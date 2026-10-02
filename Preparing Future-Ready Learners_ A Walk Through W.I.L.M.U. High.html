@@ -1,0 +1,1031 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Preparing Future-Ready Learners: A Walk Through W.I.L.M.U. High</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Nunito:wght@400;600;700;800&family=Patrick+Hand&display=swap" rel="stylesheet">
+<style>
+:root{
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+  --sat:env(safe-area-inset-top,0px);
+  --sab:env(safe-area-inset-bottom,0px);
+  --font-d:'Alfa Slab One','Rockwell','Georgia',serif;
+  --font-h:'Patrick Hand','Segoe Print','Comic Sans MS',cursive;
+  --font-b:'Nunito','Segoe UI',system-ui,-apple-system,sans-serif;
+  --hud-h:56px;
+  --floor-h:clamp(64px,11vh,104px);
+  --teacher-h:clamp(170px,31vh,280px);
+  --board-left:clamp(250px,29vw,420px);
+  --door-w:clamp(70px,8.5vw,120px);
+  --door-h:min(56vh,420px);
+  --ww:clamp(70px,8vw,120px);
+  --ink:#2b2118;
+  --paper:#fbf5e3; --paper-2:#f0e3bf; --card-ink:#2b2118; --card-line:rgba(90,56,32,.28);
+  --sticky:#ffe58a; --sticky-ink:#3a2f0b;
+  --chalk:#f4f2e8; --chalk-y:#ffe58a; --chalk-t:#7ff0e4;
+  --board:#244338; --board-d:#17302a;
+  --wood:#8a5a33; --wood-d:#5a3820; --brass:#d1a04a; --brass-d:#8b6a2a;
+  --ai:#27e0cf; --ai-d:#0b8a80; --apple:#e2553a;
+  --night:#0d1424; --tint:100%;
+  --floor:#b98450; --bg:#b98450;
+  --hud-bg:rgba(251,245,227,.92); --hud-ink:#2b2118;
+  --sky:linear-gradient(#bfe6ff,#f4fbff); --beam:1; --orb:#ffd166;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ink:#e8ecf5; --paper:#1f2b40; --paper-2:#2a3a55; --card-ink:#e9eef8; --card-line:rgba(160,190,230,.32);
+    --sticky:#6f5d1a; --sticky-ink:#fff3c4; --board:#10231e; --board-d:#091612;
+    --tint:34%; --floor:#4d3320; --bg:#4d3320; --wood:#6e4727;
+    --hud-bg:rgba(13,20,36,.92); --hud-ink:#e8ecf5;
+    --sky:linear-gradient(#0a1633,#1c2f5e); --beam:.3; --orb:#e8ecf5; --ai-d:#27e0cf;
+  }
+}
+:root[data-theme="dark"]{
+  --ink:#e8ecf5; --paper:#1f2b40; --paper-2:#2a3a55; --card-ink:#e9eef8; --card-line:rgba(160,190,230,.32);
+  --sticky:#6f5d1a; --sticky-ink:#fff3c4; --board:#10231e; --board-d:#091612;
+  --tint:34%; --floor:#4d3320; --bg:#4d3320; --wood:#6e4727;
+  --hud-bg:rgba(13,20,36,.92); --hud-ink:#e8ecf5;
+  --sky:linear-gradient(#0a1633,#1c2f5e); --beam:.3; --orb:#e8ecf5; --ai-d:#27e0cf;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font-b);overflow:hidden}
+body{height:100%}
+button{font-family:inherit}
+:focus-visible{outline:3px solid var(--ai);outline-offset:2px}
+
+/* ---------- HUD ---------- */
+.hud{position:fixed;left:0;right:0;top:var(--sat);height:var(--hud-h);z-index:10;display:flex;align-items:center;gap:14px;padding:0 14px;background:var(--hud-bg);color:var(--hud-ink);border-bottom:4px solid var(--wood-d);box-shadow:0 4px 14px rgba(0,0,0,.28);backdrop-filter:blur(6px)}
+.brand{display:flex;align-items:center;gap:9px;min-width:0}
+.crest{font-size:1.5rem;line-height:1}
+.brand b{display:block;font:400 .98rem/1 var(--font-d);letter-spacing:.02em;white-space:nowrap}
+.brand small{display:block;font-size:.7rem;font-weight:700;opacity:.75;white-space:nowrap}
+.map{flex:1;display:flex;justify-content:center;align-items:flex-end;gap:clamp(3px,.5vw,7px);height:100%;padding-bottom:9px}
+.mdoor{position:relative;width:clamp(9px,1.4vw,17px);height:26px;padding:0;border:2px solid var(--wood-d);border-bottom-width:3px;border-radius:5px 5px 0 0;background:var(--wood);cursor:pointer;transition:transform .2s,background .3s,box-shadow .3s;opacity:.55}
+.mdoor::after{content:"";position:absolute;right:2px;top:55%;width:3px;height:3px;border-radius:50%;background:var(--brass)}
+.mdoor.seen{opacity:.9;background:#a8773f}
+.mdoor.on{opacity:1;background:var(--ai);border-color:#fff;box-shadow:0 0 12px var(--ai);transform:translateY(-3px)}
+.mdoor:hover{transform:translateY(-3px);opacity:1}
+.hud-r{display:flex;align-items:center;gap:10px;font-weight:800;font-size:.82rem}
+.lights{border:2px solid var(--brass-d);background:transparent;color:inherit;border-radius:999px;padding:.28rem .7rem;font-weight:800;font-size:.76rem;cursor:pointer}
+.lights:hover{background:rgba(209,160,74,.25)}
+
+/* ---------- Floor with AI conduit ---------- */
+.floor{position:fixed;left:0;right:0;bottom:var(--sab);height:var(--floor-h);z-index:3;pointer-events:none;
+  background:
+    linear-gradient(to bottom,rgba(0,0,0,.38),transparent 24%),
+    repeating-linear-gradient(90deg,transparent 0 138px,rgba(40,22,8,.4) 138px 141px),
+    repeating-linear-gradient(0deg,transparent 0 17px,rgba(40,22,8,.18) 17px 18px),
+    var(--floor);
+  background-position:calc(var(--fx,0)*1px) 0;
+  border-top:6px solid var(--wood-d);box-shadow:0 -2px 0 var(--brass-d)}
+.floor::before{content:"";position:absolute;left:0;right:0;top:-13px;height:3px;
+  background:linear-gradient(90deg,transparent,var(--ai),transparent) 0 0/260px 100% repeat-x,rgba(39,224,207,.28);
+  box-shadow:0 0 10px var(--ai);animation:conduit 2.4s linear infinite}
+@keyframes conduit{to{background-position:260px 0,0 0}}
+
+/* ---------- World / scenes ---------- */
+#world{height:100%;display:flex;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;scrollbar-width:none;overscroll-behavior-x:contain}
+#world::-webkit-scrollbar{display:none}
+.scene{position:relative;flex:0 0 100%;width:100%;height:100%;overflow:hidden;scroll-snap-align:start;scroll-snap-stop:always;
+  --wall-c:color-mix(in srgb,var(--wall) var(--tint),var(--night));
+  --wain-c:color-mix(in srgb,var(--wain) var(--tint),var(--night))}
+.scene>*{position:absolute}
+.wall{inset:0 0 var(--floor-h) 0;overflow:hidden;z-index:0;
+  background:
+    linear-gradient(to bottom,rgba(0,0,0,.22),transparent 14%),
+    linear-gradient(to bottom,transparent 0 76%,var(--wain-c) 76% 100%),
+    var(--wall-c)}
+.wall::before{content:"";position:absolute;inset:0;background-image:radial-gradient(rgba(0,0,0,.05) 1px,transparent 1.3px);background-size:7px 7px}
+.wall::after{content:"";position:absolute;left:0;right:0;top:76%;bottom:0;
+  background:
+    linear-gradient(to bottom,rgba(255,255,255,.3) 0 5px,rgba(0,0,0,.22) 5px 8px,transparent 8px),
+    repeating-linear-gradient(90deg,transparent 0 118px,rgba(0,0,0,.2) 118px 120px)}
+.beam{left:var(--door-w);top:0;width:46%;height:100%;opacity:var(--beam);
+  background:linear-gradient(115deg,rgba(255,244,200,.34),transparent 62%);clip-path:polygon(0 0,38% 0,100% 100%,30% 100%)}
+.wall i{position:absolute;width:var(--s);height:var(--s);border-radius:50%;background:rgba(255,255,255,.8);opacity:.6;animation:mote var(--d) ease-in-out var(--dl) infinite alternate}
+@keyframes mote{to{transform:translate(34px,-46px);opacity:.15}}
+
+.window{z-index:1;top:calc(var(--hud-h) + 14px);left:calc(var(--door-w) + 60px);width:var(--ww);aspect-ratio:1/1.15;display:grid;grid-template:1fr 1fr/1fr 1fr;gap:4px;padding:4px;background:var(--wood-d);border:5px solid var(--wood);box-shadow:0 5px 10px rgba(0,0,0,.3)}
+.window i{background:var(--sky);position:relative}
+.window i:nth-child(2)::after{content:"";position:absolute;right:18%;top:22%;width:34%;aspect-ratio:1;border-radius:50%;background:var(--orb);box-shadow:0 0 14px var(--orb)}
+.clock{z-index:1;top:calc(var(--hud-h) + 26px);left:calc(var(--door-w) + 60px + var(--ww) + 18px);width:46px;height:46px;border-radius:50%;background:var(--paper);border:4px solid var(--brass-d);box-shadow:0 0 0 3px var(--ai),0 0 14px var(--ai)}
+.clock b{position:absolute;left:50%;bottom:50%;margin-left:-1px;transform-origin:50% 100%;background:var(--card-ink);border-radius:2px}
+.clock .h{width:3px;height:11px;transform:rotate(var(--h,40deg))}
+.clock .m{width:2px;height:16px;animation:spin 240s linear infinite}
+.clock .s{width:1px;height:17px;background:var(--apple);animation:spin 60s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+.doorwrap{z-index:1;left:0;bottom:var(--floor-h);width:var(--door-w);height:var(--door-h)}
+.door{position:absolute;inset:0;border:7px solid var(--wood-d);border-bottom:0;border-radius:8px 8px 0 0;background:linear-gradient(90deg,#141c2b,#33445f 65%,#5a7192);box-shadow:inset 0 0 30px rgba(0,0,0,.6)}
+.door::before{content:"";position:absolute;inset:22% 0 0 0;background:repeating-linear-gradient(90deg,#4a5e79 0 14px,#34445b 14px 16px);opacity:.55}
+.door .slab{position:absolute;top:0;bottom:0;left:0;width:82%;background:linear-gradient(90deg,var(--wood),#ad7742);border:3px solid var(--wood-d);transform-origin:left center;transform:perspective(500px) rotateY(-66deg);transition:transform 1.1s .45s cubic-bezier(.3,1.5,.5,1)}
+.door .slab::before{content:"";position:absolute;left:18%;right:18%;top:10%;height:26%;background:linear-gradient(135deg,#bfe6ff,#6aa0c8);border:3px solid var(--wood-d);opacity:.85}
+.door .slab::after{content:"";position:absolute;left:18%;right:18%;top:48%;bottom:8%;border:3px solid rgba(0,0,0,.2);border-radius:3px}
+.door .knob{position:absolute;right:8px;top:55%;width:9px;height:9px;border-radius:50%;background:var(--brass);box-shadow:0 0 0 2px var(--brass-d)}
+.scene.active .door .slab{transform:perspective(500px) rotateY(0deg)}
+.plate{z-index:2;left:8px;bottom:calc(var(--floor-h) + var(--door-h) + 14px);display:flex;flex-direction:column;gap:1px;padding:.35rem .7rem .4rem;background:linear-gradient(#f0cd82,var(--brass));color:#3a2a0a;border:2px solid var(--brass-d);border-radius:6px;box-shadow:0 3px 0 var(--brass-d),0 0 14px rgba(39,224,207,.55);max-width:calc(var(--board-left) - 20px)}
+.plate b{font:400 .95rem/1.1 var(--font-d)}
+.plate span{font-size:.7rem;font-weight:800}
+.plate em{font-style:normal;font-size:.62rem;font-weight:800;color:#075e57}
+
+.desks{z-index:2;left:var(--board-left);right:2.2vw;bottom:calc(var(--floor-h) - 10px);display:flex;justify-content:space-around;align-items:flex-end;pointer-events:none}
+.desk{position:relative;width:clamp(60px,6.8vw,92px)}
+.dsk{display:block;width:100%;height:auto;filter:drop-shadow(0 3px 2px rgba(0,0,0,.3))}
+.prop{position:absolute;left:28%;bottom:70%;translate:-50% 0;font-size:clamp(20px,3.6vh,32px);line-height:1;filter:drop-shadow(0 3px 2px rgba(0,0,0,.35));animation:bobp 3.4s ease-in-out calc(var(--k)*.4s) infinite alternate}
+@keyframes bobp{to{transform:translateY(-5px)}}
+
+/* ---------- Chalkboard ---------- */
+.board{z-index:2;left:var(--board-left);right:2.2vw;top:calc(var(--hud-h) + 14px);bottom:calc(var(--floor-h) + 74px);border:11px solid var(--wood);border-radius:8px;background:var(--board);box-shadow:inset 0 0 44px rgba(0,0,0,.6),0 0 0 3px var(--wood-d),0 12px 26px rgba(0,0,0,.4)}
+.board::before{content:"";position:absolute;inset:0;border-radius:2px;pointer-events:none;background:radial-gradient(ellipse at 28% 18%,rgba(255,255,255,.08),transparent 60%),repeating-linear-gradient(115deg,transparent 0 46px,rgba(255,255,255,.025) 46px 90px)}
+.slate{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;padding:.85rem 1.1rem 1.3rem;display:flex;flex-direction:column;gap:.7rem;color:var(--chalk);scrollbar-width:thin;scrollbar-color:rgba(244,242,232,.35) transparent}
+.sweep{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.sweep::before{content:"";position:absolute;top:0;bottom:0;left:-120px;width:90px;background:linear-gradient(90deg,transparent,rgba(39,224,207,.15),transparent);animation:sweep 9s ease-in-out infinite}
+@keyframes sweep{0%{left:-120px}55%,100%{left:100%}}
+.tray{position:absolute;left:7%;right:7%;bottom:-19px;height:9px;background:var(--wood-d);border-radius:2px;box-shadow:0 3px 6px rgba(0,0,0,.4)}
+.tray::before{content:"";position:absolute;left:14%;top:-4px;width:26px;height:5px;border-radius:2px;background:#f4f2e8}
+.tray::after{content:"";position:absolute;right:16%;top:-8px;width:34px;height:9px;border-radius:2px;background:#d8c9a0;border-bottom:4px solid #b44}
+
+.lesson-no{font:800 .78rem var(--font-b);color:var(--chalk-y)}
+.title{margin:0;font:400 clamp(1.2rem,2.2vw,1.85rem)/1.15 var(--font-d);color:var(--chalk);text-shadow:0 0 1px #fff,0 0 8px rgba(255,255,255,.12)}
+.title.big{font-size:clamp(1.5rem,3.1vw,2.5rem)}
+.bridge{margin:0;font:clamp(1rem,1.35vw,1.2rem)/1.25 var(--font-h);color:var(--chalk-t)}
+.lead{margin:0;font:1.15rem/1.25 var(--font-h);color:var(--chalk)}
+.hint{font-size:.9rem;opacity:.75}
+
+.reveal{opacity:0}
+.scene.active .reveal{animation:pop .55s cubic-bezier(.2,.9,.3,1.2) both;animation-delay:calc(.9s + var(--i,0)*.1s)}
+@keyframes pop{from{opacity:0;transform:translateY(16px) scale(.96) rotate(var(--r,0deg))}to{opacity:1;transform:rotate(var(--r,0deg))}}
+
+.grid{display:grid;gap:.7rem}
+.g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.g3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.g4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.g5{grid-template-columns:repeat(5,minmax(0,1fr))}
+
+.note{position:relative;background:var(--paper);color:var(--card-ink);border:1px solid var(--card-line);border-radius:7px;padding:.7rem .8rem .65rem;font-size:.88rem;line-height:1.36;box-shadow:0 3px 0 rgba(0,0,0,.28),0 8px 14px rgba(0,0,0,.22);transition:translate .2s}
+.note::before{content:"";position:absolute;top:-6px;left:50%;width:11px;height:11px;margin-left:-5px;border-radius:50%;background:var(--apple);box-shadow:inset -2px -2px 0 rgba(0,0,0,.28)}
+.note:hover{translate:0 -3px}
+.note h4{margin:.1rem 0 .3rem;font-size:.97rem;font-weight:800;line-height:1.2}
+.note p{margin:0}
+.note ul{margin:0;padding-left:1.1rem}
+.note li{margin:.12rem 0}
+.ico{font-size:1.55rem;line-height:1;margin-bottom:.15rem}
+.move{position:relative;background:var(--sticky);color:var(--sticky-ink);border-radius:5px 5px 16px 5px;padding:.65rem .85rem;font-size:.9rem;line-height:1.4;box-shadow:0 3px 0 rgba(0,0,0,.25),0 8px 14px rgba(0,0,0,.22)}
+.tag{display:inline-block;font:800 .72rem var(--font-b);background:var(--sticky-ink);color:var(--sticky);padding:.12rem .55rem;border-radius:4px;margin:0 .5rem .2rem 0}
+.chips{display:flex;flex-wrap:wrap;gap:.35rem}
+.chip{display:inline-flex;align-items:center;gap:.3rem;padding:.2rem .65rem;border-radius:999px;background:var(--paper-2);border:1px solid var(--card-line);font-weight:700;font-size:.8rem;transition:all .3s}
+.chip.lit{background:var(--ai);color:#03302b;border-color:#fff;box-shadow:0 0 14px var(--ai);transform:scale(1.07)}
+.brass{font:800 .84rem var(--font-b);padding:.5rem .95rem;border-radius:8px;border:2px solid var(--brass-d);background:linear-gradient(#f0cd82,var(--brass));color:#3a2a0a;cursor:pointer;box-shadow:0 3px 0 var(--brass-d),0 6px 10px rgba(0,0,0,.3);transition:transform .15s,box-shadow .15s}
+.brass:hover{transform:translateY(-2px)}
+.brass:active{transform:translateY(2px);box-shadow:0 1px 0 var(--brass-d)}
+.brass:disabled{opacity:.45;cursor:default;transform:none}
+.btn-row{display:flex;gap:.6rem;align-items:center;flex-wrap:wrap}
+
+/* flip cards */
+.fcard{appearance:none;border:0;background:none;padding:0;cursor:pointer;perspective:700px;min-height:92px;color:inherit}
+.fcard .inner{position:relative;display:block;width:100%;height:100%;min-height:92px;transform-style:preserve-3d;transition:transform .6s cubic-bezier(.3,1.3,.5,1)}
+.fcard.on .inner{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.15rem;text-align:center;padding:.5rem;border-radius:8px;backface-visibility:hidden;-webkit-backface-visibility:hidden;font-weight:800;font-size:.95rem;line-height:1.2;border:1px solid var(--card-line);box-shadow:0 3px 0 rgba(0,0,0,.28),0 8px 14px rgba(0,0,0,.22)}
+.face.front{background:var(--paper);color:var(--card-ink)}
+.face.front small{font-weight:700;font-size:.7rem;opacity:.65}
+.face.back{background:linear-gradient(135deg,#0f3b40,#0e6b66);color:#e8fffb;transform:rotateY(180deg)}
+.compare{background:var(--paper);color:var(--card-ink);border-radius:8px;padding:.65rem .8rem;border:1px solid var(--card-line);box-shadow:0 3px 0 rgba(0,0,0,.28)}
+.compare .cols{display:grid;grid-template-columns:1fr 1.25fr;gap:.6rem;margin-top:.3rem}
+.stu{border-radius:8px;padding:.45rem .6rem;font-size:.84rem;border:2px dashed var(--card-line)}
+.stu.b{border:2px solid var(--ai-d);background:rgba(39,224,207,.14)}
+.steps{display:flex;flex-wrap:wrap;gap:.25rem;margin-top:.3rem}
+.steps i{font-style:normal;font-weight:800;font-size:.74rem;background:var(--paper-2);padding:.12rem .5rem;border-radius:4px}
+.steps i+i::before{content:"›";margin-right:.35rem;opacity:.6}
+.stu.b .steps i{background:var(--ai);color:#03302b}
+
+/* flow */
+.flow{display:flex;gap:.3rem;align-items:stretch}
+.st{flex:1;min-width:0;background:var(--paper);color:var(--card-ink);border-radius:8px;padding:.5rem .3rem;text-align:center;font-weight:800;font-size:.8rem;line-height:1.2;border:2px solid var(--card-line)}
+.st b{display:block;font-size:1.1rem}
+.scene.active .st{animation:lit 7.2s ease-in-out infinite;animation-delay:calc(2.2s + var(--k)*1.2s)}
+@keyframes lit{
+  0%,15%{background:var(--ai);color:#03302b;border-color:#fff;transform:translateY(-5px) scale(1.05);box-shadow:0 0 18px var(--ai)}
+  19%,100%{background:var(--paper);color:var(--card-ink);border-color:var(--card-line);transform:none;box-shadow:none}
+}
+
+/* inputs */
+.field{display:flex;flex-direction:column;gap:.15rem;font-size:.78rem;font-weight:800;margin-top:.35rem}
+.field input,.field textarea{font:600 .86rem var(--font-b);color:var(--sticky-ink);background:rgba(255,255,255,.55);border:2px solid rgba(0,0,0,.22);border-radius:6px;padding:.35rem .5rem;resize:vertical}
+:root[data-theme="dark"] .field input,:root[data-theme="dark"] .field textarea{background:rgba(0,0,0,.28);color:var(--sticky-ink)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .field input,:root:not([data-theme="light"]) .field textarea{background:rgba(0,0,0,.28);color:var(--sticky-ink)}}
+.field input::placeholder,.field textarea::placeholder{color:inherit;opacity:.5}
+
+/* sample AI response */
+.sample{margin:.35rem 0;padding:.6rem .75rem;background:var(--paper);color:var(--card-ink);border-left:6px solid var(--ai-d);border-radius:6px;font-size:.9rem;line-height:1.55}
+.claim{background:linear-gradient(transparent 55%,rgba(255,200,0,.65) 55%);cursor:pointer;border-radius:2px;transition:background .3s}
+.claim:hover{background:linear-gradient(transparent 20%,rgba(255,200,0,.65) 20%)}
+.claim.done{background:rgba(39,224,207,.5)}
+.checkout{min-height:2.7em;margin-top:.3rem;font-size:.86rem;line-height:1.4}
+
+/* UDL */
+.fmt{border:2px solid var(--sticky-ink);background:transparent;color:inherit;border-radius:999px;padding:.25rem .75rem;font-weight:800;font-size:.8rem;cursor:pointer}
+.fmt.sel{background:var(--sticky-ink);color:var(--sticky)}
+.fmtout{margin-top:.5rem;display:flex;gap:.7rem;align-items:center;min-height:56px;font-size:.86rem}
+.mock{flex:0 0 74px;height:52px;border-radius:6px;background:rgba(255,255,255,.55);display:flex;align-items:center;justify-content:center;gap:3px;padding:6px;overflow:hidden}
+:root[data-theme="dark"] .mock{background:rgba(0,0,0,.3)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .mock{background:rgba(0,0,0,.3)}}
+.mock.m-audio i{width:5px;background:var(--ai-d);border-radius:3px;animation:eq .9s ease-in-out infinite alternate}
+.mock.m-audio i:nth-child(odd){animation-delay:.25s}
+@keyframes eq{from{height:8px}to{height:34px}}
+.mock.m-text{flex-direction:column;align-items:stretch}
+.mock.m-text i{height:6px;border-radius:3px;background:rgba(0,0,0,.25)}
+.mock.m-text i:nth-child(2){background:rgba(255,200,0,.9)}
+.mock.m-visual i{flex:1;height:30px;border-radius:5px;border:3px solid var(--ai-d)}
+
+/* tabs */
+.tabs{display:flex;gap:.4rem;margin-bottom:.4rem}
+.tab{border:2px solid var(--card-line);background:var(--paper-2);color:var(--card-ink);border-radius:8px 8px 0 0;padding:.3rem .9rem;font-weight:800;font-size:.84rem;cursor:pointer}
+.tab.sel{background:var(--ai);color:#03302b;border-color:#fff}
+.pane[hidden]{display:none}
+
+/* scenarios */
+.scn{appearance:none;text-align:left;cursor:pointer;color:var(--card-ink);border:2px solid var(--card-line);background:var(--paper);border-radius:8px;padding:.55rem .7rem;font-weight:800;font-size:.86rem;line-height:1.25;box-shadow:0 3px 0 rgba(0,0,0,.28);transition:all .25s}
+.scn span{display:block;font-size:1.3rem}
+.scn.sel{border-color:#fff;background:var(--ai);color:#03302b;transform:translateY(-3px);box-shadow:0 0 18px var(--ai)}
+.pipe{display:flex;flex-wrap:wrap;gap:.35rem;align-items:center}
+.pipe span{padding:.3rem .7rem;border-radius:999px;background:rgba(244,242,232,.12);color:var(--chalk);border:2px dashed rgba(244,242,232,.4);font-weight:800;font-size:.8rem;transition:all .35s}
+.pipe span.on{background:var(--chalk-y);color:#3a2f0b;border:2px solid #fff;transform:scale(1.05)}
+
+/* misc */
+.venn{position:relative;height:130px}
+.vc{position:absolute;width:88px;height:88px;border-radius:50%;display:flex;align-items:center;justify-content:center;text-align:center;font-weight:800;font-size:.72rem;line-height:1.1;padding:10px;color:#2b2118;border:2px solid rgba(0,0,0,.25)}
+.vc:nth-child(1){left:4%;top:4px;background:rgba(39,224,207,.65)}
+.vc:nth-child(2){left:30%;top:36px;background:rgba(255,209,102,.7)}
+.vc:nth-child(3){left:56%;top:4px;background:rgba(226,85,58,.55)}
+.scroll{background:linear-gradient(#f3e6c2,#e8d6a6);color:#3a2a10;border-radius:10px;padding:.7rem 1rem;box-shadow:0 4px 0 rgba(0,0,0,.3),inset 0 0 18px rgba(120,80,20,.3);border-left:10px solid #b18a4a;border-right:10px solid #b18a4a}
+:root[data-theme="dark"] .scroll{background:linear-gradient(#cdbd92,#b9a676)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .scroll{background:linear-gradient(#cdbd92,#b9a676)}}
+.scroll h4{margin:0 0 .3rem;font:400 1rem var(--font-d)}
+.scroll ol{margin:0;padding-left:1.2rem;font:1.2rem/1.45 var(--font-h)}
+.chain{display:flex;flex-wrap:wrap;gap:.3rem;align-items:center;font-weight:800;font-size:.8rem}
+.chain span{background:var(--chalk);color:#17302a;padding:.2rem .6rem;border-radius:999px}
+.chain em{font-style:normal;color:var(--chalk-y)}
+.plaque{margin-top:.6rem;padding:.7rem .9rem;border-radius:8px;background:linear-gradient(#f0cd82,var(--brass));color:#3a2a0a;border:3px solid var(--brass-d);box-shadow:0 4px 0 var(--brass-d),0 0 20px rgba(39,224,207,.6);font:400 .95rem/1.35 var(--font-d);animation:drop .7s cubic-bezier(.3,1.6,.5,1)}
+.plaque small{display:block;margin-top:.3rem;font:800 .84rem var(--font-b)}
+@keyframes drop{from{transform:translateY(-30px) rotate(-4deg);opacity:0}}
+.confetti{position:absolute;top:-12px;width:9px;height:14px;z-index:9;pointer-events:none;animation:fall 2.6s ease-in forwards}
+@keyframes fall{to{transform:translateY(105vh) rotate(720deg);opacity:.9}}
+
+/* ---------- Teacher stage ---------- */
+.stage{position:fixed;inset:var(--sat) 0 var(--sab) 0;z-index:4;pointer-events:none;--headx:calc(var(--door-w) - 6px + var(--teacher-h)*.312)}
+.teacher{position:absolute;left:calc(var(--door-w) - 6px);bottom:calc(var(--floor-h) - 16px);height:var(--teacher-h);aspect-ratio:150/250}
+.teacher svg{display:block;height:100%;width:auto;overflow:visible}
+.teacher.flip{transform:scaleX(-1)}
+.teacher .figure,.teacher .head,.teacher .arm,.teacher .leg,.teacher .eyes,.teacher .brows{transform-box:view-box}
+.skin{fill:#f0c59b}.sleeve{stroke:#b35d33;stroke-width:13;stroke-linecap:round;fill:none}
+.patch{fill:#8a4a28}
+.figure{transform-origin:75px 240px;animation:breath 3.4s ease-in-out infinite}
+@keyframes breath{50%{transform:scaleY(1.012)}}
+.legB{transform-origin:69px 172px}.legF{transform-origin:89px 172px}
+.armL{transform-origin:54px 100px}.armR{transform-origin:104px 100px;transition:transform .5s cubic-bezier(.3,1.4,.5,1)}
+.head{transform-origin:78px 86px}
+.eyes{transform-origin:78px 57px;animation:blink 5s infinite}
+@keyframes blink{0%,92%,100%{transform:scaleY(1)}95%{transform:scaleY(.08)}}
+.brows{transition:transform .3s}
+.asking .brows{transform:translateY(-3px)}
+.mouthTalk{display:none}
+.talking .mouthSmile{display:none}
+.talking .mouthTalk{display:block;transform-box:fill-box;transform-origin:center;animation:talk .2s ease-in-out infinite alternate}
+@keyframes talk{from{transform:scaleY(.3)}to{transform:scaleY(1.5)}}
+.pointing .armR{transform:rotate(-78deg);animation:tap 1.3s ease-in-out .5s infinite alternate}
+@keyframes tap{to{transform:rotate(-70deg)}}
+.walking .figure{animation:bob .3s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+.walking .legF,.walking .armL{animation:swingA .3s ease-in-out infinite alternate}
+.walking .legB,.walking .armR{animation:swingA .3s ease-in-out infinite alternate-reverse}
+.walking .armL,.walking .armR{--amp:.55}
+@keyframes swingA{from{transform:rotate(-27deg)}to{transform:rotate(27deg)}}
+.walking .head{animation:headbob .3s ease-in-out infinite alternate}
+@keyframes headbob{from{transform:rotate(-2deg)}to{transform:rotate(2deg)}}
+.shadow{fill:#000;opacity:.25}
+
+.bubble{position:absolute;left:16px;bottom:calc(var(--floor-h) - 16px + var(--teacher-h) + 26px);width:calc(var(--board-left) - 34px);max-width:340px;background:var(--paper);color:var(--card-ink);border:3px solid var(--ink);border-radius:22px;padding:.55rem .85rem .7rem;box-shadow:0 6px 0 rgba(0,0,0,.18),0 14px 26px rgba(0,0,0,.28);transform-origin:30% 110%;transform:scale(.55) translateY(14px);opacity:0;transition:transform .45s cubic-bezier(.3,1.6,.5,1),opacity .25s}
+.bubble.show{transform:none;opacity:1}
+.bubble .who{font:800 .74rem var(--font-b);color:var(--ai-d);margin-bottom:.15rem}
+.bubble .q{font:clamp(1.05rem,1.55vw,1.32rem)/1.2 var(--font-h);min-height:1.2em}
+.bubble.typing .q::after{content:"";display:inline-block;width:2px;height:1em;margin-left:2px;vertical-align:-2px;background:var(--ai-d);animation:caret .6s steps(1) infinite}
+@keyframes caret{50%{opacity:0}}
+.dots i{position:absolute;border-radius:50%;background:var(--paper);border:3px solid var(--ink)}
+.dots i:nth-child(1){width:15px;height:15px;left:calc(var(--headx) - 2px);bottom:-17px}
+.dots i:nth-child(2){width:10px;height:10px;left:calc(var(--headx) - 8px);bottom:-30px}
+.dots i:nth-child(3){width:7px;height:7px;left:calc(var(--headx) - 12px);bottom:-40px}
+.idea{position:absolute;left:calc(var(--headx) + 34px);bottom:calc(var(--floor-h) - 16px + var(--teacher-h) - 12px);font-size:2rem;opacity:0;filter:drop-shadow(0 0 10px #ffd166)}
+.idea.pop{animation:idea 1.7s ease-out}
+@keyframes idea{0%{opacity:0;transform:translateY(14px) scale(.3)}25%{opacity:1;transform:translateY(-8px) scale(1.25) rotate(-8deg)}70%{opacity:1;transform:translateY(-14px) scale(1)}100%{opacity:0;transform:translateY(-30px) scale(.9)}}
+
+.ada{position:absolute;left:calc(var(--door-w) + var(--teacher-h)*.6 - 12px);bottom:calc(var(--floor-h) + var(--teacher-h)*.42);width:clamp(40px,4.6vw,60px);animation:float 3s ease-in-out infinite alternate}
+@keyframes float{from{translate:0 0}to{translate:0 -9px}}
+.ada svg{display:block;width:100%;height:auto;overflow:visible;transition:transform .3s}
+.walking .ada svg{transform:rotate(12deg) translateX(-6px)}
+.ada-eyes{transform:translate(var(--ex,0px),var(--ey,0px));transition:transform .12s}
+.ada-led{animation:led 1.6s steps(1) infinite}
+@keyframes led{50%{fill:#ff6b4a}}
+
+/* ---------- Controls ---------- */
+.ctrl{position:fixed;right:14px;bottom:calc(var(--sab) + (var(--floor-h) - 42px)/2);z-index:11;display:flex;gap:8px;align-items:center}
+.pill{position:fixed;left:50%;translate:-50% 0;bottom:calc(var(--sab) + var(--floor-h) + 8px);z-index:11;background:var(--hud-bg);color:var(--hud-ink);border:2px solid var(--brass-d);border-radius:999px;padding:.3rem .9rem;font-weight:800;font-size:.8rem;opacity:0;pointer-events:none;transition:opacity .5s}
+.pill.show{opacity:1;animation:nudge 1.6s ease-in-out infinite}
+@keyframes nudge{50%{transform:translateX(8px)}}
+
+/* ---------- Responsive ---------- */
+@media (max-width:1000px){.clock{display:none}.g5{grid-template-columns:repeat(3,minmax(0,1fr))}.g4{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-height:560px){.desks{display:none}.board{bottom:calc(var(--floor-h) + 18px)}:root{--teacher-h:140px;--floor-h:52px;--door-h:min(60vh,300px)}}
+@media (max-width:760px){
+  :root{--floor-h:54px;--teacher-h:112px;--board-left:8px;--door-w:0px;--hud-h:50px}
+  .brand small,.brand b{display:none}
+  .window,.clock,.doorwrap,.plate,.desks,.ada,.beam{display:none}
+  .board{left:8px;right:8px;top:calc(var(--hud-h) + 120px);bottom:calc(var(--floor-h) + 100px);border-width:8px}
+  .tray{display:none}
+  .teacher{left:6px}
+  .bubble{left:8px;right:8px;width:auto;max-width:none;bottom:auto;top:calc(var(--hud-h) + 8px);padding:.4rem .7rem .5rem}
+  .bubble .q{font-size:1.02rem}
+  .dots{display:none}
+  .idea{left:80px}
+  .g2,.g3,.g4,.g5{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .compare .cols{grid-template-columns:1fr}
+  .flow{flex-wrap:wrap}.st{flex:1 1 30%}
+  .ctrl{right:8px}.brass{padding:.4rem .7rem;font-size:.76rem}
+  .slate{padding:.7rem .75rem 1rem}
+}
+@media (max-width:480px){.g2,.g3,.g4,.g5{grid-template-columns:1fr}.fcard{min-height:64px}.fcard .inner{min-height:64px}}
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+  .reveal{opacity:1}
+}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<symbol id="desk" viewBox="0 0 110 64">
+  <rect x="16" y="36" width="6" height="27" rx="2" style="fill:var(--wood-d)"/>
+  <rect x="88" y="36" width="6" height="27" rx="2" style="fill:var(--wood-d)"/>
+  <rect x="14" y="22" width="82" height="14" rx="2" style="fill:var(--wood-d)"/>
+  <rect x="6" y="13" width="98" height="10" rx="3" style="fill:var(--wood)"/>
+  <rect x="8" y="13" width="94" height="3" rx="1.5" fill="#fff" opacity=".2"/>
+  <g transform="rotate(-7 82 8)">
+    <rect x="66" y="2" width="32" height="11" rx="2" fill="#0f2a31" stroke="#27e0cf" stroke-width="1.5"><animate attributeName="stroke-opacity" values=".45;1;.45" dur="2.6s" repeatCount="indefinite"/></rect>
+    <rect x="70" y="5" width="15" height="2" rx="1" fill="#27e0cf"/><rect x="70" y="8.5" width="9" height="1.5" rx=".7" fill="#27e0cf" opacity=".6"/>
+  </g>
+</symbol>
+</defs></svg>
+
+<header class="hud">
+  <div class="brand"><span class="crest" aria-hidden="true">🏫</span><div><b>W.I.L.M.U. High</b><small>Est. 1927 · now wired for AI</small></div></div>
+  <nav class="map" id="map" aria-label="Classrooms"></nav>
+  <div class="hud-r"><span id="count" aria-live="polite">1 / 16</span><button class="lights" id="lights" type="button">Lights off</button></div>
+</header>
+
+<div class="floor" id="floor" aria-hidden="true"></div>
+
+<main id="world" tabindex="-1">
+
+<!-- 0 -->
+<section class="scene" data-plate="Main Hall" data-name="Front entrance" data-wall="#efe3c4" data-wain="#7a4b2a" data-props="🏫,📣,🔔,🎓,🍎"
+  data-q="Welcome to W.I.L.M.U. High! Before we open a single door, what are we walking in with?">
+  <div class="board"><div class="slate">
+    <div class="lesson-no reveal">The W.I.L.M.U. Framework · Letter U</div>
+    <h2 class="title big reveal">Preparing Future-Ready Learners</h2>
+    <p class="bridge reveal">U stands for <b>Understand the Future</b>. Follow me through 15 classrooms. Every room asks a question, and the next room builds on the answer.</p>
+    <p class="lead reveal">Future readiness combines four things:</p>
+    <div class="grid g4">
+      <div class="note reveal" style="--r:-1.2deg"><div class="ico">📚</div><h4>Academic knowledge</h4></div>
+      <div class="note reveal" style="--r:.9deg"><div class="ico">🤖</div><h4>AI literacy</h4></div>
+      <div class="note reveal" style="--r:-.6deg"><div class="ico">🤝</div><h4>Human capabilities</h4></div>
+      <div class="note reveal" style="--r:1.1deg"><div class="ico">⚖️</div><h4>Ethical judgment</h4></div>
+    </div>
+    <div class="move reveal" style="--r:-.5deg"><span class="tag">Opening prompt</span> “What should students still learn to do themselves when AI can produce an answer?”</div>
+    <div class="btn-row reveal"><button class="brass" type="button" data-go="1">Start the tour</button></div>
+  </div><div class="sweep"></div><div class="tray"></div></div>
+</section>
+
+<!-- 1 -->
+<section class="scene" data-plate="Room 101" data-name="History room" data-wall="#ecd9b0" data-wain="#8a5a33" data-props="📜,🕰️,🗺️,🏺,📖"
+  data-q="If AI can handle some of the work, what actually changes, and what must we never hand over?">
+  <div class="board"><div class="slate">
+    <div class="lesson-no reveal">Lesson 1 · Room 101</div>
+    <h2 class="title reveal">What Changes, and What Education Must Preserve</h2>
+    <p class="bridge reveal">↳ Opening prompt in hand: first, what is actually different now?</p>
+    <div class="grid g3">
+      <div class="note reveal" style="--r:-1deg"><div class="ico">🤖</div><h4>AI can assist with</h4><ul><li>Generating content</li><li>Analyzing information</li><li>Completing routine tasks</li></ul></div>
+      <div class="note reveal" style="--r:.8deg"><div class="ico">🧭</div><h4>Educators must reconsider</h4><p>What students need to <b>know</b>, <b>practice</b>, and <b>demonstrate independently</b>.</p></div>
+      <div class="note reveal" style="--r:-.7deg"><div class="ico">🏫</div><h4>Education must preserve</h4><ul><li>Understanding</li><li>Relationships</li><li>Belonging</li><li>Learner development</li></ul></div>
+    </div>
+  </div><div class="sweep"></div><div class="tray"></div></div>
+</section>
+
+<!-- 2 -->
+<section class="scene" data-plate="Room 102" data-name="Computer lab" data-wall="#d6e4ee" data-wain="#4a6a86" data-props="🖥️,⌨️,🖱️,💾,🤖"
+  data-q="Before students touch the tool, what should they understand about it?">
+  <div class="board"><div class="slate">
+    <div class="lesson-no reveal">Lesson 2 · Room 102</div>
+    <h2 class="title reveal">AI Literacy Is More Than Using a Tool</h2>
+    <p class="bridge reveal">↳ If students must understand, not just receive, they need to understand the tool itself.</p>
+    <p class="lead reveal">Four questions organize AI literacy <span class="hint">(tap a card)</span></p>
+    <div class="grid g4">
+      <button class="fcard reveal" type="button"><span class="inner"><span class="face front">How does it work?<small>Question 1</small></span><span class="face back">Basic understanding</span></span></button>
+      <button class="fcard reveal" type="button"><span class="inner"><span class="face front">Can I trust it?<small>Question 2</small></span><span class="face back">Critical evaluation</span></span></button>
+      <button class="fcard reveal" type="button"><span class="inner"><span class="face front">Should I use it?<small>Question 3</small></span><span class="face back">Responsible use</span></span></button>
+      <button class="fcard reveal" type="button"><span class="inner"><span class="face front">Who is affected?<small>Question 4</small></span><span class="face back">Awareness of societal consequences</span></span></button>
+    </div>
+    <div class="compare reveal">
+      <span class="tag" style="background:var(--card-ink);color:var(--paper)">Application</span><b style="font-size:.86rem">Compare two students</b>
+      <div class="cols">
+        <div class="stu a"><b>Student A</b> generates an answer
+          <div class="steps"><i>Prompt</i><i>Accept the answer</i></div></div>
+        <div class="stu b"><b>Student B</b> checks, revises, and explains it
+          <div class="steps"><i>Prompt</i><i>Check</i><i>Revise</i><i>Explain</i></div></div>
+      </div>
+    </div>
+  </div><div class="sweep"></div><div class="tray"></div></div>
+</section>
+
+<!-- 3 -->
+<section class="scene" data-plate="Room 103" data-name="Science lab" data-wall="#dcebe3" data-wain="#5f8b7a" data-props="🔬,🧪,⚗️,🥽,🧫"
+  data-q="Could a student catch an AI’s mistake about an experiment they don’t understand?">
+  <div class="board"><div class="slate">
+    <div class="lesson-no reveal">Lesson 3 · Room 103</div>
+    <h2 class="title reveal">Foundational Knowledge Still Matters</h2>
+    <p class="bridge reveal">↳ Asking “Can I trust it?” only works if learners have something to check the answer against.</p>
+    <div class="grid g2">
+      <div class="note reveal" style="--r:-.8deg"><div class="ico">🧠</div><h4>Subject knowledge lets students</h4><ul><li>Identify errors</li><li>Ask useful questions</li><li>Judge AI-generated responses</li></ul></div>
+      <div class="note reveal" style="--r:.7deg"><div class="ico">⚖️</div><h4>Product versus understanding</h4><p>A <b>polished product</b> can look finished. <b>Understanding</b> is the ability to explain why it works.</p></div>
+    </div>
+    <div class="move reveal" style="--r:.4deg"><span class="tag">Example</span> A student cannot reliably evaluate an AI explanation of a scientific experiment without understanding <b>variables</b> and <b>evidence</b>.</div>
+  </div><div class="sweep"></div><div class="tray"></div></div>
+</section>
+
+<!-- 4 -->
+<section class="scene" data-plate="Room 104" data-name="Music room" data-wall="#efd9d2" data-wain="#8d4b4b" data-props="🎻,🎹,🥁,🎺,🎼"
+  data-q="How does learning really happen, and when does AI help or get in the way?">
+  <div class="board"><div class="slate">
+    <div class="lesson-no reveal">Lesson 4 · Room 104</div>
+    <h2 class="title reveal">Learning Requires Thinking and Practice</h2>
+    <p class="bridge reveal">↳ Knowledge isn’t downloaded. It’s built through repeated, effortful practice, like scales on a piano.</p>
+    <div class="grid g5">
+      <div class="note reveal" style="--r:-1deg"><div class="ico">🧠</div><h4>Retrieval</h4></div>
+      <div class="note reveal" style="--r:.8deg"><div class="ico">🎯</div><h4>Deliberate practice</h4></div>
+      <div class="note reveal" style="--r:-.6deg"><div class="ico">💬</div><h4>Feedback</h4></div>
+      <div class="note reveal" style="--r:1deg"><div class="ico">🪞</div><h4>Reflection</h4></div>
+      <div class="note reveal" style="--r:-.9deg"><div class="ico">🧗</div><h4>Productive struggle</h4></div>
+    </div>
+    <div class="note reveal" style="--r:.3deg"><h4>AI can support these processes through</h4><div class="chips"><span class="chip">💡 Hints</span><span class="chip">📝 Practice questions</span><span class="chip">💬 Feedback</span></div></div>
+    <div class="move reveal" style="--r:-.4deg"><span class="tag">Discussion</span> “When does AI remove a barrier to learning, and when does it remove the thinking students need to do?”</div>
+  </div><div class="sweep"></div><div class="tray"></div></div>
+</section>
+
+<!-- 5 -->
+<section class="scene" data-plate="Room 105" data-name="Art studio" data-wall="#f2e4cf" data-wain="#b0693a" data-props="🎨,🖌️,✂️,🪴,🖼️"
+  data-q="Beyond right answers, which human capabilities are we building?">
+  <div class="board"><div class="slate">
+    <div class="lesson-no reveal">Lesson 5 · Room 105</div>
+    <h2 class="title reveal">Human Capabilities for an AI-Enabled World</h2>
+    <p class="bridge reveal">↳ Practice builds more than content. It builds capabilities no tool can stand in for.</p>
+    <div class="grid g3" id="caps">
+      <div class="note reveal" style="--r:-.9deg"><div class="ico">🧠</div><h4>Thinking</h4><div class="chips"><span class="chip">Critical thinking</span><span class="chip">Creativity</span><span class="chip">Problem solving</span></div></div>
+      <div class="note reveal" style="--r:.7deg"><div class="ico">🤝</div><h4>Working with others</h4><div class="chips"><span class="chip">Communication</span><span class="chip">Collaboration</span><span class="chip">Empathy</span></div></div>
+      <div class="note reveal" style="--r:-.5deg"><div class="ico">🧭</div><h4>Directing oneself</h4><div class="chips"><span class="chip">Adaptability</span><span class="chip">Ethical reasoning</span></div></div>
+    </div>
+    <div class="move reveal" style="--r:.4deg"><span class="tag">Application</span> Ask students to identify how a collaborative project develops several capabilities at the same time.
+      <div class="btn-row" style="margin-top:.45rem"><button class="brass" id="wave" type="button">Light up a group project</button></div></div>
+  </div><div class="sweep"></div><div class="tray"></div></div>
+</section>
+
+<!-- 6 -->
+<section class="scene" data-plate="Room 106" data-name="Maker shop" data-wall="#d9dcc9" data-wain="#66724a" data-props="🔧,⚙️,🪚,🧰,🤖"
+  data-q="What does working with AI look like when the student stays in charge?">
+  <div class="board"><div class="slate">
+    <div class="lesson-no reveal">Lesson 6 · Room 106</div>
+    <h2 class="title reveal">Human–AI Collaboration in Practice</h2>
+    <p class="bridge reveal">↳ With capabilities in view, how do students actually work alongside AI?</p>
+    <p class="lead reveal">Model this workflow:</p>
+    <div class="flow reveal">
+      <div class="st" style="--k:0"><b>1</b>Define the problem</div>
+      <div class="st" style="--k:1"><b>2</b>Attempt or plan</div>
+      <div class="st" style="--k:2"><b>3</b>Consult AI</div>
+      <div class="st" style="--k:3"><b>4</b>Evaluate the response</div>
+      <div class="st" style="--k:4"><b>5</b>Revise</div>
+      <div class="st" style="--k:5"><b>6</b>Explain the final decision</div>
+    </div>
+    <div class="note reveal" style="--r:-.5deg"><h4>Human responsibility</h4><div class="chips"><span class="chip">Accuracy</span><span class="chip">Appropriateness</span><span class="chip">The finished work</span></div></div>
+    <div class="move reveal" style="--r:.4deg"><span class="tag">Example</span> Students use AI to suggest solutions to a community problem, then evaluate feasibility and defend their recommendation.</div>
+  </div><div class="sweep"></div><div class="tray"></div></div>
+</section>
+
+<!-- 7 -->
+<section class="scene" data-plate="Room 107" data-name="Counselor’s office" data-wall="#e4dcee" data-wain="#75608f" data-props="🧭,🪴,☕,🎯,📓"
+  data-q="How do students learn when to ask for help, and when to practice alone?">
+  <div class="board"><div class="slate">
+    <div class="lesson-no reveal">Lesson 7 · Room 107</div>
+    <h2 class="title reveal">Learner Agency: Support Without Dependence</h2>
+    <p class="bridge reveal">↳ A good workflow still needs a learner who steers it. That is agency.</p>
+    <div class="grid g4">
+      <div class="note reveal" style="--r:-.8deg"><div class="ico">🎯</div><h4>Goal setting</h4></div>
+      <div class="note reveal" style="--r:.8deg"><div class="ico">🔀</div><h4>Choice</h4></div>
+      <div class="note reveal" style="--r:-.6deg"><div class="ico">📈</div><h4>Self-monitoring</h4></div>
+      <div class="note reveal" style="--r:.9deg"><div class="ico">🪞</div><h4>Reflection</h4></div>
+    </div>
+    <p class="lead reveal">Teach students to recognize <b>when they need assistance</b> and <b>when independent practice matters</b>.</p>
+    <div class="move reveal" style="--r:-.3deg"><span class="tag">Application</span> Reflection prompt: “What did AI contribute, what did I contribute, and what can I now do independently?”
+      <label class="field">AI contributed…<input type="text" placeholder="Try it"></label>
+      <label class="field">I contributed…<input type="text" placeholder="Try it"></label>
+      <label class="field">I can now do independently…<input type="text" placeholder="Try it"></label>
+    </div>
+  </div><div class="sweep"></div><div class="tray"></div></div>
+</section>
+
+<!-- 8 -->
+<section class="scene" data-plate="Room 108" data-name="Library" data-wall="#e5d4bd" data-wain="#6b4a2e" data-props="📚,🔍,🕯️,📰,🖋️"
+  data-q="How do students decide what to believe, and what to share?">
+  <div class="board"><div class="slate">
+    <div class="lesson-no reveal">Lesson 8 · Room 108</div>
+    <h2 class="title reveal">Information Literacy and Digital Citizenship</h2>
+    <p class="bridge reveal">↳ Steering well means judging information and acting responsibly online.</p>
+    <div class="grid g2">
+      <div class="note reveal" style="--r:-.8deg"><div class="ico">🔍</div><h4>Information literacy</h4><div class="chips"><span class="chip">Verify claims</span><span class="chip">Inspect sources</span><span class="chip">Recognize uncertainty</span><span class="chip">Examine bias</span></div></div>
+      <div class="note reveal" style="--r:.8deg"><div class="ico">🌐</div><h4>Digital citizenship</h4><div class="chips"><span class="chip">Privacy</span><span class="chip">Respectful communication</span><span class="chip">Transparency</span><span class="chip">Responsible participation</span></div></div>
+    </div>
+    <div class="move reveal" style="--r:.3deg"><span class="tag">Activity</span> Present an AI-generated response and ask: what would you check before using or sharing it?
+      <p class="sample">“<span class="claim" data-skill="Verify claims · recognize uncertainty" data-check="“Proves” and “every subject” sound far more certain than most evidence allows. Which research? Who ran it, when, and with which students?">Research proves that AI tutors raise test scores by 40% in every subject.</span>
+      <span class="claim" data-skill="Inspect sources" data-check="Which experts? What are their credentials, and what might they gain from saying it?">Experts agree students should use them daily</span>, and
+      <span class="claim" data-skill="Verify claims" data-check="Can you find this study? If the response can’t point to a source you can open, treat the claim as unverified.">one famous study found</span>
+      <span class="claim" data-skill="Examine bias" data-check="Whose perspective is this? Is it balanced, or does it push one view? Look at who benefits.">students who skip reading do just as well</span>.”</p>
+      <div class="hint" style="font-size:.74rem">Sample response invented for practice. Tap each highlighted claim. <b id="claimCount">0 / 4</b> checked.</div>
+      <div class="checkout" id="checkout" aria-live="polite"></div>
+    </div>
+  </div><div class="sweep"></div><div class="tray"></div></div>
+</section>
+
+<!-- 9 -->
+<section class="scene" data-plate="Room 109" data-name="Cafeteria" data-wall="#f3dfc0" data-wain="#b5532c" data-props="🍎,🥪,🥛,🍽️,🥗"
+  data-q="Is there a seat at the table for every learner?">
+  <div class="board"><div class="slate">
+    <div class="lesson-no reveal">Lesson 9 · Room 109</div>
+    <h2 class="title reveal">Future Readiness Must Include Every Learner</h2>
+    <p class="bridge reveal">↳ Now widen the lens: does all of this reach everyone?</p>
+    <div class="grid g2">
+      <div class="note reveal" style="--r:-.8deg"><div class="ico">💻</div><h4>Access to technology</h4><p>Having a device or a login.</p></div>
+      <div class="note reveal" style="--r:.8deg"><div class="ico">🌱</div><h4>Access to meaningful learning</h4><p>Using the technology to understand, practice, and grow. <b>These are not the same thing.</b></p></div>
+    </div>
+    <div class="note reveal" style="--r:-.3deg"><h4>Consider</h4><div class="chips"><span class="chip">Disability</span><span class="chip">Language</span><span class="chip">Cultural context</span><span class="chip">Socioeconomic circumstances</span><span class="chip">Prior experience</span></div></div>
+    <div class="move reveal" style="--r:.4deg"><span class="tag">Emphasis</span> All students should <b>develop AI literacy</b>, not simply <b>receive AI-based assistance</b>.</div>
+  </div><div class="sweep"></div><div class="tray"></div></div>
+</section>
+
+<!-- 10 -->
+<section class="scene" data-plate="Room 110" data-name="Resource room" data-wall="#d8ece8" data-wain="#3f8a86" data-props="🎧,🔤,🧩,🔊,🖐️"
+  data-q="How do I design so every learner can get in and show what they know?">
+  <div class="board"><div class="slate">
+    <div class="lesson-no reveal">Lesson 10 · Room 110</div>
+    <h2 class="title reveal">Designing Inclusive AI Literacy with UDL</h2>
+    <p class="bridge reveal">↳ Inclusive intent needs inclusive design. Enter Universal Design for Learning.</p>
+    <div class="grid g3">
+      <div class="note reveal" style="--r:-.8deg"><div class="ico">💡</div><h4>Multiple means of engagement</h4><p>Why learners care and stay with it.</p></div>
+      <div class="note reveal" style="--r:.7deg"><div class="ico">👁️</div><h4>Multiple means of representation</h4><p>How ideas are presented.</p></div>
+      <div class="note reveal" style="--r:-.6deg"><div class="ico">🗣️</div><h4>Multiple means of action and expression</h4><p>How learners show what they know.</p></div>
+    </div>
+    <div class="note reveal" style="--r:.2deg"><h4>Offer</h4><div class="chips"><span class="chip">Accessible explanations</span><span class="chip">Language supports</span><span class="chip">Varied participation methods</span><span class="chip">Alternatives when tools create barriers</span></div></div>
+    <div class="move reveal" style="--r:-.3deg"><span class="tag">Example</span> Students demonstrate their evaluation of an AI response through…
+      <div class="btn-row" style="margin-top:.35rem"><button class="fmt sel" type="button" data-fmt="text">Annotated text</button><button class="fmt" type="button" data-fmt="audio">Audio explanation</button><button class="fmt" type="button" data-fmt="visual">Accessible visual presentation</button></div>
+      <div class="fmtout" id="fmtout"></div>
+    </div>
+  </div><div class="sweep"></div><div class="tray"></div></div>
+</section>
+
+<!-- 11 -->
+<section class="scene" data-plate="Room 111" data-name="Grade-level wing" data-wall="#e7e4cf" data-wain="#7b7b43" data-props="🧸,🎒,🔢,📐,🎓"
+  data-q="What does this look like for a second grader versus a tenth grader?">
+  <div class="board"><div class="slate">
+    <div class="lesson-no reveal">Lesson 11 · Room 111</div>
+    <h2 class="title reveal">What AI Literacy Looks Like Across Grade Levels</h2>
+    <p class="bridge reveal">↳ Good design looks different at different ages.</p>
+    <div class="reveal">
+      <div class="tabs" role="tablist"><button class="tab sel" type="button" data-tab="el" role="tab">Elementary</button><button class="tab" type="button" data-tab="se" role="tab">Secondary</button></div>
+      <div class="note pane" id="pane-el"><div class="ico">🧸</div><h4>Elementary</h4><ul><li>Recognize AI</li><li>Question outputs</li><li>Protect personal information</li><li>Develop responsible habits</li></ul></div>
+      <div class="note pane" id="pane-se" hidden><div class="ico">🎓</div><h4>Secondary</h4><ul><li>Verify evidence</li><li>Examine bias</li><li>Document AI assistance</li><li>Defend decisions within subject areas</li></ul></div>
+    </div>
+    <div class="move reveal" style="--r:.3deg"><span class="tag">Application</span> Write one age-appropriate learning outcome and explain how students would demonstrate it.
+      <label class="field">Learning outcome<textarea rows="2" placeholder="Students will…"></textarea></label>
+      <label class="field">How students demonstrate it<textarea rows="2" placeholder="Students show this by…"></textarea></label>
+    </div>
+  </div><div class="sweep"></div><div class="tray"></div></div>
+</section>
+
+<!-- 12 -->
+<section class="scene" data-plate="Room 112" data-name="Career center" data-wall="#d9e0ea" data-wain="#36506f" data-props="💼,🛠️,🌐,📈,🧑‍💻"
+  data-q="Where does all this take students after graduation?">
+  <div class="board"><div class="slate">
+    <div class="lesson-no reveal">Lesson 12 · Room 112</div>
+    <h2 class="title reveal">Preparing Students for Work and Civic Life</h2>
+    <p class="bridge reveal">↳ These habits travel well beyond the school walls.</p>
+    <div class="note reveal" style="--r:-.4deg"><h4>AI literacy connects to</h4><div class="chips"><span class="chip">Analytical thinking</span><span class="chip">Creativity</span><span class="chip">Collaboration</span><span class="chip">Resilience</span><span class="chip">Leadership</span><span class="chip">Continuous learning</span></div></div>
+    <div class="grid g2">
+      <div class="note reveal" style="--r:.6deg"><div class="ico">🌍</div><h4>World Economic Forum</h4><p>A <b>workforce preparation</b> perspective.</p></div>
+      <div class="note reveal" style="--r:-.6deg"><div class="ico">🏛️</div><h4>OECD</h4><p>Broadens the focus to <b>agency, well-being, and participation in society</b>.</p></div>
+    </div>
+    <div class="grid g2">
+      <div class="move reveal" style="--r:.3deg"><span class="tag">Prompt</span> “How would these capabilities help a learner in a career, a community decision, and everyday life?”</div>
+      <div class="venn reveal" aria-hidden="true"><div class="vc">Career</div><div class="vc">Community decision</div><div class="vc">Everyday life</div></div>
+    </div>
+  </div><div class="sweep"></div><div class="tray"></div></div>
+</section>
+
+<!-- 13 -->
+<section class="scene" data-plate="Room 113" data-name="Faculty room" data-wall="#e9d6d6" data-wain="#7a3f48" data-props="☕,⚖️,📋,🗂️,🖊️"
+  data-q="When it gets messy, how do I make a decision I can defend?">
+  <div class="board"><div class="slate">
+    <div class="lesson-no reveal">Lesson 13 · Room 113</div>
+    <h2 class="title reveal">Professional Judgment: Four Decisions to Defend</h2>
+    <p class="bridge reveal">↳ Real classrooms get messy. Pick a scenario and watch the decision process run.</p>
+    <div class="grid g4">
+      <button class="scn reveal" type="button"><span>✍️</span>AI dependence in writing</button>
+      <button class="scn reveal" type="button"><span>👪</span>A parent’s objection</button>
+      <button class="scn reveal" type="button"><span>🏫</span>Mandatory school adoption</button>
+      <button class="scn reveal" type="button"><span>🌐</span>Unequal feedback for multilingual learners</button>
+    </div>
+    <div class="pipe reveal" id="pipe"><span>Identify the learning goal</span><span>Examine evidence</span><span>Consider affected learners</span><span>Weigh options</span><span>Justify a response</span></div>
+    <div class="move reveal" style="--r:-.3deg"><span class="tag">Require</span> Students explain how they would <b>monitor whether their decision helps learners</b>.</div>
+  </div><div class="sweep"></div><div class="tray"></div></div>
+</section>
+
+<!-- 14 -->
+<section class="scene" data-plate="Room 114" data-name="Principal’s office" data-wall="#dcd6c8" data-wain="#3d3a35" data-props="🏛️,📜,🪪,🖋️,📞"
+  data-q="Who else shapes these decisions beyond my four walls?">
+  <div class="board"><div class="slate">
+    <div class="lesson-no reveal">Lesson 14 · Room 114</div>
+    <h2 class="title reveal">Responsible Leadership and Continuous Learning</h2>
+    <p class="bridge reveal">↳ No decision lives in just one classroom.</p>
+    <div class="grid g2">
+      <div class="note reveal" style="--r:-.8deg"><div class="ico">🍎</div><h4>Classroom decisions connect to</h4><div class="chips"><span class="chip">School expectations</span><span class="chip">AI governance</span><span class="chip">Professional learning</span><span class="chip">Family involvement</span></div></div>
+      <div class="note reveal" style="--r:.8deg"><div class="ico">🏛️</div><h4>U.S. Department of Education resource</h4><p>Use it to examine <b>human-centered, equitable implementation</b>.</p></div>
+    </div>
+    <div class="move reveal" style="--r:.3deg"><span class="tag">Application</span> Identify one school practice that needs clearer guidance and propose a first step toward improvement.
+      <label class="field">Practice needing clearer guidance<input type="text" placeholder="Try it"></label>
+      <label class="field">A first step<input type="text" placeholder="Try it"></label>
+    </div>
+  </div><div class="sweep"></div><div class="tray"></div></div>
+</section>
+
+<!-- 15 -->
+<section class="scene" data-plate="My Classroom" data-name="The educator I choose to become" data-wall="#f2e8c9" data-wain="#2f6f62" data-props="🍎,📘,🌱,🏆,✨"
+  data-q="So… who am I choosing to become?">
+  <div class="board"><div class="slate">
+    <div class="lesson-no reveal">Lesson 15 · My classroom</div>
+    <h2 class="title reveal">The Educator I Choose to Become</h2>
+    <p class="bridge reveal">↳ Every room led here: back to the manifesto.</p>
+    <div class="grid g2">
+      <div>
+        <div class="scroll reveal" style="--r:-.5deg"><h4>The manifesto</h4><ol><li><b>I believe…</b></li><li><b>My students deserve…</b></li><li><b>AI should…</b></li><li><b>Educators must…</b></li><li><b>I will never…</b></li></ol></div>
+        <p class="lead reveal" style="margin:.6rem 0 .3rem;font-size:1rem">A strong philosophy connects:</p>
+        <div class="chain reveal"><span>Research</span><em>+</em><span>Classroom decisions</span><em>+</em><span>Inclusive practice</span><em>+</em><span>Professional commitments</span></div>
+      </div>
+      <div class="move reveal" style="--r:.4deg"><span class="tag">Closing task</span> Complete the sentence and support it with one concrete commitment.
+        <label class="field">The educator I choose to become is…<textarea id="who" rows="2" placeholder="…"></textarea></label>
+        <label class="field">One concrete commitment<input id="commit" type="text" placeholder="I will…"></label>
+        <div class="btn-row" style="margin-top:.5rem"><button class="brass" id="hang" type="button">Hang it on my door</button><button class="brass" type="button" data-go="0">Walk the halls again</button></div>
+        <div id="plaqueOut"></div>
+      </div>
+    </div>
+  </div><div class="sweep"></div><div class="tray"></div></div>
+</section>
+
+</main>
+
+<!-- teacher + bubble -->
+<div class="stage" id="stage">
+  <div class="bubble" id="bubble" role="status" aria-live="polite">
+    <div class="who">The teacher wonders…</div>
+    <div class="q" id="q"></div>
+    <div class="dots" aria-hidden="true"><i></i><i></i><i></i></div>
+  </div>
+  <div class="idea" id="idea" aria-hidden="true">💡</div>
+
+  <div class="ada" id="ada" aria-hidden="true">
+    <svg viewBox="0 0 64 72">
+      <defs><radialGradient id="jet"><stop offset="0" stop-color="#27e0cf" stop-opacity=".9"/><stop offset="1" stop-color="#27e0cf" stop-opacity="0"/></radialGradient></defs>
+      <ellipse cx="32" cy="62" rx="13" ry="6" fill="url(#jet)"/>
+      <line x1="32" y1="6" x2="32" y2="15" stroke="#8b6a2a" stroke-width="2.5"/><circle class="ada-led" cx="32" cy="5" r="3.5" fill="#27e0cf"/>
+      <rect x="8" y="14" width="48" height="38" rx="15" fill="#e9e2cf" stroke="#8b6a2a" stroke-width="2.5"/>
+      <rect x="2" y="27" width="6" height="13" rx="3" fill="#b9a77a"/><rect x="56" y="27" width="6" height="13" rx="3" fill="#b9a77a"/>
+      <rect x="14" y="21" width="36" height="24" rx="10" fill="#0f2a31"/>
+      <g class="ada-eyes" id="adaEyes"><circle cx="25" cy="31" r="4" fill="#27e0cf"/><circle cx="39" cy="31" r="4" fill="#27e0cf"/></g>
+      <path d="M26 39 Q32 43 38 39" stroke="#27e0cf" fill="none" stroke-width="2" stroke-linecap="round"/>
+    </svg>
+  </div>
+
+  <div class="teacher" id="teacher">
+    <svg viewBox="0 0 150 250" role="img" aria-label="Cartoon teacher walking from classroom to classroom">
+      <ellipse class="shadow" cx="76" cy="244" rx="40" ry="6"/>
+      <g class="figure">
+        <!-- viewer-left arm with tablet -->
+        <g class="arm armL">
+          <path class="sleeve" d="M54 102 L46 146"/>
+          <ellipse class="patch" cx="50" cy="124" rx="6" ry="4.5" transform="rotate(-15 50 124)"/>
+          <g transform="rotate(-12 38 152)">
+            <rect x="22" y="136" width="27" height="35" rx="4" fill="#0f2a31" stroke="#27e0cf" stroke-width="2"/>
+            <rect x="26" y="141" width="19" height="3" rx="1.5" fill="#27e0cf"/>
+            <rect x="26" y="148" width="14" height="3" rx="1.5" fill="#27e0cf" opacity=".7"/>
+            <rect x="26" y="155" width="17" height="3" rx="1.5" fill="#27e0cf" opacity=".5"/>
+          </g>
+          <circle class="skin" cx="46" cy="148" r="6.5"/>
+        </g>
+        <!-- legs -->
+        <g class="leg legB"><rect x="62" y="170" width="14" height="58" rx="7" fill="#2f3d55"/><ellipse cx="72" cy="233" rx="14" ry="6.5" fill="#4a2c18"/></g>
+        <g class="leg legF"><rect x="82" y="170" width="14" height="58" rx="7" fill="#3a4b68"/><ellipse cx="92" cy="233" rx="14" ry="6.5" fill="#5b3820"/></g>
+        <!-- torso -->
+        <path d="M52 94 Q52 88 60 88 H98 Q106 88 106 94 V174 Q106 181 99 181 H59 Q52 181 52 174Z" fill="#c1673a"/>
+        <path d="M66 88 L78 126 L90 88Z" fill="#f7efe0"/>
+        <path d="M78 126 L66 88 M78 126 L90 88" stroke="#8a4a28" stroke-width="2" fill="none"/>
+        <path d="M78 95 L65 88 V102Z M78 95 L91 88 V102Z" fill="#27e0cf"/><circle cx="78" cy="95" r="3.2" fill="#0b8a80"/>
+        <circle cx="78" cy="142" r="2.6" fill="#7a3b1f"/><circle cx="78" cy="157" r="2.6" fill="#7a3b1f"/><circle cx="78" cy="171" r="2.6" fill="#7a3b1f"/>
+        <rect x="58" y="124" width="12" height="15" rx="2" fill="#fff" stroke="#27e0cf" stroke-width="1.6"/><circle cx="64" cy="129" r="2" fill="#27e0cf"/><rect x="60.5" y="133" width="7" height="2" rx="1" fill="#27e0cf"/>
+        <!-- head -->
+        <g class="head">
+          <rect x="70" y="78" width="16" height="14" fill="#e6b88a"/>
+          <circle class="skin" cx="52" cy="58" r="5"/><circle class="skin" cx="104" cy="58" r="5"/>
+          <circle class="skin" cx="78" cy="56" r="26"/>
+          <path d="M51 56 C48 31 68 21 83 24 C101 26 108 44 105 58 C99 45 88 38 72 40 C62 41 55 47 51 56Z" fill="#4a2f1d"/>
+          <path d="M92 28 C100 30 105 38 105 47" stroke="#6b4429" stroke-width="2" fill="none"/>
+          <g class="brows" stroke="#3a2415" stroke-width="2.6" stroke-linecap="round" fill="none"><path d="M61 46 Q68 42 75 46"/><path d="M82 46 Q89 42 96 46"/></g>
+          <g class="eyes"><circle cx="68" cy="57" r="2.8" fill="#2b2118"/><circle cx="89" cy="57" r="2.8" fill="#2b2118"/><circle cx="69" cy="56" r=".9" fill="#fff"/><circle cx="90" cy="56" r=".9" fill="#fff"/></g>
+          <g fill="none" stroke="#27394d" stroke-width="2.4"><circle cx="68" cy="57" r="9"/><circle cx="89" cy="57" r="9"/><path d="M77 56 H80"/><path d="M59 55 L52 53"/></g>
+          <circle cx="62" cy="68" r="4" fill="#e88a7a" opacity=".45"/><circle cx="95" cy="68" r="4" fill="#e88a7a" opacity=".45"/>
+          <path class="mouthSmile" d="M70 69 Q78 77 86 69" stroke="#7a2e22" stroke-width="2.6" stroke-linecap="round" fill="none"/>
+          <ellipse class="mouthTalk" cx="78" cy="71" rx="6" ry="3.4" fill="#7a2e22"/>
+        </g>
+        <!-- viewer-right arm with pointer -->
+        <g class="arm armR">
+          <line x1="112" y1="148" x2="132" y2="214" stroke="#d9b26a" stroke-width="3.6" stroke-linecap="round"/>
+          <path class="sleeve" d="M104 102 L112 146"/>
+          <ellipse class="patch" cx="108" cy="124" rx="6" ry="4.5" transform="rotate(14 108 124)"/>
+          <circle class="skin" cx="112" cy="148" r="6.5"/>
+        </g>
+      </g>
+    </svg>
+  </div>
+</div>
+
+<div class="pill" id="pill">Scroll, swipe, or press → to follow the teacher</div>
+<div class="ctrl"><button class="brass" id="prev" type="button" aria-label="Previous classroom">Back</button><button class="brass" id="next" type="button" aria-label="Next classroom">Next room</button></div>
+
+<script>
+(()=>{
+const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
+const rand=(a,b)=>Math.round((a+Math.random()*(b-a))*10)/10;
+const world=$('#world'), scenes=$$('.scene'), N=scenes.length;
+const stage=$('#stage'), teacher=$('#teacher'), bubble=$('#bubble'), qEl=$('#q'), idea=$('#idea'), floor=$('#floor');
+const root=document.documentElement;
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+let current=0, targetIdx=0, arrived=-1, lastSL=0, walkTimer=0, typer=0, lockUntil=0, animating=false, suppress=false, userMoved=false;
+const seen=new Set([0]);
+
+/* ---------- Dress each classroom ---------- */
+scenes.forEach((s,i)=>{
+  s.style.setProperty('--wall',s.dataset.wall);
+  s.style.setProperty('--wain',s.dataset.wain);
+  const motes=Array.from({length:11},()=>`<i style="left:${rand(8,95)}%;top:${rand(10,70)}%;--s:${rand(2,5)}px;--d:${rand(5,10)}s;--dl:-${rand(0,8)}s"></i>`).join('');
+  const desks=s.dataset.props.split(',').map((p,k)=>`<div class="desk"><span class="prop" style="--k:${k}">${p}</span><svg class="dsk" viewBox="0 0 110 64"><use href="#desk"/></svg></div>`).join('');
+  s.insertAdjacentHTML('afterbegin',`
+    <div class="wall" aria-hidden="true"><div class="beam"></div>${motes}</div>
+    <div class="window" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+    <div class="clock" aria-hidden="true"><b class="h" style="--h:${rand(0,360)}deg"></b><b class="m"></b><b class="s"></b></div>
+    <div class="doorwrap" aria-hidden="true"><div class="door"><div class="slab"><span class="knob"></span></div></div></div>
+    <div class="plate"><b>${s.dataset.plate}</b><span>${s.dataset.name}</span><em>AI-ready room</em></div>
+    <div class="desks" aria-hidden="true">${desks}</div>`);
+  s.setAttribute('aria-label',`${s.dataset.plate}: ${s.dataset.name}`);
+  $$('.reveal',s).forEach((el,k)=>el.style.setProperty('--i',Math.min(k,12)));
+});
+
+/* ---------- HUD ---------- */
+const map=$('#map'), count=$('#count'), prev=$('#prev'), next=$('#next'), pill=$('#pill');
+scenes.forEach((s,i)=>{
+  const b=document.createElement('button');
+  b.className='mdoor'; b.type='button';
+  b.title=`${s.dataset.plate}: ${s.dataset.name}`; b.setAttribute('aria-label',b.title);
+  b.addEventListener('click',()=>goTo(i));
+  map.appendChild(b);
+});
+const doors=$$('.mdoor',map);
+function updateHud(){
+  doors.forEach((d,i)=>{d.classList.toggle('on',i===current);d.classList.toggle('seen',seen.has(i)&&i!==current)});
+  count.textContent=`${current+1} / ${N}`;
+  prev.disabled=current===0;
+  next.textContent=current===N-1?'Back to Main Hall':'Next room';
+  pill.classList.toggle('show',current===0&&!userMoved);
+}
+
+/* ---------- Teacher speech ---------- */
+function speak(text){
+  clearInterval(typer);
+  qEl.textContent='';
+  bubble.classList.add('show');
+  teacher.classList.remove('pointing');
+  if(reduce){qEl.textContent=text;finishSpeech();return}
+  teacher.classList.add('talking','asking');
+  bubble.classList.add('typing');
+  let n=0; const step=Math.max(16,Math.min(34,1900/text.length));
+  typer=setInterval(()=>{
+    qEl.textContent=text.slice(0,++n);
+    if(n>=text.length){clearInterval(typer);finishSpeech()}
+  },step);
+}
+function finishSpeech(){
+  teacher.classList.remove('talking');
+  bubble.classList.remove('typing');
+  setTimeout(()=>{teacher.classList.remove('asking');teacher.classList.add('pointing');idea.classList.remove('pop');void idea.offsetWidth;idea.classList.add('pop')},260);
+}
+
+/* ---------- Walking ---------- */
+function startWalk(dir){
+  if(arrived!==-1){
+    arrived=-1; clearInterval(typer);
+    bubble.classList.remove('show','typing');
+    teacher.classList.remove('talking','pointing','asking');
+  }
+  stage.classList.add('walking');
+  teacher.classList.toggle('flip',dir<0);
+}
+function settle(){
+  const w=world.clientWidth, i=Math.max(0,Math.min(N-1,Math.round(world.scrollLeft/w)));
+  if(!animating&&Math.abs(world.scrollLeft-i*w)>3){walkTimer=setTimeout(settle,120);return}
+  stage.classList.remove('walking');
+  arrive(i);
+}
+function arrive(i){
+  if(arrived===i)return;
+  arrived=i; current=i; targetIdx=i; seen.add(i);
+  scenes.forEach((s,k)=>s.classList.toggle('active',k===i));
+  teacher.classList.remove('flip');
+  updateHud();
+  setTimeout(()=>{if(arrived===i)speak(scenes[i].dataset.q)},reduce?0:380);
+}
+world.addEventListener('scroll',()=>{
+  const sl=world.scrollLeft, d=sl-lastSL; lastSL=sl;
+  floor.style.setProperty('--fx',-sl);
+  if(suppress){suppress=false;return}
+  if(Math.abs(d)>.5){
+    startWalk(d>0?1:-1);
+    clearTimeout(walkTimer);
+    walkTimer=setTimeout(settle,150);
+  }
+},{passive:true});
+
+function goTo(i){
+  i=Math.max(0,Math.min(N-1,i));
+  if(i!==0)userMoved=true;
+  targetIdx=i;
+  const w=world.clientWidth, target=i*w, start=world.scrollLeft, dist=target-start;
+  if(Math.abs(dist)<2){arrive(i);return}
+  const hops=Math.abs(dist)/w;
+  const dur=reduce?0:Math.min(2200,1000+hops*320);
+  lockUntil=performance.now()+dur+250;
+  if(!dur){world.scrollLeft=target;return}
+  animating=true; world.style.scrollSnapType='none';
+  const t0=performance.now();
+  (function step(t){
+    const p=Math.min(1,(t-t0)/dur), e=p<.5?4*p*p*p:1-Math.pow(-2*p+2,3)/2;
+    world.scrollLeft=start+dist*e;
+    if(p<1)requestAnimationFrame(step);
+    else{animating=false;world.scrollLeft=target;world.style.scrollSnapType=''}
+  })(t0);
+}
+document.addEventListener('click',e=>{const g=e.target.closest('[data-go]');if(g)goTo(+g.dataset.go)});
+prev.addEventListener('click',()=>goTo(targetIdx-1));
+next.addEventListener('click',()=>goTo(targetIdx===N-1?0:targetIdx+1));
+
+world.addEventListener('wheel',e=>{
+  if(Math.abs(e.deltaX)>Math.abs(e.deltaY))return;
+  const sl=e.target.closest&&e.target.closest('.slate');
+  if(sl&&sl.scrollHeight>sl.clientHeight+2){
+    const top=sl.scrollTop<=0, bot=sl.scrollTop+sl.clientHeight>=sl.scrollHeight-2;
+    if((e.deltaY<0&&!top)||(e.deltaY>0&&!bot))return;
+  }
+  e.preventDefault();
+  const now=performance.now();
+  if(now<lockUntil){lockUntil=Math.max(lockUntil,now+140);return}
+  if(Math.abs(e.deltaY)<6)return;
+  goTo(targetIdx+(e.deltaY>0?1:-1));
+},{passive:false});
+
+addEventListener('keydown',e=>{
+  if(e.target.closest&&e.target.closest('input,textarea,select'))return;
+  const k=e.key;
+  if(k==='ArrowRight'||k==='PageDown'||(k===' '&&!e.target.closest('button'))){e.preventDefault();goTo(targetIdx+1)}
+  else if(k==='ArrowLeft'||k==='PageUp'){e.preventDefault();goTo(targetIdx-1)}
+  else if(k==='Home'){e.preventDefault();goTo(0)}
+  else if(k==='End'){e.preventDefault();goTo(N-1)}
+});
+addEventListener('resize',()=>{
+  const want=targetIdx*world.clientWidth;
+  if(!animating&&Math.abs(world.scrollLeft-want)>2){suppress=true;world.scrollLeft=want}
+});
+
+/* ---------- Lights ---------- */
+const lights=$('#lights'), mq=matchMedia('(prefers-color-scheme: dark)');
+const isDark=()=>root.dataset.theme?root.dataset.theme==='dark':mq.matches;
+const lightLabel=()=>{lights.textContent=isDark()?'Lights on':'Lights off'};
+lights.addEventListener('click',()=>{root.dataset.theme=isDark()?'light':'dark';lightLabel()});
+mq.addEventListener&&mq.addEventListener('change',lightLabel);
+lightLabel();
+
+/* ---------- ADA eyes follow the pointer ---------- */
+const ada=$('#ada'), adaEyes=$('#adaEyes');
+addEventListener('pointermove',e=>{
+  const r=ada.getBoundingClientRect(); if(!r.width)return;
+  const dx=e.clientX-(r.left+r.width/2), dy=e.clientY-(r.top+r.height/2), m=Math.hypot(dx,dy)||1;
+  adaEyes.style.setProperty('--ex',(dx/m*3.5)+'px'); adaEyes.style.setProperty('--ey',(dy/m*3)+'px');
+},{passive:true});
+
+/* ---------- Room interactions ---------- */
+$$('.fcard').forEach(c=>c.addEventListener('click',()=>c.classList.toggle('on')));
+
+const waveBtn=$('#wave');
+waveBtn.addEventListener('click',()=>{
+  const chips=$$('#caps .chip'), on=chips[0].classList.contains('lit');
+  chips.forEach((c,k)=>setTimeout(()=>c.classList.toggle('lit',!on),on?0:k*150));
+  waveBtn.textContent=on?'Light up a group project':'Reset';
+});
+
+const claims=$$('.claim'), out=$('#checkout'), cc=$('#claimCount');
+claims.forEach(c=>c.addEventListener('click',()=>{
+  c.classList.add('done');
+  out.innerHTML='';
+  const b=document.createElement('b'); b.textContent=c.dataset.skill+': ';
+  out.append(b,document.createTextNode(c.dataset.check));
+  const n=claims.filter(x=>x.classList.contains('done')).length;
+  cc.textContent=`${n} / ${claims.length}`;
+  if(n===claims.length){
+    const p=document.createElement('div'); p.style.marginTop='.3rem'; p.style.fontWeight='800';
+    p.textContent='All four checked. Now ask about privacy, respect, and transparency before sharing.';
+    out.appendChild(p);
+  }
+}));
+
+const fmtOut=$('#fmtout');
+const FMT={
+  text:['<div class="mock m-text"><i></i><i></i><i></i></div>','<b>Annotated text.</b> Mark the AI’s claims and add margin notes on what holds up, what doesn’t, and why.'],
+  audio:['<div class="mock m-audio"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>','<b>Audio explanation.</b> Talk through what was checked, what changed, and the final decision.'],
+  visual:['<div class="mock m-visual"><i></i><i></i><i></i></div>','<b>Accessible visual presentation.</b> A clear, labeled visual with alt text and readable contrast.']
+};
+function showFmt(k){fmtOut.innerHTML=FMT[k][0]+'<div>'+FMT[k][1]+'</div>';$$('.fmt').forEach(b=>b.classList.toggle('sel',b.dataset.fmt===k))}
+$$('.fmt').forEach(b=>b.addEventListener('click',()=>showFmt(b.dataset.fmt)));
+showFmt('text');
+
+$$('.tab').forEach(t=>t.addEventListener('click',()=>{
+  $$('.tab').forEach(x=>x.classList.toggle('sel',x===t));
+  $('#pane-el').hidden=t.dataset.tab!=='el'; $('#pane-se').hidden=t.dataset.tab!=='se';
+}));
+
+let pipeTimers=[];
+$$('.scn').forEach(b=>b.addEventListener('click',()=>{
+  $$('.scn').forEach(x=>x.classList.toggle('sel',x===b));
+  pipeTimers.forEach(clearTimeout); pipeTimers=[];
+  const steps=$$('#pipe span'); steps.forEach(s=>s.classList.remove('on'));
+  steps.forEach((s,k)=>pipeTimers.push(setTimeout(()=>s.classList.add('on'),250+k*480)));
+}));
+
+$('#hang').addEventListener('click',()=>{
+  const who=$('#who').value.trim(), com=$('#commit').value.trim(), o=$('#plaqueOut');
+  o.innerHTML='';
+  if(!who||!com){const m=document.createElement('div');m.style.cssText='margin-top:.5rem;font-weight:800;font-size:.84rem';m.textContent='Complete both lines to hang your plaque.';o.appendChild(m);return}
+  const p=document.createElement('div'); p.className='plaque';
+  p.textContent='The educator I choose to become is '+who;
+  const s=document.createElement('small'); s.textContent='My commitment: '+com;
+  p.appendChild(s); o.appendChild(p);
+  const sc=scenes[N-1], cols=['#27e0cf','#ffd166','#e2553a','#7aa7ff','#f4f2e8'];
+  if(!reduce)for(let k=0;k<46;k++){
+    const c=document.createElement('i'); c.className='confetti';
+    c.style.cssText=`left:${rand(2,98)}%;background:${cols[k%5]};animation-delay:${rand(0,.9)}s;animation-duration:${rand(2,3.2)}s`;
+    sc.appendChild(c); setTimeout(()=>c.remove(),4500);
+  }
+});
+
+/* ---------- Intro: the teacher walks into the Main Hall ---------- */
+function intro(){
+  updateHud();
+  if(reduce){arrive(0);return}
+  stage.classList.add('walking');
+  const t0=performance.now(), dur=1900;
+  (function f(t){
+    const p=Math.min(1,(t-t0)/dur), e=1-Math.pow(1-p,3);
+    floor.style.setProperty('--fx',760*(1-e));
+    if(p<1)requestAnimationFrame(f);
+    else{stage.classList.remove('walking');arrive(0)}
+  })(t0);
+}
+document.fonts&&document.fonts.ready?document.fonts.ready.then(intro):intro();
+})();
+</script>
+</body>
+</html>
