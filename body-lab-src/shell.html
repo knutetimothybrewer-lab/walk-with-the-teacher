@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>BodyLab — Health Metrics Explorer</title>
+<meta name="description" content="Interactive 3D anatomy lab: change health choices and watch the body, vital signs and cells respond.">
+<style>/*CSS*/</style>
+</head>
+<body>
+<div id="app">
+  <header id="top">
+    <div class="brand"><div class="logo">🫀</div><div><b>BodyLab</b><small>Health Metrics Explorer</small></div></div>
+    <div class="tgroup"><label for="presetSel">Scenario</label><select id="presetSel" aria-label="Choose a scenario"></select></div>
+    <div class="tgroup" id="viewGroup"><label>View</label>
+      <button class="chip" data-view="skin" title="Show the outside of the body">Skin</button>
+      <button class="chip on" data-view="xray" title="See-through body">X-ray</button>
+      <button class="chip" data-view="muscle">Muscles</button>
+      <button class="chip" data-view="bone">Bones</button>
+      <button class="chip" data-view="organs">Organs</button>
+      <button class="chip" data-view="vessels">Blood</button>
+      <button class="chip" data-view="nerves">Nerves</button>
+      <button class="chip" data-view="fat">Fat</button>
+    </div>
+    <div class="tgroup"><label for="poseSel">Pose</label><select id="poseSel" aria-label="Choose a pose or activity"></select></div>
+    <div class="spacer"></div>
+    <button class="btn primary" id="scopeBtn" title="Microscope (M)">🔬 Microscope</button>
+    <button class="btn" id="missBtn" title="Investigation missions">🎯 Missions <span id="missCount"></span></button>
+    <button class="btn" id="keyBtn" title="Class metrics chart">📋 Metric chart</button>
+    <button class="btn" id="timeBtn" title="Fast-forward 20 years of this lifestyle">⏩ +20 years</button>
+    <button class="btn" id="nbBtn" title="Lab notebook">📓 Notebook</button>
+    <button class="btn" id="unitBtn" title="Switch units">US units</button>
+    <button class="btn" id="helpBtn" title="How to use">❔</button>
+  </header>
+
+  <aside id="left" class="panel" aria-label="Health choices">
+    <h2>Health choices</h2>
+    <div id="sliders"></div>
+    <div class="foot">Fictional simulation for learning. Numbers are simplified estimates, not medical advice. Talk with a doctor or school nurse about real health questions.</div>
+  </aside>
+
+  <main id="stage">
+    <canvas id="gl"></canvas>
+    <div id="nogl"><div><h2>3D view unavailable</h2><p>Your browser or device could not start WebGL. Try Chrome, Edge, Firefox or Safari on a computer. The sliders and charts still work.</p></div></div>
+    <div id="hud"><span><span class="heart">♥</span> <b id="hudHR">70</b> bpm</span><span>🫁 <b id="hudRR">14</b> breaths/min</span><span id="hudPose">Anatomical position</span></div>
+    <div id="timebar"><span id="timeTxt"></span><button class="btn" id="timeStop">Stop</button><button class="btn" id="timeBack">↺ Back to today</button></div>
+    <div class="floatbar" id="floatbar">
+      <button class="chip" data-focus="full">Whole body</button>
+      <button class="chip" data-focus="head">Head</button>
+      <button class="chip" data-focus="chest">Chest</button>
+      <button class="chip" data-focus="belly">Belly</button>
+      <button class="chip" data-focus="legs">Legs</button>
+      <button class="chip" id="spinBtn" title="Auto-rotate">↻ Spin</button>
+      <button class="chip" id="rstBtn" title="Reset camera">⌖</button>
+    </div>
+    <div id="narr" aria-live="polite"></div>
+    <div id="hint">Drag to rotate · scroll to zoom · click any organ to examine it · press <b>M</b> for the microscope</div>
+    <div id="tip"></div>
+    <div id="lens"><div class="ring"><canvas id="lensCv" width="420" height="420"></canvas><div class="cross"></div><div class="glare"></div><div class="name" id="lensName"></div><div class="mag" id="lensMag"></div></div><div id="lenscap"></div></div>
+  </main>
+
+  <aside id="right" class="panel" aria-label="Patient chart and health metrics">
+    <h2>Patient chart <span style="text-transform:none;letter-spacing:0;font-weight:500">(fictional)</span></h2>
+    <div class="chart" id="chart"></div>
+    <div id="radarBox"><canvas id="radar" width="340" height="270"></canvas><div class="lg"><span style="color:#2de2c8">■ this person</span><span style="color:#8a98c0">┅ typical teen</span></div></div>
+    <div class="tabs" id="tabs"></div>
+    <div id="mlist"></div>
+    <div id="notes"></div>
+  </aside>
+  <div id="mobbar"><button class="btn" id="mbL">🎚 Choices</button><button class="btn" id="mbR">📋 Chart</button></div>
+</div>
+
+<div class="modal" id="scopeModal" role="dialog" aria-modal="true" aria-label="Microscope view"><div class="card">
+  <button class="x" data-close aria-label="Close">×</button>
+  <div class="scopeGrid">
+    <div><div id="bigWrap"><canvas id="bigCv" width="900" height="900"></canvas><div class="glare"></div></div>
+      <div class="lvlbtns"><button class="chip" id="lv0"></button><button class="chip" id="lv1"></button></div></div>
+    <div><h1 id="scTitle"></h1>
+      <div class="txtblock" id="scNow"></div>
+      <div class="txtblock"><b>What it does.</b> <span id="scRole"></span></div>
+      <div class="txtblock"><b>What affects it:</b> <span id="scAff"></span></div>
+      <div><b style="font-size:12px;color:var(--ink3);letter-spacing:1px">RELATED METRICS</b><div id="scMetrics" style="margin-top:6px"></div></div>
+    </div>
+  </div>
+</div></div>
+
+<div class="modal" id="metricModal" role="dialog" aria-modal="true" aria-label="Metric details"><div class="card" style="max-width:760px"><button class="x" data-close aria-label="Close">×</button><div class="minfo" id="mBody"></div></div></div>
+
+<div class="modal" id="nbModal" role="dialog" aria-modal="true" aria-label="Lab notebook"><div class="card" style="max-width:1100px"><button class="x" data-close aria-label="Close">×</button><div class="minfo">
+  <h1>📓 Lab notebook</h1>
+  <p style="color:var(--ink2);margin:4px 0 10px">Save a snapshot of the current choices and results, change something, save another, and compare. Great for the “patterns I noticed” part of your worksheet.</p>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px"><input id="nbName" placeholder="Name this snapshot (e.g. “Added 30 min of cardio”)" style="flex:1;min-width:200px;padding:8px 10px;border-radius:10px;border:1px solid var(--line);background:rgba(255,255,255,.06);color:#fff;font-size:14px"><button class="btn primary" id="nbAdd">＋ Save snapshot</button><button class="btn" id="nbCsv">⬇ Download CSV</button><button class="btn" id="nbPrint">🖨 Print</button><button class="btn" id="nbClear">Clear</button></div>
+  <div class="nbwrap" id="nbTable"></div>
+</div></div></div>
+
+<div class="modal" id="missModal" role="dialog" aria-modal="true" aria-label="Investigation missions"><div class="card" style="max-width:860px"><button class="x" data-close aria-label="Close">×</button><div class="minfo">
+  <h1>🎯 Investigation missions</h1>
+  <p style="color:var(--ink2);margin:4px 0 12px">Use the sliders to make each one happen. Missions check themselves — and each one teaches how metrics connect. <span id="missProg" style="color:var(--amber);font-weight:700"></span></p>
+  <div id="missList"></div>
+</div></div></div>
+
+<div class="modal" id="keyModal" role="dialog" aria-modal="true" aria-label="Class metrics chart"><div class="card" style="max-width:1200px"><button class="x" data-close aria-label="Close">×</button><div class="minfo">
+  <h1>📋 Class health metrics chart</h1>
+  <p style="color:var(--ink2);margin:4px 0 10px">The same columns as your worksheet. Try to fill in your own notes first — then click a cell to reveal the reference answer.</p>
+  <div style="display:flex;gap:8px;margin-bottom:10px"><button class="btn" id="keyReveal">👁 Reveal all</button><button class="btn" id="keyHide">🙈 Hide all</button></div>
+  <div class="nbwrap" style="max-height:62vh" id="keyTable"></div>
+</div></div></div>
+
+<div class="modal" id="helpModal" role="dialog" aria-modal="true" aria-label="How to use"><div class="card" style="max-width:720px"><button class="x" data-close aria-label="Close">×</button><div class="minfo help">
+  <h1>Welcome to BodyLab</h1>
+  <p style="color:var(--ink2)">A fictional person lives in the middle of the screen. Change their health choices and watch what happens inside the body.</p>
+  <ul>
+    <li><b>Sliders (left):</b> exercise, sleep, food, substances, environment. Color tells you the effect: <span style="color:var(--good)">green helps</span>, <span style="color:var(--warn)">amber is a warning</span>, <span style="color:var(--bad)">red harms</span>.</li>
+    <li><b>Years living this way:</b> damage and benefits build up over time. Try <b>⏩ +20 years</b>!</li>
+    <li><b>3D body:</b> drag to rotate, scroll to zoom. Use <b>View</b> buttons to peel away layers: skin → fat → muscle → bones → organs → blood vessels → nerves.</li>
+    <li><b>🔬 Microscope (M):</b> turn it on and move the lens over any organ. Scroll or press <kbd>1</kbd>/<kbd>2</kbd> to zoom from <i>cells</i> to <i>molecules</i>. Click to open a big view.</li>
+    <li><b>Patient chart (right):</b> vital signs, blood tests, body measures and system scores — click any one for its healthy range, what it measures, and what helps or hurts it.</li>
+    <li><b>Pose:</b> watch the heart rate and breathing change when jogging, lifting, sitting with a screen, or sleeping.</li>
+    <li><b>📓 Notebook:</b> save snapshots to compare scenarios side by side.</li>
+  </ul>
+  <p style="color:var(--ink2)"><b>Remember:</b> metrics are tools for understanding patterns and risk — not labels for a person. One measurement never tells the whole story, and this is a simplified, fictional model. Questions about real health measurements belong with a qualified health professional.</p>
+  <button class="btn primary" data-close>Let’s explore</button>
+</div></div></div>
+
+<script>/*THREE*/</script>
+<script>/*JS*/</script>
+</body>
+</html>
