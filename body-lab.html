@@ -1244,8 +1244,8 @@ function createBody() {
   skinParts.torso = skinShell(J.torso, [0, 0, 0], torsoGeo, 0.62);
   // belly (grows with body fat)
   const belly = meshOf(UNIT_SPHERE, mats.skin); belly.userData.layer = 'skin';
-  put(J.torso, belly, [0, 1.06, 0.045]); belly.scale.set(0.001, 0.001, 0.001); register('skin', belly, { pick: 'skin' });
-  const bellyFat = meshOf(UNIT_SPHERE, mats.fat); put(J.torso, bellyFat, [0, 1.06, 0.05]); bellyFat.scale.set(0.001, 0.001, 0.001); register('fat', bellyFat, { pick: 'fat' });
+  put(J.torso, belly, [0, 1.06, 0.02]); belly.scale.set(0.001, 0.001, 0.001); register('skin', belly, { pick: 'skin' });
+  const bellyFat = meshOf(UNIT_SPHERE, mats.fat); put(J.torso, bellyFat, [0, 1.06, 0.02]); bellyFat.scale.set(0.001, 0.001, 0.001); register('fat', bellyFat, { pick: 'fat' });
   // neck
   const neckGeo = latheGeo(0.12, t => 0.052 * (t < 0.1 ? 0.9 + t : 1) * (1 + 0.15 * t), 6, 18);
   const neck = skinShell(J.head, [0, 1.6, 0], neckGeo, 0.92);
@@ -1890,8 +1890,8 @@ function createAnimator(rig, scene) {
       if (l.fat) l.fat.scale.set(gL * shellK, 1, gL * shellK);
     }
     const bs = clamp((fat - 21) / 20);
-    rig.belly.scale.set(0.16 * bs + 0.001, 0.14 * bs + 0.001, 0.125 * bs + 0.001);
-    rig.bellyFat.scale.set(0.15 * bs + 0.001, 0.13 * bs + 0.001, 0.115 * bs + 0.001);
+    rig.belly.scale.set(0.17 * bs + 0.001, 0.15 * bs + 0.001, 0.16 * bs + 0.001);
+    rig.bellyFat.scale.set(0.16 * bs + 0.001, 0.14 * bs + 0.001, 0.15 * bs + 0.001);
     const vs = clamp((fat - 19) / 22);
     rig.visceral.scale.set(0.001 + 0.12 * vs, 0.001 + 0.032 * vs, 0.001 + 0.024 * vs);
     // muscles
@@ -3065,10 +3065,10 @@ const VIEWS = {
   nerves: { skin: 0.08, fat: 0, muscle: 0, bone: 0.12, organ: 0.3, vessel: 0, nerve: 1 },
   fat: { skin: 0.1, fat: 0.7, muscle: 0, bone: 0, organ: 0.25, vessel: 0, nerve: 0 },
 };
-const FOCUS = { full: [0.92, 3.9], head: [1.62, 1.2], chest: [1.28, 1.75], belly: [1.04, 1.75], legs: [0.5, 2.6] };
+const FOCUS = { full: [0.9, 3.5], head: [1.62, 1.2], chest: [1.28, 1.75], belly: [1.04, 1.75], legs: [0.5, 2.6] };
 
 let renderer, scene, camera, rig, anim, hasGL = true;
-const cam = { az: 0.0, pol: 1.4, dist: 3.9, ty: 0.92, taz: 0.0, tpol: 1.4, tdist: 3.9, tty: 0.92, spin: false, idle: 0 };
+const cam = { az: 0.0, pol: 1.4, dist: 3.5, ty: 0.9, taz: 0.0, tpol: 1.4, tdist: 3.5, tty: 0.92, spin: false, idle: 0 };
 let poseName = 'stand', viewName = 'xray', scopeOn = false, lensLevel = 0, lensF = 0, lensKey = null, lensFade = 0;
 const ptr = { x: 0, y: 0, inside: false, dirty: false, down: false, moved: 0, id: null, sx: 0, sy: 0 };
 let floorTex, hover = null;
@@ -3305,7 +3305,7 @@ function init() {
     $$('#viewGroup .chip').forEach(c => c.onclick = () => setView(c.dataset.view));
     $$('#floatbar [data-focus]').forEach(c => c.onclick = () => setFocus(c.dataset.focus));
     $('#spinBtn').onclick = e => { cam.spin = !cam.spin; e.currentTarget.classList.toggle('on', cam.spin); };
-    $('#rstBtn').onclick = () => { cam.taz = 0; cam.tpol = 1.4; cam.tdist = 3.9; cam.tty = 0.92; };
+    $('#rstBtn').onclick = () => { cam.taz = 0; cam.tpol = 1.4; cam.tdist = 3.5; cam.tty = 0.9; };
     bindPointer();
   }
   $('#scopeBtn').onclick = () => setScope(!scopeOn);

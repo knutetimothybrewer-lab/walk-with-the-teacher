@@ -194,8 +194,8 @@ function createAnimator(rig, scene) {
       if (l.fat) l.fat.scale.set(gL * shellK, 1, gL * shellK);
     }
     const bs = clamp((fat - 21) / 20);
-    rig.belly.scale.set(0.16 * bs + 0.001, 0.14 * bs + 0.001, 0.125 * bs + 0.001);
-    rig.bellyFat.scale.set(0.15 * bs + 0.001, 0.13 * bs + 0.001, 0.115 * bs + 0.001);
+    rig.belly.scale.set(0.17 * bs + 0.001, 0.15 * bs + 0.001, 0.16 * bs + 0.001);
+    rig.bellyFat.scale.set(0.16 * bs + 0.001, 0.14 * bs + 0.001, 0.15 * bs + 0.001);
     const vs = clamp((fat - 19) / 22);
     rig.visceral.scale.set(0.001 + 0.12 * vs, 0.001 + 0.032 * vs, 0.001 + 0.024 * vs);
     // muscles

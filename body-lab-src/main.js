@@ -11,10 +11,10 @@ const VIEWS = {
   nerves: { skin: 0.08, fat: 0, muscle: 0, bone: 0.12, organ: 0.3, vessel: 0, nerve: 1 },
   fat: { skin: 0.1, fat: 0.7, muscle: 0, bone: 0, organ: 0.25, vessel: 0, nerve: 0 },
 };
-const FOCUS = { full: [0.92, 3.9], head: [1.62, 1.2], chest: [1.28, 1.75], belly: [1.04, 1.75], legs: [0.5, 2.6] };
+const FOCUS = { full: [0.9, 3.5], head: [1.62, 1.2], chest: [1.28, 1.75], belly: [1.04, 1.75], legs: [0.5, 2.6] };
 
 let renderer, scene, camera, rig, anim, hasGL = true;
-const cam = { az: 0.0, pol: 1.4, dist: 3.9, ty: 0.92, taz: 0.0, tpol: 1.4, tdist: 3.9, tty: 0.92, spin: false, idle: 0 };
+const cam = { az: 0.0, pol: 1.4, dist: 3.5, ty: 0.9, taz: 0.0, tpol: 1.4, tdist: 3.5, tty: 0.92, spin: false, idle: 0 };
 let poseName = 'stand', viewName = 'xray', scopeOn = false, lensLevel = 0, lensF = 0, lensKey = null, lensFade = 0;
 const ptr = { x: 0, y: 0, inside: false, dirty: false, down: false, moved: 0, id: null, sx: 0, sy: 0 };
 let floorTex, hover = null;
@@ -251,7 +251,7 @@ function init() {
     $$('#viewGroup .chip').forEach(c => c.onclick = () => setView(c.dataset.view));
     $$('#floatbar [data-focus]').forEach(c => c.onclick = () => setFocus(c.dataset.focus));
     $('#spinBtn').onclick = e => { cam.spin = !cam.spin; e.currentTarget.classList.toggle('on', cam.spin); };
-    $('#rstBtn').onclick = () => { cam.taz = 0; cam.tpol = 1.4; cam.tdist = 3.9; cam.tty = 0.92; };
+    $('#rstBtn').onclick = () => { cam.taz = 0; cam.tpol = 1.4; cam.tdist = 3.5; cam.tty = 0.9; };
     bindPointer();
   }
   $('#scopeBtn').onclick = () => setScope(!scopeOn);

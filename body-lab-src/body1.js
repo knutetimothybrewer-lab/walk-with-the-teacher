@@ -167,8 +167,8 @@ function createBody() {
   skinParts.torso = skinShell(J.torso, [0, 0, 0], torsoGeo, 0.62);
   // belly (grows with body fat)
   const belly = meshOf(UNIT_SPHERE, mats.skin); belly.userData.layer = 'skin';
-  put(J.torso, belly, [0, 1.06, 0.045]); belly.scale.set(0.001, 0.001, 0.001); register('skin', belly, { pick: 'skin' });
-  const bellyFat = meshOf(UNIT_SPHERE, mats.fat); put(J.torso, bellyFat, [0, 1.06, 0.05]); bellyFat.scale.set(0.001, 0.001, 0.001); register('fat', bellyFat, { pick: 'fat' });
+  put(J.torso, belly, [0, 1.06, 0.02]); belly.scale.set(0.001, 0.001, 0.001); register('skin', belly, { pick: 'skin' });
+  const bellyFat = meshOf(UNIT_SPHERE, mats.fat); put(J.torso, bellyFat, [0, 1.06, 0.02]); bellyFat.scale.set(0.001, 0.001, 0.001); register('fat', bellyFat, { pick: 'fat' });
   // neck
   const neckGeo = latheGeo(0.12, t => 0.052 * (t < 0.1 ? 0.9 + t : 1) * (1 + 0.15 * t), 6, 18);
   const neck = skinShell(J.head, [0, 1.6, 0], neckGeo, 0.92);
