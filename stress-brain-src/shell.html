@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Stress &amp; the Brain Lab</title>
+<meta name="description" content="Interactive 3D brain: add and remove stress, watch the sympathetic and parasympathetic systems respond, hover over brain regions to see real-world uses, and answer checks for understanding.">
+<style>/*CSS*/</style>
+</head>
+<body>
+<div id="app" data-tab="learn">
+  <header id="top">
+    <div class="brand"><div class="logo">🧠</div><div><b>Stress &amp; the Brain Lab</b><small>How your nervous system responds, recovers and adapts</small></div></div>
+    <nav id="tabs" role="tablist" aria-label="Sections">
+      <button role="tab" data-tab="learn" class="tab on">📖 Learn</button>
+      <button role="tab" data-tab="lab" class="tab">🧪 Lab</button>
+      <button role="tab" data-tab="explore" class="tab">🔎 Explore</button>
+      <button role="tab" data-tab="report" class="tab">📋 Report <span id="gradePill" class="pill">0/0</span></button>
+    </nav>
+    <div class="spacer"></div>
+    <div class="seg" id="segX" role="group" aria-label="Brain layer"><button data-x="0" class="on" title="Outside of the brain">Surface</button><button data-x="1" title="See-through: deep structures">X-ray</button></div>
+    <div class="seg" id="segV" role="group" aria-label="Camera view"><button data-v="brain" class="on">Brain</button><button data-v="body">Body</button></div>
+    <button class="btn" id="lblBtn" aria-pressed="true" title="Show labels">🏷️ Labels</button>
+    <button class="btn" id="spinBtn" aria-pressed="false" title="Auto-rotate">↻ Spin</button>
+    <button class="btn" id="sndBtn" aria-pressed="false" title="Heartbeat sound">🔇</button>
+    <button class="btn" id="helpBtn" title="How to use">❔</button>
+  </header>
+
+  <aside id="left" class="panel" aria-label="Lessons and activities"></aside>
+
+  <main id="stage">
+    <canvas id="gl" tabindex="0" aria-label="3D brain. Drag to rotate, scroll to zoom, hover or click a part to learn about it."></canvas>
+    <div id="nogl"><div><h2>3D view unavailable</h2><p>Your browser could not start WebGL. Try Chrome, Edge, Firefox or Safari on a computer. Everything else still works.</p></div></div>
+    <div id="labels"></div>
+    <div id="chain" aria-live="polite">
+      <div class="step" data-i="1"><i>1</i><b>Amygdala</b><small>“Could this be danger?”</small></div><span>›</span>
+      <div class="step" data-i="2"><i>2</i><b>Hypothalamus</b><small>activates stress pathways</small></div><span>›</span>
+      <div class="step" data-i="3"><i>3</i><b>Adrenal glands</b><small>adrenaline + cortisol</small></div><span>›</span>
+      <div class="step" data-i="4"><i>4</i><b>Body ready</b><small>heart, breath, muscles</small></div>
+    </div>
+    <div id="thought"><span id="thoughtTxt"></span></div>
+    <div id="breath"><div class="ring"></div><span id="breathTxt">Breathe in</span></div>
+    <div id="rcard" hidden></div>
+    <div id="caption" aria-live="polite"></div>
+    <div id="hint">Drag to rotate · scroll to zoom · <b>hover</b> a part to see how it applies to real life · <b>click</b> for details</div>
+    <div id="tip"></div>
+    <div id="cursor"></div>
+    <div id="findbanner" hidden></div>
+  </main>
+
+  <aside id="right" class="panel" aria-label="Live body and brain monitor"></aside>
+</div>
+<div id="modal" hidden><div class="card"><button class="x" id="modalX" aria-label="Close">✕</button><div id="modalBody"></div></div></div>
+<script>/*THREE*/</script>
+<script>/*JS*/</script>
+</body>
+</html>

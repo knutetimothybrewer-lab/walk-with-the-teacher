@@ -19,6 +19,29 @@ Achievable, Relevant, Time-bound) build a live goal sentence, then a Game Plan w
 milestones, weekly schedule, first-week launch list, if-then plans and a progress log.
 Single file, works offline, saves only in the student's own browser.
 
+## Stress & the Brain Lab (`stress-brain-lab.html`)
+
+Single-file, offline 3D classroom app that teaches the "Stress and the Brain" lesson (stressors, fight/flight,
+sympathetic "gas pedal", parasympathetic "brake pedal", acute vs. chronic stress, coping).
+
+- Procedural 3D brain with folded cortex, lobes, deep structures (amygdala, hippocampus, hypothalamus, pituitary,
+  thalamus), brainstem, spinal cord, vagus nerve and body organs (heart, lungs, gut, adrenals, muscles).
+  Surface / X-ray and Brain / Body views; drag to rotate, scroll to zoom.
+- Cursor effects: hover any part to see a real-world application tooltip with a glowing cursor; click for a full card
+  (what it does, real-life examples, what stress does, a live reading, and a "Show me" demo).
+- Lab: add or remove 10 stressors (acute events end on their own, chronic ones persist, intensity sliders) and
+  8 coping tools (lower the demand or boost recovery). Animated reactions: alarm chain (amygdala to hypothalamus to
+  adrenals to body), adrenaline/cortisol particles, heartbeat + ECG, breathing, gut slowing, muscle tension,
+  prefrontal cortex dimming, tunnel vision, thought bubble, and "skip ahead a week" to see chronic wear and tear
+  (amygdala more reactive, hippocampus shrinking) and recovery.
+- Seven guided lessons mirror the slides. Checks for understanding are built into every lesson, the Explore
+  "find it in 3D" challenges, and the Lab missions (29 points total).
+- Grading with unlimited attempts: first-try correct = 1 point, correct after retry = 0.5; Report tab shows letter
+  grade, per-topic breakdown, past attempts and the exit ticket, with print/save-as-PDF. Saved only in the browser.
+
+Sources live in `stress-brain-src/`; rebuild with `node stress-brain-src/build.js`.
+Fictional, simplified model, not medical advice; time is compressed.
+
 ## Health by a Thousand Choices (`health-by-a-thousand-choices.html`)
 
 Single-file, offline classroom simulation for the "Small Choices, Big Consequences" lesson. Students
