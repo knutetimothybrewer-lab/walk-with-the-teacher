@@ -218,3 +218,8 @@ dialog li{margin:5px 0}
 .lifeev.good{background:#effaf2;border-left-color:var(--good)}
 .lifeev small{display:block;font-size:11.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
 .lifeev b{display:block;font-family:var(--serif);font-size:17px}
+
+.seg{display:flex;gap:6px}
+.seg button{flex:1;border:2px solid var(--line);background:#fff;border-radius:10px;padding:7px 4px;font-weight:700;color:var(--muted)}
+.seg button[aria-pressed=true]{background:var(--indigo);border-color:var(--indigo);color:#fff}
+.preview{height:260px}

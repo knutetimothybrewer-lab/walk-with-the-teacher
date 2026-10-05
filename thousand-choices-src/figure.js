@@ -2,8 +2,10 @@
 const SKINS = ['#fbd9c0', '#f1c9a5', '#d9a273', '#b9794d', '#8d5a3a', '#5e3b26'];
 const HAIRS = ['#2b2118', '#6b4423', '#c9923a', '#b5442a', '#1a1a2e', '#8f8f99'];
 const SHIRTS = ['#e4572e', '#2a9d8f', '#4361ee', '#f2b134', '#9b5de5', '#2b2d42'];
+const BODIES = [['f', 'Female'], ['m', 'Male']];
+const HAIRSTYLES = [['short', 'Short'], ['bob', 'Bob'], ['long', 'Long']];
 
-const hex2rgb = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16));
+const hex2rgb = h => { if (h.length === 4) h = '#' + h[1] + h[1] + h[2] + h[2] + h[3] + h[3]; return [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16)); };
 const mix = (a, b, t) => { const A = hex2rgb(a), B = hex2rgb(b); t = clamp(t, 0, 1); return '#' + A.map((v, i) => Math.round(v + (B[i] - v) * t).toString(16).padStart(2, '0')).join(''); };
 const NS = 'http://www.w3.org/2000/svg';
 
@@ -19,27 +21,32 @@ function ik(sx, sy, tx, ty, L1, L2, side) {
   return { ex: e[0], ey: e[1], hx: sx + dx, hy: sy + dy };
 }
 
-// hand targets for poses: [[Rx,Ry],[Lx,Ly]]  (R = screen-right arm)
-function poseTable(sh) {
-  const rx = 200 + sh + 12, lx = 200 - sh - 12;
+// hand targets for poses: [[Rx,Ry],[Lx,Ly]]  (R = screen-right arm). Head is at y~70-150, mouth ~ (200,138)
+function poseTable(sw) {
+  const rx = 200 + sw + 7, lx = 200 - sw - 7;
   return {
-    rest: [[rx, 322], [lx, 322]],
-    mouth: [[226, 172], [lx, 322]],
-    phone: [[236, 152], [lx, 322]],
-    stomach: [[222, 300], [178, 300]],
-    shrug: [[rx + 30, 262], [lx - 30, 262]],
-    wave: [[rx, 322], [128, 118]],
-    cheer: [[290, 112], [110, 112]],
-    flex: [[292, 160], [108, 160]],
-    head: [[246, 98], [154, 98]],
-    hips: [[rx - 4, 300], [lx + 4, 300]],
-    hold: [[226, 290], [174, 290]],
-    stop: [[286, 190], [lx, 322]],
-    give: [[270, 255], [lx, 322]],
-    cheek: [[238, 166], [lx, 322]],
-    book: [[222, 262], [178, 268]]
+    rest: [[rx, 300], [lx, 300]],
+    mouth: [[212, 141], [lx, 296]],
+    phone: [[222, 124], [lx, 296]],
+    stomach: [[210, 252], [190, 252]],
+    shrug: [[rx + 26, 228], [lx - 26, 228]],
+    wave: [[rx, 296], [140, 96]],
+    cheer: [[272, 92], [128, 92]],
+    flex: [[270, 130], [130, 130]],
+    head: [[232, 100], [168, 100]],
+    hips: [[rx - 8, 262], [lx + 8, 262]],
+    hold: [[214, 236], [186, 236]],
+    stop: [[266, 150], [lx, 296]],
+    give: [[252, 216], [lx, 296]],
+    cheek: [[222, 134], [lx, 296]],
+    book: [[212, 214], [188, 220]]
   };
 }
+
+const FACE_M = 'M146 112C146 74 172 66 200 66C228 66 254 74 254 112C254 152 236 188 200 190C164 188 146 152 146 112Z';
+const FACE_F = 'M148 112C148 74 172 66 200 66C228 66 252 74 252 112C252 146 230 188 200 192C170 188 148 146 148 112Z';
+const HAIR_BOB = 'M140 108C124 70 150 42 200 42C250 42 276 70 260 108C268 140 262 175 252 198C226 188 174 188 148 198C138 175 132 140 140 108Z';
+const HAIR_LONG = 'M140 108C122 68 150 40 200 40C250 40 278 68 260 108C276 165 270 250 284 336C240 322 160 322 116 336C130 250 124 165 140 108Z';
 
 function figMarkup(P) {
   const id = n => `id="${P}${n}"`;
@@ -47,6 +54,9 @@ function figMarkup(P) {
 <defs>
   <linearGradient ${id('wallg')} gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2="436"><stop ${id('ws0')} offset="0" stop-color="#eef3f8"/><stop ${id('ws1')} offset="1" stop-color="#d9e2ec"/></linearGradient>
   <radialGradient ${id('glow')}><stop offset="0" stop-color="#bfe3ff" stop-opacity=".95"/><stop offset="1" stop-color="#bfe3ff" stop-opacity="0"/></radialGradient>
+  <linearGradient ${id('shade')} x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#000" stop-opacity=".2"/><stop offset=".32" stop-color="#000" stop-opacity="0"/><stop offset=".62" stop-color="#fff" stop-opacity=".05"/><stop offset="1" stop-color="#000" stop-opacity=".26"/></linearGradient>
+  <linearGradient ${id('shadeV')} x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".18"/></linearGradient>
+  <radialGradient ${id('fshade')} cx=".42" cy=".38" r=".75"><stop offset="0" stop-color="#fff" stop-opacity=".2"/><stop offset=".6" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".18"/></radialGradient>
   <clipPath ${id('ceL')}><ellipse cx="178" cy="128" rx="11" ry="9"/></clipPath>
   <clipPath ${id('ceR')}><ellipse cx="222" cy="128" rx="11" ry="9"/></clipPath>
   <clipPath ${id('cwin')}><rect x="283" y="46" width="94" height="100" rx="4"/></clipPath>
@@ -81,24 +91,30 @@ function figMarkup(P) {
     <g ${id('fr2')} transform="translate(-52 0)"><circle cx="354" cy="360" r="15" fill="#b9794d"/><path d="M339 358c0-14 30-14 30 0" fill="#1a1a2e"/><rect x="340" y="374" width="28" height="42" rx="10" fill="#f2b134"/><rect x="344" y="414" width="8" height="20" rx="3" fill="#2b2d42"/><rect x="356" y="414" width="8" height="20" rx="3" fill="#2b2d42"/>
       <g ${id('fr2a')}><rect x="334" y="374" width="8" height="30" rx="4" fill="#b9794d"/></g></g>
   </g>
-  <ellipse ${id('shadow')} cx="200" cy="508" rx="82" ry="10" fill="#0000002e"/>
+  <ellipse ${id('shadow')} cx="200" cy="508" rx="78" ry="10" fill="#0000002e"/>
 </g>
 <g ${id('fxBack')}></g>
 <g ${id('body')}>
   <g ${id('tank')} opacity="0"><rect x="78" y="420" width="34" height="86" rx="12" fill="#3f8a63"/><rect x="88" y="408" width="14" height="14" rx="3" fill="#868e96"/><circle cx="95" cy="448" r="8" fill="#fff"/><path d="M95 448l4-5" stroke="#e03131" stroke-width="2"/></g>
   <g ${id('legs')}>
-    <line ${id('legL')} stroke-linecap="round" stroke="#3b4a6b"/><line ${id('legR')} stroke-linecap="round" stroke="#3b4a6b"/>
-    <ellipse ${id('shoeL')} rx="21" ry="9" fill="#222"/><ellipse ${id('shoeR')} rx="21" ry="9" fill="#222"/>
+    <path ${id('legL')} stroke-linejoin="round" stroke-width="6"/><path ${id('legR')} stroke-linejoin="round" stroke-width="6"/>
+    <path ${id('legLs')} fill="url(#${P}shade)" stroke="none"/><path ${id('legRs')} fill="url(#${P}shade)" stroke="none"/>
+    <path ${id('shoeL')} fill="#23232b"/><path ${id('shoeR')} fill="#23232b"/>
   </g>
   <g ${id('upper')}>
-    <rect ${id('neck')} x="188" y="172" width="24" height="40" rx="9"/>
+    <g ${id('hairBackG')}><path ${id('hairBackLong')} fill="#2b2118" opacity="0"/><path ${id('hairBackGray')} fill="#d8dce2" opacity="0"/></g>
+    <rect ${id('neck')} y="146" height="36" rx="7"/>
+    <rect ${id('neckSh')} y="146" height="14" rx="6" fill="#000" opacity=".2"/>
     <path ${id('torso')}/>
-    <path ${id('collar')} fill="none" stroke="#00000030" stroke-width="3" stroke-linecap="round"/>
+    <path ${id('torsoSh')} fill="url(#${P}shade)"/>
+    <path ${id('bust')} fill="none" stroke="#00000030" stroke-width="2.4" stroke-linecap="round" opacity="0"/>
+    <path ${id('collar')} fill="#00000014" stroke="#00000033" stroke-width="2.4" stroke-linecap="round"/>
     <g ${id('head')}>
       <ellipse cx="146" cy="132" rx="9" ry="13" ${id('earL')}/><ellipse cx="254" cy="132" rx="9" ry="13" ${id('earR')}/>
-      <ellipse cx="200" cy="128" rx="54" ry="58" ${id('face')}/>
-      <ellipse cx="200" cy="132" rx="52" ry="56" fill="#ff3b30" ${id('burnF')} opacity="0"/>
-      <ellipse cx="200" cy="132" rx="52" ry="56" ${id('pallor')} opacity="0"/>
+      <path ${id('face')}/>
+      <path ${id('faceSh')} fill="url(#${P}fshade)"/>
+      <path ${id('burnF')} fill="#ff3b30" opacity="0"/>
+      <path ${id('pallor')} opacity="0"/>
       <g ${id('spots')} fill="#7b4a2a" opacity="0">
         <circle cx="168" cy="108" r="3"/><circle cx="236" cy="104" r="2.5"/><circle cx="226" cy="150" r="3.5"/><circle cx="174" cy="154" r="2.5"/><circle cx="200" cy="100" r="2"/><circle cx="244" cy="130" r="2.5"/><circle cx="156" cy="132" r="2"/><circle cx="212" cy="116" r="1.8"/>
       </g>
@@ -106,31 +122,32 @@ function figMarkup(P) {
         <path d="M168 94q32-6 64 0M172 102q28-5 56 0"/><path d="M148 124l-8 -4M148 130l-9 1M148 136l-8 5M252 124l8-4M252 130l9 1M252 136l8 5"/><path d="M178 146q-5 12 -3 18M222 146q5 12 3 18"/>
       </g>
       <ellipse cx="178" cy="142" rx="12" ry="4.5" fill="#6a4a7a" ${id('bagL')} opacity="0"/><ellipse cx="222" cy="142" rx="12" ry="4.5" fill="#6a4a7a" ${id('bagR')} opacity="0"/>
-      <circle cx="164" cy="148" r="10" fill="#ff6b81" ${id('chkL')} opacity=".25"/><circle cx="236" cy="148" r="10" fill="#ff6b81" ${id('chkR')} opacity=".25"/>
-      <ellipse cx="178" cy="128" rx="11" ry="9" fill="#fff"/><ellipse cx="222" cy="128" rx="11" ry="9" fill="#fff"/>
-      <circle cx="178" cy="129" r="5.4" fill="#2b2118" ${id('pupL')}/><circle cx="222" cy="129" r="5.4" fill="#2b2118" ${id('pupR')}/>
-      <circle cx="180" cy="127" r="1.6" fill="#fff" ${id('hlL')}/><circle cx="224" cy="127" r="1.6" fill="#fff" ${id('hlR')}/>
+      <circle cx="164" cy="150" r="11" fill="#ff6b81" ${id('chkL')} opacity=".25"/><circle cx="236" cy="150" r="11" fill="#ff6b81" ${id('chkR')} opacity=".25"/>
+      <ellipse cx="178" cy="128" rx="11.5" ry="9" fill="#f6f6f4" stroke="#00000030" stroke-width="1"/><ellipse cx="222" cy="128" rx="11.5" ry="9" fill="#f6f6f4" stroke="#00000030" stroke-width="1"/>
+      <circle cx="178" cy="129" r="6.2" fill="#6b4a30" ${id('pupL')}/><circle cx="222" cy="129" r="6.2" fill="#6b4a30" ${id('pupR')}/>
+      <circle cx="178" cy="129" r="3" fill="#111" ${id('pinL')}/><circle cx="222" cy="129" r="3" fill="#111" ${id('pinR')}/>
+      <circle cx="180.5" cy="126.5" r="1.7" fill="#fff" ${id('hlL')}/><circle cx="224.5" cy="126.5" r="1.7" fill="#fff" ${id('hlR')}/>
       <g clip-path="url(#${P}ceL)"><rect ${id('lidL')} x="164" y="116" width="28" height="0"/></g>
       <g clip-path="url(#${P}ceR)"><rect ${id('lidR')} x="208" y="116" width="28" height="0"/></g>
       <path ${id('lashL')} d="M167 128q11 -2 22 0" fill="none" stroke="#3a2a22" stroke-width="2" stroke-linecap="round" opacity="0"/><path ${id('lashR')} d="M211 128q11 -2 22 0" fill="none" stroke="#3a2a22" stroke-width="2" stroke-linecap="round" opacity="0"/>
+      <path ${id('topL')} d="M166 126q12 -11 25 -1M166 126l-4 -3" fill="none" stroke="#2a1d17" stroke-width="2.6" stroke-linecap="round"/><path ${id('topR')} d="M209 125q13 -10 25 1M234 126l4 -3" fill="none" stroke="#2a1d17" stroke-width="2.6" stroke-linecap="round"/>
       <path ${id('browL')} fill="none" stroke="#3a2a22" stroke-width="4.5" stroke-linecap="round"/><path ${id('browR')} fill="none" stroke="#3a2a22" stroke-width="4.5" stroke-linecap="round"/>
-      <path ${id('nose')} d="M197 134q-3 9 3 10q5 -1 3 -10" fill="none" stroke="#00000030" stroke-width="2.4" stroke-linecap="round"/>
+      <path ${id('nose')} d="M198 120q-2 14 -6 18q8 6 16 0q-4 -4 -2 -18" fill="#00000010" stroke="#00000030" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
       <path ${id('mouthOpen')} fill="#fff" stroke="#5a2a2a" stroke-width="2.5" stroke-linejoin="round" opacity="0"/>
-      <path ${id('mouthIn')} fill="#7a2230" opacity="0"/>
       <path ${id('teethBad')} fill="#6e4b1f" opacity="0"/>
       <path ${id('mouth')} fill="none" stroke="#5a2a2a" stroke-width="3.2" stroke-linecap="round"/>
-      <ellipse cx="200" cy="132" rx="52" ry="56" fill="#ff3b30" ${id('burnN')} opacity="0" style="mix-blend-mode:multiply"/>
+      <path ${id('burnN')} fill="#ff3b30" opacity="0" style="mix-blend-mode:multiply"/>
       <g ${id('hair')}><path ${id('hairBack')} d="M142 120C132 62 168 44 200 44C234 44 268 62 258 120C250 100 236 82 200 80C166 80 150 100 142 120Z"/>
         <path ${id('hairGray')} d="M142 120C132 62 168 44 200 44C234 44 268 62 258 120C250 100 236 82 200 80C166 80 150 100 142 120Z" fill="#d8dce2" opacity="0"/>
         <path d="M152 92C170 66 232 64 250 96" fill="none" stroke="#ffffff22" stroke-width="3" stroke-linecap="round"/></g>
       <g ${id('glasses')} fill="none" stroke="#3a3f47" stroke-width="3" opacity="0"><circle cx="178" cy="129" r="15"/><circle cx="222" cy="129" r="15"/><path d="M193 127q7-5 14 0M163 125l-14-3M237 125l14-3"/></g>
       <g ${id('sweat')} fill="#7cc8ff" opacity="0"><path d="M150 96q-8 12 0 16q8-4 0-16z"/><path d="M252 90q-8 12 0 16q8-4 0-16z"/></g>
-      <path ${id('cannula')} d="M193 142q-26 6 -44 -2q-16 -8 -8 30q10 36 -10 130q-8 50 -22 122" fill="none" stroke="#8fd3ff" stroke-width="3.2" stroke-linecap="round" opacity="0"/>
       <g ${id('hat')} opacity="0"><ellipse cx="200" cy="92" rx="88" ry="16" fill="#e9c46a"/><path d="M148 90C148 44 252 44 252 90Z" fill="#e9c46a"/><path d="M148 86q52 12 104 0" stroke="#e76f51" stroke-width="7" fill="none"/></g>
     </g>
+    <path ${id('cannula')} d="M197 128Q186 136 170 126Q158 134 163 162Q170 236 142 330Q116 380 96 420" fill="none" stroke="#8fd3ff" stroke-width="3" stroke-linecap="round" opacity="0"/>
     <g ${id('arms')}>
-      <g ${id('armL')}><line ${id('uaL')} stroke-linecap="round"/><line ${id('uaLb')} stroke-linecap="round"/><line ${id('faL')} stroke-linecap="round"/><circle ${id('hdL')}/><line ${id('burnAL')} stroke="#ff3b30" stroke-linecap="round" opacity="0"/></g>
-      <g ${id('armR')}><line ${id('uaR')} stroke-linecap="round"/><line ${id('uaRb')} stroke-linecap="round"/><line ${id('faR')} stroke-linecap="round"/><circle ${id('hdR')}/><line ${id('burnAR')} stroke="#ff3b30" stroke-linecap="round" opacity="0"/></g>
+      <g ${id('armL')}><line ${id('uaL')} stroke-linecap="round"/><line ${id('uaLb')} stroke-linecap="round"/><line ${id('faL')} stroke-linecap="round"/><ellipse ${id('hdL')}/><line ${id('burnAL')} stroke="#ff3b30" stroke-linecap="round" opacity="0"/></g>
+      <g ${id('armR')}><line ${id('uaR')} stroke-linecap="round"/><line ${id('uaRb')} stroke-linecap="round"/><line ${id('faR')} stroke-linecap="round"/><ellipse ${id('hdR')}/><line ${id('burnAR')} stroke="#ff3b30" stroke-linecap="round" opacity="0"/></g>
     </g>
     <g ${id('props')}>
       <g ${id('glowP')} opacity="0"><circle cx="0" cy="22" r="34" fill="url(#${P}glow)"/></g>
@@ -144,7 +161,7 @@ function figMarkup(P) {
       <g ${id('p_pill')} opacity="0"><rect x="-4" y="2" width="8" height="18" rx="4" fill="#fff" stroke="#adb5bd"/><path d="M-4 11h8v5a4 4 0 0 1-8 0z" fill="#e03131"/></g>
       <g ${id('p_pad')} opacity="0"><rect x="-9" y="-2" width="18" height="22" rx="3" fill="#fff" stroke="#adb5bd"/><path d="M-5 5h10M-5 10h10M-5 15h6" stroke="#868e96" stroke-width="1.6"/></g>
     </g>
-    <g ${id('cane')} opacity="0"><path d="M262 330v170M262 330q0 -14 -12 -14q-8 0 -8 8" fill="none" stroke="#7f5539" stroke-width="7" stroke-linecap="round"/></g>
+    <g ${id('cane')} opacity="0"><path d="M264 304v196M264 304q0 -14 -12 -14q-8 0 -8 8" fill="none" stroke="#7f5539" stroke-width="7" stroke-linecap="round"/></g>
     <g ${id('cloud')} opacity="0"><g fill="#6b7480"><ellipse cx="170" cy="40" rx="42" ry="20"/><ellipse cx="214" cy="34" rx="44" ry="22"/><ellipse cx="196" cy="52" rx="48" ry="16"/></g>
       <path ${id('bolt')} d="M200 54l-12 26h12l-8 24 24-32h-14l10-18z" fill="#ffd43b" opacity="0"/></g>
   </g>
@@ -161,12 +178,12 @@ function createFigure(svg, look) {
   svg.innerHTML = figMarkup(P);
   const $ = n => svg.querySelector('#' + P + n);
   const el = {};
-  ['wall', 'floor', 'ws0', 'ws1', 'sky', 'sun', 'clouds', 'gloom', 'plants', 'clut1', 'clut2', 'clut3', 'clut4', 'clut5', 'friends', 'fr1a', 'fr2a', 'shadow', 'fxBack', 'fxFront', 'body', 'tank', 'legL', 'legR', 'shoeL', 'shoeR',
-    'upper', 'neck', 'torso', 'collar', 'head', 'earL', 'earR', 'face', 'burnF', 'pallor', 'spots', 'wrinkles', 'bagL', 'bagR', 'chkL', 'chkR', 'pupL', 'pupR', 'hlL', 'hlR', 'lidL', 'lidR', 'lashL', 'lashR', 'browL', 'browR', 'nose',
-    'mouthOpen', 'mouthIn', 'teethBad', 'mouth', 'burnN', 'hairBack', 'hairGray', 'glasses', 'sweat', 'cannula', 'hat', 'uaL', 'uaLb', 'faL', 'hdL', 'burnAL', 'uaR', 'uaRb', 'faR', 'hdR', 'burnAR', 'props', 'glowP', 'p_cig', 'p_vape', 'p_phone',
+  ['wall', 'floor', 'ws0', 'ws1', 'sky', 'sun', 'clouds', 'gloom', 'plants', 'clut1', 'clut2', 'clut3', 'clut4', 'clut5', 'friends', 'fr1a', 'fr2a', 'shadow', 'fxBack', 'fxFront', 'body', 'tank', 'legL', 'legR', 'legLs', 'legRs', 'shoeL', 'shoeR',
+    'upper', 'neck', 'neckSh', 'torso', 'torsoSh', 'bust', 'collar', 'head', 'hairBackG', 'hairBackLong', 'hairBackGray', 'earL', 'earR', 'face', 'faceSh', 'burnF', 'pallor', 'spots', 'wrinkles', 'bagL', 'bagR', 'chkL', 'chkR', 'pupL', 'pupR', 'pinL', 'pinR', 'hlL', 'hlR', 'lidL', 'lidR', 'lashL', 'lashR', 'topL', 'topR', 'browL', 'browR', 'nose',
+    'mouthOpen', 'teethBad', 'mouth', 'burnN', 'hairBack', 'hairGray', 'glasses', 'sweat', 'cannula', 'hat', 'uaL', 'uaLb', 'faL', 'hdL', 'burnAL', 'uaR', 'uaRb', 'faR', 'hdR', 'burnAR', 'props', 'glowP', 'p_cig', 'p_vape', 'p_phone',
     'p_bottle', 'p_cup', 'p_can', 'p_book', 'p_pill', 'p_pad', 'cane', 'cloud', 'bolt', 'tint', 'armR', 'armL'].forEach(n => el[n] = $(n));
 
-  const F = { svg, look: Object.assign({ skin: SKINS[1], hair: HAIRS[0], shirt: SHIRTS[1] }, look || {}), rate: 3, time: 0, bpm: 70, rr: 14,
+  const F = { svg, look: Object.assign({ skin: SKINS[1], hair: HAIRS[0], shirt: SHIRTS[1], body: 'm', hairStyle: 'short' }, look || {}), rate: 3, time: 0, bpm: 70, rr: 14,
     tgt: null, vis: null, handCur: null, handTgt: 'rest', overlay: { prop: null, face: null, bob: 0, shake: 0, wobble: 0, run: 0, eyesClosed: 0, tint: null, hairHat: 0, dizzy: 0, cough: 0, glow: 0, cloud: 0, sun: 0 }, timers: [], blink: 0, nextBlink: 2, coughT: 5 };
   allFigures.push(F);
 
@@ -241,11 +258,15 @@ function createFigure(svg, look) {
     return g;
   };
 
+  const legPath = (hx, fx, fy, w1, w2) => `M${hx - w1 / 2} 296L${hx + w1 / 2} 296L${fx + w2 / 2} ${fy}L${fx - w2 / 2} ${fy}Z`;
+  const shoePath = (fx, fy, dir) => `M${fx - 11} ${fy - 4}L${fx + 11} ${fy - 4}Q${fx + 11 + dir * 12} ${fy - 2} ${fx + 12 + dir * 12} ${fy + 8}L${fx - 12 + dir * 0} ${fy + 8}Q${fx - 13} ${fy} ${fx - 11} ${fy - 4}Z`;
+
   // --- per-frame drawing ---
   F.draw = function (dt) {
     const v = F.vis, tgt = F.tgt, o = F.overlay, L = F.look;
     if (!v) return;
     F.time += dt;
+    const female = L.body === 'f';
     const k = Math.min(1, dt * F.rate);
     for (const key of VKEYS) v[key] += (tgt[key] - v[key]) * k;
     const T = F.time;
@@ -253,7 +274,8 @@ function createFigure(svg, look) {
     let skin = L.skin;
     skin = mix(skin, '#c8c2b5', v.pallor * 0.55);
     skin = mix(skin, '#d6c24a', v.jaun * 0.55);
-    const skinD = mix(skin, '#000000', 0.12);
+    const faceD = female ? FACE_F : FACE_M;
+    ['face', 'faceSh', 'burnF', 'pallor', 'burnN'].forEach(n => el[n].setAttribute('d', faceD));
     ['face', 'earL', 'earR', 'neck'].forEach(n => el[n].setAttribute('fill', skin));
     el.pallor.setAttribute('fill', '#9aa79a'); el.pallor.setAttribute('opacity', (v.pallor * 0.25).toFixed(3));
     el.burnF.setAttribute('opacity', (v.burn * 0.5).toFixed(3));
@@ -263,49 +285,65 @@ function createFigure(svg, look) {
     el.bagL.setAttribute('opacity', (v.bags * 0.55).toFixed(3)); el.bagR.setAttribute('opacity', (v.bags * 0.55).toFixed(3));
     el.chkL.setAttribute('opacity', clamp(v.cheek, 0, 0.6).toFixed(3)); el.chkR.setAttribute('opacity', clamp(v.cheek, 0, 0.6).toFixed(3));
     // hair
+    const hs = L.hairStyle || 'short';
     el.hairBack.setAttribute('fill', L.hair);
     el.hairGray.setAttribute('opacity', clamp(v.gray, 0, 1).toFixed(3));
+    const backD = hs === 'long' ? HAIR_LONG : hs === 'bob' ? HAIR_BOB : '';
+    el.hairBackLong.setAttribute('d', backD); el.hairBackGray.setAttribute('d', backD);
+    el.hairBackLong.setAttribute('fill', L.hair); el.hairBackLong.setAttribute('opacity', backD ? 1 : 0);
+    el.hairBackGray.setAttribute('opacity', backD ? clamp(v.gray, 0, 1).toFixed(3) : 0);
     el.glasses.setAttribute('opacity', v.glasses.toFixed(2));
+    // feminine / masculine details
+    el.topL.setAttribute('opacity', female ? 1 : 0); el.topR.setAttribute('opacity', female ? 1 : 0);
+    ['browL', 'browR'].forEach(n => el[n].setAttribute('stroke-width', female ? 3.2 : 4.8));
+    const mouthCol = female ? '#a63d52' : '#5a2a2a';
+    el.mouth.setAttribute('stroke', mouthCol); el.mouth.setAttribute('stroke-width', female ? 4.4 : 3.2);
+    el.mouthOpen.setAttribute('stroke', female ? '#a63d52' : '#5a2a2a');
     // body shape
-    const belly = v.belly, thin = v.thin;
-    const sh = 46 + v.musc * 7 - thin * 6 + Math.max(0, belly) * 4;
-    const waist = 38 + belly * 20 - thin * 8, bell = 40 + belly * 34 - thin * 8;
-    const legW = 30 + Math.max(0, belly) * 12 - thin * 6;
+    const belly = v.belly, thin = v.thin, slump = v.hunch * 0.5 + v.sag * 0.5 + (o.face === 'slump' ? 0.6 : 0);
+    const sw = (female ? 40 : 49) + v.musc * (female ? 3 : 6) - thin * 5 + Math.max(0, belly) * 2;
+    const ww = (female ? 29 : 35) + belly * 19 - thin * 6;
+    const bw = (female ? 33 : 38) + belly * 33 - thin * 6;
+    const hw = (female ? 45 : 37) + belly * 6 - thin * 4;
+    const cw = (female ? 36 : 45) + Math.max(0, belly) * 3 - thin * 3;
     const shirt = L.shirt;
     // breathing
     const rrHz = F.rr / 60 * (o.run ? 2.2 : 1), breath = Math.sin(T * Math.PI * 2 * rrHz);
-    const amp = 0.012 + (100 - v.lungs) * 0.00013;     // worse lungs: shallower / heavier chest heave
     const labor = clamp((100 - v.lungs) / 80, 0, 1);
-    const b = breath * (0.014 + labor * 0.014 + (o.run ? 0.012 : 0)) + o.cough * Math.sin(T * 40) * 0.01;
+    const b = breath * (0.012 + labor * 0.014 + (o.run ? 0.012 : 0)) + o.cough * Math.sin(T * 40) * 0.01;
     // bob/shake
     let bx = 0, by = 0, rot = 0;
     if (o.bob) { by = -Math.abs(Math.sin(T * 9)) * o.bob; }
     if (o.shake) { bx = Math.sin(T * 60) * o.shake; by += Math.cos(T * 53) * o.shake * 0.5; }
     if (o.wobble) rot = Math.sin(T * 3.2) * o.wobble;
     el.body.setAttribute('transform', `translate(${bx.toFixed(2)} ${by.toFixed(2)}) rotate(${rot.toFixed(2)} 200 500)`);
-    el.shadow.setAttribute('rx', (82 + belly * 10 + by * 0.5).toFixed(1));
-    const slump = v.hunch * 0.5 + v.sag * 0.5 + (o.face === 'slump' ? 0.6 : 0);
-    const shY = 207 + slump * 14;
-    el.upper.setAttribute('transform', `translate(200 340) scale(${(1 + b * 0.6).toFixed(4)} ${(1 + b - slump * 0.03).toFixed(4)}) translate(-200 -340)`);
+    el.shadow.setAttribute('rx', (78 + belly * 10 + by * 0.5).toFixed(1));
+    const shY = 178 + slump * 9;
+    el.upper.setAttribute('transform', `translate(200 300) scale(${(1 + b * 0.6).toFixed(4)} ${(1 + b - slump * 0.02).toFixed(4)}) translate(-200 -300)`);
     // torso
-    const sw = sh + (1 - Math.min(1, v.hunch)) * 0;
-    const topY = shY - 4;
-    el.torso.setAttribute('d', `M${200 - sw} ${topY + 12}Q200 ${topY - 8} ${200 + sw} ${topY + 12}L${200 + sw - 3} 290Q${200 + bell} 322 ${200 + waist} 346L${200 - waist} 346Q${200 - bell} 322 ${200 - sw + 3} 290Z`);
-    el.torso.setAttribute('fill', shirt);
-    el.collar.setAttribute('d', `M184 ${topY + 2}Q200 ${topY + 22} 216 ${topY + 2}`);
-    el.neck.setAttribute('y', (172 + slump * 4).toFixed(1));
-    // head
-    const headDy = slump * 14 - b * 120 * 0.0 + (o.face === 'slump' ? 6 : 0);
-    const tilt = slump * 4 * Math.sin(T * 0.7) + (o.dizzy ? Math.sin(T * 5) * 6 : 0);
-    el.head.setAttribute('transform', `translate(0 ${headDy.toFixed(1)}) rotate(${tilt.toFixed(2)} 200 190)`);
+    const tp = `M${200 - sw} ${shY + 6}Q200 ${shY - 12} ${200 + sw} ${shY + 6}L${200 + sw - 3} ${shY + 28}C${200 + cw} ${shY + 52} ${200 + ww} ${shY + 62} ${200 + ww} ${shY + 82}Q${200 + bw} ${shY + 104} ${200 + hw} 306L${200 - hw} 306Q${200 - bw} ${shY + 104} ${200 - ww} ${shY + 82}C${200 - ww} ${shY + 62} ${200 - cw} ${shY + 52} ${200 - sw + 3} ${shY + 28}Z`;
+    el.torso.setAttribute('d', tp); el.torso.setAttribute('fill', shirt);
+    el.torsoSh.setAttribute('d', tp);
+    el.collar.setAttribute('d', `M${female ? 180 : 184} ${shY - 2}Q200 ${shY + (female ? 26 : 18)} ${female ? 220 : 216} ${shY - 2}Q200 ${shY + 4} ${female ? 180 : 184} ${shY - 2}Z`);
+    el.collar.setAttribute('fill', mix(skin, '#000', 0.04));
+    el.bust.setAttribute('d', `M${200 - 20} ${shY + 50}Q${200 - 6} ${shY + 62} ${200 + 0} ${shY + 50}M${200 + 20} ${shY + 50}Q${200 + 6} ${shY + 62} ${200} ${shY + 50}`);
+    el.bust.setAttribute('opacity', female && belly < 0.8 ? 0.8 : 0);
+    // neck
+    const nw = female ? 16 : 20;
+    el.neck.setAttribute('x', 200 - nw / 2); el.neck.setAttribute('width', nw); el.neck.setAttribute('y', (146 + slump * 4).toFixed(1));
+    el.neckSh.setAttribute('x', 200 - nw / 2); el.neckSh.setAttribute('width', nw); el.neckSh.setAttribute('y', (146 + slump * 4).toFixed(1));
+    // head: scaled so the whole figure is ~6 heads tall (semi-realistic proportions)
+    const headDy = slump * 8;
+    const tilt = slump * 3 * Math.sin(T * 0.7) + (o.dizzy ? Math.sin(T * 5) * 6 : 0);
+    const headT = `translate(0 ${headDy.toFixed(1)}) translate(200 152) rotate(${tilt.toFixed(2)}) scale(0.56) translate(-200 -188)`;
+    el.head.setAttribute('transform', headT); el.hairBackG.setAttribute('transform', headT);
     // face expression
     const mood = o.face === 'sad' ? 18 : o.face === 'happy' ? 92 : o.face === 'angry' ? 22 : o.face === 'ouch' ? 20 : v.mood;
     const acute = o.face === 'angry' ? 1 : 0;
     const smile = (mood - 52) / 48;                     // -1..1
     const c = smile * 17;
-    const mx0 = 182, mx1 = 218, my = 164;
+    const mx0 = 182, mx1 = 218, my = 166;
     if (c > 4) {
-      // open smile with teeth
       const depth = Math.min(c * 1.4, 22);
       el.mouthOpen.setAttribute('d', `M${mx0} ${my - 2}Q200 ${my + depth * 1.2} ${mx1} ${my - 2}Q200 ${my + 1} ${mx0} ${my - 2}Z`);
       el.mouthOpen.setAttribute('opacity', 1);
@@ -317,10 +355,9 @@ function createFigure(svg, look) {
     } else {
       el.mouthOpen.setAttribute('opacity', 0); el.teethBad.setAttribute('opacity', 0);
       el.mouth.setAttribute('opacity', 1);
-      const yy = my + (o.face === 'dizzy' ? 0 : 0);
-      el.mouth.setAttribute('d', `M${mx0 + 2} ${yy + (c < 0 ? 4 : 0)}Q200 ${yy + c * 1.4 + (c < 0 ? 4 : 0)} ${mx1 - 2} ${yy + (c < 0 ? 4 : 0)}`);
+      el.mouth.setAttribute('d', `M${mx0 + 2} ${my + (c < 0 ? 4 : 0)}Q200 ${my + c * 1.4 + (c < 0 ? 4 : 0)} ${mx1 - 2} ${my + (c < 0 ? 4 : 0)}`);
     }
-    if (o.face === 'ouch') { el.mouthOpen.setAttribute('opacity', 1); el.mouthOpen.setAttribute('d', `M188 164Q200 158 212 164Q200 178 188 164Z`); el.mouthOpen.setAttribute('fill', '#7a2230'); el.mouth.setAttribute('opacity', 0); }
+    if (o.face === 'ouch') { el.mouthOpen.setAttribute('opacity', 1); el.mouthOpen.setAttribute('d', `M188 166Q200 160 212 166Q200 180 188 166Z`); el.mouthOpen.setAttribute('fill', '#7a2230'); el.mouth.setAttribute('opacity', 0); }
     // eyes: blink, tiredness
     F.nextBlink -= dt; if (F.nextBlink < 0) { F.blink = 1; F.nextBlink = 2 + Math.random() * 3.5; }
     F.blink = Math.max(0, F.blink - dt * 7);
@@ -328,62 +365,63 @@ function createFigure(svg, look) {
     const closed = o.eyesClosed ? 1 : 0;
     const lid = clamp(Math.max(tired * 0.65, closed, F.blink > 0.5 ? 1 : F.blink * 2), 0, 1);
     const lidH = lid * 18.5;
-    [['L', 164], ['R', 208]].forEach(([s]) => {
+    ['L', 'R'].forEach(s => {
       el['lid' + s].setAttribute('height', lidH.toFixed(1)); el['lid' + s].setAttribute('fill', skin);
       el['lash' + s].setAttribute('opacity', lid > 0.2 ? 0.9 : 0);
       el['lash' + s].setAttribute('transform', `translate(0 ${(lidH - 9.5).toFixed(1)})`);
     });
     const look = Math.sin(T * 0.6) * 1.2;
-    ['pupL', 'pupR', 'hlL', 'hlR'].forEach(n => el[n].setAttribute('transform', `translate(${look.toFixed(2)} ${(tired * 1.2).toFixed(2)})`));
+    ['pupL', 'pupR', 'pinL', 'pinR', 'hlL', 'hlR'].forEach(n => el[n].setAttribute('transform', `translate(${look.toFixed(2)} ${(tired * 1.2).toFixed(2)})`));
     // brows: worry (stress), anger
     const worry = clamp((v.stress - 50) / 40, 0, 1) + (o.face === 'sad' ? 0.7 : 0);
     const sadB = clamp((45 - mood) / 45, 0, 1);
     const inner = 100 - worry * 9 - sadB * 5 + acute * 8, outer = 106 + worry * 3 + sadB * 2 - acute * 4;
-    el.browL.setAttribute('d', `M163 ${outer}Q176 ${(inner + outer) / 2 - 4} 191 ${inner + 4}`);
-    el.browR.setAttribute('d', `M237 ${outer}Q224 ${(inner + outer) / 2 - 4} 209 ${inner + 4}`);
-    el.sweat.setAttribute('opacity', (clamp((v.stress - 60) / 30, 0, 1) * 0.9 + (o.run ? 1 : 0)).toFixed(2) > 1 ? 1 : clamp((v.stress - 60) / 30, 0, 1) * 0.9 + (o.run ? 1 : 0));
+    const arch = female ? 7 : 4;
+    el.browL.setAttribute('d', `M163 ${outer}Q176 ${(inner + outer) / 2 - arch} 191 ${inner + 4}`);
+    el.browR.setAttribute('d', `M237 ${outer}Q224 ${(inner + outer) / 2 - arch} 209 ${inner + 4}`);
+    el.sweat.setAttribute('opacity', Math.min(1, clamp((v.stress - 60) / 30, 0, 1) * 0.9 + (o.run ? 1 : 0)));
     el.sweat.setAttribute('transform', `translate(0 ${((T * 18) % 14).toFixed(1)})`);
     el.hat.setAttribute('opacity', o.hat ? 1 : 0);
     el.cane.setAttribute('opacity', v.cane > 0.5 ? 1 : 0);
     el.cannula.setAttribute('opacity', v.oxy > 0.5 ? 0.9 : 0);
     el.tank.setAttribute('opacity', v.oxy > 0.5 ? 1 : 0);
-    // legs
-    const swing = o.run ? Math.sin(T * 9) * 26 : (o.bob ? Math.sin(T * 5) * 8 : 0);
-    const lw = legW, hipY = 330, footY = 498;
-    const footLx = 200 - 24 - Math.max(0, belly) * 6 + swing, footRx = 200 + 24 + Math.max(0, belly) * 6 - swing;
+    // legs: tapered, with shading and shoes
+    const swing = o.run ? Math.sin(T * 9) * 24 : (o.bob ? Math.sin(T * 5) * 7 : 0);
+    const footY = 496, w1 = (female ? 40 : 38) + Math.max(0, belly) * 8 - thin * 6, w2 = (female ? 17 : 21) + Math.max(0, belly) * 2;
+    const fLx = 200 - 21 - Math.max(0, belly) * 4 + swing, fRx = 200 + 21 + Math.max(0, belly) * 4 - swing;
     const liftL = o.run ? Math.max(0, Math.sin(T * 9)) * 18 : 0, liftR = o.run ? Math.max(0, -Math.sin(T * 9)) * 18 : 0;
-    el.legL.setAttribute('x1', 200 - 18); el.legL.setAttribute('y1', hipY); el.legL.setAttribute('x2', footLx); el.legL.setAttribute('y2', footY - liftL);
-    el.legR.setAttribute('x1', 200 + 18); el.legR.setAttribute('y1', hipY); el.legR.setAttribute('x2', footRx); el.legR.setAttribute('y2', footY - liftR);
-    el.legL.setAttribute('stroke-width', lw.toFixed(1)); el.legR.setAttribute('stroke-width', lw.toFixed(1));
-    el.shoeL.setAttribute('cx', footLx - 3); el.shoeL.setAttribute('cy', footY + 8 - liftL); el.shoeR.setAttribute('cx', footRx + 3); el.shoeR.setAttribute('cy', footY + 8 - liftR);
+    const pants = '#3b4a6b';
+    const lp = legPath(200 - w1 / 2 + 1, fLx, footY - liftL, w1, w2), rp = legPath(200 + w1 / 2 - 1, fRx, footY - liftR, w1, w2);
+    el.legL.setAttribute('d', lp); el.legR.setAttribute('d', rp); el.legLs.setAttribute('d', lp); el.legRs.setAttribute('d', rp);
+    el.legL.setAttribute('fill', pants); el.legR.setAttribute('fill', pants); el.legL.setAttribute('stroke', pants); el.legR.setAttribute('stroke', pants);
+    el.shoeL.setAttribute('d', shoePath(fLx - 3, footY + 2 - liftL, -1)); el.shoeR.setAttribute('d', shoePath(fRx + 3, footY + 2 - liftR, 1));
     // arms by IK
-    const tbl = poseTable(sh), pn = tbl[F.handTgt] || tbl.rest;
+    const tbl = poseTable(sw), pn = tbl[F.handTgt] || tbl.rest;
     let tR = pn[0].slice(), tL = pn[1].slice();
-    if (o.run) { tR[0] = 200 + sh + 18 + Math.sin(T * 9) * 10; tR[1] = 285 + Math.cos(T * 9) * 14; tL[0] = 200 - sh - 18 - Math.sin(T * 9) * 10; tL[1] = 285 - Math.cos(T * 9) * 14; }
-    if (o.wave) { tL[0] += Math.sin(T * 8) * 12; }
+    if (o.run) { tR[0] = 200 + sw + 14 + Math.sin(T * 9) * 10; tR[1] = 250 + Math.cos(T * 9) * 14; tL[0] = 200 - sw - 14 - Math.sin(T * 9) * 10; tL[1] = 250 - Math.cos(T * 9) * 14; }
     if (F.handTgt === 'wave') tL[0] += Math.sin(T * 8) * 14;
     if (F.handTgt === 'cheer') { tR[1] += Math.sin(T * 7) * 8; tL[1] += Math.cos(T * 7) * 8; }
     if (!F.hand) F.hand = { R: tR.slice(), L: tL.slice() };
     const hk = Math.min(1, dt * 9);
     ['R', 'L'].forEach((s2, i) => { const tt = i ? tL : tR; F.hand[s2][0] += (tt[0] - F.hand[s2][0]) * hk; F.hand[s2][1] += (tt[1] - F.hand[s2][1]) * hk; });
-    const aw = 20 + v.musc * 7 + Math.max(0, belly) * 4 - thin * 4;
-    const armSkin = skin;
-    [['R', 1, 200 + sh - 2], ['L', -1, 200 - sh + 2]].forEach(([s2, side, sx]) => {
-      const r = ik(sx, shY + 6, F.hand[s2][0], F.hand[s2][1], 58, 58, side);
+    const aw = (female ? 14 : 17) + v.musc * (female ? 3 : 5) + Math.max(0, belly) * 3 - thin * 3;
+    [['R', 1, 200 + sw - 4], ['L', -1, 200 - sw + 4]].forEach(([s2, side, sx]) => {
+      const r = ik(sx, shY + 10, F.hand[s2][0], F.hand[s2][1], 62, 58, side);
       const ua = el['ua' + s2], uab = el['ua' + s2 + 'b'], fa = el['fa' + s2], hd = el['hd' + s2], ba = el['burnA' + s2];
-      const sl = 0.62;
-      ua.setAttribute('x1', sx); ua.setAttribute('y1', shY + 6); ua.setAttribute('x2', r.ex); ua.setAttribute('y2', r.ey); ua.setAttribute('stroke', armSkin); ua.setAttribute('stroke-width', aw);
-      uab.setAttribute('x1', sx); uab.setAttribute('y1', shY + 6); uab.setAttribute('x2', sx + (r.ex - sx) * sl); uab.setAttribute('y2', shY + 6 + (r.ey - shY - 6) * sl); uab.setAttribute('stroke', shirt); uab.setAttribute('stroke-width', aw + 6);
-      fa.setAttribute('x1', r.ex); fa.setAttribute('y1', r.ey); fa.setAttribute('x2', r.hx); fa.setAttribute('y2', r.hy); fa.setAttribute('stroke', armSkin); fa.setAttribute('stroke-width', aw - 3);
-      hd.setAttribute('cx', r.hx); hd.setAttribute('cy', r.hy); hd.setAttribute('r', 10.5); hd.setAttribute('fill', armSkin);
-      ba.setAttribute('x1', sx + (r.ex - sx) * sl); ba.setAttribute('y1', shY + 6 + (r.ey - shY - 6) * sl); ba.setAttribute('x2', r.hx); ba.setAttribute('y2', r.hy); ba.setAttribute('stroke-width', aw - 3);
+      const sl = 0.5, sy = shY + 10;
+      ua.setAttribute('x1', sx); ua.setAttribute('y1', sy); ua.setAttribute('x2', r.ex); ua.setAttribute('y2', r.ey); ua.setAttribute('stroke', skin); ua.setAttribute('stroke-width', aw);
+      uab.setAttribute('x1', sx); uab.setAttribute('y1', sy); uab.setAttribute('x2', sx + (r.ex - sx) * sl); uab.setAttribute('y2', sy + (r.ey - sy) * sl); uab.setAttribute('stroke', shirt); uab.setAttribute('stroke-width', aw + 5);
+      fa.setAttribute('x1', r.ex); fa.setAttribute('y1', r.ey); fa.setAttribute('x2', r.hx); fa.setAttribute('y2', r.hy); fa.setAttribute('stroke', skin); fa.setAttribute('stroke-width', aw - 4);
+      hd.setAttribute('cx', r.hx); hd.setAttribute('cy', r.hy); hd.setAttribute('rx', 7.5); hd.setAttribute('ry', 9); hd.setAttribute('fill', skin);
+      hd.setAttribute('transform', `rotate(${(Math.atan2(-(r.hx - r.ex), r.hy - r.ey) * 180 / Math.PI).toFixed(1)} ${r.hx} ${r.hy})`);
+      ba.setAttribute('x1', sx + (r.ex - sx) * sl); ba.setAttribute('y1', sy + (r.ey - sy) * sl); ba.setAttribute('x2', r.hx); ba.setAttribute('y2', r.hy); ba.setAttribute('stroke-width', aw - 4);
       ba.setAttribute('opacity', (v.burn * 0.45).toFixed(3));
       if (s2 === 'R') { F.handR = r; }
     });
     // props on right hand
     const r = F.handR, dx = r.hx - r.ex, dy = r.hy - r.ey;
     const ang = Math.atan2(-dx, dy) * 180 / Math.PI;
-    el.props.setAttribute('transform', `translate(${r.hx.toFixed(1)} ${r.hy.toFixed(1)}) rotate(${ang.toFixed(1)})`);
+    el.props.setAttribute('transform', `translate(${r.hx.toFixed(1)} ${r.hy.toFixed(1)}) rotate(${ang.toFixed(1)}) scale(0.85)`);
     ['cig', 'vape', 'phone', 'bottle', 'cup', 'can', 'book', 'pill', 'pad'].forEach(n => el['p_' + n].setAttribute('opacity', o.prop === n ? 1 : 0));
     el.glowP.setAttribute('opacity', o.glow ? 0.9 : 0);
     // scene
@@ -403,7 +441,7 @@ function createFigure(svg, look) {
     // cloud over head
     const lonely = clamp((34 - v.mood) / 22, 0, 1) * 0.8 + (o.cloud ? 1 : 0);
     el.cloud.setAttribute('opacity', clamp(lonely, 0, 1).toFixed(2));
-    el.cloud.setAttribute('transform', `translate(0 ${(Math.sin(T * 1.4) * 3 + headDy).toFixed(1)})`);
+    el.cloud.setAttribute('transform', `translate(0 ${(Math.sin(T * 1.4) * 3 + headDy - 6).toFixed(1)})`);
     el.bolt.setAttribute('opacity', o.cloud > 1 && Math.sin(T * 7) > 0.6 ? 1 : 0);
     // tint overlay
     let ta = 0, tc = '#000';
@@ -418,8 +456,8 @@ function createFigure(svg, look) {
 
   F.cough = function () {
     F.overlay.cough = 1; F.overlay.shake = 2;
-    F.emit('text', 232, 140, { text: 'cough!', size: 17, fill: '#444', bold: 1, dx: 22, dy: -14, dur: 1200, s0: .8, s1: 1.1 });
-    for (let i = 0; i < 3; i++) F.emit('circle', 226, 164, { r: 4 + i, fill: '#ffffffcc', dx: 40 + i * 8, dy: -6 + i * 8, dur: 800, delay: i * 70, s0: 1, s1: 2 });
+    F.emit('text', 226, 112, { text: 'cough!', size: 16, fill: '#444', bold: 1, dx: 22, dy: -14, dur: 1200, s0: .8, s1: 1.1 });
+    for (let i = 0; i < 3; i++) F.emit('circle', 216, 140, { r: 4 + i, fill: '#ffffffcc', dx: 40 + i * 8, dy: -6 + i * 8, dur: 800, delay: i * 70, s0: 1, s1: 2 });
     F.later(700, () => { F.overlay.cough = 0; F.overlay.shake = 0; });
     if (F.onCough) F.onCough();
   };

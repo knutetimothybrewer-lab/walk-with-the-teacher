@@ -26,7 +26,7 @@ guide an animated person from age 14 to 65 through 50 health decisions (2–4 op
 the STOP process (State, Think, Observe, Pick). Choices are scored on the worksheet's A/B/C scale
 across five domains (Physical, Mental, Emotional, Social, Environmental).
 
-- Face, skin (sunburn, spots, wrinkles), weight, posture, hair, breathing, cough, oxygen tank, cane,
+- Realistic-proportion female or male figure (short, bob or long hair). Face, skin (sunburn, spots, wrinkles), weight, posture, hair, breathing, cough, oxygen tank, cane,
   room and friends all change with health; an "inside view" shows lungs, heart, brain, liver and arteries.
 - Each choice sets a habit that keeps acting as time passes, so damage and benefits build up over the years.
 - Unlimited trials; challenge badges for one healthiest and one unhealthiest run; results screen with

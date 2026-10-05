@@ -31,7 +31,7 @@ function loadTrials() { try { return JSON.parse(localStorage.getItem(STORE)) || 
 function saveTrials(list) { try { localStorage.setItem(STORE, JSON.stringify(list.slice(-14))); } catch (e) {} }
 
 // ---------------- app state ----------------
-const App = { look: { name: 'Alex', skin: SKINS[1], hair: HAIRS[0], shirt: SHIRTS[1] }, goal: 'healthy', trials: loadTrials(), T: null, F: null, I: null, pv: null, busy: false, lapseSkip: null };
+const App = { look: { name: 'Alex', skin: SKINS[1], hair: HAIRS[0], shirt: SHIRTS[1], body: 'f', hairStyle: 'long' }, goal: 'healthy', trials: loadTrials(), T: null, F: null, I: null, pv: null, busy: false, lapseSkip: null };
 const GOAL_LABEL = { healthy: '🌟 Healthiest possible', unhealthy: '⚠️ Unhealthiest possible', free: '🎲 Explore freely' };
 const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
 function show(screen) { ['title', 'game', 'results'].forEach(s => $id('screen-' + s).classList.toggle('hidden', s !== screen)); }
@@ -41,6 +41,11 @@ function buildSwatches(id, arr, key) {
   const box = $id(id); box.innerHTML = '';
   arr.forEach(c => { const b = document.createElement('button'); b.className = 'sw'; b.style.background = c; b.setAttribute('aria-label', key + ' ' + c);
     b.setAttribute('aria-pressed', App.look[key] === c); b.onclick = () => { App.look[key] = c; [...box.children].forEach(x => x.setAttribute('aria-pressed', x === b)); App.pv.setLook(App.look); }; box.appendChild(b); });
+}
+function buildSeg(id, arr, key) {
+  const box = $id(id); box.innerHTML = '';
+  arr.forEach(([val, label]) => { const b = document.createElement('button'); b.textContent = label; b.setAttribute('aria-pressed', App.look[key] === val);
+    b.onclick = () => { App.look[key] = val; [...box.children].forEach(x => x.setAttribute('aria-pressed', x === b)); App.pv.setLook(App.look); }; box.appendChild(b); });
 }
 function renderTrials() {
   const list = App.trials.slice().reverse().slice(0, 5);
@@ -53,7 +58,7 @@ function renderTrials() {
 }
 function initTitle() {
   App.pv = createFigure($id('pv'), App.look); App.pv.setState(newState()); App.pv.snap();
-  buildSwatches('sw-skin', SKINS, 'skin'); buildSwatches('sw-hair', HAIRS, 'hair'); buildSwatches('sw-shirt', SHIRTS, 'shirt');
+  buildSeg('seg-body', BODIES, 'body'); buildSeg('seg-hairstyle', HAIRSTYLES, 'hairStyle'); buildSwatches('sw-skin', SKINS, 'skin'); buildSwatches('sw-hair', HAIRS, 'hair'); buildSwatches('sw-shirt', SHIRTS, 'shirt');
   $id('inp-name').oninput = e => { App.look.name = e.target.value.slice(0, 16); };
   document.querySelectorAll('.goal').forEach(b => b.onclick = () => { App.goal = b.dataset.goal; document.querySelectorAll('.goal').forEach(x => x.setAttribute('aria-pressed', x === b)); });
   $id('btn-start').onclick = startTrial;
