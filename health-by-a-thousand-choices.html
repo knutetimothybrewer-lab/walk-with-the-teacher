@@ -1,0 +1,1842 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Health by a Thousand Choices</title>
+<style>
+:root{
+  --indigo:#2E3094; --indigo-d:#17173A; --indigo-m:#3B3E9E; --accent:#6C8CFF; --soft:#C9CCEE;
+  --bg:#EEF0FA; --card:#FFFFFF; --ink:#16183a; --muted:#5b6188; --line:#d9dcf0;
+  --good:#1D8A4A; --warn:#B7740A; --bad:#C92A2A;
+  --phys:#e4572e; --ment:#2a9d8f; --emo:#d6336c; --soc:#5f3dc4; --env:#2f9e44;
+  --font:'Segoe UI',system-ui,-apple-system,'Helvetica Neue',Arial,sans-serif;
+  --serif:'Century Schoolbook','Georgia',serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{font-family:var(--font);background:var(--bg);color:var(--ink);font-size:15px;line-height:1.4;overflow:hidden}
+button{font:inherit;cursor:pointer}
+.hidden{display:none!important}
+.screen{height:100vh;display:flex;flex-direction:column}
+h1,h2,h3{margin:0;font-family:var(--serif)}
+
+/* ---------- title ---------- */
+#screen-title{overflow:auto;background:radial-gradient(1200px 600px at 80% -10%,#4b4fc7 0%,transparent 60%),linear-gradient(160deg,var(--indigo-d),var(--indigo));color:#fff}
+.t-wrap{max-width:1180px;width:100%;margin:0 auto;padding:28px 28px 40px;display:grid;grid-template-columns:1.15fr .85fr;gap:34px;align-items:start}
+.t-kicker{letter-spacing:.14em;text-transform:uppercase;font-size:12px;color:var(--soft);font-weight:700}
+.t-title{font-size:44px;line-height:1.05;margin:8px 0 10px}
+.t-lead{font-size:17px;color:#dfe2ff;max-width:60ch}
+.t-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:20px 0}
+.t-step{background:#ffffff14;border:1px solid #ffffff26;border-radius:12px;padding:10px 12px}
+.t-step b{display:block;font-size:22px;font-family:var(--serif);color:var(--accent)}
+.t-step span{font-size:13px;color:#e4e6ff}
+.panel{background:#fff;color:var(--ink);border-radius:16px;padding:18px 20px;box-shadow:0 14px 40px #0006}
+.panel h3{font-size:19px;margin-bottom:10px}
+.field{margin:10px 0}
+.field label{display:block;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:5px}
+.field input[type=text]{width:100%;padding:10px 12px;border:2px solid var(--line);border-radius:10px;font:inherit}
+.field input[type=text]:focus{outline:none;border-color:var(--accent)}
+.swatches{display:flex;gap:8px;flex-wrap:wrap}
+.sw{width:30px;height:30px;border-radius:50%;border:3px solid #fff;box-shadow:0 0 0 2px var(--line);padding:0}
+.sw[aria-pressed=true]{box-shadow:0 0 0 3px var(--indigo)}
+.preview{display:flex;justify-content:center;background:linear-gradient(#eef3f8,#d9e2ec);border-radius:12px;overflow:hidden;height:210px}
+.preview svg{height:100%}
+.goals{display:grid;gap:10px;margin:12px 0}
+.goal{display:flex;gap:12px;align-items:center;text-align:left;border:2px solid var(--line);background:#fff;border-radius:12px;padding:10px 12px;color:var(--ink)}
+.goal .ico{font-size:28px}
+.goal b{display:block;font-size:15px}
+.goal span{font-size:12.5px;color:var(--muted)}
+.goal[aria-pressed=true]{border-color:var(--indigo);background:#eef0ff;box-shadow:0 0 0 3px #6c8cff55}
+.btn{background:var(--indigo);color:#fff;border:0;border-radius:12px;padding:12px 20px;font-weight:700;font-size:16px;box-shadow:0 3px 0 var(--indigo-d)}
+.btn:hover{background:var(--indigo-m)}
+.btn:active{transform:translateY(2px);box-shadow:none}
+.btn.alt{background:#fff;color:var(--indigo);border:2px solid var(--indigo);box-shadow:none}
+.btn.big{width:100%;padding:14px;font-size:18px}
+.trials{margin-top:14px}
+.trial-row{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;padding:7px 0;border-top:1px solid var(--line);font-size:13.5px}
+.chip{display:inline-block;padding:2px 9px;border-radius:99px;font-size:12px;font-weight:700;background:#e7e9ff;color:var(--indigo)}
+.chip.hl{background:#dff5e7;color:#14693a}.chip.un{background:#ffe3e3;color:#a61e1e}.chip.fr{background:#e7e9ff;color:var(--indigo)}
+.challenge{display:flex;gap:10px;margin-top:10px;font-size:13.5px}
+.challenge .badge{flex:1;border:2px dashed var(--line);border-radius:10px;padding:8px 10px;text-align:center;color:var(--muted)}
+.challenge .badge.done{border-style:solid;border-color:#2f9e44;background:#ebfbee;color:#14693a;font-weight:700}
+.linkbtn{background:none;border:0;color:var(--soft);text-decoration:underline;padding:0;font-size:13.5px}
+.fine{font-size:12px;color:#c3c7ee;margin-top:14px}
+
+/* ---------- game ---------- */
+#screen-game{background:var(--bg)}
+.top{display:flex;align-items:center;gap:16px;padding:8px 16px;background:var(--indigo-d);color:#fff;flex:0 0 auto}
+.brand{font-family:var(--serif);font-weight:700;font-size:17px;white-space:nowrap}
+.top .goalchip{font-size:12.5px;font-weight:700;padding:4px 10px;border-radius:99px;background:#ffffff1f}
+.prog{flex:1;min-width:120px}
+.prog .bar{height:10px;border-radius:99px;background:#ffffff26;overflow:hidden}
+.prog .bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#6C8CFF,#9ec1ff);transition:width .5s}
+.prog small{font-size:12px;color:var(--soft)}
+.stat{text-align:center;line-height:1.1}.stat b{display:block;font-size:20px;font-family:var(--serif)}.stat small{font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--soft)}
+.top .btn{padding:6px 12px;font-size:13px;box-shadow:none;background:#ffffff1f}
+.game-grid{flex:1;min-height:0;display:grid;grid-template-columns:292px minmax(380px,1fr) 410px;gap:12px;padding:12px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:0 2px 10px #2e30941a}
+.left{overflow:auto;padding:12px 12px 14px}
+.left h4{margin:12px 0 6px;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.left h4:first-child{margin-top:0}
+.dbar{display:grid;grid-template-columns:22px 1fr 34px;align-items:center;gap:6px;margin:5px 0;font-size:13px}
+.dbar .tr{height:9px;border-radius:99px;background:#e8eaf6;overflow:hidden}
+.dbar .tr i{display:block;height:100%;border-radius:99px;transition:width .8s,background .8s}
+.dbar b{font-size:12px;text-align:right}
+.vit{display:grid;grid-template-columns:1fr auto;gap:0 8px;align-items:baseline;padding:5px 0;border-top:1px solid #eef0fa;font-size:13px;position:relative}
+.vit:first-of-type{border-top:0}
+.vit .n{color:var(--muted)}
+.vit .v{font-weight:700;font-variant-numeric:tabular-nums}
+.vit .s{text-align:right;font-weight:700}
+.vit .s.g{color:var(--good)}.vit .s.y{color:var(--warn)}.vit .s.r{color:var(--bad)}
+.vit .arrow{margin-left:4px;font-size:11px}
+.vit.flash{animation:flash 1.6s}
+@keyframes flash{0%{background:#fff3bf}100%{background:transparent}}
+.obar{display:grid;grid-template-columns:62px 1fr 28px;gap:6px;align-items:center;font-size:12px;margin:4px 0}
+.obar .tr{height:7px;border-radius:99px;background:#e8eaf6;overflow:hidden}.obar .tr i{display:block;height:100%;transition:width .8s,background .8s}
+.obar b{font-size:11.5px;text-align:right}
+
+.stage{position:relative;display:flex;flex-direction:column;min-height:0;overflow:hidden;background:#fff}
+.stage-top{display:flex;align-items:center;justify-content:space-between;padding:8px 12px;border-bottom:1px solid var(--line);gap:8px}
+.phase b{font-family:var(--serif);font-size:16px}.phase small{display:block;color:var(--muted);font-size:12px}
+.agebig{font-family:var(--serif);font-size:30px;font-weight:700;color:var(--indigo);line-height:1;text-align:right}
+.agebig small{display:block;font-family:var(--font);font-size:11px;font-weight:600;color:var(--muted);letter-spacing:.04em}
+.stage-body{flex:1;min-height:0;display:grid;grid-template-columns:1fr 206px;gap:8px;padding:6px 8px 8px}
+#figwrap{min-height:0;display:flex;justify-content:center;border-radius:10px;overflow:hidden}
+#figwrap svg{height:100%;max-width:100%}
+#insidewrap{min-height:0;display:flex;flex-direction:column;align-items:center}
+#insidewrap svg{width:100%;flex:1;min-height:0}
+.vtabs{display:none;gap:6px}
+.vtabs button{border:2px solid var(--line);background:#fff;border-radius:99px;padding:3px 10px;font-size:12px;font-weight:700;color:var(--muted)}
+.vtabs button[aria-pressed=true]{background:var(--indigo);color:#fff;border-color:var(--indigo)}
+.orgvals{display:grid;grid-template-columns:repeat(2,1fr);gap:2px 8px;font-size:11px;margin-top:4px;width:100%;color:var(--muted)}
+.orgvals b{color:var(--ink)}
+@media (max-width:1180px){
+  .game-grid{grid-template-columns:260px 1fr 360px}
+  .stage-body{grid-template-columns:1fr}
+  .vtabs{display:flex}
+  #insidewrap{display:none}
+  .stage.show-inside #insidewrap{display:flex}
+  .stage.show-inside #figwrap{display:none}
+}
+.lapse{position:absolute;left:0;right:0;bottom:0;background:linear-gradient(transparent,#17173ae6 22%);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:6px;text-align:center;padding:60px 16px 16px;z-index:5;opacity:0;pointer-events:none;transition:opacity .35s}
+.lapse.on{opacity:1;pointer-events:auto}
+.lapse .yr{font-family:var(--serif);font-size:64px;font-weight:700;line-height:1;text-shadow:0 4px 20px #0008}
+.lapse .lbl{letter-spacing:.2em;text-transform:uppercase;font-size:13px;color:var(--soft)}
+.lapse .chg{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;max-width:420px;min-height:34px}
+.lapse .ev{max-width:380px;background:#fff;color:var(--ink);border-radius:12px;padding:10px 14px;text-align:left;border-left:6px solid var(--bad);animation:pop .5s}
+.lapse .ev.good{border-left-color:var(--good)}
+.lapse .ev b{display:block;font-family:var(--serif);font-size:17px}
+.lapse .ev small{display:block;font-size:12.5px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.06em}
+@keyframes pop{0%{transform:scale(.8);opacity:0}100%{transform:none;opacity:1}}
+.chgchip{padding:3px 10px;border-radius:99px;font-size:13px;font-weight:700;background:#ffffff1f}
+.chgchip.up{background:#2f9e4466}.chgchip.dn{background:#e0313166}
+
+.right{display:flex;flex-direction:column;min-height:0;overflow:hidden}
+.rbody{flex:1;min-height:0;overflow:auto;padding:14px 16px}
+.stop{display:flex;gap:6px;margin-bottom:10px}
+.stop span{flex:1;text-align:center;border-radius:8px;padding:4px 2px;font-size:11.5px;font-weight:700;background:#eef0fa;color:var(--muted);transition:.25s}
+.stop span b{font-family:var(--serif);font-size:15px;margin-right:2px}
+.stop span.on{background:var(--indigo);color:#fff}
+.stop span.done{background:#d3d6f5;color:var(--indigo)}
+.dompill{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700;padding:3px 10px;border-radius:99px;color:#fff}
+.scn-title{font-size:23px;margin:8px 0 6px;line-height:1.15}
+.scn-text{font-size:15.5px;color:#2b2e55}
+.observe{margin:10px 0 12px;padding:8px 12px;border-radius:10px;background:#fff7e0;border:1px solid #f4dc9a;font-size:13px;color:#6b4e00}
+.opts{display:grid;gap:9px}
+.opt{display:grid;grid-template-columns:30px 1fr;gap:10px;align-items:start;text-align:left;width:100%;padding:11px 13px;border:2px solid var(--line);border-radius:12px;background:#fff;color:var(--ink);font-size:14.5px;transition:.15s}
+.opt:hover:not(:disabled){border-color:var(--accent);background:#f3f5ff;transform:translateX(2px)}
+.opt .k{width:26px;height:26px;border-radius:8px;background:#eef0fa;color:var(--indigo);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px}
+.opt:focus-visible{outline:3px solid var(--accent)}
+.report .res{display:flex;align-items:center;gap:10px;margin:2px 0 8px}
+.grade{font-family:var(--serif);font-weight:700;font-size:15px;padding:3px 12px;border-radius:99px;color:#fff}
+.grade.A{background:var(--good)}.grade.B{background:#d9a017}.grade.C{background:var(--bad)}
+.pts{font-family:var(--serif);font-size:26px;font-weight:700}
+.pts.pos{color:var(--good)}.pts.neg{color:var(--bad)}.pts.zero{color:var(--muted)}
+.youchose{font-size:13.5px;color:var(--muted);border-left:4px solid var(--soft);padding-left:10px;margin:6px 0}
+.fbtext{font-size:15.5px;margin:8px 0 10px}
+.chart-note{background:#f4f6ff;border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin:8px 0;font-size:13.5px}
+.chart-note h5{margin:0 0 4px;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.chart-note li{margin:3px 0}
+.chart-note ul{margin:0;padding-left:18px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}
+.dchip{font-size:12.5px;font-weight:700;padding:3px 9px;border-radius:99px;background:#eef0fa}
+.dchip.up{background:#dff5e7;color:#14693a}.dchip.dn{background:#ffe3e3;color:#a61e1e}
+.rfoot{padding:10px 16px 12px;border-top:1px solid var(--line);background:#fafbff;border-radius:0 0 14px 14px}
+.trend{display:block;width:100%;height:64px}
+.rfoot .lab{display:flex;justify-content:space-between;font-size:11.5px;color:var(--muted)}
+.rfoot .lab b{color:var(--ink)}
+.nextrow{display:flex;gap:8px;margin-top:10px}
+.nextrow .btn{flex:1}
+.kbd{font-size:11px;opacity:.7;margin-left:6px}
+
+/* ---------- results ---------- */
+#screen-results{overflow:auto;background:var(--bg)}
+.r-wrap{max-width:1180px;width:100%;margin:0 auto;padding:20px 24px 50px}
+.r-head{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:14px}
+.r-head h2{font-size:30px}
+.r-grid{display:grid;grid-template-columns:330px 1fr;gap:16px;align-items:start}
+.r-fig{background:linear-gradient(#eef3f8,#d9e2ec);border-radius:14px;overflow:hidden;display:flex;justify-content:center;height:430px}
+.r-fig svg{height:100%}
+.bigstats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:12px}
+.bs{padding:12px;text-align:center}.bs b{display:block;font-family:var(--serif);font-size:28px;color:var(--indigo)}.bs small{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.verdict{padding:12px 16px;border-radius:12px;font-weight:600;margin-bottom:12px}
+.verdict.ok{background:#e3f7ea;border:1px solid #9fdcb4;color:#14693a}.verdict.no{background:#fff3e0;border:1px solid #f1cf94;color:#8a5200}
+.sec{padding:14px 16px;margin-bottom:14px}
+.sec h3{font-size:18px;margin-bottom:8px}
+table.t{width:100%;border-collapse:collapse;font-size:13.5px}
+table.t th,table.t td{padding:6px 8px;border-bottom:1px solid var(--line);text-align:left}
+table.t th{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+table.t td.num{text-align:right;font-variant-numeric:tabular-nums;font-weight:700}
+.sa{font-weight:700}.sa.s{color:var(--good)}.sa.o{color:var(--warn)}.sa.n{color:var(--bad)}
+.timeline{display:grid;gap:6px}
+.tl{display:grid;grid-template-columns:54px 1fr;gap:10px;font-size:13.5px;padding:6px 10px;border-radius:8px;background:#fff0f0;border-left:5px solid var(--bad)}
+.tl.good{background:#effaf2;border-left-color:var(--good)}
+.cmp{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.cmp .cc{border:1px solid var(--line);border-radius:12px;padding:10px;text-align:center}
+.cmp .cc .r-fig{height:260px;margin:6px 0}
+.cmp h4{margin:0;font-family:var(--serif)}
+.logwrap{max-height:340px;overflow:auto;border:1px solid var(--line);border-radius:10px}
+.q{margin:6px 0;font-size:14px}
+.r-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px}
+dialog{border:0;border-radius:16px;padding:0;max-width:640px;width:92%;box-shadow:0 20px 60px #0008}
+dialog::backdrop{background:#17173acc}
+dialog .dlg{padding:20px 24px}
+dialog h3{font-size:21px;margin-bottom:8px}
+dialog li{margin:5px 0}
+.toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:var(--indigo-d);color:#fff;padding:10px 16px;border-radius:12px;z-index:50}
+@media (max-width:980px){
+  body{overflow:auto}.screen{height:auto;min-height:100vh}
+  .t-wrap,.r-grid{grid-template-columns:1fr}
+  .game-grid{grid-template-columns:1fr;height:auto}
+  .stage{height:560px}
+  .left{max-height:none}
+  .bigstats{grid-template-columns:repeat(2,1fr)}
+}
+@media print{
+  body{overflow:visible;background:#fff}
+  .screen{height:auto}#screen-title,#screen-game,.r-actions,.no-print{display:none!important}
+  #screen-results{overflow:visible}
+  .card{box-shadow:none}
+}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+
+.lifeev{margin:8px 0;background:#fff3f3;border-left:6px solid var(--bad);border-radius:10px;padding:9px 12px;animation:pop .5s}
+.lifeev.good{background:#effaf2;border-left-color:var(--good)}
+.lifeev small{display:block;font-size:11.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.lifeev b{display:block;font-family:var(--serif);font-size:17px}
+
+</style>
+</head>
+<body>
+
+<!-- ============ TITLE ============ -->
+<div id="screen-title" class="screen">
+  <div class="t-wrap">
+    <div>
+      <div class="t-kicker">Wildcats Health Class &nbsp;•&nbsp; Small Choices, Big Consequences</div>
+      <h1 class="t-title">Health by a<br>Thousand Choices</h1>
+      <p class="t-lead">Meet a person at age 14. You make the decisions. Fifty choices later they’ll be 65, and their body, mind, friendships, and surroundings will show the sum of everything you chose.</p>
+      <div class="t-steps">
+        <div class="t-step"><b>S</b><span>State: read the situation</span></div>
+        <div class="t-step"><b>T</b><span>Think: weigh the options</span></div>
+        <div class="t-step"><b>O</b><span>Observe: predict what happens</span></div>
+        <div class="t-step"><b>P</b><span>Pick: then watch the result</span></div>
+      </div>
+      <p class="t-lead" style="font-size:15px">Each choice becomes a <b>habit</b> that keeps working on the body as time passes, until the person faces a decision like it again. Watch the lungs, heart, skin, mood, and friendships change.</p>
+      <p class="t-lead" style="font-size:15px"><b>Your challenge:</b> play at least two trials. In one, build the <b>healthiest person possible</b>. In the other, build the <b>unhealthiest</b>. You can play as many trials as you like. Then compare them.</p>
+      <p style="margin-top:18px"><button class="linkbtn" id="btn-teacher">Teacher notes: how this connects to the worksheet</button></p>
+      <p class="fine">A fictional, simplified model for classroom learning, not medical advice. If anything in this lesson feels heavy, talk with your teacher or school counselor.</p>
+    </div>
+    <div>
+      <div class="panel">
+        <h3>1. Create your person</h3>
+        <div class="preview"><svg id="pv"></svg></div>
+        <div class="field"><label for="inp-name">Name</label><input type="text" id="inp-name" maxlength="16" placeholder="Name your person" value="Alex"></div>
+        <div class="field"><label>Skin tone</label><div class="swatches" id="sw-skin"></div></div>
+        <div class="field"><label>Hair</label><div class="swatches" id="sw-hair"></div></div>
+        <div class="field"><label>Shirt</label><div class="swatches" id="sw-shirt"></div></div>
+        <h3 style="margin-top:14px">2. Pick this trial’s goal</h3>
+        <div class="goals">
+          <button class="goal" data-goal="healthy" aria-pressed="true"><span class="ico">🌟</span><div><b>Healthiest person possible</b><span>Make the choices that build a long, strong, happy life.</span></div></button>
+          <button class="goal" data-goal="unhealthy" aria-pressed="false"><span class="ico">⚠️</span><div><b>Unhealthiest person possible</b><span>See exactly how risky choices pile up over time.</span></div></button>
+          <button class="goal" data-goal="free" aria-pressed="false"><span class="ico">🎲</span><div><b>Explore freely</b><span>Choose what you’d really do and see the result.</span></div></button>
+        </div>
+        <button class="btn big" id="btn-start">Start trial ▶</button>
+        <div class="challenge"><div class="badge" id="bd-healthy">🌟 Healthiest trial</div><div class="badge" id="bd-unhealthy">⚠️ Unhealthiest trial</div></div>
+        <div class="trials" id="trials"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ GAME ============ -->
+<div id="screen-game" class="screen hidden">
+  <header class="top">
+    <div class="brand">Health by a Thousand Choices</div>
+    <span class="goalchip" id="goalchip"></span>
+    <div class="prog"><div class="bar"><i id="progbar"></i></div><small id="progtxt"></small></div>
+    <div class="stat"><b id="st-pts">0</b><small>Wellness pts</small></div>
+    <div class="stat"><b id="st-vit">100</b><small>Health score</small></div>
+    <button class="btn" id="btn-menu">☰ Menu</button>
+  </header>
+  <main class="game-grid">
+    <aside class="left card" id="left">
+      <h4>Five domains of health</h4><div id="domains"></div>
+      <h4>Patient chart: vital signs</h4><div id="vitals"></div>
+      <h4>Body systems</h4><div id="organs"></div>
+    </aside>
+    <section class="stage card" id="stage">
+      <div class="stage-top">
+        <div class="phase"><b id="phname"></b><small id="phrange"></small></div>
+        <div class="vtabs" id="vtabs"><button data-v="out" aria-pressed="true">Outside</button><button data-v="in" aria-pressed="false">Inside</button></div>
+        <div class="agebig"><span id="agenum">14</span><small id="bodyage"></small></div>
+      </div>
+      <div class="stage-body">
+        <div id="figwrap"><svg id="fig"></svg></div>
+        <div id="insidewrap"><svg id="inside"></svg><div class="orgvals" id="orgvals"></div></div>
+      </div>
+      <div class="lapse" id="lapse"><div class="lbl" id="lapse-lbl">⏳ Time passes…</div><div class="yr" id="lapse-yr">14</div></div>
+    </section>
+    <section class="right card">
+      <div class="rbody" id="rbody"></div>
+      <div class="rfoot"><div class="lab"><span>Wellness points running total <b id="trendnow"></b></span><span>Start = 0</span></div><svg class="trend" id="trend" viewBox="0 0 380 64" preserveAspectRatio="none"></svg></div>
+    </section>
+  </main>
+</div>
+
+<!-- ============ RESULTS ============ -->
+<div id="screen-results" class="screen hidden"><div class="r-wrap" id="results"></div></div>
+
+<dialog id="dlg-teacher"><div class="dlg">
+  <h3>Teacher notes</h3>
+  <p><b>Runs offline.</b> One file, no install. Open it in Chrome, Edge, Firefox, or Safari. Progress is saved only in each student’s own browser.</p>
+  <ul>
+    <li><b>Lesson tie-in (STOP):</b> every decision follows State → Think → Observe → Pick. After each pick the app shows what actually happened.</li>
+    <li><b>Worksheet tie-in:</b> choices are scored on the same A (+) / B (0) / C (−) scale as <i>Health by a Thousand Choices</i>. The results screen shows the running-total graph, the Domain Balance Check (Physical, Mental, Emotional, Social, Environmental), and a full choice log students can copy into the Weekly Recap.</li>
+    <li><b>Time and habits:</b> each choice sets a habit that keeps acting on the body as years pass (&ldquo;chronic health or chronic hell&rdquo;). Later choices in the same area can change course, because it is never too late.</li>
+    <li><b>Two-trial challenge:</b> the title screen gives badges for completing a healthiest and an unhealthiest trial. The results page compares them side by side and offers reflection questions that mirror the worksheet.</li>
+    <li><b>Sensitive topics:</b> vaping, alcohol, drugs, and depression appear with an emphasis on refusal skills and asking for help.</li>
+  </ul>
+  <p style="text-align:right"><button class="btn" onclick="this.closest('dialog').close()">Close</button></p>
+</div></dialog>
+
+<script>
+// ===== ENGINE: state, effects, chronic "time passes" model, vitals =====
+// Fictional, simplified model for teaching. Every number is tunable here.
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const lerp = (a, b, t) => a + (b - a) * t;
+
+const DOMAINS = {
+  phys: { name: 'Physical',      color: '#e4572e', icon: '💪' },
+  ment: { name: 'Mental',        color: '#2a9d8f', icon: '🧠' },
+  emo:  { name: 'Emotional',     color: '#d6336c', icon: '💛' },
+  soc:  { name: 'Social',        color: '#5f3dc4', icon: '🤝' },
+  env:  { name: 'Environmental', color: '#2f9e44', icon: '🌱' }
+};
+const DOM_KEYS = ['phys', 'ment', 'emo', 'soc', 'env'];
+
+const STAT_START = { lungs: 98, heart: 95, skin: 92, brain: 94, muscle: 70, bone: 92, liver: 96, metab: 92,
+  teeth: 90, immune: 88, fit: 72, mood: 72, stress: 30, social: 68, env: 70, bmi: 21.5 };
+// habits: positive = healthier (-2..2) except smoke/drink/drugs which are 0 (none) .. 3 (heavy)
+const HAB_KEYS = ['sleep', 'diet', 'move', 'water', 'screen', 'coping', 'connect', 'outdoor', 'sun',
+  'smoke', 'drink', 'drugs', 'tidy', 'dental', 'mind', 'care', 'eco'];
+const SUBSTANCE = ['smoke', 'drink', 'drugs'];
+const GRADE_DEFAULT_S = { A: { mood: 2, stress: -2 }, B: {}, C: { mood: -3, stress: 3 } };
+
+function newState() {
+  const h = {}; HAB_KEYS.forEach(k => h[k] = 0);
+  return { age: 14, s: Object.assign({}, STAT_START), h, burn: 0, pts: 0,
+    ptsDom: { phys: 0, ment: 0, emo: 0, soc: 0, env: 0 }, log: [], events: [], fired: {} };
+}
+
+const SMIN = { bmi: 15, stress: 0 };
+function addStat(st, k, d) {
+  if (k === 'burn') { st.burn = clamp(st.burn + d, 0, 1.2); return; }
+  const v = st.s[k] + d;
+  st.s[k] = k === 'bmi' ? clamp(v, 15, 42) : clamp(v, k === 'stress' ? 0 : 2, 100);
+}
+
+function setHabits(st, hmap) {
+  for (const key in hmap) {
+    const v = hmap[key];
+    if (key.endsWith('+')) { const k = key.slice(0, -1); st.h[k] = Math.max(st.h[k], v); }
+    else if (key.endsWith('-')) { const k = key.slice(0, -1); st.h[k] = Math.min(st.h[k], v); }
+    else st.h[key] = v;
+  }
+}
+
+// grade -> points: A = +weight, B = 0, C = -weight (worksheet scale)
+function optionPts(sc, opt) { return opt.p !== undefined ? opt.p : (opt.g === 'A' ? sc.w : opt.g === 'C' ? -sc.w : 0); }
+
+function applyOption(st, sc, opt) {
+  const pts = optionPts(sc, opt);
+  const d = Object.assign({}, GRADE_DEFAULT_S[opt.g], opt.s || {});
+  for (const k in d) addStat(st, k, d[k]);
+  let hm = opt.h;
+  if (!hm && sc.k) hm = { [sc.k]: opt.g === 'A' ? 2 : opt.g === 'C' ? -2 : 0 };
+  if (hm) setHabits(st, hm);
+  st.pts += pts; st.ptsDom[sc.dom] += pts;
+  return pts;
+}
+
+// ---- chronic effects: what a habit does to the body over `dt` years ----
+function tick(st, dt) {
+  const h = st.h, s = st.s, a = st.age + dt / 2;
+  const ag = 0.16 + Math.max(0, a - 30) * 0.020;               // natural aging per year
+  const hi = Math.max(0, (s.stress - 50) / 10);                 // chronic-stress load
+  const d = (k, v) => addStat(st, k, v * dt);
+  d('lungs', -ag * 0.8 - 0.55 * h.smoke - 0.22 * h.drugs + 0.09 * h.move + 0.03 * h.outdoor + 0.04 * h.eco);
+  d('heart', -ag * 0.9 + 0.20 * h.move + 0.12 * h.diet - 0.38 * h.smoke - 0.14 * h.drink - 0.10 * h.drugs - 0.10 * hi + 0.08 * h.care + 0.05 * h.sleep);
+  d('skin',  -ag * 0.8 + 0.20 * h.sun - 0.16 * h.smoke + 0.04 * h.water + 0.04 * h.sleep + 0.03 * h.diet);
+  d('brain', -ag * 0.7 + 0.07 * h.sleep + 0.04 * h.move - 0.14 * h.drink - 0.20 * h.drugs - 0.04 * hi + 0.04 * h.mind + 0.02 * h.screen);
+  d('muscle', -ag * 1.2 + 0.26 * h.move + 0.07 * h.diet);
+  d('bone',  -ag * 0.6 + 0.08 * h.move + 0.05 * h.diet + 0.03 * h.outdoor - 0.07 * h.smoke - 0.04 * h.drink);
+  d('liver', -ag * 0.3 + 0.04 * h.diet - 0.34 * h.drink - 0.20 * h.drugs);
+  d('metab', -ag * 0.8 + 0.16 * h.diet + 0.12 * h.move + 0.04 * h.sleep + 0.04 * h.water + 0.04 * h.care);
+  d('teeth', -ag * 0.6 + 0.30 * h.dental + 0.07 * h.diet + 0.04 * h.water - 0.12 * h.smoke);
+  d('immune', -ag * 0.8 + 0.10 * h.sleep + 0.07 * h.diet + 0.06 * h.move + 0.04 * h.connect - 0.08 * h.smoke - 0.04 * h.drink + 0.06 * h.care);
+  d('fit',   -ag * 1.0 + 0.38 * h.move - 0.20 * h.smoke);
+  // moods & environments drift toward what the habits support
+  const toward = (k, target, rate) => { const f = Math.min(1, rate * dt); s[k] = clamp(s[k] + (target - s[k]) * f, k === 'stress' ? 0 : 2, 100); };
+  toward('mood', 60 + 3.2 * (h.coping + h.connect + h.sleep + h.mind) + 1.5 * h.outdoor - 2.5 * h.drugs - 1.5 * h.drink, 0.5);
+  toward('stress', 45 - 5 * h.coping - 2.5 * h.sleep - 2 * h.mind - 1.5 * h.move - 1.2 * h.screen + 2 * h.drugs + 1.5 * h.drink, 0.5);
+  toward('social', 55 + 6.5 * h.connect - 3 * h.drugs - 1.5 * h.drink + 1.5 * h.mind, 0.4);
+  toward('env', 56 + 7 * h.tidy + 3 * h.outdoor + 3 * h.eco, 0.45);
+  const x = -(1.6 * h.diet + 0.9 * h.move + 0.3 * h.water + 0.3 * h.sleep);
+  toward('bmi', 22.3 + (x < 0 ? x * 0.12 : x * 1.15) + Math.max(0, a - 30) * 0.02, 0.3);
+  st.burn *= Math.exp(-dt / 0.7);
+  st.age += dt;
+}
+
+// ---- derived vital signs ----
+function vitals(st) {
+  const s = st.s, h = st.h, a = st.age;
+  const sys = Math.round(clamp(104 + (a - 14) * 0.18 + (100 - s.heart) * 0.38 + (s.stress - 30) * 0.10 + Math.max(0, s.bmi - 24) * 1.1 + h.smoke * 1.2 + h.drink * 1.0, 96, 190));
+  const dia = Math.round(clamp(66 + (sys - 108) * 0.5, 60, 118));
+  const rhr = Math.round(clamp(58 + (100 - s.fit) * 0.28 + (100 - s.heart) * 0.18 + (s.stress - 30) * 0.12 + h.smoke * 2, 48, 118));
+  const rr = Math.round(clamp(12 + (100 - s.lungs) * 0.09 + (100 - s.fit) * 0.02 + (s.stress - 30) * 0.02, 11, 30));
+  const spo2 = Math.round(clamp(99.4 - Math.max(0, 100 - s.lungs) * 0.13, 80, 99));
+  const glucose = Math.round(clamp(80 + (100 - s.metab) * 0.5 + Math.max(0, s.bmi - 25) * 1.2, 72, 230));
+  const ldl = Math.round(clamp(80 + (100 - s.metab) * 1.1 + Math.max(0, s.bmi - 25) * 2, 70, 230));
+  const sleep = Math.round(clamp(7.6 + h.sleep * 0.9, 4.2, 9.4) * 10) / 10;
+  const energy = Math.round(clamp(52 + (s.fit - 50) * 0.3 + h.sleep * 8 - (s.stress - 30) * 0.3 + (s.metab - 60) * 0.15 + (s.mood - 60) * 0.15, 5, 100));
+  const sick = Math.round(clamp(2 + (100 - s.immune) * 0.14, 1, 24));
+  return { sys, dia, rhr, rr, spo2, glucose, ldl, sleep, energy, sick, bmi: Math.round(s.bmi * 10) / 10 };
+}
+
+function bmiScore(b) { return b >= 18.5 && b <= 24.9 ? 100 : clamp(100 - 9 * (b < 18.5 ? 18.5 - b : b - 24.9), 0, 100); }
+function vitality(st) {
+  const s = st.s;
+  return clamp(.12 * s.lungs + .16 * s.heart + .09 * s.brain + .07 * s.muscle + .06 * s.bone + .07 * s.liver + .10 * s.metab +
+    .06 * s.immune + .08 * s.fit + .04 * s.skin + .03 * s.teeth + .06 * s.mood + .04 * bmiScore(s.bmi) + .02 * (100 - s.stress), 0, 100);
+}
+function domainScores(st) {
+  const s = st.s, v = vitals(st);
+  return {
+    phys: (s.lungs + s.heart + s.fit + s.metab + s.immune + s.muscle + s.bone) / 7,
+    ment: .45 * s.brain + .35 * (100 - s.stress) + .20 * v.energy,
+    emo: s.mood, soc: s.social, env: s.env
+  };
+}
+function bodyAge(st) {
+  const f = Math.min(1, Math.max(0, (st.age - 10) / 40));
+  return Math.round(st.age + clamp((70 - vitality(st)) * 0.6 * f, -15, 25));
+}
+function lifeExpectancy(st) { return Math.round(st.age + 4 + vitality(st) * 0.27); }
+
+// ---- life events: fire once when a threshold is crossed ----
+const EVENTS = [
+  { id: 'wind',   bad: 1, t: s => s.lungs < 72, title: 'Winded on the stairs', text: 'Climbing stairs leaves them gasping. Their lung capacity is dropping.' },
+  { id: 'cough',  bad: 1, t: s => s.lungs < 52, title: 'Chronic cough', text: 'A doctor diagnoses early lung disease (COPD). Airways are inflamed and scarred.' },
+  { id: 'oxy',    bad: 1, t: s => s.lungs < 32, title: 'Needs oxygen', text: 'Lungs can no longer supply enough oxygen. A portable oxygen tank becomes part of daily life.' },
+  { id: 'bp',     bad: 1, t: s => s.heart < 66, title: 'High blood pressure', text: 'A routine visit finds high blood pressure. It strains the heart and arteries every day.' },
+  { id: 'attack', bad: 1, t: (s, st) => s.heart < 42 && st.age > 35, title: 'Heart attack', text: 'Clogged arteries cut off blood to the heart. Emergency surgery and a long recovery follow.' },
+  { id: 'pre',    bad: 1, t: s => s.metab < 58, title: 'Prediabetes', text: 'Blood sugar is running high. Without change, type 2 diabetes is next.' },
+  { id: 'diab',   bad: 1, t: s => s.metab < 38, title: 'Type 2 diabetes', text: 'Daily glucose checks, medication, and a strict diet are now necessary.' },
+  { id: 'skin',   bad: 1, t: s => s.skin < 62, title: 'Sun damage found', text: 'A dermatologist finds sun spots and removes a suspicious mole.' },
+  { id: 'skin2',  bad: 1, t: s => s.skin < 38, title: 'Skin cancer treatment', text: 'Years of unprotected sun exposure lead to skin cancer treatment and scars.' },
+  { id: 'liver',  bad: 1, t: s => s.liver < 58, title: 'Fatty liver', text: 'Blood tests show a stressed liver. It is working overtime to clear toxins.' },
+  { id: 'liver2', bad: 1, t: s => s.liver < 36, title: 'Liver disease', text: 'Scarring has damaged the liver, which affects energy, digestion, and thinking.' },
+  { id: 'teeth',  bad: 1, t: s => s.teeth < 48, title: 'Gum disease & cavities', text: 'Painful dental work and tooth loss; mouth health affects the heart too.' },
+  { id: 'bone',   bad: 1, t: s => s.bone < 48 && s.muscle < 50, title: 'Weak bones', text: 'Bones have thinned. A simple fall now means a fracture.' },
+  { id: 'brain',  bad: 1, t: s => s.brain < 56, title: 'Memory and focus problems', text: 'Brain fog, forgetfulness, and trouble concentrating make everyday life harder.' },
+  { id: 'dep',    bad: 1, t: s => s.mood < 32, title: 'A very hard stretch', text: 'Long-term stress and isolation pile up. Support and treatment make recovery possible.' },
+  { id: 'lung+',  bad: 0, t: (s, st) => st.age > 45 && s.lungs > 90, title: 'Lungs of a younger person', text: 'A doctor says their lung tests look decades younger than their age.' },
+  { id: 'run',    bad: 0, t: (s, st) => st.age > 40 && s.fit > 85, title: 'Finishes a 10K', text: 'Strong heart and muscles: they cross the finish line and feel great.' },
+  { id: 'soc+',   bad: 0, t: (s, st) => st.age > 40 && s.social > 88, title: 'Surrounded by loved ones', text: 'Close friends and family fill the house for a milestone birthday.' },
+  { id: 'check',  bad: 0, t: (s, st) => st.age > 50 && s.heart > 85 && s.metab > 80, title: 'Perfect check-up', text: 'Blood pressure, cholesterol, and blood sugar are all in the healthy range.' }
+];
+function checkEvents(st) {
+  const out = [];
+  EVENTS.forEach(e => {
+    if (!st.fired[e.id] && e.t(st.s, st)) {
+      st.fired[e.id] = 1;
+      const ev = { id: e.id, bad: e.bad, title: e.title, text: e.text, age: Math.floor(st.age) };
+      st.events.push(ev); out.push(ev);
+    }
+  });
+  return out;
+}
+
+// ---- descriptive bands for the patient chart ----
+// each band: [upperBound, status class (g good / y caution / r concern), label, plain-language description]
+const BANDS = {
+  bp: v => v.sys < 120 && v.dia < 80 ? ['g', 'Normal', 'Arteries are relaxed and blood flows easily.'] :
+           v.sys < 130 ? ['y', 'Elevated', 'Pressure is creeping up; the heart works a little harder.'] :
+           v.sys < 140 ? ['y', 'High (Stage 1)', 'Arteries are under steady strain, which damages them over time.'] :
+           ['r', 'High (Stage 2)', 'Dangerous pressure: raises the risk of heart attack and stroke.'],
+  rhr: v => v.rhr < 60 ? ['g', 'Athletic', 'A strong heart pumps a lot per beat, so it beats slowly.'] :
+            v.rhr <= 75 ? ['g', 'Healthy', 'Heart is efficient at rest.'] :
+            v.rhr <= 90 ? ['y', 'Fast', 'The heart has to beat more often to deliver the same blood.'] :
+            ['r', 'Very fast', 'The heart is overworked even while resting.'],
+  rr: v => v.rr <= 16 ? ['g', 'Normal', 'Easy, relaxed breathing.'] :
+           v.rr <= 20 ? ['y', 'Quick', 'Lungs need more breaths to get the oxygen the body needs.'] :
+           ['r', 'Labored', 'Breathing is hard work, even at rest.'],
+  spo2: v => v.spo2 >= 96 ? ['g', 'Normal', 'Blood is carrying plenty of oxygen.'] :
+             v.spo2 >= 93 ? ['y', 'Slightly low', 'Damaged lungs are not passing along all the oxygen.'] :
+             v.spo2 >= 90 ? ['r', 'Low', 'Organs are not getting enough oxygen.'] :
+             ['r', 'Dangerously low', 'Needs supplemental oxygen.'],
+  bmi: v => v.bmi < 18.5 ? ['y', 'Underweight', 'Not enough fuel: weaker muscles, bones, and immune system.'] :
+            v.bmi < 25 ? ['g', 'Healthy range', 'Weight supports energy and a healthy heart.'] :
+            v.bmi < 30 ? ['y', 'Overweight', 'Extra weight adds strain on heart, joints, and blood sugar.'] :
+            ['r', 'Obesity range', 'Much higher risk of diabetes, heart disease, and joint damage.'],
+  glucose: v => v.glucose < 100 ? ['g', 'Normal', 'Body handles sugar well.'] :
+                v.glucose < 126 ? ['y', 'Prediabetes range', 'Insulin is struggling; this is the warning zone.'] :
+                ['r', 'Diabetes range', 'Blood sugar stays too high and damages vessels and nerves.'],
+  ldl: v => v.ldl < 100 ? ['g', 'Optimal', 'Little fatty buildup in the arteries.'] :
+            v.ldl < 130 ? ['g', 'Near optimal', 'Fine for now.'] :
+            v.ldl < 160 ? ['y', 'Borderline high', 'Plaque starts building inside artery walls.'] :
+            ['r', 'High', 'Plaque narrows the arteries and raises heart attack risk.'],
+  sleep: v => v.sleep >= 7 ? ['g', 'Restorative', 'Brain and body fully recover each night.'] :
+              v.sleep >= 6 ? ['y', 'Short', 'Mild sleep debt: slower focus and weaker immunity.'] :
+              ['r', 'Sleep deprived', 'Memory, mood, and heart health suffer.'],
+  energy: v => v.energy >= 65 ? ['g', 'High', 'Plenty of energy for the day.'] :
+               v.energy >= 40 ? ['y', 'Moderate', 'Gets tired quickly.'] : ['r', 'Low', 'Constantly drained.'],
+  sick: v => v.sick <= 4 ? ['g', 'Few', 'Strong immune system.'] : v.sick <= 9 ? ['y', 'Some', 'Catches most bugs going around.'] : ['r', 'Many', 'Immune system is worn down.']
+};
+
+;
+// ===== SCENARIOS: 50 decisions in 4 life phases =====
+// o(grade, text, "what happens", animation, acuteStatChanges, habitChanges, pointsOverride)
+//   grade A = health-enhancing (+w), B = mixed/neutral (0), C = risky (-w)   (worksheet scale)
+//   habit keys: plain = set the habit, "key+" = raise to at least, "key-" = lower to at most
+// sc: dom = health domain, w = worksheet points weight, k = default habit this choice sets (A:+2 B:0 C:-2)
+const o = (g, t, fb, fx, s, h, p) => ({ g, t, fb, fx, s, h, p });
+const S = (id, dom, w, cat, k, title, text, opts, extra) => Object.assign({ id, dom, w, cat, k, title, text, opts }, extra);
+
+const PHASES = [
+  { name: 'Teen Years', range: 'ages 14–18', blurb: 'Habits start here. Many of them will stick around for decades.' },
+  { name: 'Young Adult', range: 'ages 19–32', blurb: 'Independence means every choice is now yours alone.' },
+  { name: 'Adulthood', range: 'ages 33–50', blurb: 'Work, family, and stress make healthy habits harder, and more important.' },
+  { name: 'Midlife & Beyond', range: 'ages 51–65', blurb: 'The body now shows the sum of thousands of small choices.' }
+];
+
+const PHASE_SCENARIOS = [
+// ---------------------------------------------------------------- PHASE 1: TEEN
+[
+  S('sleep1', 'phys', 3, 'Sleep', 'sleep', 'Game night vs. the big test',
+    'It’s 11:30 p.m. You have a major test tomorrow, you’re tired, and friends invite you to join an online game.', [
+    o('A', 'Say goodnight, put the phone away, and go to sleep now.', 'You get a full eight hours. Your brain files away what you studied and you wake up sharp.', 'sleep', { brain: 2, immune: 1, mood: 4, stress: -6 }),
+    o('B', 'Play “just 15 minutes,” then go to bed.', '15 minutes turns into 45. You get about six hours and feel a bit foggy during the test.', 'game', { brain: -1, stress: 1 }),
+    o('C', 'Play the whole game. The test can’t be that bad.', 'You crash at 2 a.m. and get under five hours of sleep. Your body runs on stress hormones all day.', 'game', { brain: -3, immune: -2, mood: -6, stress: 9 })
+  ]),
+  S('break1', 'phys', 2, 'Nutrition', 'diet', 'Late for school',
+    'You overslept and the bus comes in five minutes. There’s no time for a normal breakfast.', [
+    o('A', 'Grab a banana and yogurt (or peanut butter toast) to eat on the way.', 'Steady fuel keeps your blood sugar level and your mind on class.', 'eat_good', { metab: 1, mood: 2 }),
+    o('B', 'Grab a pastry from the vending machine.', 'A quick sugar rush, then a crash by second period.', 'eat_junk', { metab: -1, bmi: 0.2, mood: -1 }),
+    o('C', 'Skip breakfast, and probably lunch too.', 'Your stomach growls, your focus drops, and you get light-headed by afternoon.', 'hunger', { brain: -1, mood: -4, stress: 3, bmi: -0.3 })
+  ]),
+  S('water1', 'phys', 1, 'Hydration', 'water', 'Water or energy drink?',
+    'Your friends split energy drinks before practice. A water fountain is right there.', [
+    o('A', 'Refill your water bottle.', 'Hydrated muscles and brain, with no jitters.', 'water', { skin: 1 }),
+    o('C', 'Chug an energy drink.', 'Your heart races, your hands shake, and you crash later. All that sugar and caffeine strain your heart.', 'energy', { heart: -2, metab: -2, stress: 5, teeth: -2, bmi: 0.2 })
+  ]),
+  S('lunch1', 'phys', 2, 'Nutrition', 'diet', 'Lunch with friends',
+    'Lunch is short. Your friends want to talk instead of eating, and you’re tempted to skip lunch to spend more time with them.', [
+    o('A', 'Grab a balanced tray and eat while you chat. You get both.', 'Friends and fuel. You feel connected and energized all afternoon.', 'eat_good', { social: 3, mood: 3, metab: 1 }),
+    o('B', 'Nibble a few snacks and keep talking.', 'You don’t starve, but you’re running low by sixth period.', 'eat_junk', { metab: -1 }),
+    o('C', 'Skip lunch entirely and hang out.', 'Skipping meals becomes a habit. By afternoon you’re shaky and cranky.', 'hunger', { brain: -2, mood: -4, stress: 3, bmi: -0.4 })
+  ]),
+  S('vape1', 'soc', 3, 'Peer Pressure', null, 'The vape at the party',
+    'At a party, someone passes you a vape. Everyone is watching to see what you’ll do.', [
+    o('A', 'Say “No thanks, I’m good,” and grab a soda.', 'Nobody cares as much as you feared. You stay true to yourself and your lungs stay clean.', 'shield', { social: 4, mood: 4 }, { smoke: 0 }),
+    o('A', 'Laugh it off and suggest music or food. The group joins in.', 'Leaders change the mood, and your friends were relieved someone said it first.', 'shield', { social: 6, mood: 5 }, { smoke: 0 }),
+    o('B', 'Say “maybe later” and awkwardly hold it without using it.', 'You dodge the first hit, but you spend the night feeling anxious and on guard.', 'shrug', { stress: 5 }, { smoke: 0 }),
+    o('C', 'Take a hit so you don’t look lame.', 'Nicotine floods your brain and your lungs take in chemicals that scar them. Nicotine is addictive, and one hit can lead to many.', 'vape', { lungs: -6, brain: -3, mood: -2, stress: 4 }, { 'smoke+': 2 })
+  ]),
+  S('drink1', 'soc', 3, 'Peer Pressure', null, 'No adults, plenty of drinks',
+    'At a house party with no adults, someone hands you a drink. “One won’t hurt.”', [
+    o('A', 'Politely decline, stick with water, and text a trusted adult your location.', 'You remember the whole night, and you’re ready to help if a friend needs it.', 'shield', { social: 4, mood: 4 }, { drink: 0 }),
+    o('B', 'Take a cup so people stop asking, but don’t drink it.', 'The pressure fades and you keep control. It was a small step toward staying safe.', 'shrug', { stress: 2 }, { drink: 0 }),
+    o('C', 'Drink up (and keep drinking) to fit in.', 'A teen brain is still developing, and alcohol disrupts it. You feel sick, embarrassed, and foggy the next day.', 'drink', { liver: -4, brain: -4, mood: -5, social: -3 }, { 'drink+': 2 })
+  ]),
+  S('ride1', 'soc', 3, 'Peer Pressure', null, 'The risky ride home',
+    'A friend who has been drinking offers to drive everyone home from the party.', [
+    o('A', 'Refuse, call a parent or rideshare, and urge others not to ride.', 'You get home safe. The friend is annoyed, but he’s alive to be annoyed.', 'shield', { social: 4, mood: 5 }),
+    o('A', 'Find a sober driver, or stay over at the host’s house.', 'Planning an alternative keeps everyone safe.', 'shield', { social: 4, mood: 4 }),
+    o('B', 'Say “he’s probably fine” and wait to see what happens.', 'Nothing happens tonight, but you were lucky, not safe.', 'shrug', { stress: 6 }),
+    o('C', 'Hop in. It’s only ten minutes.', 'The car swerves and you slam into a curb. Everyone is shaken, you’re bruised, and nobody feels okay for days.', 'car', { bone: -3, mood: -8, stress: 14, heart: -1, social: -2 })
+  ]),
+  S('move1', 'phys', 2, 'Movement', 'move', 'After-school plans',
+    'After school a few classmates start a pickup game at the park.', [
+    o('A', 'Join in and play hard for 45 minutes.', 'Your heart pumps, muscles work, and endorphins flood your brain. You sleep better, too.', 'run', { fit: 3, muscle: 2, heart: 1, mood: 5, stress: -6, bmi: -0.2 }),
+    o('B', 'Walk home like usual.', 'A bit of movement, but nothing that challenges your body.', 'walk', {}),
+    o('C', 'Go straight home and sit on the couch all evening.', 'Your muscles and heart get no workout, and you feel a little more sluggish each day.', 'sit', { fit: -2, muscle: -1, mood: -2, bmi: 0.3 })
+  ]),
+  S('screen1', 'ment', 2, 'Screens / Media', 'screen', 'Homework vs. the phone',
+    'Homework is due tomorrow, but your phone keeps buzzing with notifications and new videos.', [
+    o('A', 'Finish homework first, then enjoy 30 minutes of phone time as a reward.', 'Done and guilt-free. Your brain gets a clean break when you’ve earned it.', 'study', { brain: 1, mood: 3, stress: -4 }),
+    o('B', 'Do both at once, jumping back and forth.', 'It all gets done, but slowly and badly. Multitasking splits your focus.', 'phone', { stress: 2 }),
+    o('C', 'Scroll for hours and panic at midnight.', 'The work isn’t done, you’re stressed, and you lose sleep. The scroll never ends.', 'phone', { brain: -2, mood: -5, stress: 8 })
+  ]),
+  S('stress1', 'ment', 2, 'Stress Management', 'coping', 'Everything at once',
+    'Tests, practice, and friend drama are piling up. You’ve stopped exercising and aren’t sleeping enough.', [
+    o('A', 'Talk to a trusted adult, make a to-do plan, and take a 20-minute walk.', 'Naming the problem shrinks it. A plan and fresh air lower your stress hormones.', 'calm', { mood: 6, stress: -12, heart: 1 }),
+    o('B', 'Ignore it and hope it passes.', 'The stress sits in your shoulders and doesn’t get better or worse.', 'shrug', { stress: 2 }),
+    o('C', 'Let it build and stay up late stewing. Snap at people.', 'Stress becomes a storm: poor sleep, short temper, and a pounding heart.', 'stress', { heart: -1, mood: -6, stress: 14, immune: -2, social: -2 })
+  ]),
+  S('conflict1', 'soc', 2, 'Conflict Resolution', 'connect', 'The argument',
+    'You had a big argument with a close friend. You’re upset and deciding how to respond.', [
+    o('A', 'Cool off, then say calmly, “I felt hurt when…”', 'Honest, respectful words repair the friendship, and you both feel lighter.', 'talk', { social: 7, mood: 5, stress: -6 }),
+    o('B', 'Avoid them for a few days.', 'No blow-up, but the issue just sits there between you.', 'shrug', { social: -1 }),
+    o('C', 'Blast them in the group chat, or give the silent treatment.', 'You feel powerful for five minutes, then lonely. Grudges drain energy and friendships.', 'angry', { social: -8, mood: -5, stress: 8 })
+  ]),
+  S('talk1', 'emo', 2, 'Handling Setbacks', 'mind', 'The bombed quiz',
+    'You bombed a quiz you studied for. The voice in your head starts talking.', [
+    o('A', 'Reframe it: “I can study differently. I’ll ask for help.”', 'Setbacks become information. You feel more in control and learn something real.', 'idea', { mood: 8, stress: -6, brain: 1 }),
+    o('B', 'Shrug it off. “Whatever.”', 'You keep going but skip the lesson inside the setback.', 'shrug', {}),
+    o('C', 'Spiral: “I’m so stupid. Why even try?”', 'Harsh self-talk makes the stress worse and the next test harder.', 'storm', { mood: -10, stress: 9, brain: -1 })
+  ]),
+  S('sun1', 'phys', 2, 'Sun Protection', 'sun', 'A day at the beach',
+    'Noon at the beach, UV index 9. The sun is strong and the whole day is planned outside.', [
+    o('A', 'Apply SPF 30+, wear a hat, reapply every two hours, and take shade breaks.', 'You have fun with no burn. Skin cells stay undamaged, and sunscreen is cheaper than skin cancer treatment.', 'sunscreen', { mood: 3, skin: 1 }),
+    o('B', 'Put on sunscreen once in the morning and forget about it.', 'It wears off by noon. You come home pink and sore.', 'sun', { skin: -3, burn: 0.35 }),
+    o('C', 'No sunscreen. You want a deep tan.', 'Your skin burns red and blisters. Sunburns damage DNA in skin cells, and the damage adds up for life.', 'burn', { skin: -9, burn: 1, mood: -3 })
+  ]),
+  S('space1', 'env', 1, 'Personal Space', 'tidy', 'The disaster room',
+    'Your room has laundry piles, old cups, and nowhere clear to study.', [
+    o('A', 'Spend 20 minutes tidying and clearing your desk.', 'A clear space is a clear mind. You can find things and focus.', 'clean', { env: 10, mood: 3, stress: -4 }),
+    o('B', 'Ignore it. You know where everything is.', 'It stays the same, just a little bit worse each week.', 'shrug', { env: -1 }),
+    o('C', 'Let it get worse. Eat in your room, toss clothes anywhere.', 'Clutter adds stress, makes sleep worse, and invites pests and mold.', 'mess', { env: -12, mood: -3, stress: 4, immune: -1 })
+  ])
+],
+// ---------------------------------------------------------------- PHASE 2: YOUNG ADULT
+[
+  S('focus1', 'ment', 2, 'Focus & Follow-Through', 'sleep', 'The paper due tomorrow',
+    'A big paper is due tomorrow and you haven’t started.', [
+    o('A', 'Work in 25-minute blocks, finish by 10 p.m., and sleep seven-plus hours.', 'Focused work and a rested brain. You turn in solid work and feel in control.', 'study', { brain: 2, mood: 4, stress: -6 }),
+    o('B', 'Work until 1 a.m. and sleep about five hours.', 'You finish, but you’re groggy and irritable the next day.', 'study', { brain: -1, stress: 3 }),
+    o('C', 'Pull an all-nighter with energy drinks.', 'Your heart pounds, your thoughts blur, and you crash hard. Procrastination just moves the pain.', 'energy', { brain: -3, heart: -1, mood: -6, stress: 10 })
+  ]),
+  S('smoke1', 'soc', 3, 'Peer Pressure', null, 'The smoke break',
+    'At your new job, coworkers take smoke breaks together and invite you along. You’re feeling stressed.', [
+    o('A', 'Say “no thanks” and take a walk or call a friend instead.', 'A walk clears your head better than nicotine, and you keep your lungs and your money.', 'shield', { social: 3, mood: 4, stress: -5, fit: 1 }, { smoke: 0 }),
+    o('B', 'Join them outside but don’t smoke.', 'You bond a bit, but you breathe secondhand smoke for 10 minutes each break.', 'smoke', { lungs: -1, social: 3 }, { 'smoke+': 0.5 }),
+    o('C', 'Try “just one cigarette” to fit in.', 'Nicotine hooks you faster than most people expect. Each cigarette brings tar, carbon monoxide, and cancer-causing chemicals into your lungs.', 'smoke', { lungs: -6, heart: -2, stress: 3, mood: 1 }, { 'smoke+': 2 }, -2),
+    o('C', 'Start smoking regularly to cope with stress.', 'It feels like relief, but it’s just withdrawal being fed. Your lungs, heart, and skin start taking daily damage.', 'smoke', { lungs: -9, heart: -3, skin: -2, stress: 4 }, { smoke: 3 })
+  ]),
+  S('drink2', 'phys', 3, 'Alcohol', 'drink', 'Big night out',
+    'Your group is planning a heavy drinking night this weekend.', [
+    o('A', 'Go, but be the designated driver and drink water.', 'You have fun, remember everything, and become the hero who gets everyone home.', 'cheers', { social: 4, mood: 4 }, { drink: 0 }),
+    o('B', 'Have a few drinks with food and take a rideshare home.', 'Moderate, but alcohol still strains your liver and slows your reflexes.', 'drink', { liver: -1, brain: -1 }, { drink: 1 }),
+    o('C', 'Binge. Keep up with the group.', 'You get sick, your memory goes dark, and your liver and brain take a hit. Repeating this speeds up lasting damage.', 'drink', { liver: -6, brain: -4, heart: -1, mood: -5, social: -2 }, { drink: 3 })
+  ]),
+  S('diet2', 'phys', 2, 'Nutrition', 'diet', 'First apartment, tight budget',
+    'You’re on your own for meals, and the drive-thru is right on your way home.', [
+    o('A', 'Meal prep on Sunday: beans, rice, veggies, chicken.', 'Cheaper, healthier, and way less stress during the week.', 'eat_good', { metab: 2, mood: 3, bmi: -0.2 }),
+    o('B', 'Mix of home cooking and takeout.', 'Not terrible, not great.', 'eat_junk', {}),
+    o('C', 'Fast food, ramen, and soda most days.', 'Lots of salt, sugar, and unhealthy fat. Blood sugar, cholesterol, and waistline all creep up.', 'eat_junk', { metab: -4, heart: -2, bmi: 0.8, mood: -2 })
+  ]),
+  S('move2', 'phys', 2, 'Movement', 'move', 'The desk job',
+    'Your new job means eight hours of sitting every day.', [
+    o('A', 'Schedule workouts (30+ min, four days a week) and take walking breaks.', 'Your heart gets stronger, your mood lifts, and sitting stops being a health risk.', 'run', { fit: 4, muscle: 3, heart: 2, bone: 1, mood: 4, stress: -6, bmi: -0.4 }),
+    o('B', 'Walk to the bus. That’s about it.', 'Some movement, but not enough to build fitness.', 'walk', {}),
+    o('C', 'Sit all day, then sit at home too.', 'Sitting for hours slows your metabolism and weakens your heart and muscles.', 'sit', { fit: -4, muscle: -2, heart: -1, metab: -2, bmi: 0.6, mood: -2 })
+  ]),
+  S('stress2', 'ment', 2, 'Stress Management', 'coping', 'Deadlines, rent, and relationships',
+    'Work deadlines, rent, and relationship stress hit all at the same time.', [
+    o('A', 'Journal, exercise, and talk with a friend. Ask your boss to help prioritize.', 'Stress becomes manageable when you give it outlets and ask for help.', 'calm', { mood: 6, stress: -12, heart: 1 }),
+    o('B', 'Ignore it and push through.', 'Stress doesn’t get worse right away, but it doesn’t go away.', 'shrug', { stress: 2 }),
+    o('C', 'Let it build and numb it with late-night scrolling and drinks.', 'Numbing hides the feeling but feeds the problem, and the stress comes back stronger.', 'stress', { heart: -1, mood: -6, stress: 12, liver: -1 }, { coping: -2, 'drink+': 1.5 })
+  ]),
+  S('lonely1', 'soc', 2, 'Quality Connection', 'connect', 'New city, no friends',
+    'You moved for work (or school) and you don’t know anyone.', [
+    o('A', 'Join a club, gym class, or volunteer group. Invite people to coffee.', 'Connection takes effort, but real friendships grow, and they protect your mood and health.', 'friends', { social: 10, mood: 6, stress: -5 }),
+    o('B', 'Chat with coworkers only at surface level.', 'It’s pleasant, but nobody really knows you yet.', 'shrug', { social: 1 }),
+    o('C', 'Stay home and avoid everyone.', 'Isolation raises stress and depression. Loneliness affects health as much as smoking does.', 'alone', { social: -9, mood: -7, stress: 6, immune: -2 })
+  ]),
+  S('help1', 'emo', 2, 'Emotional Expression', 'mind', 'Down for weeks',
+    'You’ve felt down and numb for weeks. Sleep, appetite, and motivation are all off.', [
+    o('A', 'Tell a trusted adult, doctor, or counselor how you feel, and ask for help.', 'Asking for help is a strength. Counselors teach real tools, and feelings get lighter once they’re shared. (If you’re ever struggling in real life, tell a trusted adult or school counselor, or call or text 988.)', 'talk', { mood: 9, stress: -9, social: 3 }, { mind: 2, coping: 2 }),
+    o('B', 'Wait and see if it gets better on its own.', 'Some days are better, but the weight stays.', 'shrug', { mood: -1 }, { mind: 0 }),
+    o('C', 'Hide it. Pull away and tell everyone “I’m fine.”', 'Bottling it up makes it heavier and pushes away the people who could help.', 'storm', { mood: -9, stress: 8, social: -5 }, { mind: -2, coping: -2 })
+  ]),
+  S('setback2', 'emo', 2, 'Handling Setbacks', 'mind', 'Laid off',
+    'You lose your job (or fail a class you needed).', [
+    o('A', 'Reframe: “What can I learn?” Ask for feedback and make a plan.', 'It hurts, but you turn it into direction, and you bounce back stronger.', 'idea', { mood: 8, stress: -5, brain: 1 }),
+    o('B', 'Shrug it off and move on.', 'You get through it, but without learning much.', 'shrug', {}),
+    o('C', 'Spiral: give up and sleep all day.', 'Hopelessness feeds on itself, and the longer you wait, the heavier it gets.', 'storm', { mood: -10, stress: 9, social: -3 })
+  ]),
+  S('dental1', 'phys', 1, 'Dental Care', 'dental', 'Sensitive teeth',
+    'Your teeth are sensitive. You’ve been skipping floss and the dentist, and you drink soda daily.', [
+    o('A', 'Brush twice, floss daily, visit the dentist, and swap soda for water.', 'Healthy gums and teeth, which also protect your heart.', 'tooth', { teeth: 7, mood: 2 }),
+    o('B', 'Brush most days.', 'Better than nothing, but plaque still builds up.', 'shrug', { teeth: -1 }),
+    o('C', 'Skip it all. Pop and sweets are life.', 'Cavities, gum disease, and painful dental work. Mouth bacteria can travel to the heart.', 'cavity', { teeth: -9, mood: -3, heart: -1 })
+  ]),
+  S('outdoor1', 'env', 1, 'Time Outdoors', 'outdoor', 'A free weekend',
+    'You have a free weekend with nothing planned.', [
+    o('A', 'Hike, bike, or picnic at a park.', 'Fresh air, sunlight, and movement. Nature lowers stress hormones.', 'nature', { env: 8, fit: 1, mood: 5, stress: -6 }),
+    o('B', 'Stay in, as usual.', 'Relaxing, but the same old four walls.', 'shrug', { env: -1 }),
+    o('C', 'Stay in a cluttered room all weekend.', 'Stale air, no sunlight, and clutter. You feel more tired every hour.', 'indoor', { env: -8, mood: -4, fit: -1 })
+  ]),
+  S('kind1', 'soc', 1, 'Kindness', 'connect', 'A neighbor in need',
+    'A neighbor is struggling to carry groceries. Your day is already full.', [
+    o('A', 'Help. Maybe even organize a neighborhood food drive.', 'Helping releases feel-good chemicals and builds trust that supports your own wellbeing.', 'kind', { social: 7, mood: 6, stress: -3 }),
+    o('B', 'Smile and keep walking.', 'Nothing bad, nothing good.', 'shrug', {}),
+    o('C', 'Brush it off: “not my problem.”', 'Small acts of indifference weaken community, and they leave you feeling a little more alone.', 'bad', { social: -5, mood: -2 })
+  ]),
+  S('eco1', 'env', 1, 'Sustainable Choices', 'eco', 'Daily footprint',
+    'Your daily routine decides how much you waste or protect the world around you.', [
+    o('A', 'Bike, walk, or take transit, recycle, and bring a reusable bottle.', 'Cleaner air, less waste, and the commute doubles as exercise.', 'eco', { env: 8, fit: 1, mood: 3, lungs: 1 }),
+    o('C', 'Idle the car, litter, and waste water and energy.', 'Dirtier air and a messier neighborhood, and you breathe it too.', 'litter', { env: -9, lungs: -1, mood: -2 })
+  ]),
+  S('pill1', 'soc', 3, 'Peer Pressure', null, 'The study pill',
+    'Before finals a classmate offers a pill “to focus all night.” It’s not prescribed to you.', [
+    o('A', 'Say no and study with a plan, or visit tutoring.', 'You avoid a dangerous drug and learn better habits for the future.', 'shield', { social: 3, mood: 3, brain: 1 }, { drugs: 0 }),
+    o('B', 'Say “maybe,” pocket it, and never take it.', 'You avoided the pill, but carrying it was a risk of its own.', 'shrug', { stress: 3 }, { drugs: 0 }),
+    o('C', 'Take it.', 'Your heart races, you can’t sleep, and the crash is brutal. Misusing someone else’s medication can be dangerous, and it can become a habit.', 'pill', { heart: -4, brain: -4, stress: 10, mood: -5 }, { 'drugs+': 2 })
+  ])
+],
+// ---------------------------------------------------------------- PHASE 3: ADULTHOOD
+[
+  S('sleep2', 'phys', 3, 'Sleep', 'sleep', 'Crunch time',
+    'A work crunch and a toddler (or a busy family) leave almost no time for sleep.', [
+    o('A', 'Protect a bedtime: share duties, screens off, aim for seven-plus hours.', 'A rested brain handles stress better and your immune system gets stronger.', 'sleep', { brain: 2, immune: 2, mood: 5, stress: -6 }),
+    o('B', 'Get five to six hours and hope for the best.', 'You function, but you’re dragging by afternoon.', 'sleep', { brain: -1 }),
+    o('C', 'Run on under five hours and lots of caffeine.', 'Chronic sleep loss raises blood pressure, blood sugar, and the risk of accidents.', 'game', { brain: -3, heart: -2, immune: -3, mood: -6, stress: 9 })
+  ]),
+  S('screen2', 'ment', 2, 'Screens / Media', 'screen', 'After-work scrolling',
+    'After work you collapse on the couch with the TV on and your phone in hand.', [
+    o('A', 'Set a screen limit and spend 30 minutes on a hobby or a book.', 'Your brain gets real rest instead of constant noise.', 'study', { brain: 1, mood: 4, stress: -5 }),
+    o('B', 'Some screens, but you still handle what matters.', 'Not great, not terrible.', 'phone', {}),
+    o('C', 'Hours of scrolling in bed.', 'Blue light delays sleep, and endless feeds leave you more anxious and drained.', 'phone', { brain: -2, mood: -5, stress: 6 })
+  ]),
+  S('rest1', 'ment', 1, 'Mental Rest', 'mind', 'No break in months',
+    'You haven’t had a real break in months. Your calendar is packed.', [
+    o('A', 'Schedule screen-free downtime for a hobby, quiet time, or nature.', 'Rest makes you more creative and less irritable.', 'calm', { mood: 6, stress: -8, brain: 1 }),
+    o('B', 'No rest, but you’re not overloaded.', 'Holding steady, but with no reserves.', 'shrug', {}),
+    o('C', 'Say yes to everything and run on empty.', 'Burnout creeps in: exhaustion, cynicism, and aches.', 'stress', { mood: -6, stress: 9, immune: -2 })
+  ]),
+  // slot 4: conditional. Smokers face a quit-or-not decision; non-smokers face secondhand smoke at home.
+  S('quit1', 'phys', 3, 'Smoking', null, 'A doctor’s warning',
+    'Your doctor says your cough is a warning sign, and your lungs and heart need you to quit.', [
+    o('A', 'Quit with support: patches, a counselor, and a quit line.', 'Withdrawal is hard, but within weeks your breathing improves, and lungs and heart begin to heal.', 'good', { lungs: 6, heart: 4, mood: -4, stress: 5 }, { smoke: 0 }),
+    o('B', 'Cut down but not quit.', 'Fewer cigarettes help a little, but any smoking keeps damaging lungs, heart, and skin.', 'smoke', { lungs: 1, stress: 3 }, { 'smoke-': 1.5 }, 0),
+    o('C', 'Keep going. You’ll quit “tomorrow.”', 'Another day, another round of tar and chemicals. Each year of smoking costs more lung function.', 'smoke', { lungs: -4, heart: -2, mood: -2 })
+  ], { cond: st => st.h.smoke > 0,
+       alt: S('second1', 'phys', 3, 'Smoking', null, 'Smoke in the apartment',
+    'Your partner (or roommate) smokes inside, and the smoke fills the apartment.', [
+    o('A', 'Set a smoke-free home rule and offer help to quit.', 'You protect your lungs and give them a push toward quitting.', 'shield', { lungs: 2, mood: 3, social: 2 }),
+    o('B', 'Open a window and put up with it.', 'Less smoke, but you’re still breathing some of it every day.', 'smoke', { lungs: -1 }, { 'smoke+': 0.4 }),
+    o('C', 'Say nothing and breathe it every day.', 'Secondhand smoke harms the lungs and heart, even if you never light up.', 'smoke', { lungs: -4, immune: -2, heart: -1 }, { 'smoke+': 0.8 })
+  ]) }),
+  S('diet3', 'phys', 2, 'Nutrition', 'diet', 'The creeping scale',
+    'Your busy life has let your weight creep up. Your doctor mentions cholesterol.', [
+    o('A', 'Cook veggies and whole grains, and watch portions of treats.', 'Your blood sugar and cholesterol improve, and you feel lighter and sharper.', 'eat_good', { metab: 4, heart: 1, mood: 3, bmi: -0.6 }),
+    o('B', 'Eat better some days, worse others.', 'Holding steady, but not improving.', 'eat_junk', {}),
+    o('C', 'Skip meals, then binge on processed snacks at night.', 'Blood sugar swings, cholesterol rises, and your waistline grows.', 'eat_junk', { metab: -4, heart: -2, bmi: 0.9, mood: -3 })
+  ]),
+  S('move3', 'phys', 2, 'Movement', 'move', 'The 5K group',
+    'A friend invites you to a 5K training group. Your knees creak just thinking about it.', [
+    o('A', 'Join in. Start with walk/jog intervals and strength work three times a week.', 'Muscles, bones, and heart all get stronger, and you’ve gained a team.', 'run', { fit: 5, muscle: 3, heart: 2, bone: 2, mood: 5, social: 5, stress: -6, bmi: -0.5 }),
+    o('B', 'Walk the dog now and then.', 'Better than sitting, but not building much.', 'walk', {}),
+    o('C', 'Say you’re too busy and stay on the sofa.', 'Muscle and bone density keep shrinking, and joints get stiffer.', 'sit', { fit: -4, muscle: -3, bone: -1, bmi: 0.5, mood: -2 })
+  ]),
+  S('check1', 'phys', 2, 'Preventive Care', 'care', 'Warning signs',
+    'There’s a new mole on your arm and your chest feels tight on stairs. Your annual physical is overdue.', [
+    o('A', 'Book a physical with bloodwork, a dental visit, and a skin check.', 'Problems caught early are easier to treat. You get peace of mind and a plan.', 'doctor', { stress: -3, mood: 3, immune: 1 }),
+    o('B', 'Go only if it gets worse.', 'Waiting means small problems can become big ones.', 'shrug', {}),
+    o('C', 'Ignore all of it.', 'Ignoring symptoms lets silent conditions grow, from heart disease to skin cancer.', 'bad', { stress: 5, mood: -2 })
+  ]),
+  S('sun2', 'phys', 2, 'Sun Protection', 'sun', 'Family beach vacation',
+    'Your family vacation includes long days outdoors in the sun.', [
+    o('A', 'SPF 30+, UV clothing, a hat, and shade breaks. Reapply often.', 'Memories made, skin protected.', 'sunscreen', { mood: 3, skin: 1 }),
+    o('B', 'Sunscreen once in the morning.', 'Some protection, but you get a little burned.', 'sun', { skin: -3, burn: 0.35 }),
+    o('C', 'No sunscreen. A tan looks healthy.', 'Tans and burns are both signs of skin damage, and years of it add up to wrinkles and skin cancer risk.', 'burn', { skin: -9, burn: 1, mood: -2 })
+  ]),
+  S('conflict2', 'soc', 2, 'Conflict Resolution', 'connect', 'Money talk',
+    'You and your partner (or a coworker) disagree about money and chores.', [
+    o('A', 'Listen, use “I” statements, and look for a compromise.', 'You solve the problem and the relationship grows stronger.', 'talk', { social: 7, mood: 5, stress: -6 }),
+    o('B', 'Avoid the topic.', 'Peace for now, but tension builds under the surface.', 'shrug', { social: -1 }),
+    o('C', 'Yell, hold a grudge, or give the silent treatment.', 'Chronic conflict raises blood pressure and wears relationships down.', 'angry', { social: -8, mood: -5, stress: 8, heart: -1 })
+  ]),
+  S('happy1', 'soc', 3, 'Peer Pressure', 'drink', 'Happy hour',
+    'Your team’s happy hour is in full swing, they’re pushing shots, and you have an early meeting.', [
+    o('A', 'Order one mocktail and leave on time.', 'You still enjoyed the team, and you’re clear-headed at the meeting.', 'cheers', { social: 4, mood: 4 }, { drink: 0 }),
+    o('B', 'Stay for one drink and eat something.', 'Moderate and manageable.', 'drink', { liver: -1 }, { drink: 1 }),
+    o('C', 'Do shots to impress everyone.', 'A hangover, a bad meeting, and a bit more strain on your liver and brain.', 'drink', { liver: -6, brain: -4, mood: -5, stress: 4 }, { drink: 3 })
+  ]),
+  S('express1', 'emo', 2, 'Emotional Expression', 'coping', 'Money worries at 2 a.m.',
+    'Money worries are keeping you up at night. You haven’t told anyone.', [
+    o('A', 'Talk to a partner, friend, or counselor.', 'A problem shared is lighter, and others often have ideas you didn’t.', 'talk', { mood: 8, stress: -10, social: 4 }),
+    o('B', 'Keep it to yourself. You’re okay for now.', 'You manage, but the worry stays.', 'shrug', { stress: 2 }),
+    o('C', 'Bottle it up, then explode at your family.', 'Pressure builds until it blows up the people you care about most.', 'angry', { mood: -7, stress: 10, social: -6 })
+  ]),
+  S('work1', 'env', 2, 'Work Environment', 'tidy', 'The chaotic desk',
+    'Your home office is cluttered, noisy, and full of notifications.', [
+    o('A', 'Set up a clear, quiet, well-lit workspace.', 'Focus returns, and so does your energy.', 'clean', { env: 11, mood: 3, stress: -5, brain: 1 }),
+    o('B', 'It’s a so-so space. You manage.', 'Productive enough.', 'shrug', {}),
+    o('C', 'Keep working in the chaos.', 'Distractions and clutter chop your focus and add stress all day.', 'mess', { env: -11, mood: -3, stress: 6, brain: -1 })
+  ])
+],
+// ---------------------------------------------------------------- PHASE 4: MIDLIFE & BEYOND
+[
+  S('move4', 'phys', 2, 'Movement', 'move', 'Stiff mornings',
+    'Your joints are stiff in the morning, and your doctor mentions bone health.', [
+    o('A', 'A daily brisk walk plus strength and balance work.', 'Muscles and bones respond at any age. You stay strong and steady.', 'run', { fit: 4, muscle: 4, bone: 3, heart: 1, mood: 4, stress: -5 }),
+    o('B', 'Just chores around the house.', 'Some movement, but little challenge.', 'walk', {}),
+    o('C', 'Rest more: “my body’s old now.”', 'Inactivity speeds up muscle loss and bone thinning. Resting more makes you weaker.', 'sit', { fit: -4, muscle: -4, bone: -2, mood: -3, bmi: 0.5 })
+  ]),
+  S('bp1', 'phys', 3, 'Preventive Care', 'care', 'The doctor’s warning',
+    'Your doctor says your blood pressure and blood sugar are creeping up.', [
+    o('A', 'Follow the plan: less salt and sugar, daily movement, and take any medication.', 'Numbers come back down, and your risk of heart attack and stroke drops sharply.', 'doctor', { heart: 4, metab: 4, stress: -4, bmi: -0.5 }, { care: 2, diet: 2 }),
+    o('B', 'Try it for a week, then drift back.', 'Little changes, so the risk stays.', 'shrug', {}, { care: 0, diet: 0 }),
+    o('C', 'Ignore it. You feel fine.', 'High blood pressure is silent. It damages arteries for years before you feel anything.', 'bad', { heart: -3, stress: 3 }, { care: -2, diet: -2 })
+  ]),
+  S('grat1', 'emo', 1, 'Gratitude / Perspective', 'mind', 'The end of the day',
+    'Another day is ending. You can reflect on it however you like.', [
+    o('A', 'Write down three good things from the day.', 'Gratitude trains your brain to notice what’s going well, and lifts your mood.', 'good', { mood: 5, stress: -4 }),
+    o('B', 'Don’t think about it.', 'Neutral.', 'shrug', {}),
+    o('C', 'Dwell on everything that went wrong.', 'Focusing only on the negative feeds stress and worry.', 'storm', { mood: -5, stress: 5 })
+  ]),
+  S('social4', 'soc', 2, 'Quality Connection', 'connect', 'The quiet house',
+    'The kids have moved out and old friends have moved away. It would be easy to drift into isolation.', [
+    o('A', 'Schedule weekly calls or walks, join a club, and host dinners.', 'Strong relationships are among the best predictors of a long, healthy life.', 'friends', { social: 10, mood: 6, stress: -5, immune: 1 }),
+    o('B', 'Reach out only when you remember to.', 'Occasional contact, but no deep connection.', 'shrug', { social: 1 }),
+    o('C', 'Withdraw. Fewer people means fewer problems.', 'Loneliness raises the risk of heart disease, memory loss, and early death.', 'alone', { social: -9, mood: -7, stress: 6, immune: -2, brain: -1 })
+  ]),
+  S('image1', 'emo', 2, 'Self-Talk', 'mind', 'The mirror',
+    'You catch your reflection and notice wrinkles and gray hair.', [
+    o('A', 'Appreciate what your body has done, and keep caring for it.', 'Respect for yourself fuels healthy habits, and you feel at peace.', 'heart', { mood: 7, stress: -5 }),
+    o('B', 'Shrug it off.', 'You move on.', 'shrug', {}),
+    o('C', 'Harsh self-talk, and a crash diet to “fix” it.', 'Self-criticism and crash diets harm your mood and your metabolism.', 'storm', { mood: -7, stress: 6, metab: -2, bmi: -0.3 })
+  ]),
+  S('drink4', 'phys', 2, 'Alcohol', 'drink', 'Nightly “unwinding”',
+    'You’ve fallen into pouring a drink every night to unwind.', [
+    o('A', 'Swap it for tea, a walk, or stretching. Keep alcohol rare.', 'Your liver gets a break, you sleep better, and you start feeling clearer.', 'calm', { liver: 4, brain: 2, mood: 4, stress: -4 }, { drink: 0 }),
+    o('B', 'Weekends only.', 'Better, but still some strain.', 'drink', { liver: 1 }, { drink: 1 }),
+    o('C', 'Two or three drinks every night.', 'Daily drinking damages the liver, raises blood pressure, and disrupts sleep.', 'drink', { liver: -6, brain: -3, heart: -2, mood: -4 }, { drink: 3 })
+  ]),
+  S('goal1', 'ment', 2, 'Focus & Follow-Through', 'mind', 'The health goal',
+    'You’ve set a goal: get healthier this year.', [
+    o('A', 'Make a SMART plan, track it weekly, and ask a friend to check in.', 'Specific plans and a support buddy turn good intentions into real change.', 'idea', { brain: 1, mood: 6, stress: -4, fit: 1 }),
+    o('B', 'Try for a week, then drift.', 'A little progress, but no staying power.', 'shrug', {}),
+    o('C', 'Keep saying “I’ll start Monday.”', 'Putting it off becomes a habit, and the months slip by.', 'bad', { mood: -4, stress: 3 })
+  ]),
+  S('sleep3', 'phys', 3, 'Sleep', 'sleep', 'Restless nights',
+    'Your sleep has gotten worse: you snore, wake up often, and drink coffee late.', [
+    o('A', 'Keep a regular schedule, no caffeine after noon, screens off, and get checked for sleep apnea.', 'Deeper sleep rebuilds your heart, brain, and immune system.', 'sleep', { brain: 3, heart: 2, immune: 2, mood: 5, stress: -6 }),
+    o('B', 'Try, but not consistently.', 'Some nights are better.', 'sleep', {}),
+    o('C', 'Late screens, coffee at 8 p.m., and four-five hours a night.', 'Chronic sleep loss raises the risks of heart attack, diabetes, and memory loss.', 'game', { brain: -3, heart: -3, immune: -3, mood: -6, stress: 8 })
+  ]),
+  S('air1', 'env', 2, 'Healthy Home', 'tidy', 'The stale house',
+    'Your home smells musty, with dust, mold, and clutter everywhere.', [
+    o('A', 'Fix the leak, add an air filter, declutter, and open the windows.', 'Cleaner air means easier breathing and fewer sick days.', 'clean', { env: 11, lungs: 2, immune: 2, mood: 3 }),
+    o('B', 'Ignore it.', 'It slowly gets worse.', 'shrug', { env: -1 }),
+    o('C', 'Let it pile up and keep the windows shut.', 'Mold and dust inflame the lungs and trigger allergies, asthma, and infections.', 'mess', { env: -11, lungs: -3, immune: -3, mood: -3 })
+  ]),
+  S('legacy1', 'soc', 2, 'Kindness / Helping Others', 'connect', 'The retirement plan',
+    'You finally have lots of free time. What shape will your days take?', [
+    o('A', 'Volunteer, mentor, or walk with friends. Stay involved.', 'Purpose and company keep body and mind sharp.', 'kind', { social: 9, mood: 7, fit: 1, brain: 1, stress: -5 }),
+    o('A', 'Join a garden club or swim class.', 'Movement, sunshine, and friends all in one place.', 'nature', { social: 6, mood: 6, fit: 2, env: 4, stress: -4 }),
+    o('B', 'Relax at home. You’ve earned it.', 'Comfortable, but a little quiet.', 'shrug', { social: -1 }),
+    o('C', 'Recliner, TV, and no plans, all day, every day.', 'Inactivity and isolation speed up decline, and the days start to blur together.', 'alone', { social: -9, mood: -6, fit: -3, muscle: -3, brain: -2 })
+  ])
+]
+];
+
+const ALL_SCENARIOS = PHASE_SCENARIOS.flat();
+const TOTAL_CHOICES = 50;
+// age at each decision (phase-aware, ends at 65)
+function ageAt(i) {
+  if (i < 14) return 14 + i * 0.35;
+  if (i < 28) return 19 + (i - 14) * 1.0;
+  if (i < 40) return 33 + (i - 28) * 1.5;
+  return 51 + (i - 40) * 1.55;
+}
+const FINAL_AGE = 65;
+const MAX_DOM = { phys: 0, ment: 0, emo: 0, soc: 0, env: 0 };
+ALL_SCENARIOS.forEach(sc => { MAX_DOM[sc.dom] += sc.w; });
+
+;
+// ===== FIGURE: the animated person (outside) + inside view (organs) =====
+const SKINS = ['#fbd9c0', '#f1c9a5', '#d9a273', '#b9794d', '#8d5a3a', '#5e3b26'];
+const HAIRS = ['#2b2118', '#6b4423', '#c9923a', '#b5442a', '#1a1a2e', '#8f8f99'];
+const SHIRTS = ['#e4572e', '#2a9d8f', '#4361ee', '#f2b134', '#9b5de5', '#2b2d42'];
+
+const hex2rgb = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16));
+const mix = (a, b, t) => { const A = hex2rgb(a), B = hex2rgb(b); t = clamp(t, 0, 1); return '#' + A.map((v, i) => Math.round(v + (B[i] - v) * t).toString(16).padStart(2, '0')).join(''); };
+const NS = 'http://www.w3.org/2000/svg';
+
+function ik(sx, sy, tx, ty, L1, L2, side) {
+  let dx = tx - sx, dy = ty - sy, d = Math.hypot(dx, dy) || 1;
+  const maxd = L1 + L2 - 0.5;
+  if (d > maxd) { dx *= maxd / d; dy *= maxd / d; d = maxd; }
+  const a = (L1 * L1 - L2 * L2 + d * d) / (2 * d), h = Math.sqrt(Math.max(0, L1 * L1 - a * a));
+  const mx = sx + dx * a / d, my = sy + dy * a / d, px = -dy / d, py = dx / d;
+  const e1 = [mx + px * h, my + py * h], e2 = [mx - px * h, my - py * h];
+  const sc = e => e[1] + side * e[0] * 0.6;
+  const e = sc(e1) >= sc(e2) ? e1 : e2;
+  return { ex: e[0], ey: e[1], hx: sx + dx, hy: sy + dy };
+}
+
+// hand targets for poses: [[Rx,Ry],[Lx,Ly]]  (R = screen-right arm)
+function poseTable(sh) {
+  const rx = 200 + sh + 12, lx = 200 - sh - 12;
+  return {
+    rest: [[rx, 322], [lx, 322]],
+    mouth: [[226, 172], [lx, 322]],
+    phone: [[236, 152], [lx, 322]],
+    stomach: [[222, 300], [178, 300]],
+    shrug: [[rx + 30, 262], [lx - 30, 262]],
+    wave: [[rx, 322], [128, 118]],
+    cheer: [[290, 112], [110, 112]],
+    flex: [[292, 160], [108, 160]],
+    head: [[246, 98], [154, 98]],
+    hips: [[rx - 4, 300], [lx + 4, 300]],
+    hold: [[226, 290], [174, 290]],
+    stop: [[286, 190], [lx, 322]],
+    give: [[270, 255], [lx, 322]],
+    cheek: [[238, 166], [lx, 322]],
+    book: [[222, 262], [178, 268]]
+  };
+}
+
+function figMarkup(P) {
+  const id = n => `id="${P}${n}"`;
+  return `
+<defs>
+  <linearGradient ${id('wallg')} gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2="436"><stop ${id('ws0')} offset="0" stop-color="#eef3f8"/><stop ${id('ws1')} offset="1" stop-color="#d9e2ec"/></linearGradient>
+  <radialGradient ${id('glow')}><stop offset="0" stop-color="#bfe3ff" stop-opacity=".95"/><stop offset="1" stop-color="#bfe3ff" stop-opacity="0"/></radialGradient>
+  <clipPath ${id('ceL')}><ellipse cx="178" cy="128" rx="11" ry="9"/></clipPath>
+  <clipPath ${id('ceR')}><ellipse cx="222" cy="128" rx="11" ry="9"/></clipPath>
+  <clipPath ${id('cwin')}><rect x="283" y="46" width="94" height="100" rx="4"/></clipPath>
+</defs>
+<g ${id('scene')}>
+  <rect ${id('wall')} x="-800" y="-900" width="2000" height="1336" fill="url(#${P}wallg)"/>
+  <rect ${id('floor')} x="-800" y="430" width="2000" height="900" fill="#c9b79c"/>
+  <rect x="-800" y="428" width="2000" height="6" fill="#00000018"/>
+  <g clip-path="url(#${P}cwin)">
+    <rect ${id('sky')} x="283" y="46" width="94" height="100" fill="#8ed1fc"/>
+    <g ${id('sun')}><circle cx="350" cy="76" r="15" fill="#ffd43b"/>
+      <g stroke="#ffd43b" stroke-width="3" stroke-linecap="round"><path d="M350 52v-7M350 100v7M326 76h-7M374 76h7M333 59l-5-5M367 93l5 5M367 59l5-5M333 93l-5 5"/></g></g>
+    <g ${id('clouds')} fill="#fff"><ellipse cx="312" cy="104" rx="20" ry="9"/><ellipse cx="326" cy="98" rx="14" ry="9"/><ellipse cx="352" cy="118" rx="22" ry="8"/></g>
+    <g ${id('gloom')} opacity="0" fill="#6b7480"><ellipse cx="320" cy="76" rx="34" ry="14"/><ellipse cx="352" cy="92" rx="30" ry="14"/><ellipse cx="338" cy="60" rx="26" ry="12"/></g>
+  </g>
+  <rect x="283" y="46" width="94" height="100" rx="4" fill="none" stroke="#fff" stroke-width="6"/>
+  <path d="M330 46v100M283 96h94" stroke="#fff" stroke-width="4"/>
+  <g ${id('plants')}>
+    <rect x="30" y="396" width="34" height="34" rx="5" fill="#b5651d"/>
+    <path d="M47 396c-22-24-26-46-14-58 8 14 12 30 14 58zM47 396c-4-30 0-52 10-66 8 18 4 40-10 66zM47 396c12-22 28-34 40-34-4 16-18 28-40 34z" fill="#2f9e44"/>
+    <rect x="344" y="404" width="28" height="26" rx="4" fill="#d9480f"/>
+    <path d="M358 404c-14-16-16-32-8-42 6 10 8 24 8 42zM358 404c6-18 16-26 26-26-2 12-12 20-26 26z" fill="#37b24d"/>
+  </g>
+  <g ${id('clut1')}><rect x="52" y="462" width="46" height="9" rx="2" fill="#e7b04f"/><rect x="56" y="452" width="40" height="10" rx="2" fill="#f1c261"/><circle cx="76" cy="457" r="5" fill="#c92a2a"/></g>
+  <g ${id('clut2')}><path d="M308 480c10-16 46-14 56 0 4 8-6 12-30 12s-30-4-26-12z" fill="#7048e8"/><path d="M322 474c6-8 24-8 30 0" stroke="#5f3dc4" stroke-width="3" fill="none"/></g>
+  <g ${id('clut3')}><rect x="100" y="490" width="14" height="20" rx="3" fill="#e03131"/><rect x="122" y="496" width="14" height="18" rx="3" fill="#868e96" transform="rotate(20 129 505)"/></g>
+  <g ${id('clut4')}><ellipse cx="368" cy="450" rx="18" ry="22" fill="#343a40"/><rect x="360" y="426" width="16" height="8" rx="3" fill="#495057"/></g>
+  <g ${id('clut5')}><rect x="20" y="486" width="30" height="14" rx="4" fill="#fa5252"/><rect x="40" y="478" width="22" height="12" rx="3" fill="#4dabf7"/></g>
+  <g ${id('friends')} opacity="0">
+    <g ${id('fr1')} transform="translate(52 0)"><circle cx="46" cy="352" r="15" fill="#f1c9a5"/><path d="M31 346c0-12 30-12 30 0" fill="#6b4423"/><rect x="32" y="366" width="28" height="44" rx="10" fill="#4361ee"/><rect x="36" y="408" width="8" height="22" rx="3" fill="#2b2d42"/><rect x="48" y="408" width="8" height="22" rx="3" fill="#2b2d42"/>
+      <g ${id('fr1a')}><rect x="58" y="366" width="8" height="30" rx="4" fill="#f1c9a5"/></g></g>
+    <g ${id('fr2')} transform="translate(-52 0)"><circle cx="354" cy="360" r="15" fill="#b9794d"/><path d="M339 358c0-14 30-14 30 0" fill="#1a1a2e"/><rect x="340" y="374" width="28" height="42" rx="10" fill="#f2b134"/><rect x="344" y="414" width="8" height="20" rx="3" fill="#2b2d42"/><rect x="356" y="414" width="8" height="20" rx="3" fill="#2b2d42"/>
+      <g ${id('fr2a')}><rect x="334" y="374" width="8" height="30" rx="4" fill="#b9794d"/></g></g>
+  </g>
+  <ellipse ${id('shadow')} cx="200" cy="508" rx="82" ry="10" fill="#0000002e"/>
+</g>
+<g ${id('fxBack')}></g>
+<g ${id('body')}>
+  <g ${id('tank')} opacity="0"><rect x="78" y="420" width="34" height="86" rx="12" fill="#3f8a63"/><rect x="88" y="408" width="14" height="14" rx="3" fill="#868e96"/><circle cx="95" cy="448" r="8" fill="#fff"/><path d="M95 448l4-5" stroke="#e03131" stroke-width="2"/></g>
+  <g ${id('legs')}>
+    <line ${id('legL')} stroke-linecap="round" stroke="#3b4a6b"/><line ${id('legR')} stroke-linecap="round" stroke="#3b4a6b"/>
+    <ellipse ${id('shoeL')} rx="21" ry="9" fill="#222"/><ellipse ${id('shoeR')} rx="21" ry="9" fill="#222"/>
+  </g>
+  <g ${id('upper')}>
+    <rect ${id('neck')} x="188" y="172" width="24" height="40" rx="9"/>
+    <path ${id('torso')}/>
+    <path ${id('collar')} fill="none" stroke="#00000030" stroke-width="3" stroke-linecap="round"/>
+    <g ${id('head')}>
+      <ellipse cx="146" cy="132" rx="9" ry="13" ${id('earL')}/><ellipse cx="254" cy="132" rx="9" ry="13" ${id('earR')}/>
+      <ellipse cx="200" cy="128" rx="54" ry="58" ${id('face')}/>
+      <ellipse cx="200" cy="132" rx="52" ry="56" fill="#ff3b30" ${id('burnF')} opacity="0"/>
+      <ellipse cx="200" cy="132" rx="52" ry="56" ${id('pallor')} opacity="0"/>
+      <g ${id('spots')} fill="#7b4a2a" opacity="0">
+        <circle cx="168" cy="108" r="3"/><circle cx="236" cy="104" r="2.5"/><circle cx="226" cy="150" r="3.5"/><circle cx="174" cy="154" r="2.5"/><circle cx="200" cy="100" r="2"/><circle cx="244" cy="130" r="2.5"/><circle cx="156" cy="132" r="2"/><circle cx="212" cy="116" r="1.8"/>
+      </g>
+      <g ${id('wrinkles')} fill="none" stroke="#6b4a3a" stroke-width="2" stroke-linecap="round" opacity="0">
+        <path d="M168 94q32-6 64 0M172 102q28-5 56 0"/><path d="M148 124l-8 -4M148 130l-9 1M148 136l-8 5M252 124l8-4M252 130l9 1M252 136l8 5"/><path d="M178 146q-5 12 -3 18M222 146q5 12 3 18"/>
+      </g>
+      <ellipse cx="178" cy="142" rx="12" ry="4.5" fill="#6a4a7a" ${id('bagL')} opacity="0"/><ellipse cx="222" cy="142" rx="12" ry="4.5" fill="#6a4a7a" ${id('bagR')} opacity="0"/>
+      <circle cx="164" cy="148" r="10" fill="#ff6b81" ${id('chkL')} opacity=".25"/><circle cx="236" cy="148" r="10" fill="#ff6b81" ${id('chkR')} opacity=".25"/>
+      <ellipse cx="178" cy="128" rx="11" ry="9" fill="#fff"/><ellipse cx="222" cy="128" rx="11" ry="9" fill="#fff"/>
+      <circle cx="178" cy="129" r="5.4" fill="#2b2118" ${id('pupL')}/><circle cx="222" cy="129" r="5.4" fill="#2b2118" ${id('pupR')}/>
+      <circle cx="180" cy="127" r="1.6" fill="#fff" ${id('hlL')}/><circle cx="224" cy="127" r="1.6" fill="#fff" ${id('hlR')}/>
+      <g clip-path="url(#${P}ceL)"><rect ${id('lidL')} x="164" y="116" width="28" height="0"/></g>
+      <g clip-path="url(#${P}ceR)"><rect ${id('lidR')} x="208" y="116" width="28" height="0"/></g>
+      <path ${id('lashL')} d="M167 128q11 -2 22 0" fill="none" stroke="#3a2a22" stroke-width="2" stroke-linecap="round" opacity="0"/><path ${id('lashR')} d="M211 128q11 -2 22 0" fill="none" stroke="#3a2a22" stroke-width="2" stroke-linecap="round" opacity="0"/>
+      <path ${id('browL')} fill="none" stroke="#3a2a22" stroke-width="4.5" stroke-linecap="round"/><path ${id('browR')} fill="none" stroke="#3a2a22" stroke-width="4.5" stroke-linecap="round"/>
+      <path ${id('nose')} d="M197 134q-3 9 3 10q5 -1 3 -10" fill="none" stroke="#00000030" stroke-width="2.4" stroke-linecap="round"/>
+      <path ${id('mouthOpen')} fill="#fff" stroke="#5a2a2a" stroke-width="2.5" stroke-linejoin="round" opacity="0"/>
+      <path ${id('mouthIn')} fill="#7a2230" opacity="0"/>
+      <path ${id('teethBad')} fill="#6e4b1f" opacity="0"/>
+      <path ${id('mouth')} fill="none" stroke="#5a2a2a" stroke-width="3.2" stroke-linecap="round"/>
+      <ellipse cx="200" cy="132" rx="52" ry="56" fill="#ff3b30" ${id('burnN')} opacity="0" style="mix-blend-mode:multiply"/>
+      <g ${id('hair')}><path ${id('hairBack')} d="M142 120C132 62 168 44 200 44C234 44 268 62 258 120C250 100 236 82 200 80C166 80 150 100 142 120Z"/>
+        <path ${id('hairGray')} d="M142 120C132 62 168 44 200 44C234 44 268 62 258 120C250 100 236 82 200 80C166 80 150 100 142 120Z" fill="#d8dce2" opacity="0"/>
+        <path d="M152 92C170 66 232 64 250 96" fill="none" stroke="#ffffff22" stroke-width="3" stroke-linecap="round"/></g>
+      <g ${id('glasses')} fill="none" stroke="#3a3f47" stroke-width="3" opacity="0"><circle cx="178" cy="129" r="15"/><circle cx="222" cy="129" r="15"/><path d="M193 127q7-5 14 0M163 125l-14-3M237 125l14-3"/></g>
+      <g ${id('sweat')} fill="#7cc8ff" opacity="0"><path d="M150 96q-8 12 0 16q8-4 0-16z"/><path d="M252 90q-8 12 0 16q8-4 0-16z"/></g>
+      <path ${id('cannula')} d="M193 142q-26 6 -44 -2q-16 -8 -8 30q10 36 -10 130q-8 50 -22 122" fill="none" stroke="#8fd3ff" stroke-width="3.2" stroke-linecap="round" opacity="0"/>
+      <g ${id('hat')} opacity="0"><ellipse cx="200" cy="92" rx="88" ry="16" fill="#e9c46a"/><path d="M148 90C148 44 252 44 252 90Z" fill="#e9c46a"/><path d="M148 86q52 12 104 0" stroke="#e76f51" stroke-width="7" fill="none"/></g>
+    </g>
+    <g ${id('arms')}>
+      <g ${id('armL')}><line ${id('uaL')} stroke-linecap="round"/><line ${id('uaLb')} stroke-linecap="round"/><line ${id('faL')} stroke-linecap="round"/><circle ${id('hdL')}/><line ${id('burnAL')} stroke="#ff3b30" stroke-linecap="round" opacity="0"/></g>
+      <g ${id('armR')}><line ${id('uaR')} stroke-linecap="round"/><line ${id('uaRb')} stroke-linecap="round"/><line ${id('faR')} stroke-linecap="round"/><circle ${id('hdR')}/><line ${id('burnAR')} stroke="#ff3b30" stroke-linecap="round" opacity="0"/></g>
+    </g>
+    <g ${id('props')}>
+      <g ${id('glowP')} opacity="0"><circle cx="0" cy="22" r="34" fill="url(#${P}glow)"/></g>
+      <g ${id('p_cig')} opacity="0"><rect x="-2.6" y="-4" width="5.2" height="26" rx="1.5" fill="#fff"/><rect x="-2.6" y="19" width="5.2" height="6" fill="#e8590c"/><rect x="-2.6" y="-4" width="5.2" height="5" fill="#d9a05b"/></g>
+      <g ${id('p_vape')} opacity="0"><rect x="-5" y="-4" width="10" height="32" rx="4" fill="#3b5bdb"/><rect x="-3" y="26" width="6" height="8" rx="2" fill="#adb5bd"/><circle cx="0" cy="8" r="1.8" fill="#74c0fc"/></g>
+      <g ${id('p_phone')} opacity="0"><rect x="-13" y="2" width="26" height="40" rx="5" fill="#212529"/><rect x="-10.5" y="5" width="21" height="33" rx="2.5" fill="#74c0fc"/></g>
+      <g ${id('p_bottle')} opacity="0"><rect x="-7" y="-6" width="14" height="38" rx="6" fill="#4dabf7" stroke="#1971c2" stroke-width="1.5"/><rect x="-4" y="30" width="8" height="7" rx="2" fill="#1971c2"/></g>
+      <g ${id('p_cup')} opacity="0"><path d="M-9-2h18l-3 30h-12z" fill="#ffd8a8" stroke="#e8590c" stroke-width="1.5"/></g>
+      <g ${id('p_can')} opacity="0"><rect x="-8" y="-4" width="16" height="32" rx="4" fill="#e03131"/><rect x="-8" y="6" width="16" height="6" fill="#ffd43b"/></g>
+      <g ${id('p_book')} opacity="0"><rect x="-17" y="-2" width="34" height="26" rx="3" fill="#4263eb"/><rect x="-14" y="1" width="28" height="20" rx="2" fill="#fff"/><path d="M0 1v20" stroke="#4263eb" stroke-width="2"/></g>
+      <g ${id('p_pill')} opacity="0"><rect x="-4" y="2" width="8" height="18" rx="4" fill="#fff" stroke="#adb5bd"/><path d="M-4 11h8v5a4 4 0 0 1-8 0z" fill="#e03131"/></g>
+      <g ${id('p_pad')} opacity="0"><rect x="-9" y="-2" width="18" height="22" rx="3" fill="#fff" stroke="#adb5bd"/><path d="M-5 5h10M-5 10h10M-5 15h6" stroke="#868e96" stroke-width="1.6"/></g>
+    </g>
+    <g ${id('cane')} opacity="0"><path d="M262 330v170M262 330q0 -14 -12 -14q-8 0 -8 8" fill="none" stroke="#7f5539" stroke-width="7" stroke-linecap="round"/></g>
+    <g ${id('cloud')} opacity="0"><g fill="#6b7480"><ellipse cx="170" cy="40" rx="42" ry="20"/><ellipse cx="214" cy="34" rx="44" ry="22"/><ellipse cx="196" cy="52" rx="48" ry="16"/></g>
+      <path ${id('bolt')} d="M200 54l-12 26h12l-8 24 24-32h-14l10-18z" fill="#ffd43b" opacity="0"/></g>
+  </g>
+</g>
+<g ${id('fxFront')}></g>
+<rect ${id('tint')} x="-800" y="-900" width="2000" height="2400" fill="#000" opacity="0" pointer-events="none"/>`;
+}
+
+const allFigures = [];
+function createFigure(svg, look) {
+  const P = 'f' + Math.random().toString(36).slice(2, 7) + '_';
+  svg.setAttribute('viewBox', '0 0 400 560');
+  svg.setAttribute('role', 'img');
+  svg.innerHTML = figMarkup(P);
+  const $ = n => svg.querySelector('#' + P + n);
+  const el = {};
+  ['wall', 'floor', 'ws0', 'ws1', 'sky', 'sun', 'clouds', 'gloom', 'plants', 'clut1', 'clut2', 'clut3', 'clut4', 'clut5', 'friends', 'fr1a', 'fr2a', 'shadow', 'fxBack', 'fxFront', 'body', 'tank', 'legL', 'legR', 'shoeL', 'shoeR',
+    'upper', 'neck', 'torso', 'collar', 'head', 'earL', 'earR', 'face', 'burnF', 'pallor', 'spots', 'wrinkles', 'bagL', 'bagR', 'chkL', 'chkR', 'pupL', 'pupR', 'hlL', 'hlR', 'lidL', 'lidR', 'lashL', 'lashR', 'browL', 'browR', 'nose',
+    'mouthOpen', 'mouthIn', 'teethBad', 'mouth', 'burnN', 'hairBack', 'hairGray', 'glasses', 'sweat', 'cannula', 'hat', 'uaL', 'uaLb', 'faL', 'hdL', 'burnAL', 'uaR', 'uaRb', 'faR', 'hdR', 'burnAR', 'props', 'glowP', 'p_cig', 'p_vape', 'p_phone',
+    'p_bottle', 'p_cup', 'p_can', 'p_book', 'p_pill', 'p_pad', 'cane', 'cloud', 'bolt', 'tint', 'armR', 'armL'].forEach(n => el[n] = $(n));
+
+  const F = { svg, look: Object.assign({ skin: SKINS[1], hair: HAIRS[0], shirt: SHIRTS[1] }, look || {}), rate: 3, time: 0, bpm: 70, rr: 14,
+    tgt: null, vis: null, handCur: null, handTgt: 'rest', overlay: { prop: null, face: null, bob: 0, shake: 0, wobble: 0, run: 0, eyesClosed: 0, tint: null, hairHat: 0, dizzy: 0, cough: 0, glow: 0, cloud: 0, sun: 0 }, timers: [], blink: 0, nextBlink: 2, coughT: 5 };
+  allFigures.push(F);
+
+  const VKEYS = ['gray', 'wr', 'spots', 'burn', 'pallor', 'jaun', 'belly', 'musc', 'hunch', 'bags', 'mood', 'stress', 'energy', 'teeth', 'cheek', 'env', 'social', 'glasses', 'cane', 'oxy', 'age', 'lungs', 'thin', 'sag'];
+  F.setState = function (st) {
+    const s = st.s, v = vitals(st), a = st.age;
+    const t = {
+      gray: clamp((a - 34) / 32 + (s.stress - 40) / 220, 0, 1),
+      wr: clamp((a - 24) / 55 * 0.6 + (100 - s.skin) / 100 * 0.75, 0, 1),
+      spots: clamp((100 - s.skin - 8) / 70, 0, 1),
+      burn: clamp(st.burn, 0, 1),
+      pallor: clamp((100 - Math.min(s.lungs, s.heart, s.immune) - 25) / 90, 0, 0.7),
+      jaun: clamp((55 - s.liver) / 55, 0, 1),
+      belly: clamp((s.bmi - 22) / 8, -0.5, 1.3),
+      musc: clamp((s.muscle - 40) / 60, 0, 1),
+      hunch: clamp((a - 42) / 70 * 0.5 + (100 - s.bone) / 100 * 0.55 + (100 - s.muscle) / 100 * 0.35 - 0.1, 0, 1),
+      bags: clamp((-st.h.sleep * 0.7 + (s.stress - 45) / 25) / 2.4, 0, 1),
+      mood: s.mood, stress: s.stress, energy: v.energy,
+      teeth: clamp((90 - s.teeth) / 70, 0, 1),
+      cheek: clamp((s.mood - 40) / 60 * 0.4 + st.burn * 0.3, 0, 0.6),
+      env: s.env, social: s.social,
+      glasses: a > 46 ? 1 : 0,
+      cane: (s.muscle + s.bone) / 2 < 38 && a > 40 ? 1 : 0,
+      oxy: s.lungs < 34 ? 1 : 0,
+      age: a, lungs: s.lungs,
+      thin: clamp((19.2 - s.bmi) / 3, 0, 1),
+      sag: clamp((50 - v.energy) / 50 + (45 - s.mood) / 120, 0, 1)
+    };
+    F.tgt = t; F.bpm = v.rhr; F.rr = v.rr; F.st = st;
+    if (!F.vis) F.vis = Object.assign({}, t);
+  };
+  F.snap = function () { if (F.tgt) F.vis = Object.assign({}, F.tgt); F.draw(0); };
+
+  F.setLook = function (look) { Object.assign(F.look, look); };
+
+  // --- one-shot animations (see FX table in fx.js) ---
+  F.later = (ms, fn) => { const id = setTimeout(fn, ms); F.timers.push(id); };
+  F.clearFx = function () { F.timers.forEach(clearTimeout); F.timers = []; Object.assign(F.overlay, { prop: null, face: null, bob: 0, shake: 0, wobble: 0, run: 0, eyesClosed: 0, tint: null, hat: 0, dizzy: 0, cough: 0, glow: 0, cloud: 0, sun: 0 }); F.handTgt = 'rest'; el.fxBack.innerHTML = ''; el.fxFront.innerHTML = ''; };
+  F.pose = (name, ms) => { F.handTgt = name; if (ms) F.later(ms, () => { if (F.handTgt === name) F.handTgt = 'rest'; }); };
+  F.prop = (name, ms) => { F.overlay.prop = name; if (ms) F.later(ms, () => { if (F.overlay.prop === name) F.overlay.prop = null; }); };
+  F.face = (f, ms) => { F.overlay.face = f; if (ms) F.later(ms, () => { if (F.overlay.face === f) F.overlay.face = null; }); };
+  F.set = (k, v, ms) => { F.overlay[k] = v; if (ms) F.later(ms, () => { F.overlay[k] = (typeof v === 'number') ? 0 : null; }); };
+  F.tintFlash = (color, alpha, ms) => { F.overlay.tint = { color, alpha, t0: performance.now(), ms }; };
+
+  // particles: generic text/shape element that animates with WAAPI
+  F.emit = function (kind, x, y, o) {
+    o = o || {};
+    const layer = o.back ? el.fxBack : el.fxFront;
+    const g = document.createElementNS(NS, 'g');
+    g.setAttribute('transform', `translate(${x} ${y})`);
+    let node;
+    if (kind === 'text') {
+      node = document.createElementNS(NS, 'text');
+      node.textContent = o.text; node.setAttribute('font-size', o.size || 26); node.setAttribute('text-anchor', 'middle');
+      node.setAttribute('fill', o.fill || '#333'); if (o.bold) node.setAttribute('font-weight', 800);
+      node.setAttribute('font-family', 'system-ui,"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif');
+    } else if (kind === 'circle') {
+      node = document.createElementNS(NS, 'circle'); node.setAttribute('r', o.r || 8); node.setAttribute('fill', o.fill || '#aaa');
+    } else if (kind === 'line') {
+      node = document.createElementNS(NS, 'line'); node.setAttribute('x1', 0); node.setAttribute('y1', 0); node.setAttribute('x2', o.len || 20); node.setAttribute('y2', 0);
+      node.setAttribute('stroke', o.fill || '#fff'); node.setAttribute('stroke-width', o.w || 3); node.setAttribute('stroke-linecap', 'round');
+    }
+    g.appendChild(node); layer.appendChild(g);
+    const dur = o.dur || 1800, dx = o.dx || 0, dy = o.dy === undefined ? -60 : o.dy, s0 = o.s0 === undefined ? 0.5 : o.s0, s1 = o.s1 === undefined ? 1 : o.s1;
+    const kf = [{ transform: `translate(0px,0px) scale(${s0}) rotate(0deg)`, opacity: 0 },
+                { transform: `translate(${dx * .25}px,${dy * .25}px) scale(${(s0 + s1) / 2}) rotate(${(o.rot || 0) / 4}deg)`, opacity: o.peak === undefined ? 1 : o.peak, offset: 0.2 },
+                { transform: `translate(${dx}px,${dy}px) scale(${s1}) rotate(${o.rot || 0}deg)`, opacity: 0 }];
+    try {
+      const a = node.animate(kf, { duration: dur, delay: o.delay || 0, easing: 'ease-out', fill: 'both' });
+      a.onfinish = () => g.remove();
+    } catch (e) { setTimeout(() => g.remove(), dur + (o.delay || 0)); }
+    return g;
+  };
+
+  // --- per-frame drawing ---
+  F.draw = function (dt) {
+    const v = F.vis, tgt = F.tgt, o = F.overlay, L = F.look;
+    if (!v) return;
+    F.time += dt;
+    const k = Math.min(1, dt * F.rate);
+    for (const key of VKEYS) v[key] += (tgt[key] - v[key]) * k;
+    const T = F.time;
+    // skin colors
+    let skin = L.skin;
+    skin = mix(skin, '#c8c2b5', v.pallor * 0.55);
+    skin = mix(skin, '#d6c24a', v.jaun * 0.55);
+    const skinD = mix(skin, '#000000', 0.12);
+    ['face', 'earL', 'earR', 'neck'].forEach(n => el[n].setAttribute('fill', skin));
+    el.pallor.setAttribute('fill', '#9aa79a'); el.pallor.setAttribute('opacity', (v.pallor * 0.25).toFixed(3));
+    el.burnF.setAttribute('opacity', (v.burn * 0.5).toFixed(3));
+    el.burnN.setAttribute('opacity', (v.burn * 0.3).toFixed(3));
+    el.spots.setAttribute('opacity', clamp(v.spots * 1.1, 0, 1).toFixed(3));
+    el.wrinkles.setAttribute('opacity', clamp(v.wr * 0.85, 0, 1).toFixed(3));
+    el.bagL.setAttribute('opacity', (v.bags * 0.55).toFixed(3)); el.bagR.setAttribute('opacity', (v.bags * 0.55).toFixed(3));
+    el.chkL.setAttribute('opacity', clamp(v.cheek, 0, 0.6).toFixed(3)); el.chkR.setAttribute('opacity', clamp(v.cheek, 0, 0.6).toFixed(3));
+    // hair
+    el.hairBack.setAttribute('fill', L.hair);
+    el.hairGray.setAttribute('opacity', clamp(v.gray, 0, 1).toFixed(3));
+    el.glasses.setAttribute('opacity', v.glasses.toFixed(2));
+    // body shape
+    const belly = v.belly, thin = v.thin;
+    const sh = 46 + v.musc * 7 - thin * 6 + Math.max(0, belly) * 4;
+    const waist = 38 + belly * 20 - thin * 8, bell = 40 + belly * 34 - thin * 8;
+    const legW = 30 + Math.max(0, belly) * 12 - thin * 6;
+    const shirt = L.shirt;
+    // breathing
+    const rrHz = F.rr / 60 * (o.run ? 2.2 : 1), breath = Math.sin(T * Math.PI * 2 * rrHz);
+    const amp = 0.012 + (100 - v.lungs) * 0.00013;     // worse lungs: shallower / heavier chest heave
+    const labor = clamp((100 - v.lungs) / 80, 0, 1);
+    const b = breath * (0.014 + labor * 0.014 + (o.run ? 0.012 : 0)) + o.cough * Math.sin(T * 40) * 0.01;
+    // bob/shake
+    let bx = 0, by = 0, rot = 0;
+    if (o.bob) { by = -Math.abs(Math.sin(T * 9)) * o.bob; }
+    if (o.shake) { bx = Math.sin(T * 60) * o.shake; by += Math.cos(T * 53) * o.shake * 0.5; }
+    if (o.wobble) rot = Math.sin(T * 3.2) * o.wobble;
+    el.body.setAttribute('transform', `translate(${bx.toFixed(2)} ${by.toFixed(2)}) rotate(${rot.toFixed(2)} 200 500)`);
+    el.shadow.setAttribute('rx', (82 + belly * 10 + by * 0.5).toFixed(1));
+    const slump = v.hunch * 0.5 + v.sag * 0.5 + (o.face === 'slump' ? 0.6 : 0);
+    const shY = 207 + slump * 14;
+    el.upper.setAttribute('transform', `translate(200 340) scale(${(1 + b * 0.6).toFixed(4)} ${(1 + b - slump * 0.03).toFixed(4)}) translate(-200 -340)`);
+    // torso
+    const sw = sh + (1 - Math.min(1, v.hunch)) * 0;
+    const topY = shY - 4;
+    el.torso.setAttribute('d', `M${200 - sw} ${topY + 12}Q200 ${topY - 8} ${200 + sw} ${topY + 12}L${200 + sw - 3} 290Q${200 + bell} 322 ${200 + waist} 346L${200 - waist} 346Q${200 - bell} 322 ${200 - sw + 3} 290Z`);
+    el.torso.setAttribute('fill', shirt);
+    el.collar.setAttribute('d', `M184 ${topY + 2}Q200 ${topY + 22} 216 ${topY + 2}`);
+    el.neck.setAttribute('y', (172 + slump * 4).toFixed(1));
+    // head
+    const headDy = slump * 14 - b * 120 * 0.0 + (o.face === 'slump' ? 6 : 0);
+    const tilt = slump * 4 * Math.sin(T * 0.7) + (o.dizzy ? Math.sin(T * 5) * 6 : 0);
+    el.head.setAttribute('transform', `translate(0 ${headDy.toFixed(1)}) rotate(${tilt.toFixed(2)} 200 190)`);
+    // face expression
+    const mood = o.face === 'sad' ? 18 : o.face === 'happy' ? 92 : o.face === 'angry' ? 22 : o.face === 'ouch' ? 20 : v.mood;
+    const acute = o.face === 'angry' ? 1 : 0;
+    const smile = (mood - 52) / 48;                     // -1..1
+    const c = smile * 17;
+    const mx0 = 182, mx1 = 218, my = 164;
+    if (c > 4) {
+      // open smile with teeth
+      const depth = Math.min(c * 1.4, 22);
+      el.mouthOpen.setAttribute('d', `M${mx0} ${my - 2}Q200 ${my + depth * 1.2} ${mx1} ${my - 2}Q200 ${my + 1} ${mx0} ${my - 2}Z`);
+      el.mouthOpen.setAttribute('opacity', 1);
+      el.mouthOpen.setAttribute('fill', mix('#ffffff', '#c9a15a', v.teeth * 0.9));
+      el.teethBad.setAttribute('opacity', v.teeth > 0.55 ? (v.teeth - 0.4) : 0);
+      el.teethBad.setAttribute('d', `M186 ${my - 1}q4 6 8 0M204 ${my}q4 7 8 0z`);
+      el.mouth.setAttribute('d', `M${mx0 - 3} ${my - 4}Q${mx0} ${my - 2} ${mx0 + 2} ${my - 1}`);
+      el.mouth.setAttribute('opacity', 0);
+    } else {
+      el.mouthOpen.setAttribute('opacity', 0); el.teethBad.setAttribute('opacity', 0);
+      el.mouth.setAttribute('opacity', 1);
+      const yy = my + (o.face === 'dizzy' ? 0 : 0);
+      el.mouth.setAttribute('d', `M${mx0 + 2} ${yy + (c < 0 ? 4 : 0)}Q200 ${yy + c * 1.4 + (c < 0 ? 4 : 0)} ${mx1 - 2} ${yy + (c < 0 ? 4 : 0)}`);
+    }
+    if (o.face === 'ouch') { el.mouthOpen.setAttribute('opacity', 1); el.mouthOpen.setAttribute('d', `M188 164Q200 158 212 164Q200 178 188 164Z`); el.mouthOpen.setAttribute('fill', '#7a2230'); el.mouth.setAttribute('opacity', 0); }
+    // eyes: blink, tiredness
+    F.nextBlink -= dt; if (F.nextBlink < 0) { F.blink = 1; F.nextBlink = 2 + Math.random() * 3.5; }
+    F.blink = Math.max(0, F.blink - dt * 7);
+    const tired = clamp((50 - v.energy) / 50, 0, 0.85) + v.bags * 0.15;
+    const closed = o.eyesClosed ? 1 : 0;
+    const lid = clamp(Math.max(tired * 0.65, closed, F.blink > 0.5 ? 1 : F.blink * 2), 0, 1);
+    const lidH = lid * 18.5;
+    [['L', 164], ['R', 208]].forEach(([s]) => {
+      el['lid' + s].setAttribute('height', lidH.toFixed(1)); el['lid' + s].setAttribute('fill', skin);
+      el['lash' + s].setAttribute('opacity', lid > 0.2 ? 0.9 : 0);
+      el['lash' + s].setAttribute('transform', `translate(0 ${(lidH - 9.5).toFixed(1)})`);
+    });
+    const look = Math.sin(T * 0.6) * 1.2;
+    ['pupL', 'pupR', 'hlL', 'hlR'].forEach(n => el[n].setAttribute('transform', `translate(${look.toFixed(2)} ${(tired * 1.2).toFixed(2)})`));
+    // brows: worry (stress), anger
+    const worry = clamp((v.stress - 50) / 40, 0, 1) + (o.face === 'sad' ? 0.7 : 0);
+    const sadB = clamp((45 - mood) / 45, 0, 1);
+    const inner = 100 - worry * 9 - sadB * 5 + acute * 8, outer = 106 + worry * 3 + sadB * 2 - acute * 4;
+    el.browL.setAttribute('d', `M163 ${outer}Q176 ${(inner + outer) / 2 - 4} 191 ${inner + 4}`);
+    el.browR.setAttribute('d', `M237 ${outer}Q224 ${(inner + outer) / 2 - 4} 209 ${inner + 4}`);
+    el.sweat.setAttribute('opacity', (clamp((v.stress - 60) / 30, 0, 1) * 0.9 + (o.run ? 1 : 0)).toFixed(2) > 1 ? 1 : clamp((v.stress - 60) / 30, 0, 1) * 0.9 + (o.run ? 1 : 0));
+    el.sweat.setAttribute('transform', `translate(0 ${((T * 18) % 14).toFixed(1)})`);
+    el.hat.setAttribute('opacity', o.hat ? 1 : 0);
+    el.cane.setAttribute('opacity', v.cane > 0.5 ? 1 : 0);
+    el.cannula.setAttribute('opacity', v.oxy > 0.5 ? 0.9 : 0);
+    el.tank.setAttribute('opacity', v.oxy > 0.5 ? 1 : 0);
+    // legs
+    const swing = o.run ? Math.sin(T * 9) * 26 : (o.bob ? Math.sin(T * 5) * 8 : 0);
+    const lw = legW, hipY = 330, footY = 498;
+    const footLx = 200 - 24 - Math.max(0, belly) * 6 + swing, footRx = 200 + 24 + Math.max(0, belly) * 6 - swing;
+    const liftL = o.run ? Math.max(0, Math.sin(T * 9)) * 18 : 0, liftR = o.run ? Math.max(0, -Math.sin(T * 9)) * 18 : 0;
+    el.legL.setAttribute('x1', 200 - 18); el.legL.setAttribute('y1', hipY); el.legL.setAttribute('x2', footLx); el.legL.setAttribute('y2', footY - liftL);
+    el.legR.setAttribute('x1', 200 + 18); el.legR.setAttribute('y1', hipY); el.legR.setAttribute('x2', footRx); el.legR.setAttribute('y2', footY - liftR);
+    el.legL.setAttribute('stroke-width', lw.toFixed(1)); el.legR.setAttribute('stroke-width', lw.toFixed(1));
+    el.shoeL.setAttribute('cx', footLx - 3); el.shoeL.setAttribute('cy', footY + 8 - liftL); el.shoeR.setAttribute('cx', footRx + 3); el.shoeR.setAttribute('cy', footY + 8 - liftR);
+    // arms by IK
+    const tbl = poseTable(sh), pn = tbl[F.handTgt] || tbl.rest;
+    let tR = pn[0].slice(), tL = pn[1].slice();
+    if (o.run) { tR[0] = 200 + sh + 18 + Math.sin(T * 9) * 10; tR[1] = 285 + Math.cos(T * 9) * 14; tL[0] = 200 - sh - 18 - Math.sin(T * 9) * 10; tL[1] = 285 - Math.cos(T * 9) * 14; }
+    if (o.wave) { tL[0] += Math.sin(T * 8) * 12; }
+    if (F.handTgt === 'wave') tL[0] += Math.sin(T * 8) * 14;
+    if (F.handTgt === 'cheer') { tR[1] += Math.sin(T * 7) * 8; tL[1] += Math.cos(T * 7) * 8; }
+    if (!F.hand) F.hand = { R: tR.slice(), L: tL.slice() };
+    const hk = Math.min(1, dt * 9);
+    ['R', 'L'].forEach((s2, i) => { const tt = i ? tL : tR; F.hand[s2][0] += (tt[0] - F.hand[s2][0]) * hk; F.hand[s2][1] += (tt[1] - F.hand[s2][1]) * hk; });
+    const aw = 20 + v.musc * 7 + Math.max(0, belly) * 4 - thin * 4;
+    const armSkin = skin;
+    [['R', 1, 200 + sh - 2], ['L', -1, 200 - sh + 2]].forEach(([s2, side, sx]) => {
+      const r = ik(sx, shY + 6, F.hand[s2][0], F.hand[s2][1], 58, 58, side);
+      const ua = el['ua' + s2], uab = el['ua' + s2 + 'b'], fa = el['fa' + s2], hd = el['hd' + s2], ba = el['burnA' + s2];
+      const sl = 0.62;
+      ua.setAttribute('x1', sx); ua.setAttribute('y1', shY + 6); ua.setAttribute('x2', r.ex); ua.setAttribute('y2', r.ey); ua.setAttribute('stroke', armSkin); ua.setAttribute('stroke-width', aw);
+      uab.setAttribute('x1', sx); uab.setAttribute('y1', shY + 6); uab.setAttribute('x2', sx + (r.ex - sx) * sl); uab.setAttribute('y2', shY + 6 + (r.ey - shY - 6) * sl); uab.setAttribute('stroke', shirt); uab.setAttribute('stroke-width', aw + 6);
+      fa.setAttribute('x1', r.ex); fa.setAttribute('y1', r.ey); fa.setAttribute('x2', r.hx); fa.setAttribute('y2', r.hy); fa.setAttribute('stroke', armSkin); fa.setAttribute('stroke-width', aw - 3);
+      hd.setAttribute('cx', r.hx); hd.setAttribute('cy', r.hy); hd.setAttribute('r', 10.5); hd.setAttribute('fill', armSkin);
+      ba.setAttribute('x1', sx + (r.ex - sx) * sl); ba.setAttribute('y1', shY + 6 + (r.ey - shY - 6) * sl); ba.setAttribute('x2', r.hx); ba.setAttribute('y2', r.hy); ba.setAttribute('stroke-width', aw - 3);
+      ba.setAttribute('opacity', (v.burn * 0.45).toFixed(3));
+      if (s2 === 'R') { F.handR = r; }
+    });
+    // props on right hand
+    const r = F.handR, dx = r.hx - r.ex, dy = r.hy - r.ey;
+    const ang = Math.atan2(-dx, dy) * 180 / Math.PI;
+    el.props.setAttribute('transform', `translate(${r.hx.toFixed(1)} ${r.hy.toFixed(1)}) rotate(${ang.toFixed(1)})`);
+    ['cig', 'vape', 'phone', 'bottle', 'cup', 'can', 'book', 'pill', 'pad'].forEach(n => el['p_' + n].setAttribute('opacity', o.prop === n ? 1 : 0));
+    el.glowP.setAttribute('opacity', o.glow ? 0.9 : 0);
+    // scene
+    const e = v.env, soc = v.social;
+    const wallTop = mix('#c9ced6', '#f3f6fb', e / 100), wallBot = mix('#b4b9c2', '#e0e8f1', e / 100);
+    el.ws0.setAttribute('stop-color', wallTop); el.ws1.setAttribute('stop-color', wallBot);
+    el.floor.setAttribute('fill', mix('#8c8274', '#d3c0a2', e / 100));
+    const nice = clamp((e - 50) / 40, 0, 1);
+    el.plants.setAttribute('opacity', nice.toFixed(2));
+    [['clut1', 38], ['clut2', 46], ['clut3', 56], ['clut4', 30], ['clut5', 22]].forEach(([n, th]) => el[n].setAttribute('opacity', clamp((th - e) / 14, 0, 1).toFixed(2)));
+    const gl = clamp((50 - (v.mood * 0.6 + e * 0.4)) / 35, 0, 1);
+    el.gloom.setAttribute('opacity', gl.toFixed(2)); el.clouds.setAttribute('opacity', (1 - gl).toFixed(2));
+    el.sky.setAttribute('fill', mix('#8ed1fc', '#6f7a8a', gl)); el.sun.setAttribute('opacity', (1 - gl).toFixed(2));
+    const fr = clamp((soc - 52) / 25, 0, 1);
+    el.friends.setAttribute('opacity', fr.toFixed(2));
+    el.fr1a.setAttribute('transform', `rotate(${(-40 + Math.sin(T * 5) * 25).toFixed(1)} 62 368)`); el.fr2a.setAttribute('transform', `rotate(${(40 - Math.sin(T * 5 + 1) * 25).toFixed(1)} 338 376)`);
+    // cloud over head
+    const lonely = clamp((34 - v.mood) / 22, 0, 1) * 0.8 + (o.cloud ? 1 : 0);
+    el.cloud.setAttribute('opacity', clamp(lonely, 0, 1).toFixed(2));
+    el.cloud.setAttribute('transform', `translate(0 ${(Math.sin(T * 1.4) * 3 + headDy).toFixed(1)})`);
+    el.bolt.setAttribute('opacity', o.cloud > 1 && Math.sin(T * 7) > 0.6 ? 1 : 0);
+    // tint overlay
+    let ta = 0, tc = '#000';
+    if (o.tint) { const p = (performance.now() - o.tint.t0) / o.tint.ms; if (p >= 1) o.tint = null; else { ta = o.tint.alpha * Math.sin(Math.min(1, p) * Math.PI); tc = o.tint.color; } }
+    el.tint.setAttribute('fill', tc); el.tint.setAttribute('opacity', ta.toFixed(3));
+    // periodic cough when lungs are damaged
+    if (v.lungs < 62 && !o.cough) {
+      F.coughT -= dt;
+      if (F.coughT < 0) { F.coughT = 4 + Math.random() * 4 + (v.lungs / 20); F.cough(); }
+    }
+  };
+
+  F.cough = function () {
+    F.overlay.cough = 1; F.overlay.shake = 2;
+    F.emit('text', 232, 140, { text: 'cough!', size: 17, fill: '#444', bold: 1, dx: 22, dy: -14, dur: 1200, s0: .8, s1: 1.1 });
+    for (let i = 0; i < 3; i++) F.emit('circle', 226, 164, { r: 4 + i, fill: '#ffffffcc', dx: 40 + i * 8, dy: -6 + i * 8, dur: 800, delay: i * 70, s0: 1, s1: 2 });
+    F.later(700, () => { F.overlay.cough = 0; F.overlay.shake = 0; });
+    if (F.onCough) F.onCough();
+  };
+
+  F.fx = function (name) { F.clearFx(); const f = FX[name] || FX.good; f(F); };
+  return F;
+}
+
+// ---------- the shared animation loop ----------
+let lastT = 0;
+function loop(t) {
+  const dt = Math.min(0.05, (t - lastT) / 1000 || 0); lastT = t;
+  for (let i = allFigures.length - 1; i >= 0; i--) {
+    const f = allFigures[i];
+    if (!f.svg.isConnected) { allFigures.splice(i, 1); continue; }
+    if (f.vis) f.draw(dt);
+  }
+  for (let i = allInsides.length - 1; i >= 0; i--) {
+    const f = allInsides[i];
+    if (!f.svg.isConnected) { allInsides.splice(i, 1); continue; }
+    if (f.vis) f.draw(dt);
+  }
+  requestAnimationFrame(loop);
+}
+const allInsides = [];
+requestAnimationFrame(loop);
+
+// ======================= INSIDE VIEW =======================
+function createInside(svg) {
+  const P = 'i' + Math.random().toString(36).slice(2, 6) + '_';
+  svg.setAttribute('viewBox', '0 0 220 330');
+  const tar = [];
+  const rnd = (() => { let s = 7; return () => (s = (s * 16807) % 2147483647) / 2147483647; })();
+  for (let i = 0; i < 34; i++) { tar.push([50 + rnd() * 56, 108 + rnd() * 92, 2 + rnd() * 4.5, (i + 1) / 34]); }
+  const lungPath = 'M104 100C84 98 56 112 50 150C46 182 56 206 82 204C100 202 106 190 106 164Z';
+  svg.innerHTML = `
+<defs><filter id="${P}blur"><feGaussianBlur stdDeviation="6"/></filter></defs>
+<rect x="2" y="2" width="216" height="326" rx="16" fill="#101a2b" stroke="#1d2c47" stroke-width="2"/>
+<circle id="${P}brainGlow" cx="110" cy="44" r="40" fill="#b197fc" opacity=".35" filter="url(#${P}blur)"/>
+<g id="${P}brain"><path d="M70 52C64 30 84 14 108 16C134 14 156 30 150 52C148 70 126 74 110 70C92 74 72 70 70 52Z" id="${P}brainP" fill="#f1a8c0" stroke="#c95f86" stroke-width="2"/>
+  <path d="M110 18C106 32 114 40 108 54M84 28C92 34 90 42 82 46M136 28C128 34 130 44 138 48M92 58C100 52 106 56 112 62M128 58C120 54 116 58 110 64" fill="none" stroke="#c95f86" stroke-width="2" stroke-linecap="round"/></g>
+<text x="110" y="86" text-anchor="middle" font-size="10" fill="#8aa0c4" font-family="system-ui,sans-serif">Brain</text>
+<g id="${P}lungs">
+  <g id="${P}lungL"><path d="${lungPath}" id="${P}lungLp" stroke-width="3"/><g id="${P}tarL"></g><path d="M100 124C84 128 70 140 62 160M100 146C86 152 76 166 72 182" fill="none" stroke="#00000026" stroke-width="2.4" stroke-linecap="round"/></g>
+  <g transform="translate(220 0) scale(-1 1)" id="${P}lungRw"><path d="${lungPath}" id="${P}lungRp" stroke-width="3"/><g id="${P}tarR"></g><path d="M100 124C84 128 70 140 62 160M100 146C86 152 76 166 72 182" fill="none" stroke="#00000026" stroke-width="2.4" stroke-linecap="round"/></g>
+  <path d="M110 92v22M110 114Q96 118 84 132M110 114Q124 118 136 132" stroke="#d9c7a6" stroke-width="6" fill="none" stroke-linecap="round" id="${P}trach"/>
+</g>
+<g id="${P}heart" transform="translate(126 166)"><path d="M0,22C-34,-4 -28,-34 -10,-34C-2,-34 0,-26 0,-23C0,-26 2,-34 10,-34C28,-34 34,-4 0,22Z" id="${P}heartP" stroke-width="2.5"/>
+  <path d="M-6 -20q-8 2 -10 10" fill="none" stroke="#ffffff55" stroke-width="3" stroke-linecap="round"/></g>
+<text x="52" y="222" text-anchor="middle" font-size="10" fill="#8aa0c4" font-family="system-ui,sans-serif">Lungs</text>
+<text x="188" y="150" text-anchor="middle" font-size="10" fill="#8aa0c4" font-family="system-ui,sans-serif">Heart</text>
+<g id="${P}liver"><path d="M24 262C34 244 80 240 102 254C110 266 98 290 70 292C44 294 20 280 24 262Z" id="${P}liverP" stroke-width="2.5"/>
+  <g id="${P}fat" fill="#f2d16b"></g></g>
+<text x="64" y="310" text-anchor="middle" font-size="10" fill="#8aa0c4" font-family="system-ui,sans-serif">Liver</text>
+<g id="${P}artery" transform="translate(166 266)"><circle r="26" fill="#d9777f" stroke="#a84c57" stroke-width="2.5"/><circle id="${P}plaque" r="22" fill="#f1d27a"/><circle id="${P}lumen" r="14" fill="#e03131"/></g>
+<text x="166" y="310" text-anchor="middle" font-size="10" fill="#8aa0c4" font-family="system-ui,sans-serif">Artery (cross-section)</text>
+<g id="${P}fx"></g>
+<g font-family="system-ui,sans-serif" font-weight="700" font-size="11" id="${P}labels">
+  <text id="${P}tBrain" x="110" y="98" text-anchor="middle"></text>
+</g>`;
+  const $ = n => svg.querySelector('#' + P + n);
+  const el = {};
+  ['brainGlow', 'brainP', 'lungs', 'lungLp', 'lungRp', 'tarL', 'tarR', 'trach', 'heart', 'heartP', 'liverP', 'fat', 'plaque', 'lumen', 'fx', 'brain'].forEach(n => el[n] = $(n));
+  const mk = (g, side) => tar.forEach(t => { const c = document.createElementNS(NS, 'circle'); c.setAttribute('cx', t[0]); c.setAttribute('cy', t[1]); c.setAttribute('r', t[2]); c.setAttribute('fill', '#17101a'); c.setAttribute('opacity', 0); g.appendChild(c); });
+  mk(el.tarL); mk(el.tarR);
+  for (let i = 0; i < 9; i++) { const c = document.createElementNS(NS, 'circle'); c.setAttribute('cx', 34 + rnd() * 64); c.setAttribute('cy', 252 + rnd() * 34); c.setAttribute('r', 3 + rnd() * 4); c.setAttribute('opacity', 0); el.fat.appendChild(c); }
+  const I = { svg, vis: null, tgt: null, time: 0, bpm: 70, rr: 14, pulse: 0, flashes: {}, burst: 0 };
+  allInsides.push(I);
+  I.setState = function (st) {
+    const s = st.s, v = vitals(st);
+    I.tgt = { lungs: s.lungs, heart: s.heart, brain: s.brain, liver: s.liver, metab: s.metab };
+    I.bpm = v.rhr; I.rr = v.rr; I.st = st;
+    if (!I.vis) I.vis = Object.assign({}, I.tgt);
+  };
+  I.snap = function () { if (I.tgt) I.vis = Object.assign({}, I.tgt); I.draw(0); };
+  I.boost = function (ms, bpmMul, rrMul) { I.boostUntil = performance.now() + ms; I.bpmMul = bpmMul || 1.5; I.rrMul = rrMul || 1.6; };
+  I.smoke = function () {
+    for (let i = 0; i < 9; i++) {
+      const c = document.createElementNS(NS, 'circle'); c.setAttribute('r', 5 + Math.random() * 4); c.setAttribute('fill', '#8c8c94');
+      const g = document.createElementNS(NS, 'g'); g.setAttribute('transform', `translate(${104 + Math.random() * 12} 90)`); g.appendChild(c); el.fx.appendChild(g);
+      const dx = (Math.random() < .5 ? -1 : 1) * (22 + Math.random() * 30);
+      try { const a = c.animate([{ transform: 'translate(0,0) scale(.7)', opacity: 0 }, { transform: `translate(${dx * .2}px,18px) scale(1)`, opacity: .9, offset: .25 }, { transform: `translate(${dx}px,${60 + Math.random() * 50}px) scale(1.5)`, opacity: 0 }], { duration: 1800, delay: i * 120, easing: 'ease-in' }); a.onfinish = () => g.remove(); } catch (e) { g.remove(); }
+    }
+    I.flash('lungs', '#868e96');
+  };
+  I.flash = function (organ, color) { I.flashes[organ] = { t0: performance.now(), color }; };
+  I.draw = function (dt) {
+    const v = I.vis, t = I.tgt; if (!v) return;
+    I.time += dt;
+    const k = Math.min(1, dt * 3);
+    for (const key in t) v[key] += (t[key] - v[key]) * k;
+    const T = I.time, boosted = I.boostUntil && performance.now() < I.boostUntil;
+    const bpm = I.bpm * (boosted ? I.bpmMul : 1), rr = I.rr * (boosted ? I.rrMul : 1);
+    // lungs
+    const dmg = clamp((100 - v.lungs) / 100, 0, 1);
+    const lungCol = mix('#f58aa0', '#4a4048', Math.pow(dmg, 0.8) * 1.05);
+    const lungStroke = mix('#d95f7c', '#2a2228', dmg);
+    el.lungLp.setAttribute('fill', lungCol); el.lungRp.setAttribute('fill', lungCol);
+    el.lungLp.setAttribute('stroke', lungStroke); el.lungRp.setAttribute('stroke', lungStroke);
+    [el.tarL, el.tarR].forEach(g => { [...g.children].forEach((c, i) => c.setAttribute('opacity', clamp((dmg * 1.05 - i / 34 * 0.92) * 3, 0, 0.92).toFixed(2))); });
+    const br = Math.sin(T * Math.PI * 2 * rr / 60);
+    const shallow = 1 - dmg * 0.55;
+    const sx = 1 + br * 0.06 * shallow, sy = 1 + br * 0.045 * shallow;
+    el.lungs.setAttribute('transform', `translate(110 150) scale(${sx.toFixed(4)} ${sy.toFixed(4)}) translate(-110 -150)`);
+    // heart: lub-dub
+    const ph = (T * bpm / 60) % 1;
+    const beat = Math.exp(-Math.pow((ph - 0.08) / 0.05, 2)) + 0.7 * Math.exp(-Math.pow((ph - 0.26) / 0.05, 2));
+    const hs = 0.92 + beat * 0.14 * (0.6 + 0.4 * v.heart / 100);
+    el.heart.setAttribute('transform', `translate(126 166) scale(${hs.toFixed(3)})`);
+    const hl = clamp(v.heart / 100, 0, 1);
+    el.heartP.setAttribute('fill', mix('#6b1b26', '#e8344f', hl)); el.heartP.setAttribute('stroke', mix('#3d0f16', '#b3162f', hl));
+    // brain
+    const bl = clamp(v.brain / 100, 0, 1);
+    el.brainP.setAttribute('fill', mix('#8e7f8d', '#f4aac6', bl));
+    el.brainGlow.setAttribute('opacity', (0.08 + bl * 0.4 + Math.sin(T * 2) * 0.04 * bl).toFixed(3));
+    // liver
+    const ll = clamp(v.liver / 100, 0, 1);
+    el.liverP.setAttribute('fill', mix('#a68a3a', '#8a3b2d', ll)); el.liverP.setAttribute('stroke', mix('#6b5818', '#5c2219', ll));
+    [...el.fat.children].forEach((c, i) => c.setAttribute('opacity', clamp((1 - ll) * 1.4 - i * 0.05, 0, 0.9).toFixed(2)));
+    // artery: plaque grows as heart + metabolic health fall
+    const clog = clamp((100 - (v.heart * 0.6 + v.metab * 0.4)) / 100 * 1.15, 0, 0.95);
+    const lum = 14 * (1 - clog * 0.85) + 2;
+    el.plaque.setAttribute('r', (22 + 0).toFixed(1)); el.plaque.setAttribute('opacity', clamp(clog * 2, 0, 1).toFixed(2));
+    el.lumen.setAttribute('r', (3 + (22 - 3) * (1 - clog) * 0.62).toFixed(1));
+    el.lumen.setAttribute('fill', mix('#a01c1c', '#e03131', 1 - clog * 0.5));
+    // flashes
+    const fl = I.flashes.lungs; if (fl) { const p = (performance.now() - fl.t0) / 900; if (p < 1) { el.lungLp.setAttribute('stroke-width', 3 + (1 - p) * 5); el.lungRp.setAttribute('stroke-width', 3 + (1 - p) * 5); } else { delete I.flashes.lungs; el.lungLp.setAttribute('stroke-width', 3); el.lungRp.setAttribute('stroke-width', 3); } }
+  };
+  return I;
+}
+
+;
+// ===== FX: one-shot animations tied to each choice =====
+// Each takes the figure F. They set a pose / prop / face and emit particles. F.inside (optional) is the organ view.
+const em = (F, text, x, y, o) => F.emit('text', x, y, Object.assign({ text }, o));
+const burst = (F, list, x, y, o) => list.forEach((t, i) => em(F, t, x + (i - (list.length - 1) / 2) * 30, y, Object.assign({ delay: i * 220, dy: -70, dur: 1900, s0: .6, s1: 1.15 }, o)));
+const zzz = F => [0, 1, 2, 3].forEach(i => em(F, 'Z', 238 + i * 12, 96 - i * 4, { size: 20 + i * 5, fill: '#4c6ef5', bold: 1, dx: 18, dy: -50, delay: i * 520, dur: 2000, rot: 12 }));
+const smokePuffs = (F, col, n, from) => { for (let i = 0; i < n; i++) F.emit('circle', from ? from[0] : 214, from ? from[1] : 150, { r: 7 + i % 3 * 2, fill: col || '#b9bcc4', dx: -20 + Math.random() * 60, dy: -90 - Math.random() * 40, dur: 2400, delay: i * 260, s0: .6, s1: 2.6, peak: .8 }); };
+const sparkles = (F, col, n, cx, cy, spread) => { for (let i = 0; i < n; i++) em(F, '✦', (cx || 200) + (Math.random() - .5) * (spread || 160), (cy || 150) + (Math.random() - .5) * (spread || 160), { size: 16 + Math.random() * 14, fill: col || '#fcc419', dy: -26, dur: 1500, delay: i * 140, s1: 1.4 }); };
+const sweatDrops = (F, n) => { for (let i = 0; i < n; i++) em(F, '💧', i % 2 ? 252 : 148, 98, { size: 16, dx: i % 2 ? 22 : -22, dy: 40, dur: 1000, delay: i * 250, s0: .8, s1: 1 }); };
+const rays = F => { const g = F.svg.querySelector('[id$=fxBack]'); const w = document.createElementNS(NS, 'g'); w.setAttribute('transform', 'translate(70 70)');
+  w.innerHTML = '<circle r="34" fill="#ffd43b"/><g stroke="#ffd43b" stroke-width="7" stroke-linecap="round">' + [...Array(12)].map((_, i) => `<line x1="0" y1="-48" x2="0" y2="-70" transform="rotate(${i * 30})"/>`).join('') + '</g>';
+  g.appendChild(w); try { const a = w.animate([{ opacity: 0, transform: 'translate(70px,70px) scale(.4)' }, { opacity: 1, transform: 'translate(70px,70px) scale(1) rotate(30deg)', offset: .3 }, { opacity: 1, transform: 'translate(70px,70px) scale(1.1) rotate(60deg)', offset: .8 }, { opacity: 0, transform: 'translate(70px,70px) scale(1.1) rotate(80deg)' }], { duration: 3000 }); a.onfinish = () => w.remove(); } catch (e) { w.remove(); } };
+const raysBeams = F => { for (let i = 0; i < 6; i++) F.emit('line', 60 + i * 12, 70, { len: 80 + i * 6, fill: '#ffe066', w: 5, dx: 150 + i * 10, dy: 130 + i * 20, dur: 2200, delay: i * 120, s0: 1, s1: 1, rot: 38, peak: .8 }); };
+
+const FX = {
+  sleep: F => { F.pose('rest'); F.set('eyesClosed', 1, 2800); F.face('happy', 2800); zzz(F); F.tintFlash('#10204d', .5, 2800); em(F, '🌙', 70, 80, { size: 40, dy: 0, dur: 2800, s0: 1, s1: 1 }); },
+  game: F => { F.pose('hold', 2800); F.set('glow', 1, 2800); F.tintFlash('#4dabf7', .22, 2800); em(F, '🎮', 200, 300, { size: 34, dy: -10, dur: 2800, s0: 1, s1: 1 }); sparkles(F, '#74c0fc', 6, 200, 130, 140); F.face('happy', 1400); },
+  eat_good: F => { F.pose('mouth', 2400); burst(F, ['🍎', '🥦', '🍌'], 200, 250, { dy: -90 }); F.face('happy', 2400); sparkles(F, '#51cf66', 5); },
+  eat_junk: F => { F.pose('mouth', 2400); burst(F, ['🍩', '🍕', '🍟'], 200, 250, { dy: -90 }); },
+  hunger: F => { F.pose('stomach', 2600); F.face('sad', 2600); em(F, 'grrr…', 200, 330, { size: 20, fill: '#555', bold: 1, dy: -26, dur: 2200, s1: 1.2 }); em(F, 'grrr…', 170, 350, { size: 16, fill: '#555', bold: 1, dy: -24, dur: 2200, delay: 600 }); },
+  water: F => { F.pose('mouth', 2400); F.prop('bottle', 2400); burst(F, ['💧', '💧', '💧'], 200, 230, { dy: -60 }); F.face('happy', 2400); sparkles(F, '#4dabf7', 4); },
+  mix: F => { F.pose('mouth', 2200); F.prop('cup', 2200); burst(F, ['🥤', '💧'], 200, 230); },
+  energy: F => { F.pose('mouth', 2200); F.prop('can', 2200); F.set('shake', 2.6, 2400); sweatDrops(F, 4); burst(F, ['⚡', '⚡', '⚡'], 200, 180, { dy: -50 }); if (F.inside) F.inside.boost(4000, 1.6, 1.2); },
+  shield: F => { F.pose('stop', 2400); em(F, '🛡️', 292, 190, { size: 52, dy: -18, dur: 2400, s0: .4, s1: 1.2 }); sparkles(F, '#fcc419', 7, 200, 160, 180); F.face('happy', 2400); },
+  vape: F => { F.pose('mouth', 2600); F.prop('vape', 2600); smokePuffs(F, '#b197fc', 6); F.later(900, () => { F.cough(); F.face('ouch', 900); }); if (F.inside) { F.inside.smoke(); F.later(900, () => F.inside.smoke()); } },
+  smoke: F => { F.pose('mouth', 2800); F.prop('cig', 2800); smokePuffs(F, '#aeb1b8', 7); F.later(1100, () => { F.cough(); F.face('ouch', 900); }); if (F.inside) { F.inside.smoke(); F.later(1000, () => F.inside.smoke()); } },
+  drink: F => { F.pose('mouth', 2200); F.prop('cup', 2200); F.set('wobble', 4, 3200); F.set('dizzy', 1, 3200); F.later(1200, () => burst(F, ['💫', '💫', '💫'], 200, 90, { dy: -26, dur: 2000 })); },
+  cheers: F => { F.pose('mouth', 2000); F.prop('cup', 2000); F.face('happy', 2400); sparkles(F, '#fcc419', 6); burst(F, ['🥂'], 200, 150, { dy: -40 }); },
+  car: F => { F.set('shake', 5, 1600); F.tintFlash('#e03131', .45, 1200); em(F, '🚗', 60, 470, { size: 56, dx: 280, dy: -20, dur: 1100, s0: 1, s1: 1, peak: 1 }); em(F, 'SCREEECH', 200, 100, { size: 24, fill: '#c92a2a', bold: 1, dy: -14, dur: 1800, s1: 1.2 }); F.face('ouch', 2200); F.set('dizzy', 1, 2400); },
+  run: F => { F.set('run', 1, 3000); F.set('bob', 7, 3000); F.pose('rest'); sweatDrops(F, 8); for (let i = 0; i < 5; i++) F.emit('line', 330, 200 + i * 40, { len: 50, fill: '#adb5bd', w: 4, dx: -90, dy: 0, dur: 600, delay: i * 120, s0: 1, s1: 1, peak: .7 }); F.face('happy', 3000); if (F.inside) F.inside.boost(3200, 1.9, 2.2); },
+  walk: F => { F.set('bob', 3, 2600); F.set('run', 0); F.pose('rest'); burst(F, ['🌿', '🍃'], 200, 180); F.face('happy', 2600); },
+  sit: F => { F.face('slump', 2800); F.pose('rest'); em(F, '🛋️', 70, 480, { size: 56, dy: 0, dur: 2800, s0: 1, s1: 1 }); em(F, '🕒', 336, 60, { size: 36, dy: 0, dur: 2800, s0: 1, s1: 1 }); F.set('cloud', 1, 2400); },
+  phone: F => { F.pose('phone', 2800); F.prop('phone', 2800); F.set('glow', 1, 2800); F.tintFlash('#4dabf7', .18, 2800); burst(F, ['💬', '❤️', '🔔', '📸'], 200, 110, { dy: -50, dx: 24 }); },
+  study: F => { F.pose('book', 2600); F.prop('book', 2600); burst(F, ['💡'], 200, 50, { dy: -20, dur: 2400, s1: 1.4 }); sparkles(F, '#fcc419', 4, 200, 90, 120); F.face('happy', 2400); },
+  calm: F => { F.pose('rest'); F.face('happy', 2800); F.set('eyesClosed', 1, 1800); for (let i = 0; i < 3; i++) F.emit('circle', 200, 260, { r: 54, fill: '#63e6be55', dy: 0, dur: 2400, delay: i * 700, s0: .6, s1: 2.2, back: 1 }); burst(F, ['🌿', '☮️'], 200, 80, { dy: -30 }); },
+  stress: F => { F.pose('head', 2800); F.set('cloud', 2, 3000); F.set('shake', 1.8, 2600); F.face('sad', 2800); sweatDrops(F, 6); for (let i = 0; i < 8; i++) F.emit('line', 150 + i * 14, 70, { len: 18, fill: '#74c0fc', w: 3, dx: -10, dy: 90, dur: 900, delay: i * 140, s0: 1, s1: 1, peak: .8, rot: 70 }); F.tintFlash('#343a40', .3, 2400); if (F.inside) F.inside.boost(3000, 1.5, 1.4); },
+  talk: F => { F.pose('wave', 2600); F.face('happy', 2400); burst(F, ['💬', '💬', '❤️'], 120, 120, { dy: -40, dx: -10 }); em(F, '💬', 290, 140, { size: 36, dy: -30, dur: 2200, delay: 600 }); },
+  shrug: F => { F.pose('shrug', 2200); em(F, '…', 200, 70, { size: 38, fill: '#666', bold: 1, dy: -14, dur: 2000 }); },
+  angry: F => { F.pose('hips', 2600); F.face('angry', 2600); F.tintFlash('#e03131', .3, 2200); for (let i = 0; i < 6; i++) { em(F, '💢', 150 + (i % 2) * 100, 100, { size: 22, dx: (i % 2 ? 1 : -1) * 26, dy: -30, delay: i * 260, dur: 1400 }); F.emit('circle', 150 + (i % 2) * 100, 120, { r: 8, fill: '#ffffffcc', dx: (i % 2 ? 1 : -1) * 20, dy: -40, delay: i * 220, dur: 1300, s1: 2 }); } F.set('shake', 1.6, 2000); if (F.inside) F.inside.boost(3000, 1.6, 1.4); },
+  idea: F => { F.pose('cheer', 2200); F.face('happy', 2600); burst(F, ['💡'], 200, 60, { dy: -30, s1: 1.6, dur: 2400 }); sparkles(F, '#fcc419', 6); },
+  storm: F => { F.set('cloud', 2, 3000); F.face('sad', 3000); F.pose('head', 2400); F.tintFlash('#343a40', .35, 2600); for (let i = 0; i < 10; i++) F.emit('line', 140 + i * 12, 70, { len: 18, fill: '#74c0fc', w: 3, dx: -10, dy: 110, dur: 900, delay: i * 160, s0: 1, s1: 1, peak: .8, rot: 70 }); },
+  sun: F => { rays(F); raysBeams(F); sweatDrops(F, 5); F.tintFlash('#ff922b', .28, 2800); em(F, '🥵', 330, 220, { size: 30, dy: -20, dur: 2200 }); },
+  burn: F => { rays(F); raysBeams(F); sweatDrops(F, 6); F.tintFlash('#ff6b6b', .4, 3000); F.face('ouch', 2800); em(F, 'OUCH!', 200, 80, { size: 26, fill: '#c92a2a', bold: 1, dy: -30, dur: 2200, s1: 1.2 }); F.pose('cheek', 2600); },
+  sunscreen: F => { F.set('hat', 1, 3000); F.pose('hold'); rays(F); F.face('happy', 3000); burst(F, ['🧴', '🧢', '😎'], 200, 220, { dy: -80, dur: 2200 }); F.emit('circle', 200, 250, { r: 120, fill: '#74c0fc33', dy: 0, dur: 2400, s0: .5, s1: 1.6, back: 1 }); sparkles(F, '#e9ecef', 8, 200, 220, 220); },
+  clean: F => { F.pose('hold', 2400); sparkles(F, '#fcc419', 10, 200, 280, 300); burst(F, ['🧹', '✨'], 120, 460, { dy: -60 }); F.face('happy', 2400); },
+  mess: F => { F.face('sad', 2200); for (let i = 0; i < 6; i++) em(F, ['🧦', '🥤', '🍕', '📄', '👕', '🍟'][i], 60 + i * 52, 200, { size: 28, dy: 270, dur: 1100, delay: i * 180, s0: 1, s1: 1, rot: 180, peak: 1 }); },
+  nature: F => { F.pose('cheer', 2400); F.face('happy', 2800); rays(F); burst(F, ['🌳', '🦋', '🌸'], 200, 180, { dy: -70, dur: 2200 }); sparkles(F, '#51cf66', 5); },
+  indoor: F => { F.face('sad', 2600); F.tintFlash('#343a40', .35, 2600); burst(F, ['🪟', '🕰️'], 200, 130, { dy: -20 }); F.pose('rest'); },
+  friends: F => { F.pose('wave', 3000); F.face('happy', 3000); burst(F, ['😄', '👋', '❤️', '🎉'], 200, 130, { dy: -70, dur: 2200 }); sparkles(F, '#f06595', 6); },
+  alone: F => { F.set('cloud', 1, 3000); F.face('sad', 3000); F.tintFlash('#343a40', .32, 2800); for (let i = 0; i < 7; i++) F.emit('line', 150 + i * 14, 70, { len: 16, fill: '#74c0fc', w: 3, dx: -10, dy: 100, dur: 900, delay: i * 190, s0: 1, s1: 1, peak: .8, rot: 70 }); em(F, '📵', 330, 200, { size: 30, dy: -10, dur: 2600 }); },
+  kind: F => { F.pose('give', 2600); F.face('happy', 2800); burst(F, ['🎁', '❤️', '🤝'], 240, 230, { dy: -80, dur: 2200 }); sparkles(F, '#f06595', 6); },
+  eco: F => { F.pose('cheer', 2400); F.face('happy', 2600); burst(F, ['♻️', '🚲', '🌍'], 200, 190, { dy: -80, dur: 2200 }); sparkles(F, '#51cf66', 6); },
+  litter: F => { F.face('sad', 2200); for (let i = 0; i < 5; i++) em(F, ['🥤', '🍟', '🛍️', '📦', '🥫'][i], 100 + i * 50, 230, { size: 26, dy: 240, dur: 1000, delay: i * 200, s0: 1, s1: 1, rot: 220 }); smokePuffs(F, '#6c6f78', 4, [330, 440]); },
+  pill: F => { F.pose('mouth', 2200); F.prop('pill', 2200); F.set('shake', 2.2, 3000); sweatDrops(F, 5); burst(F, ['⚡', '💓'], 200, 170, { dy: -50 }); if (F.inside) F.inside.boost(5000, 1.9, 1.5); },
+  doctor: F => { F.pose('rest'); F.prop('pad', 2400); F.face('happy', 2600); burst(F, ['🩺', '➕', '📋'], 200, 160, { dy: -80, dur: 2200 }); sparkles(F, '#4dabf7', 4); },
+  tooth: F => { F.face('happy', 2800); F.pose('rest'); burst(F, ['🪥', '✨', '🦷'], 200, 200, { dy: -60 }); sparkles(F, '#e9ecef', 8, 200, 165, 70); },
+  cavity: F => { F.pose('cheek', 2600); F.face('ouch', 2600); burst(F, ['🦷', '😖'], 220, 200, { dy: -60 }); em(F, 'ouch!', 255, 150, { size: 18, fill: '#c92a2a', bold: 1, dx: 24, dy: -14, dur: 1800 }); },
+  heart: F => { F.pose('hold', 2400); F.face('happy', 2800); burst(F, ['❤️', '💖', '❤️'], 200, 220, { dy: -90, dur: 2200 }); },
+  good: F => { F.face('happy', 2400); F.pose('cheer', 1800); sparkles(F, '#fcc419', 9); },
+  bad: F => { F.face('sad', 2400); F.tintFlash('#343a40', .25, 2200); em(F, '😟', 200, 60, { size: 34, dy: -16, dur: 2000 }); }
+};
+
+;
+// ===== UI: screens, game flow, chart, results =====
+const $id = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const sgn = n => (n > 0 ? '+' : n < 0 ? '−' : '') + Math.abs(n);
+
+const VIT = [
+  { id: 'bp', name: 'Blood pressure', unit: 'mmHg', fmt: v => v.sys + '/' + v.dia, bad: v => v.sys },
+  { id: 'rhr', name: 'Resting heart rate', unit: 'bpm', fmt: v => v.rhr, bad: v => v.rhr },
+  { id: 'rr', name: 'Breathing rate', unit: '/min', fmt: v => v.rr, bad: v => v.rr },
+  { id: 'spo2', name: 'Blood oxygen', unit: '%', fmt: v => v.spo2, bad: v => -v.spo2 },
+  { id: 'bmi', name: 'BMI', unit: '', fmt: v => v.bmi.toFixed(1), bad: v => Math.abs(v.bmi - 22) },
+  { id: 'glucose', name: 'Blood glucose', unit: 'mg/dL', fmt: v => v.glucose, bad: v => v.glucose },
+  { id: 'ldl', name: 'LDL cholesterol', unit: 'mg/dL', fmt: v => v.ldl, bad: v => v.ldl },
+  { id: 'sleep', name: 'Sleep per night', unit: 'hours', fmt: v => v.sleep.toFixed(1), bad: v => -v.sleep },
+  { id: 'energy', name: 'Energy level', unit: '/100', fmt: v => v.energy, bad: v => -v.energy },
+  { id: 'sick', name: 'Sick days / year', unit: 'days', fmt: v => v.sick, bad: v => v.sick }
+];
+const ORG = [['lungs', 'Lungs'], ['heart', 'Heart'], ['brain', 'Brain'], ['liver', 'Liver'], ['skin', 'Skin'], ['bone', 'Bones'], ['muscle', 'Muscle'], ['teeth', 'Teeth'],
+  ['immune', 'Immunity'], ['metab', 'Metabolism'], ['fit', 'Fitness']];
+const HAB_NAMES = { sleep: 'Sleep', diet: 'Eating', move: 'Movement', water: 'Hydration', screen: 'Screen use', coping: 'Stress coping', connect: 'Relationships', outdoor: 'Time outdoors',
+  sun: 'Sun protection', smoke: 'Smoking / vaping', drink: 'Alcohol', drugs: 'Drug misuse', tidy: 'Space & surroundings', dental: 'Dental care', mind: 'Mindset', care: 'Medical care', eco: 'Sustainability' };
+function habitWord(k, v) {
+  if (SUBSTANCE.includes(k)) return v <= 0.2 ? 'none' : v < 1.2 ? 'occasional' : v < 2.4 ? 'regular' : 'heavy';
+  return v >= 1.5 ? 'strong habit' : v >= 0.5 ? 'good' : v > -0.5 ? 'average' : v > -1.5 ? 'poor' : 'harmful';
+}
+const barColor = v => v >= 70 ? '#2f9e44' : v >= 45 ? '#e8a317' : '#d9363e';
+
+// ---------------- persistence ----------------
+const STORE = 'htc.trials.v1';
+function loadTrials() { try { return JSON.parse(localStorage.getItem(STORE)) || []; } catch (e) { return []; } }
+function saveTrials(list) { try { localStorage.setItem(STORE, JSON.stringify(list.slice(-14))); } catch (e) {} }
+
+// ---------------- app state ----------------
+const App = { look: { name: 'Alex', skin: SKINS[1], hair: HAIRS[0], shirt: SHIRTS[1] }, goal: 'healthy', trials: loadTrials(), T: null, F: null, I: null, pv: null, busy: false, lapseSkip: null };
+const GOAL_LABEL = { healthy: '🌟 Healthiest possible', unhealthy: '⚠️ Unhealthiest possible', free: '🎲 Explore freely' };
+const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+function show(screen) { ['title', 'game', 'results'].forEach(s => $id('screen-' + s).classList.toggle('hidden', s !== screen)); }
+
+// ---------------- title screen ----------------
+function buildSwatches(id, arr, key) {
+  const box = $id(id); box.innerHTML = '';
+  arr.forEach(c => { const b = document.createElement('button'); b.className = 'sw'; b.style.background = c; b.setAttribute('aria-label', key + ' ' + c);
+    b.setAttribute('aria-pressed', App.look[key] === c); b.onclick = () => { App.look[key] = c; [...box.children].forEach(x => x.setAttribute('aria-pressed', x === b)); App.pv.setLook(App.look); }; box.appendChild(b); });
+}
+function renderTrials() {
+  const list = App.trials.slice().reverse().slice(0, 5);
+  $id('bd-healthy').classList.toggle('done', App.trials.some(t => t.goal === 'healthy'));
+  $id('bd-unhealthy').classList.toggle('done', App.trials.some(t => t.goal === 'unhealthy'));
+  $id('bd-healthy').textContent = (App.trials.some(t => t.goal === 'healthy') ? '✔ ' : '') + '🌟 Healthiest trial';
+  $id('bd-unhealthy').textContent = (App.trials.some(t => t.goal === 'unhealthy') ? '✔ ' : '') + '⚠️ Unhealthiest trial';
+  $id('trials').innerHTML = list.length ? '<h4 style="margin:14px 0 4px;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)">Your recent trials</h4>' + list.map(t =>
+    `<div class="trial-row"><span class="chip ${t.goal === 'healthy' ? 'hl' : t.goal === 'unhealthy' ? 'un' : 'fr'}">${t.goal === 'healthy' ? 'Healthiest' : t.goal === 'unhealthy' ? 'Unhealthiest' : 'Explore'}</span><span>${esc(t.name)}: body age <b>${t.bodyAge}</b></span><span><b>${sgn(t.pts)}</b> pts</span></div>`).join('') : '';
+}
+function initTitle() {
+  App.pv = createFigure($id('pv'), App.look); App.pv.setState(newState()); App.pv.snap();
+  buildSwatches('sw-skin', SKINS, 'skin'); buildSwatches('sw-hair', HAIRS, 'hair'); buildSwatches('sw-shirt', SHIRTS, 'shirt');
+  $id('inp-name').oninput = e => { App.look.name = e.target.value.slice(0, 16); };
+  document.querySelectorAll('.goal').forEach(b => b.onclick = () => { App.goal = b.dataset.goal; document.querySelectorAll('.goal').forEach(x => x.setAttribute('aria-pressed', x === b)); });
+  $id('btn-start').onclick = startTrial;
+  $id('btn-teacher').onclick = () => $id('dlg-teacher').showModal();
+  renderTrials();
+}
+
+// ---------------- game ----------------
+function buildOrder() { return PHASE_SCENARIOS.map(ph => shuffle(ph)); }
+
+function startTrial() {
+  if (!App.look.name.trim()) App.look.name = 'Alex';
+  const st = newState();
+  App.T = { goal: App.goal, st, order: buildOrder().flat(), idx: 0, log: [], pts: [0], vit: [vitality(st)], look: Object.assign({}, App.look), num: App.trials.length + 1, started: Date.now() };
+  show('game');
+  if (!App.F) {
+    App.F = createFigure($id('fig'), App.T.look); App.I = createInside($id('inside')); App.F.inside = App.I;
+    $id('vtabs').querySelectorAll('button').forEach(b => b.onclick = () => { $id('stage').classList.toggle('show-inside', b.dataset.v === 'in'); $id('vtabs').querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', x === b)); });
+  }
+  App.F.clearFx(); App.F.setLook(App.T.look); App.F.hand = null; App.F.vis = null; App.F.setState(st); App.F.snap(); App.I.vis = null; App.I.setState(st); App.I.snap();
+  $id('goalchip').textContent = GOAL_LABEL[App.goal];
+  App.snap = snapshot(st); App.dispAge = st.age;
+  renderPanels(st, null); renderTrend(); nextScenario();
+}
+
+const snapshot = st => ({ s: Object.assign({}, st.s), v: vitals(st), h: Object.assign({}, st.h), vit: vitality(st), dom: domainScores(st), pts: st.pts, age: st.age });
+
+function renderPanels(st, prev) {
+  const v = vitals(st), dom = domainScores(st), vt = vitality(st);
+  const T = App.T;
+  $id('st-pts').textContent = sgn(st.pts) === '' ? '0' : sgn(st.pts);
+  $id('st-vit').textContent = Math.round(vt);
+  $id('progbar').style.width = (T.idx / TOTAL_CHOICES * 100) + '%';
+  $id('progtxt').textContent = 'Choice ' + Math.min(T.idx + 1, TOTAL_CHOICES) + ' of ' + TOTAL_CHOICES;
+  // domains
+  $id('domains').innerHTML = DOM_KEYS.map(k => `<div class="dbar" title="${DOMAINS[k].name}"><span>${DOMAINS[k].icon}</span><div><div style="display:flex;justify-content:space-between;font-size:12px"><span>${DOMAINS[k].name}</span></div><div class="tr"><i style="width:${dom[k].toFixed(0)}%;background:${DOMAINS[k].color}"></i></div></div><b>${Math.round(dom[k])}</b></div>`).join('');
+  // vitals
+  $id('vitals').innerHTML = VIT.map(m => {
+    const band = BANDS[m.id](v), cls = band[0], prevV = prev && prev.v;
+    const changed = prevV && m.fmt(prevV) !== m.fmt(v);
+    let arrow = '';
+    if (changed) { const better = m.bad(v) < m.bad(prevV); const up = typeof m.bad(v) === 'number' && (m.id === 'bp' ? v.sys > prevV.sys : parseFloat(m.fmt(v)) > parseFloat(m.fmt(prevV)));
+      arrow = `<span class="arrow" style="color:${better ? '#1d8a4a' : '#c92a2a'}">${up ? '▲' : '▼'}</span>`; }
+    return `<div class="vit ${changed ? 'flash' : ''}" title="${esc(band[2])}"><span class="n">${m.name}</span><span class="v s ${cls}" style="grid-column:auto;font-size:13px">${m.fmt(v)} <small style="font-weight:500">${m.unit}</small>${arrow}<br><small style="font-weight:700">${band[1]}</small></span></div>`;
+  }).join('');
+  // organs
+  $id('organs').innerHTML = ORG.map(([k, n]) => `<div class="obar"><span>${n}</span><div class="tr"><i style="width:${st.s[k].toFixed(0)}%;background:${barColor(st.s[k])}"></i></div><b>${Math.round(st.s[k])}</b></div>`).join('');
+  $id('orgvals').innerHTML = `<span>Lungs <b>${Math.round(st.s.lungs)}%</b></span><span>Heart <b>${Math.round(st.s.heart)}%</b></span><span>Brain <b>${Math.round(st.s.brain)}%</b></span><span>Liver <b>${Math.round(st.s.liver)}%</b></span>`;
+  $id('bodyage').textContent = 'Body age ' + bodyAge(st);
+}
+
+function renderTrend() {
+  const T = App.T, pts = T.pts, n = TOTAL_CHOICES;
+  const m = Math.max(16, ...pts.map(Math.abs)), W = 380, H = 64;
+  const x = i => 4 + (W - 8) * i / n, y = v => H / 2 - (v / m) * (H / 2 - 5);
+  let d = pts.map((v, i) => (i ? 'L' : 'M') + x(i).toFixed(1) + ' ' + y(v).toFixed(1)).join('');
+  const last = pts[pts.length - 1];
+  const col = last > 0 ? '#1d8a4a' : last < 0 ? '#c92a2a' : '#5b6188';
+  $id('trend').innerHTML = `<line x1="0" x2="${W}" y1="${H / 2}" y2="${H / 2}" stroke="#c9cce8" stroke-dasharray="3 3"/>
+    <path d="${d}" fill="none" stroke="${col}" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke"/>
+    <circle cx="${x(pts.length - 1).toFixed(1)}" cy="${y(last).toFixed(1)}" r="3.5" fill="${col}"/>`;
+  $id('trendnow').textContent = sgn(last) || '0';
+}
+
+function nextScenario() {
+  const T = App.T, st = T.st;
+  let sc = T.order[T.idx];
+  if (sc.cond && !sc.cond(st)) sc = sc.alt;
+  T.cur = sc; T.pickedBefore = snapshot(st);
+  const phase = T.idx < 14 ? 0 : T.idx < 28 ? 1 : T.idx < 40 ? 2 : 3;
+  $id('phname').textContent = PHASES[phase].name; $id('phrange').textContent = PHASES[phase].range;
+  $id('agenum').textContent = Math.floor(st.age);
+  const D = DOMAINS[sc.dom];
+  const opts = shuffle(sc.opts).map((o, i) => ({ o, i }));
+  T.shown = opts;
+  const body = $id('rbody');
+  body.innerHTML = `<div class="stop"><span class="done"><b>S</b>State</span><span class="on"><b>T</b>Think</span><span id="stopO"><b>O</b>Observe</span><span id="stopP"><b>P</b>Pick</span></div>
+    <span class="dompill" style="background:${D.color}">${D.icon} ${D.name} · ${esc(sc.cat)}</span>
+    <h2 class="scn-title">${esc(sc.title)}</h2>
+    <p class="scn-text">${esc(sc.text)}</p>
+    <div class="observe"><b>Observe first:</b> What could happen <u>right away</u>? What if this became your habit for years?</div>
+    <div class="opts">${opts.map((x, n) => `<button class="opt" data-n="${n}"><span class="k">${n + 1}</span><span>${esc(x.o.t)}</span></button>`).join('')}</div>`;
+  body.scrollTop = 0;
+  body.querySelectorAll('.opt').forEach(b => b.onclick = () => pick(+b.dataset.n));
+  App.mode = 'choose'; App.F.pose('rest');
+}
+
+function pick(n) {
+  if (App.mode !== 'choose') return;
+  App.mode = 'report';
+  const T = App.T, st = T.st, sc = T.cur, opt = T.shown[n].o;
+  const before = T.pickedBefore, habBefore = Object.assign({}, st.h);
+  const pts = applyOption(st, sc, opt);
+  T.log.push({ id: sc.id, title: sc.title, dom: sc.dom, g: opt.g, p: pts, w: sc.w, t: opt.t, age: Math.floor(st.age), cat: sc.cat });
+  T.pts.push(st.pts); T.vit.push(vitality(st));
+  const evs = checkEvents(st);
+  App.pendingEv = evs;
+  App.F.fx(opt.fx || (opt.g === 'C' ? 'bad' : 'good'));
+  App.F.setState(st); App.I.setState(st);
+  renderPanels(st, before); renderTrend();
+  const after = snapshot(st);
+  // describe changes
+  const chips = ORG.map(([k, nm]) => ({ nm, d: Math.round(after.s[k] - before.s[k]) })).concat([{ nm: 'Mood', d: Math.round(after.s.mood - before.s.mood) }, { nm: 'Stress', d: Math.round(after.s.stress - before.s.stress), inv: 1 }, { nm: 'Friendships', d: Math.round(after.s.social - before.s.social) }, { nm: 'Surroundings', d: Math.round(after.s.env - before.s.env) }])
+    .filter(c => c.d !== 0).sort((a, b) => Math.abs(b.d) - Math.abs(a.d)).slice(0, 8);
+  const notes = [];
+  VIT.forEach(m => { const a = m.fmt(before.v), b = m.fmt(after.v); if (a !== b) { const band = BANDS[m.id](after.v); notes.push({ m, a, b, band, mag: Math.abs(m.bad(after.v) - m.bad(before.v)) / Math.max(1, Math.abs(m.bad(before.v))) }); } });
+  notes.sort((x, y) => y.mag - x.mag);
+  const habNotes = Object.keys(st.h).filter(k => Math.abs(st.h[k] - habBefore[k]) > 0.01).map(k => `${HAB_NAMES[k]}: <b>${habitWord(k, st.h[k])}</b>`);
+  const word = { A: 'Health-enhancing choice', B: 'Mixed / neutral choice', C: 'Risky choice' }[opt.g];
+  const pcls = pts > 0 ? 'pos' : pts < 0 ? 'neg' : 'zero';
+  const body = $id('rbody');
+  const isLast = T.idx >= TOTAL_CHOICES - 1;
+  body.innerHTML = `<div class="stop"><span class="done"><b>S</b>State</span><span class="done"><b>T</b>Think</span><span class="done"><b>O</b>Observe</span><span class="on"><b>P</b>Picked</span></div>
+   <div class="report">
+    <div class="res"><span class="grade ${opt.g}">${word}</span><span class="pts ${pcls}">${pts > 0 ? '+' : pts < 0 ? '−' : ''}${Math.abs(pts)} pts</span><span class="dompill" style="background:${DOMAINS[sc.dom].color};margin-left:auto">${DOMAINS[sc.dom].name}</span></div>
+    <div class="youchose">You chose: “${esc(opt.t)}”</div>
+    <p class="fbtext"><b>What happened:</b> ${esc(opt.fb)}</p>
+    ${chips.length ? `<div class="chips">${chips.map(c => { const good = c.inv ? c.d < 0 : c.d > 0; return `<span class="dchip ${good ? 'up' : 'dn'}">${c.nm} ${c.d > 0 ? '+' : '−'}${Math.abs(c.d)}</span>`; }).join('')}</div>` : ''}
+    <div class="chart-note"><h5>Doctor’s chart update</h5>${notes.length ? '<ul>' + notes.slice(0, 4).map(x => `<li><b>${x.m.name}</b> ${x.a} → <b>${x.b}</b> ${x.m.unit} <i>(${x.band[1]})</i>. ${esc(x.band[2])}</li>`).join('') + '</ul>' : 'No big change to vital signs yet. One choice rarely does, but habits add up as the years pass.'}
+      ${habNotes.length ? `<div style="margin-top:6px;font-size:12.5px;color:var(--muted)">This choice is now a habit → ${habNotes.join(' · ')}. Time will keep acting on the body until you face this kind of decision again.</div>` : ''}</div>
+    <div class="nextrow"><button class="btn" id="btn-next">${isLast ? 'Fast-forward to 65 ▶' : 'Let time pass ▶'}<span class="kbd">Enter</span></button></div>
+   </div>`;
+  body.scrollTop = 0;
+  $id('btn-next').onclick = advance; $id('btn-next').focus({ preventScroll: true });
+}
+
+function habitDrivers(st) {
+  const bad = [], good = [];
+  for (const k in st.h) { const v = st.h[k];
+    if (SUBSTANCE.includes(k)) { if (v >= 0.8) bad.push([v * 1.2, `${HAB_NAMES[k]} (${habitWord(k, v)})`]); }
+    else if (v <= -1) bad.push([-v, `${HAB_NAMES[k]} (${habitWord(k, v)})`]);
+    else if (v >= 1) good.push([v, `${HAB_NAMES[k]}`]); }
+  const top = l => l.sort((x, y) => y[0] - x[0]).slice(0, 3).map(x => x[1]);
+  return { bad: top(bad), good: top(good) };
+}
+
+function advance() {
+  if (App.mode !== 'report') return;
+  App.mode = 'lapse';
+  const T = App.T, st = T.st;
+  const target = T.idx >= TOTAL_CHOICES - 1 ? FINAL_AGE : ageAt(T.idx + 1);
+  const dt = Math.max(0.2, target - st.age);
+  const b = snapshot(st), a0 = st.age;
+  tick(st, dt);
+  const evs = checkEvents(st).concat(App.pendingEv || []); App.pendingEv = null;
+  const af = snapshot(st);
+  T.idx++;
+  App.F.clearFx(); App.F.rate = 0.9; App.F.setState(st); App.I.setState(st);
+  renderPanels(st, b);
+  const when = dt < 1 ? Math.max(1, Math.round(dt * 12)) + (Math.round(dt * 12) === 1 ? ' month' : ' months') + ' later' : (Math.round(dt) === 1 ? '1 year later' : Math.round(dt) + ' years later');
+  const chg = [];
+  ORG.forEach(([k, n]) => { const d = Math.round(af.s[k] - b.s[k]); if (Math.abs(d) >= 1) chg.push({ n, d }); });
+  chg.sort((x, y) => Math.abs(y.d) - Math.abs(x.d));
+  const dr = habitDrivers(st);
+  const lapse = $id('lapse');
+  $id('lapse-lbl').textContent = '⏳ ' + when + '…';
+  $id('rbody').innerHTML = `<div class="stop"><span class="done"><b>S</b>State</span><span class="done"><b>T</b>Think</span><span class="done"><b>O</b>Observe</span><span class="done"><b>P</b>Pick</span></div>
+    <div class="report"><div class="res"><span class="grade" style="background:var(--indigo)">⏳ ${when}</span><span style="margin-left:auto;font-weight:700;color:var(--muted)">Age ${Math.floor(a0)} → ${Math.floor(st.age)}</span></div>
+    <p class="fbtext"><b>Chronic effects:</b> your habits kept working on the body while time passed.</p>
+    <div class="chips">${chg.length ? chg.slice(0, 8).map(c => `<span class="dchip ${c.d > 0 ? 'up' : 'dn'}">${c.n} ${c.d > 0 ? '+' : '−'}${Math.abs(c.d)}</span>`).join('') : '<span class="dchip">The body held steady</span>'}</div>
+    <div class="chart-note"><h5>What’s driving this</h5>
+      ${dr.bad.length ? `<div>⚠️ <b>Working against you:</b> ${dr.bad.join(', ')}</div>` : ''}${dr.good.length ? `<div>✅ <b>Working for you:</b> ${dr.good.join(', ')}</div>` : ''}${!dr.bad.length && !dr.good.length ? '<div>Mostly average habits, so changes are slow and steady.</div>' : ''}</div>
+    ${evs.map(e => `<div class="lifeev ${e.bad ? '' : 'good'}"><small>Age ${e.age} · life event</small><b>${e.bad ? '⚠️ ' : '🌟 '}${esc(e.title)}</b><span>${esc(e.text)}</span></div>`).join('')}
+    <div class="nextrow"><button class="btn" id="btn-cont">${T.idx >= TOTAL_CHOICES ? 'See the results ▶' : 'Next decision ▶'}<span class="kbd">Enter</span></button></div></div>`;
+  lapse.classList.add('on');
+  const dur = Math.max(2200, Math.min(4200, dt * 400));
+  const t0 = performance.now(); let done = false;
+  const fin = () => { if (done) return; done = true; lapse.classList.remove('on'); App.F.rate = 3; App.lapseSkip = null; afterLapse(); };
+  const step = now => {
+    if (done) return;
+    const p = Math.min(1, (now - t0) / dur), e = 1 - Math.pow(1 - p, 2);
+    const ageNow = a0 + (st.age - a0) * e;
+    $id('lapse-yr').textContent = Math.floor(ageNow); $id('agenum').textContent = Math.floor(ageNow);
+    if (p < 1) requestAnimationFrame(step);
+    else { lapse.classList.remove('on'); if (!evs.length) setTimeout(fin, 700); }
+  };
+  requestAnimationFrame(step);
+  $id('btn-cont').onclick = fin; $id('btn-cont').focus({ preventScroll: true }); App.lapseSkip = fin;
+}
+
+function afterLapse() {
+  const T = App.T;
+  if (T.idx >= TOTAL_CHOICES) { finishTrial(); return; }
+  $id('agenum').textContent = Math.floor(T.st.age);
+  nextScenario();
+}
+
+// ---------------- results ----------------
+function finishTrial() {
+  const T = App.T, st = T.st;
+  const vt = vitality(st), g = { A: 0, B: 0, C: 0 };
+  T.log.forEach(l => g[l.g]++);
+  const rec = { id: Date.now(), goal: T.goal, name: T.look.name, date: new Date().toISOString(), vit: Math.round(vt), pts: st.pts, ptsDom: Object.assign({}, st.ptsDom), bodyAge: bodyAge(st), le: lifeExpectancy(st),
+    grades: g, events: st.events.map(e => ({ age: e.age, title: e.title, bad: e.bad, text: e.text })), snap: { age: st.age, s: st.s, h: st.h, burn: st.burn, fired: {}, events: [] }, look: T.look,
+    log: T.log.map(l => ({ id: l.id, title: l.title, dom: l.dom, g: l.g, p: l.p, w: l.w, t: l.t, age: l.age, cat: l.cat })), run: T.pts };
+  App.trials.push(rec); saveTrials(App.trials); renderTrials();
+  renderResults(rec);
+}
+
+function lineChart(run, w, h) {
+  const n = TOTAL_CHOICES, m = Math.max(20, ...run.map(Math.abs)), padL = 34, padB = 20, padT = 8, W = w, H = h;
+  const x = i => padL + (W - padL - 8) * i / n, y = v => padT + (H - padT - padB) * (1 - (v + m) / (2 * m));
+  const d = run.map((v, i) => (i ? 'L' : 'M') + x(i).toFixed(1) + ' ' + y(v).toFixed(1)).join('');
+  const ticks = [-m, -m / 2, 0, m / 2, m].map(v => `<line x1="${padL}" x2="${W - 8}" y1="${y(v)}" y2="${y(v)}" stroke="${v === 0 ? '#8b90b8' : '#e3e5f4'}"/><text x="${padL - 4}" y="${y(v) + 4}" font-size="10" text-anchor="end" fill="#5b6188">${Math.round(v)}</text>`).join('');
+  const marks = [[0, 'Teen'], [14, 'Young adult'], [28, 'Adulthood'], [40, 'Midlife']].map(([i, t]) => `<line x1="${x(i)}" x2="${x(i)}" y1="${padT}" y2="${H - padB}" stroke="#d6d9ee" stroke-dasharray="2 4"/><text x="${x(i) + 4}" y="${H - 6}" font-size="10" fill="#5b6188">${t}</text>`).join('');
+  const last = run[run.length - 1], col = last >= 0 ? '#1d8a4a' : '#c92a2a';
+  return `<svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto">${ticks}${marks}<path d="${d}" fill="none" stroke="${col}" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/><circle cx="${x(run.length - 1)}" cy="${y(last)}" r="4.5" fill="${col}"/></svg>`;
+}
+
+function renderResults(rec) {
+  show('results');
+  const maxTot = DOM_KEYS.reduce((a, k) => a + MAX_DOM[k], 0);
+  const goalMet = rec.goal === 'healthy' ? rec.vit >= 85 : rec.goal === 'unhealthy' ? rec.vit <= 22 : null;
+  const close = rec.goal === 'healthy' ? rec.vit >= 70 : rec.goal === 'unhealthy' ? rec.vit <= 40 : false;
+  let verdict = '';
+  if (rec.goal === 'healthy') {
+    const missed = rec.log.filter(l => l.g !== 'A').sort((a, b) => b.w - a.w).slice(0, 3);
+    verdict = goalMet ? `<div class="verdict ok">🌟 Goal met. ${esc(rec.name)} has a body age of ${rec.bodyAge} at a real age of ${FINAL_AGE}.</div>` :
+      `<div class="verdict no">${close ? 'So close' : 'Not quite'}: aim for a health score of 85+ (yours is ${rec.vit}). ${missed.length ? 'Biggest missed chances: ' + missed.map(m => '<b>' + esc(m.title) + '</b>').join(', ') + '.' : ''}</div>`;
+  } else if (rec.goal === 'unhealthy') {
+    const missed = rec.log.filter(l => l.g !== 'C').sort((a, b) => b.w - a.w).slice(0, 3);
+    verdict = goalMet ? `<div class="verdict ok">⚠️ Goal met. Years of risky choices left ${esc(rec.name)} with a body age of ${rec.bodyAge}, far older than ${FINAL_AGE}. Now play a healthiest trial and compare.</div>` :
+      `<div class="verdict no">${close ? 'Nearly there' : 'Not quite'}: a health score of 22 or less means “unhealthiest.” Yours is ${rec.vit}. ${missed.length ? 'Choices that still helped: ' + missed.map(m => '<b>' + esc(m.title) + '</b>').join(', ') + '.' : ''}</div>`;
+  }
+  const rows = DOM_KEYS.map(k => { const p = rec.ptsDom[k], mx = MAX_DOM[k], r = p / mx; const lab = r >= 0.7 ? ['Strong', 's'] : r >= 0.35 ? ['Okay', 'o'] : ['Needs attention', 'n'];
+    return `<tr><td>${DOMAINS[k].icon} ${DOMAINS[k].name}</td><td class="num">+${mx}</td><td class="num">${sgn(p) || 0}</td><td class="sa ${lab[1]}">${lab[0]}</td></tr>`; }).join('');
+  const big = rec.log.slice().sort((a, b) => Math.abs(b.p) - Math.abs(a.p))[0];
+  const ones = rec.log.filter(l => Math.abs(l.w) === 1);
+  const oneNet = ones.reduce((a, l) => a + l.p, 0);
+  const other = pickOther(rec);
+  const resEl = $id('results');
+  resEl.innerHTML = `
+  <div class="r-head"><div><div class="t-kicker" style="color:var(--muted)">${GOAL_LABEL[rec.goal]} · Trial complete</div><h2>${esc(rec.name)}’s life at 65</h2></div>
+    <div class="r-actions"><button class="btn" id="r-again">Play another trial ▶</button><button class="btn alt" id="r-menu">Menu</button><button class="btn alt" id="r-print">Print / save results</button></div></div>
+  <div class="r-grid">
+    <div><div class="r-fig"><svg id="rfig"></svg></div>
+      <div class="card sec" style="margin-top:12px"><h3>Life timeline</h3><div class="timeline">${rec.events.length ? rec.events.map(e => `<div class="tl ${e.bad ? '' : 'good'}"><b>Age ${e.age}</b><span><b>${esc(e.title)}</b> ${esc(e.text)}</span></div>`).join('') : '<span style="color:var(--muted)">No major health events. A quiet, steady life.</span>'}</div></div>
+    </div>
+    <div>
+      <div class="bigstats">
+        <div class="card bs"><b>${rec.bodyAge}</b><small>Body age (real: ${FINAL_AGE})</small></div>
+        <div class="card bs"><b>${rec.vit}</b><small>Health score</small></div>
+        <div class="card bs"><b>${sgn(rec.pts) || 0}</b><small>Wellness pts (of ±${maxTot})</small></div>
+        <div class="card bs"><b>~${rec.le}</b><small>Est. lifespan</small></div>
+      </div>
+      ${verdict}
+      <div class="card sec"><h3>Your running total (worksheet “Plot the Trend”)</h3>${lineChart(rec.run, 640, 190)}
+        <div style="font-size:13.5px;color:var(--muted)">Your biggest single swing was <b>${esc(big.title)}</b> (${sgn(big.p)} pts, ${DOMAINS[big.dom].name}). You made ${ones.length} small “±1” choices; together they added up to <b>${sgn(oneNet) || 0}</b> pts.</div></div>
+      <div class="card sec"><h3>Domain Balance Check</h3><table class="t"><tr><th>Domain</th><th style="text-align:right">Max possible</th><th style="text-align:right">Your total</th><th>Strong / Needs attention?</th></tr>${rows}</table></div>
+      <div class="card sec"><h3>Compare your trials</h3>${other ? compareHtml(rec, other) : '<p style="margin:0;color:var(--muted)">Play a trial with the <b>opposite goal</b> (healthiest ↔ unhealthiest) and you’ll see both people side by side here.</p>'}</div>
+      <div class="card sec"><h3>Reflect: use STOP and the worksheet</h3>
+        <div class="q"><b>1.</b> Describe the shape of your running-total line. What does that shape represent in real life?</div>
+        <div class="q"><b>2.</b> Which single choice moved your total the most? Which domain was it, and why did it matter so much?</div>
+        <div class="q"><b>3.</b> In the Domain Balance table, which domain scored highest and lowest? Were you surprised?</div>
+        <div class="q"><b>4.</b> Can someone look “healthy” in one domain while struggling in another? Use your own numbers.</div>
+        <div class="q"><b>5.</b> Pick one small (±1) category you chose several times. What was its combined effect?</div>
+        <div class="q"><b>6.</b> Use STOP (State → Think → Observe → Pick) to explain one change to a single choice that would most improve your weakest domain.</div>
+        <div class="q"><b>7.</b> In your own words: what does “health by a thousand choices” mean, and how did your two trials show it?</div></div>
+      <div class="card sec"><details><summary style="cursor:pointer;font-weight:700">Full choice log (copy into the worksheet’s Weekly Recap)</summary>
+        <div class="logwrap"><table class="t"><tr><th>#</th><th>Age</th><th>Decision</th><th>Your choice</th><th>Grade</th><th style="text-align:right">Pts</th><th style="text-align:right">Total</th></tr>
+        ${rec.log.map((l, i) => `<tr><td>${i + 1}</td><td>${l.age}</td><td>${esc(l.title)} <small style="color:var(--muted)">(${DOMAINS[l.dom].name})</small></td><td>${esc(l.t)}</td><td><span class="grade ${l.g}" style="font-size:12px;padding:1px 8px">${l.g}</span></td><td class="num">${sgn(l.p) || 0}</td><td class="num">${sgn(rec.run[i + 1]) || 0}</td></tr>`).join('')}</table></div></details></div>
+    </div>
+  </div>`;
+  const rf = createFigure($id('rfig'), rec.look); const ss = JSON.parse(JSON.stringify(rec.snap)); rf.setState(ss); rf.snap();
+  if (other) { const a = createFigure($id('cmp-a'), rec.look); a.setState(ss); a.snap(); const b = createFigure($id('cmp-b'), other.look); b.setState(other.snap); b.snap(); }
+  $id('r-again').onclick = startTrial; $id('r-menu').onclick = () => { show('title'); };
+  $id('r-print').onclick = () => window.print();
+  resEl.parentElement.scrollTop = 0;
+}
+
+function pickOther(rec) {
+  const opp = rec.goal === 'healthy' ? 'unhealthy' : rec.goal === 'unhealthy' ? 'healthy' : null;
+  const list = App.trials.filter(t => t.id !== rec.id);
+  if (opp) { const c = list.filter(t => t.goal === opp); return c[c.length - 1] || null; }
+  return list[list.length - 1] || null;
+}
+function compareHtml(a, b) {
+  const cell = (t, tag) => `<div class="cc"><h4>${esc(t.name)} <span class="chip ${t.goal === 'healthy' ? 'hl' : t.goal === 'unhealthy' ? 'un' : 'fr'}">${t.goal === 'healthy' ? 'Healthiest' : t.goal === 'unhealthy' ? 'Unhealthiest' : 'Explore'}</span></h4>
+    <div class="r-fig"><svg id="${tag}"></svg></div>
+    <div style="font-size:13.5px">Body age <b>${t.bodyAge}</b> · Health score <b>${t.vit}</b> · <b>${sgn(t.pts) || 0}</b> pts<br><small style="color:var(--muted)">${t.events.length} life events · A:${t.grades.A} B:${t.grades.B} C:${t.grades.C}</small></div></div>`;
+  return `<div class="cmp">${cell(a, 'cmp-a')}${cell(b, 'cmp-b')}</div>
+    <p style="font-size:13.5px;margin:10px 0 0">Same person at the same age: the only difference is the choices. Difference in body age: <b>${Math.abs(a.bodyAge - b.bodyAge)} years</b>.</p>`;
+}
+
+// ---------------- boot ----------------
+window.addEventListener('keydown', e => {
+  if (e.target.tagName === 'INPUT' || document.querySelector('dialog[open]')) return;
+  if ($id('screen-game').classList.contains('hidden')) return;
+  if (App.mode === 'choose' && e.key >= '1' && e.key <= '4') { const n = +e.key - 1; if (App.T.shown[n]) pick(n); }
+  else if (App.mode === 'report' && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); advance(); }
+  else if (App.mode === 'lapse' && (e.key === 'Enter' || e.key === ' ') && App.lapseSkip) { e.preventDefault(); App.lapseSkip(); }
+});
+$id('btn-menu').onclick = () => { if (confirm('Leave this trial? Progress in this trial will be lost.')) { if (App.F) App.F.clearFx(); show('title'); } };
+initTitle();
+
+</script>
+</body>
+</html>
