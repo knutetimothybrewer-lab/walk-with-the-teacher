@@ -1,0 +1,1050 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sam's Wellness Walk</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>:root{--ink:#2b2d42;--card:#fffdf7;--good:#1fa66a;--bad:#e63a63;--info:#3f7de8;
+--phys:#ff7a59;--ment:#5b8cff;--soc:#ffb703;--emo:#ff5d9e;--env:#2ec27e}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:#111}
+body{font-family:'Fredoka','Baloo 2','Trebuchet MS',system-ui,sans-serif;color:var(--ink);overflow-x:hidden}
+body.locked{overflow:hidden}
+#track{width:1px;position:relative}
+#stage{position:fixed;inset:0;overflow:hidden;background:#222}
+#world{position:absolute;inset:0;width:100%;height:100%;display:block}
+button{font-family:inherit;cursor:pointer}
+
+/* ---------- scenes ---------- */
+.sc{opacity:0;visibility:hidden;transition:opacity .7s ease,visibility 0s .7s}
+.sc.on{opacity:1;visibility:visible;transition:opacity .7s ease,visibility 0s 0s}
+.sc:not(.on) *{animation-play-state:paused!important}
+.far{transform:translateX(calc(var(--px,0)*.25px))}
+.near{transform:translateX(calc(var(--px,0)*.7px))}
+.cloud{animation:drift 40s linear infinite alternate}
+@keyframes drift{from{transform:translateX(-40px)}to{transform:translateX(60px)}}
+.spin{animation:spin 30s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.twinkle{animation:tw 2.4s ease-in-out infinite}
+@keyframes tw{50%{opacity:.2}}
+.sway{animation:sway 3s ease-in-out infinite alternate}
+@keyframes sway{from{transform:rotate(-3deg)}to{transform:rotate(3deg)}}
+.float{animation:flo 3s ease-in-out infinite alternate}
+@keyframes flo{to{transform:translateY(-14px)}}
+.pulse{animation:pul 1.2s ease-in-out infinite}
+@keyframes pul{50%{transform:scale(1.12)}}
+.tb{transform-box:fill-box;transform-origin:center}
+
+/* ---------- Sam ---------- */
+#sam .bob{animation:breathe 3s ease-in-out infinite}
+@keyframes breathe{50%{transform:translateY(-4px)}}
+#sam .armL{transform:rotate(var(--aL,6deg));transform-origin:-48px -172px;transition:transform .55s cubic-bezier(.3,1.5,.5,1)}
+#sam .armR{transform:rotate(var(--aR,-6deg));transform-origin:48px -172px;transition:transform .55s cubic-bezier(.3,1.5,.5,1)}
+#sam .legL{transform:rotate(var(--lL,0deg));transform-origin:-24px -105px;transition:transform .4s}
+#sam .legR{transform:rotate(var(--lR,0deg));transform-origin:24px -105px;transition:transform .4s}
+#sam .head{transform:rotate(var(--ht,0deg));transform-origin:0 -190px;transition:transform .5s cubic-bezier(.3,1.5,.5,1)}
+#sam .torso{transform-origin:0 -100px;transition:transform .5s}
+#sam .eyes{animation:blink 4.2s infinite;transform-origin:0 -238px}
+@keyframes blink{0%,94%,100%{transform:scaleY(1)}97%{transform:scaleY(.08)}}
+#sam .mo,#sam .hr,#sam .hc{display:none}
+#sam[data-mood=happy] .m-happy,#sam[data-mood=neutral] .m-neutral,#sam[data-mood=sad] .m-sad,#sam[data-mood=worried] .m-worried,
+#sam[data-mood=angry] .m-angry,#sam[data-mood=sleepy] .m-sleepy,#sam[data-mood=calm] .m-calm,#sam[data-mood=sick] .m-sick{display:block}
+#sam[data-mood=calm] .eyes{display:none}
+#sam[data-hold=phone] .hc-phone,#sam[data-hold=pad] .hc-pad,#sam[data-hold=tray] .hc-tray,#sam[data-hold=journal] .hc-journal{display:block}
+#sam[data-hold=apple] .hr-apple,#sam[data-hold=soda] .hr-soda,#sam[data-hold=bag] .hr-bag{display:block}
+#sam .tear{animation:tear 1.8s infinite}@keyframes tear{0%{transform:translateY(0);opacity:1}100%{transform:translateY(40px);opacity:0}}
+#sam .sweat{animation:tear 1.2s infinite}
+#sam .zzz{animation:zzz 2.6s infinite}@keyframes zzz{0%{transform:translate(0,0);opacity:0}30%{opacity:1}100%{transform:translate(30px,-60px);opacity:0}}
+#sam .steam{animation:steam .9s infinite}@keyframes steam{0%{transform:translateY(0) scale(.6);opacity:.9}100%{transform:translateY(-50px) scale(1.4);opacity:0}}
+/* poses */
+#sam.p-happy{--aL:165deg;--aR:-165deg}#sam.p-happy .bob{animation:hop .65s ease-in-out infinite}
+@keyframes hop{50%{transform:translateY(-26px)}}
+#sam.p-wave{--aL:6deg}#sam.p-wave .armR{animation:wave .5s ease-in-out infinite alternate}
+@keyframes wave{from{transform:rotate(-135deg)}to{transform:rotate(-176deg)}}
+#sam.p-phone{--aL:-118deg;--aR:118deg;--ht:10deg}
+#sam.p-yawn{--aL:8deg;--aR:150deg;--ht:-10deg}#sam.p-yawn .bob{animation:yawn 2.4s ease-in-out infinite}
+@keyframes yawn{50%{transform:translateY(8px)}}
+#sam.p-stretch{--aL:172deg;--aR:-172deg;--ht:-8deg}#sam.p-stretch .bob{animation:stretch 2.4s ease-in-out infinite}
+@keyframes stretch{50%{transform:scale(1.03,1.06)}}
+#sam.p-pulse{--aL:8deg;--aR:-125deg;--ht:4deg}
+#sam.p-slump{--aL:2deg;--aR:-2deg;--ht:12deg}#sam.p-slump .torso{transform:rotate(3deg)}#sam.p-slump .bob{animation:breathe 4.5s ease-in-out infinite}
+#sam.p-eat{--aL:6deg;--aR:150deg}#sam.p-eat .head{animation:chomp .5s ease-in-out infinite alternate}
+@keyframes chomp{from{transform:rotate(-4deg)}to{transform:rotate(5deg)}}
+#sam.p-game{--aL:-118deg;--aR:118deg;--ht:-6deg}#sam.p-game .bob{animation:gm .3s infinite}
+@keyframes gm{50%{transform:translateY(-3px)}}
+#sam.p-kick{--aL:50deg;--aR:-50deg}#sam.p-kick .legR{animation:kick 1.4s ease-in-out infinite}
+@keyframes kick{0%,40%,100%{transform:rotate(0)}55%{transform:rotate(55deg)}70%{transform:rotate(-40deg)}}
+#sam.p-stress{--aL:-150deg;--aR:150deg;--ht:-5deg}#sam.p-stress .bob{animation:shake .14s infinite}
+@keyframes shake{25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+#sam.p-breathe{--aL:35deg;--aR:-35deg;--ht:-4deg}#sam.p-breathe .torso{animation:inhale 8s ease-in-out infinite}
+@keyframes inhale{0%,100%{transform:scale(1)}50%{transform:scale(1.07,1.05)}}
+#sam.p-write{--aL:-120deg;--aR:118deg;--ht:16deg}
+#sam.p-angry{--aL:25deg;--aR:-25deg;--ht:0}#sam.p-angry .bob{animation:shake .1s infinite}
+#sam.p-talk{--aL:6deg;--aR:-62deg}#sam.p-talk .armR{animation:talk 1s ease-in-out infinite alternate}
+@keyframes talk{from{transform:rotate(-45deg)}to{transform:rotate(-78deg)}}
+#sam.p-calmhand{--aL:6deg;--aR:130deg;--ht:-4deg}
+#sam.p-cough{--aL:6deg;--aR:150deg;--ht:14deg}#sam.p-cough .bob{animation:cough 1s infinite}
+@keyframes cough{0%,60%,100%{transform:translateY(0)}70%{transform:translateY(10px) rotate(2deg)}80%{transform:translateY(0)}90%{transform:translateY(8px)}}
+#sam.p-pick{--aL:20deg;--aR:-20deg;--ht:18deg}#sam.p-pick .bob{animation:pick 1.2s ease-in-out infinite}
+@keyframes pick{50%{transform:translateY(46px) scaleY(.82)}}
+#sam.p-plant{--aL:25deg;--aR:-25deg;--ht:14deg}#sam.p-plant .bob{transform:translateY(40px) scaleY(.84)}
+#sam.p-point{--aL:6deg;--aR:-102deg}#sam.p-point .armR{animation:point 1s ease-in-out infinite alternate}
+@keyframes point{from{transform:rotate(-92deg)}to{transform:rotate(-112deg)}}
+#sam.p-run .bob{animation:runbob .3s infinite}
+@keyframes runbob{50%{transform:translateY(-14px)}}
+/* walking / running limb swing */
+#sam.walk .legL,#sam.p-run .legL{animation:swing .5s ease-in-out infinite alternate;--amp:30}
+#sam.walk .legR,#sam.p-run .legR{animation:swing .5s ease-in-out infinite alternate-reverse;--amp:30}
+#sam.walk .armL,#sam.p-run .armL{animation:swing .5s ease-in-out infinite alternate-reverse;--amp:32}
+#sam.walk .armR,#sam.p-run .armR{animation:swing .5s ease-in-out infinite alternate;--amp:32}
+#sam.walk .bob{animation:walkbob .5s ease-in-out infinite}
+@keyframes walkbob{50%{transform:translateY(-9px)}}
+#sam.p-run .legL,#sam.p-run .legR,#sam.p-run .armL,#sam.p-run .armR{animation-duration:.28s;--amp:55}
+@keyframes swing{from{transform:rotate(calc(var(--amp,28)*1deg))}to{transform:rotate(calc(var(--amp,28)*-1deg))}}
+
+/* ---------- HUD ---------- */
+#hud{position:fixed;left:14px;top:50%;transform:translateY(-50%);z-index:20;display:flex;flex-direction:column;gap:10px;
+ background:rgba(255,253,247,.88);backdrop-filter:blur(8px);border:3px solid var(--ink);border-radius:22px;padding:12px 12px 10px;
+ box-shadow:0 6px 0 rgba(43,45,66,.35);width:206px}
+#hud h4{font-size:13px;letter-spacing:.08em;text-transform:uppercase;text-align:center;opacity:.75;margin-bottom:2px}
+.hb{position:relative}
+.hb .row{display:flex;align-items:center;gap:8px}
+.hb .ic{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-size:18px;border:3px solid var(--ink);background:var(--c);flex:none;transition:transform .3s}
+.hb .nm{font-size:13px;font-weight:600;line-height:1}
+.hb .nm small{display:block;font-size:10px;font-weight:500;opacity:.65;margin-top:2px}
+.hb .val{margin-left:auto;font-weight:700;font-size:15px;min-width:28px;text-align:right}
+.hb .bar{height:15px;border:3px solid var(--ink);border-radius:10px;background:#e8e4da;margin-top:5px;overflow:hidden;position:relative}
+.hb .fill{height:100%;width:0;background:linear-gradient(180deg,color-mix(in srgb,var(--c) 70%,#fff),var(--c));border-radius:7px;transition:filter .3s;position:relative}
+.hb .fill::after{content:"";position:absolute;left:4px;right:4px;top:2px;height:3px;border-radius:3px;background:rgba(255,255,255,.55)}
+.hb.low .fill{background:repeating-linear-gradient(45deg,#ff4d6d 0 8px,#ff7b93 8px 16px)}
+.hb.low .bar{animation:lowp .8s infinite}
+@keyframes lowp{50%{box-shadow:0 0 0 4px rgba(230,58,99,.45)}}
+.hb.up .ic{animation:icup .7s}
+.hb.dn .ic{animation:icdn .6s}
+@keyframes icup{40%{transform:scale(1.35) rotate(-10deg)}}
+@keyframes icdn{20%,60%{transform:translateX(-5px)}40%,80%{transform:translateX(5px)}}
+.hb.up .fill{filter:brightness(1.3) saturate(1.3)}
+.hb.dn .fill{filter:brightness(.8)}
+.fl{position:absolute;right:-6px;top:-4px;font-weight:700;font-size:20px;pointer-events:none;animation:fl 1.7s ease-out forwards;text-shadow:0 2px 0 #fff,0 -2px 0 #fff,2px 0 0 #fff,-2px 0 0 #fff}
+.fl.up{color:var(--good)}.fl.dn{color:var(--bad)}
+@keyframes fl{0%{transform:translate(0,10px) scale(.5);opacity:0}15%{opacity:1;transform:translate(0,-4px) scale(1.3)}100%{transform:translate(0,-42px) scale(1);opacity:0}}
+
+/* ---------- top / misc UI ---------- */
+#banner{position:fixed;top:14px;left:50%;transform:translateX(-50%);z-index:20;background:rgba(255,253,247,.92);border:3px solid var(--ink);
+ border-radius:40px;padding:8px 20px;display:flex;gap:10px;align-items:center;font-weight:600;font-size:17px;box-shadow:0 5px 0 rgba(43,45,66,.35);white-space:nowrap;max-width:calc(100vw - 260px)}
+#banner.swap{animation:bn .8s cubic-bezier(.3,1.6,.5,1)}
+@keyframes bn{0%{transform:translateX(-50%) translateY(-90px)}100%{transform:translateX(-50%)}}
+#banner .tag{font-size:11px;letter-spacing:.08em;text-transform:uppercase;padding:3px 10px;border-radius:20px;color:#fff;background:var(--info)}
+#banner .tag.good{background:var(--good)}#banner .tag.bad{background:var(--bad)}
+#tools{position:fixed;top:14px;right:14px;z-index:25;display:flex;gap:8px}
+.tb2{background:var(--card);border:3px solid var(--ink);border-radius:16px;padding:7px 12px;font-size:16px;font-weight:600;box-shadow:0 4px 0 rgba(43,45,66,.35);transition:transform .15s;color:var(--ink)}
+.tb2:hover{transform:translateY(-2px)}.tb2:active{transform:translateY(2px);box-shadow:none}
+#dots{position:fixed;right:8px;top:50%;transform:translateY(-50%);z-index:15;display:flex;flex-direction:column;gap:7px}
+#dots i{width:11px;height:11px;border-radius:50%;border:2px solid var(--ink);background:rgba(255,255,255,.7);cursor:pointer;transition:transform .2s,background .2s}
+#dots i.g{background:#7ae0ab}#dots i.b{background:#ff93ac}
+#dots i.cur{transform:scale(1.7);background:var(--ink)}
+#next{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);z-index:25;background:var(--ink);color:#fff;border:3px solid #fff;border-radius:40px;
+ padding:11px 26px;font-size:17px;font-weight:600;box-shadow:0 5px 0 rgba(0,0,0,.35);animation:nx 1.6s ease-in-out infinite}
+#next:hover{background:#3d4066}
+@keyframes nx{50%{transform:translateX(-50%) translateY(-7px)}}
+#next.off{display:none}
+#fx{position:fixed;inset:0;pointer-events:none;z-index:18}
+#fx.bad{animation:fxbad .9s}@keyframes fxbad{0%{box-shadow:inset 0 0 0 0 rgba(230,58,99,0)}20%{box-shadow:inset 0 0 160px 40px rgba(230,58,99,.55)}100%{box-shadow:inset 0 0 0 0 rgba(230,58,99,0)}}
+#fx.good{animation:fxgood .9s}@keyframes fxgood{0%{box-shadow:inset 0 0 0 0 rgba(31,166,106,0)}20%{box-shadow:inset 0 0 160px 30px rgba(255,255,160,.6)}100%{box-shadow:inset 0 0 0 0 rgba(31,166,106,0)}}
+#world.shake{animation:wshake .5s}@keyframes wshake{20%{transform:translate(-8px,3px)}40%{transform:translate(7px,-3px)}60%{transform:translate(-5px,2px)}80%{transform:translate(4px,0)}}
+.spark{position:fixed;z-index:19;pointer-events:none;font-size:28px;animation:sp 1.3s ease-out forwards}
+@keyframes sp{0%{transform:translate(0,0) scale(.3);opacity:1}100%{transform:translate(var(--dx),var(--dy)) scale(1.2) rotate(var(--r));opacity:0}}
+
+/* ---------- explainer card ---------- */
+#card{position:fixed;right:34px;top:78px;bottom:84px;width:min(410px,31vw);z-index:19;display:flex;align-items:center;pointer-events:none}
+#cardIn{pointer-events:auto;background:var(--card);border:4px solid var(--ink);border-radius:26px;box-shadow:0 8px 0 rgba(43,45,66,.4);padding:0 0 14px;
+ max-height:100%;overflow:auto;width:100%;transform:translateX(130%) rotate(4deg);opacity:0;transition:transform .7s cubic-bezier(.3,1.4,.5,1),opacity .4s}
+#card.show #cardIn{transform:none;opacity:1}
+#cardIn.ping{animation:ping .6s cubic-bezier(.3,1.6,.5,1)}
+@keyframes ping{0%{transform:scale(.9) rotate(-2deg)}100%{transform:none}}
+.ch{padding:12px 18px;border-radius:20px 20px 0 0;color:#fff;display:flex;gap:12px;align-items:center;background:var(--info)}
+.ch.good{background:var(--good)}.ch.bad{background:var(--bad)}
+.ch .e{font-size:34px;line-height:1}
+.ch .k{font-size:11px;letter-spacing:.1em;text-transform:uppercase;opacity:.9}
+.ch h3{font-size:21px;line-height:1.1;font-weight:700}
+.cb{padding:12px 18px 0;font-size:15px;line-height:1.38}
+.cb p{margin-bottom:9px}
+.cb b.l{display:block;font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:#7a7d93;margin-bottom:1px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 10px}
+.chip{border:3px solid var(--ink);border-radius:30px;padding:2px 10px 2px 4px;font-weight:600;font-size:13.5px;display:flex;align-items:center;gap:5px;background:#fff;animation:chip .6s cubic-bezier(.3,1.7,.5,1) both}
+.chip i{font-style:normal;width:22px;height:22px;border-radius:50%;background:var(--c);display:grid;place-items:center;font-size:12px;border:2px solid var(--ink)}
+.chip.up{color:var(--good)}.chip.dn{color:var(--bad)}
+@keyframes chip{from{transform:scale(0)}}
+.metric{display:inline-block;background:#fff3c4;border:2px solid #e3b93c;border-radius:10px;padding:1px 9px;font-weight:600;font-size:13px}
+.fact{background:#eef4ff;border-left:5px solid var(--info);border-radius:8px;padding:8px 10px;font-size:13.5px;margin-bottom:8px}
+.fact a{color:#1d56c4;font-weight:600;display:block;font-size:12px;margin-top:3px;word-break:break-word}
+.think{background:#f1ecff;border-radius:10px;padding:7px 10px;font-size:13.5px;font-weight:500}
+.dimlist{display:grid;gap:5px;margin-bottom:8px}
+.dimlist div{display:flex;gap:8px;align-items:center;font-size:13.5px}
+.dimlist i{font-style:normal;width:26px;height:26px;border-radius:50%;background:var(--c);border:2px solid var(--ink);display:grid;place-items:center;flex:none}
+
+/* quiz + recap */
+.qchips{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:10px}
+.qc{border:3px solid var(--ink);background:#fff;border-radius:14px;padding:5px 10px;font-size:13.5px;font-weight:500;transition:transform .2s,background .2s;color:var(--ink)}
+.qc.sel{background:#fff0a8;transform:scale(1.07) rotate(-2deg)}
+.qc.done{background:#c9f3dc;opacity:.75;pointer-events:none}
+.qc.nope{animation:nope .45s}
+@keyframes nope{25%,75%{transform:translateX(-7px)}50%{transform:translateX(7px)}}
+.bk{display:grid;gap:7px}
+.bkt{border:3px dashed var(--ink);border-radius:14px;padding:7px 10px;background:#fff;font-weight:600;font-size:14.5px;text-align:left;display:flex;flex-wrap:wrap;gap:5px;align-items:center;min-height:44px;width:100%;color:var(--ink)}
+.bkt:hover{background:#f6f2ff}
+.bkt small{font-weight:500;background:#c9f3dc;border-radius:8px;padding:1px 7px;font-size:12px}
+.bkt.fo{border-style:solid;font-weight:500;display:block}.bkt.fo:disabled{cursor:default;color:var(--ink)}
+.bkt.fok{background:#c9f3dc;border-color:var(--good)}.bkt.fno{background:#ffd9e1;border-color:var(--bad);animation:nope .45s}
+.score{font-weight:700;font-size:15px;text-align:center;margin-top:8px}
+.ex{width:100%;border:3px solid var(--ink);border-radius:12px;padding:6px 10px;font:inherit;font-size:14px;margin-bottom:6px}
+.big{background:var(--ink);color:#fff;border:0;border-radius:14px;padding:9px 16px;font-weight:600;font-size:15px;width:100%;margin-top:4px}
+.sum{display:grid;grid-template-columns:auto 1fr auto;gap:4px 8px;align-items:center;font-size:13.5px;margin-bottom:10px}
+.sum .b{height:10px;border-radius:6px;background:#e8e4da;border:2px solid var(--ink);overflow:hidden}.sum .b span{display:block;height:100%;background:var(--c)}
+.srcl{font-size:11.5px;line-height:1.5;margin-top:8px}.srcl a{color:#1d56c4;display:block}
+
+/* ---------- overlay + modal ---------- */
+#intro{position:fixed;inset:0;z-index:100;display:grid;place-items:center;text-align:center;padding:20px;
+ background:radial-gradient(circle at 50% 40%,#7ec8ff,#3f7de8 60%,#2b2d6b);transition:opacity .8s,visibility .8s}
+#intro.gone{opacity:0;visibility:hidden;pointer-events:none}
+#intro .box{max-width:640px;color:#fff}
+#intro h1{font-size:clamp(34px,6vw,64px);line-height:1;text-shadow:0 5px 0 #2b2d42;-webkit-text-stroke:2px #2b2d42;paint-order:stroke fill;letter-spacing:.01em}
+#intro p{font-size:clamp(16px,2.2vw,21px);margin:16px 0 22px;text-shadow:0 2px 0 rgba(0,0,0,.35)}
+#intro .go{background:#ffd23f;color:var(--ink);border:4px solid var(--ink);border-radius:50px;padding:14px 38px;font-size:24px;font-weight:700;box-shadow:0 7px 0 var(--ink);animation:nx2 1.4s ease-in-out infinite}
+@keyframes nx2{50%{transform:scale(1.07)}}
+#intro .five{display:flex;justify-content:center;gap:10px;margin:0 0 16px;font-size:34px;flex-wrap:wrap}
+#intro .five span{animation:flo 1.6s ease-in-out infinite alternate;background:#fff;border:3px solid var(--ink);border-radius:50%;width:58px;height:58px;display:grid;place-items:center}
+#intro .tip{font-size:14px;opacity:.9;margin-top:16px}
+#modal{position:fixed;inset:0;z-index:90;background:rgba(20,20,40,.6);display:none;place-items:center;padding:16px;backdrop-filter:blur(4px)}
+#modal.open{display:grid}
+#mbox{background:var(--card);border:4px solid var(--ink);border-radius:26px;max-width:900px;width:100%;max-height:88vh;overflow:auto;padding:18px 20px;animation:ping .5s cubic-bezier(.3,1.6,.5,1)}
+#mbox h2{font-size:26px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center}
+.tabs{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.tabs button{border:3px solid var(--ink);border-radius:20px;background:#fff;padding:4px 14px;font-weight:600;color:var(--ink)}
+.tabs button.on{background:var(--ink);color:#fff}
+.mgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px}
+.mi{border:3px solid var(--ink);border-radius:16px;padding:9px 12px;background:#fff;text-align:left;font-size:14px;line-height:1.3;transition:transform .2s;color:var(--ink)}
+.mi:hover{transform:translateY(-3px) rotate(-.6deg)}
+.mi b{display:block;font-size:15px}.mi.good{background:#e6f9ef}.mi.bad{background:#ffe9ee}.mi.info{background:#eaf1ff}
+.mi .dl{margin-top:4px;font-size:12px;font-weight:600}
+.mi .dl span{margin-right:6px}.mi .dl .u{color:var(--good)}.mi .dl .d{color:var(--bad)}
+.gl{border:3px solid var(--ink);border-radius:16px;padding:9px 12px;background:#fff;font-size:14px}
+.gl b{display:block}.gl small{display:inline-block;margin-top:4px;background:var(--c);border:2px solid var(--ink);border-radius:10px;padding:0 8px;font-weight:600}
+
+/* ---------- scene-specific animation ---------- */
+.glowp{opacity:0;transition:opacity 1s}.sc.b0 .glowp,.sc.b1 .glowp{opacity:1}
+.ringw{opacity:0;transform-box:fill-box;transform-origin:center}
+.sc.b1 .ringw{animation:ringw 1s ease-out infinite}
+@keyframes ringw{0%{opacity:.9;transform:scale(.6)}100%{opacity:0;transform:scale(1.8)}}
+.sc.b1 .alarmc,.sc.b0 .alarmc2{animation:rattle .12s infinite}
+@keyframes rattle{25%{transform:translate(-3px,0) rotate(-3deg)}75%{transform:translate(3px,0) rotate(3deg)}}
+.alarmc,.alarmc2{transform-box:fill-box;transform-origin:center}
+.win-sky{transition:fill 3s}
+.sc.b1 .nightdawn{fill:#ff9e7a}
+.beam{opacity:0;transition:opacity 2s}.sc.b0 .beam,.sc.b1 .beam{opacity:.5}
+.ecg{opacity:0;transition:opacity .8s}.sc.b1 .ecg{opacity:1}
+.sc.b0 .candrop{animation:candrop 1.6s cubic-bezier(.5,0,.8,.6) forwards}
+@keyframes candrop{0%{transform:translateY(0)}65%{transform:translateY(118px)}78%{transform:translateY(104px)}100%{transform:translateY(118px)}}
+.fizz{opacity:0}.sc.b0 .fizz{animation:fizz 1.4s 1.5s ease-out infinite}
+@keyframes fizz{0%{transform:translateY(0);opacity:1}100%{transform:translateY(-50px);opacity:0}}
+.crash{opacity:0}.sc.b0 .crash{animation:crash 1.2s 3.2s forwards}
+@keyframes crash{from{opacity:0;transform:scale(.2)}to{opacity:1;transform:scale(1)}}
+.plateg{opacity:0;transform:scale(.2);transform-box:fill-box;transform-origin:center}
+.sc.b0 .plateg{animation:plate 1s .2s cubic-bezier(.3,1.6,.5,1) forwards}
+@keyframes plate{to{opacity:1;transform:scale(1)}}
+.tvg{animation:tvg 1.6s ease-in-out infinite}@keyframes tvg{50%{opacity:.35}}
+.scr{animation:scr .6s steps(2) infinite}@keyframes scr{50%{opacity:.6}}
+.sc.b0 .ball{animation:ballk 1.5s .5s cubic-bezier(.3,.6,.5,1) forwards}
+@keyframes ballk{0%{transform:translate(0,0) rotate(0)}50%{transform:translate(110px,-250px) rotate(360deg)}100%{transform:translate(262px,-110px) rotate(720deg)}}
+.sc.b1 .ball{transform:translate(262px,-110px)}
+.net{transform-box:fill-box;transform-origin:left center}
+.sc.b0 .net{animation:netw .6s 1.7s}@keyframes netw{50%{transform:scaleX(1.12)}}
+.heart{animation:hb .8s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
+.sc.b1 .heart{animation-duration:.4s}
+@keyframes hb{50%{transform:scale(1.25)}}
+.sc.b1 .scrolltrees{animation:scrollx 1.3s linear infinite}
+.sc.b1 .scrollgrass{animation:scrollx 0.5s linear infinite}
+@keyframes scrollx{to{transform:translateX(-400px)}}
+.vig{opacity:0;transition:opacity 1s}.sc.b0 .vig{opacity:1}
+.tbubble{opacity:0;transform-box:fill-box;transform-origin:50% 100%;transform:scale(.1)}
+.sc.b0 .tbubble{animation:tbub .8s .1s cubic-bezier(.3,1.6,.5,1) forwards}
+@keyframes tbub{to{opacity:1;transform:scale(1)}}
+.sechand{animation:spin 3s linear infinite;transform-box:view-box}
+.brc{opacity:0;transition:opacity 1s}.sc.b0 .brc{opacity:1}
+.brc .bc{animation:bcs 8s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
+@keyframes bcs{0%,100%{transform:scale(.55)}50%{transform:scale(1.15)}}
+.brc .in{animation:bin 8s ease-in-out infinite}.brc .out{animation:bout 8s ease-in-out infinite}
+@keyframes bin{0%{opacity:0}8%,44%{opacity:1}52%,100%{opacity:0}}
+@keyframes bout{0%,48%{opacity:0}58%,94%{opacity:1}100%{opacity:0}}
+.sparkle{animation:rise 3s linear infinite}@keyframes rise{0%{transform:translateY(0) scale(.4);opacity:0}20%{opacity:1}100%{transform:translateY(-160px) scale(1);opacity:0}}
+.jn{opacity:0;transition:opacity 1s}.sc.b1 .jn{opacity:1}
+.rain line{animation:rainf .6s linear infinite}@keyframes rainf{from{transform:translateY(-40px)}to{transform:translateY(60px)}}
+.rainw{opacity:0;transition:opacity 1s}.sc.b0 .rainw{opacity:1}
+.haha{animation:haha 1.4s ease-in-out infinite;transform-box:fill-box;transform-origin:center}@keyframes haha{50%{transform:scale(1.1) rotate(3deg)}}
+.heartf{opacity:0}.sc.b0 .heartf,.sc.b1 .heartf{animation:rise 2.4s ease-out infinite}
+.scoot{transition:transform 1s cubic-bezier(.3,1.4,.5,1)}.sc.b0 .scoot,.sc.b1 .scoot{transform:translateX(-70px)}
+.say{opacity:0;transform-box:fill-box;transform-origin:50% 100%}
+.sc.b0 .say0{animation:say .6s .3s cubic-bezier(.3,1.6,.5,1) forwards}
+.sc.b1 .say1{animation:say .6s .3s cubic-bezier(.3,1.6,.5,1) forwards}
+.sc.b1 .say2{animation:say .6s 1.6s cubic-bezier(.3,1.6,.5,1) forwards}
+.sc.b0 .sayA{animation:say .6s .3s cubic-bezier(.3,1.6,.5,1) forwards}
+.sc.b1 .sayB{animation:say .6s .3s cubic-bezier(.3,1.6,.5,1) forwards}
+@keyframes say{from{opacity:0;transform:scale(.2)}to{opacity:1;transform:scale(1)}}
+.kwave{animation:kw .6s ease-in-out infinite alternate}
+@keyframes kw{from{transform:rotate(-20deg)}to{transform:rotate(25deg)}}
+.knod{animation:knod 1.2s ease-in-out infinite}@keyframes knod{50%{transform:translateY(6px)}}
+.storm{transform-box:fill-box;transform-origin:center}
+.sc.b0 .storm{animation:storm 2.2s .3s ease-in forwards}
+.sc.b1 .storm{opacity:0}
+@keyframes storm{from{opacity:1;transform:scale(1)}to{opacity:0;transform:scale(.15) translateY(30px)}}
+.bolt{animation:bolt 1.4s infinite}@keyframes bolt{0%,85%,100%{opacity:0}88%,94%{opacity:1}}
+.puff{animation:puff 5s linear infinite;transform-box:fill-box;transform-origin:center}
+@keyframes puff{0%{transform:translate(0,0) scale(.5);opacity:.9}100%{transform:translate(140px,-300px) scale(2.6);opacity:0}}
+.car{animation:drive 11s linear infinite}@keyframes drive{from{transform:translateX(-300px)}to{transform:translateX(1900px)}}
+.smog{opacity:.35;transition:opacity 1.5s}.sc.b0 .smog{opacity:.6}
+.sc.b0 .lt{animation:toss 1.4s cubic-bezier(.4,0,.6,1) forwards}
+.sc.b0 .lt1{animation-delay:.2s}.sc.b0 .lt2{animation-delay:.8s}.sc.b0 .lt3{animation-delay:1.4s}
+@keyframes toss{0%{transform:translate(0,0)}50%{transform:translate(calc(var(--dx)*.5),-170px)}99%{opacity:1}100%{transform:translate(var(--dx),var(--dy));opacity:0}}
+.sc.b1 .lt{display:none}
+.sapl{transform:scale(0);transform-box:fill-box;transform-origin:50% 100%}
+.sc.b1 .sapl{animation:grow 3s .4s cubic-bezier(.3,1.5,.5,1) forwards}
+@keyframes grow{to{transform:scale(1)}}
+.birdf{opacity:0}.sc.b1 .birdf{opacity:1;animation:fly 8s linear infinite}
+@keyframes fly{from{transform:translate(-300px,0)}50%{transform:translate(500px,-60px)}to{transform:translate(1500px,20px)}}
+.bfly{opacity:0}.sc.b1 .bfly{opacity:1;animation:bf 6s ease-in-out infinite alternate}
+@keyframes bf{from{transform:translate(0,0)}to{transform:translate(160px,-90px)}}
+.chain{stroke-dasharray:12 10;opacity:0;transition:opacity .8s}
+.sc.b0 .chain{opacity:1;animation:dash .8s linear infinite}
+@keyframes dash{to{stroke-dashoffset:-22}}
+.sc.b0 .nA{animation:nodep 2.4s 0s infinite}.sc.b0 .nB{animation:nodep 2.4s .8s infinite}.sc.b0 .nC{animation:nodep 2.4s 1.6s infinite}
+@keyframes nodep{0%,100%{transform:scale(1)}15%{transform:scale(1.3)}}
+.nd{transform-box:fill-box;transform-origin:center}
+.neon{animation:neon 2s infinite}@keyframes neon{45%{opacity:.6}50%{opacity:1}55%{opacity:.5}}
+.spot{animation:spot 6s ease-in-out infinite alternate;transform-box:fill-box;transform-origin:50% 0}
+@keyframes spot{from{transform:rotate(-8deg)}to{transform:rotate(8deg)}}
+.conf{animation:conf 5s linear infinite}@keyframes conf{from{transform:translateY(-60px) rotate(0)}to{transform:translateY(1100px) rotate(720deg)}}
+.flag{animation:flagw 1.6s ease-in-out infinite alternate}
+@keyframes flagw{from{transform:skewY(-6deg) scaleX(1)}to{transform:skewY(6deg) scaleX(.9)}}
+
+/* ---------- responsive ---------- */
+@media (max-aspect-ratio:1/1),(max-width:820px){
+ #hud{left:50%;top:60px;transform:translateX(-50%);flex-direction:row;width:calc(100vw - 16px);padding:6px 8px;gap:6px;border-radius:16px}
+ #hud h4,.hb .nm,.hb .val{display:none}
+ .hb{flex:1}.hb .ic{width:24px;height:24px;font-size:13px;border-width:2px}.hb .bar{height:11px;border-width:2px;margin-top:3px}
+ .hb .row{justify-content:center}
+ #world{height:56vh}
+ #banner{top:8px;font-size:13px;padding:5px 12px;max-width:calc(100vw - 140px);overflow:hidden;text-overflow:ellipsis}
+ #tools{top:8px;right:8px}.tb2{padding:4px 9px;font-size:14px}
+ #dots{display:none}
+ #card{right:8px;left:8px;width:auto;top:auto;bottom:62px;max-height:40vh;align-items:flex-end}
+ #cardIn{transform:translateY(130%)}#card.show #cardIn{transform:none}
+ .cb{font-size:13.5px;padding:8px 14px 0}.ch{padding:8px 14px}.ch h3{font-size:17px}.ch .e{font-size:26px}
+ #next{bottom:12px;padding:8px 20px;font-size:15px}
+}
+@media (prefers-reduced-motion:reduce){.cloud,.spin{animation:none}}
+</style>
+</head>
+<body>
+<div id="stage"><svg id="world" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMax slice" aria-label="Animated story scene"></svg><div id="fx"></div></div>
+<div id="track"></div>
+<div id="hud" aria-label="Sam's five wellness bars"></div>
+<div id="banner"></div>
+<div id="tools"><button class="tb2" id="review" title="Review all concepts">📚 Review</button><button class="tb2" id="mute" title="Sound on/off">🔊</button></div>
+<div id="dots" title="Jump to a scene"></div>
+<div id="card" aria-live="polite"><div id="cardIn"></div></div>
+<button id="next" class="off">Continue ▼</button>
+<div id="modal"><div id="mbox"></div></div>
+<div id="intro"><div class="box">
+ <div class="five"><span style="animation-delay:0s">💪</span><span style="animation-delay:.15s">🧠</span><span style="animation-delay:.3s">🤝</span><span style="animation-delay:.45s">❤️</span><span style="animation-delay:.6s">🌍</span></div>
+ <h1>Sam’s Wellness Walk</h1>
+ <p>Follow Sam through real-life moments — the good <b>and</b> the not-so-good — and watch the five Dimensions of Wellness rise and fall. Every time a bar changes, a card explains why.</p>
+ <button class="go" id="startBtn">▶ Start the walk</button>
+ <div class="tip">🔊 Turn your sound on · Scroll, press ↓ / Space, or tap “Continue”</div>
+</div></div>
+<script>/* ===== SVG art helpers ===== */
+const OL='#2b2d42', SKIN='#ffd3a8', HOOD='#ff7a59', JEANS='#3d5a80', HAIR='#5a3825';
+const o=`stroke="${OL}" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"`;
+const rect=(x,y,w,h,f,r=8,a='')=>`<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${r}" fill="${f}" ${o} ${a}/>`;
+const circ=(x,y,r,f,a='')=>`<circle cx="${x}" cy="${y}" r="${r}" fill="${f}" ${o} ${a}/>`;
+const ell=(x,y,rx,ry,f,a='')=>`<ellipse cx="${x}" cy="${y}" rx="${rx}" ry="${ry}" fill="${f}" ${o} ${a}/>`;
+const pth=(d,f,a='')=>`<path d="${d}" fill="${f}" ${o} ${a}/>`;
+const lin=(x1,y1,x2,y2,c=OL,w=5,a='')=>`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${c}" stroke-width="${w}" stroke-linecap="round" ${a}/>`;
+const txt=(x,y,t,s=40,f='#fff',a='')=>`<text x="${x}" y="${y}" font-size="${s}" fill="${f}" text-anchor="middle" font-weight="700" font-family="Fredoka,'Trebuchet MS',sans-serif" ${a}>${t}</text>`;
+const G=(c,inner,a='')=>`<g class="${c}" ${a}>${inner}</g>`;
+const BG=(i,a,b)=>`<defs><linearGradient id="sk${i}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${a}"/><stop offset="1" stop-color="${b}"/></linearGradient></defs><rect x="-1200" y="-700" width="4000" height="2400" fill="url(#sk${i})"/>`;
+const GR=(c,c2,y=730)=>`<rect x="-1200" y="${y}" width="4000" height="1000" fill="${c}"/><rect x="-1200" y="${y}" width="4000" height="12" fill="${c2}"/>`;
+const cloud=(x,y,s=1,c='#fff')=>G('cloud',`<g transform="translate(${x},${y}) scale(${s})"><path d="M-70 20 Q-95 20 -90 -5 Q-85 -30 -55 -25 Q-45 -60 -10 -50 Q20 -75 50 -45 Q90 -50 95 -15 Q110 20 80 20Z" fill="${c}" ${o}/></g>`);
+const sun=(x,y,r=60)=>{let s='';for(let i=0;i<12;i++){const a=i*30*Math.PI/180;s+=lin(Math.cos(a)*(r+14),Math.sin(a)*(r+14),Math.cos(a)*(r+40),Math.sin(a)*(r+40),'#ffb703',8);}return `<g transform="translate(${x},${y})"><g class="spin">${s}</g>${circ(0,0,r,'#ffd23f')}</g>`;};
+const tree=(x,y,s=1,c='#52c15a')=>`<g transform="translate(${x},${y}) scale(${s})">${rect(-18,-130,36,130,'#8d5a35',8)}${circ(0,-170,70,c)}${circ(-52,-135,48,c)}${circ(52,-135,48,c)}${circ(0,-210,45,c)}</g>`;
+const hill=(c,y=730,h=200)=>pth(`M-300 ${y+40} Q150 ${y-h} 600 ${y-40} T1400 ${y-h*.7} T2200 ${y-20} L2200 ${y+60} L-300 ${y+60}Z`,c);
+const bubble=(x,y,w,h,lines,cls='',tail='l',fill='#fff',fs=26,col=OL)=>{
+ const t=tail==='l'?`M${x+30} ${y+h-2} L${x+10} ${y+h+30} L${x+70} ${y+h-2}`:`M${x+w-70} ${y+h-2} L${x+w-12} ${y+h+30} L${x+w-30} ${y+h-2}`;
+ return `<g class="${cls}">${rect(x,y,w,h,fill,24)}${pth(t+'Z',fill,'stroke-linejoin="round"')}<rect x="${x+8}" y="${y+h-8}" width="${w-16}" height="10" fill="${fill}"/>`+
+  lines.map((l,i)=>txt(x+w/2,y+h/2+fs*.35+(i-(lines.length-1)/2)*(fs+4),l,fs,col)).join('')+`</g>`;};
+const kid=(x,shirt,hair,m='happy',cls='',wave=false)=>{
+ const face=m==='mad'?`${lin(-26,-222,-8,-214,HAIR,5)}${lin(8,-214,26,-222,HAIR,5)}${pth('M-12 -178 Q0 -190 12 -178','none')}`:m==='calm'?pth('M-12 -180 Q0 -172 12 -180','none'):pth('M-14 -184 Q0 -164 14 -184Z','#8c1c2b');
+ return `<g class="${cls}" transform="translate(${x},785) scale(.78)"><g class="${m==='calm'?'knod':''}">`+
+ lin(-18,-70,-18,-12,OL,24)+lin(-18,-70,-18,-12,'#555a6e',14)+lin(18,-70,18,-12,OL,24)+lin(18,-70,18,-12,'#555a6e',14)+
+ ell(-20,-6,22,10,'#fff')+ell(20,-6,22,10,'#fff')+
+ rect(-44,-162,88,98,shirt,30)+
+ lin(-40,-142,-58,-82,OL,22)+lin(-40,-142,-58,-82,shirt,12)+circ(-58,-78,11,'#f3c9a0')+
+ `<g class="${wave?'kwave':''}" style="transform-origin:42px -146px">`+lin(42,-146,60,-84,OL,22)+lin(42,-146,60,-84,shirt,12)+circ(60,-78,11,'#f3c9a0')+`</g>`+
+ circ(0,-206,46,'#f3c9a0')+pth(`M-46 -210 Q-52 -262 0 -258 Q52 -262 46 -210 Q30 -236 0 -234 Q-30 -236 -46 -210Z`,hair)+
+ circ(-16,-206,5,OL,'stroke-width="2"')+circ(16,-206,5,OL,'stroke-width="2"')+face+`</g></g>`;};
+
+/* ===== Sam ===== */
+const SAMSVG=`<g id="samPos"><g id="sam" class="p-idle" data-mood="happy" data-hold="">
+<ellipse cx="0" cy="4" rx="72" ry="11" fill="rgba(0,0,0,.25)"/>
+<g class="bob">
+${rect(-64,-180,128,98,'#3d5a80',30)}
+<g class="legL">${lin(-24,-105,-26,-16,OL,32)}${lin(-24,-105,-26,-16,JEANS,22)}${pth('M-50 -12 Q-48 -32 -28 -30 Q-6 -28 -4 -12 Q-4 3 -20 3 L-44 3 Q-52 3 -50 -12Z','#fff')}${lin(-47,-5,-7,-5,'#e63946',6)}</g>
+<g class="legR">${lin(24,-105,26,-16,OL,32)}${lin(24,-105,26,-16,JEANS,22)}${pth('M50 -12 Q48 -32 28 -30 Q6 -28 4 -12 Q4 3 20 3 L44 3 Q52 3 50 -12Z','#fff')}${lin(47,-5,7,-5,'#e63946',6)}</g>
+<g class="torso">
+${pth('M-54 -184 Q-62 -120 -50 -88 Q0 -78 50 -88 Q62 -120 54 -184 Q0 -200 -54 -184Z',HOOD)}
+${pth('M-28 -188 Q0 -158 28 -188','none')}${lin(-10,-168,-12,-140,OL,4)}${lin(10,-168,12,-140,OL,4)}
+${rect(-30,-124,60,26,'#e8613f',10,'stroke-width="4"')}
+<g class="hc hc-phone">${rect(-14,-176,28,46,'#222',6)}<rect x="-10" y="-170" width="20" height="34" rx="3" fill="#9be7ff"/><ellipse cx="0" cy="-153" rx="46" ry="38" fill="#9be7ff" opacity=".25"/></g>
+<g class="hc hc-tray">${rect(-52,-150,104,24,'#9aa3b5',8)}${circ(-26,-158,9,'#e9c46a','stroke-width="3"')}${circ(0,-160,10,'#8ac926','stroke-width="3"')}${circ(26,-158,9,'#ff7a59','stroke-width="3"')}</g>
+<g class="hc hc-journal">${rect(-30,-168,60,44,'#4cc9a0',6)}${lin(-18,-152,18,-152,'#fff',3)}${lin(-18,-140,12,-140,'#fff',3)}${lin(34,-124,52,-168,'#ffd23f',6)}</g>
+<g class="hc hc-pad">${pth('M-42 -150 Q-48 -172 -22 -170 L22 -170 Q48 -172 42 -150 Q40 -128 20 -134 L-20 -134 Q-40 -128 -42 -150Z','#444a63')}${circ(-24,-152,6,'#ff4d6d','stroke-width="2"')}${circ(24,-152,6,'#4dffb8','stroke-width="2"')}</g>
+</g>
+<g class="armL">${lin(-48,-172,-60,-94,OL,26)}${lin(-48,-172,-60,-94,HOOD,16)}${circ(-60,-86,13,SKIN)}</g>
+<g class="armR">${lin(48,-172,60,-94,OL,26)}${lin(48,-172,60,-94,HOOD,16)}${circ(60,-86,13,SKIN)}
+ <g class="hr hr-apple">${circ(62,-104,17,'#e63946','stroke-width="4"')}${pth('M62 -121 Q68 -134 78 -130 Q72 -120 62 -121Z','#52c15a','stroke-width="3"')}</g>
+ <g class="hr hr-soda">${rect(48,-122,28,44,'#3a86ff',6,'stroke-width="4"')}${rect(48,-108,28,12,'#fff',0,'stroke-width="2"')}</g>
+ <g class="hr hr-bag">${rect(46,-122,32,44,'#ffd23f',6,'stroke-width="4"')}${circ(62,-100,8,'#e63946','stroke-width="2"')}</g>
+</g>
+<g class="head">
+${circ(-57,-240,12,SKIN)}${circ(57,-240,12,SKIN)}${circ(0,-240,56,SKIN)}
+${pth('M-58 -246 Q-68 -308 0 -306 Q68 -308 58 -246 Q44 -274 0 -272 Q-44 -274 -58 -246Z',HAIR)}${pth('M-8 -304 Q-6 -334 20 -328 Q4 -320 10 -304Z',HAIR)}
+<g class="eyes">${ell(-20,-238,11,14,'#fff','stroke-width="3"')}${ell(20,-238,11,14,'#fff','stroke-width="3"')}${circ(-18,-236,6.5,OL,'stroke-width="1"')}${circ(22,-236,6.5,OL,'stroke-width="1"')}<circle cx="-16" cy="-239" r="2.3" fill="#fff"/><circle cx="24" cy="-239" r="2.3" fill="#fff"/></g>
+${ell(-36,-214,9,6,'#ff8fa3','stroke="none" opacity=".6"')}${ell(36,-214,9,6,'#ff8fa3','stroke="none" opacity=".6"')}
+<g class="mo m-happy"><path d="M-32 -262 Q-20 -274 -8 -266M8 -266 Q20 -274 32 -262" fill="none" stroke="${HAIR}" stroke-width="5" stroke-linecap="round"/>${pth('M-20 -222 Q0 -184 20 -222Z','#8c1c2b','stroke-width="4"')}<ellipse cx="0" cy="-206" rx="8" ry="5" fill="#ff7b8a"/></g>
+<g class="mo m-neutral"><path d="M-32 -264 L-8 -266M8 -266 L32 -264" fill="none" stroke="${HAIR}" stroke-width="5" stroke-linecap="round"/><path d="M-13 -214 Q0 -205 13 -214" fill="none" ${o}/></g>
+<g class="mo m-sad"><path d="M-33 -258 L-9 -270M9 -270 L33 -258" fill="none" stroke="${HAIR}" stroke-width="5" stroke-linecap="round"/><path d="M-16 -206 Q0 -224 16 -206" fill="none" ${o}/><path class="tear" d="M-26 -226 q-6 12 0 16 q8 -4 0 -16Z" fill="#6ec6ff" stroke="${OL}" stroke-width="2"/></g>
+<g class="mo m-worried"><path d="M-33 -258 L-9 -270M9 -270 L33 -258" fill="none" stroke="${HAIR}" stroke-width="5" stroke-linecap="round"/><path d="M-20 -208 q5 -9 10 0 t10 0 t10 0 t10 0" fill="none" ${o}/><path class="sweat" d="M46 -284 q-8 14 0 20 q10 -6 0 -20Z" fill="#6ec6ff" stroke="${OL}" stroke-width="2"/></g>
+<g class="mo m-angry"><circle cx="0" cy="-240" r="55" fill="#ff3b3b" opacity=".38"/><path d="M-36 -270 L-8 -256M8 -256 L36 -270" fill="none" stroke="${HAIR}" stroke-width="6" stroke-linecap="round"/>${rect(-20,-222,40,16,'#fff',5,'stroke-width="4"')}${lin(-7,-222,-7,-206,OL,3)}${lin(7,-222,7,-206,OL,3)}<g class="steam"><circle cx="-62" cy="-262" r="9" fill="#fff" opacity=".8"/></g><g class="steam" style="animation-delay:.4s"><circle cx="62" cy="-262" r="9" fill="#fff" opacity=".8"/></g></g>
+<g class="mo m-sleepy"><path d="M-33 -240 h26 a13 13 0 0 0 -26 0Z" fill="${SKIN}" stroke="none"/><path d="M7 -240 h26 a13 13 0 0 0 -26 0Z" fill="${SKIN}" stroke="none"/><path d="M-34 -240 H-6M6 -240 H34" stroke="${OL}" stroke-width="4" stroke-linecap="round"/><path d="M-30 -226 q10 6 20 0M10 -226 q10 6 20 0" stroke="#9a7bd1" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M-32 -262 L-8 -258M8 -258 L32 -262" fill="none" stroke="${HAIR}" stroke-width="5" stroke-linecap="round"/>${ell(0,-210,8,10,'#8c1c2b','stroke-width="3"')}<g class="zzz"><text x="50" y="-290" font-size="30" font-weight="700" fill="#fff" stroke="${OL}" stroke-width="1.5">Z</text></g><g class="zzz" style="animation-delay:1.3s"><text x="40" y="-280" font-size="22" font-weight="700" fill="#fff" stroke="${OL}" stroke-width="1.5">z</text></g></g>
+<g class="mo m-calm"><path d="M-32 -238 Q-20 -226 -8 -238M8 -238 Q20 -226 32 -238" fill="none" ${o}/><path d="M-32 -262 Q-20 -270 -8 -264M8 -264 Q20 -270 32 -262" fill="none" stroke="${HAIR}" stroke-width="5" stroke-linecap="round"/><path d="M-12 -214 Q0 -202 12 -214" fill="none" ${o}/></g>
+<g class="mo m-sick"><circle cx="0" cy="-240" r="55" fill="#8bd35c" opacity=".4"/><path d="M-33 -258 L-9 -270M9 -270 L33 -258" fill="none" stroke="${HAIR}" stroke-width="5" stroke-linecap="round"/><path d="M-20 -208 q5 -9 10 0 t10 0 t10 0 t10 0" fill="none" ${o}/></g>
+</g></g></g></g>`;
+
+/* ===== Scenes ===== */
+const dots=(n,fn)=>Array.from({length:n},(_,i)=>fn(i)).join('');
+const SC=[];
+
+/* 0 — school entrance */
+SC.push({id:'school',loc:'🏫',name:'Outside school · Monday morning',sky:'#7ec8ff',amb:'morning',mood:'happy',pose:'wave',
+art:()=>BG(0,'#7ec8ff','#d9f2ff')+`<g class="far">${sun(1230,170)}${cloud(300,150,1.3)}${cloud(820,95,.9)}${cloud(1450,230,1.1)}${hill('#a6e6a0')}</g>
+<g class="near">${GR('#7bd36b','#62c058')}${rect(-400,742,2800,30,'#d8d3c8',0)}
+${rect(150,400,520,330,'#f4845f',10)}${pth('M110 405 L410 270 L710 405Z','#c8553d')}${rect(360,590,100,140,'#7b4b2a',14)}${circ(445,665,6,'#ffd23f')}
+${dots(4,i=>rect(190+i*118,450,76,84,'#bfe9ff',8)+lin(228+i*118,450,228+i*118,534)+lin(190+i*118,492,266+i*118,492))}
+${rect(300,340,220,50,'#fff',12)}${txt(410,376,'WELLNESS MS',30,'#e63946')}
+${lin(720,260,720,732,'#999',8)}<g class="flag" style="transform-origin:724px 280px">${pth('M724 270 L830 270 L830 330 L724 330Z','#ffd23f')}${txt(777,312,'★',34,'#e63946')}</g>
+${rect(1000,610,18,130,'#8d5a35',4)}${rect(940,560,190,64,'#e0b57a',12)}${txt(1035,603,'Wellness Walk →',22,OL)}
+${tree(1180,735,1.1)}${tree(40,735,1)}
+${circ(110,725,32,'#3da35d')}${circ(690,725,28,'#3da35d')}</g>`,
+beats:[{k:'info',ico:'🚶',t:'Meet Sam!',dims:true,pose:'wave',mood:'happy',hold:'',sfx:[],
+ w:'Sam is a student heading into school. We’ll follow Sam through real-life moments and watch five wellness bars rise and fall.',
+ why:'Wellness isn’t just “not being sick.” It’s an active, ongoing state made up of connected parts of your life — health in one area affects the others.',
+ m:'Five Dimensions of Wellness',think:'Scroll, press ↓ / Space, or tap Continue. Every time a bar changes, a card explains why.',d:{}}]});
+
+/* 1 — bedroom night */
+SC.push({id:'bed-night',loc:'🌙',name:'Sam’s bedroom · 1:47 AM',sky:'#1d1b3a',amb:'night',mood:'sleepy',pose:'idle',hold0:'',
+art:()=>BG(1,'#1d1b3a','#2e2a5e')+`<g class="far">${rect(160,160,270,320,'#0e1230',10)}<rect class="win-sky nightdawn" x="172" y="172" width="246" height="296" rx="6" fill="#16224f"/>
+${pth('M330 230 a45 45 0 1 0 40 60 a36 36 0 1 1 -40 -60Z','#ffe9a0','stroke-width="3"')}${dots(9,i=>`<circle class="twinkle" style="animation-delay:${i*.3}s" cx="${195+(i*53)%210}" cy="${200+(i*71)%240}" r="3" fill="#fff"/>`)}
+${lin(295,172,295,468)}${lin(172,320,418,320)}${pth('M140 150 h60 v350 q-40 -30 -60 0Z','#8a5cc7')}${pth('M390 150 h60 v350 q-20 -30 -60 0Z','#8a5cc7')}
+${rect(980,210,150,200,'#3a3f7a',10)}${circ(1055,290,34,'#ff6b9a')}${txt(1055,380,'ROCK!',28,'#ffd23f')}</g>
+<g class="near">${GR('#4a3427','#5d4333')}${dots(9,i=>lin(-100+i*300,742,-100+i*300,880,'#3a281d',3))}
+${rect(110,540,40,240,'#6b4226',10)}${rect(130,650,440,90,'#5b6fd6',16)}${rect(130,622,440,40,'#e6e9ff',14)}${ell(210,622,50,20,'#fff')}${rect(550,690,24,60,'#6b4226',4)}
+${rect(610,600,110,150,'#6b4226',8)}${lin(610,670,720,670,OL,4)}<g class="alarmc">${rect(622,545,86,58,'#15171f',10)}<text id="digits" x="665" y="587" font-size="34" font-family="monospace" font-weight="700" fill="#ff4d4d" text-anchor="middle">1:47</text>${circ(630,545,10,'#888','stroke-width="3"')}${circ(700,545,10,'#888','stroke-width="3"')}</g>
+<circle class="ringw" cx="665" cy="574" r="60" fill="none" stroke="#ff4d4d" stroke-width="5"/><circle class="ringw" style="animation-delay:.4s" cx="665" cy="574" r="60" fill="none" stroke="#ff4d4d" stroke-width="5"/>
+${rect(980,660,220,20,'#7b5233',6)}${rect(990,680,16,70,'#6b4226',2)}${rect(1170,680,16,70,'#6b4226',2)}${rect(1030,620,40,40,'#cfd2e8',6)}${lin(1050,620,1050,570,OL,6)}${pth('M1020 570 h60 l-14 -34 h-32Z','#9a9ab8')}${rect(1100,630,26,30,'#ff7a59',3)}${rect(1126,620,22,40,'#4cc9a0',3)}</g>
+<g class="glowp"><radialGradient id="gb"><stop offset="0" stop-color="#7fd8ff" stop-opacity=".75"/><stop offset="1" stop-color="#7fd8ff" stop-opacity="0"/></radialGradient><circle cx="780" cy="590" r="260" fill="url(#gb)" class="pulse tb"/></g>`,
+onBeat:(k,r)=>{const d=r.querySelector('#digits');if(d)d.textContent=k>=1?'6:30':'1:47';},
+beats:[
+{k:'bad',ico:'📱',t:'Late-night scrolling',pose:'phone',mood:'sleepy',hold:'phone',sfx:['tap'],d:{p:-10,m:-5},m:'Sleep',
+ w:'It’s 1:47 AM and Sam is still scrolling. The screen glows in a dark room — and the sleep clock keeps ticking.',
+ why:'Sleep is a Physical health metric: hours of sleep and how rested you feel. Short sleep also pulls down Mental wellness.',
+ f:'Teens aged 13–18 need about 8–10 hours of sleep per 24 hours (AASM), yet most U.S. high schoolers fall short, per CDC survey data.',
+ src:[['Johns Hopkins Medicine — Teenagers & sleep','https://www.hopkinsmedicine.org/health/wellness-and-prevention/teenagers-and-sleep-how-much-sleep-is-enough'],['Contemporary Pediatrics — CDC teen sleep report','https://www.contemporarypediatrics.com/view/cdc-most-us-teens-fail-to-get-recommended-8-hours-of-sleep-report-finds']]},
+{k:'bad',ico:'⏰',t:'The groggy alarm',pose:'yawn',mood:'sleepy',hold:'',sfx:['alarm'],d:{m:-10,e:-8,s:-4},m:'Sleep Quality · Mood',
+ w:'6:30 AM. The alarm blares and Sam drags out of bed with under five hours of sleep. Everything feels harder.',
+ why:'Poor sleep quality strongly affects thinking: focus drops, mood dips and patience shrinks. That ripples into Mental and Social/Emotional wellness.',
+ f:'Sam’s chain reaction is the deck’s own example: poor sleep (physical) → lower focus (mental) → less patience with friends (social/emotional).',
+ think:'Which bar dropped the most — and why?'}]});
+
+/* 2 — bedroom morning */
+SC.push({id:'bed-morning',loc:'🌅',name:'Sam’s bedroom · A well-rested morning',sky:'#ffe3b3',amb:'morning',mood:'happy',pose:'idle',
+art:()=>BG(2,'#ffe9c4','#ffd2a6')+`<g class="far">${rect(150,130,320,350,'#fff',12)}${rect(166,146,288,318,'#8fd6ff',6)}<g class="tb" style="transform-origin:310px 300px">${sun(310,260,48)}</g>${cloud(220,380,.5)}${lin(310,146,310,464)}${lin(166,300,454,300)}
+${pth('M130 120 h50 v380 q-28 -24 -50 0Z','#ff9bb3')}${pth('M440 120 h50 v380 q-22 -24 -50 0Z','#ff9bb3')}${rect(250,470,120,24,'#c9743f',6)}${circ(310,452,22,'#52c15a')}${circ(285,458,16,'#3da35d')}${circ(335,458,16,'#3da35d')}
+${rect(950,300,250,16,'#c9743f',4)}${rect(970,255,26,45,'#4d96ff',3)}${rect(996,262,22,38,'#ff7a59',3)}${pth('M1130 300 h50 l-8 -50 h-34Z','#ffd23f')}${rect(1010,490,160,120,'#fff',8)}${circ(1090,550,40,'#ff6b9a')}${circ(1090,550,16,'#ffd23f')}</g>
+<g class="near">${GR('#d9a066','#e8b57e')}${dots(8,i=>lin(-100+i*300,742,-100+i*300,880,'#b5834f',3))}
+<polygon class="beam" points="170,480 450,480 1000,780 360,780" fill="#fff6b0" opacity=".5"/>
+${rect(110,560,420,180,'#7fd8a8',20)}${rect(110,530,420,48,'#fff',16)}${ell(200,533,55,20,'#fff')}${rect(110,520,36,230,'#c9743f',10)}
+<g class="alarmc2">${circ(1085,278,22,'#ff4d6d')}${lin(1085,278,1085,266,'#fff',4)}${lin(1085,278,1094,282,'#fff',4)}</g>
+<circle class="ringw" cx="1085" cy="278" r="40" fill="none" stroke="#ffb703" stroke-width="5"/>
+<g class="ecg">${rect(1000,420,190,100,'#fff',14)}${txt(1095,462,'62 BPM',30,'#e63946')}<path d="M1015 495 h30 l8 -22 l12 40 l10 -30 h20 l8 -10 l8 22 h50" fill="none" stroke="#e63946" stroke-width="4" stroke-linejoin="round"/>${txt(1095,512,'resting',14,'#888')}</g></g>`,
+beats:[
+{k:'good',ico:'🌅',t:'Rested and rising',pose:'stretch',mood:'happy',hold:'',sfx:['alarm','birds'],d:{p:18,m:10},m:'Sleep',
+ w:'Tonight, Sam went to bed on time and slept almost 9½ hours. The alarm rings, sunshine pours in and Sam stretches.',
+ why:'Enough sleep fuels energy, focus and mood. It’s one of the strongest levers for both Physical and Mental wellness.',
+ f:'The American Academy of Sleep Medicine recommends 8–10 hours for ages 13–18.',
+ src:[['Johns Hopkins Medicine — Teenagers & sleep','https://www.hopkinsmedicine.org/health/wellness-and-prevention/teenagers-and-sleep-how-much-sleep-is-enough']]},
+{k:'good',ico:'💓',t:'Calm, steady vital signs',pose:'pulse',mood:'calm',hold:'',sfx:['heart'],d:{p:4,e:8},m:'Vital Signs',
+ w:'Sam checks a pulse: 62 beats per minute at rest — calm and steady. Sam wakes up cheerful, not cranky.',
+ why:'Vital signs — heart rate, breathing and other measurable body signals — are observable Physical metrics. A rested, active body supports a calm mood too.',
+ think:'What other vital signs could Sam measure?'}]});
+
+/* 3 — vending machine */
+SC.push({id:'vending',loc:'🥤',name:'School hallway · Lunchtime',sky:'#cfd8e6',amb:'hall',mood:'neutral',pose:'idle',
+art:()=>BG(3,'#d3dbe8','#e9eef6')+`<g class="far">${circ(700,200,56,'#fff')}${lin(700,200,700,160,OL,5)}${lin(700,200,726,210,OL,5)}${rect(980,140,200,70,'#fff',10)}${txt(1080,188,'NO RUNNING',26,'#e63946')}</g>
+<g class="near">${GR('#b9b2a5','#cfc8ba')}${dots(10,i=>lin(-100+i*220,742,-100+i*220,880,'#a29b8e',3))}
+${dots(6,i=>rect(120+i*74,330,72,400,'#4d7ea8',4)+lin(132+i*74,380,170+i*74,380,'#2f5d82',4)+lin(132+i*74,396,170+i*74,396,'#2f5d82',4)+circ(172+i*74,540,5,'#ffd23f','stroke-width="2"'))}
+${rect(930,320,230,420,'#e63946',16)}${rect(950,350,150,300,'#bde0fe',8)}
+${dots(3,i=>dots(3,j=>rect(962+j*46,364+i*88,36,60,['#ffd23f','#ff9ec4','#3a86ff'][(i+j)%3],5,'stroke-width="3"')))}
+${rect(1112,350,32,170,'#2b2d42',6)}${dots(4,i=>circ(1128,368+i*34,8,'#8ac926','stroke-width="2"'))}${rect(950,665,150,50,'#1b1c2b',8)}
+<g class="candrop">${rect(1000,540,34,60,'#3a86ff',6)}${rect(1000,556,34,14,'#fff',0,'stroke-width="2"')}</g>
+<g class="fizz">${circ(1010,660,4,'#bfe9ff','stroke-width="2"')}${circ(1030,650,5,'#bfe9ff','stroke-width="2"')}${circ(1050,662,4,'#bfe9ff','stroke-width="2"')}</g>
+${pth('M560 770 l20 -10 l10 14Z','#ffd23f','stroke-width="3"')}${pth('M470 780 l24 -8 l8 14Z','#ff9ec4','stroke-width="3"')}
+<g class="crash">${bubble(560,260,220,90,['💤 CRASH!'],'','l','#ffe3e8',30)}</g></g>`,
+beats:[{k:'bad',ico:'🥤',t:'Vending-machine lunch',pose:'eat',mood:'worried',hold:'soda',sfx:['coin','can','fizz'],d:{p:-12,m:-8},m:'Nutrition · Focus & Concentration',
+ w:'Skipping the cafeteria, Sam grabs a soda and chips. Sugar rush… then a big energy crash before the next class.',
+ why:'Nutrition is the balance and variety of foods that fuel the body. Low-nutrient snacks give a short burst of energy, then focus fades — Physical and Mental both dip.',
+ f:'The Dietary Guidelines for Americans advise keeping added sugars under 10% of daily calories. Sweetened drinks are among the top sources of added sugar in teens’ diets.',
+ src:[['Harvard Nutrition Source — Added sugar','https://nutritionsource.hsph.harvard.edu/carbohydrates/added-sugar-in-the-diet/'],['NCBI/USDA — Added sugars in children’s diets','https://www.ncbi.nlm.nih.gov/books/NBK589213/']]}]});
+
+/* 4 — cafeteria healthy */
+SC.push({id:'cafe',loc:'🥗',name:'School cafeteria · Lunch',sky:'#fff1d6',amb:'cafe',mood:'happy',pose:'idle',
+art:()=>BG(4,'#fff4dc','#ffe5b8')+`<g class="far">${rect(150,150,300,200,'#bfe9ff',10)}${lin(300,150,300,350)}${lin(150,250,450,250)}${rect(600,120,360,60,'#52c15a',14)}${txt(780,166,'FRESH FOOD',36)}${rect(1010,160,160,120,'#2f5d50',8)}${txt(1090,205,'MENU',26)}${txt(1090,245,'🍎🥦🥕',28)}</g>
+<g class="near">${GR('#e7c9a5','#f2dcc0')}${dots(10,i=>lin(-100+i*220,742,-100+i*220,880,'#d4b58f',3))}
+${rect(860,560,330,180,'#7aa874',10)}${rect(840,534,370,30,'#e8e8ee',8)}${pth('M860 534 L880 440 H1170 L1190 534','rgba(190,230,255,.45)','stroke-width="3"')}
+${circ(900,520,22,'#e63946')}${circ(935,524,20,'#e63946')}${circ(918,500,20,'#ff6b6b')}${ell(1000,522,40,16,'#52c15a')}${dots(3,i=>pth(`M${1070+i*18} 530 l8 -34 l8 34Z`,'#ff9f1c','stroke-width="3"'))}${rect(1135,492,26,42,'#6ec6ff',6,'stroke-width="3"')}${rect(1165,498,20,36,'#6ec6ff',6,'stroke-width="3"')}
+<g class="plateg"><g transform="translate(420,300)">${circ(0,0,100,'#fff')}${pth('M0 0 L0 -90 A90 90 0 0 1 90 0Z','#8ac926','stroke-width="3"')}${pth('M0 0 L90 0 A90 90 0 0 1 0 90Z','#ff7a59','stroke-width="3"')}${pth('M0 0 L0 90 A90 90 0 0 1 -90 0Z','#b56cff','stroke-width="3"')}${pth('M0 0 L-90 0 A90 90 0 0 1 0 -90Z','#e63946','stroke-width="3"')}${circ(120,-80,34,'#6ec6ff')}${txt(46,-34,'Veg',20,OL)}${txt(46,52,'Grain',20,OL)}${txt(-46,52,'Protein',17,OL)}${txt(-46,-34,'Fruit',20,OL)}${txt(0,138,'Balance!',30,OL)}</g></g></g>`,
+beats:[{k:'good',ico:'🥗',t:'Fueling up with variety',pose:'eat',mood:'happy',hold:'apple',sfx:['crunch'],d:{p:14,m:8},m:'Nutrition',
+ w:'Sam builds a balanced plate — fruit, veggies, whole grains, protein and water — and takes a crunchy bite.',
+ why:'Balance and variety of foods fuel the body and the brain, so energy stays steady and focus lasts through the afternoon.',
+ f:'USDA’s MyPlate suggests filling about half your plate with fruits and vegetables.',
+ src:[['USDA — MyPlate','https://www.myplate.gov/']]}]});
+
+/* 5 — screen marathon */
+SC.push({id:'tv',loc:'🎮',name:'Living room · Saturday, hour 4',sky:'#2d2a4a',amb:'tv',mood:'sleepy',pose:'game',hold0:'pad',
+art:()=>BG(5,'#25223f','#3b3568')+`<g class="far">${rect(560,130,150,100,'#4b4577',8)}${circ(635,180,32,'#fff')}${lin(635,180,635,156,OL,5)}${lin(635,180,652,188,OL,5)}${rect(130,160,150,190,'#3b3568',8)}${circ(205,250,38,'#ff6b9a')}</g>
+<g class="near">${GR('#3d2f4f','#4d3c62')}<ellipse class="tvg tb" cx="1080" cy="480" rx="330" ry="240" fill="#6ec6ff" opacity=".22"/>
+${rect(120,500,440,170,'#7b5ea7',24)}${rect(100,620,480,110,'#6a4d96',24)}${rect(100,560,60,170,'#5d4285',22)}${rect(520,560,60,170,'#5d4285',22)}
+${rect(930,360,300,200,'#111',14)}<rect class="scr" x="945" y="375" width="270" height="170" rx="6" fill="#2a5bd7"/>${dots(5,i=>`<rect class="scr" style="animation-delay:${i*.13}s" x="${960+i*50}" y="${470-(i*37)%80}" width="34" height="34" fill="${['#ffd23f','#ff4d6d','#4dffb8','#b56cff','#ff9f1c'][i]}"/>`)}
+${rect(980,570,220,26,'#1b1c2b',6)}${rect(960,596,260,140,'#4a3a5e',10)}
+${rect(560,730,110,26,'#fff',4)}${rect(600,712,30,18,'#e63946',3)}${rect(1140,745,28,40,'#3a86ff',5,'stroke-width="3"')}${rect(1180,752,28,34,'#3a86ff',5,'stroke-width="3"')}${pth('M440 780 l30 -12 l14 20Z','#ffd23f','stroke-width="3"')}
+<g class="pulse tb">${rect(940,260,280,60,'#2b2d42',16)}${txt(1080,302,'⏱ Playtime: 4h 12m',26,'#ff9ec4')}</g></g>`,
+beats:[{k:'bad',ico:'🎮',t:'The 4-hour couch marathon',pose:'game',mood:'sleepy',hold:'pad',sfx:['arcade','sigh'],d:{p:-12,s:-6,e:-4},m:'Physical Activity',
+ w:'Sam has been gaming for hours. Snack wrappers pile up, the sun has set, and nobody’s been texted back.',
+ why:'Physical activity is the amount and type of movement you get each week. Long, still stretches cut movement and can crowd out sleep and friends — so Physical, Social and Emotional wellness all slip.',
+ f:'WHO guidelines advise limiting sedentary time — especially recreational screen time — and replacing it with physical activity.',
+ src:[['WHO — Physical activity fact sheet','https://www.who.int/news-room/fact-sheets/detail/physical-activity']]}]});
+
+/* 6 — park */
+SC.push({id:'park',loc:'⚽',name:'The park · After school',sky:'#6ecbff',amb:'park',mood:'happy',pose:'idle',
+art:()=>BG(6,'#6ecbff','#d8f6ff')+`<g class="far">${sun(1300,150,54)}${cloud(300,160,1.2)}${cloud(900,110,.8)}${hill('#a6e6a0')}
+<g class="scrolltrees">${dots(10,i=>tree(-800+i*400,735,.7,'#7fd18a'))}</g></g>
+<g class="near">${GR('#7bd36b','#62c058')}<g class="scrollgrass">${dots(12,i=>`<rect x="${-800+i*200}" y="740" width="100" height="60" fill="#6fc863" stroke="none"/>`)}</g>
+${lin(-100,736,2200,736,'#fff',6)}
+${rect(1020,520,16,220,'#fff',3)}${rect(1170,520,16,220,'#fff',3)}${rect(1020,516,166,14,'#fff',3)}<g class="net">${dots(6,i=>lin(1036+i*25,530,1036+i*25,740,'#ddd',2))}${dots(6,i=>lin(1030,560+i*30,1180,560+i*30,'#ddd',2))}</g>
+<g class="ball">${circ(880,768,18,'#fff')}${circ(880,768,7,OL,'stroke-width="2"')}</g>
+${rect(130,640,150,16,'#c9743f',5)}${rect(145,656,12,80,'#8d5a35',2)}${rect(255,656,12,80,'#8d5a35',2)}
+${rect(140,110,270,130,'#fff',18)}<g class="heart">${pth('M200 160 q-26 -34 -4 -44 q16 -4 24 14 q8 -18 24 -14 q22 10 -4 44 l-20 22Z','#e63946')}</g>${txt(320,166,'<tspan id="bpm">95</tspan>',46,'#e63946')}${txt(320,204,'BPM',20,'#888')}</g>
+<g class="birdf" style="animation-duration:11s">${pth('M300 200 q15 -18 30 0 q15 -18 30 0','none','stroke-width="4"')}</g>`,
+onBeat:(k,r)=>{const b=r.querySelector('#bpm');if(b)b.textContent=k>=1?'142':k===0?'98':'72';},
+beats:[
+{k:'good',ico:'⚽',t:'Get moving!',pose:'kick',mood:'happy',hold:'',sfx:['kick','cheer'],d:{p:14,e:6},m:'Physical Activity',
+ w:'At the park Sam kicks the ball — it sails into the goal! Moving feels good.',
+ why:'Regular activity builds a strong body, lifts mood and creates healthy habits that last a lifetime.',
+ f:'WHO: children and teens should average at least 60 minutes a day of moderate-to-vigorous activity, including muscle- and bone-strengthening activity on at least 3 days a week.',
+ src:[['WHO — Physical activity fact sheet','https://www.who.int/news-room/fact-sheets/detail/physical-activity']]},
+{k:'good',ico:'💓',t:'Heart rate climbs — and that’s healthy',pose:'run',mood:'happy',hold:'',sfx:['heart','steps'],d:{p:6,m:10},m:'Vital Signs',
+ w:'Sam sprints and the monitor jumps from about 95 to 142 BPM, then settles back down at rest.',
+ why:'Vital signs show how the body responds to effort. The heart works harder during exercise — and regular activity trains it. Exercise also boosts mood, so Mental wellness rises too.',
+ f:'WHO evidence links physical activity with better fitness, heart and bone health, thinking skills and fewer symptoms of depression.',
+ src:[['WHO guidelines for ages 5–17: evidence summary (IJBNPA, 2020)','https://link.springer.com/article/10.1186/s12966-020-01037-z']]}]});
+
+/* 7 — test stress */
+SC.push({id:'test',loc:'📝',name:'Classroom · Test day',sky:'#fff4c9',amb:'tense',mood:'worried',pose:'idle',
+art:()=>BG(7,'#fff4c9','#ffe9a8')+`<g class="far">${rect(150,150,540,290,'#8d5a35',12)}${rect(168,166,504,258,'#2f5d50',6)}${txt(420,270,'TEST TODAY!',62,'#fff')}${lin(210,330,430,330,'#fff',4)}${lin(210,370,350,370,'#fff',4)}
+${circ(900,200,62,'#fff')}<g style="transform-origin:900px 200px" class="sechand">${lin(900,200,900,150,'#e63946',4)}</g>${lin(900,200,900,160,OL,6)}${lin(900,200,930,208,OL,6)}${rect(1030,150,170,230,'#9ab7c7',8)}${lin(1030,265,1200,265)}</g>
+<g class="near">${GR('#c9a27a','#d8b48c')}${dots(9,i=>lin(-100+i*250,742,-100+i*250,880,'#b3895f',3))}
+${dots(3,i=>rect(130+i*160,640,130,16,'#e0b57a',4)+rect(145+i*160,656,10,80,'#8d5a35',2)+rect(235+i*160,656,10,80,'#8d5a35',2)+rect(150+i*160,618,70,24,'#fff',3))}
+${rect(1000,620,200,16,'#e0b57a',4)}${rect(1010,636,12,100,'#8d5a35',2)}${rect(1180,636,12,100,'#8d5a35',2)}${rect(1030,586,60,34,'#fff',3)}${rect(1100,590,60,30,'#fff',3)}
+<g class="tbubble">${circ(790,330,80,'#fff')}${circ(690,420,16,'#fff')}${circ(715,380,10,'#fff')}${txt(790,350,'😰',70,'#000')}${pth('M740 290 q20 -20 40 0 t40 0','none','stroke-width="4"')}${txt(860,300,'?!',44,'#e63946')}</g></g>
+<g class="vig"><radialGradient id="vg7"><stop offset=".55" stop-color="#e63946" stop-opacity="0"/><stop offset="1" stop-color="#e63946" stop-opacity=".55"/></radialGradient><rect x="-600" y="-300" width="2800" height="1400" fill="url(#vg7)"/></g>`,
+beats:[{k:'bad',ico:'😰',t:'Test-day pressure',pose:'stress',mood:'worried',hold:'',sfx:['tick'],d:{m:-18,e:-8,p:-4},m:'Mood & Stress Level · Focus',
+ w:'Surprise — a big test today! Sam’s heart races, hands sweat and thoughts spin out of control.',
+ why:'Mood and stress level is how often someone feels calm, anxious or overwhelmed. High stress hurts focus and concentration, and shows up in the body too.',
+ f:'NIMH: stress affects both body and mind. Learning what triggers your stress and which coping techniques work for you can help.',
+ src:[['NIMH — I’m So Stressed Out! Fact sheet','https://www.nimh.nih.gov/health/publications/so-stressed-out-fact-sheet']]}]});
+
+/* 8 — calm corner */
+SC.push({id:'calm',loc:'🧘',name:'The quiet corner · Coping skills',sky:'#e6dcff',amb:'calm',mood:'calm',pose:'idle',
+art:()=>BG(8,'#e8defe','#cdebf5')+`<g class="far">${rect(1000,150,200,270,'#bfe9ff',12)}${tree(1100,420,.35)}${lin(1100,150,1100,420)}${rect(150,160,160,120,'#fff',10)}${circ(230,220,34,'#b56cff')}${circ(260,205,18,'#ffd23f')}</g>
+<g class="near">${GR('#a8dccb','#bfe9db')}${ell(780,770,360,40,'#c7b8f5','opacity=".6"')}
+${ell(430,710,110,50,'#ff9ec4')}${ell(430,670,90,44,'#ffb8d4')}
+${rect(960,640,170,16,'#e0b57a',5)}${rect(980,656,12,84,'#8d5a35',2)}${rect(1100,656,12,84,'#8d5a35',2)}<g class="jn">${rect(1000,610,70,34,'#4cc9a0',5)}${lin(1010,624,1058,624,'#fff',3)}</g>
+${rect(130,640,60,100,'#c9743f',8)}${pth('M160 640 q-60 -70 -40 -140 q40 40 40 140Z','#52c15a')}${pth('M160 640 q60 -90 30 -160 q-40 60 -30 160Z','#3da35d')}${pth('M160 640 q-10 -100 10 -170 q20 80 -10 170Z','#6bd36a')}
+${rect(1160,380,10,360,'#8d5a35',3)}${pth('M1110 380 h110 l-16 -54 h-78Z','#ffd23f')}
+<g class="brc"><radialGradient id="bgr"><stop offset="0" stop-color="#fff" stop-opacity=".9"/><stop offset="1" stop-color="#b9a5ff" stop-opacity=".25"/></radialGradient>
+<circle class="bc" cx="780" cy="520" r="200" fill="url(#bgr)" stroke="#9b7bff" stroke-width="6"/><g class="in">${txt(780,330,'Breathe in… 4',36,'#6a4ec2')}</g><g class="out">${txt(780,330,'Breathe out… 4',36,'#6a4ec2')}</g></g>
+${dots(8,i=>`<text class="sparkle" style="animation-delay:${i*.4}s" x="${600+i*50}" y="640" font-size="28">✨</text>`)}</g>`,
+beats:[
+{k:'good',ico:'🌬️',t:'Pause and breathe',pose:'breathe',mood:'calm',hold:'',sfx:['breath'],d:{m:16,e:6,p:3},m:'Coping Skills',
+ w:'Sam steps into a quiet corner and breathes slowly: in for 4, out for 4. The spinning thoughts slow down.',
+ why:'Coping skills are the strategies you use to manage stress or setbacks. Slow breathing is one you can use anywhere — it helps body and mind settle together.',
+ f:'NIMH lists deep breathing, relaxation and mindfulness exercises among ways teens can manage stress.',think:'Try it now: breathe in 4… out 4… with the circle.',
+ src:[['NIMH — I’m So Stressed Out! Fact sheet','https://www.nimh.nih.gov/health/publications/so-stressed-out-fact-sheet']]},
+{k:'good',ico:'📓',t:'Write it out',pose:'write',mood:'happy',hold:'journal',sfx:['scribble'],d:{m:6,e:8},m:'Coping Skills · Emotional Regulation',
+ w:'Sam journals about what’s worrying them and makes a small plan. The big feeling shrinks to a manageable size.',
+ why:'Journaling turns a swirl of worry into words and next steps — another coping skill that strengthens Mental and Emotional wellness.',
+ f:'NIMH suggests keeping a journal, exercising and eating regular, healthy meals to handle stress.',
+ src:[['NIMH — I’m So Stressed Out! Fact sheet','https://www.nimh.nih.gov/health/publications/so-stressed-out-fact-sheet']]}]});
+
+/* 9 — lonely lunch */
+SC.push({id:'alone',loc:'🥺',name:'Lunch courtyard · A rainy day',sky:'#9aa5b1',amb:'lonely',mood:'sad',pose:'slump',
+art:()=>BG(9,'#8e99a6','#c5ccd4')+`<g class="far">${cloud(500,130,1.6,'#7d8794')}${cloud(1000,100,1.4,'#7d8794')}${hill('#8fa39a')}</g>
+<g class="near">${GR('#8c8f99','#9fa2ac')}
+${rect(120,590,400,18,'#a77d57',5)}${rect(150,608,14,128,'#7b5233',2)}${rect(480,608,14,128,'#7b5233',2)}${rect(130,660,380,12,'#a77d57',4)}${rect(130,700,380,12,'#a77d57',4)}${txt(320,570,'?',50,'#6c7685')}
+${rect(900,600,300,16,'#e0b57a',5)}${rect(920,616,14,120,'#8d5a35',2)}${rect(1170,616,14,120,'#8d5a35',2)}
+${kid(960,'#ff6b9a','#ffd23f','happy','haha')}${kid(1040,'#4d96ff','#2b2d42','happy','haha')}${kid(1120,'#8ac926','#8d5a35','happy','haha')}${kid(1190,'#ffb703','#c9743f','happy','haha')}
+<g class="haha">${bubble(960,420,150,60,['Hahaha!'],'','l','#fff',24)}</g>
+<g class="rainw"><g transform="translate(780,230)">${pth('M-150 20 Q-190 20 -180 -20 Q-170 -60 -120 -50 Q-100 -100 -40 -85 Q10 -120 60 -80 Q130 -90 150 -40 Q190 20 140 20Z','#6f7a88')}</g>
+<g class="rain" stroke="#6ec6ff" stroke-width="5" stroke-linecap="round">${dots(14,i=>`<line style="animation-delay:${(i*.13)%.6}s" x1="${650+i*20}" y1="${290+(i%3)*25}" x2="${644+i*20}" y2="${312+(i%3)*25}"/>`)}</g></g></g>`,
+beats:[{k:'bad',ico:'🥺',t:'Eating alone',pose:'slump',mood:'sad',hold:'tray',sfx:['rain','sigh'],d:{s:-22,e:-12},m:'Sense of Belonging · Relationships',
+ w:'At lunch Sam stands with a tray while other groups laugh together. No one waves Sam over.',
+ why:'Sense of belonging is feeling accepted, valued and connected to a group. When it’s missing, Social and Emotional wellness fall together.',
+ f:'Harvard research: social isolation and loneliness are linked to higher risks of heart disease, stroke, anxiety, depression and dementia — and to ~26–29% higher risk of premature death in studies of adults.',
+ src:[['Harvard Chan — Loneliness is hurting our health','https://hsph.harvard.edu/news/loneliness-is-hurting-our-health-but-these-policies-could-help/'],['Harvard Health — Social isolation & heart risk','https://www.health.harvard.edu/staying-healthy/social-isolation-and-loneliness-add-up-to-higher-heart-risks']]}]});
+
+/* 10 — friends */
+SC.push({id:'friends',loc:'🤗',name:'Lunch courtyard · Sunny again',sky:'#ffe6a7',amb:'warm',mood:'happy',pose:'wave',
+art:()=>BG(10,'#ffe3a1','#ffd1dc')+`<g class="far">${sun(1250,150,50)}${cloud(400,150,1.2)}${hill('#bfe8a0')}${rect(150,150,160,70,'#fff',10)}${txt(230,198,'LUNCH',32,'#ff7a59')}</g>
+<g class="near">${GR('#8fd68a','#7bc477')}
+${rect(860,600,340,16,'#e0b57a',5)}${rect(880,616,14,120,'#8d5a35',2)}${rect(1170,616,14,120,'#8d5a35',2)}
+${kid(930,'#ff6b9a','#ffd23f','happy','',true)}<g class="scoot">${kid(1010,'#4d96ff','#2b2d42','happy','',true)}${kid(1090,'#8ac926','#8d5a35','happy','')}</g>${kid(1170,'#ffb703','#c9743f','happy','')}
+<g class="say say0">${bubble(870,430,230,70,['Sam, over here!'],'','l','#fff',24)}</g>
+<g class="say say1">${bubble(450,430,300,100,['Can you help me','study for the test?'],'','r','#e6f9ef',24)}</g>
+<g class="say say2">${bubble(830,380,300,100,['Sure! What’s','the tricky part?'],'','l','#fff',24)}</g>
+${dots(6,i=>`<text class="heartf" style="animation-delay:${i*.45}s" x="${900+i*50}" y="580" font-size="30">${['💛','💗','💙'][i%3]}</text>`)}</g>`,
+beats:[
+{k:'good',ico:'🤗',t:'A seat saved for Sam',pose:'wave',mood:'happy',hold:'',sfx:['laugh'],d:{s:24,e:10},m:'Relationships · Sense of Belonging',
+ w:'A classmate waves: “Sam, over here!” Friends scoot over and make room.',
+ why:'Supportive friendships and feeling included are core Social metrics. They provide support, belonging and connection.',
+ f:'The U.S. Surgeon General’s advisory on social connection describes strong relationships as a protective factor for health and well-being.',
+ src:[['HHS Surgeon General — Social connection','https://www.hhs.gov/surgeongeneral/reports-and-publications/connection/index.html']]},
+{k:'good',ico:'🗣️',t:'Say it — and really listen',pose:'talk',mood:'happy',hold:'',sfx:['pop','laugh'],d:{s:8,m:6},m:'Communication',
+ w:'Sam asks, “Can you help me study?” A friend listens, answers, and Sam listens right back.',
+ why:'Communication is the ability to express your needs and listen to others clearly. It builds trust and cuts stress — linking Social and Mental wellness.',
+ think:'What’s one need you could express more clearly this week?'}]});
+
+/* 11 — blow-up */
+function stormCloud(){return `<g transform="translate(780,300)">${pth('M-130 20 Q-170 20 -160 -20 Q-150 -60 -100 -50 Q-80 -100 -20 -85 Q30 -120 80 -80 Q150 -90 160 -40 Q200 20 150 20Z','#4b4570')}${pth('M-10 20 l-30 60 h40 l-20 60 l70 -80 h-40 l30 -40Z','#ffd23f','stroke-width="3"')}</g>`;}
+SC.push({id:'argue',loc:'🌋',name:'Group project · Things get heated',sky:'#ffb199',amb:'argue',mood:'angry',pose:'angry',
+art:()=>BG(11,'#ff9b86','#ffc9a8')+`<g class="far">${rect(150,150,300,200,'#6b5b7a',10)}<g class="bolt">${pth('M300 160 l-30 70 h40 l-30 80 l70 -100 h-40 l30 -50Z','#ffd23f','stroke-width="3"')}</g>${rect(1000,140,190,100,'#fff',10)}${txt(1095,205,'GROUP 4',34,'#e63946')}</g>
+<g class="near">${GR('#a86f4f','#bd8260')}
+${rect(930,620,260,16,'#e0b57a',4)}${rect(945,636,12,100,'#8d5a35',2)}${rect(1160,636,12,100,'#8d5a35',2)}${pth('M980 612 l30 -20 l25 22Z','#fff','stroke-width="3"')}
+${kid(990,'#4d96ff','#2b2d42','mad','')}${kid(1110,'#8ac926','#8d5a35','mad','')}
+<g class="haha">${bubble(870,400,240,80,['You never','listen!'],'','l','#fff1f1',26,'#e63946')}</g><g class="haha" style="animation-delay:.5s">${bubble(450,380,210,70,['!@#?! &*%!'],'','r','#fff1f1',26,'#e63946')}</g>
+<g class="float">${stormCloud()}</g></g>`,
+beats:[{k:'bad',ico:'🌋',t:'Boiling over',pose:'angry',mood:'angry',hold:'',sfx:['thunder'],d:{e:-18,s:-14},m:'Emotional Regulation · Communication',
+ w:'During a group project, voices rise. Sam feels hot, shouts — and the team stops listening to each other.',
+ why:'Emotional regulation is the skill of naming feelings and calming down when upset. Without it we react instead of respond — and communication breaks down.',
+ f:'Strong feelings are normal and not “bad.” The skill is what you do with them next.',think:'What signs does your body give you before you “boil over”?'}]});
+
+/* 12 — name it */
+SC.push({id:'nameit',loc:'🏷️',name:'Group project · Take two',sky:'#cfeeff',amb:'warm',mood:'worried',pose:'calmhand',
+art:()=>BG(12,'#cfeeff','#eaf9ff')+`<g class="far">${rect(150,150,300,200,'#bfe9ff',10)}${cloud(300,250,.6)}${rect(1000,140,190,100,'#fff',10)}${txt(1095,205,'GROUP 4',34,'#4d96ff')}</g>
+<g class="near">${GR('#cdb89a','#dfc9aa')}
+<g class="storm">${stormCloud()}</g>
+${rect(930,620,260,16,'#e0b57a',4)}${rect(945,636,12,100,'#8d5a35',2)}${rect(1160,636,12,100,'#8d5a35',2)}
+${kid(990,'#4d96ff','#2b2d42','calm','')}${kid(1110,'#8ac926','#8d5a35','calm','')}
+<g class="say sayA">${bubble(380,300,300,150,['😤 I feel','FRUSTRATED'],'','r','#fff3c4',34)}</g>
+<g class="say sayB">${bubble(380,330,330,120,['I feel frustrated.','Can we take turns?'],'','r','#e6f9ef',28)}</g>
+<g class="say sayB" style="animation-delay:1.2s">${txt(1050,520,'✓',90,'#1fa66a')}</g>
+${dots(6,i=>`<text class="heartf" style="animation-delay:${i*.45}s" x="${960+i*45}" y="580" font-size="28">💙</text>`)}</g>`,
+beats:[
+{k:'good',ico:'🏷️',t:'Name it to tame it',pose:'calmhand',mood:'calm',hold:'',sfx:['pop'],d:{e:16},m:'Emotional Regulation',
+ w:'Sam pauses, takes a breath and names the feeling: “I’m frustrated.” The storm cloud shrinks.',
+ why:'Naming your emotions helps you respond rather than react. It’s the first step in emotional regulation.',
+ f:'UCLA brain-imaging research (Lieberman et al., 2007) found that putting feelings into words reduced activity in the amygdala, the brain’s alarm center.',
+ src:[['UCLA Newsroom — Putting feelings into words','https://newsroom.ucla.edu/releases/Putting-Feelings-Into-Words-Produces-8047'],['Psychological Science (2007)','https://journals.sagepub.com/doi/10.1111/j.1467-9280.2007.01916.x']]},
+{k:'good',ico:'🤝',t:'Respond, don’t react',pose:'talk',mood:'happy',hold:'',sfx:['pop','laugh'],d:{s:10,e:6},m:'Communication · Emotional Regulation',
+ w:'Sam says calmly, “I feel frustrated. Can we take turns?” Teammates nod and the group gets back on track.',
+ why:'Clear, calm communication repairs relationships. That’s why Social and Emotional wellness are so closely linked.',
+ think:'Try the formula: “I feel ___ because ___. Can we ___?”'}]});
+
+/* 13 — polluted street */
+SC.push({id:'smog',loc:'🏭',name:'Walking home · Smoggy street',sky:'#8d8576',amb:'street',mood:'sick',pose:'cough',
+art:()=>BG(13,'#8f867a','#b9ae98')+`<g class="far">${rect(130,330,330,400,'#6d6d6d',6)}${rect(160,200,60,140,'#7b7b7b',4)}${rect(300,160,60,180,'#7b7b7b',4)}${dots(5,i=>`<circle class="puff" style="animation-delay:${i}s" cx="190" cy="190" r="34" fill="#4a4540" stroke="none"/>`)}${dots(5,i=>`<circle class="puff" style="animation-delay:${i+.5}s" cx="330" cy="150" r="38" fill="#4a4540" stroke="none"/>`)}${dots(3,i=>rect(160+i*100,420,60,50,'#ffd23f',4,'opacity=".5"'))}
+${rect(980,140,250,86,'#e63946',16)}${txt(1105,176,'AIR QUALITY',24)}${txt(1105,208,'UNHEALTHY',30)}</g>
+<g class="near">${rect(-400,640,2800,92,'#58585f',0)}${lin(-400,690,2400,690,'#e8d86a',6,'stroke-dasharray="40 30"')}${GR('#9a9a9a','#adadad',732)}
+<g class="car">${rect(100,636,170,44,'#e63946',14)}${rect(140,606,90,36,'#bfe9ff',10)}${circ(140,684,18,'#222')}${circ(240,684,18,'#222')}</g><g class="car" style="animation-delay:-6s">${rect(100,636,190,44,'#3a86ff',14)}${rect(150,608,100,34,'#bfe9ff',10)}${circ(145,684,18,'#222')}${circ(255,684,18,'#222')}</g>
+${rect(980,590,110,140,'#4f7d5e',10)}${rect(970,578,130,22,'#3e6249',6)}${pth('M990 590 q10 -40 40 -34 q30 -10 50 30Z','#6b6b5f')}${rect(1100,700,30,22,'#e9c46a',4,'stroke-width="3"')}${pth('M900 770 l26 -12 l12 18Z','#fff','stroke-width="3"')}${rect(1000,745,20,30,'#c9743f',4,'stroke-width="3"')}${pth('M1150 770 l22 -8 l10 14Z','#ffd23f','stroke-width="3"')}
+${lin(1180,730,1180,560,'#6b5a46',14)}${lin(1180,610,1130,550,'#6b5a46',8)}${lin(1180,590,1230,540,'#6b5a46',8)}${lin(1180,650,1236,610,'#6b5a46',6)}</g>
+<rect class="smog" x="-600" y="-300" width="2800" height="1400" fill="#a08c5a" stroke="none"/>`,
+beats:[{k:'bad',ico:'🏭',t:'Smog, litter, and noise',pose:'cough',mood:'sick',hold:'',sfx:['honk','cough'],d:{v:-22,p:-10,m:-5},m:'Safe, clean surroundings (Environmental · overview)',
+ w:'On the walk home: smoky air, overflowing trash, bumper-to-bumper traffic. Sam coughs and hurries along.',
+ why:'Environmental wellness is about whether the spaces around you — home, school, community — support a healthy life. Polluted or cluttered surroundings affect both the body and the mind.',
+ f:'EPA: fine-particle pollution can aggravate asthma and cause coughing and shortness of breath; children are more sensitive because their lungs are still developing.',
+ src:[['EPA — Links between air pollution and childhood asthma','https://www.epa.gov/sciencematters/links-between-air-pollution-and-childhood-asthma']]}]});
+
+/* 14 — garden */
+SC.push({id:'garden',loc:'🌱',name:'Community garden · Sam takes action',sky:'#7fd1ff',amb:'garden',mood:'happy',pose:'idle',
+art:()=>BG(14,'#7fd1ff','#e1f6ff')+`<g class="far">${sun(1250,150,52)}${cloud(350,140,1.2)}${cloud(850,100,.8)}${hill('#a6e6a0')}${tree(160,735,.8)}${tree(1330,735,.9)}</g>
+<g class="near">${GR('#7bd36b','#62c058')}
+${rect(130,660,420,80,'#8d5a35',10)}${dots(7,i=>`<g class="sway" style="transform-origin:${170+i*55}px 690px">${lin(170+i*55,690,170+i*55,620+(i%3)*14,'#3da35d',6)}${circ(170+i*55,612+(i%3)*14,15,['#ff6b9a','#ffd23f','#b56cff','#ff9f1c'][i%4],'stroke-width="4"')}</g>`)}
+${rect(880,630,92,110,'#3a86ff',10)}${rect(870,618,112,20,'#2a6fd6',6)}${txt(926,700,'♻',50)}${rect(980,650,70,90,'#52c15a',10)}${txt(1015,712,'🍃',30)}
+${rect(1090,520,200,220,'#c9a066',8)}${pth('M1070 525 L1190 440 L1310 525Z','#8d5a35')}<g transform="rotate(-18 1190 480)">${rect(1130,470,120,50,'#2a5bd7',4)}${lin(1170,470,1170,520,'#8fb2ff',2)}${lin(1210,470,1210,520,'#8fb2ff',2)}${lin(1130,495,1250,495,'#8fb2ff',2)}</g>${rect(1160,620,60,120,'#7b4b2a',6)}
+<g class="litter"><g class="lt lt1" style="--dx:200px;--dy:-60px">${pth('M600 770 l26 -12 l10 18Z','#fff','stroke-width="3"')}</g><g class="lt lt2" style="--dx:330px;--dy:-80px">${rect(520,752,22,34,'#3a86ff',5,'stroke-width="3"')}</g><g class="lt lt3" style="--dx:400px;--dy:-60px">${pth('M500 780 l26 -8 l10 14Z','#ffd23f','stroke-width="3"')}</g></g>
+${ell(1000,775,40,12,'#7b4b2a')}<g class="sapl">${lin(1000,770,1000,690,'#3da35d',8)}${pth('M1000 720 q-40 -10 -44 -42 q38 4 44 42Z','#52c15a')}${pth('M1000 705 q40 -10 44 -42 q-38 4 -44 42Z','#52c15a')}${circ(1000,680,20,'#6bd36a')}</g>
+<g class="bfly">${txt(1100,540,'🦋',40,'#000')}</g><g class="birdf">${pth('M300 220 q15 -18 30 0 q15 -18 30 0','none','stroke-width="4"')}</g>
+${dots(6,i=>`<text class="sparkle" style="animation-delay:${i*.5}s" x="${950+i*20}" y="740" font-size="26">✨</text>`)}</g>`,
+beats:[
+{k:'good',ico:'♻️',t:'Clean it up',pose:'pick',mood:'happy',hold:'',sfx:['swoosh'],d:{v:16,e:6},m:'Reducing pollution or clutter',
+ w:'Sam picks up litter and tosses it into the recycling bin. The block already looks — and feels — better.',
+ why:'Reducing clutter and pollution around you is a direct way to improve Environmental wellness — and doing something good lifts your mood.',
+ think:'What’s one small change that would make your school or home space healthier?'},
+{k:'good',ico:'🌱',t:'Plant something that grows',pose:'plant',mood:'happy',hold:'',sfx:['grow','birds'],d:{v:14,m:6},m:'Access to nature & outdoor space',
+ w:'Sam plants a sapling in the community garden. Flowers bloom, birds arrive, and the air feels fresher.',
+ why:'Access to nature and outdoor space is an Environmental wellness marker. Green space calms the mind and invites movement.',
+ f:'EPA: living near more green space is linked to lower chronic stress. Green space can also reduce exposure to air pollution, noise and extreme heat.',
+ src:[['EPA — Nearby green spaces linked to reduced chronic stress','https://www.epa.gov/sciencematters/nearby-green-spaces-linked-reduced-chronic-stress'],['EPA — Social benefits of green infrastructure','https://www.epa.gov/green-infrastructure/social-benefits-green-infrastructure']]}]});
+
+/* 15 — connections web */
+const WEB=[['p','💪','Physical',-90],['m','🧠','Mental',-18],['s','🤝','Social',54],['e','❤️','Emotional',126],['v','🌍','Environment',198]];
+const wp=(a,r=165)=>[780+Math.cos(a*Math.PI/180)*r,262+Math.sin(a*Math.PI/180)*r];
+SC.push({id:'web',loc:'🕸️',name:'Sunset hill · How it all connects',sky:'#3a2e6b',amb:'dream',mood:'happy',pose:'idle',
+art:()=>BG(15,'#3a2e6b','#ff9a76')+`<g class="far">${dots(14,i=>`<circle class="twinkle" style="animation-delay:${i*.25}s" cx="${100+i*110}" cy="${60+(i*53)%260}" r="3" fill="#fff"/>`)}${circ(1300,640,90,'#ffd0a0','opacity=".8"')}${hill('#5b4a8f',700,260)}</g>
+<g class="near">${GR('#3f3a73','#514b8c')}
+<g>${WEB.map((a,i)=>WEB.slice(i+1).map(b=>{const[p,q]=[wp(a[3]),wp(b[3])];return lin(p[0],p[1],q[0],q[1],'rgba(255,255,255,.35)',3,'stroke-dasharray="4 10"');}).join('')).join('')}
+${[[0,1],[1,2],[2,3]].map(([i,j])=>{const p=wp(WEB[i][3]),q=wp(WEB[j][3]);return lin(p[0],p[1],q[0],q[1],'#ffd23f',7,'class="chain"');}).join('')}
+${WEB.map((w,i)=>{const[x,y]=wp(w[3]);return `<g class="nd ${['nA','nB','nC','',''][i]}" id="wn-${w[0]}">${circ(x,y,40,'#fff')}${txt(x,y+11,w[1],34,'#000')}${txt(x,y+(w[3]>0&&w[3]<180?66:-52),w[2],22,'#fff')}</g>`;}).join('')}</g></g>`,
+onTick:(r,v)=>{WEB.forEach(w=>{const c=r.querySelector('#wn-'+w[0]+' circle');if(c)c.setAttribute('r',(26+(v[w[0]]||0)*.28).toFixed(1));});},
+beats:[{k:'info',ico:'🕸️',t:'Everything is connected',pose:'idle',mood:'happy',hold:'',sfx:['chime'],d:{},m:'How the Dimensions Connect',
+ w:'Each bubble’s size shows Sam’s current health in that dimension. Watch the glow travel from Physical → Mental → Social/Emotional.',
+ why:'Wellness dimensions overlap: poor sleep (Physical) can lower focus (Mental) and patience with friends (Social/Emotional). Good habits ripple the same way.',
+ think:'Try it: think of one habit that could affect two dimensions at once. Be ready to share.'}]});
+
+/* 16 — quiz */
+SC.push({id:'quiz',loc:'🧩',name:'Quiz stage · Check your understanding',sky:'#5b3cc4',amb:'quiz',mood:'happy',pose:'point',
+art:()=>BG(16,'#4a2fb0','#8a6cf0')+`<g class="far"><g class="spot" style="transform-origin:560px 0">${pth('M540 0 L440 740 L760 740 L580 0Z','rgba(255,255,255,.14)','stroke="none"')}</g><g class="spot" style="transform-origin:1000px 0;animation-delay:-3s">${pth('M980 0 L880 740 L1200 740 L1020 0Z','rgba(255,255,255,.12)','stroke="none"')}</g>
+<g class="neon">${rect(520,80,520,100,'#1b0f4a',20,'stroke="#ff9ec4"')}${txt(780,150,'SORT IT!',66,'#ff9ec4')}</g></g>
+<g class="near">${GR('#b07a4f','#c48d60')}${pth('M-100 -100 H180 Q120 300 200 760 H-100Z','#e63946')}${pth('M1700 -100 H1420 Q1480 300 1400 760 H1700Z','#e63946')}</g>`,
+beats:[{k:'info',ico:'🧩',t:'Check your understanding',pose:'point',mood:'happy',hold:'',sfx:['chime'],quiz:true,d:{},m:'Sort the metrics',w:'',why:''}]});
+
+/* 17 — final check */
+SC.push({id:'final',loc:'🎓',name:'Final check · Earn 100% to finish',sky:'#0f766e',amb:'quiz',mood:'happy',pose:'point',
+art:()=>BG(18,'#0b4f6c','#20bf9f')+`<g class="far">${dots(16,i=>`<circle class="twinkle" style="animation-delay:${i*.2}s" cx="${60+i*100}" cy="${50+(i*67)%300}" r="3" fill="#fff"/>`)}
+<g class="neon">${rect(480,70,600,100,'#06303f',20,'stroke="#ffd23f"')}${txt(780,142,'FINAL CHECK',58,'#ffd23f')}</g></g>
+<g class="near">${GR('#134e4a','#1c6f69')}${rect(560,690,440,50,'#ffd23f',10)}${rect(600,640,360,52,'#f4b400',10)}
+<g class="float">${pth('M1050 300 h90 v70 q0 60 -45 60 q-45 0 -45 -60Z','#ffd23f')}${rect(1080,430,30,40,'#f4b400',4)}${rect(1055,470,80,20,'#f4b400',6)}${txt(1095,375,'★',50,'#fff')}</g>
+${dots(24,i=>`<rect class="conf" style="animation-delay:${-(i*.41)%5}s;animation-duration:${5+(i%3)}s" x="${(i*67)%1500}" y="-40" width="12" height="20" rx="3" fill="${['#ffd23f','#ff4d6d','#4dffb8','#4d96ff','#b56cff'][i%5]}" stroke="none"/>`)}</g>`,
+beats:[{k:'info',ico:'🎓',t:'Final Check: 15 questions',pose:'point',mood:'happy',hold:'',sfx:['chime'],final:true,d:{},m:'Mastery check',w:'',why:''}]});
+
+/* 18 — recap */
+SC.push({id:'recap',loc:'🏆',name:'Hilltop · Let’s recap',sky:'#ff9966',amb:'finale',mood:'happy',pose:'happy',
+art:()=>BG(17,'#ff8a65','#ffe0a8')+`<g class="far">${sun(780,470,110)}${cloud(280,180,1.2,'#ffd6c0')}${cloud(1200,230,1,'#ffd6c0')}${hill('#7fbf7a',700,260)}</g>
+<g class="near">${GR('#5a9a5a','#6fb06f')}${rect(1010,560,16,180,'#8d5a35',3)}${rect(930,520,180,66,'#e0b57a',12)}${txt(1020,566,'5 Dimensions',26,OL)}${tree(250,735,1.1)}${tree(1330,735,1)}
+${dots(30,i=>`<rect class="conf" style="animation-delay:${-(i*.37)%5}s;animation-duration:${4+(i%4)}s" x="${(i*53)%1500}" y="-40" width="14" height="22" rx="3" fill="${['#ffd23f','#ff4d6d','#4dffb8','#4d96ff','#b56cff'][i%5]}" stroke="none"/>`)}</g>`,
+beats:[{k:'info',ico:'🏆',t:'Let’s recap',pose:'happy',mood:'happy',hold:'',sfx:['fanfare'],recap:true,d:{},m:'Exit Ticket',w:'',why:''}]});
+
+/* ===== Procedural sound engine (WebAudio, no files) ===== */
+const AU=(()=>{
+ let ctx,master,nbuf,amb=null,muted=false;
+ const rnd=(a,b)=>a+Math.random()*(b-a);
+ const init=()=>{if(ctx)return;try{ctx=new(window.AudioContext||window.webkitAudioContext)();}catch(e){return;}
+  master=ctx.createGain();master.gain.value=.55;master.connect(ctx.destination);
+  nbuf=ctx.createBuffer(1,ctx.sampleRate*2,ctx.sampleRate);const d=nbuf.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;};
+ const ok=()=>ctx&&ctx.state!=='closed';
+ const tone=(f,t0,dur,type='sine',vol=.2,fEnd,dest)=>{if(!ok())return;const t=ctx.currentTime+t0,o=ctx.createOscillator(),g=ctx.createGain();o.type=type;o.frequency.setValueAtTime(f,t);
+  if(fEnd)o.frequency.exponentialRampToValueAtTime(fEnd,t+dur);g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(vol,t+.012);g.gain.exponentialRampToValueAtTime(.0001,t+dur);
+  o.connect(g);g.connect(dest||master);o.start(t);o.stop(t+dur+.05);return o;};
+ const burst=(t0,dur,type,f,vol=.2,fEnd,q=1,dest)=>{if(!ok())return;const t=ctx.currentTime+t0,s=ctx.createBufferSource(),fl=ctx.createBiquadFilter(),g=ctx.createGain();s.buffer=nbuf;s.loop=true;
+  fl.type=type;fl.frequency.setValueAtTime(f,t);fl.Q.value=q;if(fEnd)fl.frequency.exponentialRampToValueAtTime(fEnd,t+dur);
+  g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(vol,t+Math.min(.02,dur/3));g.gain.exponentialRampToValueAtTime(.0001,t+dur);s.connect(fl);fl.connect(g);g.connect(dest||master);s.start(t);s.stop(t+dur+.05);};
+ const bed=()=>{const g=ctx.createGain();g.gain.value=0;g.connect(master);g.gain.linearRampToValueAtTime(1,ctx.currentTime+1.4);return {g,nodes:[],timers:[]};};
+ const nz=(b,type,f,vol,lfo)=>{const s=ctx.createBufferSource(),fl=ctx.createBiquadFilter(),g=ctx.createGain();s.buffer=nbuf;s.loop=true;fl.type=type;fl.frequency.value=f;fl.Q.value=.7;g.gain.value=vol;
+  s.connect(fl);fl.connect(g);g.connect(b.g);s.start();b.nodes.push(s);
+  if(lfo){const l=ctx.createOscillator(),lg=ctx.createGain();l.frequency.value=lfo;lg.gain.value=vol*.7;l.connect(lg);lg.connect(g.gain);l.start();b.nodes.push(l);}};
+ const dr=(b,type,f,vol)=>{const o=ctx.createOscillator(),g=ctx.createGain();o.type=type;o.frequency.value=f;g.gain.value=vol;o.connect(g);g.connect(b.g);o.start();b.nodes.push(o);};
+ const every=(b,fn,a,c)=>{const loop=()=>{if(b.dead)return;fn();b.timers.push(setTimeout(loop,rnd(a,c)));};b.timers.push(setTimeout(loop,rnd(a,c)));};
+ const pent=[523.25,587.33,659.25,783.99,880,1046.5];
+ const chirp=(b,vol=.05)=>{const f=rnd(2400,4200),n=1+(Math.random()*3|0);for(let i=0;i<n;i++)tone(f*(1+i*.08),i*.11,.09,'sine',vol,f*rnd(1.1,1.4),b.g);};
+ const note=(b,vol=.06,type='triangle')=>tone(pent[Math.random()*pent.length|0]*(Math.random()<.3?.5:1),0,1.6,type,vol,undefined,b.g);
+ const AMB={
+  night:b=>{nz(b,'lowpass',180,.1);dr(b,'sine',55,.05);every(b,()=>{const f=rnd(4100,4500);for(let i=0;i<4;i++)tone(f,i*.07,.04,'sine',.025,undefined,b.g);},500,1300);},
+  morning:b=>{nz(b,'bandpass',500,.025,.1);every(b,()=>chirp(b,.05),700,2200);},
+  hall:b=>{nz(b,'bandpass',600,.06,.3);dr(b,'sawtooth',100,.012);every(b,()=>tone(rnd(300,400),0,.08,'square',.02,undefined,b.g),2500,6000);},
+  cafe:b=>{nz(b,'bandpass',750,.13,.7);nz(b,'bandpass',1500,.04,1.3);every(b,()=>burst(0,.06,'highpass',4000,.05,undefined,1,b.g),600,1800);},
+  tv:b=>{nz(b,'lowpass',250,.06);dr(b,'sawtooth',120,.012);every(b,()=>{const f=rnd(300,900);tone(f,0,.07,'square',.03,undefined,b.g);tone(f*1.5,.08,.07,'square',.03,undefined,b.g);},350,1100);},
+  park:b=>{nz(b,'bandpass',400,.05,.15);every(b,()=>chirp(b,.05),500,1800);every(b,()=>tone(160,0,.12,'sine',.06,70,b.g),1800,3500);},
+  tense:b=>{dr(b,'sine',70,.07);dr(b,'sine',74,.05);dr(b,'sine',880,.006);every(b,()=>burst(0,.03,'bandpass',2200,.18,undefined,5,b.g),1000,1000);
+   every(b,()=>{tone(60,0,.16,'sine',.25,40,b.g);tone(55,.2,.14,'sine',.18,40,b.g);},700,700);},
+  calm:b=>{[220,277.18,329.63,440].forEach((f,i)=>dr(b,'sine',f*(1+i*.001),.035));nz(b,'lowpass',500,.025,.1);every(b,()=>note(b,.05,'sine'),1500,3200);},
+  lonely:b=>{nz(b,'bandpass',320,.08,.15);dr(b,'sine',110,.05);dr(b,'sine',130.8,.035);},
+  warm:b=>{[261.63,329.63,392].forEach(f=>dr(b,'triangle',f,.025));nz(b,'bandpass',800,.05,.6);every(b,()=>note(b,.05,'triangle'),900,2200);},
+  argue:b=>{nz(b,'lowpass',140,.16,.4);dr(b,'sawtooth',90,.025);dr(b,'sawtooth',96,.02);},
+  street:b=>{nz(b,'lowpass',380,.2,.2);dr(b,'sawtooth',65,.03);every(b,()=>{const f=rnd(300,420);tone(f,0,.25,'square',.04,undefined,b.g);},2500,6000);},
+  garden:b=>{nz(b,'highpass',2400,.02,6);nz(b,'bandpass',450,.03,.15);[261.63,392,523.25].forEach(f=>dr(b,'sine',f,.012));every(b,()=>chirp(b,.06),500,1500);},
+  dream:b=>{[196,293.66,392].forEach(f=>dr(b,'sine',f,.03));every(b,()=>note(b,.06,'sine'),700,1500);},
+  quiz:b=>{dr(b,'sine',196,.02);every(b,()=>note(b,.06,'triangle'),500,1100);},
+  finale:b=>{[261.63,329.63,392,523.25].forEach(f=>dr(b,'triangle',f,.025));every(b,()=>note(b,.08,'triangle'),400,900);}
+ };
+ const SFX={
+  good(){[523.25,659.25,783.99,1046.5].forEach((f,i)=>tone(f,i*.09,.5,'triangle',.22));burst(.3,.5,'highpass',6000,.05);},
+  bad(){[311.13,293.66,277.18,261.63].forEach((f,i)=>tone(f,i*.28,i==3?1:.3,'sawtooth',.14));tone(80,0,.4,'sine',.3,40);},
+  info(){tone(660,0,.15,'sine',.12);tone(990,.09,.25,'sine',.1);},
+  chime(){[784,988,1175,1568].forEach((f,i)=>tone(f,i*.12,.9,'sine',.12));},
+  tap(){for(let i=0;i<4;i++)burst(i*.15,.03,'highpass',3000,.1);},
+  alarm(){for(let i=0;i<6;i++)tone(1000,i*.18,.09,'square',.07);},
+  birds(){for(let i=0;i<3;i++){const f=rnd(2400,4200);tone(f,i*.3,.09,'sine',.1,f*1.3);tone(f*1.1,i*.3+.12,.09,'sine',.1,f*1.4);}},
+  heart(){for(let i=0;i<5;i++){tone(65,i*.7,.14,'sine',.45,40);tone(55,i*.7+.2,.12,'sine',.32,35);}},
+  coin(){tone(1200,0,.07,'square',.06);tone(1600,.07,.2,'square',.06);},
+  can(){burst(.2,.08,'bandpass',3000,.2,undefined,3);tone(900,.2,.1,'triangle',.1,500);burst(.5,1.2,'highpass',5000,.12,2000);},
+  fizz(){burst(0,1.5,'highpass',6000,.1,3000);},
+  crunch(){for(let i=0;i<3;i++)burst(i*.18,.07,'bandpass',1800,.35,900,2);tone(120,0,.1,'sine',.2,60);},
+  arcade(){[392,523,659,784,659,523].forEach((f,i)=>tone(f,i*.08,.08,'square',.05));},
+  sigh(){burst(.1,1.2,'lowpass',1400,.18,250);tone(300,.1,1,'sine',.08,160);},
+  kick(){tone(150,0,.18,'sine',.5,45);burst(.05,.3,'bandpass',900,.14,300);},
+  cheer(){burst(.3,1.4,'bandpass',1200,.12,2000,.6);[523,659,784].forEach((f,i)=>tone(f,.4+i*.1,.4,'triangle',.1));},
+  steps(){for(let i=0;i<10;i++){tone(110,i*.17,.07,'sine',.2,60);burst(i*.17,.04,'lowpass',700,.1);}},
+  tick(){for(let i=0;i<6;i++)burst(i*.5,.025,'bandpass',2500,.25,undefined,6);},
+  breath(){burst(0,4,'lowpass',200,.18,1100,.5);burst(4,4,'lowpass',1100,.16,200,.5);},
+  scribble(){for(let i=0;i<8;i++)burst(i*.12,.1,'bandpass',2500+rnd(-500,500),.08,undefined,3);},
+  rain(){burst(0,3,'highpass',3000,.1,5000);},
+  laugh(){for(let i=0;i<5;i++)tone(500+rnd(-50,80),i*.13,.1,'triangle',.07,420);},
+  pop(){tone(500,0,.1,'sine',.25,1200);},
+  thunder(){burst(0,2.2,'lowpass',500,.55,50);tone(60,0,1.5,'sawtooth',.12,35);},
+  honk(){tone(380,0,.35,'sawtooth',.08);tone(480,0,.35,'sawtooth',.07);},
+  cough(){for(let i=0;i<3;i++)burst(.9+i*.25,.12,'bandpass',700,.3,300,1.5);},
+  swoosh(){for(let i=0;i<3;i++)burst(.2+i*.6,.3,'bandpass',500,.15,3000,1);},
+  grow(){[392,440,523,587,659,784].forEach((f,i)=>tone(f,.3+i*.35,.5,'sine',.12));},
+  fanfare(){[[523,0],[659,.15],[784,.3],[1046,.45],[784,.8],[1046,.95],[1318,1.15]].forEach(([f,t])=>tone(f,t,.45,'triangle',.18));},
+  nope(){tone(200,0,.25,'sawtooth',.1,120);},
+  yes(){tone(784,0,.12,'triangle',.18);tone(1175,.1,.25,'triangle',.18);},
+  walk(){tone(140,0,.05,'sine',.07,80);}
+ };
+ return {
+  start(){init();if(ctx&&ctx.state==='suspended')ctx.resume();},
+  setAmb(name){if(!ok())return;if(amb){const o=amb;o.dead=true;o.g.gain.cancelScheduledValues(ctx.currentTime);o.g.gain.setValueAtTime(o.g.gain.value,ctx.currentTime);o.g.gain.linearRampToValueAtTime(0,ctx.currentTime+1);
+    setTimeout(()=>{o.nodes.forEach(n=>{try{n.stop()}catch(e){}});o.timers.forEach(clearTimeout);try{o.g.disconnect()}catch(e){}},1200);}
+   amb=null;if(!name||!AMB[name])return;amb=bed();AMB[name](amb);},
+  play(n){if(!ok()||muted)return;if(SFX[n])SFX[n]();},
+  stinger(k){this.play(k==='good'?'good':k==='bad'?'bad':'info');},
+  toggle(){muted=!muted;if(master)master.gain.value=muted?0:.55;return muted;}
+ };
+})();
+
+/* ===== Story engine ===== */
+const DIMS=[{k:'p',n:'Physical',ic:'💪',c:'var(--phys)',sub:'Your body',d:'movement, sleep, nutrition'},
+ {k:'m',n:'Mental',ic:'🧠',c:'var(--ment)',sub:'Your mind',d:'thoughts, focus, stress'},
+ {k:'s',n:'Social',ic:'🤝',c:'var(--soc)',sub:'Your connections',d:'friends, family, community'},
+ {k:'e',n:'Emotional',ic:'❤️',c:'var(--emo)',sub:'Your feelings',d:'naming and managing emotions'},
+ {k:'v',n:'Environmental',ic:'🌍',c:'var(--env)',sub:'Your surroundings',d:'safe, healthy spaces'}];
+const DM=Object.fromEntries(DIMS.map(d=>[d.k,d]));
+const SX=780,SY=785,START=60;
+const $=s=>document.querySelector(s);
+
+/* flatten beats, precompute health after each beat */
+const BEATS=[];let run={p:START,m:START,s:START,e:START,v:START};
+SC.forEach((s,si)=>{s.base=BEATS.length;const nb=s.beats.length;
+ s.len=(si===0?1.8:2.3)+.9*nb;s.kind=s.beats[0].k;
+ s.beats.forEach((b,k)=>{b.si=si;b.k2=k;b.at=si===0?0:.3+.5*k/nb;
+  Object.entries(b.d||{}).forEach(([d,v])=>{run[d]=Math.max(5,Math.min(100,run[d]+v));});b.after={...run};BEATS.push(b);});});
+const INIT={p:START,m:START,s:START,e:START,v:START};
+
+/* build DOM */
+const world=$('#world');
+world.innerHTML=`<g id="scenes">${SC.map((s,i)=>`<g class="sc" id="sc${i}">${s.art()}</g>`).join('')}</g>${SAMSVG}`;
+SC.forEach((s,i)=>s.root=$('#sc'+i));
+const sam=$('#sam'),samPos=$('#samPos');
+$('#hud').innerHTML='<h4>Sam’s Wellness</h4>'+DIMS.map(d=>`<div class="hb" data-k="${d.k}" style="--c:${d.c}"><div class="row"><div class="ic">${d.ic}</div><div class="nm">${d.n}<small>${d.sub}</small></div><div class="val">0</div></div><div class="bar"><div class="fill"></div></div></div>`).join('');
+const HB=Object.fromEntries(DIMS.map(d=>{const e=$(`.hb[data-k=${d.k}]`);return[d.k,{e,fill:e.querySelector('.fill'),val:e.querySelector('.val')}]}));
+$('#dots').innerHTML=SC.map((s,i)=>`<i class="${s.kind==='good'?'g':s.kind==='bad'?'b':''}" data-i="${i}" title="${s.name}"></i>`).join('');
+
+/* state */
+let started=false,vh=innerHeight,starts=[],total=0,cur={p:0,m:0,s:0,e:0,v:0},target={...INIT},lastG=-1,lastSi=-1,lastK=-2,sx=-300,introT=0,introStart=0,anim=null,lastStep=0,cardKey='';
+const clamp=(x,a=0,b=1)=>Math.max(a,Math.min(b,x)),ease=t=>t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;
+
+function layout(){vh=innerHeight;let y=0;starts=SC.map(s=>{const st=y;y+=s.len*vh;return st;});total=y;$('#track').style.height=(total+vh)+'px';}
+const beatY=b=>starts[b.si]+b.at*SC[b.si].len*vh+(b.at?4:0);
+layout();addEventListener('resize',layout);
+
+/* smooth programmatic scrolling */
+function scrollToY(y,instant){y=clamp(y,0,total);if(anim){cancelAnimationFrame(anim.id);anim=null;}if(instant){scrollTo(0,y);return;}
+ const y0=scrollY,dist=Math.abs(y-y0),dur=700+Math.min(dist/vh,3)*420,t0=performance.now();anim={};
+ const step=t=>{const k=clamp((t-t0)/dur);scrollTo(0,y0+(y-y0)*ease(k));if(k<1&&anim)anim.id=requestAnimationFrame(step);else anim=null;};anim.id=requestAnimationFrame(step);}
+['wheel','touchstart','mousedown'].forEach(e=>addEventListener(e,()=>{if(anim){cancelAnimationFrame(anim.id);anim=null;}},{passive:true}));
+function nextBeat(){const y=scrollY;const b=BEATS.find(b=>beatY(b)>y+8);if(b)scrollToY(beatY(b));}
+function prevBeat(){const y=scrollY;const l=BEATS.filter(b=>beatY(b)<y-8);scrollToY(l.length?beatY(l[l.length-1]):0);}
+addEventListener('keydown',e=>{if(!started||$('#modal').classList.contains('open')||/INPUT|TEXTAREA/.test(e.target.tagName))return;
+ if(['ArrowDown','PageDown',' ','Enter'].includes(e.key)){e.preventDefault();nextBeat();}else if(['ArrowUp','PageUp'].includes(e.key)){e.preventDefault();prevBeat();}});
+$('#next').onclick=nextBeat;
+$('#dots').onclick=e=>{const i=e.target.dataset&&e.target.dataset.i;if(i!=null){const s=SC[i];scrollToY(beatY(s.beats[0]),Math.abs(i-Math.max(lastSi,0))>1);}};
+
+/* sam */
+function applySam(si,k,moving){const s=SC[si],b=k>=0?s.beats[k]:null;
+ const pose=moving?'idle':(b?b.pose:s.pose),mood=b?b.mood:s.mood,hold=moving?'':(b?(b.hold||''):(s.hold0||''));
+ const cn='p-'+pose+(moving?' walk':'');if(sam.getAttribute('class')!==cn)sam.setAttribute('class',cn);
+ sam.dataset.mood=mood;sam.dataset.hold=hold;}
+
+/* cards */
+const KL={good:'Positive ✓',bad:'Negative ✗',info:'Explore ◆'};
+const chipsHTML=d=>{const e=Object.entries(d||{});return e.length?`<div class="chips">${e.map(([k,v],i)=>`<span class="chip ${v>0?'up':'dn'}" style="--c:${DM[k].c};animation-delay:${.25+i*.12}s"><i>${DM[k].ic}</i>${DM[k].n} ${v>0?'▲ +':'▼ '}${v}</span>`).join('')}</div>`:'';};
+const srcHTML=s=>(s||[]).map(x=>`<a href="${x[1]}" target="_blank" rel="noopener">↗ ${x[0]}</a>`).join('');
+function cardHTML(b){
+ const head=`<div class="ch ${b.k}"><div class="e">${b.ico}</div><div><div class="k">${KL[b.k]}</div><h3>${b.t}</h3></div></div>`;
+ if(b.final)return head+finalHTML();
+ if(b.quiz)return head+quizHTML();
+ if(b.recap)return head+recapHTML();
+ return head+`<div class="cb">${chipsHTML(b.d)}<p><b class="l">What’s happening</b>${b.w}</p>${b.dims?`<div class="dimlist">${DIMS.map(d=>`<div style="--c:${d.c}"><i>${d.ic}</i><span><b>${d.n}</b> — ${d.sub.toLowerCase()}: ${d.d}</span></div>`).join('')}</div>`:''}
+ <p><b class="l">Why it matters</b>${b.why}</p>${b.m?`<p><span class="metric">📏 Metric: ${b.m}</span></p>`:''}
+ ${b.f?`<div class="fact">💡 ${b.f}${srcHTML(b.src)}</div>`:''}${b.think?`<div class="think">🤔 ${b.think}</div>`:''}</div>`;}
+/* quiz */
+const QI=[['Hours of sleep last night','p'],['Ability to name how you feel','se'],['Number of close friends','se'],['Heart rate after running','p'],['Level of stress before a test','m'],['Listening to a friend’s problem','se']];
+const QB=[['p','💪 Physical'],['m','🧠 Mental'],['se','🤝❤️ Social / Emotional']];
+let Q={sel:-1,done:{},miss:0};
+function quizHTML(){const n=Object.keys(Q.done).length;
+ return `<div class="cb"><p>Tap a metric, then tap the dimension it best measures.</p><div class="qchips">${QI.map((q,i)=>`<button class="qc ${Q.done[i]?'done':''} ${Q.sel===i?'sel':''}" data-q="${i}">${q[0]}</button>`).join('')}</div>
+ <div class="bk">${QB.map(b=>`<button class="bkt" data-b="${b[0]}">${b[1]} ${QI.map((q,i)=>Q.done[i]===b[0]?`<small>${q[0]}</small>`:'').join('')}</button>`).join('')}</div>
+ <div class="score">${n===QI.length?`🎉 All sorted! ${QI.length-Q.miss}/${QI.length} first-try correct`:`Sorted ${n}/${QI.length} · tries missed: ${Q.miss}`}</div></div>`;}
+/* final check: 15 questions, unlimited attempts, 100% in one run to pass */
+const FQ=[
+['Which dimension includes sleep, nutrition, physical activity and vital signs?',['Physical','Mental','Social','Environmental'],'Sleep, nutrition, activity and vital signs are all observable Physical metrics.'],
+['About how many hours of sleep do teens aged 13–18 need per 24 hours?',['8–10 hours','4–5 hours','6 hours exactly','11–13 hours'],'The AASM recommends 8–10 hours for ages 13–18.'],
+['“Heart rate after running” is a metric of which dimension?',['Physical (vital signs)','Mental','Social / Emotional','Environmental'],'Heart rate is a vital sign — a measurable body signal.'],
+['Which of these is a Mental health metric?',['Level of stress before a test','Number of close friends','Hours of sleep last night','Heart rate after running'],'Mood and stress level describes how calm, anxious or overwhelmed you feel.'],
+['Poor sleep lowered Sam’s focus and patience with friends. What does this show?',['Wellness dimensions are connected','Dimensions never affect each other','Only Physical health matters','Friends don’t affect sleep'],'Wellness is multidimensional: change in one area often affects the others.'],
+['What does WHO recommend for children and teens?',['An average of 60+ minutes a day of moderate-to-vigorous activity','10 minutes of activity a week','Only weekend exercise','3 hours of screen time a day'],'WHO: at least an average of 60 minutes per day of moderate-to-vigorous activity.'],
+['Why did Sam crash after the vending-machine soda and chips?',['A short sugar burst, then focus faded','Soda gives steady all-day energy','Chips improve vital signs','Food has no effect on focus'],'Low-nutrient snacks give a quick burst of energy, then focus dips — Physical and Mental both suffer.'],
+['MyPlate suggests filling about half your plate with…',['Fruits and vegetables','Grains only','Dairy','Sweets'],'Balance and variety fuel the body — half fruits and vegetables.'],
+['Which is a healthy coping skill for stress?',['Slow, deep breathing','Skipping sleep to study','Ignoring the feeling','Gaming for four hours'],'Coping skills are strategies to manage stress; breathing, journaling and exercise are examples.'],
+['“Sense of belonging” means…',['Feeling accepted, valued and connected to a group','Having the most followers online','Being alone to recharge','Winning every game'],'Belonging is about acceptance and connection — a Social/Emotional metric.'],
+['“Listening to a friend’s problem” best measures…',['Communication (Social / Emotional)','Vital signs','Nutrition','Physical activity'],'Communication is expressing needs and listening to others clearly.'],
+['What is the first step in “name it to tame it”?',['Naming the feeling','Shouting louder','Pretending nothing is wrong','Walking away from everyone'],'Naming emotions helps you respond rather than react (Lieberman et al., UCLA, 2007).'],
+['Emotional regulation is…',['Naming feelings and calming down when upset','Never feeling angry','Hiding every emotion','Avoiding people'],'It’s a skill: name the feeling, then calm down and respond.'],
+['Which best describes Environmental wellness?',['Safe, clean spaces with access to nature','Only how your bedroom looks','How many friends you have','Your resting heart rate'],'Home, school and community spaces that support a healthy life.'],
+['Which habit helps TWO dimensions at once?',['Walking outside with a friend','Scrolling until 2 AM','Skipping lunch to study alone','Four-hour gaming marathon'],'Walking = Physical + Social (and nature = Environmental, mood = Emotional).']];
+const shuf=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]];}return a;};
+let FC={attempt:0,passed:false,order:[],i:0,right:0,missed:[],opts:[],picked:-1,screen:'intro'};
+function fcStart(){FC.attempt++;FC.order=shuf(FQ.map((_,i)=>i));FC.i=0;FC.right=0;FC.missed=[];FC.screen='q';fcOpts();}
+function fcOpts(){const q=FQ[FC.order[FC.i]];FC.opts=shuf(q[1].map((t,i)=>({t,ok:i===0})));FC.picked=-1;}
+function finalHTML(){const n=FQ.length;
+ if(FC.screen==='intro'||FC.attempt===0&&!FC.order.length)return `<div class="cb"><p>${FC.passed?'🏅 You already earned 100%! You can retake it any time.':`Answer all <b>${n}</b> questions correctly in one run to finish the story. You get <b>unlimited attempts</b> — questions and answer order are shuffled each time.`}</p><button class="big" data-fstart>${FC.passed?'Practice again':'▶ Begin the Final Check'}</button></div>`;
+ if(FC.screen==='q'){const q=FQ[FC.order[FC.i]],ans=FC.picked>=0,ok=ans&&FC.opts[FC.picked].ok;
+  return `<div class="cb"><div class="sum" style="grid-template-columns:1fr auto;margin-bottom:6px"><div class="b" style="--c:var(--good)"><span style="width:${(FC.i/n)*100}%"></span></div><b>${FC.i+1}/${n}</b></div><p style="font-size:12px;opacity:.7;margin-bottom:6px">Attempt ${FC.attempt} · ${FC.right} correct so far</p><p><b>${q[0]}</b></p>
+  <div class="bk">${FC.opts.map((o,i)=>`<button class="bkt fo ${ans?(o.ok?'fok':i===FC.picked?'fno':''):''}" style="border-style:solid" data-fa="${i}" ${ans?'disabled':''}>${o.t}</button>`).join('')}</div>
+  ${ans?`<div class="fact" style="margin-top:8px;border-left-color:${ok?'var(--good)':'var(--bad)'}">${ok?'✅ Correct! ':'❌ Not quite. '}${q[2]}</div><button class="big" data-fnext>${FC.i+1<n?'Next question ▶':'See my score ▶'}</button>`:''}</div>`;}
+ const perfect=FC.right===n;
+ return `<div class="cb"><div class="score" style="font-size:22px">${perfect?'🎉':'💪'} ${FC.right} / ${n} correct</div>
+ ${perfect?`<p style="text-align:center;margin:8px 0">100%! You’ve mastered the Dimensions of Wellness. Scroll on to finish with your recap.</p>`:`<p style="text-align:center;margin:8px 0">You need all ${n} right in one run — and you have unlimited tries. Review what you missed:</p><div class="srcl" style="font-size:13px">${FC.missed.map(i=>`<div class="fact" style="margin-bottom:6px"><b>${FQ[i][0]}</b><br>✔ ${FQ[i][1][0]}<br><i>${FQ[i][2]}</i></div>`).join('')}</div>`}
+ <button class="big" data-fstart>${perfect?'Practice again':'↺ Try again'}</button></div>`;}
+function recapHTML(){if(!FC.passed)return `<div class="cb"><p style="text-align:center;font-size:40px">🔒</p><p style="text-align:center"><b>Your recap unlocks when you score 100% on the Final Check.</b> You have unlimited attempts!</p><button class="big" data-fgo>↑ Go to the Final Check</button></div>`;
+ return recapHTML2();}
+function recapHTML2(){const allSrc=[],seen={};BEATS.forEach(b=>(b.src||[]).forEach(s=>{if(!seen[s[1]]){seen[s[1]]=1;allSrc.push(s);}}));
+ return `<div class="cb"><p style="text-align:center">🏅 <b>Final Check mastered — 100%!</b> (attempt ${FC.attempt})</p><p><b class="l">Objective</b>Identify the Physical, Mental, Social, Emotional and Environmental wellness model.</p>
+ <div class="sum">${DIMS.map(d=>`<span>${d.ic} ${d.n}</span><div class="b" style="--c:${d.c}"><span style="width:${Math.round(target[d.k])}%"></span></div><b>${Math.round(target[d.k])}</b>`).join('')}</div>
+ <p>✓ I can identify <b>physical</b> health metrics.<br>✓ I can identify <b>mental</b> health metrics.<br>✓ I can identify <b>social / emotional</b> health metrics.</p>
+ <div class="think" style="margin-bottom:8px">🎟️ <b>Exit ticket:</b> name one metric for each dimension.</div>
+ <input class="ex" placeholder="Physical metric (e.g., sleep)"><input class="ex" placeholder="Mental metric (e.g., coping skills)"><input class="ex" placeholder="Social / Emotional metric (e.g., belonging)">
+ <button class="big" data-restart>↺ Walk with Sam again</button>
+ <div class="srcl"><b>Sources used in this story</b>${allSrc.map(s=>`<a href="${s[1]}" target="_blank" rel="noopener">↗ ${s[0]}</a>`).join('')}</div></div>`;}
+$('#cardIn').addEventListener('click',e=>{const t=e.target.closest('button');if(!t)return;
+ if(t.dataset.restart!==undefined){Q={sel:-1,done:{},miss:0};FC={attempt:0,passed:false,order:[],i:0,right:0,missed:[],opts:[],picked:-1,screen:'intro'};scrollToY(0);return;}
+ if(t.dataset.fgo!==undefined){scrollToY(beatY(BEATS.find(b=>b.final)));return;}
+ if(t.dataset.fstart!==undefined){fcStart();AU.play('pop');renderCard(true);return;}
+ if(t.dataset.fa!==undefined&&FC.picked<0){const i=+t.dataset.fa,o=FC.opts[i];FC.picked=i;
+  if(o.ok){FC.right++;AU.play('yes');sparks('good',e.clientX,e.clientY,6);}else{FC.missed.push(FC.order[FC.i]);AU.play('nope');}
+  renderCard(true);return;}
+ if(t.dataset.fnext!==undefined){if(FC.i+1<FQ.length){FC.i++;fcOpts();}else{FC.screen='end';
+   if(FC.right===FQ.length){FC.passed=true;AU.play('fanfare');sparks('good',innerWidth/2,innerHeight/2,24);}else AU.play('sigh');}
+  renderCard(true);return;}
+ if(t.dataset.q!==undefined){Q.sel=+t.dataset.q;AU.play('pop');renderCard(true);return;}
+ if(t.dataset.b!==undefined&&Q.sel>=0){const i=Q.sel;if(QI[i][1]===t.dataset.b){Q.done[i]=t.dataset.b;Q.sel=-1;AU.play('yes');sparks('good',e.clientX,e.clientY,6);if(Object.keys(Q.done).length===QI.length){AU.play('chime');sparks('good',innerWidth/2,innerHeight/2,16);}renderCard(true);}
+  else{Q.miss++;AU.play('nope');const c=$('#cardIn .qc.sel');if(c){c.classList.remove('sel');c.classList.add('nope');}Q.sel=-1;setTimeout(()=>renderCard(true),450);}}});
+
+let shownBeat=null;
+function renderCard(keep){const b=shownBeat;if(!b)return;const ci=$('#cardIn'),st=ci.scrollTop;ci.innerHTML=cardHTML(b);if(keep)ci.scrollTop=st;else{ci.classList.remove('ping');void ci.offsetWidth;ci.classList.add('ping');ci.scrollTop=0;}}
+function showCard(b){if(b===shownBeat)return;shownBeat=b;if(b){renderCard();$('#card').classList.add('show');}else $('#card').classList.remove('show');}
+
+/* effects */
+function sparks(kind,x,y,n=12){const em=kind==='good'?['✨','⭐','💖','🌟','🎉']:['💥','💢','💫','💨'];
+ for(let i=0;i<n;i++){const s=document.createElement('span');s.className='spark';s.textContent=em[i%em.length];s.style.left=x+'px';s.style.top=y+'px';
+  const a=Math.random()*Math.PI*2,r=60+Math.random()*130;s.style.setProperty('--dx',Math.cos(a)*r+'px');s.style.setProperty('--dy',(Math.sin(a)*r-(kind==='good'?60:0))+'px');s.style.setProperty('--r',(Math.random()*240-120)+'deg');
+  document.body.appendChild(s);setTimeout(()=>s.remove(),1400);}}
+function trigger(b,jump){
+ const r=$('#sam').getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height*.35;
+ Object.entries(b.d||{}).forEach(([k,v])=>{if(jump>1)return;const h=HB[k].e;h.classList.remove('up','dn');void h.offsetWidth;h.classList.add(v>0?'up':'dn');
+  const f=document.createElement('div');f.className='fl '+(v>0?'up':'dn');f.textContent=(v>0?'+':'')+v;h.appendChild(f);setTimeout(()=>{f.remove();h.classList.remove('up','dn');},1800);});
+ if(jump>1)return;
+ AU.stinger(b.k);const fx=$('#fx');if(b.k==='good'||b.k==='bad'){fx.className='';void fx.offsetWidth;fx.className=b.k;}
+ if(b.k==='bad'){world.classList.remove('shake');void world.offsetWidth;world.classList.add('shake');}
+ if(b.k!=='info')sparks(b.k,cx,cy,b.k==='good'?14:7);
+ (b.sfx||[]).forEach((s,i)=>setTimeout(()=>AU.play(s),350+i*450));}
+
+/* main loop */
+function frame(t){
+ const y=scrollY;let si=0;for(let i=0;i<SC.length;i++)if(y>=starts[i])si=i;
+ const s=SC[si],p=clamp((y-starts[si])/(s.len*vh));
+ let k=-1;s.beats.forEach((b,i)=>{if(p>=b.at-1e-6)k=i;});
+ if(!started)k=-1;
+ if(si!==lastSi){SC.forEach((q,i)=>q.root.classList.toggle('on',i===si));
+  lastSi=si;sx=NaN;lastK=-2;$('#stage').style.background=s.sky;
+  const bn=$('#banner');bn.innerHTML=`<span>${s.loc}</span><span>${s.name}</span><span class="tag ${s.kind}">${s.kind==='good'?'Positive':s.kind==='bad'?'Negative':'Explore'}</span>`;bn.classList.remove('swap');void bn.offsetWidth;bn.classList.add('swap');
+  if(started)AU.setAmb(s.amb);document.querySelectorAll('#dots i').forEach((d,i)=>d.classList.toggle('cur',i===si));}
+ if(k!==lastK){SC.forEach(q=>q.root.classList.remove('b0','b1','b2'));if(k>=0)s.root.classList.add('b'+k);if(s.onBeat)s.onBeat(k,s.root);lastK=k;}
+ s.root.style.setProperty('--px',((p-.5)*-160).toFixed(1));
+ /* sam position: walks in during the first 20% of a scene, walks out after 86% */
+ let enter=clamp(p/.2);if(si===0)enter=Math.max(enter,started?introT:0);
+ let tx=-220+(SX+220)*ease(enter);
+ if(si!==SC.length-1&&p>.86)tx=SX+(1900-SX)*ease(clamp((p-.86)/.14));
+ if(!isFinite(tx))tx=SX;
+ if(!isFinite(sx))sx=tx;else sx+=(tx-sx)*.16;
+ const moving=Math.abs(tx-sx)>.9;
+ applySam(si,k,moving);
+ samPos.setAttribute('transform',`translate(${sx.toFixed(1)},${SY}) scale(.95)`);
+ if(moving&&started&&t-lastStep>260){lastStep=t;AU.play('walk');}
+ if(started&&introT<1)introT=clamp((t-introStart)/2400);
+ /* health */
+ const g=started?s.base+k:-1;
+ if(started){target=g>=0?BEATS[g].after:INIT;if(g!==lastG){if(g>lastG&&g>=0)trigger(BEATS[g],g-lastG);lastG=g;}}
+ DIMS.forEach(d=>{const c=cur[d.k],tv=started?target[d.k]:0;const n=Math.abs(tv-c)<.05?tv:c+(tv-c)*.07;if(n!==c){cur[d.k]=n;const h=HB[d.k];h.fill.style.width=n+'%';h.val.textContent=Math.round(n);h.e.classList.toggle('low',n<35);}});
+ if(s.onTick)s.onTick(s.root,cur);
+ /* explainer card */
+ const hide=!started||k<0||(si<SC.length-1&&p>.93);
+ if(!hide){const b=s.beats[k];if(cardKey!==si+':'+k){cardKey=si+':'+k;shownBeat=null;showCard(b);}}else{cardKey='';showCard(null);}
+ const last=BEATS[BEATS.length-1];$('#next').classList.toggle('off',!started||y>=beatY(last)-8);
+ requestAnimationFrame(frame);}
+requestAnimationFrame(frame);
+
+/* review modal */
+const GLOSS=[['p','Sleep','Hours of sleep and how rested a person feels each day.'],['p','Nutrition','Balance and variety of foods eaten to fuel the body.'],['p','Physical Activity','Amount and type of movement or exercise each week.'],['p','Vital Signs','Heart rate, breathing, and other measurable body signals.'],
+ ['m','Mood & Stress Level','How often someone feels calm, anxious, or overwhelmed.'],['m','Focus & Concentration','Ability to pay attention and complete tasks.'],['m','Coping Skills','Strategies used to manage stress or setbacks.'],['m','Sleep Quality','Restfulness of sleep, which strongly affects thinking.'],
+ ['s','Relationships','Quality and number of supportive friendships and family ties.'],['s','Communication','Ability to express needs and listen to others clearly.'],['e','Emotional Regulation','Skill in naming feelings and calming down when upset.'],['s','Sense of Belonging','Feeling accepted, valued, and connected to a group.'],
+ ['v','Safe, clean surroundings','Environmental overview: spaces that support a healthy life.'],['v','Access to nature','Outdoor space and nature near home, school and community.'],['v','Reducing pollution or clutter','Keeping the space around you cleaner and calmer.']];
+let tab='all';
+function modal(){const m=$('#mbox');
+ const tabs=[['all','All scenes'],['good','✓ Positive'],['bad','✗ Negative'],['gloss','📏 Metrics glossary']];
+ let body;
+ if(tab==='gloss')body=`<div class="mgrid">${GLOSS.map(g=>{const key=g[1].toLowerCase().replace(/ \(.*/,'');const b=BEATS.find(b=>(b.m||'').toLowerCase().includes(key.split(',')[0]));return `<div class="gl" style="--c:${DM[g[0]].c}"><b>${g[1]}</b>${g[2]}<br><small>${DM[g[0]].ic} ${DM[g[0]].n}</small>${b?` <button class="tb2" style="padding:0 8px;font-size:12px;box-shadow:none" data-j="${BEATS.indexOf(b)}">see scene →</button>`:''}</div>`;}).join('')}</div>`;
+ else body=`<div class="mgrid">${BEATS.map((b,i)=>({b,i})).filter(x=>tab==='all'||x.b.k===tab).map(({b,i})=>`<button class="mi ${b.k}" data-j="${i}"><b>${b.ico} ${b.t}</b>${SC[b.si].name}<div class="dl">${Object.entries(b.d||{}).map(([k,v])=>`<span class="${v>0?'u':'d'}">${DM[k].ic}${v>0?'+':''}${v}</span>`).join('')||'<span>◆ concept</span>'}</div></button>`).join('')}</div>`;
+ m.innerHTML=`<h2>📚 Concept Review <button class="tb2" data-x>✕</button></h2><div class="tabs">${tabs.map(t=>`<button class="${tab===t[0]?'on':''}" data-t="${t[0]}">${t[1]}</button>`).join('')}</div>${body}`;}
+$('#review').onclick=()=>{modal();$('#modal').classList.add('open');};
+$('#modal').addEventListener('click',e=>{const t=e.target;
+ if(t.id==='modal'||t.closest('[data-x]'))return $('#modal').classList.remove('open');
+ const tb=t.closest('[data-t]');if(tb){tab=tb.dataset.t;modal();return;}
+ const j=t.closest('[data-j]');if(j){$('#modal').classList.remove('open');scrollToY(beatY(BEATS[+j.dataset.j]),true);}});
+$('#mute').onclick=()=>{const m=AU.toggle();$('#mute').textContent=m?'🔇':'🔊';};
+
+/* start */
+$('#startBtn').onclick=()=>{AU.start();started=true;introStart=performance.now();$('#intro').classList.add('gone');document.body.classList.remove('locked');
+ AU.setAmb(SC[Math.max(lastSi,0)].amb);AU.play('chime');};
+document.body.classList.add('locked');scrollTo(0,0);
+</script>
+</body>
+</html>
