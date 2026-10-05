@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Health by a Thousand Choices</title>
+<style>
+/*CSS*/
+</style>
+</head>
+<body>
+
+<!-- ============ TITLE ============ -->
+<div id="screen-title" class="screen">
+  <div class="t-wrap">
+    <div>
+      <div class="t-kicker">Wildcats Health Class &nbsp;•&nbsp; Small Choices, Big Consequences</div>
+      <h1 class="t-title">Health by a<br>Thousand Choices</h1>
+      <p class="t-lead">Meet a person at age 14. You make the decisions. Fifty choices later they’ll be 65, and their body, mind, friendships, and surroundings will show the sum of everything you chose.</p>
+      <div class="t-steps">
+        <div class="t-step"><b>S</b><span>State: read the situation</span></div>
+        <div class="t-step"><b>T</b><span>Think: weigh the options</span></div>
+        <div class="t-step"><b>O</b><span>Observe: predict what happens</span></div>
+        <div class="t-step"><b>P</b><span>Pick: then watch the result</span></div>
+      </div>
+      <p class="t-lead" style="font-size:15px">Each choice becomes a <b>habit</b> that keeps working on the body as time passes, until the person faces a decision like it again. Watch the lungs, heart, skin, mood, and friendships change.</p>
+      <p class="t-lead" style="font-size:15px"><b>Your challenge:</b> play at least two trials. In one, build the <b>healthiest person possible</b>. In the other, build the <b>unhealthiest</b>. You can play as many trials as you like. Then compare them.</p>
+      <p style="margin-top:18px"><button class="linkbtn" id="btn-teacher">Teacher notes: how this connects to the worksheet</button></p>
+      <p class="fine">A fictional, simplified model for classroom learning, not medical advice. If anything in this lesson feels heavy, talk with your teacher or school counselor.</p>
+    </div>
+    <div>
+      <div class="panel">
+        <h3>1. Create your person</h3>
+        <div class="preview"><svg id="pv"></svg></div>
+        <div class="field"><label for="inp-name">Name</label><input type="text" id="inp-name" maxlength="16" placeholder="Name your person" value="Alex"></div>
+        <div class="field"><label>Skin tone</label><div class="swatches" id="sw-skin"></div></div>
+        <div class="field"><label>Hair</label><div class="swatches" id="sw-hair"></div></div>
+        <div class="field"><label>Shirt</label><div class="swatches" id="sw-shirt"></div></div>
+        <h3 style="margin-top:14px">2. Pick this trial’s goal</h3>
+        <div class="goals">
+          <button class="goal" data-goal="healthy" aria-pressed="true"><span class="ico">🌟</span><div><b>Healthiest person possible</b><span>Make the choices that build a long, strong, happy life.</span></div></button>
+          <button class="goal" data-goal="unhealthy" aria-pressed="false"><span class="ico">⚠️</span><div><b>Unhealthiest person possible</b><span>See exactly how risky choices pile up over time.</span></div></button>
+          <button class="goal" data-goal="free" aria-pressed="false"><span class="ico">🎲</span><div><b>Explore freely</b><span>Choose what you’d really do and see the result.</span></div></button>
+        </div>
+        <button class="btn big" id="btn-start">Start trial ▶</button>
+        <div class="challenge"><div class="badge" id="bd-healthy">🌟 Healthiest trial</div><div class="badge" id="bd-unhealthy">⚠️ Unhealthiest trial</div></div>
+        <div class="trials" id="trials"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ GAME ============ -->
+<div id="screen-game" class="screen hidden">
+  <header class="top">
+    <div class="brand">Health by a Thousand Choices</div>
+    <span class="goalchip" id="goalchip"></span>
+    <div class="prog"><div class="bar"><i id="progbar"></i></div><small id="progtxt"></small></div>
+    <div class="stat"><b id="st-pts">0</b><small>Wellness pts</small></div>
+    <div class="stat"><b id="st-vit">100</b><small>Health score</small></div>
+    <button class="btn" id="btn-menu">☰ Menu</button>
+  </header>
+  <main class="game-grid">
+    <aside class="left card" id="left">
+      <h4>Five domains of health</h4><div id="domains"></div>
+      <h4>Patient chart: vital signs</h4><div id="vitals"></div>
+      <h4>Body systems</h4><div id="organs"></div>
+    </aside>
+    <section class="stage card" id="stage">
+      <div class="stage-top">
+        <div class="phase"><b id="phname"></b><small id="phrange"></small></div>
+        <div class="vtabs" id="vtabs"><button data-v="out" aria-pressed="true">Outside</button><button data-v="in" aria-pressed="false">Inside</button></div>
+        <div class="agebig"><span id="agenum">14</span><small id="bodyage"></small></div>
+      </div>
+      <div class="stage-body">
+        <div id="figwrap"><svg id="fig"></svg></div>
+        <div id="insidewrap"><svg id="inside"></svg><div class="orgvals" id="orgvals"></div></div>
+      </div>
+      <div class="lapse" id="lapse"><div class="lbl" id="lapse-lbl">⏳ Time passes…</div><div class="yr" id="lapse-yr">14</div></div>
+    </section>
+    <section class="right card">
+      <div class="rbody" id="rbody"></div>
+      <div class="rfoot"><div class="lab"><span>Wellness points running total <b id="trendnow"></b></span><span>Start = 0</span></div><svg class="trend" id="trend" viewBox="0 0 380 64" preserveAspectRatio="none"></svg></div>
+    </section>
+  </main>
+</div>
+
+<!-- ============ RESULTS ============ -->
+<div id="screen-results" class="screen hidden"><div class="r-wrap" id="results"></div></div>
+
+<dialog id="dlg-teacher"><div class="dlg">
+  <h3>Teacher notes</h3>
+  <p><b>Runs offline.</b> One file, no install. Open it in Chrome, Edge, Firefox, or Safari. Progress is saved only in each student’s own browser.</p>
+  <ul>
+    <li><b>Lesson tie-in (STOP):</b> every decision follows State → Think → Observe → Pick. After each pick the app shows what actually happened.</li>
+    <li><b>Worksheet tie-in:</b> choices are scored on the same A (+) / B (0) / C (−) scale as <i>Health by a Thousand Choices</i>. The results screen shows the running-total graph, the Domain Balance Check (Physical, Mental, Emotional, Social, Environmental), and a full choice log students can copy into the Weekly Recap.</li>
+    <li><b>Time and habits:</b> each choice sets a habit that keeps acting on the body as years pass (&ldquo;chronic health or chronic hell&rdquo;). Later choices in the same area can change course, because it is never too late.</li>
+    <li><b>Two-trial challenge:</b> the title screen gives badges for completing a healthiest and an unhealthiest trial. The results page compares them side by side and offers reflection questions that mirror the worksheet.</li>
+    <li><b>Sensitive topics:</b> vaping, alcohol, drugs, and depression appear with an emphasis on refusal skills and asking for help.</li>
+  </ul>
+  <p style="text-align:right"><button class="btn" onclick="this.closest('dialog').close()">Close</button></p>
+</div></dialog>
+
+<script>
+/*JS*/
+</script>
+</body>
+</html>
