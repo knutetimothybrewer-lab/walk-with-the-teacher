@@ -2,10 +2,10 @@
 // Each takes the figure F. They set a pose / prop / face and emit particles. F.inside (optional) is the organ view.
 const em = (F, text, x, y, o) => F.emit('text', x, y, Object.assign({ text }, o));
 const burst = (F, list, x, y, o) => list.forEach((t, i) => em(F, t, x + (i - (list.length - 1) / 2) * 30, y, Object.assign({ delay: i * 220, dy: -70, dur: 1900, s0: .6, s1: 1.15 }, o)));
-const zzz = F => [0, 1, 2, 3].forEach(i => em(F, 'Z', 238 + i * 12, 96 - i * 4, { size: 20 + i * 5, fill: '#4c6ef5', bold: 1, dx: 18, dy: -50, delay: i * 520, dur: 2000, rot: 12 }));
-const smokePuffs = (F, col, n, from) => { for (let i = 0; i < n; i++) F.emit('circle', from ? from[0] : 214, from ? from[1] : 150, { r: 7 + i % 3 * 2, fill: col || '#b9bcc4', dx: -20 + Math.random() * 60, dy: -90 - Math.random() * 40, dur: 2400, delay: i * 260, s0: .6, s1: 2.6, peak: .8 }); };
-const sparkles = (F, col, n, cx, cy, spread) => { for (let i = 0; i < n; i++) em(F, '✦', (cx || 200) + (Math.random() - .5) * (spread || 160), (cy || 150) + (Math.random() - .5) * (spread || 160), { size: 16 + Math.random() * 14, fill: col || '#fcc419', dy: -26, dur: 1500, delay: i * 140, s1: 1.4 }); };
-const sweatDrops = (F, n) => { for (let i = 0; i < n; i++) em(F, '💧', i % 2 ? 252 : 148, 98, { size: 16, dx: i % 2 ? 22 : -22, dy: 40, dur: 1000, delay: i * 250, s0: .8, s1: 1 }); };
+const zzz = F => [0, 1, 2, 3].forEach(i => em(F, 'Z', 226 + i * 12, 80 - i * 4, { size: 20 + i * 5, fill: '#4c6ef5', bold: 1, dx: 18, dy: -50, delay: i * 520, dur: 2000, rot: 12 }));
+const smokePuffs = (F, col, n, from) => { for (let i = 0; i < n; i++) F.emit('circle', from ? from[0] : 212, from ? from[1] : 138, { r: 7 + i % 3 * 2, fill: col || '#b9bcc4', dx: -20 + Math.random() * 60, dy: -90 - Math.random() * 40, dur: 2400, delay: i * 260, s0: .6, s1: 2.6, peak: .8 }); };
+const sparkles = (F, col, n, cx, cy, spread) => { for (let i = 0; i < n; i++) em(F, '✦', (cx || 200) + (Math.random() - .5) * (spread || 160), (cy || 130) + (Math.random() - .5) * (spread || 130), { size: 16 + Math.random() * 14, fill: col || '#fcc419', dy: -26, dur: 1500, delay: i * 140, s1: 1.4 }); };
+const sweatDrops = (F, n) => { for (let i = 0; i < n; i++) em(F, '💧', i % 2 ? 230 : 170, 100, { size: 16, dx: i % 2 ? 22 : -22, dy: 40, dur: 1000, delay: i * 250, s0: .8, s1: 1 }); };
 const rays = F => { const g = F.svg.querySelector('[id$=fxBack]'); const w = document.createElementNS(NS, 'g'); w.setAttribute('transform', 'translate(70 70)');
   w.innerHTML = '<circle r="34" fill="#ffd43b"/><g stroke="#ffd43b" stroke-width="7" stroke-linecap="round">' + [...Array(12)].map((_, i) => `<line x1="0" y1="-48" x2="0" y2="-70" transform="rotate(${i * 30})"/>`).join('') + '</g>';
   g.appendChild(w); try { const a = w.animate([{ opacity: 0, transform: 'translate(70px,70px) scale(.4)' }, { opacity: 1, transform: 'translate(70px,70px) scale(1) rotate(30deg)', offset: .3 }, { opacity: 1, transform: 'translate(70px,70px) scale(1.1) rotate(60deg)', offset: .8 }, { opacity: 0, transform: 'translate(70px,70px) scale(1.1) rotate(80deg)' }], { duration: 3000 }); a.onfinish = () => w.remove(); } catch (e) { w.remove(); } };
@@ -14,10 +14,10 @@ const raysBeams = F => { for (let i = 0; i < 6; i++) F.emit('line', 60 + i * 12,
 const FX = {
   sleep: F => { F.pose('rest'); F.set('eyesClosed', 1, 2800); F.face('happy', 2800); zzz(F); F.tintFlash('#10204d', .5, 2800); em(F, '🌙', 70, 80, { size: 40, dy: 0, dur: 2800, s0: 1, s1: 1 }); },
   game: F => { F.pose('hold', 2800); F.set('glow', 1, 2800); F.tintFlash('#4dabf7', .22, 2800); em(F, '🎮', 200, 300, { size: 34, dy: -10, dur: 2800, s0: 1, s1: 1 }); sparkles(F, '#74c0fc', 6, 200, 130, 140); F.face('happy', 1400); },
-  eat_good: F => { F.pose('mouth', 2400); burst(F, ['🍎', '🥦', '🍌'], 200, 250, { dy: -90 }); F.face('happy', 2400); sparkles(F, '#51cf66', 5); },
-  eat_junk: F => { F.pose('mouth', 2400); burst(F, ['🍩', '🍕', '🍟'], 200, 250, { dy: -90 }); },
+  eat_good: F => { F.pose('mouth', 2400); burst(F, ['🍎', '🥦', '🍌'], 200, 225, { dy: -88 }); F.face('happy', 2400); sparkles(F, '#51cf66', 5); },
+  eat_junk: F => { F.pose('mouth', 2400); burst(F, ['🍩', '🍕', '🍟'], 200, 225, { dy: -88 }); },
   hunger: F => { F.pose('stomach', 2600); F.face('sad', 2600); em(F, 'grrr…', 200, 330, { size: 20, fill: '#555', bold: 1, dy: -26, dur: 2200, s1: 1.2 }); em(F, 'grrr…', 170, 350, { size: 16, fill: '#555', bold: 1, dy: -24, dur: 2200, delay: 600 }); },
-  water: F => { F.pose('mouth', 2400); F.prop('bottle', 2400); burst(F, ['💧', '💧', '💧'], 200, 230, { dy: -60 }); F.face('happy', 2400); sparkles(F, '#4dabf7', 4); },
+  water: F => { F.pose('mouth', 2400); F.prop('bottle', 2400); burst(F, ['💧', '💧', '💧'], 200, 200, { dy: -60 }); F.face('happy', 2400); sparkles(F, '#4dabf7', 4); },
   mix: F => { F.pose('mouth', 2200); F.prop('cup', 2200); burst(F, ['🥤', '💧'], 200, 230); },
   energy: F => { F.pose('mouth', 2200); F.prop('can', 2200); F.set('shake', 2.6, 2400); sweatDrops(F, 4); burst(F, ['⚡', '⚡', '⚡'], 200, 180, { dy: -50 }); if (F.inside) F.inside.boost(4000, 1.6, 1.2); },
   shield: F => { F.pose('stop', 2400); em(F, '🛡️', 292, 190, { size: 52, dy: -18, dur: 2400, s0: .4, s1: 1.2 }); sparkles(F, '#fcc419', 7, 200, 160, 180); F.face('happy', 2400); },
