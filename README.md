@@ -11,3 +11,10 @@ extras, and a microscope lens zooms from cells to molecules.
 
 Sources live in `body-lab-src/`; rebuild with `node body-lab-src/build.js`.
 Fictional, simplified model — not medical advice.
+
+## SMART Goal Studio (`smart-goal-studio.html`)
+
+Interactive SMART goal planner for high school students. Five guided steps (Specific, Measurable,
+Achievable, Relevant, Time-bound) build a live goal sentence, then a Game Plan with timeline chart,
+milestones, weekly schedule, first-week launch list, if-then plans and a progress log.
+Single file, works offline, saves only in the student's own browser.

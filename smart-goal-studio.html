@@ -1,0 +1,1287 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SMART Goal Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: sticky five-letter stepper above a two-column workspace (guided form + live goal rail).
+   The Game Plan step drops the rail and runs full width. Each SMART letter owns one color. */
+:root{
+  --font-display:'Bricolage Grotesque','Segoe UI',system-ui,sans-serif;
+  --font-body:'Figtree','Segoe UI',system-ui,sans-serif;
+  --font-mono:'JetBrains Mono',ui-monospace,Consolas,monospace;
+  --bg:#EEF1F5; --surface:#FFFFFF; --surface-2:#F5F7FA; --line:#D8DFE7; --ink:#14202C; --muted:#566678;
+  --primary:#14202C; --primary-fg:#FFFFFF; --focus:#2F6FDE;
+  --good:#1D7A43; --warn:#94560A; --bad:#B42318;
+  --c-s:#D9480F; --c-m:#0B7285; --c-a:#2B8A3E; --c-r:#C2255C; --c-t:#5F3DC4; --on-c:#FFFFFF;
+  --shadow:0 1px 2px rgba(20,32,44,.06),0 10px 28px rgba(20,32,44,.07);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0D131A; --surface:#16202B; --surface-2:#1B2733; --line:#2B3B4B; --ink:#E7EEF5; --muted:#9BACBD;
+    --primary:#E7EEF5; --primary-fg:#0D131A; --focus:#7FA8FF;
+    --good:#5AD68E; --warn:#F0B558; --bad:#FF8C82;
+    --c-s:#FF9468; --c-m:#4FD0E6; --c-a:#65D788; --c-r:#FF8AB2; --c-t:#B29CFF; --on-c:#0D131A;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 28px rgba(0,0,0,.35);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0D131A; --surface:#16202B; --surface-2:#1B2733; --line:#2B3B4B; --ink:#E7EEF5; --muted:#9BACBD;
+  --primary:#E7EEF5; --primary-fg:#0D131A; --focus:#7FA8FF;
+  --good:#5AD68E; --warn:#F0B558; --bad:#FF8C82;
+  --c-s:#FF9468; --c-m:#4FD0E6; --c-a:#65D788; --c-r:#FF8AB2; --c-t:#B29CFF; --on-c:#0D131A;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 28px rgba(0,0,0,.35);
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--font-body);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4{font-family:var(--font-display);line-height:1.15;margin:0;text-wrap:balance;letter-spacing:-.01em}
+p{margin:0}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px;border-radius:6px}
+.wrap{max-width:1240px;margin-inline:auto;padding-inline:clamp(16px,3vw,32px)}
+.L-s{--c:var(--c-s)} .L-m{--c:var(--c-m)} .L-a{--c:var(--c-a)} .L-r{--c:var(--c-r)} .L-t{--c:var(--c-t)}
+.badge{display:inline-grid;place-items:center;width:30px;height:30px;border-radius:8px;background:var(--c,var(--primary));color:var(--on-c,var(--primary-fg));font-family:var(--font-display);font-weight:700;font-size:16px;flex:none}
+.badge.lg{width:46px;height:46px;border-radius:12px;font-size:24px}
+.badge svg{width:16px;height:16px;fill:currentColor}
+
+/* Header */
+.top{padding-block:22px 14px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:14px;min-width:0}
+.logo{display:flex;gap:3px}
+.logo .badge{width:26px;height:26px;border-radius:6px;font-size:13px}
+.brand h1{font-size:26px}
+.brand small{display:block;color:var(--muted);font-size:13px}
+.top-actions{display:flex;gap:10px;align-items:center;color:var(--muted);font-size:13px}
+
+/* Stepper */
+.stepper-bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--bg);padding-block:8px 12px;border-bottom:1px solid var(--line)}
+.steps{display:flex;gap:8px;overflow-x:auto;padding-bottom:2px;scrollbar-width:thin}
+.step{flex:1 0 118px;display:grid;grid-template-columns:auto 1fr;grid-template-rows:auto auto;column-gap:10px;row-gap:6px;align-items:center;text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:9px 12px;transition:border-color .15s,box-shadow .15s}
+.step:hover{border-color:var(--c,var(--ink))}
+.step[aria-current="step"]{border-color:var(--c,var(--primary));box-shadow:0 0 0 2px color-mix(in srgb,var(--c,var(--primary)) 35%,transparent)}
+.step .sl{font-weight:600;font-size:14px;white-space:nowrap}
+.sbar{grid-column:1/-1;height:4px;border-radius:4px;background:var(--surface-2);overflow:hidden;display:block}
+.sbar b{display:block;height:100%;background:var(--c,var(--primary));border-radius:4px;transition:width .3s}
+
+/* Workspace */
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:24px;padding-block:24px 56px;align-items:start}
+.layout.is-plan{grid-template-columns:minmax(0,1fr)}
+.layout.is-plan .rail{display:none}
+.rail{position:sticky;top:96px;display:grid;gap:16px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:20px;box-shadow:var(--shadow);min-width:0}
+.eyebrow{font-family:var(--font-mono);font-size:11.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
+.statement{font-size:17px;line-height:1.7;margin-top:10px}
+.seg{font:inherit;border:0;border-bottom:2px solid var(--c);background:color-mix(in srgb,var(--c) 13%,var(--surface));color:var(--ink);padding:1px 5px;border-radius:5px 5px 0 0;cursor:pointer;text-align:left}
+.seg:hover{background:color-mix(in srgb,var(--c) 24%,var(--surface))}
+.seg.ph{color:var(--muted);font-style:italic;border-bottom-style:dashed}
+.legend-note{margin-top:12px;font-size:12.5px;color:var(--muted)}
+.rail-btns{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
+
+.score-top{display:flex;align-items:center;gap:16px;margin-bottom:14px}
+.ring{width:72px;height:72px;flex:none}
+.ring circle{fill:none;stroke-width:8}
+.ring .bg{stroke:var(--surface-2)}
+.ring .fg{stroke:var(--primary);stroke-linecap:round;transform:rotate(-90deg);transform-origin:50% 50%;transition:stroke-dasharray .35s}
+.ring text{fill:var(--ink);font-family:var(--font-display);font-weight:700;font-size:19px;text-anchor:middle;dominant-baseline:central}
+.score-top h3{font-size:18px}
+.score-top p{font-size:13.5px;color:var(--muted)}
+.rowl{display:grid;grid-template-columns:auto 84px 1fr 40px;gap:10px;align-items:center;width:100%;background:none;border:0;border-radius:8px;padding:5px 4px;text-align:left}
+.rowl:hover{background:var(--surface-2)}
+.rowl .badge{width:24px;height:24px;border-radius:6px;font-size:13px}
+.rowl .rl-name{font-size:13.5px;font-weight:600}
+.rowl .bar{height:6px;background:var(--surface-2);border-radius:6px;overflow:hidden}
+.rowl .bar i{display:block;height:100%;background:var(--c);transition:width .3s}
+.rowl .pct{font-family:var(--font-mono);font-size:12px;text-align:right;color:var(--muted)}
+
+.kpis{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.kpi{background:var(--surface-2);border-radius:12px;padding:10px 12px;min-width:0}
+.kpi b{display:block;font-family:var(--font-display);font-size:21px;line-height:1.2;overflow-wrap:anywhere}
+.kpi span{font-size:12px;color:var(--muted)}
+.rail .chart-wrap{margin-top:14px}
+
+/* Panels */
+.panel{display:none;min-width:0}
+.panel.on{display:block}
+.panel>.card{display:grid;gap:22px}
+.p-head{display:flex;gap:16px;align-items:flex-start}
+.p-head h2{font-size:32px}
+.p-head p{color:var(--muted);margin-top:6px;max-width:62ch}
+.field{display:grid;gap:7px;min-width:0}
+.field>label,.field>.lbl{font-weight:600;font-size:15px}
+.hint{font-size:13.5px;color:var(--muted);max-width:68ch}
+input[type=text],input[type=number],input[type=date],textarea,select{width:100%;font:inherit;color:var(--ink);background:var(--surface);border:1.5px solid var(--line);border-radius:10px;padding:11px 13px;transition:border-color .15s,box-shadow .15s;min-width:0}
+textarea{min-height:84px;resize:vertical}
+input:hover,textarea:hover{border-color:color-mix(in srgb,var(--ink) 35%,var(--line))}
+input:focus,textarea:focus{outline:none;border-color:var(--c,var(--focus));box-shadow:0 0 0 3px color-mix(in srgb,var(--c,var(--focus)) 25%,transparent)}
+input::placeholder,textarea::placeholder{color:color-mix(in srgb,var(--muted) 75%,transparent)}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{background:var(--surface);border:1.5px solid var(--line);border-radius:999px;padding:6px 14px;font-size:14px;font-weight:500;transition:all .12s}
+.chip:hover{border-color:var(--c,var(--ink))}
+.chip[aria-pressed="true"]{background:var(--c,var(--primary));border-color:var(--c,var(--primary));color:var(--on-c,var(--primary-fg));font-weight:600}
+.chip.sm{padding:3px 11px;font-size:13px;border-style:dashed}
+.seg-ctl{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.mode{background:var(--surface);border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;text-align:left;display:grid;gap:2px}
+.mode b{font-family:var(--font-display);font-size:16px}
+.mode span{font-size:13px;color:var(--muted)}
+.mode:hover{border-color:var(--c)}
+.mode[aria-pressed="true"]{border-color:var(--c);background:color-mix(in srgb,var(--c) 11%,var(--surface));box-shadow:0 0 0 2px color-mix(in srgb,var(--c) 30%,transparent)}
+.btn{display:inline-flex;align-items:center;gap:8px;justify-content:center;background:var(--primary);color:var(--primary-fg);border:1.5px solid var(--primary);border-radius:10px;padding:10px 18px;font-weight:600;font-size:15px;transition:transform .12s,opacity .12s}
+.btn:hover{opacity:.9}
+.btn:active{transform:translateY(1px)}
+.btn.ghost{background:transparent;color:var(--ink);border-color:var(--line)}
+.btn.ghost:hover{border-color:var(--ink)}
+.btn.small{padding:6px 12px;font-size:13px;border-radius:8px}
+.btn.big{padding:13px 24px;font-size:16px}
+.range-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:14px;align-items:center}
+output{font-family:var(--font-mono);font-weight:600;font-size:14px;min-width:90px;text-align:right}
+input[type=range]{width:100%;accent-color:var(--c,var(--primary));height:28px}
+.nav-row{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:20px;flex-wrap:wrap}
+.nav-row .count{font-family:var(--font-mono);font-size:12px;color:var(--muted)}
+
+/* Notes + checklist */
+.note{border-radius:12px;padding:12px 14px;font-size:14.5px;border:1px solid var(--line);background:var(--surface-2);display:grid;gap:8px}
+.note.good{border-color:color-mix(in srgb,var(--good) 45%,var(--line));background:color-mix(in srgb,var(--good) 10%,var(--surface))}
+.note.warn{border-color:color-mix(in srgb,var(--warn) 50%,var(--line));background:color-mix(in srgb,var(--warn) 11%,var(--surface))}
+.note.bad{border-color:color-mix(in srgb,var(--bad) 50%,var(--line));background:color-mix(in srgb,var(--bad) 10%,var(--surface))}
+.note strong{font-weight:700}
+.coach{display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:start;border-radius:12px;padding:14px 16px;background:color-mix(in srgb,var(--c) 9%,var(--surface));border:1px solid color-mix(in srgb,var(--c) 30%,var(--line))}
+.coach .eyebrow{color:var(--c)}
+.coach p{font-size:14.5px}
+.check{display:grid;gap:6px;margin:0;padding:0;list-style:none}
+.check li{display:flex;gap:10px;align-items:center;font-size:14.5px}
+.check .dot{width:20px;height:20px;border-radius:50%;border:2px solid var(--line);display:grid;place-items:center;flex:none;font-size:12px;font-weight:700;color:transparent}
+.check li.ok .dot{background:var(--c);border-color:var(--c);color:var(--on-c)}
+.check li.ok span:last-child{color:var(--muted)}
+.check-title{font-weight:600;font-size:15px;margin-bottom:8px}
+.stat-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px}
+.stat{background:var(--surface-2);border-radius:12px;padding:12px 14px;min-width:0}
+.stat b{display:block;font-family:var(--font-display);font-size:24px;line-height:1.2;overflow-wrap:anywhere}
+.stat span{font-size:13px;color:var(--muted)}
+.bars{display:grid;gap:10px}
+.bar-row{display:grid;grid-template-columns:140px 1fr 44px;gap:12px;align-items:center;font-size:14px}
+.bar-row .track{height:9px;background:var(--surface-2);border-radius:9px;overflow:hidden}
+.bar-row .track i{display:block;height:100%;background:var(--c-a);border-radius:9px;transition:width .3s}
+.bar-row .v{font-family:var(--font-mono);font-size:12px;text-align:right;color:var(--muted)}
+.obs{display:grid;gap:10px}
+.obs-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr) auto;gap:10px;align-items:start}
+.x-btn{background:none;border:1.5px solid var(--line);border-radius:10px;width:42px;height:42px;font-size:18px;color:var(--muted)}
+.x-btn:hover{border-color:var(--bad);color:var(--bad)}
+
+/* Start page */
+.hero{display:grid;gap:18px;padding-block:6px}
+.hero h2{font-size:clamp(34px,5vw,54px);max-width:16ch}
+.hero .lead{font-size:18px;color:var(--muted);max-width:60ch}
+.smart-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px}
+.smart-card{border:1px solid color-mix(in srgb,var(--c) 35%,var(--line));background:color-mix(in srgb,var(--c) 8%,var(--surface));border-radius:14px;padding:14px;display:grid;gap:8px;align-content:start}
+.smart-card h3{font-size:17px}
+.smart-card p{font-size:13.5px;color:var(--muted)}
+.ba{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.ba>div{border-radius:14px;padding:16px;border:1px solid var(--line);background:var(--surface-2);display:grid;gap:8px;align-content:start}
+.ba .after{border-color:color-mix(in srgb,var(--good) 45%,var(--line));background:color-mix(in srgb,var(--good) 8%,var(--surface))}
+.ba q{font-size:15.5px;quotes:none}
+.examples{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.ex{text-align:left;background:var(--surface);border:1.5px solid var(--line);border-radius:14px;padding:14px;display:grid;gap:5px;transition:border-color .15s,transform .15s}
+.ex:hover{border-color:var(--ink);transform:translateY(-2px)}
+.ex b{font-family:var(--font-display);font-size:17px}
+.ex span{font-size:13px;color:var(--muted)}
+.ex em{font-style:normal;font-family:var(--font-mono);font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--c-m)}
+.how-list{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.how-list div{display:grid;gap:4px}
+.how-list b{font-family:var(--font-display)}
+.how-list span{font-size:14px;color:var(--muted)}
+h3.sub{font-size:20px;margin-bottom:12px}
+
+/* Plan */
+.plan{display:grid;gap:20px}
+.plan-hero{display:grid;gap:16px}
+.plan-hero .statement{font-size:21px;line-height:1.75}
+.sec-h{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+.sec-h h3{font-size:22px}
+.sec-h p{font-size:14px;color:var(--muted)}
+.plan-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+.table-wrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:14.5px}
+th{font-family:var(--font-mono);font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);text-align:left;font-weight:600;padding:8px 10px;border-bottom:1.5px solid var(--line);white-space:nowrap}
+td{padding:10px;border-bottom:1px solid var(--line);vertical-align:middle}
+td.num{font-variant-numeric:tabular-nums;font-family:var(--font-mono);font-size:13.5px;white-space:nowrap}
+tr.past td{opacity:.55}
+.pctcell{display:inline-block;min-width:44px;padding:2px 8px;border-radius:6px;background:var(--c-t);color:var(--on-c);font-family:var(--font-mono);font-size:12px;font-weight:600;text-align:center}
+td input{padding:7px 10px;font-size:14px;min-width:150px}
+.week-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:8px}
+.wd{border:1.5px solid var(--line);border-radius:12px;padding:10px 6px;text-align:center;display:grid;gap:2px;background:var(--surface-2)}
+.wd b{font-family:var(--font-display);font-size:15px}
+.wd span{font-size:12px;color:var(--muted)}
+.wd.on{background:color-mix(in srgb,var(--c-a) 14%,var(--surface));border-color:var(--c-a)}
+.wd.on span{color:var(--ink)}
+.launch{display:grid;gap:8px;margin:0;padding:0;list-style:none}
+.launch label{display:grid;grid-template-columns:auto auto 1fr;gap:12px;align-items:start;background:var(--surface-2);border-radius:12px;padding:12px 14px;cursor:pointer}
+.launch input{margin-top:4px;width:18px;height:18px;accent-color:var(--c-a)}
+.launch .dn{font-family:var(--font-mono);font-size:12px;font-weight:600;color:var(--c-m);padding-top:3px;white-space:nowrap}
+.launch .tx b{display:block;font-size:15px}
+.launch .tx span{font-size:14px;color:var(--muted)}
+.launch input:checked ~ .tx{opacity:.55;text-decoration:line-through}
+.iflist{display:grid;gap:10px}
+.if{display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:start;background:var(--surface-2);border-radius:12px;padding:12px 14px;font-size:14.5px}
+.if .tag{font-family:var(--font-mono);font-size:11px;font-weight:600;letter-spacing:.06em;color:var(--on-c);background:var(--c-a);border-radius:5px;padding:2px 6px;margin-top:2px}
+.pill{display:inline-flex;align-items:center;gap:7px;font-weight:700;font-size:14px;padding:5px 12px;border-radius:999px;background:var(--surface-2)}
+.pill::before{content:"";width:9px;height:9px;border-radius:50%;background:currentColor}
+.pill.good{color:var(--good);background:color-mix(in srgb,var(--good) 13%,var(--surface))}
+.pill.warn{color:var(--warn);background:color-mix(in srgb,var(--warn) 14%,var(--surface))}
+.pill.info{color:var(--c-m);background:color-mix(in srgb,var(--c-m) 13%,var(--surface))}
+.log-form{display:grid;grid-template-columns:150px 140px minmax(0,1fr) auto;gap:10px;align-items:end}
+.log-form .field>label{font-size:13px}
+.legend{display:flex;gap:18px;flex-wrap:wrap;font-size:13px;color:var(--muted);margin-top:8px}
+.legend i{display:inline-block;width:22px;height:0;border-top:3px solid;vertical-align:middle;margin-right:6px}
+.legend i.dash{border-top-style:dashed}
+.legend i.dot{width:10px;height:10px;border-radius:50%;border:2px solid;border-top-width:2px;margin-right:6px;vertical-align:-1px}
+.opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.opt{border:1px solid var(--line);border-radius:12px;padding:14px;display:grid;gap:4px;background:var(--surface-2)}
+.opt b{font-family:var(--font-display);font-size:15px}
+.opt span{font-size:14px}
+textarea.plain{font-family:var(--font-mono);font-size:12.5px;min-height:260px;line-height:1.5}
+details summary{cursor:pointer;font-weight:600;padding:6px 0}
+details[open] summary{margin-bottom:8px}
+.chart-wrap svg{display:block;width:100%;height:auto}
+.chart-wrap text{font-family:var(--font-mono);font-size:11px;fill:var(--muted)}
+.chart-wrap .ax{stroke:var(--line);stroke-width:1}
+.chart-wrap .grid{stroke:var(--line);stroke-width:1;stroke-dasharray:2 4}
+.chart-empty{display:grid;place-items:center;text-align:center;border:1.5px dashed var(--line);border-radius:12px;padding:28px 16px;color:var(--muted);font-size:14px}
+
+/* Overlay + toast */
+.overlay{position:fixed;inset:0;background:rgba(10,16,22,.55);display:grid;place-items:center;z-index:50;padding:16px}
+.overlay .box{background:var(--surface);border-radius:16px;padding:24px;max-width:420px;width:100%;display:grid;gap:16px;box-shadow:var(--shadow);border:1px solid var(--line)}
+.overlay .box .row{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translate(-50%,20px);background:var(--primary);color:var(--primary-fg);padding:10px 18px;border-radius:999px;font-weight:600;font-size:14px;opacity:0;pointer-events:none;transition:all .25s;z-index:60;max-width:calc(100vw - 32px)}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+
+@media (max-width:1040px){
+  .layout{grid-template-columns:minmax(0,1fr)}
+  .rail{position:static}
+  .smart-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .plan-grid{grid-template-columns:minmax(0,1fr)}
+}
+@media (max-width:700px){
+  .grid2,.grid3,.ba,.how-list,.seg-ctl{grid-template-columns:minmax(0,1fr)}
+  .obs-row{grid-template-columns:minmax(0,1fr) auto}
+  .obs-row .p-in{grid-column:1/2;grid-row:2}
+  .log-form{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+  .log-form .field.note-f{grid-column:1/-1}
+  .bar-row{grid-template-columns:100px 1fr 40px}
+  .week-grid{gap:4px}
+  .p-head h2{font-size:26px}
+  .card{padding:16px}
+  .rowl{grid-template-columns:auto 76px 1fr 38px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important;scroll-behavior:auto!important}}
+</style>
+
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="brand">
+      <div class="logo" aria-hidden="true">
+        <span class="badge L-s">S</span><span class="badge L-m">M</span><span class="badge L-a">A</span><span class="badge L-r">R</span><span class="badge L-t">T</span>
+      </div>
+      <div>
+        <h1>SMART Goal Studio</h1>
+        <small>Plan it. Date it. Do it.</small>
+      </div>
+    </div>
+    <div class="top-actions">
+      <span>Saved in this browser only</span>
+      <button class="btn ghost small" type="button" data-act="reset">Start over</button>
+    </div>
+  </header>
+</div>
+
+<div class="stepper-bar">
+  <div class="wrap"><nav class="steps" id="stepper" aria-label="Goal steps"></nav></div>
+</div>
+
+<div class="wrap">
+<main class="layout" id="layout">
+  <div class="main" id="main">
+
+    <!-- 0 START -->
+    <section class="panel on" id="p-0" aria-labelledby="h-0">
+      <div class="card">
+        <div class="hero">
+          <div class="eyebrow">For high school students</div>
+          <h2 id="h-0" tabindex="-1">Build a goal you can actually finish.</h2>
+          <p class="lead">Answer five short sets of questions. The studio turns your answers into one clear goal, a dated timeline, a weekly routine and a plan for the first seven days. Change anything and the whole plan updates.</p>
+          <div><button class="btn big" type="button" data-act="next">Start my goal →</button></div>
+        </div>
+
+        <div>
+          <h3 class="sub">What SMART means</h3>
+          <div class="smart-grid">
+            <div class="smart-card L-s"><span class="badge">S</span><h3>Specific</h3><p>What exactly will you do, and how will you do it?</p></div>
+            <div class="smart-card L-m"><span class="badge">M</span><h3>Measurable</h3><p>What number or count shows you are making progress?</p></div>
+            <div class="smart-card L-a"><span class="badge">A</span><h3>Achievable</h3><p>Can you do it with the time, skills and support you have?</p></div>
+            <div class="smart-card L-r"><span class="badge">R</span><h3>Relevant</h3><p>Why does it matter to you, and how does it fit your bigger plans?</p></div>
+            <div class="smart-card L-t"><span class="badge">T</span><h3>Time-bound</h3><p>What is the deadline, and what are the checkpoints on the way?</p></div>
+          </div>
+        </div>
+
+        <div>
+          <h3 class="sub">Same idea, two versions</h3>
+          <div class="ba">
+            <div><div class="eyebrow">Fuzzy</div><q>I want to get better at math.</q><span class="hint">No finish line, no plan, easy to quit without noticing.</span></div>
+            <div class="after"><div class="eyebrow" style="color:var(--good)">SMART</div><q>By December 18, I will raise my Algebra II grade from 72% to 85% by attending tutoring twice a week and doing 3 practice problems every night, because it keeps me on the honors track.</q></div>
+          </div>
+        </div>
+
+        <div>
+          <h3 class="sub">Not sure where to start? Open a worked example</h3>
+          <div class="examples" id="examples"></div>
+          <p class="hint" style="margin-top:10px">Examples fill in every step so you can see a finished plan. Edit anything, or press Start over to clear it.</p>
+        </div>
+
+        <div class="how-list">
+          <div><b>1. Answer the questions</b><span>Each letter has a short form and a checklist that shows what is still missing.</span></div>
+          <div><b>2. Watch your goal build</b><span>Your goal sentence, score and timeline update as you type.</span></div>
+          <div><b>3. Use your Game Plan</b><span>Milestones, a weekly schedule, a first-week launch list, if-then plans and a progress log.</span></div>
+        </div>
+        <p class="hint">Your answers stay in this browser on this computer. Nothing is sent anywhere. To keep a copy, use the copy button on the Game Plan page and paste it into a document.</p>
+      </div>
+    </section>
+
+    <!-- 1 SPECIFIC -->
+    <section class="panel L-s" id="p-1" aria-labelledby="h-1">
+      <div class="card">
+        <div class="p-head"><span class="badge lg">S</span><div><h2 id="h-1" tabindex="-1">Specific</h2><p>A specific goal says what you will do, how you will do it, and who or where is involved. If a stranger could watch you and tell whether you are doing it, it is specific.</p></div></div>
+
+        <div class="field"><span class="lbl">Which area of life is this?</span><div class="chips" id="cat-chips"></div></div>
+
+        <div class="field">
+          <label for="what">What do you want to accomplish?</label>
+          <textarea id="what" data-k="what" placeholder="Raise my Algebra II grade"></textarea>
+          <span class="hint">Start with an action verb. Tap one to begin:</span>
+          <div class="chips" id="verb-chips"></div>
+        </div>
+
+        <div class="field">
+          <label for="how">How will you do it?</label>
+          <textarea id="how" data-k="how" placeholder="Attend tutoring on Tuesdays and Thursdays and do 3 practice problems every night"></textarea>
+          <span class="hint">Name the actual actions you will take, not just the result you want.</span>
+        </div>
+
+        <div class="grid2">
+          <div class="field"><label for="who">Who is involved?</label><input type="text" id="who" data-k="who" placeholder="Ms. Alvarez and a study partner"><span class="hint">A teacher, coach, friend, family member, or just you.</span></div>
+          <div class="field"><label for="where">Where will it happen?</label><input type="text" id="where" data-k="where" placeholder="The school library"><span class="hint">A place, an app, a course, or a team.</span></div>
+        </div>
+
+        <div id="vagueBox"></div>
+        <div><div class="check-title">Specific checklist</div><ul class="check" id="chk-s"></ul></div>
+        <div class="coach"><span class="badge">?</span><div><div class="eyebrow">Coach</div><p>Swap fuzzy words like "better," "more," "try" or "healthy" for things a camera could record: "attend tutoring," "write 300 words," "run 3 times."</p></div></div>
+        <div class="nav-row"><button class="btn ghost" type="button" data-act="prev">← Back</button><span class="count">Step 1 of 5</span><button class="btn" type="button" data-act="next">Next: Measurable →</button></div>
+      </div>
+    </section>
+
+    <!-- 2 MEASURABLE -->
+    <section class="panel L-m" id="p-2" aria-labelledby="h-2">
+      <div class="card">
+        <div class="p-head"><span class="badge lg">M</span><div><h2 id="h-2" tabindex="-1">Measurable</h2><p>Pick the number that tells you whether you are on track. The studio uses it to build your milestones and your progress chart.</p></div></div>
+
+        <div class="field"><span class="lbl">What kind of goal is this?</span>
+          <div class="seg-ctl" id="mode-ctl">
+            <button type="button" class="mode" data-mode="number" aria-pressed="true"><b>Reach a number</b><span>A grade, savings, distance, time, score</span></button>
+            <button type="button" class="mode" data-mode="habit" aria-pressed="false"><b>Build a habit</b><span>Do something a set number of times a week</span></button>
+            <button type="button" class="mode" data-mode="project" aria-pressed="false"><b>Finish a project</b><span>Complete a list of steps</span></button>
+          </div>
+        </div>
+
+        <div id="m-number" class="grid3">
+          <div class="field"><label for="base">Where are you now?</label><input type="number" id="base" data-k="base" inputmode="decimal" placeholder="72"></div>
+          <div class="field"><label for="target">Where do you want to be?</label><input type="number" id="target" data-k="target" inputmode="decimal" placeholder="85"></div>
+          <div class="field"><label for="unit">Unit</label><input type="text" id="unit" data-k="unit" placeholder="%"></div>
+          <div class="field" style="grid-column:1/-1"><span class="hint">Common units:</span><div class="chips" id="unit-chips"></div></div>
+        </div>
+        <div id="m-habit" hidden class="grid2">
+          <div class="field"><label for="perWeek">How many times per week?</label><input type="number" id="perWeek" data-k="perWeek" min="1" max="14" step="1" placeholder="4"><span class="hint">Pick a number you could still hit during a busy week.</span></div>
+          <div class="field"><span class="lbl">Total sessions over your timeline</span><div class="stat"><b id="habitTotal">–</b><span>Set the dates in the Time-bound step</span></div></div>
+        </div>
+        <div id="m-project" hidden class="field">
+          <label for="projectSteps">List the steps, one per line, in order</label>
+          <textarea id="projectSteps" data-k="projectSteps" style="min-height:150px" placeholder="Pick a topic&#10;Outline the main points&#10;Write the first draft&#10;Get feedback from a teacher&#10;Revise and proofread&#10;Submit"></textarea>
+          <span class="hint" id="stepCount">0 steps</span>
+        </div>
+
+        <div class="field"><span class="lbl">How should your progress be paced?</span>
+          <div class="chips" id="pace-chips"></div>
+          <span class="hint" id="paceHint"></span>
+        </div>
+
+        <div class="field"><label for="trackHow">How will you track it?</label><input type="text" id="trackHow" data-k="trackHow" placeholder="Check the gradebook every Friday and write down the percentage"><span class="hint">Where will you write the number down, and when?</span></div>
+
+        <div id="measureCalc"></div>
+        <div><div class="check-title">Measurable checklist</div><ul class="check" id="chk-m"></ul></div>
+        <div class="coach"><span class="badge">?</span><div><div class="eyebrow">Coach</div><p>If you cannot put a number on it, ask "what would be different if I got there?" and measure that: points, minutes, pages, dollars, days in a row.</p></div></div>
+        <div class="nav-row"><button class="btn ghost" type="button" data-act="prev">← Back</button><span class="count">Step 2 of 5</span><button class="btn" type="button" data-act="next">Next: Achievable →</button></div>
+      </div>
+    </section>
+
+    <!-- 3 ACHIEVABLE -->
+    <section class="panel L-a" id="p-3" aria-labelledby="h-3">
+      <div class="card">
+        <div class="p-head"><span class="badge lg">A</span><div><h2 id="h-3" tabindex="-1">Achievable</h2><p>A good goal stretches you without breaking your week. Be honest about your time, your starting point and what might get in the way. Honest plans work better.</p></div></div>
+
+        <div class="field"><span class="lbl">Which days will you work on it?</span><div class="chips" id="day-chips"></div></div>
+        <div class="grid2">
+          <div class="field"><label for="minutes">Time per session</label><div class="range-row"><input type="range" id="minutes" data-k="minutes" min="10" max="180" step="5"><output data-out="minutes"></output></div></div>
+          <div class="field"><span class="lbl">When in the day?</span><div class="chips" id="slot-chips"></div></div>
+        </div>
+        <div class="grid2">
+          <div class="field"><label for="confidence">How confident are you that you can do it?</label><div class="range-row"><input type="range" id="confidence" data-k="confidence" min="1" max="10" step="1"><output data-out="confidence"></output></div><span class="hint">1 is "no way," 10 is "already done."</span></div>
+          <div class="field"><label for="challenge">How big a challenge is it?</label><div class="range-row"><input type="range" id="challenge" data-k="challenge" min="1" max="5" step="1"><output data-out="challenge"></output></div><span class="hint">Aim for a 3 or 4: hard enough to matter, doable enough to finish.</span></div>
+        </div>
+
+        <div class="field"><label for="resources">What skills, tools and resources do you already have?</label><textarea id="resources" data-k="resources" placeholder="Textbook, free tutoring, Khan Academy, my class notes"></textarea></div>
+        <div class="grid2">
+          <div class="field"><label for="support">Who will support you?</label><input type="text" id="support" data-k="support" placeholder="My older brother"></div>
+          <div class="field"><span class="lbl">How often will you check in with them?</span><div class="chips" id="supportHow-chips"></div></div>
+        </div>
+
+        <div class="field">
+          <span class="lbl">What could get in the way, and what will you do about it?</span>
+          <span class="hint">An if-then plan decides ahead of time what you will do, so you do not have to decide when you are tired.</span>
+          <div class="obs" id="obs"></div>
+          <div class="chips" id="obs-suggest"></div>
+          <div><button class="btn ghost small" type="button" data-act="addObstacle">+ Add an obstacle</button></div>
+        </div>
+
+        <div id="achCalc"></div>
+        <div><div class="check-title">Achievable checklist</div><ul class="check" id="chk-a"></ul></div>
+        <div class="nav-row"><button class="btn ghost" type="button" data-act="prev">← Back</button><span class="count">Step 3 of 5</span><button class="btn" type="button" data-act="next">Next: Relevant →</button></div>
+      </div>
+    </section>
+
+    <!-- 4 RELEVANT -->
+    <section class="panel L-r" id="p-4" aria-labelledby="h-4">
+      <div class="card">
+        <div class="p-head"><span class="badge lg">R</span><div><h2 id="h-4" tabindex="-1">Relevant</h2><p>Goals you care about survive busy weeks and bad days. This step connects the goal to what matters to you.</p></div></div>
+
+        <div class="field"><label for="why">Why does this goal matter to you?</label><textarea id="why" data-k="why" placeholder="A higher math grade keeps me eligible for the honors track and makes my college applications stronger"></textarea><span class="hint">Write it in your own words. Aim for a full sentence or two.</span></div>
+        <div class="field"><span class="lbl">Which of these does it support? Pick any.</span><div class="chips" id="val-chips"></div></div>
+        <div class="field"><label for="bigger">What bigger goal or dream does it move you toward?</label><input type="text" id="bigger" data-k="bigger" placeholder="Getting into an engineering program"></div>
+        <div class="field"><label for="importance">How important is it to you right now?</label><div class="range-row"><input type="range" id="importance" data-k="importance" min="1" max="5" step="1"><output data-out="importance"></output></div></div>
+        <div id="relNote"></div>
+        <div><div class="check-title">Relevant checklist</div><ul class="check" id="chk-r"></ul></div>
+        <div class="coach"><span class="badge">?</span><div><div class="eyebrow">Coach</div><p>Is this goal yours, or someone else's idea? If it is not yours yet, find the part you do care about and build the goal around that.</p></div></div>
+        <div class="nav-row"><button class="btn ghost" type="button" data-act="prev">← Back</button><span class="count">Step 4 of 5</span><button class="btn" type="button" data-act="next">Next: Time-bound →</button></div>
+      </div>
+    </section>
+
+    <!-- 5 TIME-BOUND -->
+    <section class="panel L-t" id="p-5" aria-labelledby="h-5">
+      <div class="card">
+        <div class="p-head"><span class="badge lg">T</span><div><h2 id="h-5" tabindex="-1">Time-bound</h2><p>A deadline turns "someday" into a schedule. Set your dates and the studio spaces your milestones and weekly targets for you. Change a date and everything shifts.</p></div></div>
+
+        <div class="grid2">
+          <div class="field"><label for="start">Start date</label><input type="date" id="start" data-k="start"></div>
+          <div class="field"><label for="end">Deadline</label><input type="date" id="end" data-k="end"></div>
+        </div>
+        <div class="field"><span class="hint">Quick deadlines counted from your start date:</span><div class="chips" id="preset-chips"></div></div>
+        <div class="field"><label for="deadlineWhy">Why this deadline?</label><input type="text" id="deadlineWhy" data-k="deadlineWhy" placeholder="Semester grades close on that date"><span class="hint">A real event (a test, tryouts, a trip, the end of a term) makes a deadline feel real.</span></div>
+        <div class="field"><span class="lbl">How often will you review your progress?</span><div class="chips" id="checkin-chips"></div></div>
+
+        <div id="timeCalc"></div>
+        <div><div class="check-title">Time-bound checklist</div><ul class="check" id="chk-t"></ul></div>
+        <div class="nav-row"><button class="btn ghost" type="button" data-act="prev">← Back</button><span class="count">Step 5 of 5</span><button class="btn big" type="button" data-act="next">Build my Game Plan →</button></div>
+      </div>
+    </section>
+
+    <!-- 6 PLAN -->
+    <section class="panel" id="p-6" aria-labelledby="h-6">
+      <h2 id="h-6" tabindex="-1" style="position:absolute;left:-9999px">Game Plan</h2>
+      <div class="plan" id="planRoot"></div>
+    </section>
+  </div>
+
+  <aside class="rail" id="rail" aria-label="Live goal summary">
+    <section class="card">
+      <div class="eyebrow">Your SMART goal, live</div>
+      <p class="statement" id="liveStatement"></p>
+      <p class="legend-note">Tap a highlighted phrase to jump to its step. Dashed phrases are still empty.</p>
+      <div class="rail-btns"><button class="btn ghost small" type="button" data-act="copyStmt">Copy goal</button></div>
+    </section>
+    <section class="card">
+      <div class="score-top">
+        <svg class="ring" viewBox="0 0 72 72" aria-hidden="true"><circle class="bg" cx="36" cy="36" r="30"/><circle class="fg" id="ringFg" cx="36" cy="36" r="30" stroke-dasharray="0 189"/><text id="ringTxt" x="36" y="37">0%</text></svg>
+        <div><h3 id="scoreTitle">SMART score</h3><p id="scoreSub">Complete each letter to reach 100%.</p></div>
+      </div>
+      <div id="scoreRows"></div>
+    </section>
+    <section class="card">
+      <div class="eyebrow">By the numbers</div>
+      <div class="kpis" id="kpis" style="margin-top:10px"></div>
+      <div class="chart-wrap" id="railChart"></div>
+    </section>
+  </aside>
+</main>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<div id="overlayRoot"></div>
+
+<script>
+(function(){
+'use strict';
+
+/* ---------- helpers ---------- */
+var KEY='smartGoalStudio.v1';
+var $=function(s,r){return (r||document).querySelector(s)};
+var $$=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))};
+var esc=function(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})};
+var clamp=function(n,a,b){return Math.min(b,Math.max(a,n))};
+var DAY=86400000;
+var pad=function(n){return String(n).padStart(2,'0')};
+var iso=function(d){return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())};
+var parse=function(s){if(!/^\d{4}-\d{2}-\d{2}$/.test(s||''))return null;var p=s.split('-').map(Number);var d=new Date(p[0],p[1]-1,p[2]);return isNaN(d)?null:d};
+var today=function(){var n=new Date();return new Date(n.getFullYear(),n.getMonth(),n.getDate())};
+var addDays=function(d,n){return new Date(d.getFullYear(),d.getMonth(),d.getDate()+n)};
+var diffDays=function(a,b){return Math.round((b-a)/DAY)};
+var words=function(s){return (s||'').trim().split(/\s+/).filter(Boolean).length};
+var fmtShort=function(d){return d.toLocaleDateString(undefined,{month:'short',day:'numeric'})};
+var fmtLong=function(d){return d.toLocaleDateString(undefined,{month:'long',day:'numeric',year:'numeric'})};
+var fmtDay=function(d){return d.toLocaleDateString(undefined,{weekday:'short',month:'short',day:'numeric'})};
+var fmtNum=function(n){if(!isFinite(n))return '–';var a=Math.abs(n);var d=a>=100?0:a>=10?1:2;return (+n.toFixed(d)).toLocaleString(undefined,{maximumFractionDigits:d})};
+var joinList=function(a){return a.length<2?a.join(''):a.slice(0,-1).join(', ')+' and '+a[a.length-1]};
+var DAYS_SHORT=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+var DAYS_PLURAL=['Sundays','Mondays','Tuesdays','Wednesdays','Thursdays','Fridays','Saturdays'];
+var DAY_ORDER=[1,2,3,4,5,6,0];
+var CATEGORIES=['Academics','Health & fitness','Money','College & career','Personal growth','Friends & community','Creative & hobbies'];
+var VERBS=['Raise','Save','Run','Finish','Learn','Read','Build','Practice','Earn','Reduce'];
+var UNITS=['%','$','minutes','pages','points','miles','pounds','hours'];
+var VALUES=['College & career','Health','Money','Family','Friends','Independence','Creativity','Confidence','Giving back','Fun'];
+var SLOTS=['before school','after school','in the evening','on weekends'];
+var SUPPORT_HOW=[['daily','Daily text'],['weekly','Weekly check-in'],['biweekly','Every two weeks']];
+var PACES=[['even','Steady','Equal progress every week.'],['slow','Slow start','Ease in, then speed up. Good for learning a new skill.'],['fast','Fast start','Big early push, then ease off. Good when momentum is easy to lose.']];
+var OBS_IDEAS=['Homework piles up','I am too tired','Friends invite me out','I lose motivation','Phone distractions','A busy week'];
+var VAGUE=/\b(better|more|less|improve|improved|improving|good|well|try|trying|some|stuff|things?|a lot|healthy|enough|soon|someday|eventually|maybe|kind of|sort of|do my best|be happy|succeed|successful)\b/gi;
+
+var STEPS=[
+  {id:'start',label:'Start',icon:'start'},
+  {id:'s',letter:'S',label:'Specific'},
+  {id:'m',letter:'M',label:'Measurable'},
+  {id:'a',letter:'A',label:'Achievable'},
+  {id:'r',letter:'R',label:'Relevant'},
+  {id:'t',letter:'T',label:'Time-bound'},
+  {id:'plan',label:'Game Plan',icon:'flag'}
+];
+var LETTERS=['s','m','a','r','t'];
+var LNAME={s:'Specific',m:'Measurable',a:'Achievable',r:'Relevant',t:'Time-bound'};
+
+/* ---------- state ---------- */
+function fresh(){
+  var t=today();
+  return {
+    step:0,category:'',what:'',how:'',who:'',where:'',
+    mode:'number',unit:'',base:'',target:'',perWeek:'3',projectSteps:'',trackHow:'',pace:'even',
+    start:iso(t),end:iso(addDays(t,56)),deadlineWhy:'',checkin:'weekly',
+    days:[2,4],minutes:45,slot:'after school',confidence:7,challenge:3,
+    resources:'',support:'',supportHow:'weekly',obstacles:[{o:'',p:''}],
+    why:'',values:[],importance:4,bigger:'',
+    rewards:{},launch:{},log:[]
+  };
+}
+var S=fresh();
+try{
+  var raw=localStorage.getItem(KEY);
+  if(raw){var saved=JSON.parse(raw);if(saved&&typeof saved==='object'){Object.keys(saved).forEach(function(k){S[k]=saved[k]});}}
+}catch(e){}
+if(!Array.isArray(S.obstacles)||!S.obstacles.length)S.obstacles=[{o:'',p:''}];
+if(!Array.isArray(S.days))S.days=[];
+if(!Array.isArray(S.values))S.values=[];
+if(!Array.isArray(S.log))S.log=[];
+if(!S.rewards||typeof S.rewards!=='object')S.rewards={};
+if(!S.launch||typeof S.launch!=='object')S.launch={};
+S.step=clamp(+S.step||0,0,6);
+
+var saveTimer=null;
+function save(){clearTimeout(saveTimer);saveTimer=setTimeout(function(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}},250)}
+
+/* ---------- derived numbers ---------- */
+var cur=null;
+function curve(p){if(S.pace==='slow')return Math.pow(p,1.7);if(S.pace==='fast')return 1-Math.pow(1-p,1.7);return p}
+function derive(){
+  var D={};
+  D.start=parse(S.start);D.end=parse(S.end);
+  D.datesOk=!!(D.start&&D.end&&D.end>D.start);
+  D.days=D.datesOk?diffDays(D.start,D.end):0;
+  D.weeks=D.days/7;
+  D.steps=String(S.projectSteps||'').split('\n').map(function(s){return s.trim()}).filter(Boolean);
+  var perWeek=parseFloat(S.perWeek)||0;
+  D.spw=S.mode==='habit'?perWeek:S.days.length;
+  var B=NaN,T=NaN,unit='';
+  if(S.mode==='number'){B=parseFloat(S.base);T=parseFloat(S.target);unit=String(S.unit||'').trim()}
+  else if(S.mode==='habit'){B=0;T=(D.datesOk&&perWeek>0)?Math.round(perWeek*D.weeks):NaN;unit='sessions'}
+  else{B=0;T=D.steps.length||NaN;unit='steps'}
+  D.B=B;D.T=T;D.unit=unit;
+  D.mOk=isFinite(B)&&isFinite(T)&&B!==T;
+  D.dir=T>=B?1:-1;
+  D.span=T-B;
+  D.roundV=function(v){return S.mode==='number'?v:Math.round(v)};
+  D.valueAt=function(date){var p=clamp((date-D.start)/(D.end-D.start),0,1);return D.B+D.span*curve(p)};
+  D.ready=D.datesOk&&D.mOk;
+  if(D.ready){
+    D.milestones=[25,50,75,100].map(function(pct){
+      var date=addDays(D.start,Math.round(D.days*pct/100));
+      return {pct:pct,date:date,value:D.roundV(D.B+D.span*curve(pct/100))};
+    });
+    D.checkpoints=[];
+    var n=Math.min(Math.ceil(D.weeks),78);
+    for(var w=1;w<=n;w++){var dt=addDays(D.start,Math.min(7*w,D.days));D.checkpoints.push({w:w,date:dt,value:D.roundV(D.valueAt(dt))})}
+    D.paceWeek=Math.abs(D.span)/D.weeks;
+    D.perSession=D.spw>0?Math.abs(D.span)/(D.spw*D.weeks):NaN;
+  }
+  D.sessionMin=clamp(+S.minutes||0,0,600);
+  D.weeklyMin=D.spw*D.sessionMin;
+  D.totalHours=D.datesOk?(D.weeklyMin/60)*D.weeks:NaN;
+  return D;
+}
+function fmtV(v,withUnit){
+  if(withUnit===undefined)withUnit=true;
+  var n=fmtNum(v);if(!withUnit)return n;
+  if(S.mode!=='number')return n+' '+cur.unit;
+  var u=cur.unit;
+  if(u==='$'||u.toLowerCase()==='dollars')return '$'+n;
+  if(u==='%')return n+'%';
+  return u?n+' '+u:n;
+}
+
+/* ---------- vague words + scoring ---------- */
+function vagueIn(text){var m=(text||'').match(VAGUE)||[];var seen={};return m.map(function(x){return x.toLowerCase()}).filter(function(x){if(seen[x])return false;seen[x]=1;return true})}
+function obstaclesDone(){return S.obstacles.filter(function(o){return words(o.o)>=2&&words(o.p)>=3}).length}
+function scores(D){
+  var r={};
+  r.s=mk([
+    ['Choose an area of life',!!S.category],
+    ['Say what you will do in 5 or more words',words(S.what)>=5],
+    ['Say how you will do it in 4 or more words',words(S.how)>=4],
+    ['Add who is involved or where it happens',!!(S.who.trim()||S.where.trim())],
+    ['Use concrete words instead of fuzzy ones',words(S.what+' '+S.how)>0&&!vagueIn(S.what+' '+S.how).length]
+  ]);
+  r.m=mk([
+    ['Set a starting point and a target that differ',D.mOk],
+    [S.mode==='number'?'Name the unit (%, $, minutes...)':(S.mode==='habit'?'Choose how many times per week':'List the steps of your project'),S.mode==='number'?!!D.unit:(S.mode==='habit'?(parseFloat(S.perWeek)||0)>0:D.steps.length>0)],
+    ['Describe how you will track progress',words(S.trackHow)>=3]
+  ]);
+  r.a=mk([
+    ['Choose at least one practice day',S.days.length>=1],
+    ['Plan sessions of 15 minutes or more',+S.minutes>=15],
+    ['List the resources you already have',words(S.resources)>=2],
+    ['Write an obstacle with an if-then plan',obstaclesDone()>=1],
+    ['Name someone who will support you',words(S.support)>=1],
+    ['Confidence is 5 or higher (if not, shrink the goal or add time)',+S.confidence>=5]
+  ]);
+  r.r=mk([
+    ['Explain why it matters in 8 or more words',words(S.why)>=8],
+    ['Pick at least one thing it supports',S.values.length>=1],
+    ['Connect it to a bigger goal',words(S.bigger)>=3],
+    ['Importance is 3 or higher',+S.importance>=3]
+  ]);
+  r.t=mk([
+    ['Pick a deadline after your start date',D.datesOk],
+    ['Leave at least two weeks',D.days>=14],
+    ['Stay within one year (break bigger goals into stages)',D.datesOk&&D.days<=366],
+    ['Say why you chose this deadline',words(S.deadlineWhy)>=3]
+  ]);
+  var tot=0;LETTERS.forEach(function(l){tot+=r[l].pct});
+  r.total=Math.round(tot/5);
+  return r;
+  function mk(items){var ok=items.filter(function(i){return i[1]}).length;return {items:items.map(function(i){return {label:i[0],ok:!!i[1]}}),pct:Math.round(100*ok/items.length)}}
+}
+
+/* ---------- statement ---------- */
+function daysList(){
+  var d=DAY_ORDER.filter(function(x){return S.days.indexOf(x)>-1}).map(function(x){return DAYS_PLURAL[x]});
+  return d.length?'on '+joinList(d):'';
+}
+function trimEnd(s){return String(s).trim().replace(/[.\s]+$/,'')}
+function statementSegs(D){
+  var out=[];
+  function t(x){out.push({l:null,text:x})}
+  function m(l,x,ph){out.push({l:l,text:x,ph:!!ph})}
+  t('By ');
+  if(D.datesOk)m('t',fmtLong(D.end));else m('t','[deadline]',1);
+  t(', I will ');
+  var what=trimEnd(S.what);
+  m('s',what||'[what you will do]',!what);
+  if(S.mode==='number'){
+    if(D.mOk){t(', going from ');m('m',fmtV(D.B));t(' to ');m('m',fmtV(D.T))}
+    else{t(', measured by ');m('m','[start and target numbers]',1)}
+  }else if(S.mode==='habit'){
+    var pw=parseFloat(S.perWeek)||0;
+    if(pw>0){t(', doing it ');m('m',fmtNum(pw)+(pw===1?' time':' times')+' a week');t(' for ');m('m',D.datesOk?fmtNum(D.weeks)+' weeks':'[number of weeks]',!D.datesOk)}
+    else{t(', measured by ');m('m','[times per week]',1)}
+  }else{
+    t(', finishing ');m('m',D.steps.length?'all '+D.steps.length+' steps':'[your project steps]',!D.steps.length);
+  }
+  var how=trimEnd(S.how);
+  t(' by ');m('s',how||'[how you will do it]',!how);
+  if(S.who.trim()){t(', with ');m('s',trimEnd(S.who))}
+  if(S.where.trim()){t(', at ');m('s',trimEnd(S.where))}
+  t('. ');
+  var dl=daysList();
+  t('I will work on it ');
+  if(dl)m('a',dl);else m('a','[practice days]',1);
+  t(' for ');m('a',(+S.minutes||0)+' minutes');
+  t(' '+S.slot+'. ');
+  var why=trimEnd(S.why);
+  t('This matters to me because ');
+  m('r',why||'[your reason]',!why);
+  t('.');
+  return out;
+}
+var STEP_OF={s:1,m:2,a:3,r:4,t:5};
+function segsHtml(segs){
+  return segs.map(function(s){
+    if(!s.l)return esc(s.text);
+    return '<button type="button" class="seg L-'+s.l+(s.ph?' ph':'')+'" data-go="'+STEP_OF[s.l]+'" title="Edit in the '+LNAME[s.l]+' step">'+esc(s.text)+'</button>';
+  }).join('');
+}
+function segsPlain(segs){return segs.map(function(s){return s.text}).join('')}
+
+/* ---------- chart ---------- */
+function niceTicks(min,max,n){
+  var span=(max-min)||1,raw=span/n,mag=Math.pow(10,Math.floor(Math.log10(raw))),norm=raw/mag;
+  var step=(norm<1.5?1:norm<3?2:norm<7?5:10)*mag;
+  var lo=Math.floor(min/step+1e-9)*step,hi=Math.ceil(max/step-1e-9)*step,ticks=[];
+  for(var v=lo;v<=hi+step/2;v+=step)ticks.push(+v.toFixed(10));
+  return {ticks:ticks,lo:lo,hi:hi};
+}
+function sortedLog(){
+  return S.log.filter(function(l){return parse(l.date)&&isFinite(l.value)}).slice().sort(function(a,b){return a.date<b.date?-1:a.date>b.date?1:0});
+}
+function chart(D,compact){
+  if(!D.ready){
+    return '<div class="chart-empty">'+(D.mOk?'Set a valid start date and deadline to see your timeline.':'Set your numbers in the Measurable step and your dates in the Time-bound step to see your timeline.')+'</div>';
+  }
+  var W=compact?360:720,H=compact?190:330;
+  var m={l:compact?44:58,r:16,t:16,b:compact?28:36};
+  var log=sortedLog();
+  var vals=[D.B,D.T].concat(log.map(function(l){return +l.value}));
+  var lo=Math.min.apply(null,vals),hi=Math.max.apply(null,vals);
+  var nt=niceTicks(lo,hi,compact?3:4);
+  var t0=+D.start,t1=+D.end;
+  var x=function(t){return m.l+clamp((t-t0)/(t1-t0),0,1)*(W-m.l-m.r)};
+  var y=function(v){return H-m.b-(v-nt.lo)/(nt.hi-nt.lo)*(H-m.t-m.b)};
+  var g='';
+  nt.ticks.forEach(function(v){
+    g+='<line class="grid" x1="'+m.l+'" x2="'+(W-m.r)+'" y1="'+y(v)+'" y2="'+y(v)+'"/>';
+    g+='<text x="'+(m.l-7)+'" y="'+(y(v)+4)+'" text-anchor="end">'+esc(fmtTick(v))+'</text>';
+  });
+  g+='<line class="ax" x1="'+m.l+'" x2="'+(W-m.r)+'" y1="'+(H-m.b)+'" y2="'+(H-m.b)+'"/>';
+  var mid=addDays(D.start,Math.round(D.days/2));
+  g+='<text x="'+m.l+'" y="'+(H-m.b+18)+'" text-anchor="start">'+esc(fmtShort(D.start))+'</text>';
+  if(!compact)g+='<text x="'+x(+mid)+'" y="'+(H-m.b+18)+'" text-anchor="middle">'+esc(fmtShort(mid))+'</text>';
+  g+='<text x="'+(W-m.r)+'" y="'+(H-m.b+18)+'" text-anchor="end">'+esc(fmtShort(D.end))+'</text>';
+  var pts=[],N=48;
+  for(var i=0;i<=N;i++){var tt=t0+(t1-t0)*i/N;var p=i/N;var v=D.B+D.span*curve(p);pts.push(x(tt).toFixed(1)+','+y(v).toFixed(1))}
+  g+='<polyline fill="none" stroke="var(--muted)" stroke-width="2.5" stroke-dasharray="6 5" stroke-linecap="round" points="'+pts.join(' ')+'"/>';
+  var td=today();
+  if(td>=D.start&&td<=D.end){
+    g+='<line x1="'+x(+td)+'" x2="'+x(+td)+'" y1="'+m.t+'" y2="'+(H-m.b)+'" stroke="var(--c-s)" stroke-width="1.5" stroke-dasharray="3 3"/>';
+    var tx=x(+td),anchor=tx>W-60?'end':'start';
+    g+='<text x="'+(tx+(anchor==='end'?-5:5))+'" y="'+(m.t+10)+'" text-anchor="'+anchor+'" style="fill:var(--c-s);font-weight:600">Today</text>';
+  }
+  D.milestones.forEach(function(ms){
+    g+='<circle cx="'+x(+ms.date)+'" cy="'+y(D.valueAt(ms.date))+'" r="'+(compact?4:5)+'" fill="var(--surface)" stroke="var(--c-t)" stroke-width="2.5"/>';
+  });
+  if(log.length){
+    var lp=log.map(function(l){return x(+parse(l.date)).toFixed(1)+','+y(+l.value).toFixed(1)});
+    if(lp.length>1)g+='<polyline fill="none" stroke="var(--c-m)" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" points="'+lp.join(' ')+'"/>';
+    log.forEach(function(l){g+='<circle cx="'+x(+parse(l.date))+'" cy="'+y(+l.value)+'" r="4.5" fill="var(--c-m)"/>'});
+  }
+  var label='Progress chart from '+fmtV(D.B)+' to '+fmtV(D.T)+' between '+fmtShort(D.start)+' and '+fmtShort(D.end);
+  var svg='<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="'+esc(label)+'">'+g+'</svg>';
+  if(!compact)svg+='<div class="legend"><span><i class="dash" style="border-color:var(--muted)"></i>Planned path</span><span><i class="dot" style="border-color:var(--c-t)"></i>Milestone</span><span><i style="border-color:var(--c-m)"></i>Your logged progress</span><span><i class="dash" style="border-color:var(--c-s)"></i>Today</span></div>';
+  return svg;
+}
+function fmtTick(v){
+  var n=fmtNum(v);
+  if(S.mode!=='number')return n;
+  if(cur.unit==='$'||cur.unit.toLowerCase()==='dollars')return '$'+n;
+  if(cur.unit==='%')return n+'%';
+  return n;
+}
+
+/* ---------- static UI builders ---------- */
+function icon(name){
+  if(name==='start')return '<svg viewBox="0 0 16 16"><path d="M4 2.5v11l9-5.5z"/></svg>';
+  return '<svg viewBox="0 0 16 16"><path d="M3 1.5h1.6V15H3zM5.6 2.5h7.4l-2 3 2 3H5.6z"/></svg>';
+}
+function renderStepper(sc){
+  var h='';
+  STEPS.forEach(function(st,i){
+    var l=st.letter?st.letter.toLowerCase():'';
+    var pct=l?sc[l].pct:(i===0?100:sc.total);
+    h+='<button type="button" class="step'+(l?' L-'+l:'')+'" data-go="'+i+'"'+(S.step===i?' aria-current="step"':'')+'>'
+      +'<span class="badge">'+(st.letter||icon(st.icon))+'</span><span class="sl">'+st.label+'</span>'
+      +'<span class="sbar"><b style="width:'+(i===0?(S.step>0?100:0):pct)+'%"></b></span></button>';
+  });
+  $('#stepper').innerHTML=h;
+  var cur=$('.step[aria-current="step"]');
+  if(cur&&cur.scrollIntoView&&$('#stepper').scrollWidth>$('#stepper').clientWidth){try{cur.scrollIntoView({block:'nearest',inline:'center'})}catch(e){}}
+}
+function chipRow(sel,items,isOn,attr,cls){
+  var el=$(sel);if(!el)return;
+  el.innerHTML=items.map(function(it){
+    var v=Array.isArray(it)?it[0]:it,lab=Array.isArray(it)?it[1]:it;
+    return '<button type="button" class="chip'+(cls?' '+cls:'')+'" '+attr+'="'+esc(v)+'" aria-pressed="'+(isOn(v)?'true':'false')+'">'+esc(lab)+'</button>';
+  }).join('');
+}
+function renderChips(){
+  chipRow('#cat-chips',CATEGORIES,function(v){return S.category===v},'data-cat');
+  chipRow('#verb-chips',VERBS,function(){return false},'data-verb','sm');
+  chipRow('#unit-chips',UNITS,function(v){return S.unit===v},'data-unit','sm');
+  chipRow('#pace-chips',PACES.map(function(p){return [p[0],p[1]]}),function(v){return S.pace===v},'data-pace');
+  chipRow('#day-chips',DAY_ORDER.map(function(d){return [String(d),DAYS_SHORT[d]]}),function(v){return S.days.indexOf(+v)>-1},'data-day');
+  chipRow('#slot-chips',SLOTS,function(v){return S.slot===v},'data-slot');
+  chipRow('#supportHow-chips',SUPPORT_HOW,function(v){return S.supportHow===v},'data-sh');
+  chipRow('#val-chips',VALUES,function(v){return S.values.indexOf(v)>-1},'data-val');
+  chipRow('#preset-chips',[[28,'4 weeks'],[56,'8 weeks'],[84,'12 weeks'],[126,'18 weeks (a semester)']].map(function(p){return [String(p[0]),p[1]]}),function(v){return cur&&cur.datesOk&&cur.days===+v},'data-preset');
+  chipRow('#checkin-chips',[['weekly','Every week'],['biweekly','Every two weeks']],function(v){return S.checkin===v},'data-ci');
+  chipRow('#obs-suggest',OBS_IDEAS,function(){return false},'data-obs-idea','sm');
+  $$('#mode-ctl .mode').forEach(function(b){b.setAttribute('aria-pressed',b.dataset.mode===S.mode?'true':'false')});
+  $('#m-number').hidden=S.mode!=='number';
+  $('#m-habit').hidden=S.mode!=='habit';
+  $('#m-project').hidden=S.mode!=='project';
+}
+function renderObstacles(){
+  $('#obs').innerHTML=S.obstacles.map(function(o,i){
+    return '<div class="obs-row"><input type="text" aria-label="Obstacle '+(i+1)+'" data-oi="'+i+'" data-of="o" value="'+esc(o.o)+'" placeholder="If this happens...">'
+      +'<input class="p-in" type="text" aria-label="Plan for obstacle '+(i+1)+'" data-oi="'+i+'" data-of="p" value="'+esc(o.p)+'" placeholder="...then I will">'
+      +'<button type="button" class="x-btn" data-act="delObstacle" data-i="'+i+'" aria-label="Remove obstacle '+(i+1)+'">×</button></div>';
+  }).join('');
+}
+function setInputs(){
+  $$('[data-k]').forEach(function(el){var v=S[el.dataset.k];el.value=v==null?'':v});
+  syncOutputs();
+}
+var CONF_TXT=['','Very unsure','Unsure','Unsure','A bit unsure','Maybe','Fairly sure','Confident','Confident','Very confident','Certain'];
+var CHAL_TXT=['','Very easy','Easy','Just right','Hard','Very hard'];
+var IMP_TXT=['','Low','Some','Important','High','Top priority'];
+function syncOutputs(){
+  var set=function(k,t){var e=$('[data-out="'+k+'"]');if(e)e.textContent=t};
+  set('minutes',S.minutes+' min');
+  set('confidence',S.confidence+' · '+CONF_TXT[S.confidence]);
+  set('challenge',S.challenge+' · '+CHAL_TXT[S.challenge]);
+  set('importance',S.importance+' · '+IMP_TXT[S.importance]);
+}
+
+/* ---------- live regions ---------- */
+function checklist(sel,sc){
+  var el=$(sel);if(!el)return;
+  el.innerHTML=sc.items.map(function(i){return '<li class="'+(i.ok?'ok':'')+'"><span class="dot">✓</span><span>'+esc(i.label)+'</span></li>'}).join('');
+}
+function renderRail(D,sc){
+  var segs=statementSegs(D);
+  $('#liveStatement').innerHTML=segsHtml(segs);
+  var C=2*Math.PI*30;
+  $('#ringFg').setAttribute('stroke-dasharray',(C*sc.total/100).toFixed(1)+' '+C.toFixed(1));
+  $('#ringTxt').textContent=sc.total+'%';
+  $('#scoreTitle').textContent=sc.total>=100?'Fully SMART':(sc.total>=70?'Almost there':'SMART score');
+  $('#scoreSub').textContent=sc.total>=100?'Every letter is complete. Open your Game Plan.':'Complete each letter to reach 100%.';
+  $('#scoreRows').innerHTML=LETTERS.map(function(l,i){
+    return '<button type="button" class="rowl L-'+l+'" data-go="'+(i+1)+'"><span class="badge">'+l.toUpperCase()+'</span><span class="rl-name">'+LNAME[l]+'</span><span class="bar"><i style="width:'+sc[l].pct+'%"></i></span><span class="pct">'+sc[l].pct+'%</span></button>';
+  }).join('');
+  var k=[];
+  k.push(['Days to go',D.datesOk?fmtNum(D.days):'–']);
+  k.push(['Weeks',D.datesOk?fmtNum(D.weeks):'–']);
+  k.push(['Needed per week',D.ready?fmtV(D.paceWeek):'–']);
+  k.push(['Practice hours total',isFinite(D.totalHours)&&D.weeklyMin>0?fmtNum(D.totalHours)+' h':'–']);
+  $('#kpis').innerHTML=k.map(function(x){return '<div class="kpi"><b>'+esc(x[1])+'</b><span>'+x[0]+'</span></div>'}).join('');
+  $('#railChart').innerHTML=chart(D,true);
+}
+function renderFeedback(D,sc){
+  checklist('#chk-s',sc.s);checklist('#chk-m',sc.m);checklist('#chk-a',sc.a);checklist('#chk-r',sc.r);checklist('#chk-t',sc.t);
+
+  // specific
+  var vg=vagueIn(S.what+' '+S.how);
+  var vb=$('#vagueBox');
+  if(vg.length)vb.innerHTML='<div class="note warn"><div><strong>Fuzzy words spotted:</strong> '+vg.map(function(w){return '"'+esc(w)+'"'}).join(', ')+'.</div><div>Ask yourself "how would a camera or a number show this?" and swap them for something concrete.</div></div>';
+  else if(words(S.what+' '+S.how)>3)vb.innerHTML='<div class="note good"><strong>No fuzzy words found.</strong> Your wording is concrete.</div>';
+  else vb.innerHTML='';
+
+  // measurable
+  $('#stepCount').textContent=D.steps.length+(D.steps.length===1?' step':' steps');
+  $('#habitTotal').textContent=D.ready||(S.mode==='habit'&&isFinite(D.T))?fmtNum(D.T)+' sessions':'–';
+  var ph=PACES.filter(function(p){return p[0]===S.pace})[0];$('#paceHint').textContent=ph?ph[2]:'';
+  var mc=$('#measureCalc');
+  if(D.ready){
+    var cards=[['Total to cover',fmtV(Math.abs(D.span))],['Needed per week',fmtV(D.paceWeek)],[D.spw>0?'Needed per session':'Sessions',D.spw>0?fmtV(D.perSession):'Pick practice days'],['Direction',D.dir>0?'Going up':'Going down']];
+    mc.innerHTML='<div class="stat-row">'+cards.map(function(c){return '<div class="stat"><b>'+esc(c[1])+'</b><span>'+c[0]+'</span></div>'}).join('')+'</div>'
+      +(D.milestones?'<p class="hint" style="margin-top:10px">Halfway on '+esc(fmtLong(D.milestones[1].date))+' you should be at '+esc(fmtV(D.milestones[1].value))+'.</p>':'');
+  }else if(D.mOk){
+    mc.innerHTML='<div class="note"><strong>Almost there.</strong> Set a valid start date and deadline in the Time-bound step to see your pace.</div>';
+  }else{
+    mc.innerHTML='<div class="note"><strong>Your pace shows up here.</strong> Enter your starting point and target and the studio works out what you need each week and each session.</div>';
+  }
+
+  // achievable
+  var ac=$('#achCalc');
+  var timeScore=clamp(D.weeklyMin/150,0,1)*100;
+  var confScore=(+S.confidence)*10;
+  var supScore=(words(S.support)>0?50:0)+(words(S.resources)>1?50:0);
+  var obsScore=Math.min(100,obsDoneScore());
+  var ready=Math.round(confScore*.3+timeScore*.3+supScore*.2+obsScore*.2);
+  var label=ready>=75?'Strong foundation':ready>=50?'Getting there':'Needs more planning';
+  var msgs=[];
+  if(+S.confidence<=4)msgs.push(['warn','Low confidence is useful information, not a failure. Try a smaller target, a longer deadline, or more support.']);
+  if(+S.challenge>=4&&+S.confidence<=5)msgs.push(['warn','You rated this a big challenge and you are unsure. Extra time usually helps more than extra pressure.']);
+  if(+S.challenge<=1&&+S.confidence>=8)msgs.push(['info','This looks quite easy for you. Consider a bigger target so the goal actually stretches you.']);
+  if(D.datesOk&&D.weeks<2)msgs.push(['warn','Less than two weeks leaves no room for a bad day. Consider a later deadline.']);
+  if(D.weeklyMin>0&&D.weeklyMin<60)msgs.push(['warn','Under one hour a week is a light load. Check that the target fits the time you have.']);
+  if(D.weeklyMin>900)msgs.push(['warn','That is over 15 hours a week. Make sure it fits with school, sleep and everything else.']);
+  if(S.mode==='habit'&&S.days.length!==(parseFloat(S.perWeek)||0))msgs.push(['info','Your habit goal says '+fmtNum(parseFloat(S.perWeek)||0)+' times a week but you picked '+S.days.length+' practice days. Make them match so your schedule is realistic.']);
+  if(obsDoneScore()===0)msgs.push(['info','Name at least one thing likely to get in the way, and decide now what you will do about it.']);
+  if(!msgs.length&&ready>=75)msgs.push(['good','Your plan fits your time, your confidence and your support. Nice work.']);
+  var needExt=(+S.confidence<=5||+S.challenge>=4)&&D.datesOk;
+  ac.innerHTML='<div class="note"><div class="check-title" style="margin:0">Readiness check: '+label+'</div><div class="bars">'
+    +bar('Confidence',confScore)+bar('Time commitment',timeScore)+bar('Support and tools',supScore)+bar('Obstacle plans',obsScore)
+    +'</div><div class="stat-row" style="margin-top:6px">'
+    +'<div class="stat"><b>'+(D.weeklyMin?fmtNum(D.weeklyMin/60)+' h':'–')+'</b><span>per week ('+fmtNum(D.spw)+' sessions × '+D.sessionMin+' min)</span></div>'
+    +'<div class="stat"><b>'+(D.ready&&isFinite(D.perSession)?fmtV(D.perSession):'–')+'</b><span>to gain per session</span></div>'
+    +'<div class="stat"><b>'+ready+'</b><span>readiness out of 100</span></div></div>'
+    +msgs.map(function(m){return '<div class="note '+(m[0]==='info'?'':m[0])+'" style="background:none">'+esc(m[1])+'</div>'}).join('')
+    +(needExt?'<div><button type="button" class="btn ghost small" data-act="ext" data-n="14">Add 2 weeks to my deadline</button></div>':'')
+    +'</div>';
+  function bar(n,v){return '<div class="bar-row"><span>'+n+'</span><span class="track"><i style="width:'+Math.round(v)+'%"></i></span><span class="v">'+Math.round(v)+'%</span></div>'}
+  function obsDoneScore(){return obstaclesDone()*50}
+
+  // relevant
+  var rn=$('#relNote');
+  if(+S.importance<=2)rn.innerHTML='<div class="note warn"><strong>Low importance is a warning sign.</strong> Goals you do not care about are the first to slip. Is there a version of this goal that matters more to you?</div>';
+  else if(S.values.length&&words(S.why)>=8)rn.innerHTML='<div class="note good"><strong>Strong reason.</strong> You will see this sentence in your Game Plan. Reread it when motivation drops.</div>';
+  else rn.innerHTML='';
+
+  // time
+  var tc=$('#timeCalc');
+  if(D.datesOk){
+    var endWd=D.end.toLocaleDateString(undefined,{weekday:'long'});
+    var h='<div class="stat-row"><div class="stat"><b>'+fmtNum(D.days)+'</b><span>days total</span></div><div class="stat"><b>'+fmtNum(D.weeks)+'</b><span>weeks</span></div><div class="stat"><b>'+endWd+'</b><span>deadline falls on a</span></div><div class="stat"><b>'+(diffDays(today(),D.end)>=0?fmtNum(diffDays(today(),D.end)):'Passed')+'</b><span>days from today</span></div></div>';
+    if(D.days>366)h+='<div class="note warn" style="margin-top:12px"><strong>That is over a year away.</strong> Long goals work better as stages. Pick the first stage and set that deadline.</div>';
+    if(D.ready){
+      h+='<div class="table-wrap" style="margin-top:14px"><table><thead><tr><th>Milestone</th><th>Date</th><th>Target</th></tr></thead><tbody>'
+        +D.milestones.map(function(ms){return '<tr><td><span class="pctcell">'+ms.pct+'%</span></td><td class="num">'+esc(fmtDay(ms.date))+'</td><td class="num">'+esc(fmtV(ms.value))+'</td></tr>'}).join('')+'</tbody></table></div>';
+    }
+    h+='<div class="chart-wrap" style="margin-top:14px">'+chart(D,false)+'</div>';
+    tc.innerHTML=h;
+  }else{
+    tc.innerHTML='<div class="note warn"><strong>Check your dates.</strong> The deadline needs to come after the start date.</div>';
+  }
+}
+
+/* ---------- plan page ---------- */
+function statusInfo(D){
+  var log=sortedLog();
+  if(!D.ready||!log.length)return null;
+  var last=log[log.length-1],v=+last.value,ld=parse(last.date);
+  var reached=(v-D.T)*D.dir>=0;
+  var plannedV=D.valueAt(ld<D.start?D.start:ld);
+  var diff=(v-plannedV)/D.span; // positive = ahead
+  var st=reached?'done':(diff>=0.05?'ahead':(diff<=-0.05?'behind':'on'));
+  var t=today();var from=ld>t?ld:t;
+  var remainDays=diffDays(from,D.end);
+  var remaining=Math.abs(D.T-v);
+  var o={v:v,ld:ld,plannedV:plannedV,diff:diff,st:st,remainDays:remainDays,remaining:remaining,reached:reached};
+  if(!reached){
+    o.needWeek=remainDays>0?remaining/(remainDays/7):Infinity;
+    o.ratio=o.needWeek/D.paceWeek;
+    var perDay=D.paceWeek/7;
+    o.extDays=Math.ceil(remaining/perDay);
+    o.extDate=addDays(from,o.extDays);
+    o.keepV=v+D.dir*Math.min(remaining,perDay*Math.max(remainDays,0));
+  }
+  return o;
+}
+function planText(D,sc){
+  var L=[];
+  L.push('MY SMART GOAL PLAN');L.push('');
+  L.push(segsPlain(statementSegs(D)));L.push('');
+  L.push('SPECIFIC');L.push('  What: '+(S.what||'-'));L.push('  How: '+(S.how||'-'));L.push('  Who: '+(S.who||'-'));L.push('  Where: '+(S.where||'-'));
+  L.push('MEASURABLE');
+  if(D.ready){L.push('  From '+fmtV(D.B)+' to '+fmtV(D.T));L.push('  Needed per week: '+fmtV(D.paceWeek))}
+  L.push('  Tracking: '+(S.trackHow||'-'));
+  L.push('ACHIEVABLE');L.push('  Practice: '+(daysList()||'-')+', '+S.minutes+' min, '+S.slot);L.push('  Resources: '+(S.resources||'-'));L.push('  Support: '+(S.support||'-')+' ('+S.supportHow+')');
+  L.push('RELEVANT');L.push('  Why: '+(S.why||'-'));L.push('  Supports: '+(S.values.join(', ')||'-'));L.push('  Bigger goal: '+(S.bigger||'-'));
+  L.push('TIME-BOUND');
+  if(D.datesOk){L.push('  '+fmtLong(D.start)+' to '+fmtLong(D.end)+' ('+D.days+' days)');L.push('  Why this deadline: '+(S.deadlineWhy||'-'));L.push('  Reviews: '+(S.checkin==='weekly'?'every week':'every two weeks'))}
+  if(D.ready){
+    L.push('');L.push('MILESTONES');
+    D.milestones.forEach(function(ms){L.push('  '+ms.pct+'%  '+fmtShort(ms.date)+'  '+fmtV(ms.value)+(S.rewards[ms.pct]?'  Reward: '+S.rewards[ms.pct]:''))});
+  }
+  var ob=S.obstacles.filter(function(o){return o.o.trim()});
+  if(ob.length){L.push('');L.push('IF-THEN PLANS');ob.forEach(function(o){L.push('  If '+o.o.trim()+', then I will '+(o.p.trim()||'...'))})}
+  L.push('');L.push('SMART score: '+sc.total+'%');
+  return L.join('\n');
+}
+function launchItems(D){
+  var first=S.obstacles.filter(function(o){return o.o.trim()})[0];
+  var d4;
+  if(S.mode==='number')d4='Record your starting number ('+(D.mOk?fmtV(D.B):'your baseline')+') in the progress log so you have a real starting line.';
+  else if(S.mode==='habit')d4='Do session #1. Keep it short and easy. Showing up matters more than doing it perfectly.';
+  else d4=D.steps.length?'Break step 1, "'+D.steps[0]+'", into three tiny tasks and do the first one.':'Write your project steps and break the first one into three tiny tasks.';
+  return [
+    ['Write it down','Put your goal sentence somewhere you will see it every day: a notebook cover, phone lock screen, or bedroom wall. Use the Copy goal button.'],
+    ['Tell your support person','Share your goal with '+(S.support.trim()||'someone you trust')+' and ask for a '+(S.supportHow==='daily'?'daily text':S.supportHow==='weekly'?'weekly check-in':'check-in every two weeks')+'.'],
+    ['Gather your tools',S.resources.trim()?'Collect what you listed: '+trimEnd(S.resources)+'. Remove anything that is missing from your list of excuses.':'List what you need (materials, apps, a quiet place) and set it up.'],
+    ['Block the time','Add '+fmtNum(D.spw)+' sessions to your calendar '+(daysList()||'on your practice days')+', '+S.slot+', for '+S.minutes+' minutes each, with a reminder.'],
+    ['Start the first real step',d4],
+    ['Prepare for your first obstacle',first?'Obstacle: '+trimEnd(first.o)+'. Your plan: '+(first.p.trim()||'decide what you will do')+'. Set up whatever makes that plan easy today.':'Think of what will most likely get in your way and write an if-then plan in the Achievable step.'],
+    ['Hold your first review','Log your progress, answer the three review questions below, and adjust the plan if something did not fit your week.']
+  ];
+}
+function renderPlan(D,sc){
+  var h='';
+  var segs=statementSegs(D);
+  var st=statusInfo(D);
+
+  // hero
+  h+='<div class="card plan-hero"><div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:center"><div class="eyebrow">Your SMART goal</div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn ghost small" type="button" data-act="copyStmt">Copy goal</button><button class="btn small" type="button" data-act="copyPlan">Copy full plan</button></div></div>'
+    +'<p class="statement">'+segsHtml(segs)+'</p>'
+    +'<div class="kpis" style="grid-template-columns:repeat(auto-fit,minmax(150px,1fr))">'
+    +kp(D.datesOk?fmtNum(D.days):'–','days to deadline')+kp(D.ready?fmtV(D.paceWeek):'–','needed per week')+kp(D.ready&&isFinite(D.perSession)?fmtV(D.perSession):'–','per session')+kp(isFinite(D.totalHours)&&D.weeklyMin>0?fmtNum(D.totalHours)+' h':'–','total practice time')+kp(sc.total+'%','SMART score')
+    +'</div>'
+    +(sc.total<100?'<div class="note warn"><strong>Your SMART score is '+sc.total+'%.</strong> '+LETTERS.filter(function(l){return sc[l].pct<100}).map(function(l){return '<button class="chip sm L-'+l+'" type="button" data-go="'+STEP_OF[l]+'">Finish '+LNAME[l]+'</button>'}).join(' ')+'</div>':'<div class="note good"><strong>Every letter is complete.</strong> This is a fully SMART goal.</div>')
+    +'</div>';
+  function kp(b,s){return '<div class="kpi"><b>'+esc(b)+'</b><span>'+s+'</span></div>'}
+
+  // chart + status
+  h+='<div class="card"><div class="sec-h"><h3>Your timeline</h3><p>Dashed line is the plan. Log your real numbers below and the teal line shows how you are doing.</p></div><div class="chart-wrap">'+chart(D,false)+'</div></div>';
+
+  // milestones + weekly checkpoints
+  if(D.ready){
+    h+='<div class="card"><div class="sec-h"><h3>Milestones</h3><p>Pick a reward you will actually look forward to.</p></div><div class="table-wrap"><table><thead><tr><th>Done</th><th>Date</th><th>Target</th>'+(S.mode==='project'?'<th>Step</th>':'')+'<th>Reward</th></tr></thead><tbody>'
+      +D.milestones.map(function(ms){
+        var stepName='';
+        if(S.mode==='project'){var idx=clamp(Math.round(ms.value),1,D.steps.length);stepName='<td>'+esc(D.steps[idx-1])+'</td>'}
+        return '<tr class="'+(ms.date<today()?'past':'')+'"><td><span class="pctcell">'+ms.pct+'%</span></td><td class="num">'+esc(fmtDay(ms.date))+'</td><td class="num">'+esc(fmtV(ms.value))+'</td>'+stepName+'<td><input type="text" aria-label="Reward at '+ms.pct+' percent" data-rw="'+ms.pct+'" value="'+esc(S.rewards[ms.pct]||'')+'" placeholder="e.g., movie night"></td></tr>';
+      }).join('')+'</tbody></table></div>'
+      +'<details style="margin-top:14px"><summary>Week-by-week targets ('+D.checkpoints.length+' weeks)</summary><div class="table-wrap"><table><thead><tr><th>Week</th><th>Date</th><th>Target by then</th></tr></thead><tbody>'
+      +D.checkpoints.map(function(c){return '<tr class="'+(c.date<today()?'past':'')+'"><td class="num">Week '+c.w+'</td><td class="num">'+esc(fmtDay(c.date))+'</td><td class="num">'+esc(fmtV(c.value))+'</td></tr>'}).join('')+'</tbody></table></div></details></div>';
+  }else{
+    h+='<div class="card"><div class="sec-h"><h3>Milestones</h3></div><div class="note"><strong>Unlock your milestones.</strong> Add your numbers and dates and the studio will spread 25%, 50%, 75% and 100% checkpoints across your timeline. <div><button class="chip sm L-m" type="button" data-go="2">Go to Measurable</button> <button class="chip sm L-t" type="button" data-go="5">Go to Time-bound</button></div></div></div>';
+  }
+
+  // weekly rhythm
+  h+='<div class="card"><div class="sec-h"><h3>Your weekly rhythm</h3><p>'+fmtNum(D.spw)+' sessions · '+S.minutes+' minutes · '+esc(S.slot)+(D.weeklyMin?' · '+fmtNum(D.weeklyMin/60)+' hours a week':'')+'</p></div><div class="week-grid">'
+    +DAY_ORDER.map(function(d){var on=S.days.indexOf(d)>-1;return '<div class="wd'+(on?' on':'')+'"><b>'+DAYS_SHORT[d]+'</b><span>'+(on?S.minutes+' min':'rest')+'</span></div>'}).join('')+'</div>'
+    +(S.mode==='habit'&&S.days.length!==(parseFloat(S.perWeek)||0)?'<div class="note warn" style="margin-top:12px">Your habit goal says '+fmtNum(parseFloat(S.perWeek)||0)+' times a week but you picked '+S.days.length+' days. <button class="chip sm L-a" type="button" data-go="3">Fix it</button></div>':'')
+    +'<p class="hint" style="margin-top:12px">Review '+(S.checkin==='weekly'?'every week':'every two weeks')+'. Pick one day for it, such as '+esc(D.datesOk?D.end.toLocaleDateString(undefined,{weekday:'long'}):'Sunday')+'.</p></div>';
+
+  // launch + ifthen
+  var li=launchItems(D);
+  h+='<div class="plan-grid"><div class="card"><div class="sec-h"><h3>Your first seven days</h3><p>Check each off as you go.</p></div><ul class="launch">'
+    +li.map(function(it,i){return '<li><label><input type="checkbox" data-launch="'+i+'"'+(S.launch[i]?' checked':'')+'><span class="dn">DAY '+(i+1)+'</span><span class="tx"><b>'+esc(it[0])+'</b><span>'+esc(it[1])+'</span></span></label></li>'}).join('')+'</ul></div>';
+  var ob=S.obstacles.filter(function(o){return o.o.trim()});
+  h+='<div class="card"><div class="sec-h"><h3>If-then plans</h3><p>Decide now, act later.</p></div>'
+    +(ob.length?'<div class="iflist">'+ob.map(function(o){return '<div class="if"><span class="tag">IF</span><span><strong>'+esc(trimEnd(o.o))+'</strong><br>then I will <em>'+esc(o.p.trim()||'(add your plan)')+'</em></span></div>'}).join('')+'</div>':'<div class="note">No obstacles yet. <button class="chip sm L-a" type="button" data-go="3">Add some</button></div>')
+    +'<div class="sec-h" style="margin-top:22px"><h3>Support</h3></div><div class="if"><span class="tag">WHO</span><span>'+(S.support.trim()?'<strong>'+esc(S.support.trim())+'</strong> · '+(S.supportHow==='daily'?'daily text':S.supportHow==='weekly'?'weekly check-in':'check-in every two weeks'):'<em>Name your support person in the Achievable step.</em>')+'</span></div></div></div>';
+
+  // why
+  h+='<div class="card" style="border-left:6px solid var(--c-r)"><div class="eyebrow">Why this matters to me</div><p style="font-size:19px;margin-top:8px;font-family:var(--font-display)">'+(S.why.trim()?esc(S.why.trim()):'<span style="color:var(--muted)">Write your reason in the Relevant step. Read it when motivation drops.</span>')+'</p>'
+    +(S.values.length||S.bigger.trim()?'<div class="chips" style="margin-top:12px">'+S.values.map(function(v){return '<span class="chip L-r" aria-pressed="true">'+esc(v)+'</span>'}).join('')+'</div>':'')
+    +(S.bigger.trim()?'<p class="hint" style="margin-top:10px">Bigger picture: '+esc(S.bigger.trim())+'</p>':'')+'</div>';
+
+  // tracker
+  h+='<div class="card"><div class="sec-h"><h3>Progress tracker</h3><p>Log your real number each time you check in.</p></div>';
+  if(D.ready){
+    h+='<div class="log-form"><div class="field"><label for="logDate">Date</label><input type="date" id="logDate" value="'+iso(today())+'"></div>'
+      +'<div class="field"><label for="logVal">'+esc(S.mode==='number'?(D.unit||'Value'):(S.mode==='habit'?'Sessions so far':'Steps done'))+'</label><input type="number" id="logVal" inputmode="decimal" placeholder="'+esc(fmtNum(D.B))+'"></div>'
+      +'<div class="field note-f"><label for="logNote">Note (optional)</label><input type="text" id="logNote" placeholder="What helped or got in the way?"></div>'
+      +'<button class="btn" type="button" data-act="addLog">Add entry</button></div>';
+    var log=sortedLog();
+    if(log.length){
+      h+='<div class="table-wrap" style="margin-top:14px"><table><thead><tr><th>Date</th><th>Value</th><th>Planned</th><th>Note</th><th></th></tr></thead><tbody>'
+        +log.map(function(l){
+          var idx=S.log.indexOf(l);var pd=parse(l.date);
+          return '<tr><td class="num">'+esc(fmtDay(pd))+'</td><td class="num">'+esc(fmtV(+l.value))+'</td><td class="num">'+esc(fmtV(D.roundV(D.valueAt(pd<D.start?D.start:pd))))+'</td><td>'+esc(l.note||'')+'</td><td><button class="x-btn" style="width:32px;height:32px;font-size:15px" type="button" data-act="delLog" data-i="'+idx+'" aria-label="Delete entry">×</button></td></tr>';
+        }).join('')+'</tbody></table></div>';
+    }else{
+      h+='<p class="hint" style="margin-top:12px">No entries yet. Log your starting number on Day 5 of your launch plan.</p>';
+    }
+    if(st){
+      var pill=st.st==='done'?['good','Goal reached']:st.st==='ahead'?['good','Ahead of plan']:st.st==='on'?['info','On track']:['warn','Behind plan'];
+      h+='<div class="note '+(pill[0]==='warn'?'warn':pill[0]==='good'?'good':'')+'" style="margin-top:14px"><div><span class="pill '+pill[0]+'">'+pill[1]+'</span></div>'
+        +'<div>Latest entry: <strong>'+esc(fmtV(st.v))+'</strong> on '+esc(fmtShort(st.ld))+'. The plan expected <strong>'+esc(fmtV(D.roundV(st.plannedV)))+'</strong> by then.</div>';
+      if(st.reached)h+='<div>You reached your target. Celebrate, then decide what the next goal is.</div>';
+      h+='</div>';
+      if(!st.reached&&(st.st==='behind'||st.remainDays<=0)){
+        h+='<div style="margin-top:16px"><h4 style="font-size:18px;margin-bottom:10px">Back on track: your options</h4><div class="opts">'
+          +(st.remainDays>0?'<div class="opt"><b>Keep the deadline</b><span>You now need <strong>'+esc(fmtV(st.needWeek))+' per week</strong> ('+Math.round(st.ratio*100)+'% of the original pace). Add a session or lengthen the ones you have.</span></div>':'')
+          +'<div class="opt"><b>Keep the pace, move the date</b><span>At your original pace you would finish around <strong>'+esc(fmtLong(st.extDate))+'</strong>. <button class="chip sm L-t" type="button" data-act="setEnd" data-v="'+iso(st.extDate)+'">Use this deadline</button></span></div>'
+          +(st.remainDays>0?'<div class="opt"><b>Keep both, adjust the target</b><span>At the original pace you would reach about <strong>'+esc(fmtV(D.roundV(st.keepV)))+'</strong> by the deadline. Decide if that still counts as a win.</span></div>':'')
+          +'</div></div>';
+      }
+    }
+  }else{
+    h+='<div class="note">Set your numbers and dates first, then your progress tracker appears here. <button class="chip sm L-m" type="button" data-go="2">Go to Measurable</button></div>';
+  }
+  h+='</div>';
+
+  // review
+  var nextCp=D.ready?D.checkpoints.filter(function(c){return c.date>=today()})[0]:null;
+  h+='<div class="card"><div class="sec-h"><h3>Weekly review</h3><p>Ten minutes, '+(S.checkin==='weekly'?'once a week':'every two weeks')+'.</p></div><div class="iflist">'
+    +'<div class="if"><span class="tag">1</span><span>What did I do toward my goal this week, and what did I log?</span></div>'
+    +'<div class="if"><span class="tag">2</span><span>What got in the way, and what will I change?</span></div>'
+    +'<div class="if"><span class="tag">3</span><span>'+(nextCp?'My next target is <strong>'+esc(fmtV(nextCp.value))+'</strong> by '+esc(fmtDay(nextCp.date))+'. What is the first action I will take?':'What is my target for next week, and the first action I will take?')+'</span></div></div></div>';
+
+  // text copy
+  h+='<div class="card"><details id="textWrap"><summary>Plain-text version of your plan (select and copy)</summary><textarea class="plain" id="planText" readonly>'+esc(planText(D,sc))+'</textarea></details></div>';
+
+  $('#planRoot').innerHTML=h;
+}
+
+/* ---------- master refresh ---------- */
+function refresh(opts){
+  opts=opts||{};
+  cur=derive();
+  var sc=scores(cur);
+  renderRail(cur,sc);
+  renderStepper(sc);
+  renderFeedback(cur,sc);
+  syncOutputs();
+  if(S.step===6&&opts.plan!==false)renderPlan(cur,sc);
+  var pc=$('#preset-chips');if(pc)$$('[data-preset]',pc).forEach(function(b){b.setAttribute('aria-pressed',cur.datesOk&&cur.days===+b.dataset.preset?'true':'false')});
+}
+function goTo(n,noScroll){
+  S.step=clamp(n,0,6);
+  $$('.panel').forEach(function(p,i){p.classList.toggle('on',i===S.step)});
+  $('#layout').classList.toggle('is-plan',S.step===6);
+  refresh();
+  save();
+  if(!noScroll){
+    var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    try{window.scrollTo({top:0,behavior:reduce?'auto':'smooth'})}catch(e){window.scrollTo(0,0)}
+    var h=$('#h-'+S.step);if(h)try{h.focus({preventScroll:true})}catch(e){}
+  }
+}
+
+/* ---------- toast, confirm, copy ---------- */
+var toastTimer=null;
+function toast(msg){var t=$('#toast');t.textContent=msg;t.classList.add('on');clearTimeout(toastTimer);toastTimer=setTimeout(function(){t.classList.remove('on')},2200)}
+function confirmBox(msg,yesLabel,onYes){
+  var root=$('#overlayRoot');
+  root.innerHTML='<div class="overlay" role="dialog" aria-modal="true" aria-label="Confirm"><div class="box"><p>'+esc(msg)+'</p><div class="row"><button type="button" class="btn ghost" id="cNo">Cancel</button><button type="button" class="btn" id="cYes">'+esc(yesLabel)+'</button></div></div></div>';
+  var close=function(){root.innerHTML=''};
+  $('#cNo').onclick=close;$('#cYes').onclick=function(){close();onYes()};
+  $('#cYes').focus();
+}
+function copyText(text,okMsg){
+  var fallback=function(){
+    var det=$('#textWrap'),ta=$('#planText');
+    if(det&&ta){det.open=true;ta.focus();ta.select();toast('Press Ctrl+C (or Cmd+C) to copy')}
+    else{
+      var tmp=document.createElement('textarea');tmp.value=text;tmp.style.cssText='position:fixed;opacity:0';document.body.appendChild(tmp);tmp.select();
+      var ok=false;try{ok=document.execCommand('copy')}catch(e){}
+      document.body.removeChild(tmp);toast(ok?okMsg:'Select the text and press Ctrl+C');
+    }
+  };
+  try{
+    if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(text).then(function(){toast(okMsg)},fallback)}
+    else fallback();
+  }catch(e){fallback()}
+}
+
+/* ---------- examples ---------- */
+var EXAMPLES=[
+  {name:'Raise a grade',sub:'Algebra II from 72% to 85%',weeks:12,d:{category:'Academics',what:'Raise my Algebra II grade',how:'attending tutoring on Tuesdays and Thursdays and doing 3 practice problems every night',who:'Ms. Alvarez and a study partner',where:'the school library',mode:'number',base:'72',target:'85',unit:'%',trackHow:'Check the online gradebook every Friday and write down the percentage',pace:'even',days:[1,2,3,4],minutes:40,slot:'after school',confidence:7,challenge:3,resources:'Textbook, Khan Academy videos, free tutoring, class notes',support:'My older brother',supportHow:'weekly',obstacles:[{o:'I get home tired after practice',p:'do the 3 problems before dinner and start with the easiest one'},{o:'I get stuck and want to give up',p:'write down the exact step I am stuck on and ask at tutoring the next day'}],why:'A higher math grade keeps me eligible for the honors track and makes my college applications stronger',values:['College & career','Confidence'],importance:5,bigger:'Getting into an engineering program',deadlineWhy:'Semester grades close on that date',checkin:'weekly'}},
+  {name:'Run a 5K',sub:'From 1 mile to 3.1 without stopping',weeks:10,d:{category:'Health & fitness',what:'Run 3.1 miles without stopping',how:'following a 3-day run and walk plan that adds a little distance each week',who:'My cousin Jamal',where:'the track and the park trail',mode:'number',base:'1',target:'3.1',unit:'miles',trackHow:'Log distance in a running app after each long run',pace:'slow',days:[1,3,6],minutes:35,slot:'after school',confidence:6,challenge:4,resources:'Running shoes, a free running app, flat routes near home',support:'Jamal',supportHow:'weekly',obstacles:[{o:'It is raining or cold',p:'do a 20 minute indoor workout and still log it'},{o:'I skip a run',p:'do the next one the very next day instead of waiting for the next plan day'}],why:'I want more energy during the day and I want to finish the school 5K without walking',values:['Health','Confidence'],importance:4,bigger:'Making the track team next spring',deadlineWhy:'The school 5K is on that date',checkin:'weekly'}},
+  {name:'Save for a laptop',sub:'$600 from jobs and paychecks',weeks:16,d:{category:'Money',what:'Save $600 for a used laptop',how:'putting aside $40 from each paycheck and lawn-mowing job into a separate savings account',who:'My mom helps me open the account',where:'my credit union savings account',mode:'number',base:'0',target:'600',unit:'$',trackHow:'Check the account balance every Sunday evening',pace:'even',days:[0],minutes:20,slot:'in the evening',confidence:8,challenge:3,resources:'Part-time job, lawn-mowing customers, a savings account',support:'My mom',supportHow:'biweekly',obstacles:[{o:'Friends ask me to go out and spend money',p:'suggest a free plan or go for a short time and bring my own snack'}],why:'A laptop of my own means I can do homework and video projects without waiting for the family computer',values:['Independence','Money','Creativity'],importance:4,bigger:'Starting a small video editing business',deadlineWhy:'Back-to-school sales begin then',checkin:'biweekly'}},
+  {name:'Finish my essay',sub:'College essay in six steps',weeks:6,d:{category:'College & career',what:'Finish my college application essay',how:'completing one writing step each week and getting feedback from my English teacher',who:'Mr. Okafor',where:'the writing center after school',mode:'project',projectSteps:'Brainstorm three story ideas\nPick one and write an outline\nWrite the first draft\nGet feedback from Mr. Okafor\nRevise the second draft\nProofread and submit',trackHow:'Check off each step in my notebook every Friday',pace:'even',days:[2,4,0],minutes:50,slot:'after school',confidence:6,challenge:4,resources:'Essay prompts, my school email, writing center hours, sample essays from the library',support:'My best friend Priya',supportHow:'weekly',obstacles:[{o:'I stare at a blank page',p:'write badly for ten minutes without stopping, then fix it later'}],why:'The essay is the part of my application where the college hears my own voice, and I want to be proud of it',values:['College & career','Independence'],importance:5,bigger:'Going to college and studying nursing',deadlineWhy:'The early application deadline is that day',checkin:'weekly'}},
+  {name:'Read every night',sub:'A habit of 5 nights a week',weeks:8,d:{category:'Personal growth',what:'Read for pleasure 20 minutes before bed',how:'keeping a book on my pillow and putting my phone on the charger across the room',who:'My little sister, who reads with me',where:'my bedroom',mode:'habit',perWeek:'5',trackHow:'Tick a box on a calendar by my bed each night',pace:'even',days:[1,2,3,4,0],minutes:20,slot:'in the evening',confidence:8,challenge:2,resources:'A library card, two books I already own, a bedside lamp',support:'My sister',supportHow:'daily',obstacles:[{o:'I am scrolling my phone and lose track of time',p:'set an alarm for 9:30 and plug my phone in across the room'}],why:'Reading calms me down before sleep and it makes my writing and vocabulary stronger for the SAT',values:['Health','College & career'],importance:3,bigger:'Reading 20 books this year',deadlineWhy:'Winter break starts then',checkin:'weekly'}}
+];
+function renderExamples(){
+  $('#examples').innerHTML=EXAMPLES.map(function(e,i){return '<button type="button" class="ex" data-ex="'+i+'"><em>Example</em><b>'+esc(e.name)+'</b><span>'+esc(e.sub)+'</span></button>'}).join('');
+}
+function hasWork(){return !!(S.what||S.how||S.why||S.base||S.target||S.projectSteps||S.log.length)}
+function loadExample(i){
+  var e=EXAMPLES[i];if(!e)return;
+  var f=fresh();
+  Object.keys(e.d).forEach(function(k){f[k]=e.d[k]});
+  var t=today();f.start=iso(t);f.end=iso(addDays(t,e.weeks*7));
+  S=f;
+  setInputs();renderChips();renderObstacles();
+  goTo(6);
+  toast('Example loaded. Edit any step to make it yours.');
+}
+
+/* ---------- events ---------- */
+document.addEventListener('input',function(ev){
+  var t=ev.target;
+  if(t.dataset&&t.dataset.oi!==undefined){
+    S.obstacles[+t.dataset.oi][t.dataset.of]=t.value;refresh();save();return;
+  }
+  if(t.dataset&&t.dataset.rw!==undefined){S.rewards[t.dataset.rw]=t.value;save();return;}
+  var k=t.dataset&&t.dataset.k;
+  if(!k)return;
+  S[k]=(t.type==='range')?+t.value:t.value;
+  refresh();save();
+});
+document.addEventListener('change',function(ev){
+  var t=ev.target;
+  if(t.dataset&&t.dataset.launch!==undefined){S.launch[t.dataset.launch]=t.checked;save();}
+});
+document.addEventListener('click',function(ev){
+  var b=ev.target.closest('button,[data-go]');
+  if(!b)return;
+  var d=b.dataset;
+  if(d.go!==undefined){goTo(+d.go);return}
+  if(d.ex!==undefined){var i=+d.ex;if(hasWork())confirmBox('Load this example? It replaces what you have typed so far.','Load example',function(){loadExample(i)});else loadExample(i);return}
+  if(d.cat!==undefined){S.category=S.category===d.cat?'':d.cat;renderChips();refresh();save();return}
+  if(d.verb!==undefined){var w=$('#what');if(!S.what.trim()){S.what=d.verb+' ';w.value=S.what;refresh();save()}w.focus();w.setSelectionRange(w.value.length,w.value.length);return}
+  if(d.unit!==undefined){S.unit=d.unit;$('#unit').value=S.unit;renderChips();refresh();save();return}
+  if(d.mode!==undefined){S.mode=d.mode;renderChips();refresh();save();return}
+  if(d.pace!==undefined){S.pace=d.pace;renderChips();refresh();save();return}
+  if(d.day!==undefined){var n=+d.day,ix=S.days.indexOf(n);if(ix>-1)S.days.splice(ix,1);else S.days.push(n);S.days.sort();renderChips();refresh();save();return}
+  if(d.slot!==undefined){S.slot=d.slot;renderChips();refresh();save();return}
+  if(d.sh!==undefined){S.supportHow=d.sh;renderChips();refresh();save();return}
+  if(d.val!==undefined){var vi=S.values.indexOf(d.val);if(vi>-1)S.values.splice(vi,1);else S.values.push(d.val);renderChips();refresh();save();return}
+  if(d.preset!==undefined){var st=parse(S.start)||today();S.start=iso(st);S.end=iso(addDays(st,+d.preset));$('#start').value=S.start;$('#end').value=S.end;refresh();save();return}
+  if(d.ci!==undefined){S.checkin=d.ci;renderChips();refresh();save();return}
+  if(d.obsIdea!==undefined){
+    var empty=S.obstacles.filter(function(o){return !o.o.trim()&&!o.p.trim()})[0];
+    if(empty)empty.o=d.obsIdea;else if(S.obstacles.length<5)S.obstacles.push({o:d.obsIdea,p:''});
+    renderObstacles();refresh();save();return;
+  }
+  switch(d.act){
+    case 'next':goTo(S.step+1);break;
+    case 'prev':goTo(S.step-1);break;
+    case 'reset':confirmBox('Start over? This clears your goal and progress log from this browser.','Start over',function(){S=fresh();setInputs();renderChips();renderObstacles();goTo(0)});break;
+    case 'addObstacle':if(S.obstacles.length<5){S.obstacles.push({o:'',p:''});renderObstacles();var ins=$$('#obs input');if(ins.length>1)ins[ins.length-2].focus();save()}else toast('Five obstacles is plenty. Focus on the likeliest ones.');break;
+    case 'delObstacle':S.obstacles.splice(+d.i,1);if(!S.obstacles.length)S.obstacles=[{o:'',p:''}];renderObstacles();refresh();save();break;
+    case 'ext':var e=parse(S.end);if(e){S.end=iso(addDays(e,+d.n));$('#end').value=S.end;refresh();save();toast('Deadline moved to '+fmtLong(parse(S.end)))}break;
+    case 'setEnd':S.end=d.v;$('#end').value=S.end;refresh();save();toast('Deadline moved to '+fmtLong(parse(S.end)));break;
+    case 'copyStmt':copyText(segsPlain(statementSegs(cur)),'Goal copied');break;
+    case 'copyPlan':copyText(planText(cur,scores(cur)),'Full plan copied');break;
+    case 'addLog':
+      var dt=$('#logDate').value,val=parseFloat($('#logVal').value),note=$('#logNote').value.trim();
+      if(!parse(dt)||!isFinite(val)){toast('Enter a date and a number first');break}
+      S.log.push({date:dt,value:val,note:note});save();refresh();toast('Entry added');break;
+    case 'delLog':S.log.splice(+d.i,1);save();refresh();break;
+  }
+});
+
+/* ---------- boot ---------- */
+renderExamples();
+setInputs();
+renderChips();
+renderObstacles();
+goTo(S.step,true);
+})();
+</script>
+
+</body>
+</html>
