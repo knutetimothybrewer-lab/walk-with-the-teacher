@@ -58,3 +58,32 @@ across five domains (Physical, Mental, Emotional, Social, Environmental).
 
 Sources live in `thousand-choices-src/`; rebuild with `node thousand-choices-src/build.js`.
 Fictional, simplified model, not medical advice.
+
+## Lucky Rush Casino — House Edge Lab (`lucky-rush-casino.html`)
+
+Single-file, offline classroom simulation for the gambling-awareness lesson ("House-edge simulation").
+Students get fake tokens (1,000,000 coins, no real value) in a deliberately slick mobile-casino clone:
+slots and dice, huge numbers, animations, sounds, welcome, daily-chest, wheel and mystery-box gifts (kept modest so students spend time actually playing), VIP levels,
+leaderboard, live-winner feed, auto-spin/turbo, rescue gifts.
+
+- Math: slots return 90.5% (9.5% house edge) from a fixed outcome table, with near misses and
+  "losses disguised as wins" layered on top; dice are fair but pay 2.2x / 5x instead of 2.4x / 6x.
+- **X-Ray Mode** (toggle any time, or start with it on for a teacher demo) names each manipulation as it fires.
+- A class-round spin cap ends the game into **The Reveal**: your real totals, balance chart, gifts vs. bets,
+  near-miss and fake-win counts, a 3,000-player simulation showing the house winning over the long run,
+  every trick used, discussion questions and a helpline.
+- **Teacher tally**: each student copies a short code; paste them all into the teacher tool to total the
+  class and show "the house" coming out ahead while some individuals finish ahead.
+- Calm mode reduces flashing/shaking. Nothing is saved; no network needed; no purchases are real.
+
+**Escalation + limited wallet:** rewards (level-ups, mystery boxes) are earned by how much is *wagered*, a "Double up & win it back"
+button appears after losses, and bets go up to 500K. Students can buy coins with a limited pretend wallet ($20 by default,
+$0/$10/$50 selectable on the start screen); when coins, the one free rescue gift and the wallet are all gone, the game ends in
+a "BUSTED" reveal screen. Nothing real is ever purchased.
+
+**Pacing (≈15-minute activity):** everything is scaled small so a typical student goes bust in roughly 10–15 minutes:
+50,000 starting coins, bets from 500 to 50,000 (default 2,500), small gifts, coin packs of 5K–60K for $1.99–$19.99
+from the pretend wallet, and one free 10,000-coin rescue. The class round defaults to a **15-minute timer** (10/20 minutes,
+spin counts or free play also available); students never see a clock. A simulation of mixed betting styles put the
+default 2,500 bettor at about 11–14 minutes to bottom out, heavier bettors and loss-chasers in 2–5 minutes, and very
+cautious (1,000) bettors still ahead when the timer ends.
