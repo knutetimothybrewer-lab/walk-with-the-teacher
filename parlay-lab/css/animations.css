@@ -1,0 +1,31 @@
+/* PARLAY LAB — animations. Every animation is short, uses transform/opacity, and is switched off for prefers-reduced-motion. */
+@keyframes spin { to { transform: rotate(360deg); } }
+.spinner { animation: spin .9s linear infinite; }
+@keyframes popin { 0% { transform: scale(.94); opacity: 0; } 60% { transform: scale(1.02); opacity: 1; } 100% { transform: scale(1); } }
+.delta.pop { animation: popin .35s ease-out; }
+@keyframes slidein { from { transform: translateX(30px); opacity: 0; } to { transform: none; opacity: 1; } }
+.legcard { animation: slidein .28s ease-out; }
+@keyframes flashup { 0% { color: var(--green); text-shadow: 0 0 10px rgba(52,211,153,.8); } 100% { text-shadow: none; } }
+@keyframes flashdown { 0% { color: var(--red); text-shadow: 0 0 10px rgba(251,113,133,.8); } 100% { text-shadow: none; } }
+.flash-up { animation: flashup .8s ease-out; } .flash-down { animation: flashdown .8s ease-out; }
+@keyframes bump { 0% { transform: scale(1); } 40% { transform: scale(1.25); color: var(--amber); } 100% { transform: scale(1); } }
+.sb-score.bump { animation: bump .55s ease-out; }
+@keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+.pick.shake { animation: shake .4s; }
+@keyframes drawline { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+.chart .line { stroke-dasharray: 1; animation: drawline 1s ease-out forwards; }
+@keyframes growbar { from { transform: scaleY(0); } to { transform: scaleY(1); } }
+.chart .bar { transform-box: fill-box; transform-origin: bottom; animation: growbar .6s ease-out backwards; }
+@keyframes feed { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: none; } }
+.plays li:first-child { animation: feed .25s ease-out; }
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .5; } }
+.trk.live .trk-state, .tleg.st-live .ico { animation: pulse 1.6s ease-in-out infinite; }
+@keyframes resolve { 0% { transform: scale(.85); } 60% { transform: scale(1.08); } 100% { transform: scale(1); } }
+.tleg.st-hit .ico, .tleg.st-missed .ico { animation: resolve .4s ease-out; }
+@keyframes fadeup { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+main > .card, main > section { animation: fadeup .3s ease-out; }
+.modal { animation: popin .22s ease-out; }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+  .chart .line { stroke-dasharray: none; }
+}

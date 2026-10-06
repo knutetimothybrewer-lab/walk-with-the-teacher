@@ -87,3 +87,8 @@ from the pretend wallet, and one free 10,000-coin rescue. The class round defaul
 spin counts or free play also available); students never see a clock. A simulation of mixed betting styles put the
 default 2,500 bettor at about 11–14 minutes to bottom out, heavier bettors and loss-chasers in 2–5 minutes, and very
 cautious (1,000) bettors still ahead when the timer ends.
+
+## PARLAY LAB (`parlay-lab/index.html`)
+
+Static classroom simulation about probability, parlays and risk (fictional basketball, pretend Lab Tokens). See `parlay-lab/README.md`.
+Run the checks with `node parlay-lab/tests/run-tests.js`.
