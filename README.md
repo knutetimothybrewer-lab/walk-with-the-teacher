@@ -2,6 +2,14 @@
 
 Teacher walk through AI literacy (`index.html`).
 
+## The Wildcat Wellness Trail: Mental Health Unit assessment (`health-summative/`)
+
+An animated, ~45-minute, self-grading summative assessment for the Mental Health unit (64 questions, 10 stations, a capstone, a final score page, and an optional Google Sheet backend with a "Reteach" tab). Static site, no build step, no trackers.
+
+Student link once GitHub Pages is on: `https://YOUR-USER.github.io/walk-with-the-teacher/health-summative/`
+
+Start with `health-summative/README.md` (setup and deploy), `health-summative/ROLLOUT.md` (counselor email, pilot plan, day-of checklist) and `health-summative/DISCREPANCIES.md` (things to confirm against your slides).
+
 ## BodyLab — Health Metrics Explorer (`body-lab.html`)
 
 A single-file, offline classroom app (open `body-lab.html` in Chrome/Edge/Firefox/Safari).

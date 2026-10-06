@@ -1,0 +1,27 @@
+# DISCREPANCIES.md — where the brief, your slides, and verified sources differ
+
+Nothing here was silently changed. Each row says what the brief said, what the sources show, and what the app does. **Items marked "Please confirm" need your eyes.**
+
+## A. Things that differ from the brief's numbers or claims
+
+| # | Brief / notes said | Verified sources show | What the app does |
+|---|---|---|---|
+| 1 | "77% of high schoolers use social media several times a day" is listed under **Pew** data. | The 77.0% figure is from **CDC's 2023 YRBS** (first year it asked this). Pew reports other measures (for example, how many teens are online "almost constantly"). | Attributed to CDC. The Pew numbers used are 95% smartphone access and about 44% anxious without a phone. |
+| 2 | "Teen smartphone ownership crossing 50% around 2012." | Pew's survey fielded in 2012 found **37%** of U.S. teens ages 12–17 owned a smartphone (23% in 2011); by 2014–15, **73%** had access to one. Haidt's "majority by about 2012" claim uses different measures. | **No ownership-share claim is made in the timeline.** The timeline uses dated events only (iPhone 2007, Instagram 2010, Facebook acquires Instagram 2012, CDC first asks about social media in 2023). Please confirm what your slide says. |
+| 3 | "39.7% persistent sadness; 28.5% poor mental health most/all of the time." | Both confirmed for **2023** (39.7% = past 12 months, "persistent sadness or hopelessness"; 28.5% = past 30 days, "poor mental health most or all of the time"). | Used as written. A question asks why the two numbers differ (different question, different time window). |
+| 4 | "2013–2023 trend (rose, peaked, eased slightly). Verify the correct peak and easing years." | Peak: **2021** (about 42%). Eased to **39.7% in 2023**. 2013 about 30%. Intermediate YRBS years (2015, 2017, 2019) are **about 30, 32, 37**. | Chart shows whole-percent rounded values for all years except it states 39.7% for 2023 in the tooltip. **Please confirm the 2015, 2017, 2019 decimals** against the CDC report (the network blocked direct download). |
+| 5 | "About 1 in ___ seriously considered / attempted suicide." | 2023 YRBS: about **20.4%** seriously considered attempting suicide, about **9.5%** attempted (about 1 in 5 and about 1 in 10). | To follow safe messaging and keep the data a *protective-factor* story, the app does **not** present the overall rates. It shows only the connectedness comparison (about 14% vs. about 27%) in a skippable reading. ✱ Please confirm those two numbers in MMWR Suppl. 73(4). |
+| 6 | "CDC comparison of frequent vs. less-frequent social media users on persistent sadness." | Direction confirmed: frequent users had **higher** prevalence (cross-sectional). The exact percentages could not be retrieved. | Stated **qualitatively**. Add the numbers from MMWR 73(4) if you want them. |
+| 7 | "How to help: Notice → Ask → Listen → Connect" (section B) vs. "Listen → Validate → Ask → Connect" (section D). | These are two different sequences in your own lesson. | The assessment teaches **Listen → Validate → Ask → Connect** (section D) because it is the longer, more specific mini-lesson, and treats "Notice" as the D.I.I.S. step. **Please confirm which you want students to know.** |
+| 8 | Continuum zone names "Healthy → Struggling → Injured → Ill." | You asked me to use these and to flag them. | Used everywhere. **Please confirm they match your slides.** To rename them, edit `content/s1.js` and `content/s10.js` and the "Zone" strings in `css/items.css` do not need to change. |
+
+## B. Things that could not be done as specified
+
+| # | Brief | Reality | Decision |
+|---|---|---|---|
+| 9 | Read the 3 PPTX and 3 DOCX files in `./source/` and map each item to a slide or section. | The six files were **not present** in the repo, `./source/`, or the attached locations, so they could not be read. | The content follows the brief's section 3 summary. CONTENT-MAP.md cites the **lesson and section named in the brief**, not slide numbers. **Please check the map against your slides.** |
+| 10 | Build in `/home/claude/health-summative/`. | That path is outside the repository you can open from this session. | Built in `health-summative/` inside this repository. |
+| 11 | "About 70–85 scored items" **and** "about 45 minutes." | A first draft of 87 items estimated about 70 minutes. | **Time won.** The final build has 64 questions (93 points) estimated at about 48 minutes in TIMING.md. Remove or add questions as you like. |
+| 12 | Default school name "Howard High School" and "Wildcats." | Your notes mention both. | `config.js` defaults to a neutral title ("The Wildcat Wellness Trail" / "Your School"). Edit `schoolName`, `mascot`, and `appTitle`. |
+| 13 | Quick-fire vocabulary with an untimed mode; Pew/other enrichment such as the prefrontal cortex. | Vocabulary is assessed through match items; a timed quick-fire mode was not built (time pressure can add anxiety). The prefrontal-cortex enrichment item was cut for time. | Documented in CONTENT-MAP.md. |
+| 14 | Verify facts at CDC and Pew directly. | Network policy blocked those hosts. | See SOURCES.md for exactly what was verified and how. |

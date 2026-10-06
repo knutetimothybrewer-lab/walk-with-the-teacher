@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The Wildcat Wellness Trail — Mental Health Assessment</title>
+  <meta name="description" content="An interactive, self-grading mental health unit assessment for high school health students.">
+  <meta name="theme-color" content="#0e1330">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="preload" href="assets/fonts/nunito-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/fonts/fraunces-latin-800-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/app.css">
+  <link rel="stylesheet" href="css/items.css">
+  <link rel="stylesheet" href="css/visuals.css">
+  <link rel="modulepreload" href="js/app.js">
+  <link rel="modulepreload" href="js/engine/code.js">
+  <link rel="modulepreload" href="js/engine/grade.js">
+  <link rel="modulepreload" href="js/engine/plan.js">
+  <link rel="modulepreload" href="js/engine/rng.js">
+  <link rel="modulepreload" href="js/engine/scoring.js">
+  <link rel="modulepreload" href="js/engine/session.js">
+  <link rel="modulepreload" href="js/engine/storage.js">
+  <link rel="modulepreload" href="js/engine/sync.js">
+  <link rel="modulepreload" href="js/engine/timing.js">
+  <link rel="modulepreload" href="js/items/common.js">
+  <link rel="modulepreload" href="js/items/mc.js">
+  <link rel="modulepreload" href="js/items/multi.js">
+  <link rel="modulepreload" href="js/items/place.js">
+  <link rel="modulepreload" href="js/ui/dom.js">
+  <link rel="modulepreload" href="js/ui/runner.js">
+  <link rel="modulepreload" href="js/ui/screens.js">
+  <link rel="modulepreload" href="js/ui/settings.js">
+  <link rel="modulepreload" href="js/ui/sky.js">
+  <link rel="modulepreload" href="js/visuals/brain.js">
+  <link rel="modulepreload" href="js/visuals/gauges.js">
+  <link rel="modulepreload" href="js/visuals/poster.js">
+  <link rel="modulepreload" href="js/visuals/stressDays.js">
+  <link rel="modulepreload" href="js/visuals/svg.js">
+  <link rel="modulepreload" href="js/visuals/thirdVar.js">
+  <link rel="modulepreload" href="js/visuals/yrbs.js">
+  <link rel="modulepreload" href="content/dsl.js">
+  <link rel="modulepreload" href="content/index.js">
+  <link rel="modulepreload" href="content/s1.js">
+  <link rel="modulepreload" href="content/s10.js">
+  <link rel="modulepreload" href="content/s2.js">
+  <link rel="modulepreload" href="content/s3.js">
+  <link rel="modulepreload" href="content/s4.js">
+  <link rel="modulepreload" href="content/s5.js">
+  <link rel="modulepreload" href="content/s6.js">
+  <link rel="modulepreload" href="content/s7.js">
+  <link rel="modulepreload" href="content/s8.js">
+  <link rel="modulepreload" href="content/s9.js">
+  <link rel="modulepreload" href="content/sources.js">
+  <link rel="modulepreload" href="config.js">
+</head>
+<body data-stage="0">
+  <a class="skip" href="#app">Skip to the content</a>
+
+  <!-- Sky + trail scenery. Brightens as the student progresses. -->
+  <div id="scenery" aria-hidden="true">
+    <svg viewBox="0 0 1200 700" preserveAspectRatio="xMidYMax slice" focusable="false">
+      <g id="stars"></g>
+      <g id="sun"><circle cx="600" cy="520" r="70" class="sun-core"/><circle cx="600" cy="520" r="120" class="sun-halo"/></g>
+      <path class="hill h3" d="M0 560 C200 500 380 540 600 520 C820 500 1000 540 1200 500 L1200 700 L0 700 Z"/>
+      <path class="hill h2" d="M0 610 C220 560 420 600 640 580 C860 560 1020 600 1200 570 L1200 700 L0 700 Z"/>
+      <path class="hill h1" d="M0 660 C260 620 460 650 700 635 C900 620 1060 650 1200 635 L1200 700 L0 700 Z"/>
+      <path id="trailpath" class="trailpath" d="M-20 690 C220 660 380 690 560 650 C760 605 700 580 880 560 C1010 545 1100 560 1220 535" />
+      <circle id="walker" class="walker" r="9" cx="-20" cy="690"/>
+    </svg>
+  </div>
+
+  <header id="bar">
+    <div class="bar-inner">
+      <a class="brand" href="./"><span class="brand-mark" aria-hidden="true"></span><span class="brand-name" id="brandName">The Wildcat Wellness Trail</span></a>
+      <div class="bar-mid" id="barMid" hidden>
+        <div class="progress" role="progressbar" aria-label="Trail progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="progress"><span id="progressFill"></span></div>
+        <span class="bar-chip" id="stationChip"></span>
+        <span class="bar-chip soft" id="paceChip" hidden></span>
+        <span class="bar-chip pts" id="ptsChip" hidden><span aria-hidden="true">✦</span> <span id="ptsVal">0</span> wellness points</span>
+      </div>
+      <div class="bar-btns">
+        <button type="button" class="bar-btn" id="trailBtn" hidden>Trail</button>
+        <button type="button" class="bar-btn" id="settingsBtn" aria-label="Display and reading settings">Aa</button>
+        <button type="button" class="bar-btn help" id="helpBtn" aria-haspopup="dialog"><span class="help-l1">Need help?</span><span class="help-l2">Take a break</span></button>
+      </div>
+    </div>
+  </header>
+
+  <main id="app" tabindex="-1">
+    <noscript><p class="card">This assessment needs JavaScript. Please use a current version of Chrome.</p></noscript>
+    <p class="card boot" id="boot">Loading the trail…</p>
+  </main>
+
+  <footer id="foot">
+    <button type="button" class="linkish" id="sourcesBtn">Sources</button>
+    <span aria-hidden="true">·</span>
+    <span>No ads. No trackers. Nothing about your feelings is ever asked or stored.</span>
+  </footer>
+
+  <div id="live" class="sr-only" role="status" aria-live="polite"></div>
+
+  <!-- ====== Help / break (static; works offline) ====== -->
+  <dialog id="help" aria-labelledby="helpTitle" class="crisis">
+    <div class="dlg-head"><h2 id="helpTitle">You're not alone. Help is here.</h2><button type="button" class="dlg-x" data-close aria-label="Close">✕</button></div>
+    <div class="dlg-body">
+      <p class="calm">Feeling a lot right now is okay. You can take a break, skip any scenario, and come back when you're ready. Your progress is saved.</p>
+      <ul class="crisis-list">
+        <li class="urgent"><strong>In danger right now?</strong> Call <a href="tel:911">911</a>.</li>
+        <li><strong>988 Suicide &amp; Crisis Lifeline.</strong> <a href="tel:988">Call</a> or <a href="sms:988">text 988</a> (or chat at 988lifeline.org). Free, private, and open 24/7.</li>
+        <li><strong>Crisis Text Line.</strong> Text <b>HOME</b> to <a href="sms:741741?body=HOME">741741</a>.</li>
+        <li><strong>Someone close by.</strong> Talk to your school counselor or a trusted adult. You can tell your teacher you need to go.</li>
+      </ul>
+      <div class="breathe-wrap">
+        <div class="breathe" aria-hidden="true"></div>
+        <p class="breathe-text"><strong>Take a break:</strong> breathe in slowly for 4, then out for 6. Repeat a few times. Closing this window puts you right back where you were.</p>
+      </div>
+    </div>
+    <div class="dlg-foot"><button type="button" class="btn-primary" data-close>Back to the trail</button></div>
+  </dialog>
+
+  <dialog id="settings" aria-labelledby="setTitle">
+    <div class="dlg-head"><h2 id="setTitle">Make it comfortable</h2><button type="button" class="dlg-x" data-close aria-label="Close">✕</button></div>
+    <div class="dlg-body" id="settingsBody"></div>
+    <div class="dlg-foot"><button type="button" class="btn-primary" data-close>Done</button></div>
+  </dialog>
+
+  <dialog id="trail" aria-labelledby="trailTitle">
+    <div class="dlg-head"><h2 id="trailTitle">Your trail</h2><button type="button" class="dlg-x" data-close aria-label="Close">✕</button></div>
+    <div class="dlg-body" id="trailBody"></div>
+    <div class="dlg-foot"><button type="button" class="btn-primary" data-close>Close</button></div>
+  </dialog>
+
+  <dialog id="sources" aria-labelledby="srcTitle" class="wide">
+    <div class="dlg-head"><h2 id="srcTitle">Sources</h2><button type="button" class="dlg-x" data-close aria-label="Close">✕</button></div>
+    <div class="dlg-body" id="sourcesBody"></div>
+    <div class="dlg-foot"><button type="button" class="btn-primary" data-close>Close</button></div>
+  </dialog>
+
+  <dialog id="review" aria-labelledby="revTitle" class="wide">
+    <div class="dlg-head"><h2 id="revTitle">Review</h2><button type="button" class="dlg-x" data-close aria-label="Close">✕</button></div>
+    <div class="dlg-body" id="reviewBody"></div>
+    <div class="dlg-foot"><button type="button" class="btn-primary" data-close>Close review</button></div>
+  </dialog>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>

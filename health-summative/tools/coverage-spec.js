@@ -1,0 +1,63 @@
+/* Every bullet of the brief's section 3, mapped to the item ids that assess it.
+   tools/content-map.js verifies the ids exist and reports thin coverage.
+   `note` explains anything covered only in a reading, explorer, or explanation. */
+export default [
+  // A. Mental Health 101
+  { id: 'A1', src: 'A · Mental Health 101', topic: 'Mental health vs. mental illness', items: ['s1-01'] },
+  { id: 'A2', src: 'A', topic: 'Continuum: four zones Healthy → Struggling → Injured → Ill', items: ['s1-02', 's10-c1'] },
+  { id: 'A3', src: 'A', topic: 'Struggling/Injured does not mean something is wrong with you', items: ['s1-03'] },
+  { id: 'A4', src: 'A', topic: 'Mental health changes over time; one bad day ≠ permanent decline; sleep, stress, relationships, big changes, support', items: ['s1-05'] },
+  { id: 'A5', src: 'A', topic: 'Risk factors vs. protective factors (family conflict, trauma, chronic illness, isolation/bullying, substance use, pressure vs. supportive family, friends, coping, purpose, access to care, connectedness)', items: ['s2-01', 's2-08'] },
+  { id: 'A6', src: 'A', topic: 'Acute vs. chronic stressors with examples', items: ['s2-02', 's4-04'] },
+  { id: 'A7', src: 'A', topic: 'Resilience: four building blocks; a skill set, not a fixed trait', items: ['s2-04', 's2-05'] },
+  { id: 'A8', src: 'A', topic: 'School and family connectedness (CDC) with YRBS figures, handled gently', items: ['s3-01'], note: 'Reading cites 14% vs 27% (CDC 2023). Also a skippable item.' },
+  { id: 'A9', src: 'A', topic: 'Risk, protection, and balance (protective can outweigh risk)', items: ['s2-08', 's3-01'] },
+  { id: 'A10', src: 'A', topic: 'Where to get help: 988, trusted adult', items: ['s9-08', 's9-07', 's10-c5', 's10-c6'] },
+  // B. Understanding Emotional Health
+  { id: 'B1', src: 'B · Understanding Emotional Health', topic: 'Data literacy: 39.7% persistent sadness; 28.5% poor mental health; 2013–2023 trend (rose, peaked 2021, eased)', items: ['s3-03', 's3-04', 's3-06', 's3-07'] },
+  { id: 'B2', src: 'B', topic: 'Essential question: what do the statistics support and not support?', items: ['s3-03'] },
+  { id: 'B3', src: 'B', topic: 'D.I.I.S. framework (a noticing framework, not diagnostic)', items: ['s5-06', 's5-08'] },
+  { id: 'B4', src: 'B', topic: 'Why a pattern beats one isolated symptom', items: ['s5-10', 's5-09'] },
+  { id: 'B5', src: 'B', topic: 'Patterns, not labels: stress, anxiety, depression, panic, grief, emotional distress (definition, signs, pattern to notice)', items: ['s5-03'] },
+  { id: 'B6', src: 'B', topic: '"Most useful clue" matching table', items: ['s5-04'] },
+  { id: 'B7', src: 'B', topic: 'Smartphone/social media timeline (2007 iPhone, 2010 Instagram, 2012 Facebook acquisition)', items: ['s6-01'], note: 'The brief says teen smartphone ownership crossed 50% around 2012; Pew data says later (see DISCREPANCIES.md), so no ownership-share claim is made in the timeline.' },
+  { id: 'B8', src: 'B', topic: 'Pew data (95% smartphone; 44% anxious without phone) and the "77% several times a day" figure (CDC)', items: ['s6-03'], note: 'Stats appear in the reading; the item tests what they do and do not show.' },
+  { id: 'B9', src: 'B', topic: 'CDC comparison: frequent vs. less-frequent social media users on persistent sadness', items: ['s6-03'] },
+  { id: 'B10', src: 'B', topic: 'Correlation ≠ causation; "major cause" vs. "proceed with caution"; stronger causal claim; evidence for causation; third variable', items: ['s6-05', 's6-06', 's6-07'] },
+  { id: 'B11', src: 'B', topic: 'Bottom line: part of the picture; size still being studied', items: ['s6-08'] },
+  { id: 'B12', src: 'B', topic: 'D.I.I.S. in practice: scenario 1 (skipped lunch, tired, snapped) and scenario 2 (quiet a week, missed practices; check in, keep watching)', items: ['s5-06', 's5-07', 's5-08', 's5-09'] },
+  { id: 'B13', src: 'B', topic: 'Red flags: safety overrides uncertainty; no diagnosis needed; do not keep secret', items: ['s7-01', 's7-02', 's7-04', 's7-06'] },
+  { id: 'B14', src: 'B', topic: 'How to help: Notice → Ask → Listen → Connect; "not responsible for solving, responsible for not ignoring"', items: ['s8-02', 's8-10'], note: 'See DISCREPANCIES.md: Section B lists Notice→Ask→Listen→Connect, Section D lists Listen→Validate→Ask→Connect. The app teaches Section D\'s sequence.' },
+  // C. Stress and the Brain
+  { id: 'C1', src: 'C · Stress and the Brain', topic: 'Stressor = anything the brain reads as a demand (not always bad)', items: ['s4-01'] },
+  { id: 'C2', src: 'C', topic: 'Stress cycle and fight/flight pathway: amygdala → hypothalamus → adrenals (adrenaline, cortisol) → body ready', items: ['s4-02', 's4-x1'] },
+  { id: 'C3', src: 'C', topic: 'Sympathetic "gas pedal" and the whole-body changes', items: ['s4-03'] },
+  { id: 'C4', src: 'C', topic: 'Recovery "brake pedal" (parasympathetic): sleep, breathing, movement, support, time', items: ['s4-03', 's4-06'] },
+  { id: 'C5', src: 'C', topic: 'Acute vs. chronic: "Am I recovering?"', items: ['s4-04', 's4-09'] },
+  { id: 'C6', src: 'C', topic: 'Coping loop Notice → Regulate → Choose → Recover; coping reduces demand or improves recovery; not pretending', items: ['s4-07', 's4-06'] },
+  { id: 'C7', src: 'C', topic: 'Three practice situations (presentation jitters; 4 hours of sleep for 2 weeks; scrolling after an argument)', items: ['s4-08', 's4-09', 's4-10'] },
+  // D. Communication
+  { id: 'D1', src: 'D · Communication Mini-Lesson', topic: 'Listen → Validate → Ask → Connect, with specifics', items: ['s8-02', 's8-c1a', 's8-c1b', 's8-c1c', 's8-c1d'] },
+  { id: 'D2', src: 'D', topic: 'Validation ≠ agreeing; example phrases', items: ['s8-c1b', 's8-02'] },
+  { id: 'D3', src: 'D', topic: 'Unhelpful responses and why they backfire (get over it, others have it worse, dramatic, instant advice, absolute secrecy)', items: ['s8-c1a', 's8-c1b', 's8-c1d', 's8-08'] },
+  { id: 'D4', src: 'D', topic: 'Language swaps', items: ['s8-08'] },
+  { id: 'D5', src: 'D', topic: 'Poor vs. effective response comparison', items: ['s8-c1a', 's8-c1b', 's8-c1c', 's8-c1d'] },
+  { id: 'D6', src: 'D', topic: 'Crisis connection: vague warning + fear for safety; "Are you safe right now?"; walk them to the counselor', items: ['s8-c2a', 's8-c2b', 's8-c2c'] },
+  { id: 'D7', src: 'D', topic: 'Role boundaries: be a bridge, not the only support or the counselor; privacy statement', items: ['s8-10', 's8-c2c', 's8-08'] },
+  { id: 'D8', src: 'D', topic: 'Spot the move; pair-practice scenarios', items: ['s8-02', 's8-c1a', 's8-c2a'] },
+  // E. Help-seeking
+  { id: 'E1', src: 'E · Help-Seeking Mini-Lesson', topic: 'Circle of support: 4 tiers (everyday, school team, health care, emergency/crisis)', items: ['s9-01'] },
+  { id: 'E2', src: 'E', topic: '"Who do I go to?" (counselor, psychologist, psychiatrist, PCP/therapist, 988/911)', items: ['s9-02', 's9-01'] },
+  { id: 'E3', src: 'E', topic: 'Barriers (stigma, fear, embarrassment, cost, transportation, confidentiality, not knowing where, "not serious enough") and reframes', items: ['s9-04'] },
+  { id: 'E4', src: 'E', topic: 'CDC WSCC model (10 components)', items: ['s9-06'] },
+  { id: 'E5', src: 'E', topic: 'First step: one trusted person, low-pressure moment, an opener', items: ['s9-07'] },
+  // F. Infographic
+  { id: 'F1', src: 'F · Wildcats Infographic Project', topic: 'Section 1 understanding mental health + continuum', items: ['s10-c1'] },
+  { id: 'F2', src: 'F', topic: 'Section 2 at least 4 warning signs without diagnosing', items: ['s10-c2'] },
+  { id: 'F3', src: 'F', topic: 'Section 3 at least 3 realistic coping strategies and how each helps', items: ['s10-c3'] },
+  { id: 'F4', src: 'F', topic: 'Section 4 Listen → Validate → Ask → Connect with 2 helpful phrases and 1 to avoid', items: ['s10-c4'] },
+  { id: 'F5', src: 'F', topic: 'Section 5 when to get an adult, professional, or crisis service', items: ['s10-c5'] },
+  { id: 'F6', src: 'F', topic: 'Section 6 at least 3 credible resources (what, how to access, crisis vs. non-crisis)', items: ['s10-c6'] },
+  { id: 'F7', src: 'F', topic: 'Section 7 one stigma-challenging message', items: ['s10-c7'] },
+  { id: 'F8', src: 'F', topic: 'Peer review / accuracy check (medically inaccurate, diagnosing, unrealistic coping, non-credible resource, bad peer advice)', items: ['s10-c8'] },
+];
