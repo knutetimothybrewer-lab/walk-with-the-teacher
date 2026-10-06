@@ -80,3 +80,10 @@ leaderboard, live-winner feed, auto-spin/turbo, rescue gifts.
 button appears after losses, and bets go up to 500K. Students can buy coins with a limited pretend wallet ($20 by default,
 $0/$10/$50 selectable on the start screen); when coins, the one free rescue gift and the wallet are all gone, the game ends in
 a "BUSTED" reveal screen. Nothing real is ever purchased.
+
+**Pacing (≈15-minute activity):** everything is scaled small so a typical student goes bust in roughly 10–15 minutes:
+50,000 starting coins, bets from 500 to 50,000 (default 2,500), small gifts, coin packs of 5K–60K for $1.99–$19.99
+from the pretend wallet, and one free 10,000-coin rescue. The class round defaults to a **15-minute timer** (10/20 minutes,
+spin counts or free play also available); students never see a clock. A simulation of mixed betting styles put the
+default 2,500 bettor at about 11–14 minutes to bottom out, heavier bettors and loss-chasers in 2–5 minutes, and very
+cautious (1,000) bettors still ahead when the timer ends.

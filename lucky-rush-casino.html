@@ -184,11 +184,11 @@ textarea{width:100%;min-height:110px;background:#12002b;color:#fff;border:2px so
   <div class="card">
     <div class="disc">EDUCATIONAL SIMULATION · No real money · Tokens have NO value · Built to show how gambling apps work</div>
     <div class="logo">LUCKY RUSH<small>★ CASINO ★</small></div>
-    <p style="font-size:18px;margin:14px 0 4px">🎁 <b>WELCOME GIFT: 1,000,000 FREE COINS!</b></p>
+    <p style="font-size:18px;margin:14px 0 4px">🎁 <b>WELCOME GIFT: 50,000 FREE COINS!</b></p>
     <p class="small" style="margin:0 0 14px">Your goal: have fun. Your teacher's goal: see if you notice what the game is doing to you.</p>
     <input id="nick" type="text" maxlength="14" placeholder="Pick a nickname" value="">
     <label class="row">Class round:
-      <select id="cap"><option value="40" selected>40 spins</option><option value="25">25 spins</option><option value="60">60 spins</option><option value="100">100 spins</option><option value="0">Free play (no limit)</option></select>
+      <select id="cap"><option value="m15" selected>15 minutes</option><option value="m10">10 minutes</option><option value="m20">20 minutes</option><option value="40">40 spins</option><option value="100">100 spins</option><option value="0">Free play (no limit)</option></select>
     </label>
     <label class="row">Pretend wallet for buying coins:
       <select id="wal"><option value="20" selected>$20</option><option value="10">$10</option><option value="50">$50</option><option value="0">$0 (no buying)</option></select>
@@ -235,7 +235,7 @@ textarea{width:100%;min-height:110px;background:#12002b;color:#fff;border:2px so
         <div id="msg">Spin to win! 🍀</div>
         <div style="text-align:center"><button class="btn btn-pink hidden pulse" id="chase" style="margin:4px 0 8px"></button></div>
         <div id="ctl">
-          <div class="betbox"><small>TOTAL BET</small><div id="betv">10,000</div><div class="betbtns" id="betbtns"></div></div>
+          <div class="betbox"><small>TOTAL BET</small><div id="betv">2,500</div><div class="betbtns" id="betbtns"></div></div>
           <button id="spin">SPIN</button>
           <div class="opts"><button class="opt" id="auto">⟳ AUTO</button><button class="opt" id="turbo">⚡ TURBO</button></div>
         </div>
@@ -247,7 +247,7 @@ textarea{width:100%;min-height:110px;background:#12002b;color:#fff;border:2px so
         <h3>🎁 FREE GIFTS</h3>
         <div class="chest" id="chest"><div class="ic">🧰</div><div style="flex:1"><b>Daily Treasure Chest</b><div id="chesttime" class="small">Opens in 2:00</div></div><button class="btn btn-gold hidden" id="chestbtn">CLAIM</button></div>
         <div class="chest" id="wheelrow"><div class="ic">🎡</div><div style="flex:1"><b>Lucky Wheel</b><div class="small" id="wheeltxt">Level up to unlock a free spin!</div></div><button class="btn btn-pink hidden" id="wheelbtn">SPIN</button></div>
-        <div class="small" id="nextbox">🎁 Mystery box after you wager 500,000 coins</div>
+        <div class="small" id="nextbox">🎁 Mystery box after you wager 125,000 coins</div>
       </div>
       <div class="panel" style="margin-bottom:12px">
         <h3>🏆 LEADERBOARD</h3>
@@ -287,8 +287,8 @@ const OUT=[
 const SLOT_RTP=OUT.reduce((a,o)=>a+o.m*o.p,0);          // 0.905
 const NEAR_RATE=.45;                                     // share of losing spins dressed up as "almost won"
 const DICE={low:{pay:2.2,p:15/36},high:{pay:2.2,p:15/36},seven:{pay:5,p:6/36}};
-const BETS=[1000,5000,10000,50000,100000,250000,500000];
-const START_BAL=1000000;
+const BETS=[500,1000,2500,5000,10000,25000,50000];
+const START_BAL=50000;
 const fmt=n=>Math.round(n).toLocaleString('en-US');
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 const rnd=a=>a[Math.floor(Math.random()*a.length)];
@@ -301,19 +301,19 @@ function pickOutcome(){let r=Math.random(),acc=0;for(const o of OUT){acc+=o.p;if
    ============================================================ */
 let S;
 function newState(){return{
-  name:'Player',cap:40,bal:0,bet:10000,game:'slots',pick:'low',
+  name:'Player',cap:0,capMin:15,bal:0,bet:2500,game:'slots',pick:'low',
   spins:0,wagered:0,returned:0,wins:0,losses:0,nearMiss:0,ldw:0,bigWins:0,biggest:0,
   hist:[],t0:Date.now(),giftValue:0,gifts:0,pretend:0,wallet:20,wallet0:20,boxEarned:0,xp:0,level:1,
   busy:false,auto:false,turbo:false,xray:false,calm:false,muted:false,
   lossRun:0,winRun:0,rescues:0,chestT:120,chestReady:false,wheelReady:0,boxReady:false,
-  tricks:{},seen:{},capHit:false,jp:12483920
+  tricks:{},seen:{},capHit:false,jp:1248392
 }}
 
 /* ============================================================
    X-RAY: every manipulation is logged; shown live if X-Ray on
    ============================================================ */
 const TRICKS={
- bigNumbers:['Giant numbers','Starting with 1,000,000 "coins" makes a 10,000 bet feel tiny. Big numbers hide how fast value disappears. Real apps do the same with chips, gems and credits.'],
+ bigNumbers:['Giant numbers','Starting with 50,000 "coins" feels like a lot, and a 2,500 bet feels tiny. Big numbers hide how fast value disappears. Real apps do the same with chips, gems and credits.'],
  welcomeGift:['Welcome gift','A free gift at the start creates a feeling of "house money" — you are more willing to risk what you did not earn, and you feel you owe the app a try.'],
  nearMiss:['Near miss','Two matching jackpot symbols and the third one JUST off the line. Your brain treats it like almost winning, but the result was already decided as a plain loss before the reels moved. Near misses make people keep playing.'],
  suspense:['Fake suspense','The last reel slows down when two symbols already match. The outcome is already set — the slow-down is only drama.'],
@@ -423,7 +423,7 @@ function updateAll(){
   $('xpt').textContent=`${fmt(S.xp)} / ${fmt(xpNeed(S.level))} XP`;
   $('xpbar').style.width=Math.min(100,S.xp/xpNeed(S.level)*100)+'%';
   $('jp').textContent=fmt(S.jp);
-  $('nextbox').textContent=S.boxReady?'🎁 Mystery box is ready! (top of machine)':`🎁 Mystery box after you wager ${fmt(500000-(S.wagered%500000))} more coins`;$('walletpill').textContent='💵 Wallet $'+S.wallet.toFixed(2);
+  $('nextbox').textContent=S.boxReady?'🎁 Mystery box is ready! (top of machine)':`🎁 Mystery box after you wager ${fmt(125000-(S.wagered%125000))} more coins`;$('walletpill').textContent='💵 Wallet $'+S.wallet.toFixed(2);
   $('wheeltxt').textContent=S.wheelReady?'FREE SPIN READY!':'Level up to unlock a free spin!';
   $('wheelbtn').classList.toggle('hidden',!S.wheelReady);$('wheelrow').classList.toggle('ready',!!S.wheelReady);
   $('giftbox').classList.toggle('hidden',!S.boxReady);
@@ -432,11 +432,11 @@ function updateAll(){
 let bots=[];
 function initBots(){
   const names=['xX_LuckyKing_Xx','MiaSpins','DiamondDan','JackpotJess','BigBetBen','Queen_of_7s','CoinCollector','SpinWizard','NoLimitNate','GoldenGina'];
-  bots=names.map((n,i)=>({n,v:Math.round((90-i*7)*1e6*(0.8+Math.random()*.4))}));
+  bots=names.map((n,i)=>({n,v:Math.round((90-i*7)*5e4*(0.8+Math.random()*.4))}));
 }
 function drawLB(){
-  const rank=Math.max(1,Math.round(8000-S.bal/700));
-  const gap=Math.max(50000,Math.round((S.bal*.0007)*1000)%2400000+90000);
+  const rank=Math.max(1,Math.round(8000-S.bal/35));
+  const gap=1000+(S.spins*137)%4000;
   const rows=bots.slice(0,5).map((b,i)=>`<tr><td>${i+1}</td><td>${b.n}</td><td>${fmt(b.v)}</td></tr>`).join('');
   $('lb').innerHTML=rows+`<tr class="me"><td>${fmt(rank)}</td><td>${esc(S.name)} (you)</td><td>${fmt(S.bal)}</td></tr><tr><td colspan="3" class="small">Only ${fmt(gap)} coins to climb to rank ${fmt(rank-1)}! 🚀</td></tr>`;
 }
@@ -506,7 +506,7 @@ async function go(){
   S.busy=true;$('spin').disabled=true;$('chase').classList.add('hidden');
   S.bal-=S.bet;S.wagered+=S.bet;S.spins++;      // bet leaves immediately
   setBal(S.bal);
-  S.xp+=S.bet/1000;
+  S.xp+=S.bet/250;
   msg('Good luck... 🤞');
   let res;
   if(S.game==='slots'){res=await spinSlots()}else{res=await rollDice()}
@@ -514,7 +514,7 @@ async function go(){
   if(win>0){S.returned+=win;S.wins++;S.lossRun=0;S.winRun++;if(win>S.biggest)S.biggest=win}else{S.losses++;S.lossRun++;S.winRun=0}
   setBal(S.bal+win);S.hist.push(S.bal);
   if(win>S.bet*1.0001)S.bigWins++;
-  if(S.game==='slots'&&res.outcome&&res.outcome.m>=50){S.jp=12483920+Math.floor(Math.random()*500000)}
+  if(S.game==='slots'&&res.outcome&&res.outcome.m>=50){S.jp=1248392+Math.floor(Math.random()*50000)}
   // ---- presentation: this is where the psychology lives ----
   if(win>S.bet){celebrate(win,S.bet,false);trick('celebration')}
   else if(win>0&&win<S.bet){celebrate(win,S.bet,true);S.ldw++;trick('ldw');trick('celebration')}
@@ -529,13 +529,13 @@ async function go(){
   // XP / level / box
   let lvlUp=false;
   while(S.xp>=xpNeed(S.level)){S.xp-=xpNeed(S.level);S.level++;S.wheelReady++;lvlUp=true}
-  {const e=Math.floor(S.wagered/500000);if(e>S.boxEarned&&!S.boxReady){S.boxEarned=e;S.boxReady=true;trick('mystery');trick('wagerRewards')}}
+  {const e=Math.floor(S.wagered/125000);if(e>S.boxEarned&&!S.boxReady){S.boxEarned=e;S.boxReady=true;trick('mystery');trick('wagerRewards')}}
   updateAll();
   await sleep(win>0?(S.turbo?500:1500):(S.turbo?150:450));
   if(lvlUp){trick('vip');trick('wheel');await levelUp()}
   S.busy=false;$('spin').disabled=false;
-  if(S.cap&&S.spins>=S.cap&&!S.capHit){S.capHit=true;S.auto=false;$('auto').classList.remove('on');roundOver();return}
-  if(S.bal<1000){outOfCoins();return}
+  if(((S.cap&&S.spins>=S.cap)||(S.capMin&&Date.now()-S.t0>=S.capMin*60000))&&!S.capHit){S.capHit=true;S.auto=false;$('auto').classList.remove('on');roundOver();return}
+  if(S.bal<BETS[0]){outOfCoins();return}
   if(S.auto&&!modalOpen()){await sleep(S.turbo?150:700);if(S.auto)go()}
 }
 function offerChase(win){
@@ -570,11 +570,11 @@ async function levelUp(){
 function openWheel(){
   return new Promise(res=>{
     if(!S.wheelReady){res();return}
-    const prizes=[10000,20000,50000,25000,100000,30000,500000,15000];
+    const prizes=[500,1000,2500,1250,5000,1500,25000,750];
     const wts=[24,20,8,16,4,12,1,15];
     let r=Math.random()*wts.reduce((a,b)=>a+b),i=0;for(;i<wts.length;i++){if((r-=wts[i])<0)break}
     i=Math.min(i,7);
-    const labels=prizes.map((p,k)=>`<span style="transform:rotate(${k*45+22.5}deg) translateY(-115px) rotate(0deg)">${p>=1e6?'500K!':fmt(p/1000)+'K'}</span>`).join('');
+    const labels=prizes.map((p,k)=>`<span style="transform:rotate(${k*45+22.5}deg) translateY(-115px) rotate(0deg)">${p>=25000?'25,000!':fmt(p)}</span>`).join('');
     modal(`<h2>🎡 LUCKY WHEEL</h2><div id="wheelwrap"><div id="pointer">🔻</div><div id="wheel">${labels}</div></div><div id="wres" style="font-size:22px;font-weight:900;min-height:30px"></div><button class="btn btn-pink big" id="wgo">SPIN!</button>`);
     $('wgo').onclick=()=>{
       $('wgo').disabled=true;S.wheelReady--;sfx.pop();
@@ -592,7 +592,7 @@ function openWheel(){
 function openBox(){
   if(S.busy||modalOpen())return;
   S.boxReady=false;trick('mystery');
-  const prize=Math.round((10000+Math.random()*90000)/1000)*1000;
+  const prize=Math.round((500+Math.random()*2500)/100)*100;
   modal(`<h2>🎁 MYSTERY BOX!</h2><p>Pick ONE box — big prizes inside!</p><div style="font-size:70px;display:flex;justify-content:center;gap:14px"><button class="bx" style="background:none;font-size:70px">🎁</button><button class="bx" style="background:none;font-size:70px">🎁</button><button class="bx" style="background:none;font-size:70px">🎁</button></div><div id="bres" style="font-size:22px;font-weight:900;min-height:30px"></div>`);
   document.querySelectorAll('.bx').forEach(b=>b.onclick=()=>{
     document.querySelectorAll('.bx').forEach(x=>{x.textContent='🪙';x.disabled=true});
@@ -611,14 +611,14 @@ function chestTick(){
 }
 function claimChest(){
   if(!S.chestReady)return;S.chestReady=false;S.chestT=120;trick('dailyChest');
-  const p=50000+Math.round(Math.random()*5)*10000;addCoins(p);rain(['🪙','💰'],18);
+  const p=1000+Math.round(Math.random()*3)*500;addCoins(p);rain(['🪙','💰'],18);
   msg(`🧰 Chest opened! +${fmt(p)} free coins!`,'msg-win');
 }
 
 /* ============================================================
    RESCUE
    ============================================================ */
-const PACKS=[['1,000,000',1.99,'',''],['3,500,000',4.99,'<s>$7.49</s>','🔥 50% BONUS'],['10,000,000',9.99,'<s>$19.99</s>','⭐ BEST VALUE'],['25,000,000',19.99,'<s>$49.99</s>','👑 VIP PACK']];
+const PACKS=[['5,000',1.99,'',''],['15,000',4.99,'<s>$7.49</s>','🔥 50% BONUS'],['30,000',9.99,'<s>$19.99</s>','⭐ BEST VALUE'],['60,000',19.99,'<s>$49.99</s>','👑 VIP PACK']];
 function openStore(rescue){
   trick('store');
   const free=rescue&&S.rescues<1;
@@ -626,17 +626,17 @@ function openStore(rescue){
   modal(`<h2>${rescue?'😱 OUT OF COINS!':'💰 COIN SHOP'}</h2>
   ${broke?'':'<div class="timer" id="stimer">⏰ LIMITED TIME: 0:30</div>'}
   <div class="disc">SIMULATION — nothing is really purchased. Your pretend wallet is all the money you have: <b>$${S.wallet.toFixed(2)}</b> left.</div>
-  ${free?`<button class="btn btn-gold big pulse" id="free" style="width:100%;margin:8px 0">🎁 CLAIM FREE 250,000 COINS</button>`:''}
+  ${free?`<button class="btn btn-gold big pulse" id="free" style="width:100%;margin:8px 0">🎁 CLAIM FREE 10,000 COINS</button>`:''}
   ${broke?'<p style="font-size:18px">You\'re out of coins <b>and</b> out of money. There is nothing left to play with.</p>':PACKS.map(p=>`<div class="pack">${p[3]?`<span class="tag">${p[3]}</span>`:''}<div><div class="c">🪙 ${p[0]}</div>${p[2]}</div><button class="btn btn-green buy" data-c="${p[0].replace(/,/g,'')}" data-d="${p[1]}" ${p[1]>S.wallet+1e-9?'disabled style="opacity:.35;cursor:not-allowed"':''}>$${p[1]}</button></div>`).join('')}
   <div style="margin-top:10px"><button class="btn btn-ghost" id="sclose" style="${rescue&&!broke?'opacity:.5;font-size:11px':''}">${broke?'See my results':rescue?'no thanks, I quit':'Close'}</button></div>`);
   let t=30;const iv=setInterval(()=>{t--;const e=$('stimer');if(!e||t<0){clearInterval(iv);return}e.textContent='⏰ LIMITED TIME: 0:'+String(t).padStart(2,'0')},1000);
   const done=()=>{clearInterval(iv);closeModal();S.busy=false;$('spin').disabled=false;updateAll()};
-  if($('free'))$('free').onclick=()=>{S.rescues++;trick('rescue');addCoins(250000);msg('Phew! Free coins! Back in the game! 🍀','msg-win');done()};
+  if($('free'))$('free').onclick=()=>{S.rescues++;trick('rescue');addCoins(10000);msg('Phew! Free coins! Back in the game! 🍀','msg-win');done()};
   document.querySelectorAll('.buy').forEach(b=>b.onclick=()=>{
     const d=+b.dataset.d;if(d>S.wallet+1e-9)return;
     S.wallet=Math.round((S.wallet-d)*100)/100;S.pretend+=d;addCoins(+b.dataset.c,false);
     msg(`(Pretend) bought ${fmt(b.dataset.c)} coins for $${d} — wallet: $${S.wallet.toFixed(2)}`,'msg-win');done()});
-  $('sclose').onclick=()=>{clearInterval(iv);closeModal();if(rescue&&S.bal<1000)showResults();else{S.busy=false;$('spin').disabled=false}};
+  $('sclose').onclick=()=>{clearInterval(iv);closeModal();if(rescue&&S.bal<BETS[0])showResults();else{S.busy=false;$('spin').disabled=false}};
 }
 function outOfCoins(){S.auto=false;$('auto').classList.remove('on');S.busy=true;$('spin').disabled=true;trick('rescue');openStore(true)}
 
@@ -647,7 +647,7 @@ function roundOver(){
   const net=S.returned-S.wagered;
   modal(`<h2>⏱ CLASS ROUND COMPLETE</h2><p style="font-size:18px">You played <b>${S.spins}</b> spins.</p><p>Your balance: <b style="color:var(--gold)">${fmt(S.bal)}</b> coins</p><p class="small">Feeling lucky? You can keep playing…</p>
   <button class="btn btn-gold big" id="keep">KEEP PLAYING 🎰</button><div style="margin-top:10px"><button class="btn btn-pink" id="reveal">🔍 REVEAL WHAT HAPPENED</button></div>`);
-  $('keep').onclick=()=>{closeModal();S.cap=0};
+  $('keep').onclick=()=>{closeModal();S.cap=0;S.capMin=0};
   $('reveal').onclick=()=>{closeModal();showResults()};
 }
 
@@ -671,11 +671,11 @@ function showResults(){
   const rtp=S.wagered?S.returned/S.wagered:0;
   const peak=Math.max(...S.hist,START_BAL);
   
-  const sims=[10,50,200,1000,5000].map(n=>({n,...simulate(3000,n,10000)}));
+  const sims=[10,50,200,1000,5000].map(n=>({n,...simulate(3000,n,2500)}));
   const trickRows=Object.keys(S.tricks).filter(k=>TRICKS[k]).sort((a,b)=>S.tricks[b]-S.tricks[a]).map(k=>`<div class="trick"><span class="n">×${S.tricks[k]}</span><b>${TRICKS[k][0]}</b><br>${TRICKS[k][1]}</div>`).join('');
   const unseen=['noClock','hiddenExit','bigNumbers','welcomeGift','popular','socialProof','leaderboard','nearPrize','autoplay'].filter(k=>!S.tricks[k]).map(k=>`<div class="trick"><b>${TRICKS[k][0]}</b><br>${TRICKS[k][1]}</div>`).join('');
   $('dbody').innerHTML=`
-  <div class="dh">${S.bal<1000?`<div class="trick" style="border-color:var(--red);font-size:18px">💸 <b>BUSTED.</b> You ran out of coins${S.wallet0?` and spent $${S.pretend.toFixed(2)} of your $${S.wallet0.toFixed(2)} pretend wallet`:''}. The game worked exactly as designed.</div>`:''}<h1>🔍 THE REVEAL: what the app did to you</h1>
+  <div class="dh">${S.bal<BETS[0]?`<div class="trick" style="border-color:var(--red);font-size:18px">💸 <b>BUSTED.</b> You ran out of coins${S.wallet0?` and spent $${S.pretend.toFixed(2)} of your $${S.wallet0.toFixed(2)} pretend wallet`:''}. The game worked exactly as designed.</div>`:''}<h1>🔍 THE REVEAL: what the app did to you</h1>
    <p>This was a simulation — no real money, but the design is copied from real mobile gambling apps. Here is the truth behind the flashing lights.</p>
    <div class="stats">
     <div class="stat"><b>${S.spins}</b><span>spins</span></div>
@@ -700,7 +700,7 @@ function showResults(){
   </div>
   <div class="dh"><h2>🏠 Why the house always wins (the math)</h2>
    <p>The game pays back about <b>${(SLOT_RTP*100).toFixed(1)}</b> coins for every 100 bet. The other <b>${((1-SLOT_RTP)*100).toFixed(1)}</b> is the <b>house edge</b>. Dice: Low/High pay 2.2× (fair would be 2.4×); Lucky 7 pays 5× (fair would be 6×) — the "biggest payout" is actually the worst deal. The dice themselves were completely fair; the <i>payout</i> is what's rigged.</p>
-   <p>We just simulated <b>3,000 players</b> betting 10,000 per spin on this exact slot machine:</p>
+   <p>We just simulated <b>3,000 players</b> betting 2,500 per spin on this exact slot machine:</p>
    <table class="t"><tr><th>Spins each</th><th>% of players AHEAD</th><th>Average result per player</th><th>House profit (all players)</th></tr>
    ${sims.map(s=>`<tr><td>${fmt(s.n)}</td><td>${(s.ahead*100).toFixed(0)}%</td><td class="${s.avg<0?'neg':'pos'}">${fmt(s.avg)}</td><td class="pos">+${fmt(s.house)}</td></tr>`).join('')}</table>
    <p class="small">Notice: after a few spins plenty of players are ahead — those are the winners the app shows off. But the longer people play, the fewer are ahead, and the house's total keeps growing. Luck decides single spins; maths decides the long run.</p>
@@ -760,11 +760,11 @@ function teacherTool(){
 function ticker(){
   if($('game').classList.contains('hidden'))return;
   const n=['Mia_K','Jake_88','LuckyLiam','Sofia_Spin','Big_Dre','Kayla777','ZaneTheKing','Ava_Rich'],g=['Diamond Rush','Lucky Dice','Diamond Rush'];
-  const v=Math.round(Math.pow(10,5+Math.random()*2.6)/1000)*1000;
+  const v=Math.round(Math.pow(10,3.5+Math.random()*2.3)/100)*100;
   const d=document.createElement('div');d.innerHTML=`🎉 <b>${rnd(n)}</b> just won <span style="color:var(--gold)">${fmt(v)}</span> on ${rnd(g)}!`;
   const t=$('ticker');t.prepend(d);while(t.children.length>6)t.lastChild.remove();
   trick('socialProof');
-  bots.forEach(b=>b.v+=Math.round(Math.random()*400000));
+  bots.forEach(b=>b.v+=Math.round(Math.random()*20000));
   if(Math.random()<.3)trick('leaderboard');
 }
 function setGame(g){
@@ -776,19 +776,19 @@ function setGame(g){
 }
 function startGame(){
   S=newState();
-  S.name=($('nick').value.trim()||'Player');S.cap=+$('cap').value;S.wallet=S.wallet0=+$('wal').value;S.xray=$('xr0').checked;S.calm=$('calm').checked;
+  S.name=($('nick').value.trim()||'Player');{const c=$('cap').value;S.cap=c[0]==='m'?0:+c;S.capMin=c[0]==='m'?+c.slice(1):0}S.wallet=S.wallet0=+$('wal').value;S.xray=$('xr0').checked;S.calm=$('calm').checked;
   document.body.classList.toggle('calm',S.calm);
   $('start').classList.add('hidden');$('game').classList.remove('hidden');
   $('xrbtn').classList.toggle('xon',S.xray);
   initBots();
-  const bb=$('betbtns');bb.innerHTML=BETS.map(b=>`<button class="betbtn${b===250000?' hot':''}" data-b="${b}">${b>=1000?fmt(b/1000)+'K':b}</button>`).join('');
-  bb.querySelectorAll('.betbtn').forEach(b=>b.onclick=()=>{if(S.busy)return;S.bet=+b.dataset.b;if(S.bet>=250000)trick('popular');sfx.tick();updateAll()});
-  S.jp=12483920;setBal(0,false);shownBal=0;
+  const bb=$('betbtns');bb.innerHTML=BETS.map(b=>`<button class="betbtn${b===5000?' hot':''}" data-b="${b}">${b>=1000?(b/1000)+'K':b}</button>`).join('');
+  bb.querySelectorAll('.betbtn').forEach(b=>b.onclick=()=>{if(S.busy)return;S.bet=+b.dataset.b;if(S.bet>=5000)trick('popular');sfx.tick();updateAll()});
+  S.jp=1248392;setBal(0,false);shownBal=0;
   trick('bigNumbers');trick('welcomeGift');trick('noClock');trick('hiddenExit');trick('popular');trick('nearPrize');
   // welcome gift
   rain(['🎁','🪙','🎉','💰'],26);sfx.win(5);
-  modal(`<h2>🎁 WELCOME GIFT!</h2><div style="font-size:64px">🎁</div><p style="font-size:22px"><b>1,000,000 FREE COINS</b></p><p class="small">(Don't worry, we'll never ask you to quit. 😉)</p><button class="btn btn-gold big pulse" id="wc">CLAIM &amp; PLAY!</button>`);
-  $('wc').onclick=()=>{closeModal();S.giftValue+=0;setBal(START_BAL);S.hist=[START_BAL];updateAll();
+  modal(`<h2>🎁 WELCOME GIFT!</h2><div style="font-size:64px">🎁</div><p style="font-size:22px"><b>50,000 FREE COINS</b></p><p class="small">(Don't worry, we'll never ask you to quit. 😉)</p><button class="btn btn-gold big pulse" id="wc">CLAIM &amp; PLAY!</button>`);
+  $('wc').onclick=()=>{closeModal();S.t0=Date.now();S.giftValue+=0;setBal(START_BAL);S.hist=[START_BAL];updateAll();
     if(S.xray){S.seen={}};['bigNumbers','welcomeGift','noClock','hiddenExit'].forEach(k=>{S.tricks[k]--;trick(k)})};
   updateAll();setGame('slots');
 }
