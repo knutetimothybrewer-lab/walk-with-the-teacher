@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Teacher passcode setup: Wildcats Wellness Quest</title>
+<link rel="stylesheet" href="../css/tokens.css">
+<style>body{padding:24px}main{max-width:720px;margin:0 auto}pre{background:#14213d;color:#fff;padding:16px;border-radius:12px;overflow:auto;white-space:pre-wrap;word-break:break-all}.card{margin-bottom:16px}.msg{font-weight:700}</style>
+</head>
+<body>
+<main>
+  <h1>Teacher passcode setup</h1>
+  <p>This page runs entirely in your browser. Nothing is sent anywhere and your passcode is never stored. It generates a <b>salted, iterated SHA-256 verifier</b> that you paste into <code>js/teacher-config.js</code>.</p>
+  <div class="card callout warn"><div><b>Honest limit.</b> This protects the Teacher reset dialog from casual use. It is <b>not</b> real security: anyone who can open browser developer tools can read or change the verifier and the application code. See the README, "Honest technical limits."</div></div>
+  <div class="card">
+    <label class="field" for="p1">Choose a passcode (at least 8 characters; avoid easy ones such as 1234 or wildcats)</label>
+    <input class="txt" id="p1" type="password" autocomplete="new-password">
+    <label class="field" for="p2" style="margin-top:12px">Type it again</label>
+    <input class="txt" id="p2" type="password" autocomplete="new-password">
+    <p class="msg" id="msg" role="status" aria-live="polite"></p>
+    <button class="btn primary" id="go" type="button">Generate verifier</button>
+  </div>
+  <div class="card" id="out" hidden>
+    <h2>Paste this into <code>js/teacher-config.js</code></h2>
+    <p>Replace the line <code>teacher: { configured: false }</code> with:</p>
+    <pre id="code"></pre>
+    <button class="btn" id="copy" type="button">Copy to clipboard</button>
+    <p class="small muted">Then commit and publish the change. Keep your passcode somewhere safe. If you forget it, generate a new verifier.</p>
+  </div>
+</main>
+<script src="../js/config.js"></script>
+<script src="../js/util.js"></script>
+<script>
+(function () {
+  var U = WWQ.U, EASY = ['12345678', 'password', 'wildcats', 'wildcat123', 'teacher123', 'qwertyui', '11111111', 'abcd1234'];
+  var $ = function (id) { return document.getElementById(id); };
+  $('go').addEventListener('click', function () {
+    var a = $('p1').value, b = $('p2').value, msg = $('msg');
+    if (a.length < 8) { msg.textContent = 'Please use at least 8 characters.'; return; }
+    if (EASY.indexOf(a.toLowerCase()) >= 0 || /^(\d)\1+$/.test(a)) { msg.textContent = 'That passcode is too easy to guess. Please choose another.'; return; }
+    if (a !== b) { msg.textContent = 'The two entries do not match.'; return; }
+    var iterations = 30000, salt = U.randomHex(16), verifier = U.deriveVerifier(a, salt, iterations);
+    $('p1').value = ''; $('p2').value = '';
+    $('code').textContent = "teacher: { configured: true, salt: '" + salt + "', iterations: " + iterations + ", verifier: '" + verifier + "', freeTries: 3, cooldownSeconds: 30 }";
+    $('out').hidden = false; msg.textContent = 'Verifier generated. Your passcode was cleared from this page.';
+  });
+  $('copy').addEventListener('click', function () { var t = $('code').textContent; if (navigator.clipboard) navigator.clipboard.writeText(t).then(function () { $('msg').textContent = 'Copied.'; }); });
+})();
+</script>
+</body>
+</html>

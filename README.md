@@ -103,3 +103,7 @@ a "Can you beat the house?" strategy challenge, scenario mastery locks and a fin
 Static (no build, no server), progress saved only in the student's browser. One URL for students:
 `https://<user>.github.io/<repo>/house-edge/`. See `house-edge/README.md` for teacher instructions, how to edit probabilities,
 payouts, questions and timing, and the tests (`node house-edge/tests/engine.test.js`).
+
+## Wildcats Wellness Quest (`wildcats-wellness-quest/`)
+
+Animated summative assessment for a high school health unit (five dimensions of wellness, health metrics, habits and SMART goals, media literacy, STOP decisions, and the Health by a Thousand Choices simulation). Static site with automatic scoring (100 points), strict 2-3 attempt policy with equivalent retry variants, a locked final report with JSON/print export, and a passcode-protected teacher reset. See `wildcats-wellness-quest/README.md` for setup, GitHub Pages deployment, limits and teacher materials.
