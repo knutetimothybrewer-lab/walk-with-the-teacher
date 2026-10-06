@@ -58,3 +58,20 @@ across five domains (Physical, Mental, Emotional, Social, Environmental).
 
 Sources live in `thousand-choices-src/`; rebuild with `node thousand-choices-src/build.js`.
 Fictional, simplified model, not medical advice.
+
+## Lucky Rush Casino — House Edge Lab (`lucky-rush-casino.html`)
+
+Single-file, offline classroom simulation for the gambling-awareness lesson ("House-edge simulation").
+Students get fake tokens (1,000,000 coins, no real value) in a deliberately slick mobile-casino clone:
+slots and dice, huge numbers, animations, sounds, welcome/daily/wheel/mystery-box gifts, VIP levels,
+leaderboard, live-winner feed, auto-spin/turbo, rescue gifts and a (pretend) coin shop.
+
+- Math: slots return 90.5% (9.5% house edge) from a fixed outcome table, with near misses and
+  "losses disguised as wins" layered on top; dice are fair but pay 2.2x / 5x instead of 2.4x / 6x.
+- **X-Ray Mode** (toggle any time, or start with it on for a teacher demo) names each manipulation as it fires.
+- A class-round spin cap ends the game into **The Reveal**: your real totals, balance chart, gifts vs. bets,
+  near-miss and fake-win counts, a 3,000-player simulation showing the house winning over the long run,
+  every trick used, discussion questions and a helpline.
+- **Teacher tally**: each student copies a short code; paste them all into the teacher tool to total the
+  class and show "the house" coming out ahead while some individuals finish ahead.
+- Calm mode reduces flashing/shaking. Nothing is saved; no network needed; no purchases are real.

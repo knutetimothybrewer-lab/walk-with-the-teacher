@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Lucky Rush Casino — House Edge Lab</title>
+<style>
+:root{
+  --bg1:#1a0638;--bg2:#4a0f7a;--pink:#ff2d95;--gold:#ffd23f;--gold2:#ff9f1c;--cyan:#27f0ff;--green:#31ff7a;--red:#ff4b5c;--ink:#fff;--panel:rgba(20,4,45,.78);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;min-height:100%}
+body{font-family:'Trebuchet MS','Arial Rounded MT Bold',system-ui,sans-serif;color:var(--ink);background:radial-gradient(1200px 700px at 50% -10%,#8a2be2 0%,var(--bg2) 35%,var(--bg1) 80%) fixed;overflow-x:hidden}
+button{font-family:inherit;cursor:pointer;border:0;color:inherit}
+.hidden{display:none!important}
+.screen{min-height:100vh;padding:14px}
+h1,h2,h3{margin:0}
+/* floating bg coins */
+#bgcoins{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:0}
+#bgcoins span{position:absolute;top:-40px;font-size:26px;opacity:.25;animation:fall linear infinite}
+@keyframes fall{to{transform:translateY(115vh) rotate(360deg)}}
+.wrap{position:relative;z-index:1;max-width:1180px;margin:0 auto}
+.disc{background:#000a;border:2px dashed var(--cyan);color:var(--cyan);border-radius:10px;padding:6px 10px;font-size:12px;text-align:center;margin-bottom:10px}
+/* start */
+#start .card{max-width:560px;margin:4vh auto;background:var(--panel);border:3px solid var(--gold);border-radius:26px;padding:26px;text-align:center;box-shadow:0 0 50px #ff2d9566}
+.logo{font-size:clamp(34px,8vw,58px);font-weight:900;line-height:1;background:linear-gradient(180deg,#fff7a8,var(--gold) 45%,var(--gold2));-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 3px 0 #7a1a00) drop-shadow(0 0 18px #ff2d95);letter-spacing:1px}
+.logo small{display:block;font-size:.38em;color:var(--cyan);-webkit-text-fill-color:var(--cyan);letter-spacing:6px;margin-top:6px}
+input[type=text]{width:100%;padding:12px;border-radius:12px;border:3px solid var(--cyan);background:#12002b;color:#fff;font-size:18px;text-align:center;font-family:inherit}
+select{padding:10px;border-radius:10px;border:2px solid var(--cyan);background:#12002b;color:#fff;font-size:16px;font-family:inherit}
+label.row{display:flex;gap:8px;align-items:center;justify-content:center;margin:10px 0;font-size:15px}
+.btn{border-radius:16px;padding:12px 20px;font-weight:900;font-size:17px;text-transform:uppercase;letter-spacing:.5px;transition:transform .08s}
+.btn:active{transform:scale(.95)}
+.btn-gold{background:linear-gradient(180deg,#fff27a,var(--gold) 40%,var(--gold2));color:#4a1a00;box-shadow:0 5px 0 #a34a00,0 0 20px #ffd23f88}
+.btn-green{background:linear-gradient(180deg,#8dffb4,var(--green) 50%,#00b84f);color:#003a1a;box-shadow:0 5px 0 #007a35}
+.btn-pink{background:linear-gradient(180deg,#ff8cc6,var(--pink) 50%,#c40066);box-shadow:0 5px 0 #7a003d}
+.btn-ghost{background:#ffffff18;border:2px solid #ffffff55;padding:8px 14px;font-size:13px}
+.big{font-size:26px;padding:16px 30px}
+.pulse{animation:pulse 1.1s ease-in-out infinite}
+@keyframes pulse{50%{transform:scale(1.07);filter:brightness(1.15)}}
+/* header */
+#hdr{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;background:var(--panel);border:2px solid #ffffff33;border-radius:18px;padding:10px 14px;margin-bottom:12px}
+.bal{display:flex;align-items:center;gap:10px;background:linear-gradient(180deg,#2a0a55,#12002b);border:3px solid var(--gold);border-radius:40px;padding:6px 18px 6px 8px;box-shadow:0 0 22px #ffd23f66 inset}
+.bal .coin{font-size:34px;animation:spinY 2.2s linear infinite}
+@keyframes spinY{50%{transform:rotateY(180deg)}}
+#bal{font-size:clamp(24px,5vw,38px);font-weight:900;color:var(--gold);text-shadow:0 0 12px #ff9f1c;font-variant-numeric:tabular-nums}
+#bal.up{animation:balup .6s}
+#bal.down{animation:baldown .35s}
+@keyframes balup{40%{transform:scale(1.25);color:#fff}}
+@keyframes baldown{40%{color:var(--red)}}
+.lvl{min-width:190px;flex:1;max-width:300px}
+.lvl .t{font-size:13px;font-weight:800;display:flex;justify-content:space-between}
+.bar{height:14px;border-radius:9px;background:#12002b;border:2px solid #ffffff44;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--pink),var(--gold),var(--green));background-size:200% 100%;animation:shine 2s linear infinite;transition:width .6s}
+@keyframes shine{to{background-position:-200% 0}}
+.hbtns{display:flex;gap:6px;flex-wrap:wrap}
+.xon{background:var(--cyan)!important;color:#00323a!important;border-color:#fff!important}
+/* layout */
+#grid{display:grid;grid-template-columns:1fr 310px;gap:12px}
+@media(max-width:900px){#grid{grid-template-columns:1fr}}
+.panel{background:var(--panel);border:2px solid #ffffff33;border-radius:18px;padding:12px}
+.tabs{display:flex;gap:8px;margin-bottom:10px}
+.tab{flex:1;padding:10px;border-radius:14px;background:#ffffff18;font-weight:900;font-size:16px;border:2px solid transparent}
+.tab.on{background:linear-gradient(180deg,var(--pink),#8a0050);border-color:var(--gold);box-shadow:0 0 18px var(--pink)}
+/* machine */
+#machine{position:relative;border-radius:26px;padding:18px;background:linear-gradient(180deg,#ff4fa8,#7a1fd1 55%,#3a0a78);border:5px solid var(--gold);box-shadow:0 0 40px #ff2d95aa,inset 0 0 30px #0007}
+#machine.shake{animation:shake .6s}
+@keyframes shake{20%{transform:translate(-8px,3px)}40%{transform:translate(8px,-3px)}60%{transform:translate(-6px,2px)}80%{transform:translate(6px,-2px)}}
+#lights{position:absolute;inset:-5px;border-radius:26px;pointer-events:none;border:6px dotted #fff;animation:chase 1s steps(2) infinite;opacity:.8}
+@keyframes chase{50%{border-color:var(--gold)}}
+.calm #lights{animation:none}
+.title-bar{text-align:center;font-weight:900;font-size:clamp(18px,3.4vw,28px);color:#fff7a8;text-shadow:0 0 14px #ff2d95,0 3px 0 #7a1a00;margin-bottom:8px}
+.jackpot{text-align:center;background:#000a;border:3px solid var(--gold);border-radius:14px;padding:6px;margin-bottom:12px}
+.jackpot small{display:block;color:var(--cyan);font-size:12px;letter-spacing:3px}
+#jp{font-size:clamp(24px,5vw,40px);font-weight:900;color:var(--gold);text-shadow:0 0 14px #ff9f1c;font-variant-numeric:tabular-nums}
+#reels{display:flex;gap:10px;justify-content:center;background:#12002b;padding:12px;border-radius:18px;border:4px solid #000;position:relative}
+.reel{flex:1;max-width:150px;background:linear-gradient(180deg,#d9d9ff,#fff 25%,#fff 75%,#d9d9ff);border-radius:12px;overflow:hidden;box-shadow:inset 0 0 14px #0006}
+.cell{height:clamp(62px,12vw,92px);display:flex;align-items:center;justify-content:center;font-size:clamp(38px,8vw,62px);transition:transform .1s}
+.cell:nth-child(2){background:#fff7c4;border-top:3px solid var(--red);border-bottom:3px solid var(--red)}
+.cell:nth-child(1),.cell:nth-child(3){opacity:.6}
+.reel.spin .cell{filter:blur(2.5px);animation:jig .12s linear infinite}
+@keyframes jig{50%{transform:translateY(5px)}}
+.reel.land .cell:nth-child(2){animation:land .25s}
+@keyframes land{0%{transform:scale(1.5)}100%{transform:scale(1)}}
+#payline{position:absolute;left:4px;right:4px;top:50%;height:4px;background:var(--red);box-shadow:0 0 10px var(--red);transform:translateY(-50%);pointer-events:none;opacity:.7}
+#msg{min-height:34px;text-align:center;font-size:clamp(16px,3vw,22px);font-weight:900;margin:10px 0 2px;text-shadow:0 2px 0 #0008}
+.msg-win{color:var(--green)}.msg-near{color:var(--gold)}.msg-lose{color:#ffd0e8}
+/* dice */
+#dicearea{display:flex;gap:16px;justify-content:center;background:#12002b;padding:18px;border-radius:18px;border:4px solid #000;min-height:150px;align-items:center}
+.die{font-size:clamp(70px,16vw,110px);line-height:1;background:#fff;color:#111;border-radius:18px;padding:0 6px;box-shadow:0 6px 0 #aaa}
+.die.roll{animation:roll .35s linear infinite}
+@keyframes roll{0%{transform:rotate(0) translateY(0)}50%{transform:rotate(180deg) translateY(-18px)}100%{transform:rotate(360deg) translateY(0)}}
+.picks{display:flex;gap:8px;margin-top:10px}
+.pick{flex:1;padding:10px 4px;border-radius:14px;background:#ffffff1e;border:3px solid #ffffff44;font-weight:900;font-size:15px;position:relative}
+.pick.on{background:linear-gradient(180deg,var(--cyan),#0a8fa0);color:#00262c;border-color:#fff}
+.pick b{display:block;font-size:22px;color:var(--gold)}.pick.on b{color:#00262c}
+.pick em{position:absolute;top:-10px;right:-4px;background:var(--red);font-style:normal;font-size:10px;padding:2px 6px;border-radius:8px;animation:pulse 1s infinite}
+/* controls */
+#ctl{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:center;margin-top:12px}
+@media(max-width:560px){#ctl{grid-template-columns:1fr;}}
+.betbox{text-align:center}
+.betbox small{color:var(--cyan);letter-spacing:2px;font-size:11px}
+#betv{font-size:26px;font-weight:900;color:var(--gold)}
+.betbtns{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-top:4px}
+.betbtn{padding:6px 10px;border-radius:10px;background:#ffffff22;border:2px solid #ffffff55;font-weight:800;font-size:13px;position:relative}
+.betbtn.on{background:var(--gold);color:#4a1a00;border-color:#fff}
+.betbtn.hot::after{content:'🔥 MOST POPULAR';position:absolute;top:-14px;left:50%;transform:translateX(-50%);font-size:9px;white-space:nowrap;background:var(--red);color:#fff;padding:1px 5px;border-radius:6px}
+#spin{width:150px;height:150px;border-radius:50%;font-size:26px;font-weight:900;margin:0 auto;background:radial-gradient(circle at 35% 30%,#aaffc8,var(--green) 40%,#00a845);color:#003a1a;box-shadow:0 8px 0 #006b2c,0 0 34px var(--green);text-transform:uppercase;animation:pulse 1.3s infinite}
+#spin:disabled{filter:grayscale(.7) brightness(.7);animation:none;cursor:not-allowed}
+#spin:active:not(:disabled){transform:translateY(6px);box-shadow:0 2px 0 #006b2c}
+.opts{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.opt{padding:8px 12px;border-radius:12px;background:#ffffff22;border:2px solid #ffffff55;font-weight:800;font-size:13px}
+.opt.on{background:var(--pink);border-color:#fff}
+#exitlink{display:block;margin:14px auto 0;background:none;color:#ffffff40;font-size:10px;text-decoration:underline}
+/* side */
+.side h3{font-size:15px;color:var(--gold);margin-bottom:8px;letter-spacing:1px}
+.chest{display:flex;gap:10px;align-items:center;background:linear-gradient(180deg,#3b0a7a,#1d0442);border:2px solid var(--gold);border-radius:14px;padding:10px;margin-bottom:8px}
+.chest .ic{font-size:40px}
+.chest.ready{animation:pulse .9s infinite;box-shadow:0 0 22px var(--gold)}
+.chest .btn{padding:6px 12px;font-size:13px}
+.lb{font-size:13px;width:100%;border-collapse:collapse}
+.lb td{padding:3px 4px;border-bottom:1px solid #ffffff22}
+.lb tr.me{background:#ff2d9555;font-weight:900}
+.lb td:last-child{text-align:right;color:var(--gold);font-variant-numeric:tabular-nums}
+#ticker{height:110px;overflow:hidden;font-size:12px}
+#ticker div{padding:3px 0;border-bottom:1px solid #ffffff1a;animation:slidein .4s}
+@keyframes slidein{from{opacity:0;transform:translateX(30px)}}
+#giftbox{position:absolute;right:10px;top:10px;font-size:44px;background:none;animation:bob 1s infinite;z-index:5;filter:drop-shadow(0 0 10px var(--gold))}
+@keyframes bob{50%{transform:translateY(-8px) rotate(8deg)}}
+/* overlays */
+#win{position:fixed;inset:0;pointer-events:none;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:50;opacity:0}
+#win.show{animation:winpop 2.2s}
+@keyframes winpop{0%{opacity:0;transform:scale(.4)}12%{opacity:1;transform:scale(1.15)}20%{transform:scale(1)}85%{opacity:1}100%{opacity:0}}
+#win .w1{font-size:clamp(40px,11vw,100px);font-weight:900;color:#fff7a8;text-shadow:0 0 30px var(--pink),0 6px 0 #7a1a00;-webkit-text-stroke:2px #7a1a00}
+#win .w2{font-size:clamp(34px,9vw,80px);font-weight:900;color:var(--green);text-shadow:0 0 24px #000,0 4px 0 #004a20;font-variant-numeric:tabular-nums}
+.fx{position:fixed;pointer-events:none;z-index:49;font-size:30px;animation:fx 1.8s ease-in forwards}
+@keyframes fx{0%{transform:translate(0,0) rotate(0);opacity:1}100%{transform:translate(var(--dx),110vh) rotate(var(--rot));opacity:.9}}
+.fxup{animation:fxup 1.4s ease-out forwards}
+@keyframes fxup{0%{transform:translate(0,0) scale(.5);opacity:1}100%{transform:translate(var(--dx),var(--dy)) scale(1.3);opacity:0}}
+#modal{position:fixed;inset:0;background:#000b;z-index:80;display:flex;align-items:center;justify-content:center;padding:14px;overflow:auto}
+#modal .box{background:linear-gradient(180deg,#4b1090,#1d0442);border:4px solid var(--gold);border-radius:24px;padding:22px;max-width:520px;width:100%;text-align:center;box-shadow:0 0 60px var(--pink);animation:mpop .35s;max-height:92vh;overflow:auto}
+@keyframes mpop{from{transform:scale(.5);opacity:0}}
+#modal h2{font-size:28px;color:var(--gold);text-shadow:0 0 14px var(--pink);margin-bottom:8px}
+#modal .timer{display:inline-block;background:var(--red);padding:4px 12px;border-radius:20px;font-weight:900;margin:6px 0}
+.pack{display:flex;align-items:center;justify-content:space-between;gap:10px;background:#ffffff15;border:2px solid #ffffff44;border-radius:14px;padding:8px 12px;margin:8px 0;text-align:left;position:relative}
+.pack .c{font-size:20px;font-weight:900;color:var(--gold)}
+.pack s{color:#ffffff88;font-size:12px}
+.pack .tag{position:absolute;top:-10px;left:12px;background:var(--red);font-size:10px;font-weight:900;padding:2px 8px;border-radius:8px}
+/* wheel */
+#wheelwrap{position:relative;width:260px;height:260px;margin:10px auto}
+#wheel{width:100%;height:100%;border-radius:50%;border:6px solid var(--gold);position:relative;transition:transform 4.2s cubic-bezier(.12,.7,.1,1);background:conic-gradient(#ff2d95 0 45deg,#27f0ff 45deg 90deg,#ffd23f 90deg 135deg,#31ff7a 135deg 180deg,#ff2d95 180deg 225deg,#27f0ff 225deg 270deg,#ffd23f 270deg 315deg,#8a2be2 315deg 360deg)}
+#wheel span{position:absolute;left:50%;top:50%;font-weight:900;font-size:13px;color:#1a0638;width:90px;margin-left:-45px;text-align:center;transform-origin:50% 0}
+#pointer{position:absolute;left:50%;top:-14px;transform:translateX(-50%);font-size:34px;filter:drop-shadow(0 2px 2px #000)}
+/* xray */
+#xr{position:fixed;left:10px;bottom:10px;width:min(340px,92vw);z-index:70;display:flex;flex-direction:column;gap:8px;pointer-events:none}
+.xt{background:#00262c;border:3px solid var(--cyan);border-radius:14px;padding:10px;font-size:13px;line-height:1.35;box-shadow:0 0 18px var(--cyan);animation:slidein .3s;pointer-events:auto}
+.xt b{color:var(--cyan);display:block;font-size:14px;margin-bottom:2px}
+/* debrief */
+#debrief .wrap{max-width:980px}
+.dh{background:linear-gradient(180deg,#0b2a3a,#08101e);border:3px solid var(--cyan);border-radius:22px;padding:22px;margin-bottom:14px}
+.dh h1{font-size:clamp(26px,5vw,40px);color:var(--cyan)}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin:12px 0}
+.stat{background:#ffffff12;border-radius:14px;padding:10px;text-align:center}
+.stat b{display:block;font-size:24px;font-variant-numeric:tabular-nums}
+.stat span{font-size:12px;color:#cfe}
+.neg{color:var(--red)}.pos{color:var(--green)}
+canvas{width:100%;background:#00000055;border-radius:12px}
+table.t{width:100%;border-collapse:collapse;font-size:14px}
+table.t th,table.t td{padding:6px 8px;border-bottom:1px solid #ffffff22;text-align:right}
+table.t th:first-child,table.t td:first-child{text-align:left}
+table.t th{color:var(--cyan)}
+.trick{border-left:6px solid var(--pink);background:#ffffff10;border-radius:10px;padding:8px 12px;margin:8px 0;font-size:14px}
+.trick b{color:var(--gold)}
+.trick .n{float:right;background:var(--pink);border-radius:12px;padding:1px 10px;font-weight:900}
+.q{background:#ffffff10;border-radius:10px;padding:8px 12px;margin:6px 0;font-size:15px}
+textarea{width:100%;min-height:110px;background:#12002b;color:#fff;border:2px solid var(--cyan);border-radius:10px;padding:8px;font-family:monospace;font-size:12px}
+.small{font-size:13px;color:#d6c8ff}
+</style>
+</head>
+<body>
+<div id="bgcoins"></div>
+
+<!-- START -->
+<div id="start" class="screen"><div class="wrap">
+  <div class="card">
+    <div class="disc">EDUCATIONAL SIMULATION · No real money · Tokens have NO value · Built to show how gambling apps work</div>
+    <div class="logo">LUCKY RUSH<small>★ CASINO ★</small></div>
+    <p style="font-size:18px;margin:14px 0 4px">🎁 <b>WELCOME GIFT: 1,000,000 FREE COINS!</b></p>
+    <p class="small" style="margin:0 0 14px">Your goal: have fun. Your teacher's goal: see if you notice what the game is doing to you.</p>
+    <input id="nick" type="text" maxlength="14" placeholder="Pick a nickname" value="">
+    <label class="row">Class round:
+      <select id="cap"><option value="40" selected>40 spins</option><option value="25">25 spins</option><option value="60">60 spins</option><option value="100">100 spins</option><option value="0">Free play (no limit)</option></select>
+    </label>
+    <label class="row"><input type="checkbox" id="xr0"> Start with X-Ray Mode ON (teacher demo)</label>
+    <label class="row"><input type="checkbox" id="calm"> Calm mode (less flashing &amp; shaking)</label>
+    <button class="btn btn-gold big pulse" id="playbtn">▶ PLAY NOW</button>
+    <div style="margin-top:14px"><button class="btn btn-ghost" id="teachbtn">🧑‍🏫 Teacher tally tool</button></div>
+  </div>
+</div></div>
+
+<!-- GAME -->
+<div id="game" class="screen hidden"><div class="wrap">
+  <div id="hdr">
+    <div class="bal"><span class="coin">🪙</span><span id="bal">0</span><button class="btn btn-green" id="storebtn" style="padding:6px 12px;font-size:13px">+ GET COINS</button></div>
+    <div class="lvl"><div class="t"><span id="vip">⭐ BRONZE · LVL 1</span><span id="xpt"></span></div><div class="bar"><i id="xpbar"></i></div></div>
+    <div class="hbtns">
+      <button class="btn btn-ghost" id="mute">🔊</button>
+      <button class="btn btn-ghost" id="xrbtn">🔍 X-Ray Mode</button>
+    </div>
+  </div>
+  <div id="grid">
+    <div>
+      <div class="tabs"><button class="tab on" id="tabS">🎰 DIAMOND RUSH SLOTS</button><button class="tab" id="tabD">🎲 LUCKY DICE</button></div>
+      <div id="machine">
+        <div id="lights"></div>
+        <button id="giftbox" class="hidden">🎁</button>
+        <div class="title-bar" id="mtitle">💎 DIAMOND RUSH 💎</div>
+        <div class="jackpot"><small>★ MEGA JACKPOT ★</small><div id="jp">0</div></div>
+        <div id="slotarea"><div id="reels"><div id="payline"></div>
+          <div class="reel"><div class="cell"></div><div class="cell"></div><div class="cell"></div></div>
+          <div class="reel"><div class="cell"></div><div class="cell"></div><div class="cell"></div></div>
+          <div class="reel"><div class="cell"></div><div class="cell"></div><div class="cell"></div></div>
+        </div></div>
+        <div id="dicewrap" class="hidden">
+          <div id="dicearea"><div class="die" id="d1">⚀</div><div class="die" id="d2">⚁</div></div>
+          <div class="picks" id="picks">
+            <button class="pick on" data-p="low">LOW<br><small>2–6</small><b>2.2×</b></button>
+            <button class="pick" data-p="seven"><em>BIG PAYOUT!</em>LUCKY 7<br><small>exactly 7</small><b>5×</b></button>
+            <button class="pick" data-p="high">HIGH<br><small>8–12</small><b>2.2×</b></button>
+          </div>
+        </div>
+        <div id="msg">Spin to win! 🍀</div>
+        <div id="ctl">
+          <div class="betbox"><small>TOTAL BET</small><div id="betv">10,000</div><div class="betbtns" id="betbtns"></div></div>
+          <button id="spin">SPIN</button>
+          <div class="opts"><button class="opt" id="auto">⟳ AUTO</button><button class="opt" id="turbo">⚡ TURBO</button></div>
+        </div>
+      </div>
+      <button id="exitlink">cash out &amp; see results</button>
+    </div>
+    <div class="side">
+      <div class="panel" style="margin-bottom:12px">
+        <h3>🎁 FREE GIFTS</h3>
+        <div class="chest" id="chest"><div class="ic">🧰</div><div style="flex:1"><b>Daily Treasure Chest</b><div id="chesttime" class="small">Opens in 0:45</div></div><button class="btn btn-gold hidden" id="chestbtn">CLAIM</button></div>
+        <div class="chest" id="wheelrow"><div class="ic">🎡</div><div style="flex:1"><b>Lucky Wheel</b><div class="small" id="wheeltxt">Level up to unlock a free spin!</div></div><button class="btn btn-pink hidden" id="wheelbtn">SPIN</button></div>
+        <div class="small" id="nextbox">🎁 Mystery box in 10 spins</div>
+      </div>
+      <div class="panel" style="margin-bottom:12px">
+        <h3>🏆 LEADERBOARD</h3>
+        <table class="lb" id="lb"></table>
+      </div>
+      <div class="panel">
+        <h3>📣 LIVE WINNERS</h3>
+        <div id="ticker"></div>
+      </div>
+    </div>
+  </div>
+</div></div>
+
+<div id="win"><div class="w1" id="w1"></div><div class="w2" id="w2"></div></div>
+<div id="xr"></div>
+<div id="modal" class="hidden"><div class="box" id="mbox"></div></div>
+
+<!-- DEBRIEF -->
+<div id="debrief" class="screen hidden"><div class="wrap" id="dbody"></div></div>
+
+<script>
+'use strict';
+/* ============================================================
+   MATH — the whole "game" is just this table. Everything else
+   is decoration that makes the table feel exciting.
+   ============================================================ */
+const SYMS=['🍒','🍋','🔔','⭐','💎','7️⃣'];
+const HIGH=['7️⃣','💎','⭐'];
+const OUT=[
+  {m:50,p:.004,sym:'7️⃣',name:'MEGA JACKPOT'},
+  {m:10,p:.02, sym:'💎',name:'DIAMOND WIN'},
+  {m:5, p:.04, sym:'⭐',name:'STAR WIN'},
+  {m:2, p:.09, sym:'🔔',name:'BELL WIN'},
+  {m:1, p:.05, sym:'🍋',name:'LEMON'},
+  {m:.5,p:.15, sym:'🍒',name:'CHERRY'}        // pays back LESS than the bet — a "loss disguised as a win"
+];
+const SLOT_RTP=OUT.reduce((a,o)=>a+o.m*o.p,0);          // 0.905
+const NEAR_RATE=.45;                                     // share of losing spins dressed up as "almost won"
+const DICE={low:{pay:2.2,p:15/36},high:{pay:2.2,p:15/36},seven:{pay:5,p:6/36}};
+const BETS=[1000,5000,10000,50000,100000,250000];
+const START_BAL=1000000;
+const fmt=n=>Math.round(n).toLocaleString('en-US');
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+const rnd=a=>a[Math.floor(Math.random()*a.length)];
+const $=id=>document.getElementById(id);
+
+function pickOutcome(){let r=Math.random(),acc=0;for(const o of OUT){acc+=o.p;if(r<acc)return o}return null}
+
+/* ============================================================
+   STATE
+   ============================================================ */
+let S;
+function newState(){return{
+  name:'Player',cap:40,bal:0,bet:10000,game:'slots',pick:'low',
+  spins:0,wagered:0,returned:0,wins:0,losses:0,nearMiss:0,ldw:0,bigWins:0,biggest:0,
+  hist:[],t0:Date.now(),giftValue:0,gifts:0,pretend:0,xp:0,level:1,
+  busy:false,auto:false,turbo:false,xray:false,calm:false,muted:false,
+  lossRun:0,winRun:0,rescues:0,chestT:45,chestReady:false,wheelReady:0,boxReady:false,
+  tricks:{},seen:{},capHit:false,jp:12483920
+}}
+
+/* ============================================================
+   X-RAY: every manipulation is logged; shown live if X-Ray on
+   ============================================================ */
+const TRICKS={
+ bigNumbers:['Giant numbers','Starting with 1,000,000 "coins" makes a 10,000 bet feel tiny. Big numbers hide how fast value disappears. Real apps do the same with chips, gems and credits.'],
+ welcomeGift:['Welcome gift','A free gift at the start creates a feeling of "house money" — you are more willing to risk what you did not earn, and you feel you owe the app a try.'],
+ nearMiss:['Near miss','Two matching jackpot symbols and the third one JUST off the line. Your brain treats it like almost winning, but the result was already decided as a plain loss before the reels moved. Near misses make people keep playing.'],
+ suspense:['Fake suspense','The last reel slows down when two symbols already match. The outcome is already set — the slow-down is only drama.'],
+ ldw:['Loss disguised as a win','You bet more than you got back, but the screen flashed, played the win sound and showed "WIN". Net result: a loss celebrated like a win. Researchers call this a "loss disguised as a win".'],
+ celebration:['Celebrate wins, hide losses','Lights, sounds, coin showers and sparkles fire on wins. Losses are quiet and fast. You remember the celebrations far more than the losses, so you think you win more than you do.'],
+ predetermined:['Outcome decided first','The result is picked by a probability table BEFORE the animation. The spinning reels have no effect on it — they are a show.'],
+ dailyChest:['Daily chest + timer','A countdown that brings you back. Real apps use "come back in 4 hours!" so the app becomes a habit and a daily check-in.'],
+ wheel:['Variable-reward wheel','Prizes are random: usually small, sometimes huge. Unpredictable rewards are the most habit-forming kind (the same schedule as a slot machine, or checking social media).'],
+ mystery:['Mystery box + illusion of choice','You "choose" one of three boxes, but all three hold the same prize. Feeling in control makes you more attached.'],
+ vip:['VIP levels & XP','Progress bars and status levels reward you for wagering MORE. Level-ups trigger more gifts, which trigger more betting.'],
+ rescue:['The rescue gift','When you run out, the app gives you free coins right away — so you never have to stop and feel the loss. It keeps you in the game.'],
+ store:['The store pitch','"Limited time!", crossed-out prices, "BEST VALUE" and fake discounts push you to spend. Anchoring: the huge $99.99 pack makes $19.99 feel reasonable.'],
+ popular:['"Most popular" bet','Highlighting a high bet nudges you to wager more. Most players never change the default the app picks.'],
+ coldStreak:['"Luck is due" message','After a losing streak the app says your luck is about to turn. That is the gambler\'s fallacy: every spin is independent, a loss streak does not make a win more likely.'],
+ hotStreak:['"You\'re on fire" message','Praise after a couple of wins makes you feel skilled and in a groove — in a game that is pure chance.'],
+ socialProof:['Fake winners feed','The "live winners" list is generated by the app, not real people. It makes big wins look common.'],
+ leaderboard:['Leaderboard bait','The ranking is mostly made-up players. "Only X coins to move up!" keeps you chasing.'],
+ autoplay:['Auto-spin / Turbo','Auto-play and turbo remove the moment where you decide to bet again, and speed up losses. More spins per minute means more house edge collected per minute.'],
+ hiddenExit:['Hidden exit','The button to stop and see your real results is tiny, grey and hard to find. The "SPIN" button is huge, green and pulsing.'],
+ noClock:['No clock, no running total','Nothing on screen shows how long you have played or how much you have lost in total — only your balance and your wins.'],
+ nearPrize:['Almost-there goals','"Only 1,240,000 coins to reach the next rank!" Always just out of reach so you never feel finished.']
+};
+function trick(id){
+  S.tricks[id]=(S.tricks[id]||0)+1;
+  if(!S.xray||!TRICKS[id])return;
+  const first=!S.seen[id];S.seen[id]=(S.seen[id]||0)+1;
+  if(S.seen[id]>2&&S.seen[id]%6)return;
+  const t=TRICKS[id];
+  const d=document.createElement('div');d.className='xt';
+  d.innerHTML=`<b>🔍 TRICK: ${t[0]}</b>${first?t[1]:'(seen again) '+t[0]}`;
+  const box=$('xr');box.appendChild(d);
+  while(box.children.length>3)box.firstChild.remove();
+  setTimeout(()=>d.remove(),first?9000:3500);
+}
+
+/* ============================================================
+   AUDIO (tiny synth, no files)
+   ============================================================ */
+let AC;
+function tone(f,d,type='sine',v=.12,delay=0){
+  if(S&&S.muted)return;
+  try{AC=AC||new (window.AudioContext||window.webkitAudioContext)();
+    const o=AC.createOscillator(),g=AC.createGain(),t=AC.currentTime+delay;
+    o.type=type;o.frequency.setValueAtTime(f,t);g.gain.setValueAtTime(v,t);g.gain.exponentialRampToValueAtTime(.0001,t+d);
+    o.connect(g);g.connect(AC.destination);o.start(t);o.stop(t+d)}catch(e){}
+}
+const sfx={
+  tick(){tone(380+Math.random()*80,.05,'square',.04)},
+  stop(){tone(160,.12,'triangle',.15)},
+  win(n){const base=[523,659,784,1047,1319,1568];for(let i=0;i<Math.min(6,n+3);i++)tone(base[i],.18,'triangle',.14,i*.08)},
+  near(){tone(520,.2,'sawtooth',.06);tone(390,.35,'sawtooth',.06,.18)},
+  lose(){tone(120,.12,'sine',.05)},
+  coin(){tone(1400,.08,'square',.06);tone(1900,.12,'square',.06,.07)},
+  pop(){tone(700,.1,'triangle',.12);tone(1000,.14,'triangle',.12,.09)}
+};
+
+/* ============================================================
+   EFFECTS
+   ============================================================ */
+function rain(emojis,n){
+  if(S.calm)n=Math.ceil(n/3);
+  for(let i=0;i<n;i++){
+    const e=document.createElement('div');e.className='fx';e.textContent=rnd(emojis);
+    e.style.left=Math.random()*100+'vw';e.style.top=(-8-Math.random()*20)+'vh';
+    e.style.setProperty('--dx',(Math.random()*160-80)+'px');e.style.setProperty('--rot',(Math.random()*720-360)+'deg');
+    e.style.animationDelay=(Math.random()*.5)+'s';e.style.fontSize=(22+Math.random()*26)+'px';
+    document.body.appendChild(e);setTimeout(()=>e.remove(),2600);
+  }
+}
+function burst(emoji,x,y,n=10){
+  for(let i=0;i<n;i++){
+    const e=document.createElement('div');e.className='fx fxup';e.textContent=emoji;e.style.left=x+'px';e.style.top=y+'px';
+    e.style.setProperty('--dx',(Math.random()*240-120)+'px');e.style.setProperty('--dy',(-60-Math.random()*160)+'px');
+    document.body.appendChild(e);setTimeout(()=>e.remove(),1500);
+  }
+}
+let shownBal=0,balAnim=0;
+function setBal(v,animate=true){
+  const el=$('bal'),from=shownBal;S.bal=v;
+  cancelAnimationFrame(balAnim);
+  if(!animate||from===v){shownBal=v;el.textContent=fmt(v);return}
+  el.classList.remove('up','down');void el.offsetWidth;el.classList.add(v>from?'up':'down');
+  const t0=performance.now(),dur=650;
+  const step=t=>{const k=Math.min(1,(t-t0)/dur);shownBal=from+(v-from)*(1-Math.pow(1-k,3));el.textContent=fmt(shownBal);if(k<1)balAnim=requestAnimationFrame(step);else{shownBal=v;el.textContent=fmt(v)}};
+  balAnim=requestAnimationFrame(step);
+}
+function addCoins(n,gift=true){setBal(S.bal+n);if(gift){S.giftValue+=n;S.gifts++}S.hist.push(S.bal);sfx.coin();burst('🪙',innerWidth/2,innerHeight/3,12);updateAll()}
+
+/* ============================================================
+   MODAL
+   ============================================================ */
+function modal(html,wide){$('mbox').innerHTML=html;$('modal').classList.remove('hidden')}
+function closeModal(){$('modal').classList.add('hidden');$('mbox').innerHTML=''}
+function modalOpen(){return !$('modal').classList.contains('hidden')}
+
+/* ============================================================
+   UI REFRESH
+   ============================================================ */
+const VIPN=['BRONZE','SILVER','GOLD','PLATINUM','DIAMOND','ROYAL','LEGEND'];
+const xpNeed=l=>150+(l-1)*100;
+function updateAll(){
+  $('betv').textContent=fmt(S.bet);
+  document.querySelectorAll('.betbtn').forEach(b=>b.classList.toggle('on',+b.dataset.b===S.bet));
+  $('vip').textContent=`⭐ ${VIPN[Math.min(S.level-1,VIPN.length-1)]} · LVL ${S.level}`;
+  $('xpt').textContent=`${fmt(S.xp)} / ${fmt(xpNeed(S.level))} XP`;
+  $('xpbar').style.width=Math.min(100,S.xp/xpNeed(S.level)*100)+'%';
+  $('jp').textContent=fmt(S.jp);
+  const left=10-(S.spins%10);$('nextbox').textContent=S.boxReady?'🎁 Mystery box is ready! (top of machine)':`🎁 Mystery box in ${left} spin${left>1?'s':''}`;
+  $('wheeltxt').textContent=S.wheelReady?'FREE SPIN READY!':'Level up to unlock a free spin!';
+  $('wheelbtn').classList.toggle('hidden',!S.wheelReady);$('wheelrow').classList.toggle('ready',!!S.wheelReady);
+  $('giftbox').classList.toggle('hidden',!S.boxReady);
+  drawLB();
+}
+let bots=[];
+function initBots(){
+  const names=['xX_LuckyKing_Xx','MiaSpins','DiamondDan','JackpotJess','BigBetBen','Queen_of_7s','CoinCollector','SpinWizard','NoLimitNate','GoldenGina'];
+  bots=names.map((n,i)=>({n,v:Math.round((90-i*7)*1e6*(0.8+Math.random()*.4))}));
+}
+function drawLB(){
+  const rank=Math.max(1,Math.round(8000-S.bal/700));
+  const gap=Math.max(50000,Math.round((S.bal*.0007)*1000)%2400000+90000);
+  const rows=bots.slice(0,5).map((b,i)=>`<tr><td>${i+1}</td><td>${b.n}</td><td>${fmt(b.v)}</td></tr>`).join('');
+  $('lb').innerHTML=rows+`<tr class="me"><td>${fmt(rank)}</td><td>${esc(S.name)} (you)</td><td>${fmt(S.bal)}</td></tr><tr><td colspan="3" class="small">Only ${fmt(gap)} coins to climb to rank ${fmt(rank-1)}! 🚀</td></tr>`;
+}
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+function msg(t,cls){const m=$('msg');m.textContent=t;m.className=cls||''}
+
+/* ============================================================
+   REELS
+   ============================================================ */
+const reels=()=>[...document.querySelectorAll('.reel')];
+function setReel(i,top,mid,bot){const c=reels()[i].children;c[0].textContent=top;c[1].textContent=mid;c[2].textContent=bot}
+function layout(outcome){
+  if(outcome)return{r:[outcome.sym,outcome.sym,outcome.sym],near:false};
+  if(Math.random()<NEAR_RATE){
+    const A=rnd(HIGH);let B;do{B=rnd(SYMS)}while(B===A);
+    const pat=rnd([[A,A,B],[B,A,A],[A,B,A]]);
+    return{r:pat,near:true,A};
+  }
+  let r;do{r=[rnd(SYMS),rnd(SYMS),rnd(SYMS)]}while(r[0]===r[1]&&r[1]===r[2]||(HIGH.includes(r[0])&&r[0]===r[1])||(HIGH.includes(r[1])&&r[1]===r[2])||(HIGH.includes(r[0])&&r[0]===r[2]));
+  return{r,near:false};
+}
+async function spinSlots(){
+  const outcome=pickOutcome();trick('predetermined');
+  const L=layout(outcome);
+  const R=reels();
+  const speed=S.turbo?.28:1;
+  R.forEach(r=>r.classList.add('spin'));
+  const iv=setInterval(()=>{R.forEach((r,i)=>{if(r.classList.contains('spin'))setReel(i,rnd(SYMS),rnd(SYMS),rnd(SYMS))});sfx.tick()},75);
+  const stops=[700,1100,1500].map(x=>x*speed);
+  let extra=0;
+  for(let i=0;i<3;i++){
+    let wait=stops[i]-(i?stops[i-1]:0);
+    if(i===2&&L.near&&!S.turbo){wait+=900;trick('suspense')}   // fake suspense on the last reel
+    await sleep(wait);
+    R[i].classList.remove('spin');
+    let top=rnd(SYMS),bot=rnd(SYMS);
+    if(i===2&&L.near){ if(Math.random()<.5)top=L.A;else bot=L.A }   // winning symbol sits just above/below the line
+    setReel(i,top,L.r[i],bot);R[i].classList.remove('land');void R[i].offsetWidth;R[i].classList.add('land');sfx.stop();
+  }
+  clearInterval(iv);
+  return{win:outcome?Math.round(S.bet*outcome.m):0,outcome,near:L.near};
+}
+/* ---- dice ---- */
+const FACE=['⚀','⚁','⚂','⚃','⚄','⚅'];
+async function rollDice(){
+  const d=[$('d1'),$('d2')];d.forEach(x=>x.classList.add('roll'));
+  const iv=setInterval(()=>{d.forEach(x=>x.textContent=rnd(FACE));sfx.tick()},90);
+  const a=1+Math.floor(Math.random()*6),b=1+Math.floor(Math.random()*6);   // genuinely fair dice
+  await sleep(S.turbo?350:1300);clearInterval(iv);
+  d.forEach(x=>x.classList.remove('roll'));d[0].textContent=FACE[a-1];d[1].textContent=FACE[b-1];sfx.stop();
+  const sum=a+b,res=sum<7?'low':sum>7?'high':'seven';
+  const win=res===S.pick?Math.round(S.bet*DICE[S.pick].pay):0;
+  return{win,sum,res};
+}
+
+/* ============================================================
+   MAIN SPIN FLOW
+   ============================================================ */
+async function go(){
+  if(S.busy||modalOpen())return;
+  if(S.bal<S.bet){
+    const aff=[...BETS].reverse().find(b=>b<=S.bal);
+    if(!aff){outOfCoins();return}
+    S.bet=aff;updateAll();
+  }
+  S.busy=true;$('spin').disabled=true;
+  S.bal-=S.bet;S.wagered+=S.bet;S.spins++;      // bet leaves immediately
+  setBal(S.bal);
+  S.xp+=S.bet/1000;
+  msg('Good luck... 🤞');
+  let res;
+  if(S.game==='slots'){res=await spinSlots()}else{res=await rollDice()}
+  const{win}=res;
+  if(win>0){S.returned+=win;S.wins++;S.lossRun=0;S.winRun++;if(win>S.biggest)S.biggest=win}else{S.losses++;S.lossRun++;S.winRun=0}
+  setBal(S.bal+win);S.hist.push(S.bal);
+  if(win>S.bet*1.0001)S.bigWins++;
+  if(S.game==='slots'&&res.outcome&&res.outcome.m>=50){S.jp=12483920+Math.floor(Math.random()*500000)}
+  // ---- presentation: this is where the psychology lives ----
+  if(win>S.bet){celebrate(win,S.bet,false);trick('celebration')}
+  else if(win>0&&win<S.bet){celebrate(win,S.bet,true);S.ldw++;trick('ldw');trick('celebration')}
+  else if(win===S.bet){msg('Break even — spin again! 🍋','msg-near');sfx.coin()}
+  else{
+    if(res.near){S.nearMiss++;sfx.near();msg('SO CLOSE!!! 😱 Almost a JACKPOT!','msg-near');trick('nearMiss')}
+    else{sfx.lose();msg(rnd(['Try again! 🍀','Next one is yours!','Keep going! 🔥']),'msg-lose')}
+  }
+  if(S.lossRun>=4){trick('coldStreak');if(S.lossRun===4)msg('💡 Your luck is about to turn! Lucky Boost ready!','msg-near')}
+  if(S.winRun>=2){trick('hotStreak');msg(S.lastMsgOverride||'🔥 YOU\'RE ON FIRE! 🔥 Keep the streak!','msg-win')}
+  // XP / level / box
+  let lvlUp=false;
+  while(S.xp>=xpNeed(S.level)){S.xp-=xpNeed(S.level);S.level++;S.wheelReady++;lvlUp=true}
+  if(S.spins%10===0&&!S.boxReady){S.boxReady=true;trick('mystery')}
+  updateAll();
+  await sleep(win>0?(S.turbo?500:1500):(S.turbo?150:450));
+  if(lvlUp){trick('vip');trick('wheel');await levelUp()}
+  S.busy=false;$('spin').disabled=false;
+  if(S.cap&&S.spins>=S.cap&&!S.capHit){S.capHit=true;S.auto=false;$('auto').classList.remove('on');roundOver();return}
+  if(S.bal<1000){outOfCoins();return}
+  if(S.auto&&!modalOpen()){await sleep(S.turbo?150:700);if(S.auto)go()}
+}
+function celebrate(win,bet,isLDW){
+  const ratio=win/bet;
+  const tier=ratio>=10?3:ratio>=3?2:1;
+  const label=ratio>=50?'MEGA JACKPOT!!!':ratio>=10?'MEGA WIN!':ratio>=3?'BIG WIN!':'WIN!';
+  $('w1').textContent=label;$('w2').textContent='+0';
+  const w=$('win');w.classList.remove('show');void w.offsetWidth;w.classList.add('show');
+  const t0=performance.now();(function c(t){const k=Math.min(1,(t-t0)/900);$('w2').textContent='+'+fmt(win*k);if(k<1)requestAnimationFrame(c)})(t0);
+  msg(isLDW?`WIN! +${fmt(win)} 🎉`:`${label} +${fmt(win)} 🎉`,'msg-win');
+  sfx.win(tier+(isLDW?0:2));
+  rain(isLDW?['🪙','✨']:['🪙','💰','💎','🎉','⭐','💵'],isLDW?10:tier*14);
+  if(tier>=2&&!S.calm){$('machine').classList.remove('shake');void $('machine').offsetWidth;$('machine').classList.add('shake')}
+}
+
+/* ============================================================
+   GIFTS
+   ============================================================ */
+async function levelUp(){
+  sfx.pop();rain(['⭐','🎉','🌟'],24);
+  modal(`<h2>🎉 LEVEL UP! 🎉</h2><div style="font-size:60px">⭐</div><p style="font-size:20px">You reached <b>${VIPN[Math.min(S.level-1,VIPN.length-1)]} · LVL ${S.level}</b>!</p><p>🎁 A FREE Lucky Wheel spin is waiting!</p><button class="btn btn-gold big" id="mok">SPIN NOW</button>`);
+  await new Promise(r=>$('mok').onclick=()=>{closeModal();r()});
+  await openWheel();
+}
+function openWheel(){
+  return new Promise(res=>{
+    if(!S.wheelReady){res();return}
+    const prizes=[25000,50000,100000,50000,250000,75000,1000000,40000];
+    const wts=[22,20,14,18,6,12,1,7];
+    let r=Math.random()*wts.reduce((a,b)=>a+b),i=0;for(;i<wts.length;i++){if((r-=wts[i])<0)break}
+    i=Math.min(i,7);
+    const labels=prizes.map((p,k)=>`<span style="transform:rotate(${k*45+22.5}deg) translateY(-115px) rotate(0deg)">${p>=1e6?'1M!':fmt(p/1000)+'K'}</span>`).join('');
+    modal(`<h2>🎡 LUCKY WHEEL</h2><div id="wheelwrap"><div id="pointer">🔻</div><div id="wheel">${labels}</div></div><div id="wres" style="font-size:22px;font-weight:900;min-height:30px"></div><button class="btn btn-pink big" id="wgo">SPIN!</button>`);
+    $('wgo').onclick=()=>{
+      $('wgo').disabled=true;S.wheelReady--;sfx.pop();
+      const deg=360*6-(i*45+22.5);
+      $('wheel').style.transform=`rotate(${deg}deg)`;
+      const iv=setInterval(()=>sfx.tick(),120);
+      setTimeout(()=>{clearInterval(iv);$('wres').innerHTML=`You won <span style="color:var(--gold)">${fmt(prizes[i])}</span> coins! 🎉`;rain(['🪙','🎉'],24);sfx.win(4);
+        addCoins(prizes[i]);
+        $('wgo').outerHTML=`<button class="btn btn-gold big" id="wdone">COLLECT</button>`;
+        $('wdone').onclick=()=>{closeModal();updateAll();res()};
+      },4400);
+    };
+  });
+}
+function openBox(){
+  if(S.busy||modalOpen())return;
+  S.boxReady=false;trick('mystery');
+  const prize=Math.round((20000+Math.random()*280000)/1000)*1000;
+  modal(`<h2>🎁 MYSTERY BOX!</h2><p>Pick ONE box — big prizes inside!</p><div style="font-size:70px;display:flex;justify-content:center;gap:14px"><button class="bx" style="background:none;font-size:70px">🎁</button><button class="bx" style="background:none;font-size:70px">🎁</button><button class="bx" style="background:none;font-size:70px">🎁</button></div><div id="bres" style="font-size:22px;font-weight:900;min-height:30px"></div>`);
+  document.querySelectorAll('.bx').forEach(b=>b.onclick=()=>{
+    document.querySelectorAll('.bx').forEach(x=>{x.textContent='🪙';x.disabled=true});
+    $('bres').innerHTML=`+${fmt(prize)} coins!<div class="small">(all three boxes held the same prize 😉)</div>`;sfx.win(3);rain(['🪙','🎉'],20);
+    addCoins(prize);
+    $('bres').insertAdjacentHTML('afterend','<button class="btn btn-gold big" id="bdone">COLLECT</button>');
+    $('bdone').onclick=()=>{closeModal();updateAll()};
+  });
+  updateAll();
+}
+function chestTick(){
+  if(!S||$('game').classList.contains('hidden'))return;
+  if(!S.chestReady){S.chestT--;if(S.chestT<=0){S.chestReady=true;sfx.pop()}}
+  $('chesttime').textContent=S.chestReady?'READY NOW! Tap claim!':`Opens in 0:${String(S.chestT).padStart(2,'0')}`;
+  $('chestbtn').classList.toggle('hidden',!S.chestReady);$('chest').classList.toggle('ready',S.chestReady);
+}
+function claimChest(){
+  if(!S.chestReady)return;S.chestReady=false;S.chestT=45;trick('dailyChest');
+  const p=100000+Math.round(Math.random()*10)*10000;addCoins(p);rain(['🪙','💰'],18);
+  msg(`🧰 Chest opened! +${fmt(p)} free coins!`,'msg-win');
+}
+
+/* ============================================================
+   STORE / RESCUE
+   ============================================================ */
+function openStore(rescue){
+  trick('store');
+  modal(`<h2>${rescue?'😱 OUT OF COINS!':'💰 COIN SHOP'}</h2>
+  <div class="timer" id="stimer">⏰ LIMITED TIME: 0:30</div>
+  <div class="disc">SIMULATION — nothing is really purchased. Your teacher will show you the total you "would have spent."</div>
+  ${rescue&&S.rescues<3?`<button class="btn btn-gold big pulse" id="free" style="width:100%;margin:8px 0">🎁 CLAIM FREE 500,000 COINS</button>`:''}
+  ${[['1,000,000','0.99','',''],['6,000,000','4.99','<s>$9.99</s>','🔥 50% OFF'],['35,000,000','19.99','<s>$79.99</s>','⭐ BEST VALUE'],['200,000,000','99.99','<s>$499.99</s>','👑 VIP WHALE PACK']].map((p,i)=>`<div class="pack">${p[3]?`<span class="tag">${p[3]}</span>`:''}<div><div class="c">🪙 ${p[0]}</div>${p[2]}</div><button class="btn btn-green buy" data-c="${p[0].replace(/,/g,'')}" data-d="${p[1]}">$${p[1]}</button></div>`).join('')}
+  <div style="margin-top:10px"><button class="btn btn-ghost" id="sclose" style="${rescue?'opacity:.5;font-size:11px':''}">${rescue?'no thanks, I quit':'Close'}</button></div>`);
+  let t=30;const iv=setInterval(()=>{t--;const e=$('stimer');if(!e||t<0){clearInterval(iv);return}e.textContent='⏰ LIMITED TIME: 0:'+String(t).padStart(2,'0')},1000);
+  if($('free'))$('free').onclick=()=>{S.rescues++;clearInterval(iv);closeModal();addCoins(500000);trick('rescue');msg('Phew! Free coins! Back in the game! 🍀','msg-win');S.busy=false;$('spin').disabled=false};
+  document.querySelectorAll('.buy').forEach(b=>b.onclick=()=>{
+    S.pretend+=+b.dataset.d;clearInterval(iv);closeModal();addCoins(+b.dataset.c,false);
+    msg(`(Pretend) bought ${fmt(b.dataset.c)} coins for $${b.dataset.d}`,'msg-win');S.busy=false;$('spin').disabled=false;
+  });
+  $('sclose').onclick=()=>{clearInterval(iv);closeModal();if(rescue&&S.bal<1000){showResults()}};
+}
+function outOfCoins(){S.auto=false;$('auto').classList.remove('on');S.busy=true;$('spin').disabled=true;trick('rescue');openStore(true)}
+
+/* ============================================================
+   ROUND OVER
+   ============================================================ */
+function roundOver(){
+  const net=S.returned-S.wagered;
+  modal(`<h2>⏱ CLASS ROUND COMPLETE</h2><p style="font-size:18px">You played <b>${S.spins}</b> spins.</p><p>Your balance: <b style="color:var(--gold)">${fmt(S.bal)}</b> coins</p><p class="small">Feeling lucky? You can keep playing…</p>
+  <button class="btn btn-gold big" id="keep">KEEP PLAYING 🎰</button><div style="margin-top:10px"><button class="btn btn-pink" id="reveal">🔍 REVEAL WHAT HAPPENED</button></div>`);
+  $('keep').onclick=()=>{closeModal();S.cap=0};
+  $('reveal').onclick=()=>{closeModal();showResults()};
+}
+
+/* ============================================================
+   DEBRIEF
+   ============================================================ */
+function simulate(players,spins,bet){
+  let ahead=0,sum=0;
+  for(let p=0;p<players;p++){let net=0;for(let s=0;s<spins;s++){const o=pickOutcome();net+=(o?Math.round(bet*o.m):0)-bet}
+    if(net>0)ahead++;sum+=net}
+  return{ahead:ahead/players,avg:sum/players,house:-sum}
+}
+function makeCode(){
+  const o={n:S.name,s:S.spins,w:S.wagered,r:S.returned,g:S.giftValue,v:S.pretend,b:S.bal};
+  return 'LRC1.'+btoa(unescape(encodeURIComponent(JSON.stringify(o))));
+}
+function showResults(){
+  S.auto=false;S.busy=false;closeModal();$('win').classList.remove('show');document.querySelectorAll('.fx').forEach(e=>e.remove());
+  $('game').classList.add('hidden');$('debrief').classList.remove('hidden');window.scrollTo(0,0);
+  const net=S.returned-S.wagered,mins=Math.max(1,Math.round((Date.now()-S.t0)/60000));
+  const rtp=S.wagered?S.returned/S.wagered:0;
+  const peak=Math.max(...S.hist,START_BAL);
+  const dollar=Math.abs(net)/1000000*0.99;
+  const sims=[10,50,200,1000,5000].map(n=>({n,...simulate(3000,n,10000)}));
+  const trickRows=Object.keys(S.tricks).filter(k=>TRICKS[k]).sort((a,b)=>S.tricks[b]-S.tricks[a]).map(k=>`<div class="trick"><span class="n">×${S.tricks[k]}</span><b>${TRICKS[k][0]}</b><br>${TRICKS[k][1]}</div>`).join('');
+  const unseen=['noClock','hiddenExit','bigNumbers','welcomeGift','popular','socialProof','leaderboard','nearPrize','autoplay'].filter(k=>!S.tricks[k]).map(k=>`<div class="trick"><b>${TRICKS[k][0]}</b><br>${TRICKS[k][1]}</div>`).join('');
+  $('dbody').innerHTML=`
+  <div class="dh"><h1>🔍 THE REVEAL: what the app did to you</h1>
+   <p>This was a simulation — no real money, but the design is copied from real mobile gambling apps. Here is the truth behind the flashing lights.</p>
+   <div class="stats">
+    <div class="stat"><b>${S.spins}</b><span>spins</span></div>
+    <div class="stat"><b>${fmt(S.wagered)}</b><span>coins you bet in total</span></div>
+    <div class="stat"><b>${fmt(S.returned)}</b><span>coins paid back to you</span></div>
+    <div class="stat"><b class="${net<0?'neg':'pos'}">${net<0?'−':'+'}${fmt(Math.abs(net))}</b><span>net result from betting</span></div>
+    <div class="stat"><b>${(rtp*100).toFixed(1)}%</b><span>of bets returned (the game is built to return ~${(SLOT_RTP*100).toFixed(1)}% on slots)</span></div>
+    <div class="stat"><b>${fmt(S.giftValue)}</b><span>free "gift" coins you received</span></div>
+    <div class="stat"><b>$${S.pretend.toFixed(2)}</b><span>pretend dollars spent in the shop</span></div>
+    <div class="stat"><b>${mins} min</b><span>time played (no clock was shown!)</span></div>
+   </div>
+   <p>At the shop's own price, your betting ${net<0?'loss':'result'} of <b>${fmt(Math.abs(net))}</b> coins ≈ <b>$${dollar.toFixed(2)}</b> in real money (1,000,000 coins = $0.99). Big numbers make that feel like nothing.</p>
+  </div>
+  <div class="dh"><h2>📉 Your balance over time</h2><canvas id="cv" width="900" height="260"></canvas>
+   <div class="stats">
+    <div class="stat"><b>${fmt(peak)}</b><span>your peak balance</span></div>
+    <div class="stat"><b>${fmt(S.bal)}</b><span>your final balance</span></div>
+    <div class="stat"><b>${S.wins}</b><span>spins that flashed a "win"</span></div>
+    <div class="stat"><b class="neg">${S.ldw}</b><span>"wins" that were actually LOSSES (paid back less than the bet)</span></div>
+    <div class="stat"><b>${S.nearMiss}</b><span>near misses (${S.losses?Math.round(S.nearMiss/Math.max(1,S.losses)*100):0}% of your losses were dressed up as "so close!")</span></div>
+    <div class="stat"><b>${S.bigWins}</b><span>spins where you truly won more than you bet</span></div>
+   </div>
+  </div>
+  <div class="dh"><h2>🏠 Why the house always wins (the math)</h2>
+   <p>The game pays back about <b>${(SLOT_RTP*100).toFixed(1)}</b> coins for every 100 bet. The other <b>${((1-SLOT_RTP)*100).toFixed(1)}</b> is the <b>house edge</b>. Dice: Low/High pay 2.2× (fair would be 2.4×); Lucky 7 pays 5× (fair would be 6×) — the "biggest payout" is actually the worst deal. The dice themselves were completely fair; the <i>payout</i> is what's rigged.</p>
+   <p>We just simulated <b>3,000 players</b> betting 10,000 per spin on this exact slot machine:</p>
+   <table class="t"><tr><th>Spins each</th><th>% of players AHEAD</th><th>Average result per player</th><th>House profit (all players)</th></tr>
+   ${sims.map(s=>`<tr><td>${fmt(s.n)}</td><td>${(s.ahead*100).toFixed(0)}%</td><td class="${s.avg<0?'neg':'pos'}">${fmt(s.avg)}</td><td class="pos">+${fmt(s.house)}</td></tr>`).join('')}</table>
+   <p class="small">Notice: after a few spins plenty of players are ahead — those are the winners the app shows off. But the longer people play, the fewer are ahead, and the house's total keeps growing. Luck decides single spins; maths decides the long run.</p>
+  </div>
+  <div class="dh"><h2>🕵️ Tricks the app used on you</h2>${trickRows||'<p>None triggered yet — play more!</p>'}
+   ${unseen?`<h3 style="margin-top:14px;color:var(--gold)">Also built in:</h3>${unseen}`:''}</div>
+  <div class="dh"><h2>💬 Discuss</h2>
+   <div class="q">1. How did you feel at the moment of a near miss? Did you want to spin again?</div>
+   <div class="q">2. Which gift or pop-up made you most likely to keep playing? Why?</div>
+   <div class="q">3. Look at your "wins" that were really losses. Did the app make you feel like you were winning?</div>
+   <div class="q">4. Why do some players end up ahead after 10 spins while the house comes out ahead after 1,000?</div>
+   <div class="q">5. If a "free" game uses these designs, what might they be preparing you for? What protects people (time limits, spending caps, knowing the odds, talking to someone)?</div>
+   <div class="q">6. Help is available: in the US, the National Problem Gambling Helpline is 1-800-GAMBLER (call/text 1-800-426-2537).</div>
+  </div>
+  <div class="dh"><h2>📋 Class tally code</h2>
+   <p class="small">Give your teacher this code so they can total the whole class — the class "house" will end up ahead.</p>
+   <textarea id="code" readonly>${makeCode()}</textarea>
+   <div style="margin-top:8px"><button class="btn btn-gold" id="copy">Copy code</button> <button class="btn btn-ghost" id="again">Play again</button> <button class="btn btn-ghost" id="teach2">🧑‍🏫 Teacher tally</button></div>
+  </div>`;
+  drawChart(peak);
+  $('copy').onclick=()=>{$('code').select();try{document.execCommand('copy')}catch(e){}$('copy').textContent='Copied!'};
+  $('again').onclick=()=>location.reload();
+  $('teach2').onclick=teacherTool;
+}
+function drawChart(peak){
+  const cv=$('cv'),c=cv.getContext('2d'),W=cv.width,H=cv.height,h=S.hist.length>1?S.hist:[START_BAL,S.bal];
+  const mn=Math.min(...h,0),mx=Math.max(...h,START_BAL)*1.05;
+  const X=i=>20+i/(h.length-1)*(W-40),Y=v=>H-20-(v-mn)/(mx-mn)*(H-40);
+  c.strokeStyle='#ffffff55';c.setLineDash([6,6]);c.beginPath();c.moveTo(20,Y(START_BAL));c.lineTo(W-20,Y(START_BAL));c.stroke();c.setLineDash([]);
+  c.fillStyle='#ffffffaa';c.font='13px sans-serif';c.fillText('starting balance',24,Y(START_BAL)-6);
+  c.lineWidth=3;c.strokeStyle='#27f0ff';c.beginPath();h.forEach((v,i)=>i?c.lineTo(X(i),Y(v)):c.moveTo(X(i),Y(v)));c.stroke();
+  const pi=h.indexOf(Math.max(...h));c.fillStyle='#ffd23f';c.beginPath();c.arc(X(pi),Y(h[pi]),6,0,7);c.fill();c.fillText('peak',X(pi)+8,Y(h[pi])-8);
+  c.fillStyle='#ff2d95';c.beginPath();c.arc(X(h.length-1),Y(h[h.length-1]),6,0,7);c.fill();
+  c.fillStyle='#ffffffaa';c.fillText('Gifts (wheel, chest, rescue) push this line up — they are why it can look healthier than your betting really was.',24,16);
+}
+
+/* ============================================================
+   TEACHER TALLY
+   ============================================================ */
+function teacherTool(){
+  modal(`<h2>🧑‍🏫 Class Tally</h2><p class="small">Paste each student's code (one per line), then Tally.</p><textarea id="codes" placeholder="LRC1.xxxxx"></textarea><div style="margin:8px"><button class="btn btn-gold" id="tally">TALLY</button> <button class="btn btn-ghost" id="tclose">Close</button></div><div id="tout"></div>`);
+  $('tclose').onclick=closeModal;
+  $('tally').onclick=()=>{
+    const rows=[];$('codes').value.split(/\s+/).forEach(l=>{if(!l.startsWith('LRC1.'))return;try{rows.push(JSON.parse(decodeURIComponent(escape(atob(l.slice(5))))))}catch(e){}});
+    if(!rows.length){$('tout').innerHTML='<p>No valid codes found.</p>';return}
+    rows.forEach(r=>r.net=r.r-r.w);rows.sort((a,b)=>b.net-a.net);
+    const W=rows.reduce((a,r)=>a+r.w,0),R=rows.reduce((a,r)=>a+r.r,0),ahead=rows.filter(r=>r.net>0).length;
+    $('tout').innerHTML=`<table class="t"><tr><th>Student</th><th>Spins</th><th>Bet</th><th>Returned</th><th>Net</th></tr>${rows.map(r=>`<tr><td>${esc(r.n)}</td><td>${r.s}</td><td>${fmt(r.w)}</td><td>${fmt(r.r)}</td><td class="${r.net<0?'neg':'pos'}">${fmt(r.net)}</td></tr>`).join('')}
+    <tr><th>CLASS</th><th>${rows.reduce((a,r)=>a+r.s,0)}</th><th>${fmt(W)}</th><th>${fmt(R)}</th><th class="${R-W<0?'neg':'pos'}">${fmt(R-W)}</th></tr></table>
+    <p><b>${ahead} of ${rows.length}</b> students finished ahead. 🏠 <b>The house</b> ${R<W?'won':'lost'} <b>${fmt(Math.abs(W-R))}</b> coins — a return of ${(R/W*100).toFixed(1)}% to players.</p>
+    <p class="small">Individual players can win; the house is the sum of everyone's bets — so it's far more predictable.</p>`};
+}
+
+/* ============================================================
+   SETUP
+   ============================================================ */
+function ticker(){
+  if($('game').classList.contains('hidden'))return;
+  const n=['Mia_K','Jake_88','LuckyLiam','Sofia_Spin','Big_Dre','Kayla777','ZaneTheKing','Ava_Rich'],g=['Diamond Rush','Lucky Dice','Diamond Rush'];
+  const v=Math.round(Math.pow(10,5+Math.random()*2.6)/1000)*1000;
+  const d=document.createElement('div');d.innerHTML=`🎉 <b>${rnd(n)}</b> just won <span style="color:var(--gold)">${fmt(v)}</span> on ${rnd(g)}!`;
+  const t=$('ticker');t.prepend(d);while(t.children.length>6)t.lastChild.remove();
+  trick('socialProof');
+  bots.forEach(b=>b.v+=Math.round(Math.random()*400000));
+  if(Math.random()<.3)trick('leaderboard');
+}
+function setGame(g){
+  if(S.busy)return;S.game=g;
+  $('tabS').classList.toggle('on',g==='slots');$('tabD').classList.toggle('on',g==='dice');
+  $('slotarea').classList.toggle('hidden',g!=='slots');$('dicewrap').classList.toggle('hidden',g!=='dice');
+  $('mtitle').textContent=g==='slots'?'💎 DIAMOND RUSH 💎':'🎲 LUCKY DICE 🎲';
+  $('spin').textContent=g==='slots'?'SPIN':'ROLL';msg(g==='slots'?'Spin to win! 🍀':'Pick Low, Lucky 7 or High — then ROLL! 🎲');
+}
+function startGame(){
+  S=newState();
+  S.name=($('nick').value.trim()||'Player');S.cap=+$('cap').value;S.xray=$('xr0').checked;S.calm=$('calm').checked;
+  document.body.classList.toggle('calm',S.calm);
+  $('start').classList.add('hidden');$('game').classList.remove('hidden');
+  $('xrbtn').classList.toggle('xon',S.xray);
+  initBots();
+  const bb=$('betbtns');bb.innerHTML=BETS.map(b=>`<button class="betbtn${b===250000?' hot':''}" data-b="${b}">${b>=1000?fmt(b/1000)+'K':b}</button>`).join('');
+  bb.querySelectorAll('.betbtn').forEach(b=>b.onclick=()=>{if(S.busy)return;S.bet=+b.dataset.b;if(S.bet>=250000)trick('popular');sfx.tick();updateAll()});
+  S.jp=12483920;setBal(0,false);shownBal=0;
+  trick('bigNumbers');trick('welcomeGift');trick('noClock');trick('hiddenExit');trick('popular');trick('nearPrize');
+  // welcome gift
+  rain(['🎁','🪙','🎉','💰'],26);sfx.win(5);
+  modal(`<h2>🎁 WELCOME GIFT!</h2><div style="font-size:64px">🎁</div><p style="font-size:22px"><b>1,000,000 FREE COINS</b></p><p class="small">(Don't worry, we'll never ask you to quit. 😉)</p><button class="btn btn-gold big pulse" id="wc">CLAIM &amp; PLAY!</button>`);
+  $('wc').onclick=()=>{closeModal();S.giftValue+=0;setBal(START_BAL);S.hist=[START_BAL];updateAll();
+    if(S.xray){S.seen={}};['bigNumbers','welcomeGift','noClock','hiddenExit'].forEach(k=>{S.tricks[k]--;trick(k)})};
+  updateAll();setGame('slots');
+}
+document.addEventListener('DOMContentLoaded',()=>{
+  S=newState();
+  const bg=$('bgcoins');for(let i=0;i<14;i++){const s=document.createElement('span');s.textContent=rnd(['🪙','💎','⭐','🍒','7️⃣']);s.style.left=Math.random()*100+'%';s.style.animationDuration=(9+Math.random()*10)+'s';s.style.animationDelay=(-Math.random()*14)+'s';bg.appendChild(s)}
+  $('playbtn').onclick=startGame;
+  $('teachbtn').onclick=teacherTool;
+  $('spin').onclick=go;
+  $('tabS').onclick=()=>setGame('slots');$('tabD').onclick=()=>setGame('dice');
+  $('picks').querySelectorAll('.pick').forEach(b=>b.onclick=()=>{if(S.busy)return;S.pick=b.dataset.p;$('picks').querySelectorAll('.pick').forEach(x=>x.classList.toggle('on',x===b));sfx.tick()});
+  $('auto').onclick=()=>{S.auto=!S.auto;$('auto').classList.toggle('on',S.auto);if(S.auto){trick('autoplay');go()}};
+  $('turbo').onclick=()=>{S.turbo=!S.turbo;$('turbo').classList.toggle('on',S.turbo);trick('autoplay')};
+  $('mute').onclick=()=>{S.muted=!S.muted;$('mute').textContent=S.muted?'🔇':'🔊'};
+  $('xrbtn').onclick=()=>{S.xray=!S.xray;$('xrbtn').classList.toggle('xon',S.xray);if(!S.xray)$('xr').innerHTML='';else{S.seen={};trick('nearMiss')}};
+  $('storebtn').onclick=()=>{if(!S.busy)openStore(false)};
+  $('chestbtn').onclick=claimChest;
+  $('wheelbtn').onclick=async()=>{if(S.busy||modalOpen())return;S.busy=true;$('spin').disabled=true;await openWheel();S.busy=false;$('spin').disabled=false;updateAll()};
+  $('giftbox').onclick=openBox;
+  $('exitlink').onclick=showResults;
+  $('modal').addEventListener('click',e=>{if(e.target.id==='modal'&&$('mbox').querySelector('#tclose'))closeModal()});
+  setInterval(chestTick,1000);setInterval(ticker,3500);
+});
+</script>
+</body>
+</html>
