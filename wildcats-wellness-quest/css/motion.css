@@ -1,0 +1,26 @@
+/* Motion: brief, purposeful, never blocks controls. html[data-motion="off"] removes every animation and transition
+ * while preserving all information (charts and numbers are always present in text and tables). */
+@keyframes rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+@keyframes pop { 0% { transform: scale(.96); } 60% { transform: scale(1.02); } 100% { transform: none; } }
+@keyframes bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
+@keyframes sway { 0%, 100% { transform: rotate(-3deg); } 50% { transform: rotate(3deg); } }
+@keyframes draw { to { stroke-dashoffset: 0; } }
+@keyframes walkL { 0%, 100% { transform: rotate(18deg); } 50% { transform: rotate(-18deg); } }
+@keyframes walkR { 0%, 100% { transform: rotate(-18deg); } 50% { transform: rotate(18deg); } }
+@keyframes ringpulse { 0% { box-shadow: 0 0 0 0 rgba(245,184,61,.65); } 100% { box-shadow: 0 0 0 16px rgba(245,184,61,0); } }
+@keyframes shine { from { background-position: -200% 0; } to { background-position: 200% 0; } }
+
+html[data-motion="on"] .rise { animation: rise .35s ease both; }
+html[data-motion="on"] .pop { animation: pop .3s ease both; }
+html[data-motion="on"] .bob { animation: bob 3.2s ease-in-out infinite; }
+html[data-motion="on"] .sway { transform-origin: top center; animation: sway 4s ease-in-out infinite; }
+html[data-motion="on"] .draw { stroke-dasharray: var(--len, 600); stroke-dashoffset: var(--len, 600); animation: draw .9s .1s ease forwards; }
+html[data-motion="on"] .walking .legL { transform-origin: 50% 0; animation: walkL .5s ease-in-out infinite; }
+html[data-motion="on"] .walking .legR { transform-origin: 50% 0; animation: walkR .5s ease-in-out infinite; }
+html[data-motion="on"] .nodebtn.cur { animation: ringpulse 1.8s ease-out infinite; }
+html[data-motion="on"] .btn.pulse { animation: ringpulse 1.8s ease-out 3; }
+html[data-motion="on"] .stagger > * { animation: rise .35s ease both; } html[data-motion="on"] .stagger > *:nth-child(2) { animation-delay: .05s; } html[data-motion="on"] .stagger > *:nth-child(3) { animation-delay: .1s; } html[data-motion="on"] .stagger > *:nth-child(4) { animation-delay: .15s; } html[data-motion="on"] .stagger > *:nth-child(5) { animation-delay: .2s; }
+html[data-motion="off"] *, html[data-motion="off"] *::before, html[data-motion="off"] *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+html[data-motion="off"] .draw { stroke-dasharray: none !important; stroke-dashoffset: 0 !important; }
+html.paused *, html.paused *::before, html.paused *::after { animation-play-state: paused !important; }
+@media (prefers-reduced-motion: reduce) { html[data-motion="auto"] *, html[data-motion="auto"] *::before, html[data-motion="auto"] *::after { animation: none !important; transition: none !important; } }

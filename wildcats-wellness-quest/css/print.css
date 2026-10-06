@@ -1,0 +1,19 @@
+/* Print / Save as PDF layout for the final report. Only the report prints; interface chrome is hidden. */
+@media print {
+  *, *::before, *::after { animation: none !important; transition: none !important; opacity: 1 !important; }
+  @page { margin: 14mm; }
+  html { font-size: 11pt; }
+  body { background: #fff; color: #000; }
+  .hud, .strip, .skip, #toasts, .noprint, .actionbar, .stagenav, .modal-back, .drawer, .footnote button, .banner, .warnbar { display: none !important; }
+  .page { max-width: none; padding: 0; }
+  .card, .item { box-shadow: none !important; border: 1px solid #999 !important; break-inside: avoid; }
+  .score-hero { grid-template-columns: 1fr 1fr 1fr; }
+  .twocol { grid-template-columns: 1fr 1fr; } .grid.c3 { grid-template-columns: repeat(3, 1fr) !important; } .mrow { grid-template-columns: 230px 1fr 110px !important; }
+  a { color: #000; text-decoration: none; }
+  .bar { border: 1px solid #666; } .bar > i { background: #444 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  details > summary { list-style: none; } details:not([open]) > *:not(summary) { display: block !important; }
+  .printonly { display: block !important; }
+  h2, h3 { break-after: avoid; }
+  .itemtable tr { break-inside: avoid; }
+}
+.printonly { display: none; }
