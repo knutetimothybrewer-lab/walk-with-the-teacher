@@ -45,7 +45,7 @@ export default {
         ['Growth mindset', 'Thinking "I can\'t do this yet" and trying a new study method'],
         ['Purpose', 'Volunteering at an animal shelter because it matters to you'],
       ],
-      hint: 'Relationships = people. Coping skills = tools. Growth mindset = how you think about setbacks. Purpose = what matters to you.',
+      hint: 'Ask which part of resilience each example builds: the people, the tools, the way of thinking, or the meaning.',
       explain: 'The four building blocks of resilience are Relationships (connection), Coping Skills, Growth Mindset, and Purpose. You can build all four.',
     }),
     mc('s2-05', {
@@ -62,15 +62,15 @@ export default {
     }),
     mc('s2-08', {
       level: 'analyze', src: `${A} › Risk, protection, and balance`,
-      prompt: 'Two students face the same stress: a parent lost a job. Lena has close friends, a mentor, and uses exercise to cope. Sam has no one to talk to and has no outlets. Why might they do differently?',
-      right: 'Protective factors such as support and healthy coping can outweigh risk, and Lena has more of them.',
+      prompt: 'Two students face the same stress: a parent lost a job. Lena has close friends, a mentor, and uses exercise to cope. Ben has no one to talk to and no outlets right now. Why might they cope differently?',
+      right: 'Protective factors can balance risk, and Lena has more of them right now.',
       wrong: [
-        ['Lena must care less about her family than Sam does.', 'The difference is in the supports around them, not how much they care.'],
-        ['The same event always has the same effect on everyone.', 'Protective factors change how a stressor lands.'],
-        ['Risk factors do not matter once someone has friends.', 'Risk still matters. Protective factors help balance it.'],
+        ['Lena must care less about her family than Ben does, so the loss hits her less.', 'The difference is in the supports around them, not how much they care.'],
+        ['The same event always has the same effect on everyone, no matter what supports they have.', 'Protective factors change how a stressor lands.'],
+        ['Risk factors stop mattering as soon as a person has even one friend.', 'Risk still matters. Protective factors help balance it.'],
       ],
       hint: 'Compare the supports each student has. What is different about the protective side?',
-      explain: 'The same stressor does not have the same effect on everyone. Supports and coping skills (protective factors) can balance risk.',
+      explain: 'The same stressor does not have the same effect on everyone. Supports and coping skills (protective factors) can balance risk. Ben could build supports too.',
     }),
   ],
 };

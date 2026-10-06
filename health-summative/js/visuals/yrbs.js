@@ -7,14 +7,14 @@ import { s, svgRoot } from './svg.js';
 
 export const YRBS = [
   { y: 2013, v: 30 }, { y: 2015, v: 30 }, { y: 2017, v: 32 },
-  { y: 2019, v: 37 }, { y: 2021, v: 42 }, { y: 2023, v: 40, exact: '39.7' },
+  { y: 2019, v: 37 }, { y: 2021, v: 42 }, { y: 2023, v: 40, exact: '39.7' }, { y: 2025, v: 33 },
 ];
 
 export function mount(host) {
   const W = 560, H = 270, L = 48, R = 20, T = 24, B = 40;
   const x = (i) => L + (i * (W - L - R)) / (YRBS.length - 1);
   const y = (v) => T + (1 - (v - 20) / (50 - 20)) * (H - T - B);
-  const svg = svgRoot(`0 0 ${W} ${H}`, 'Line chart of the percent of U.S. high school students with persistent feelings of sadness or hopelessness, 2013 to 2023: about 30, 30, 32, 37, 42, 40 percent.', { interactive: true });
+  const svg = svgRoot(`0 0 ${W} ${H}`, 'Line chart of the percent of U.S. high school students with persistent feelings of sadness or hopelessness, 2013 to 2025: about 30, 30, 32, 37, 42, 40, 33 percent.', { interactive: true });
   [20, 30, 40, 50].forEach(v => {
     svg.append(s('line', { x1: L, x2: W - R, y1: y(v), y2: y(v), class: 'grid' }));
     svg.append(s('text', { x: L - 8, y: y(v) + 4, 'text-anchor': 'end', class: 'tick' }, v + '%'));
@@ -48,6 +48,6 @@ export function mount(host) {
   host.append(h('figure', { class: 'viz-fig' },
     h('figcaption', {}, 'Students with persistent feelings of sadness or hopelessness (CDC Youth Risk Behavior Survey, high school students, U.S.)'),
     svg, tip, tableBtn, table,
-    h('p', { class: 'viz-note' }, 'Source: CDC, Youth Risk Behavior Survey Data Summary & Trends Report 2013–2023. Rounded to whole percents. "Persistent" = felt this way almost every day for at least 2 weeks in a row, enough to stop usual activities.')));
+    h('p', { class: 'viz-note' }, 'Source: CDC, Youth Risk Behavior Survey (2013–2023 Data Summary & Trends Report; 2025 results released September 2026). Rounded to whole percents. "Persistent" = felt this way almost every day for at least 2 weeks in a row, enough to stop usual activities.')));
   return {};
 }

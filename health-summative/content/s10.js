@@ -14,9 +14,9 @@ export default {
       level: 'apply', poster: { n: 1, title: 'Mental health and the continuum' }, visual: 'poster', visualSeconds: 2, src: `${F} › Section 1: understanding mental health + continuum`,
       prompt: 'Section 1. Which tile belongs at the top of the poster?',
       options: [
-        { t: 'Everyone has mental health. It moves along a continuum (Healthy, Struggling, Injured, Ill) and can change over time.', ok: true },
+        { t: 'Everyone has mental health. It moves along a continuum and can change over time.', ok: true, posterText: 'Everyone has mental health. It moves along a continuum (Healthy, Struggling, Injured, Ill) and can change over time.' },
         { t: 'Mental health only matters if you have a mental illness.' },
-        { t: 'Your place on the continuum never changes.' },
+        { t: 'Your place on the continuum is fixed and never changes over time.' },
         { t: 'If you are in the Struggling zone, something is wrong with you.' },
       ],
       hint: 'The first tile should be true for everyone and mention the continuum.',
@@ -65,7 +65,7 @@ export default {
       fixed: true,
       level: 'apply', poster: { n: 5, title: 'When to get help', lines: ['Everyday stress: talk with a trusted adult.', 'Weeks of sadness or worry affecting daily life: a counselor, doctor, or therapist.', 'Talk of wanting to die, or danger right now: tell an adult now and call or text 988 (911 in an emergency).'] }, visual: 'poster', visualSeconds: 2, src: `${F} › Section 5: when to get an adult, professional, or crisis service`,
       prompt: 'Section 5. Who is the best help for each situation?',
-      slots: [['a', 'Trusted adult', 'Talk it through'], ['p', 'Professional', 'Counselor, doctor, therapist'], ['x', 'Crisis service', '988 or 911 now']],
+      slots: [['a', 'Trusted adult', 'Talk it through'], ['p', 'Professional', 'Counselor, doctor, therapist'], ['x', 'Adult now, plus 988 or 911', 'Tell an adult now. Call or text 988. Call 911 if someone is in immediate danger.']],
       cards: [
         ['A friend is stressed about exams', 'a'],
         ['Sadness or worry has lasted for weeks and affects daily life', 'p'],
@@ -73,7 +73,7 @@ export default {
         ['Someone is in immediate danger', 'x'],
       ],
       hint: 'The more serious and the more urgent, the further up the support ladder.',
-      explain: 'Everyday stress: a trusted adult. Weeks of sadness or worry that affect daily life: a professional. Talk of wanting to die or immediate danger: a crisis service plus an adult now.',
+      explain: 'Everyday stress: a trusted adult. Weeks of sadness or worry that affect daily life: a professional. Talk of wanting to die or immediate danger: tell an adult now and use a crisis service (988 any time; 911 for immediate danger).',
     }),
     multi('s10-c6', {
       fixed: true,
@@ -109,7 +109,7 @@ export default {
       prompt: 'Accuracy check. A classmate\'s draft infographic has 5 errors (one medically inaccurate, one diagnosing, one unrealistic coping tip, one non-credible resource, and one bad peer-support tip). Select the 5 lines with errors.',
       options: [
         { t: '"Everyone has mental health, just like physical health."' },
-        { t: 'Warning sign: "Priya is acting weird, so she definitely has depression."', ok: true },
+        { t: 'Warning sign: "Jamie is acting different, so Jamie definitely has depression."', ok: true },
         { t: '"Stress is always harmful and must be completely avoided."', ok: true },
         { t: 'Coping tip: "Think positive and you will never feel stressed again."', ok: true },
         { t: 'Resource: "An anonymous internet forum. Strangers give the best advice."', ok: true },
@@ -120,7 +120,7 @@ export default {
         { t: '"Asking for help is a strength."' },
       ],
       hint: 'Look for lines that diagnose, overpromise, point to an unreliable source, or suggest secrecy when someone may be unsafe. One line is a medical claim that is not accurate.',
-      explain: 'Errors: diagnosing a friend; saying stress is always harmful (it is not, and recovery is the key); promising coping that ends all stress; an unreliable resource; and promising secrecy when someone may be unsafe.',
+      explain: 'The five errors: diagnosing a friend; saying stress is always harmful (it is not; recovery is the key); promising coping that ends all stress; an unreliable resource; and promising secrecy when someone may be unsafe.',
     }),
   ],
 };

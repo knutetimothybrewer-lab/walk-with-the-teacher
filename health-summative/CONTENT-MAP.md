@@ -15,10 +15,10 @@ Scored questions: **64** · Points possible: **93** · Stations: **10**
 | A5 | Risk factors vs. protective factors (family conflict, trauma, chronic illness, isolation/bullying, substance use, pressure vs. supportive family, friends, coping, purpose, access to care, connectedness) | A | s2-01, s2-08 (2 scored) |
 | A6 | Acute vs. chronic stressors with examples | A | s2-02, s4-04 (2 scored) |
 | A7 | Resilience: four building blocks; a skill set, not a fixed trait | A | s2-04, s2-05 (2 scored) |
-| A8 | School and family connectedness (CDC) with YRBS figures, handled gently <br><sub>Reading cites 14% vs 27% (CDC 2023). Also a skippable item.</sub> | A | s3-01 (1 scored) |
+| A8 | School and family connectedness (CDC) with YRBS figures, handled gently <br><sub>Qualitative CDC YRBS 2023 reading; no suicide statistics shown (see DISCREPANCIES.md #5).</sub> | A | s3-01 (1 scored) |
 | A9 | Risk, protection, and balance (protective can outweigh risk) | A | s2-08, s3-01 (2 scored) |
 | A10 | Where to get help: 988, trusted adult | A | s9-08, s9-07, s10-c5, s10-c6 (4 scored) |
-| B1 | Data literacy: 39.7% persistent sadness; 28.5% poor mental health; 2013–2023 trend (rose, peaked 2021, eased) | B · Understanding Emotional Health | s3-03, s3-04, s3-06, s3-07 (4 scored) |
+| B1 | Data literacy: 39.7% persistent sadness (2023); 28.5% poor mental health; trend (rose, peaked 2021, fell; about 33% in 2025) | B · Understanding Emotional Health | s3-03, s3-04, s3-06, s3-07 (4 scored) |
 | B2 | Essential question: what do the statistics support and not support? | B | s3-03 (1 scored) |
 | B3 | D.I.I.S. framework (a noticing framework, not diagnostic) | B | s5-06, s5-08 (2 scored) |
 | B4 | Why a pattern beats one isolated symptom | B | s5-10, s5-09 (2 scored) |
@@ -28,7 +28,7 @@ Scored questions: **64** · Points possible: **93** · Stations: **10**
 | B8 | Pew data (95% smartphone; 44% anxious without phone) and the "77% several times a day" figure (CDC) <br><sub>Stats appear in the reading; the item tests what they do and do not show.</sub> | B | s6-03 (1 scored) |
 | B9 | CDC comparison: frequent vs. less-frequent social media users on persistent sadness | B | s6-03 (1 scored) |
 | B10 | Correlation ≠ causation; "major cause" vs. "proceed with caution"; stronger causal claim; evidence for causation; third variable | B | s6-05, s6-06, s6-07 (3 scored) |
-| B11 | Bottom line: part of the picture; size still being studied | B | s6-08 (1 scored) |
+| B11 | Bottom line: links exist; size and cause still being studied and debated | B | s6-08 (1 scored) |
 | B12 | D.I.I.S. in practice: scenario 1 (skipped lunch, tired, snapped) and scenario 2 (quiet a week, missed practices; check in, keep watching) | B | s5-06, s5-07, s5-08, s5-09 (4 scored) |
 | B13 | Red flags: safety overrides uncertainty; no diagnosis needed; do not keep secret | B | s7-01, s7-02, s7-04, s7-06 (4 scored) |
 | B14 | How to help: Notice → Ask → Listen → Connect; "not responsible for solving, responsible for not ignoring" <br><sub>See DISCREPANCIES.md: Section B lists Notice→Ask→Listen→Connect, Section D lists Listen→Validate→Ask→Connect. The app teaches Section D's sequence.</sub> | B | s8-02, s8-10 (2 scored) |
@@ -73,7 +73,7 @@ Scored questions: **64** · Points possible: **93** · Stations: **10**
 * **B7**: Smartphone/social media timeline (2007 iPhone, 2010 Instagram, 2012 Facebook acquisition) (s6-01)
 * **B8**: Pew data (95% smartphone; 44% anxious without phone) and the "77% several times a day" figure (CDC) (s6-03)
 * **B9**: CDC comparison: frequent vs. less-frequent social media users on persistent sadness (s6-03)
-* **B11**: Bottom line: part of the picture; size still being studied (s6-08)
+* **B11**: Bottom line: links exist; size and cause still being studied and debated (s6-08)
 * **C1**: Stressor = anything the brain reads as a demand (not always bad) (s4-01)
 * **C2**: Stress cycle and fight/flight pathway: amygdala → hypothalamus → adrenals (adrenaline, cortisol) → body ready (s4-02, s4-x1)
 * **C3**: Sympathetic "gas pedal" and the whole-body changes (s4-03)
@@ -146,10 +146,10 @@ Scored questions: **64** · Points possible: **93** · Stations: **10**
 | s4-02 | order | recall | STRESS | 2 | C · Stress and the Brain (slides) › Stress pathway: amygdala → hypothalamus → adrenals | Put the stress response in order. |
 | s4-03 | sort | recall | STRESS | 2 | C · Stress and the Brain (slides) › Sympathetic "gas pedal" vs. parasympathetic "brake pedal" | Which changes belong to the "gas pedal" (stress response) and which to the "brake pedal" ( |
 | s4-04 | mc | analyze | STRESS | 1 | C · Stress and the Brain (slides) › Acute vs. chronic stress over time | Try both lines. Which line shows chronic stress? |
-| s4-06 | multi | apply | STRESS | 2 | C · Stress and the Brain (slides) › Recovery: coping reduces the demand or improves recovery | Alex has been in "gas pedal" mode all week. Choose the actions that help the brake work. W |
+| s4-06 | multi | apply | STRESS | 2 | C · Stress and the Brain (slides) › Recovery: coping reduces the demand or improves recovery | Noor has been in "gas pedal" mode all week. Choose the actions that help the brake work. W |
 | s4-07 | order | recall | STRESS | 2 | C · Stress and the Brain (slides) › Coping loop: Notice → Regulate → Choose → Recover | Put the coping loop in order. |
 | s4-08 | mc | apply | STRESS | 1 | C · Stress and the Brain (slides) › Practice situation 1: presentation jitters | Before a class presentation, Nia's heart pounds and her hands feel shaky. An hour afterwar |
-| s4-09 | mc | apply | STRESS | 1 | C · Stress and the Brain (slides) › Practice situation 2: 4 hours of sleep, always on edge | For two weeks, Theo has slept about 4 hours a night and says he is "always on edge." What  |
+| s4-09 | mc | apply | STRESS | 1 | C · Stress and the Brain (slides) › Practice situation 2: 4 hours of sleep, always on edge | For two weeks, Mateo has slept about 4 hours a night and says he is "always on edge." What |
 | s4-10 | mc | apply | STRESS | 1 | C · Stress and the Brain (slides) › Practice situation 3: scrolling after an argument | After a big argument, Kai scrolls for hours but still cannot calm down. Why might scrollin |
 
 ### Station: Patterns, Not Labels
@@ -173,7 +173,7 @@ Scored questions: **64** · Points possible: **93** · Stations: **10**
 | s6-05 | mc | analyze | EH | 1 | B · Understanding Emotional Health (Guided Notes + slides) › Which argument makes the stronger causal claim? | Which argument makes the stronger causal claim? |
 | s6-06 | multi | analyze | EH | 2 | B · Understanding Emotional Health (Guided Notes + slides) › What evidence would establish causation? | Which kinds of evidence would help test whether social media use affects mood? |
 | s6-07 | mc | analyze | EH | 1 | B · Understanding Emotional Health (Guided Notes + slides) › Third variables (confounders) | Too little sleep is linked to both late-night scrolling and low mood. In this case, sleep  |
-| s6-08 | mc | recall | EH | 1 | B · Understanding Emotional Health (Guided Notes + slides) › Bottom line: part of the picture, size still being studied | Which statement best matches where most researchers currently stand? |
+| s6-08 | mc | recall | EH | 1 | B · Understanding Emotional Health (Guided Notes + slides) › Bottom line: part of the picture, size still being studied | Which statement is the most accurate summary of the evidence so far? |
 
 ### Station: Red Flags & Safety
 
@@ -181,8 +181,8 @@ Scored questions: **64** · Points possible: **93** · Stations: **10**
 |---|---|---|---|---|---|---|
 | s7-01 | sort | apply | EH | 2 | B · Understanding Emotional Health (Guided Notes + slides) › Red flags (safety overrides uncertainty) | Red Flags Radar: sort each sign. |
 | s7-02 | mc | apply | EH | 1 | B · Understanding Emotional Health (Guided Notes + slides) › You don't need the diagnosis before getting an adult involved | You are not sure what is going on, but a friend said something that sounded like wanting t |
-| s7-04 | mc | apply | EH | 1 | B · Understanding Emotional Health (Guided Notes + slides) › Do not keep it a secret, even if asked | A friend tells you something worrying and says, "Promise you will not tell anyone." What i |
-| s7-06 | mc | analyze | EH | 1 | B · Understanding Emotional Health (Guided Notes + slides) › Sudden calm after deep distress | Why is "suddenly calm after a long stretch of deep distress" on the red flag list? |
+| s7-04 | mc | apply | EH | 1 | B · Understanding Emotional Health (Guided Notes + slides) › Do not keep it a secret, even if asked | A friend tells you something that makes you worry they might be unsafe, and says, "Promise |
+| s7-06 | mc | analyze | EH | 1 | B · Understanding Emotional Health (Guided Notes + slides) › Sudden calm after deep distress | Why might "suddenly calm after a long stretch of deep distress" be on the red flag list? |
 
 ### Station: Be a Bridge
 
@@ -204,7 +204,7 @@ Scored questions: **64** · Points possible: **93** · Stations: **10**
 | ID | Type | Level | Topic | Pts | Source (lesson › section) | Prompt (start) |
 |---|---|---|---|---|---|---|
 | s9-01 | sort | recall | HELP | 3 | E · Help-Seeking Mini-Lesson (slides) › Circle of support: 4 tiers | Circle of Support: put each person or service in its tier. |
-| s9-02 | sort | apply | HELP | 2 | E · Help-Seeking Mini-Lesson (slides) › "Who do I go to?" matching | Circle of Support Navigator: send each situation to the best first stop. |
+| s9-02 | sort | apply | HELP | 2 | E · Help-Seeking Mini-Lesson (slides) › "Who do I go to?" matching | Circle of Support Navigator: which helper does this job? |
 | s9-04 | match | apply | HELP | 2 | E · Help-Seeking Mini-Lesson (slides) › Barriers and reframes | Barrier Buster: match each barrier to the best reframe. |
 | s9-06 | multi | recall | HELP | 2 | E · Help-Seeking Mini-Lesson (slides) › CDC WSCC model (10 components) | CDC's WSCC model (Whole School, Whole Community, Whole Child) has 10 components. Which of  |
 | s9-07 | mc | apply | HELP | 1 | E · Help-Seeking Mini-Lesson (slides) › First step: one trusted person, low-pressure moment, an opener | Which is the best way to take a first step toward getting support? |

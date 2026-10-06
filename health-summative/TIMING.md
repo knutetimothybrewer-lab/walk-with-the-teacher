@@ -7,18 +7,18 @@ The app's gentle "about N min left" note uses the same estimates. It never locks
 | # | Station | Questions | Est. minutes |
 |---|---|---|---|
 | 0 | Welcome, class code, how scoring works | — | 2.0 |
-| 1 | Mental Health Basics | 4 | 2.8 |
+| 1 | Mental Health Basics | 4 | 2.9 |
 | 2 | Risk, Protection & Resilience | 5 | 3.9 |
-| 3 | Connectedness & the Data | 5 | 3.6 |
-| 4 | Stress & the Brain | 9 | 6.5 |
-| 5 | Patterns, Not Labels | 7 | 5.3 |
-| 6 | Phones, Teens & Evidence | 6 | 4.3 |
+| 3 | Connectedness & the Data | 5 | 3.8 |
+| 4 | Stress & the Brain | 9 | 6.8 |
+| 5 | Patterns, Not Labels | 7 | 5.5 |
+| 6 | Phones, Teens & Evidence | 6 | 4.4 |
 | 7 | Red Flags & Safety | 4 | 3.0 |
-| 8 | Be a Bridge | 10 | 5.3 |
-| 9 | Who Can Help? | 6 | 4.6 |
+| 8 | Be a Bridge | 10 | 5.7 |
+| 9 | Who Can Help? | 6 | 4.7 |
 | 10 | Capstone: Infographic Studio | 8 | 5.5 |
 | 11 | Final score + calm next-step card | — | 1.0 |
-| | **Total** | **64** | **47.8** |
+| | **Total** | **64** | **49.2** |
 
 Target: 45 minutes ±5. ✅ Within range.
 
@@ -28,9 +28,9 @@ Target: 45 minutes ±5. ✅ Within range.
 
 | Item | Type | Level | Seconds |
 |---|---|---|---|
-| s1-01 | mc | recall | 25 |
-| s1-02 | sort | apply | 59 |
-| s1-03 | mc | apply | 28 |
+| s1-01 | mc | recall | 29 |
+| s1-02 | sort | apply | 62 |
+| s1-03 | mc | apply | 29 |
 | s1-05 | multi | recall | 34 |
 
 ### Risk, Protection & Resilience
@@ -41,55 +41,55 @@ Target: 45 minutes ±5. ✅ Within range.
 | s2-02 | sort | apply | 46 |
 | s2-04 | match | apply | 49 |
 | s2-05 | mc | recall | 21 |
-| s2-08 | mc | analyze | 35 |
+| s2-08 | mc | analyze | 39 |
 
 ### Connectedness & the Data
 
 | Item | Type | Level | Seconds |
 |---|---|---|---|
 | s3-01 | mc | apply | 44 |
-| s3-03 | tag | analyze | 69 |
+| s3-03 | tag | analyze | 71 |
 | s3-04 | mc | recall | 27 |
-| s3-06 | mc | recall | 29 |
-| s3-07 | mc | analyze | 29 |
+| s3-06 | mc | recall | 31 |
+| s3-07 | mc | analyze | 35 |
 
 ### Stress & the Brain
 
 | Item | Type | Level | Seconds |
 |---|---|---|---|
 | s4-x1 | explore |  | 35 |
-| s4-01 | mc | recall | 20 |
+| s4-01 | mc | recall | 24 |
 | s4-02 | order | recall | 54 |
 | s4-03 | sort | recall | 45 |
 | s4-04 | mc | analyze | 44 |
 | s4-06 | multi | apply | 47 |
 | s4-07 | order | recall | 45 |
-| s4-08 | mc | apply | 26 |
-| s4-09 | mc | apply | 29 |
-| s4-10 | mc | apply | 27 |
+| s4-08 | mc | apply | 30 |
+| s4-09 | mc | apply | 33 |
+| s4-10 | mc | apply | 30 |
 
 ### Patterns, Not Labels
 
 | Item | Type | Level | Seconds |
 |---|---|---|---|
-| s5-03 | tag | apply | 82 |
-| s5-04 | match | recall | 43 |
+| s5-03 | tag | apply | 83 |
+| s5-04 | match | recall | 46 |
 | s5-06 | tag | analyze | 49 |
-| s5-07 | mc | apply | 28 |
+| s5-07 | mc | apply | 30 |
 | s5-08 | tag | analyze | 45 |
-| s5-09 | mc | analyze | 27 |
-| s5-10 | mc | analyze | 27 |
+| s5-09 | mc | analyze | 28 |
+| s5-10 | mc | analyze | 28 |
 
 ### Phones, Teens & Evidence
 
 | Item | Type | Level | Seconds |
 |---|---|---|---|
 | s6-01 | order | recall | 46 |
-| s6-03 | mc | analyze | 48 |
-| s6-05 | mc | analyze | 40 |
+| s6-03 | mc | analyze | 52 |
+| s6-05 | mc | analyze | 39 |
 | s6-06 | multi | analyze | 37 |
-| s6-07 | mc | analyze | 39 |
-| s6-08 | mc | recall | 25 |
+| s6-07 | mc | analyze | 41 |
+| s6-08 | mc | recall | 30 |
 
 ### Red Flags & Safety
 
@@ -97,34 +97,34 @@ Target: 45 minutes ±5. ✅ Within range.
 |---|---|---|---|
 | s7-01 | sort | apply | 67 |
 | s7-02 | mc | apply | 31 |
-| s7-04 | mc | apply | 30 |
-| s7-06 | mc | analyze | 29 |
+| s7-04 | mc | apply | 33 |
+| s7-06 | mc | analyze | 28 |
 
 ### Be a Bridge
 
 | Item | Type | Level | Seconds |
 |---|---|---|---|
 | s8-02 | tag | apply | 48 |
-| s8-c1a | mc | apply | 24 |
+| s8-c1a | mc | apply | 26 |
 | s8-c1b | mc | apply | 26 |
-| s8-c1c | mc | apply | 22 |
-| s8-c1d | mc | apply | 25 |
-| s8-c2a | mc | apply | 26 |
-| s8-c2b | mc | apply | 23 |
+| s8-c1c | mc | apply | 26 |
+| s8-c1d | mc | apply | 28 |
+| s8-c2a | mc | apply | 28 |
+| s8-c2b | mc | apply | 30 |
 | s8-c2c | mc | apply | 32 |
-| s8-08 | match | apply | 49 |
-| s8-10 | mc | apply | 25 |
+| s8-08 | match | apply | 48 |
+| s8-10 | mc | apply | 28 |
 
 ### Who Can Help?
 
 | Item | Type | Level | Seconds |
 |---|---|---|---|
 | s9-01 | sort | recall | 67 |
-| s9-02 | sort | apply | 57 |
+| s9-02 | sort | apply | 60 |
 | s9-04 | match | apply | 52 |
 | s9-06 | multi | recall | 29 |
-| s9-07 | mc | apply | 28 |
-| s9-08 | mc | recall | 24 |
+| s9-07 | mc | apply | 29 |
+| s9-08 | mc | recall | 27 |
 
 ### Capstone: Infographic Studio
 

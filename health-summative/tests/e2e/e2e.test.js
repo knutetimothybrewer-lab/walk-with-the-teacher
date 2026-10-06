@@ -138,6 +138,7 @@ test('a refresh in the middle of retries keeps the attempt count', async () => {
 
 test('offline: score and code still show; queued submission is retried and succeeds', { timeout: 300000 }, async () => {
   backend.state.down = true;
+  const before = backend.state.submissions.length;
   const { page, ctx } = await newPage({ withBackend: true });
   // start is allowed offline with a locally valid code (allowOfflineStart)
   await D.startStudent(page, BASE, { first: 'Off', last: 'Line', code: 'TRAIL2' });
@@ -151,11 +152,11 @@ test('offline: score and code still show; queued submission is retried and succe
   assert.match(await p2.page.locator('#syncStatus').innerText(), /may not have been sent yet/i);
   assert.match(await p2.page.locator('#ccode').innerText(), /^WWT-/);
   assert.ok((await p2.page.locator('#finalPct').innerText()).length > 0);
-  assert.equal(backend.state.submissions.length, 0);
+  assert.equal(backend.state.submissions.length, before);
   backend.state.down = false;
   await p2.page.click('#btn-resend');
   await p2.page.waitForFunction(() => /was sent to/.test(document.querySelector('#syncStatus').textContent), null, { timeout: 20000 });
-  assert.equal(backend.state.submissions.length, 1);
+  assert.equal(backend.state.submissions.length, before + 1);
   await p2.ctx.close();
 });
 
