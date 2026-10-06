@@ -75,3 +75,8 @@ leaderboard, live-winner feed, auto-spin/turbo, rescue gifts.
 - **Teacher tally**: each student copies a short code; paste them all into the teacher tool to total the
   class and show "the house" coming out ahead while some individuals finish ahead.
 - Calm mode reduces flashing/shaking. Nothing is saved; no network needed; no purchases are real.
+
+**Escalation + limited wallet:** rewards (level-ups, mystery boxes) are earned by how much is *wagered*, a "Double up & win it back"
+button appears after losses, and bets go up to 500K. Students can buy coins with a limited pretend wallet ($20 by default,
+$0/$10/$50 selectable on the start screen); when coins, the one free rescue gift and the wallet are all gone, the game ends in
+a "BUSTED" reveal screen. Nothing real is ever purchased.
