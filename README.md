@@ -63,7 +63,7 @@ Fictional, simplified model, not medical advice.
 
 Single-file, offline classroom simulation for the gambling-awareness lesson ("House-edge simulation").
 Students get fake tokens (1,000,000 coins, no real value) in a deliberately slick mobile-casino clone:
-slots and dice, huge numbers, animations, sounds, welcome/daily/wheel/mystery-box gifts, VIP levels,
+slots and dice, huge numbers, animations, sounds, welcome, daily-chest, wheel and mystery-box gifts (kept modest so students spend time actually playing), VIP levels,
 leaderboard, live-winner feed, auto-spin/turbo, rescue gifts and a (pretend) coin shop.
 
 - Math: slots return 90.5% (9.5% house edge) from a fixed outcome table, with near misses and

@@ -240,9 +240,9 @@ textarea{width:100%;min-height:110px;background:#12002b;color:#fff;border:2px so
     <div class="side">
       <div class="panel" style="margin-bottom:12px">
         <h3>🎁 FREE GIFTS</h3>
-        <div class="chest" id="chest"><div class="ic">🧰</div><div style="flex:1"><b>Daily Treasure Chest</b><div id="chesttime" class="small">Opens in 0:45</div></div><button class="btn btn-gold hidden" id="chestbtn">CLAIM</button></div>
+        <div class="chest" id="chest"><div class="ic">🧰</div><div style="flex:1"><b>Daily Treasure Chest</b><div id="chesttime" class="small">Opens in 2:00</div></div><button class="btn btn-gold hidden" id="chestbtn">CLAIM</button></div>
         <div class="chest" id="wheelrow"><div class="ic">🎡</div><div style="flex:1"><b>Lucky Wheel</b><div class="small" id="wheeltxt">Level up to unlock a free spin!</div></div><button class="btn btn-pink hidden" id="wheelbtn">SPIN</button></div>
-        <div class="small" id="nextbox">🎁 Mystery box in 10 spins</div>
+        <div class="small" id="nextbox">🎁 Mystery box in 25 spins</div>
       </div>
       <div class="panel" style="margin-bottom:12px">
         <h3>🏆 LEADERBOARD</h3>
@@ -300,7 +300,7 @@ function newState(){return{
   spins:0,wagered:0,returned:0,wins:0,losses:0,nearMiss:0,ldw:0,bigWins:0,biggest:0,
   hist:[],t0:Date.now(),giftValue:0,gifts:0,pretend:0,xp:0,level:1,
   busy:false,auto:false,turbo:false,xray:false,calm:false,muted:false,
-  lossRun:0,winRun:0,rescues:0,chestT:45,chestReady:false,wheelReady:0,boxReady:false,
+  lossRun:0,winRun:0,rescues:0,chestT:120,chestReady:false,wheelReady:0,boxReady:false,
   tricks:{},seen:{},capHit:false,jp:12483920
 }}
 
@@ -408,7 +408,7 @@ function modalOpen(){return !$('modal').classList.contains('hidden')}
    UI REFRESH
    ============================================================ */
 const VIPN=['BRONZE','SILVER','GOLD','PLATINUM','DIAMOND','ROYAL','LEGEND'];
-const xpNeed=l=>150+(l-1)*100;
+const xpNeed=l=>400+(l-1)*300;
 function updateAll(){
   $('betv').textContent=fmt(S.bet);
   document.querySelectorAll('.betbtn').forEach(b=>b.classList.toggle('on',+b.dataset.b===S.bet));
@@ -416,7 +416,7 @@ function updateAll(){
   $('xpt').textContent=`${fmt(S.xp)} / ${fmt(xpNeed(S.level))} XP`;
   $('xpbar').style.width=Math.min(100,S.xp/xpNeed(S.level)*100)+'%';
   $('jp').textContent=fmt(S.jp);
-  const left=10-(S.spins%10);$('nextbox').textContent=S.boxReady?'🎁 Mystery box is ready! (top of machine)':`🎁 Mystery box in ${left} spin${left>1?'s':''}`;
+  const left=25-(S.spins%25);$('nextbox').textContent=S.boxReady?'🎁 Mystery box is ready! (top of machine)':`🎁 Mystery box in ${left} spin${left>1?'s':''}`;
   $('wheeltxt').textContent=S.wheelReady?'FREE SPIN READY!':'Level up to unlock a free spin!';
   $('wheelbtn').classList.toggle('hidden',!S.wheelReady);$('wheelrow').classList.toggle('ready',!!S.wheelReady);
   $('giftbox').classList.toggle('hidden',!S.boxReady);
@@ -521,7 +521,7 @@ async function go(){
   // XP / level / box
   let lvlUp=false;
   while(S.xp>=xpNeed(S.level)){S.xp-=xpNeed(S.level);S.level++;S.wheelReady++;lvlUp=true}
-  if(S.spins%10===0&&!S.boxReady){S.boxReady=true;trick('mystery')}
+  if(S.spins%25===0&&!S.boxReady){S.boxReady=true;trick('mystery')}
   updateAll();
   await sleep(win>0?(S.turbo?500:1500):(S.turbo?150:450));
   if(lvlUp){trick('vip');trick('wheel');await levelUp()}
@@ -555,11 +555,11 @@ async function levelUp(){
 function openWheel(){
   return new Promise(res=>{
     if(!S.wheelReady){res();return}
-    const prizes=[25000,50000,100000,50000,250000,75000,1000000,40000];
-    const wts=[22,20,14,18,6,12,1,7];
+    const prizes=[10000,20000,50000,25000,100000,30000,500000,15000];
+    const wts=[24,20,8,16,4,12,1,15];
     let r=Math.random()*wts.reduce((a,b)=>a+b),i=0;for(;i<wts.length;i++){if((r-=wts[i])<0)break}
     i=Math.min(i,7);
-    const labels=prizes.map((p,k)=>`<span style="transform:rotate(${k*45+22.5}deg) translateY(-115px) rotate(0deg)">${p>=1e6?'1M!':fmt(p/1000)+'K'}</span>`).join('');
+    const labels=prizes.map((p,k)=>`<span style="transform:rotate(${k*45+22.5}deg) translateY(-115px) rotate(0deg)">${p>=1e6?'500K!':fmt(p/1000)+'K'}</span>`).join('');
     modal(`<h2>🎡 LUCKY WHEEL</h2><div id="wheelwrap"><div id="pointer">🔻</div><div id="wheel">${labels}</div></div><div id="wres" style="font-size:22px;font-weight:900;min-height:30px"></div><button class="btn btn-pink big" id="wgo">SPIN!</button>`);
     $('wgo').onclick=()=>{
       $('wgo').disabled=true;S.wheelReady--;sfx.pop();
@@ -577,7 +577,7 @@ function openWheel(){
 function openBox(){
   if(S.busy||modalOpen())return;
   S.boxReady=false;trick('mystery');
-  const prize=Math.round((20000+Math.random()*280000)/1000)*1000;
+  const prize=Math.round((10000+Math.random()*90000)/1000)*1000;
   modal(`<h2>🎁 MYSTERY BOX!</h2><p>Pick ONE box — big prizes inside!</p><div style="font-size:70px;display:flex;justify-content:center;gap:14px"><button class="bx" style="background:none;font-size:70px">🎁</button><button class="bx" style="background:none;font-size:70px">🎁</button><button class="bx" style="background:none;font-size:70px">🎁</button></div><div id="bres" style="font-size:22px;font-weight:900;min-height:30px"></div>`);
   document.querySelectorAll('.bx').forEach(b=>b.onclick=()=>{
     document.querySelectorAll('.bx').forEach(x=>{x.textContent='🪙';x.disabled=true});
@@ -591,12 +591,12 @@ function openBox(){
 function chestTick(){
   if(!S||$('game').classList.contains('hidden'))return;
   if(!S.chestReady){S.chestT--;if(S.chestT<=0){S.chestReady=true;sfx.pop()}}
-  $('chesttime').textContent=S.chestReady?'READY NOW! Tap claim!':`Opens in 0:${String(S.chestT).padStart(2,'0')}`;
+  $('chesttime').textContent=S.chestReady?'READY NOW! Tap claim!':`Opens in ${Math.floor(S.chestT/60)}:${String(S.chestT%60).padStart(2,'0')}`;
   $('chestbtn').classList.toggle('hidden',!S.chestReady);$('chest').classList.toggle('ready',S.chestReady);
 }
 function claimChest(){
-  if(!S.chestReady)return;S.chestReady=false;S.chestT=45;trick('dailyChest');
-  const p=100000+Math.round(Math.random()*10)*10000;addCoins(p);rain(['🪙','💰'],18);
+  if(!S.chestReady)return;S.chestReady=false;S.chestT=120;trick('dailyChest');
+  const p=50000+Math.round(Math.random()*5)*10000;addCoins(p);rain(['🪙','💰'],18);
   msg(`🧰 Chest opened! +${fmt(p)} free coins!`,'msg-win');
 }
 
@@ -608,11 +608,11 @@ function openStore(rescue){
   modal(`<h2>${rescue?'😱 OUT OF COINS!':'💰 COIN SHOP'}</h2>
   <div class="timer" id="stimer">⏰ LIMITED TIME: 0:30</div>
   <div class="disc">SIMULATION — nothing is really purchased. Your teacher will show you the total you "would have spent."</div>
-  ${rescue&&S.rescues<3?`<button class="btn btn-gold big pulse" id="free" style="width:100%;margin:8px 0">🎁 CLAIM FREE 500,000 COINS</button>`:''}
+  ${rescue&&S.rescues<2?`<button class="btn btn-gold big pulse" id="free" style="width:100%;margin:8px 0">🎁 CLAIM FREE 250,000 COINS</button>`:''}
   ${[['1,000,000','0.99','',''],['6,000,000','4.99','<s>$9.99</s>','🔥 50% OFF'],['35,000,000','19.99','<s>$79.99</s>','⭐ BEST VALUE'],['200,000,000','99.99','<s>$499.99</s>','👑 VIP WHALE PACK']].map((p,i)=>`<div class="pack">${p[3]?`<span class="tag">${p[3]}</span>`:''}<div><div class="c">🪙 ${p[0]}</div>${p[2]}</div><button class="btn btn-green buy" data-c="${p[0].replace(/,/g,'')}" data-d="${p[1]}">$${p[1]}</button></div>`).join('')}
   <div style="margin-top:10px"><button class="btn btn-ghost" id="sclose" style="${rescue?'opacity:.5;font-size:11px':''}">${rescue?'no thanks, I quit':'Close'}</button></div>`);
   let t=30;const iv=setInterval(()=>{t--;const e=$('stimer');if(!e||t<0){clearInterval(iv);return}e.textContent='⏰ LIMITED TIME: 0:'+String(t).padStart(2,'0')},1000);
-  if($('free'))$('free').onclick=()=>{S.rescues++;clearInterval(iv);closeModal();addCoins(500000);trick('rescue');msg('Phew! Free coins! Back in the game! 🍀','msg-win');S.busy=false;$('spin').disabled=false};
+  if($('free'))$('free').onclick=()=>{S.rescues++;clearInterval(iv);closeModal();addCoins(250000);trick('rescue');msg('Phew! Free coins! Back in the game! 🍀','msg-win');S.busy=false;$('spin').disabled=false};
   document.querySelectorAll('.buy').forEach(b=>b.onclick=()=>{
     S.pretend+=+b.dataset.d;clearInterval(iv);closeModal();addCoins(+b.dataset.c,false);
     msg(`(Pretend) bought ${fmt(b.dataset.c)} coins for $${b.dataset.d}`,'msg-win');S.busy=false;$('spin').disabled=false;
