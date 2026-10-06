@@ -1,0 +1,42 @@
+/* Self-hosted fonts (SIL Open Font License): Nunito, Fraunces, OpenDyslexic, Atkinson Hyperlegible. */
+@font-face { font-family: 'Nunito'; font-weight: 400; font-style: normal; font-display: swap; src: url('../assets/fonts/nunito-latin-400-normal.woff2') format('woff2'); }
+@font-face { font-family: 'Nunito'; font-weight: 600; font-style: normal; font-display: swap; src: url('../assets/fonts/nunito-latin-600-normal.woff2') format('woff2'); }
+@font-face { font-family: 'Nunito'; font-weight: 800; font-style: normal; font-display: swap; src: url('../assets/fonts/nunito-latin-800-normal.woff2') format('woff2'); }
+@font-face { font-family: 'Fraunces'; font-weight: 600; font-style: normal; font-display: swap; src: url('../assets/fonts/fraunces-latin-600-normal.woff2') format('woff2'); }
+@font-face { font-family: 'Fraunces'; font-weight: 800; font-style: normal; font-display: swap; src: url('../assets/fonts/fraunces-latin-800-normal.woff2') format('woff2'); }
+@font-face { font-family: 'OpenDyslexic'; font-weight: 400; font-style: normal; font-display: swap; src: url('../assets/fonts/opendyslexic-latin-400-normal.woff2') format('woff2'); }
+@font-face { font-family: 'OpenDyslexic'; font-weight: 700; font-style: normal; font-display: swap; src: url('../assets/fonts/opendyslexic-latin-700-normal.woff2') format('woff2'); }
+@font-face { font-family: 'Atkinson Hyperlegible'; font-weight: 400; font-style: normal; font-display: swap; src: url('../assets/fonts/atkinson-hyperlegible-latin-400-normal.woff2') format('woff2'); }
+@font-face { font-family: 'Atkinson Hyperlegible'; font-weight: 700; font-style: normal; font-display: swap; src: url('../assets/fonts/atkinson-hyperlegible-latin-700-normal.woff2') format('woff2'); }
+
+:root {
+  /* sky (set live by js/ui/sky.js) */
+  --sky-top: #0b1030; --sky-bot: #1d2b64; --p: 0; --star-o: 1; --sun-y: 190px; --sun-o: .15;
+
+  /* palette: indigo night -> teal -> lavender -> sunrise gold / coral */
+  --navy: #0e1330; --indigo: #1d2b64; --ink: #1a2040; --ink-soft: #4a5278;
+  --teal: #0f6f78; --teal-d: #0b5760; --teal-l: #dcf2f1;
+  --lav: #ece7fb; --lav-d: #5b4aa8; --line: #d7dbef;
+  --gold: #ffcf70; --coral: #ff8c78; --sun: #ffe3a8;
+  --card: rgba(255, 255, 255, .965);
+
+  /* feedback colours (never red/orange for wrong answers) */
+  --good: #0c6b52; --good-bg: #e0f5ec;
+  --try: #583b9c; --try-bg: #efeafb;
+  --info: #274a8a; --info-bg: #e8effb;
+
+  /* red/orange only for the Red Flags station and the help dialog */
+  --alert: #b54708; --alert-bg: #fff3e8; --alert-line: #f3c9a5;
+
+  --radius: 20px; --radius-s: 12px;
+  --shadow: 0 12px 40px rgba(5, 8, 30, .35);
+  --font-body: 'Nunito', 'Atkinson Hyperlegible', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-head: 'Fraunces', 'Georgia', 'Times New Roman', serif;
+  --focus: 0 0 0 3px #fff, 0 0 0 6px #1d2b64;
+}
+
+html { font-size: 17px; }
+html[data-text="1"] { font-size: 19px; }
+html[data-text="2"] { font-size: 21.5px; }
+html.dys { --font-body: 'OpenDyslexic', 'Atkinson Hyperlegible', 'Nunito', sans-serif; --font-head: 'OpenDyslexic', 'Atkinson Hyperlegible', sans-serif; }
+html.dys body { letter-spacing: .035em; word-spacing: .12em; line-height: 1.75; }

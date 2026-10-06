@@ -1,0 +1,126 @@
+/* Runs apps-script/Code.gs in Node against an in-memory fake of the Google
+   Apps Script services, to check the backend logic (codes, duplicates, reset,
+   reports). It cannot prove the deployed script runs in Google, but it catches
+   logic and syntax errors. */
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import vm from 'node:vm';
+
+function makeEnv() {
+  const sheets = new Map();
+  const props = { TEACHER_PASSCODE: 'secret' };
+  class Range {
+    constructor(sh, r, c, nr = 1, nc = 1) { Object.assign(this, { sh, r, c, nr, nc }); }
+    getValues() { const o = []; for (let i = 0; i < this.nr; i++) { const row = []; for (let j = 0; j < this.nc; j++) { const v = (this.sh.cells[this.r - 1 + i] || [])[this.c - 1 + j]; row.push(v === undefined ? '' : v); } o.push(row); } return o; }
+    setValues(v) { v.forEach((row, i) => row.forEach((x, j) => this.sh.set(this.r + i, this.c + j, x))); return this; }
+    setFormula(f) { this.sh.set(this.r, this.c, f); return this; }
+    setFontWeight() { return this; } setBackground() { return this; } setFontSize() { return this; } setNumberFormat() { return this; }
+  }
+  class Sheet {
+    constructor(name) { this.name = name; this.cells = []; this.frozen = 0; }
+    set(r, c, v) { while (this.cells.length < r) this.cells.push([]); const row = this.cells[r - 1]; while (row.length < c) row.push(undefined); row[c - 1] = v; }
+    getLastRow() { let last = 0; this.cells.forEach((row, i) => { if (row.some(x => x !== undefined && x !== '')) last = i + 1; }); return last; }
+    getRange(r, c, nr, nc) { return new Range(this, r, c, nr, nc); }
+    appendRow(row) { const r = this.getLastRow() + 1; row.forEach((x, j) => this.set(r, j + 1, x)); }
+    deleteRow(n) { this.cells.splice(n - 1, 1); }
+    deleteRows(n, k) { this.cells.splice(n - 1, k); }
+    clear() { this.cells = []; }
+    setFrozenRows(n) { this.frozen = n; } setColumnWidth() {}
+  }
+  const book = {
+    getSheetByName: (n) => sheets.get(n) || null,
+    insertSheet: (n) => { const s = new Sheet(n); sheets.set(n, s); return s; },
+  };
+  const ctx = {
+    SpreadsheetApp: { getActiveSpreadsheet: () => book, getUi: () => ({ alert() {}, prompt() {}, ButtonSet: {}, Button: {}, createMenu: () => ({ addItem() { return this; }, addSeparator() { return this; }, addToUi() {} }) }) },
+    ContentService: { createTextOutput: (t) => ({ t, setMimeType() { return this; } }), MimeType: { JSON: 'json' } },
+    LockService: { getScriptLock: () => ({ waitLock() {}, releaseLock() {} }) },
+    PropertiesService: { getScriptProperties: () => ({ getProperty: (k) => props[k], setProperty: (k, v) => { props[k] = v; } }) },
+    console,
+  };
+  vm.createContext(ctx);
+  vm.runInContext(fs.readFileSync(new URL('../../apps-script/Code.gs', import.meta.url), 'utf8'), ctx);
+  const call = (body) => JSON.parse(ctx.doPost({ postData: { contents: JSON.stringify(body) } }).t);
+  call({ action: 'start', student: { first: 'x', last: 'y', period: '1', code: 'zzz' } }); // forces nothing; sets up below
+  vm.runInContext('ensureSheets_()', ctx);
+  return { ctx, call, sheets };
+}
+
+const student = { first: 'Alex', last: 'Rivera', period: '3', code: 'trail1' };
+const payload = (over = {}) => ({
+  student, completion: 'WWT-AAAA-BBBB', percent: 80, earned: 80, possible: 100, totalSeconds: 2400, activeSeconds: 2000, skips: 1, helpOpens: 2, codeVerified: 'server', retakeNo: 0,
+  stations: { s1: { percent: 90 }, capstone: { percent: 70 } }, topics: { MH101: { percent: 85 } },
+  items: [
+    { id: 'q1', station: 's1', topic: 'MH101', label: 'Question one', points: 1, earned: 1, attempts: 1, first: 1, skipped: false, firstWrong: '' },
+    { id: 'q2', station: 's1', topic: 'MH101', label: 'Question two', points: 2, earned: 0, attempts: 3, first: 0, skipped: false, firstWrong: 'chose B' },
+    { id: 'q3', station: 's2', topic: 'EH', label: 'Skipped one', points: 1, earned: 1, attempts: 0, first: '', skipped: true, firstWrong: '' },
+  ], ...over,
+});
+
+test('start: valid code (any case) is accepted, bad code rejected', () => {
+  const { call } = makeEnv();
+  assert.deepEqual(call({ action: 'start', student }), { ok: true, status: 'new' });
+  assert.equal(call({ action: 'start', student: { ...student, code: 'nope' } }).reason, 'code');
+  assert.equal(call({ action: 'start', student: { ...student, first: '' } }).reason, 'incomplete');
+});
+
+test('submit stores summary + detail, then flags duplicates', () => {
+  const { call, sheets } = makeEnv();
+  assert.deepEqual(call({ action: 'submit', payload: payload() }), { ok: true });
+  assert.equal(sheets.get('Summary').getLastRow(), 2);
+  assert.equal(sheets.get('Detail').getLastRow(), 4);
+  assert.equal(call({ action: 'start', student }).status, 'duplicate');
+  // same completion code again = lost-response retry, idempotent
+  assert.equal(call({ action: 'submit', payload: payload() }).dedup, true);
+  assert.equal(sheets.get('Summary').getLastRow(), 2);
+  // a different attempt for the same student is a duplicate
+  assert.equal(call({ action: 'submit', payload: payload({ completion: 'WWT-CCCC-DDDD' }) }).reason, 'duplicate');
+  // different student with the same name in another period is fine
+  assert.equal(call({ action: 'submit', payload: payload({ student: { ...student, period: '4' }, completion: 'WWT-EEEE-FFFF' }) }).ok, true);
+});
+
+test('submit rejects an invalid class code', () => {
+  const { call } = makeEnv();
+  assert.equal(call({ action: 'submit', payload: payload({ student: { ...student, code: 'bad' } }) }).reason, 'code');
+});
+
+test('reports: Items, Reteach and flags', () => {
+  const { call, sheets } = makeEnv();
+  // three students all miss q2 on attempt 1 with the same wrong answer
+  ['A', 'B', 'C'].forEach((n, i) => call({ action: 'submit', payload: payload({ student: { ...student, first: n }, completion: 'WWT-X' + i }) }));
+  const items = sheets.get('Items');
+  const ids = items.cells.map(r => r[0]);
+  assert.ok(ids.includes('q1') && ids.includes('q2'));
+  const q2 = items.cells.find(r => r[0] === 'q2');
+  assert.match(q2[10], /chose B \(3\)/);
+  assert.match(q2[11], /Possibly a bad question/);
+  const q1 = items.cells.find(r => r[0] === 'q1');
+  assert.equal(q1[11], '');
+  const q3 = items.cells.find(r => r[0] === 'q3');
+  assert.equal(q3[9], 3); // skipped counted separately, excluded from n
+  const rt = sheets.get('Reteach').cells.flat().join(' | ');
+  assert.match(rt, /10 MOST-MISSED QUESTIONS/);
+  assert.match(rt, /q2/);
+});
+
+test('teacher: passcode required; list; reset allows a retake', () => {
+  const { call, sheets } = makeEnv();
+  call({ action: 'submit', payload: payload() });
+  assert.equal(call({ action: 'teacher', op: 'list', passcode: 'wrong' }).reason, 'passcode');
+  const list = call({ action: 'teacher', op: 'list', passcode: 'secret' });
+  assert.equal(list.students.length, 1);
+  assert.equal(list.students[0].first, 'Alex');
+  assert.equal(call({ action: 'teacher', op: 'reset', passcode: 'secret', student }).ok, true);
+  assert.equal(sheets.get('Summary').getLastRow(), 1);
+  assert.equal(sheets.get('Detail').getLastRow(), 1);
+  assert.equal(sheets.get('Archive').getLastRow(), 2);
+  assert.equal(call({ action: 'start', student }).status, 'new');
+  assert.equal(call({ action: 'submit', payload: payload({ completion: 'WWT-NEW1' }) }).ok, true);
+});
+
+test('unknown action and bad json are handled', () => {
+  const { ctx, call } = makeEnv();
+  assert.equal(call({ action: 'nope' }).reason, 'unknown-action');
+  assert.equal(JSON.parse(ctx.doPost({ postData: { contents: '{bad' } }).t).reason, 'bad-request');
+});

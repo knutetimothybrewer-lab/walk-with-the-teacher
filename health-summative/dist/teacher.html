@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Teacher page — Wildcat Wellness Trail</title>
+  <meta name="robots" content="noindex">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/app.css">
+  <style>
+    body { background: #eef1fa; }
+    main { max-width: 980px; margin: 0 auto; padding: 24px 16px 60px; }
+    table { border-collapse: collapse; width: 100%; background: #fff; border-radius: 12px; overflow: hidden; }
+    th, td { padding: 8px 12px; text-align: left; border-bottom: 1px solid #e3e6f3; }
+    th { background: #e8ebf7; }
+    .row { margin: 12px 0; }
+  </style>
+</head>
+<body>
+<main>
+  <h1>Teacher page</h1>
+  <p class="small">Live list of finished students from your Google Sheet. Enter the passcode you set from the Sheet's <b>Wildcat Trail</b> menu. Nothing is stored in this browser.</p>
+  <div class="card">
+    <div class="field" style="max-width:340px"><label for="pass">Teacher passcode</label><input id="pass" type="password" autocomplete="off"></div>
+    <div class="row"><button class="btn-primary" id="load">Load students</button> <button class="btn-quiet" id="csv" disabled>Download gradebook CSV</button></div>
+    <p id="msg" role="status" class="small"></p>
+    <div id="out"></div>
+  </div>
+</main>
+<script type="module">
+import cfg from './config.js';
+const $ = (s) => document.querySelector(s);
+let students = [];
+async function call(body) {
+  const r = await fetch(cfg.backend.url, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ action: 'teacher', passcode: $('#pass').value, ...body }) });
+  return r.json();
+}
+function esc(s) { return String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c])); }
+function render() {
+  if (!students.length) { $('#out').innerHTML = '<p>No finished students yet.</p>'; return; }
+  const rows = students.map((s, i) => `<tr><td>${esc(s.last)}</td><td>${esc(s.first)}</td><td>${esc(s.period)}</td><td>${esc(s.code)}</td><td>${esc(s.percent)}%</td><td><button class="btn-quiet" data-i="${i}">Reset for retake</button></td></tr>`).join('');
+  $('#out').innerHTML = `<table><thead><tr><th>Last</th><th>First</th><th>Period</th><th>Code</th><th>Score</th><th></th></tr></thead><tbody>${rows}</tbody></table>`;
+  $('#csv').disabled = false;
+}
+async function load() {
+  if (!cfg.backend.url) { $('#msg').textContent = 'No backend URL is set in config.js yet.'; return; }
+  $('#msg').textContent = 'Loading…';
+  try {
+    const r = await call({ op: 'list' });
+    if (!r.ok) { $('#msg').textContent = r.reason === 'passcode' ? 'That passcode did not match.' : 'Something went wrong: ' + r.reason; return; }
+    students = r.students; $('#msg').textContent = `${students.length} finished.`; render();
+  } catch { $('#msg').textContent = 'Could not reach the Sheet. Check Wi-Fi and the backend URL.'; }
+}
+$('#load').addEventListener('click', load);
+$('#out').addEventListener('click', async (e) => {
+  const b = e.target.closest('button[data-i]'); if (!b) return;
+  const s = students[Number(b.dataset.i)];
+  if (!confirm(`Reset ${s.first} ${s.last} (period ${s.period})? Their row moves to the Archive tab and they can start again.`)) return;
+  const r = await call({ op: 'reset', student: { first: s.first, last: s.last, period: s.period, code: s.code } });
+  $('#msg').textContent = r.ok ? 'Reset. They can start again.' : 'Could not reset: ' + (r.reason || 'not found');
+  load();
+});
+$('#csv').addEventListener('click', () => {
+  const q = (v) => `"${String(v).replace(/"/g, '""')}"`;
+  const csv = ['Last,First,Period,Percent', ...students.map(s => [s.last, s.first, s.period, s.percent].map(q).join(','))].join('\n');
+  const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' })); a.download = 'gradebook.csv'; a.click();
+});
+</script>
+</body>
+</html>
