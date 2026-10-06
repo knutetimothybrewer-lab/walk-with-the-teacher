@@ -200,7 +200,7 @@ textarea{width:100%;min-height:110px;background:#12002b;color:#fff;border:2px so
 <!-- GAME -->
 <div id="game" class="screen hidden"><div class="wrap">
   <div id="hdr">
-    <div class="bal"><span class="coin">🪙</span><span id="bal">0</span><button class="btn btn-green" id="storebtn" style="padding:6px 12px;font-size:13px">+ GET COINS</button></div>
+    <div class="bal"><span class="coin">🪙</span><span id="bal">0</span></div>
     <div class="lvl"><div class="t"><span id="vip">⭐ BRONZE · LVL 1</span><span id="xpt"></span></div><div class="bar"><i id="xpbar"></i></div></div>
     <div class="hbtns">
       <button class="btn btn-ghost" id="mute">🔊</button>
@@ -298,7 +298,7 @@ let S;
 function newState(){return{
   name:'Player',cap:40,bal:0,bet:10000,game:'slots',pick:'low',
   spins:0,wagered:0,returned:0,wins:0,losses:0,nearMiss:0,ldw:0,bigWins:0,biggest:0,
-  hist:[],t0:Date.now(),giftValue:0,gifts:0,pretend:0,xp:0,level:1,
+  hist:[],t0:Date.now(),giftValue:0,gifts:0,xp:0,level:1,
   busy:false,auto:false,turbo:false,xray:false,calm:false,muted:false,
   lossRun:0,winRun:0,rescues:0,chestT:120,chestReady:false,wheelReady:0,boxReady:false,
   tricks:{},seen:{},capHit:false,jp:12483920
@@ -320,7 +320,6 @@ const TRICKS={
  mystery:['Mystery box + illusion of choice','You "choose" one of three boxes, but all three hold the same prize. Feeling in control makes you more attached.'],
  vip:['VIP levels & XP','Progress bars and status levels reward you for wagering MORE. Level-ups trigger more gifts, which trigger more betting.'],
  rescue:['The rescue gift','When you run out, the app gives you free coins right away — so you never have to stop and feel the loss. It keeps you in the game.'],
- store:['The store pitch','"Limited time!", crossed-out prices, "BEST VALUE" and fake discounts push you to spend. Anchoring: the huge $99.99 pack makes $19.99 feel reasonable.'],
  popular:['"Most popular" bet','Highlighting a high bet nudges you to wager more. Most players never change the default the app picks.'],
  coldStreak:['"Luck is due" message','After a losing streak the app says your luck is about to turn. That is the gambler\'s fallacy: every spin is independent, a loss streak does not make a win more likely.'],
  hotStreak:['"You\'re on fire" message','Praise after a couple of wins makes you feel skilled and in a groove — in a game that is pure chance.'],
@@ -601,25 +600,18 @@ function claimChest(){
 }
 
 /* ============================================================
-   STORE / RESCUE
+   RESCUE
    ============================================================ */
-function openStore(rescue){
-  trick('store');
-  modal(`<h2>${rescue?'😱 OUT OF COINS!':'💰 COIN SHOP'}</h2>
-  <div class="timer" id="stimer">⏰ LIMITED TIME: 0:30</div>
-  <div class="disc">SIMULATION — nothing is really purchased. Your teacher will show you the total you "would have spent."</div>
-  ${rescue&&S.rescues<2?`<button class="btn btn-gold big pulse" id="free" style="width:100%;margin:8px 0">🎁 CLAIM FREE 250,000 COINS</button>`:''}
-  ${[['1,000,000','0.99','',''],['6,000,000','4.99','<s>$9.99</s>','🔥 50% OFF'],['35,000,000','19.99','<s>$79.99</s>','⭐ BEST VALUE'],['200,000,000','99.99','<s>$499.99</s>','👑 VIP WHALE PACK']].map((p,i)=>`<div class="pack">${p[3]?`<span class="tag">${p[3]}</span>`:''}<div><div class="c">🪙 ${p[0]}</div>${p[2]}</div><button class="btn btn-green buy" data-c="${p[0].replace(/,/g,'')}" data-d="${p[1]}">$${p[1]}</button></div>`).join('')}
-  <div style="margin-top:10px"><button class="btn btn-ghost" id="sclose" style="${rescue?'opacity:.5;font-size:11px':''}">${rescue?'no thanks, I quit':'Close'}</button></div>`);
+function openRescue(){
+  const can=S.rescues<2;
+  modal(`<h2>😱 OUT OF COINS!</h2>
+  ${can?`<div class="timer" id="stimer">⏰ LIMITED TIME: 0:30</div><button class="btn btn-gold big pulse" id="free" style="width:100%;margin:8px 0">🎁 CLAIM FREE 250,000 COINS</button>`:`<p>No more free gifts this round.</p>`}
+  <div style="margin-top:10px"><button class="btn btn-ghost" id="sclose" style="${can?'opacity:.5;font-size:11px':''}">${can?'no thanks, I quit':'See my results'}</button></div>`);
   let t=30;const iv=setInterval(()=>{t--;const e=$('stimer');if(!e||t<0){clearInterval(iv);return}e.textContent='⏰ LIMITED TIME: 0:'+String(t).padStart(2,'0')},1000);
-  if($('free'))$('free').onclick=()=>{S.rescues++;clearInterval(iv);closeModal();addCoins(250000);trick('rescue');msg('Phew! Free coins! Back in the game! 🍀','msg-win');S.busy=false;$('spin').disabled=false};
-  document.querySelectorAll('.buy').forEach(b=>b.onclick=()=>{
-    S.pretend+=+b.dataset.d;clearInterval(iv);closeModal();addCoins(+b.dataset.c,false);
-    msg(`(Pretend) bought ${fmt(b.dataset.c)} coins for $${b.dataset.d}`,'msg-win');S.busy=false;$('spin').disabled=false;
-  });
-  $('sclose').onclick=()=>{clearInterval(iv);closeModal();if(rescue&&S.bal<1000){showResults()}};
+  if($('free'))$('free').onclick=()=>{S.rescues++;clearInterval(iv);closeModal();addCoins(250000);msg('Phew! Free coins! Back in the game! 🍀','msg-win');S.busy=false;$('spin').disabled=false};
+  $('sclose').onclick=()=>{clearInterval(iv);closeModal();showResults()};
 }
-function outOfCoins(){S.auto=false;$('auto').classList.remove('on');S.busy=true;$('spin').disabled=true;trick('rescue');openStore(true)}
+function outOfCoins(){S.auto=false;$('auto').classList.remove('on');S.busy=true;$('spin').disabled=true;trick('rescue');openRescue()}
 
 /* ============================================================
    ROUND OVER
@@ -642,7 +634,7 @@ function simulate(players,spins,bet){
   return{ahead:ahead/players,avg:sum/players,house:-sum}
 }
 function makeCode(){
-  const o={n:S.name,s:S.spins,w:S.wagered,r:S.returned,g:S.giftValue,v:S.pretend,b:S.bal};
+  const o={n:S.name,s:S.spins,w:S.wagered,r:S.returned,g:S.giftValue,b:S.bal};
   return 'LRC1.'+btoa(unescape(encodeURIComponent(JSON.stringify(o))));
 }
 function showResults(){
@@ -651,7 +643,7 @@ function showResults(){
   const net=S.returned-S.wagered,mins=Math.max(1,Math.round((Date.now()-S.t0)/60000));
   const rtp=S.wagered?S.returned/S.wagered:0;
   const peak=Math.max(...S.hist,START_BAL);
-  const dollar=Math.abs(net)/1000000*0.99;
+  
   const sims=[10,50,200,1000,5000].map(n=>({n,...simulate(3000,n,10000)}));
   const trickRows=Object.keys(S.tricks).filter(k=>TRICKS[k]).sort((a,b)=>S.tricks[b]-S.tricks[a]).map(k=>`<div class="trick"><span class="n">×${S.tricks[k]}</span><b>${TRICKS[k][0]}</b><br>${TRICKS[k][1]}</div>`).join('');
   const unseen=['noClock','hiddenExit','bigNumbers','welcomeGift','popular','socialProof','leaderboard','nearPrize','autoplay'].filter(k=>!S.tricks[k]).map(k=>`<div class="trick"><b>${TRICKS[k][0]}</b><br>${TRICKS[k][1]}</div>`).join('');
@@ -665,10 +657,8 @@ function showResults(){
     <div class="stat"><b class="${net<0?'neg':'pos'}">${net<0?'−':'+'}${fmt(Math.abs(net))}</b><span>net result from betting</span></div>
     <div class="stat"><b>${(rtp*100).toFixed(1)}%</b><span>of bets returned (the game is built to return ~${(SLOT_RTP*100).toFixed(1)}% on slots)</span></div>
     <div class="stat"><b>${fmt(S.giftValue)}</b><span>free "gift" coins you received</span></div>
-    <div class="stat"><b>$${S.pretend.toFixed(2)}</b><span>pretend dollars spent in the shop</span></div>
     <div class="stat"><b>${mins} min</b><span>time played (no clock was shown!)</span></div>
    </div>
-   <p>At the shop's own price, your betting ${net<0?'loss':'result'} of <b>${fmt(Math.abs(net))}</b> coins ≈ <b>$${dollar.toFixed(2)}</b> in real money (1,000,000 coins = $0.99). Big numbers make that feel like nothing.</p>
   </div>
   <div class="dh"><h2>📉 Your balance over time</h2><canvas id="cv" width="900" height="260"></canvas>
    <div class="stats">
@@ -786,7 +776,6 @@ document.addEventListener('DOMContentLoaded',()=>{
   $('turbo').onclick=()=>{S.turbo=!S.turbo;$('turbo').classList.toggle('on',S.turbo);trick('autoplay')};
   $('mute').onclick=()=>{S.muted=!S.muted;$('mute').textContent=S.muted?'🔇':'🔊'};
   $('xrbtn').onclick=()=>{S.xray=!S.xray;$('xrbtn').classList.toggle('xon',S.xray);if(!S.xray)$('xr').innerHTML='';else{S.seen={};trick('nearMiss')}};
-  $('storebtn').onclick=()=>{if(!S.busy)openStore(false)};
   $('chestbtn').onclick=claimChest;
   $('wheelbtn').onclick=async()=>{if(S.busy||modalOpen())return;S.busy=true;$('spin').disabled=true;await openWheel();S.busy=false;$('spin').disabled=false;updateAll()};
   $('giftbox').onclick=openBox;
