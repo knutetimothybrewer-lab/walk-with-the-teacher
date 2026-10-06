@@ -113,6 +113,9 @@
       doubleCap: 400
     },
 
+    /* ---------- TIMING (milliseconds) ---------- */
+    timing: { reelStops: [700, 1000, 1300], celebrateMs: 2300, randomScanMs: 1400, strategyStepMs: 110, parlayStepMs: 650 },
+
     /* ---------- LEVELS ---------- */
     levels: [
       { n: 0, name: 'PLAYER', vision: null, msg: 'You see the games, the tokens and the lights.' },
@@ -186,7 +189,7 @@
       { id: 's4', tag: 'research', title: 'Miller & Sanjurjo (2018). Surprised by the Hot Hand Fallacy? A Truth in the Law of Small Numbers. Econometrica, 86(6), 2019-2047.',
         url: 'https://econometricsociety.org/publications/econometrica/2018/11/01/surprised-hot-hand-fallacy-truth-law-small-numbers', use: 'Why "hot hand" in real sports is still debated, while a fair coin has no hot hand (Zone 6).', verified: 'Citation confirmed by search.' },
       { id: 's5', tag: 'fact', title: 'National Council on Problem Gambling: help and treatment (helpline, text and chat).',
-        url: 'https://www.ncpgambling.org/help-treatment/', use: 'Help & Support. The national helpline number has changed hands recently; always confirm the current number on this page.', verified: 'Search found 1-800-522-4700 listed by NCPG as of the last check. CONFIRM BEFORE CLASS.' },
+        url: 'https://ncpgambling.org/help-treatment/national-helpline-1-800-522-4700/', use: 'Help & Support. The national helpline number has changed hands recently; always confirm the current number on this page.', verified: 'Search found 1-800-522-4700 listed by NCPG as of the last check. CONFIRM BEFORE CLASS.' },
       { id: 's6', tag: 'fact', title: 'Expected value, independence, Law of Large Numbers (any standard high-school/AP statistics text; e.g. OpenStax Introductory Statistics, Khan Academy "Probability").',
         url: 'https://openstax.org/details/books/introductory-statistics-2e', use: 'Mathematical definitions used throughout. TEACHER: confirm the chapter that matches your course.', verified: 'PLACEHOLDER: general reference, verify chapter before citing.' },
       { id: 's7', tag: 'research', title: 'Gilovich, Vallone & Tversky (1985). The hot hand in basketball: On the misperception of random sequences. Cognitive Psychology, 17(3), 295-314.',

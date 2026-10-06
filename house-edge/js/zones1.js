@@ -69,7 +69,7 @@
       var fin_syms = symbolsFor(d.outcome.show); $('.reels', el).classList.remove('winflash'); msg.className = 'm-msg'; msg.textContent = 'Spinning…';
       return new Promise(function (res) {
         if (UI.reduced) { showSyms(fin_syms); fin(); res(spin); return; }
-        var stops = [700, 1000, 1300], t0 = performance.now(), iv = setInterval(function () {
+        var stops = C.timing.reelStops, t0 = performance.now(), iv = setInterval(function () {
           var t = performance.now() - t0;
           reels.forEach(function (r, i) { if (t < stops[i]) { var k = Math.floor(Math.random() * 5); r.textContent = SYM[k]; r.className = SYMC[k] + ' spinning'; } else if (r.classList.contains('spinning') || !r.dataset.done) { r.dataset.done = '1'; r.className = SYMC[fin_syms[i]]; r.textContent = SYM[fin_syms[i]]; UI.sound('tick'); } });
           if (t > stops[2] + 30) { clearInterval(iv); reels.forEach(function (r) { delete r.dataset.done; }); showSyms(fin_syms); fin(); res(spin); }
@@ -221,7 +221,7 @@
     function celebrate(spin) {
       var first = !P.isDone('z2.xray'), ov = UI.el('<div class="celebrate" role="dialog" aria-modal="true" aria-label="Big win"><div class="cel-text">BIG WIN!</div><div class="cel-amt">+' + fmt(spin.ret - spin.w) + ' tokens</div></div>');
       document.body.appendChild(ov); UI.confetti(180); UI.sound('big');
-      UI.wait(2300).then(function () {
+      UI.wait(C.timing.celebrateMs).then(function () {
         ov.className = 'celebrate frozen'; ov.innerHTML = '<div class="cel-wait">WAIT.</div><p class="cel-sub">That was a ' + fmt(spin.ret / spin.w, 1) + '× return. Was it a good bet, or just a good spin? Let\'s look underneath.</p><div class="btn-row center"><button class="btn primary big" type="button" id="xrWin">X-RAY THIS WIN</button>' + (first ? '' : '<button class="btn ghost" type="button" id="skipWin">Keep playing</button>') + '</div>';
         $('#xrWin', ov).focus(); $('#xrWin', ov).addEventListener('click', function () { ov.remove(); openXray(spin); }); var sk = $('#skipWin', ov); if (sk) sk.addEventListener('click', function () { ov.remove(); });
       });

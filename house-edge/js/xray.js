@@ -34,7 +34,7 @@
     UI.$('.rtbl', el).innerHTML = tb + '</tbody></table>';
     var mk = UI.el('<div class="rmark" aria-hidden="true"><i></i><b>▼</b></div>'); bar.appendChild(mk);
     return new Promise(function (resolve) {
-      var t0 = performance.now(), dur = UI.reduced ? 0 : 1400;
+      var t0 = performance.now(), dur = UI.reduced ? 0 : C.timing.randomScanMs;
       (function tick(t) {
         var k = dur ? Math.min(1, (t - t0) / dur) : 1;
         if (k < 1) { rv.textContent = Math.random().toFixed(4); requestAnimationFrame(tick); return; }

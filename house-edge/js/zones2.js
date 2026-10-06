@@ -158,7 +158,7 @@
     $('#p10go', Cs).addEventListener('click', function () {
       var which = ($$('input[name=p10]:checked', Cs)[0] || {}).value, last = P.get('z5.last'), ps = which === 'ref' || !last ? [.5, .5, .5, .5, .5, .5] : last.legs.map(PL.legP);
       var obs = PL.survivors(ps, 10000), th = [10000], acc = 10000; ps.forEach(function (p) { acc *= p; th.push(acc); }); this.disabled = true; var btn = this;
-      var k = 0; (function step() { Ch.survivors($('#p10cv', Cs), { observed: obs, theory: th }, k); if (k < ps.length) { k++; setTimeout(step, UI.reduced ? 0 : 650); } else { btn.disabled = false; finish(); } })();
+      var k = 0; (function step() { Ch.survivors($('#p10cv', Cs), { observed: obs, theory: th }, k); if (k < ps.length) { k++; setTimeout(step, UI.reduced ? 0 : C.timing.parlayStepMs); } else { btn.disabled = false; finish(); } })();
       function finish() {
         var n = ps.length; $('#p10note', Cs).innerHTML = 'Observed after all ' + n + ' legs: <b>' + fmt(obs[n]) + '</b> of 10,000 · Theoretical expectation: <b>' + fmt(th[n], 1) + '</b> (' + pc(th[n] / 10000, 2) + '). Real randomness lands <i>near</i> the theory, not exactly on it. Press again for a new, independent run.';
         ran = true; var h = $('#p10why', Cs); if (!h.firstChild) { h.innerHTML = '<hr>'; QE.render(h, 'z5_why', { onDone: function (r, rs) { if (!rs) api.complete('z5.sim'); } }); }
