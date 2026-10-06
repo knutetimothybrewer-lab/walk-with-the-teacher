@@ -140,7 +140,7 @@ First name, last name or initial, class period, the class code, scores, per-ques
 ## 11. Testing and tools
 
 ```
-npm test             # 27 unit tests: scoring engine, grading, shuffling, completion code, Apps Script logic (mocked)
+npm test             # 24 unit tests: scoring engine, grading, shuffling, completion code, Apps Script logic (mocked)
 npm run test:e2e     # real Chromium: wrong code, full mixed run vs. independently computed score, refresh-resume,
                      # offline retry, duplicate/reset, keyboard-only, reduced motion, 360x640 phone and Chromebook sizes
 npm run timing       # TIMING.md        npm run map   # CONTENT-MAP.md        npm run build  # clean dist/

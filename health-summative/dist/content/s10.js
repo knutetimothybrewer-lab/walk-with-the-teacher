@@ -120,7 +120,7 @@ export default {
         { t: '"Asking for help is a strength."' },
       ],
       hint: 'Look for lines that diagnose, overpromise, point to an unreliable source, or suggest secrecy when someone may be unsafe. One line is a medical claim that is not accurate.',
-      explain: 'Errors: diagnosing a friend; saying stress is always harmful (it is not, and recovery is the key); promising coping that ends all stress; an unreliable resource; and promising secrecy when someone may be unsafe.',
+      explain: 'The five errors: diagnosing a friend; saying stress is always harmful (it is not; recovery is the key); promising coping that ends all stress; an unreliable resource; and promising secrecy when someone may be unsafe.',
     }),
   ],
 };

@@ -45,7 +45,7 @@ export default {
         ['"It is not serious enough." (minimizing)', 'You do not have to wait until it is severe. Early support helps.'],
       ],
       hint: 'Pick the reframe that answers the worry directly and offers a next step.',
-      explain: 'Each barrier has a reframe and a practical next step: help is a strength, ask about privacy and exceptions, start free at school with one trusted person (cost, transportation, and not knowing where to go are real barriers), and do not wait for things to be severe.',
+      explain: 'Each barrier has a reframe and a next step. Help is a strength. Ask about privacy first. Start free at school with one trusted person (cost, rides, and not knowing where to go are real barriers). Do not wait until things are severe.',
     }),
     multi('s9-06', {
       level: 'recall', src: `${E} › CDC WSCC model (10 components)`,

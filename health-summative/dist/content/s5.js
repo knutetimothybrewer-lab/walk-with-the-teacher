@@ -50,7 +50,7 @@ export default {
         ['A loved one died', 'A specific loss'],
       ],
       hint: 'Each situation has one clue that stands out most.',
-      explain: 'The most useful clue for a big test is the trigger; for worry with no trigger, future-focused thinking; for loss of interest, duration plus interference; for the death of a loved one, a specific loss.',
+      explain: 'A big test gives a clear trigger. Worry with no trigger is future-focused. Weeks of lost interest point to duration plus interference. A death is a specific loss.',
     }),
     scene('s5-sc1', [
       tag('s5-06', {

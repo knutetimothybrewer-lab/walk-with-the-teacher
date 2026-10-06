@@ -43,7 +43,8 @@ export function mount(host, ctx) {
     const btn = h('button', { type: 'button', class: 'slot-btn', 'data-slot': String(s.id) },
       mode === 'order' ? h('span', { class: 'slot-num' }, String(i + 1)) : null,
       h('span', { class: 'slot-title' }, rich(s.t)),
-      s.desc ? h('span', { class: 'slot-desc' }, s.desc) : null);
+      s.desc ? h('span', { class: 'slot-desc' }, s.desc) : null,
+      h('span', { class: 'sr-only cnt' }));
     btn.addEventListener('click', () => { if (selected) put(selected, s.id); else announce('Pick a card first, then choose where it goes.'); updateLabels(); });
     const sec = h('section', { class: `slot ${s.cls || ''}`, 'data-slot': String(s.id), 'data-i': String(i) }, btn, body);
     slotBody[s.id] = body; slotBtn[s.id] = btn;
@@ -84,10 +85,10 @@ export function mount(host, ctx) {
   }
 
   function updateLabels() {
-    item.slots.forEach(s => {
+    // The button's name is its visible text plus a hidden status (keeps label-in-name).
+    item.slots.forEach((s) => {
       const n = Object.keys(map).filter(k => map[k] === s.id).length;
-      const label = selected ? `Put the picked card in: ${stripMarks(s.t)}` : `${stripMarks(s.t)}. ${n} ${n === 1 ? 'card' : 'cards'} placed`;
-      slotBtn[s.id].setAttribute('aria-label', label);
+      slotBtn[s.id].querySelector('.cnt').textContent = selected ? '. Press to put the picked card here' : `. ${n} ${n === 1 ? 'card' : 'cards'} placed`;
     });
     trayBtn.style.visibility = selected !== null && map[selected] !== undefined ? 'visible' : 'hidden';
   }

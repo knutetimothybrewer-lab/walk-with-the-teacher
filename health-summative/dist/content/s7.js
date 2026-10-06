@@ -22,7 +22,7 @@ export default {
         ['Is nervous the night before a tryout', 't'],
       ],
       hint: 'Red flags are about safety. If safety might be at risk, get an adult. Longer patterns need a check-in. One tough moment is a typical bad day.',
-      explain: 'Red flags: talking about wanting to die or disappear, giving away belongings or saying goodbye, sudden calm after deep distress, signs of self-harm or talk of hurting self or others, and drastic, rapid change in behavior or mood. Safety overrides uncertainty.',
+      explain: 'Red flags include: talking about wanting to die or disappear; giving away belongings or saying goodbye; sudden calm after deep distress; signs of self-harm or talk of hurting self or others; and a drastic, rapid change in behavior or mood. Safety overrides uncertainty.',
     }),
     mc('s7-02', {
       level: 'apply', sensitive: true, alert: true, src: `${B} › You don't need the diagnosis before getting an adult involved`,
