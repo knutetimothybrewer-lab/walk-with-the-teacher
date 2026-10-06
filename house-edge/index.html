@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The House Edge: Think You Can Beat the Game?</title>
+<meta name="description" content="An interactive gambling-literacy investigation about probability, expected value, house edge and variance. Fictional tokens only. No real money.">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body data-level="0">
+<a class="skip" href="#main">Skip to main content</a>
+<canvas id="bg" aria-hidden="true"></canvas>
+<canvas id="fx" aria-hidden="true"></canvas>
+
+<header id="hud" role="banner">
+  <div class="hud-brand"><span class="logo" aria-hidden="true">◈</span><div><b>THE HOUSE EDGE</b><small>Think You Can Beat the Game?</small></div></div>
+  <button id="levelChip" class="chip lvl" type="button" aria-label="Analyst level. Open level list">LEVEL 0 · PLAYER</button>
+  <div class="hud-prog" role="progressbar" aria-label="Overall completion" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+    <div class="bar"><i id="progFill"></i></div><span id="progPct">0%</span>
+  </div>
+  <div class="hud-btns">
+    <button id="btnReport" class="chip" type="button" hidden>My Report</button>
+    <button id="btnSound" class="chip" type="button" aria-pressed="false" aria-label="Sound off">🔇 Sound OFF</button>
+    <button id="btnHelp" class="chip" type="button">Help &amp; Sources</button>
+    <button id="btnTeacher" class="chip" type="button">Teacher</button>
+    <button id="btnReset" class="chip danger" type="button">Reset</button>
+  </div>
+  <p class="hud-note">Tokens have no monetary value. This is a classroom simulation, not gambling.</p>
+</header>
+
+<nav id="zonebar" aria-label="Zones"></nav>
+<main id="main" tabindex="-1"></main>
+
+<footer id="mission" role="region" aria-label="Where you are and what to do next">
+  <div class="m-info"><div class="m-where" id="mWhere"></div><div class="m-todo" id="mTodo" aria-live="polite"></div></div>
+  <button id="mNext" class="btn primary big" type="button">Continue ▸</button>
+</footer>
+
+<div id="modalRoot"></div>
+<div id="toasts" aria-live="polite"></div>
+<div id="live" class="sr-only" aria-live="polite" role="status"></div>
+<noscript><p style="padding:2rem;color:#fff">This classroom activity needs JavaScript. Please use a current version of Chrome.</p></noscript>
+
+<script src="js/config.js"></script>
+<script src="js/engine.js"></script>
+<script src="js/progress.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/charts.js"></script>
+<script src="js/questions.js"></script>
+<script src="js/xray.js"></script>
+<script src="js/zones1.js"></script>
+<script src="js/zones2.js"></script>
+<script src="js/zones3.js"></script>
+<script src="js/zones4.js"></script>
+<script src="js/report.js"></script>
+<script src="js/debrief.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
