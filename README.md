@@ -92,3 +92,14 @@ cautious (1,000) bettors still ahead when the timer ends.
 
 Static classroom simulation about probability, parlays and risk (fictional basketball, pretend Lab Tokens). See `parlay-lab/README.md`.
 Run the checks with `node parlay-lab/tests/run-tests.js`.
+
+## THE HOUSE EDGE — Think You Can Beat the Game? (`house-edge/index.html`)
+
+Full gambling-literacy investigation for high school students (fictional tokens only, no real money).
+Students go from **PLAYER** to **ANALYST** across 10 zones: probability, a fictional slot machine with **X-Ray Mode**, expected value,
+house edge/RTP/variance, a fictional sportsbook with parlay X-ray, cognitive biases and interface design, a **10,000 Players Lab**,
+a "Can you beat the house?" strategy challenge, scenario mastery locks and a final **X-Ray Everything** reveal. Includes a personal
+*Gambling Literacy Report*, exit ticket, print sheet, Teacher Mode and a presentation-style **Classroom Debrief**.
+Static (no build, no server), progress saved only in the student's browser. One URL for students:
+`https://<user>.github.io/<repo>/house-edge/`. See `house-edge/README.md` for teacher instructions, how to edit probabilities,
+payouts, questions and timing, and the tests (`node house-edge/tests/engine.test.js`).
