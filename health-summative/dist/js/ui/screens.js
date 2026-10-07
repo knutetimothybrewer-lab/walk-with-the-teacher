@@ -84,7 +84,8 @@ function welcome(app, existing) {
         : r.reason === 'network' ? "We couldn't reach the server to check your code. Check your Wi-Fi and try again, or ask your teacher."
           : r.reason === 'error' ? 'Something went wrong starting the trail. Try again, or ask your teacher.'
             : "Hmm, that class code didn't work. Check it with your teacher and try again.";
-      return showErr(err, r.detail ? `${msg} (Technical detail for your teacher: ${r.detail})` : msg);
+      const detail = r.detail || (r.via === 'server' && r.reason && r.reason !== 'duplicate' ? `server said: ${r.reason}` : '');
+      return showErr(err, detail ? `${msg} (Technical detail for your teacher: ${detail})` : msg);
     }
     app.render();
   });
