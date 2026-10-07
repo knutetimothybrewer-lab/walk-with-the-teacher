@@ -124,3 +124,24 @@ test('unknown action and bad json are handled', () => {
   assert.equal(call({ action: 'nope' }).reason, 'unknown-action');
   assert.equal(JSON.parse(ctx.doPost({ postData: { contents: '{bad' } }).t).reason, 'bad-request');
 });
+
+test('class tabs: one tab per class code, only that class, sorted by name, with an average; updates on reset', () => {
+  const { call, sheets, ctx } = makeEnv();
+  const cs = sheets.get('ClassCodes'); // TRAIL1..TRAIL4 are the samples
+  assert.ok(cs.getLastRow() >= 3);
+  const mk = (first, last, code, pct, n) => payload({ student: { first, last, period: '3', code }, percent: pct, earned: pct, completion: 'WWT-T' + n });
+  call({ action: 'submit', payload: mk('Zed', 'Young', 'trail1', 70, 1) });
+  call({ action: 'submit', payload: mk('Amy', 'Adams', 'TRAIL1', 90, 2) });
+  call({ action: 'submit', payload: mk('Bo', 'Baker', 'trail2', 50, 3) });
+  const t1 = sheets.get('Class - TRAIL1'), t2 = sheets.get('Class - TRAIL2');
+  assert.ok(t1 && t2, 'a tab exists for each class code');
+  const names = t1.cells.slice(1, 3).map(r => r[1]);
+  assert.deepEqual(names, ['Adams', 'Young'], 'TRAIL1 holds only its two students, sorted by last name');
+  assert.equal(t2.cells[1][1], 'Baker');
+  assert.equal(t1.cells.flat().includes('Baker'), false, 'students of another class are not on this tab');
+  assert.match(String(t1.cells.flat().find(c => typeof c === 'string' && c.startsWith('=AVERAGE'))), /^=AVERAGE\(F2:F3\)$/, 'class average formula covers the class rows');
+  assert.equal(sheets.get('Summary').getLastRow(), 4, 'Summary still lists everyone');
+  call({ action: 'teacher', op: 'reset', passcode: 'secret', student: { first: 'Amy', last: 'Adams', period: '3', code: 'TRAIL1' } });
+  assert.deepEqual(sheets.get('Class - TRAIL1').cells.slice(1, 2).map(r => r[1]), ['Young'], 'a reset removes the student from the class tab');
+  void ctx;
+});

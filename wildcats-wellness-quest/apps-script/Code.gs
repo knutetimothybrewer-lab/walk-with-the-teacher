@@ -6,7 +6,8 @@
  *   1. Checks class codes on the SERVER (codes live in the ClassCodes tab, not in the web page).
  *   2. Stores ONE row per student (alias + class code) on Summary, plus one row per question on Detail.
  *   3. Ranks topics and questions by how many points the class missed on Reteach.
- *   4. Keeps a second submission under the same ID on Resubmissions instead of overwriting the first.
+ *   4. Adds one "Class - <code>" tab per class code (that class's students, sorted by name, with a class average).
+ *   5. Keeps a second submission under the same ID on Resubmissions instead of overwriting the first.
  *      You choose which to keep: menu "Wildcats Quest -> Use a resubmission for one student".
  *
  * Privacy: stores only the alias/ID the student typed, period, class code, scores and per-question
@@ -123,6 +124,7 @@ function handleSubmit_(p) {
     sheet_(SHEETS.summary).appendRow(summaryRow_(p, when));
     writeDetail_(p, when, 'main');
     rebuildReteach_();
+    rebuildClassTabs_(p.student.code);
     return { ok: true, status: 'new' };
   } finally { lock.releaseLock(); }
 }
@@ -164,16 +166,58 @@ function rebuildReteach_() {
   r.getRange(1, 1, out.length, 4).setValues(out);
 }
 
+/* ------------------------------------------------------- per-class tabs */
+/* One tab per class code ("Class - <code>"), rebuilt from Summary: only that class's students, sorted by name,
+   with a class-average row. Summary stays the master list. Rebuilt after every submission, reset and wipe, and from the menu. */
+var CLASS_TAB_PREFIX = 'Class - ';
+var CLASS_COL = 4, SORT_COLS = [2], PCT_COL = 5;   // 1-based columns on Summary: class code, sort-by, percent
+
+function classTabName_(code) { return (CLASS_TAB_PREFIX + String(code).replace(/[\[\]*?:\/\\]/g, '-')).slice(0, 99); }
+
+function rebuildClassTabs_(onlyCode) {
+  try {
+    var cs = ss_().getSheetByName(SHEETS.codes), codes = [], seen = {};
+    if (cs && cs.getLastRow() > 1) cs.getRange(2, 1, cs.getLastRow() - 1, 1).getValues().forEach(function (r) {
+      var raw = String(r[0]).trim(), k = norm_(raw);
+      if (k && !seen[k]) { seen[k] = 1; codes.push(raw); }
+    });
+    if (onlyCode) codes = codes.filter(function (c) { return norm_(c) === norm_(onlyCode); });
+    if (!codes.length) return;
+    var sum = ss_().getSheetByName(SHEETS.summary), hlen = summaryHeader_().length, head = summaryHeader_().slice(0, hlen - 1);
+    var all = sum && sum.getLastRow() > 1 ? sum.getRange(2, 1, sum.getLastRow() - 1, hlen).getValues() : [];
+    codes.forEach(function (code) {
+      var rows = all.filter(function (r) { return norm_(r[CLASS_COL - 1]) === norm_(code); })
+        .sort(function (a, b) {
+          for (var i = 0; i < SORT_COLS.length; i++) { var x = norm_(a[SORT_COLS[i] - 1]), y = norm_(b[SORT_COLS[i] - 1]); if (x !== y) return x < y ? -1 : 1; }
+          return 0;
+        }).map(function (r) { return r.slice(0, hlen - 1); });
+      var tab = sheet_(classTabName_(code)); tab.clear();
+      tab.getRange(1, 1, 1, head.length).setValues([head]).setFontWeight('bold').setBackground('#e8ebf7'); tab.setFrozenRows(1);
+      if (!rows.length) return;
+      tab.getRange(2, 1, rows.length, head.length).setValues(rows);
+      var last = rows.length + 1, pc = PCT_COL, r0 = last + 2, col = function (n) { return String.fromCharCode(64 + n); };
+      tab.getRange(r0, 1, 1, 1).setValues([['Class average']]).setFontWeight('bold');
+      tab.getRange(r0, pc).setFormula('=AVERAGE(' + col(pc) + '2:' + col(pc) + last + ')').setNumberFormat('0.0');
+      tab.getRange(r0, pc + 1).setFormula('=AVERAGE(' + col(pc + 1) + '2:' + col(pc + 1) + last + ')').setNumberFormat('0.0');
+      tab.getRange(r0 + 1, 1, 1, 2).setValues([['Students', rows.length]]).setFontWeight('bold');
+    });
+  } catch (err) { log_('class-tabs', String(err && err.stack || err)); }
+}
+
+
 /* ------------------------------------------------------------ teacher menu */
 
 function onOpen() {
   SpreadsheetApp.getUi().createMenu('Wildcats Quest')
     .addItem('1. Set up tabs (first time)', 'setupTabs')
     .addItem('Use a resubmission for one student', 'useResubmission')
+    .addItem('Rebuild class tabs', 'menuRebuildClassTabs')
     .addItem('Wipe ALL results (keeps class codes)', 'wipeAll')
     .addToUi();
 }
 function setupTabs() { ensureSheets_(); SpreadsheetApp.getUi().alert('Done. Edit the ClassCodes tab, then Deploy -> New deployment -> Web app (Execute as: Me, Who has access: Anyone) and paste the URL into js/teacher-config.js.'); }
+
+function menuRebuildClassTabs() { ensureSheets_(); rebuildClassTabs_(); SpreadsheetApp.getUi().alert('Class tabs rebuilt.'); }
 
 function useResubmission() {
   var ui = SpreadsheetApp.getUi(), r = ui.prompt('Use a resubmission', 'Type the student alias/ID exactly as shown on the Resubmissions tab:', ui.ButtonSet.OK_CANCEL);
@@ -198,6 +242,7 @@ function useResubmission() {
     d.clearContents(); d.appendRow(DETAIL_HEAD); var rows = keep.concat(add); if (rows.length) d.getRange(2, 1, rows.length, DETAIL_HEAD.length).setValues(rows);
   }
   rebuildReteach_();
+  rebuildClassTabs_();
   ui.alert('Done. The resubmission is now on Summary; the earlier result moved to Resubmissions.');
 }
 
@@ -207,4 +252,5 @@ function wipeAll() {
   [SHEETS.summary, SHEETS.detail, SHEETS.resub, SHEETS.reteach, SHEETS.log].forEach(function (n) { var s = ss_().getSheetByName(n); if (s) s.clear(); });
   PropertiesService.getScriptProperties().deleteAllProperties();
   ensureSheets_();
+  rebuildClassTabs_();
 }
