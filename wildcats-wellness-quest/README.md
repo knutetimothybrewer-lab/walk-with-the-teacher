@@ -4,7 +4,7 @@ An animated, walk-through **summative assessment** for a high school health unit
 
 - Static HTML/CSS/JavaScript. **No server, accounts, API keys, paid services or build step.** Local relative paths only.
 - Runs on Chromebooks (Chrome) from one student link on GitHub Pages.
-- Saves in each student's own browser. Nothing is sent anywhere.
+- Saves in each student's own browser. **By default nothing is sent anywhere.** Optionally, results can be sent to **your Google Sheet** with a class code (see "Send results to a Google Sheet").
 - Designed for a 30-40-minute class period, **not timed or enforced**. See "Timing, honestly" below.
 
 > **Before using for grades:** set your teacher passcode ([docs/TEACHER_SETUP.md](docs/TEACHER_SETUP.md)), verify the clinical reference values ([docs/SOURCE_REGISTER.md](docs/SOURCE_REGISTER.md)), and run a short pilot on real Chromebooks ([docs/PILOT_CHECKLIST.md](docs/PILOT_CHECKLIST.md)). The six source decks/worksheet were not available when this was built, so slide numbers in the coverage matrix are unverified.
@@ -44,7 +44,10 @@ python3 -m http.server 8000     # then visit http://localhost:8000/
 
 Optional: if you do not want students to be able to browse the teacher answer keys on your public site, keep `docs/` and `tools/` in a private repository or branch and publish only `index.html`, `css/`, `js/` and `teacher/` (the keys are still inspectable inside `js/data/` because the app scores in the browser; see limits below).
 
-### Share the link and collect reports
+### Send results to a Google Sheet (optional, about 10 minutes, once)
+Full steps: [docs/TEACHER_SETUP.md](docs/TEACHER_SETUP.md) section 8. In short: make a Sheet, paste `apps-script/Code.gs` into **Extensions -> Apps Script**, run **Wildcats Quest -> 1. Set up tabs**, put your class codes on the **ClassCodes** tab, deploy as a **Web app** (Execute as: Me, Access: Anyone), then paste the `/exec` URL into `backend: { url: '...' }` in `js/teacher-config.js`. Students then enter a **class code** at the start, and their result is sent when they submit (with a "Try sending again" button if the network fails). The downloadable JSON file still works as a backup.
+
+### Share the link and collect reports (without a Sheet)
 Give students **one link**. Each student enters the alias or ID you assign, works, submits, then presses **Download results (JSON)** and gives you the file the way you collect work (for example upload to your LMS assignment). A printable page (**Print / Save as PDF**) is also provided. Nothing is submitted automatically; there is no cross-device sync.
 
 ## Teacher setup in brief (full guide: [docs/TEACHER_SETUP.md](docs/TEACHER_SETUP.md))
@@ -89,7 +92,7 @@ Students can pause and resume one session (autosave). Final submission requires 
 
 ## Privacy
 
-No accounts, analytics or network calls. Students enter only an alias/ID and optional period. No medical history or personal health measurements are collected: all health data is fictional. Text is rendered safely (no HTML injection) and imported files are validated and recomputed.
+No accounts or analytics. By default there are **no network calls**; only if you set `backend.url` does the page contact your own Apps Script (class-code check at the start, one result at submission). What is sent: alias/ID, period, class code, scores, and per-question points and attempt counts. Never reflections, never raw answers. Students enter only an alias/ID and optional period (plus the class code when the Sheet backend is on). No medical history or personal health measurements are collected: all health data is fictional. Text is rendered safely (no HTML injection) and imported files are validated and recomputed.
 
 ## Accessibility
 

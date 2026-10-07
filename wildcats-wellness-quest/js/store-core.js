@@ -32,7 +32,7 @@
     return {
       schema: SCHEMA, assessmentVersion: ver(),
       session: { id: St.newSessionId(), createdAt: now, status: 'ACTIVE', submittedAt: null, resetCount: extra.resetCount || 0, reset: extra.reset || null },
-      student: { alias: '', period: '', avatar: 'a1' },
+      student: { alias: '', period: '', code: '', avatar: 'a1' },
       progress: { pos: { m: 0, s: '0.1' }, started: false, activities: {}, view: 'stage' },
       items: {}, practice: { tut: P.newRec() }, optPractice: {},
       sim: { picks: {}, finished: false, compare: null },
@@ -89,7 +89,7 @@
     var s = raw.session; if (!U.isObj(s) || typeof s.id !== 'string' || !/^WWQ-[0-9a-f]{12}$/.test(s.id)) return { ok: false, problems: ['invalid session id'] };
     out.session = { id: s.id, createdAt: str(s.createdAt, 40) || out.session.createdAt, status: s.status === 'SUBMITTED' ? 'SUBMITTED' : 'ACTIVE', submittedAt: s.submittedAt ? str(s.submittedAt, 40) : null, resetCount: Math.max(0, s.resetCount | 0), reset: U.isObj(s.reset) ? { at: str(s.reset.at, 40), previousSessionId: str(s.reset.previousSessionId, 20), authorizedVia: str(s.reset.authorizedVia, 120), note: str(s.reset.note, 200) } : null };
     var stu = U.isObj(raw.student) ? raw.student : {};
-    out.student = { alias: str(stu.alias, ALIAS_MAX), period: str(stu.period, 20), avatar: W.AVATARS.some(function (a) { return a.id === stu.avatar; }) ? stu.avatar : 'a1' };
+    out.student = { alias: str(stu.alias, ALIAS_MAX), period: str(stu.period, 20), code: str(stu.code, 40), avatar: W.AVATARS.some(function (a) { return a.id === stu.avatar; }) ? stu.avatar : 'a1' };
     var pr = U.isObj(raw.progress) ? raw.progress : {};
     out.progress.started = !!pr.started;
     if (U.isObj(pr.pos) && W.MISSION[pr.pos.m | 0] && W.MISSION[pr.pos.m | 0].stages.some(function (x) { return x.id === pr.pos.s; })) out.progress.pos = { m: pr.pos.m | 0, s: pr.pos.s };

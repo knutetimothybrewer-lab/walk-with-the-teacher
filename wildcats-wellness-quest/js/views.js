@@ -78,16 +78,29 @@
     var st = env.state, C = W.CONFIG, started = st.progress.started, ro = env.readOnly;
     var alias = h('input.txt#alias', { type: 'text', maxlength: '60', autocomplete: 'off', 'data-fk': 'alias', value: st.student.alias, disabled: ro || null, 'aria-describedby': 'alias-help', oninput: function (e) { st.student.alias = e.target.value.slice(0, 60); env.save(); env.refresh(); } });
     var period = h('input.txt#period', { type: 'text', maxlength: '20', autocomplete: 'off', 'data-fk': 'period', value: st.student.period, disabled: ro || null, oninput: function (e) { st.student.period = e.target.value.slice(0, 20); env.save(); } });
+    var useCode = W.Sync.enabled(), codeMsg = h('p.hint-line#code-msg', { role: 'status' }, 'Your teacher will give you the class code.');
+    var code = h('input.txt#classcode', { type: 'text', maxlength: '40', autocomplete: 'off', autocapitalize: 'characters', 'data-fk': 'code', value: st.student.code || '', disabled: ro || started || null, 'aria-describedby': 'code-msg', oninput: function (e) { st.student.code = e.target.value.slice(0, 40); env.save(); env.refresh(); } });
+    var needsCode = function () { return useCode && !started && (st.student.code || '').trim().length < 2; };
     var avs = h('div.avatars', { role: 'radiogroup', 'aria-label': 'Choose your avatar' });
     W.AVATARS.forEach(function (a) { avs.appendChild(h('label.opt', h('input', { type: 'radio', name: 'avatar', value: a.id, checked: st.student.avatar === a.id, disabled: ro || null, 'data-fk': 'av-' + a.id, onchange: function () { st.student.avatar = a.id; env.save(); env.rerender(); } }), h('span.mark', A.iconEl('check')), U.svg(A.avatar(a)), h('span.small', { style: { fontWeight: '700' } }, a.name))); });
-    var startBtn = UI.btn(started ? 'Continue to How it works' : 'Start my quest', { cls: 'primary big pulse', id: 'btn-start', icon: 'right', disabled: C.requireIdentifier && st.student.alias.trim().length < 2,
-      onclick: function () { st.student.alias = st.student.alias.trim(); st.progress.started = true; if (!st.timing.startedAt) st.timing.startedAt = U.nowISO(); env.save(true); W.App.go({ m: 0, s: '0.2' }); } });
-    env.refreshStart = function () { startBtn.disabled = C.requireIdentifier && alias.value.trim().length < 2; };
+    var begin = function () { st.student.alias = st.student.alias.trim(); st.student.code = (st.student.code || '').trim(); st.progress.started = true; if (!st.timing.startedAt) st.timing.startedAt = U.nowISO(); env.save(true); W.App.go({ m: 0, s: '0.2' }); };
+    var startBtn = UI.btn(started ? 'Continue to How it works' : 'Start my quest', { cls: 'primary big pulse', id: 'btn-start', icon: 'right', disabled: (C.requireIdentifier && st.student.alias.trim().length < 2) || needsCode(),
+      onclick: function () {
+        if (!useCode || started) { begin(); return; }
+        st.student.alias = st.student.alias.trim(); st.student.code = st.student.code.trim(); startBtn.disabled = true; codeMsg.textContent = 'Checking your class code\u2026';
+        W.Sync.checkCode(st.student).then(function (r) {
+          if (r.ok) { begin(); return; }
+          startBtn.disabled = false; codeMsg.textContent = r.reason === 'network' ? 'Could not reach the server to check your class code. Check your connection and try again.' : 'That class code was not recognized. Check it with your teacher.'; UI.announce(codeMsg.textContent);
+          try { code.focus(); } catch (e) { /* ignore */ }
+        });
+      } });
+    env.refreshStart = function () { startBtn.disabled = (C.requireIdentifier && alias.value.trim().length < 2) || needsCode(); };
     var left = h('div.stack', h('div.display', 'Wildcats Wellness Quest', h('br'), h('span', { style: { color: 'var(--brand)' } }, 'Small Choices, Whole Health')),
       h('p.lead', 'Walk the Wildcat High campus with Pounce and Jordan, a fictional classmate. Investigate situations, play a simulation, and show what you understand about wellness.'),
       h('div.callout.info', A.iconEl('clock'), h('div', h('b', 'Designed for about ' + C.timeGuidance.rangeMinutes[0] + '\u2013' + C.timeGuidance.rangeMinutes[1] + ' minutes. '), 'Some students need more. No timers, no speed points. Progress saves as you go.')));
     var form = h('div.card.stack', h('div', h('label.field', { 'for': 'alias' }, C.identifierLabel), alias, h('p.hint-line#alias-help', 'Use the alias or ID your teacher gave you. This is typed text, not a verified identity. Do not enter private health information.')),
       h('div', h('label.field', { 'for': 'period' }, 'Class period (optional)'), period),
+      useCode ? h('div', h('label.field', { 'for': 'classcode' }, 'Class code'), code, codeMsg) : null,
       h('div', h('b', 'Choose your avatar'), avs), startBtn);
     var page = h('div', h('div.hero', left, ro ? h('div.card', h('p', 'Your assessment is submitted. Your alias and avatar cannot be changed.'), U.svg(A.avatar(A.avatarById(st.student.avatar)))) : form));
     if (!St.passcodeConfigured()) page.appendChild(h('div.callout.warn', { style: { marginTop: '16px' } }, A.iconEl('key'), h('div', h('b', 'Teacher setup not finished. '), 'No reset passcode is configured, so this copy is in preview mode. See README, “Teacher setup,” before using it for a class. Students can ignore this message.')));

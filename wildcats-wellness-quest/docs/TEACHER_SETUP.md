@@ -75,3 +75,31 @@ A student cannot start another session through the normal interface after submis
 | `docs/PILOT_CHECKLIST.md` | Observation form and revision priorities for your pilot |
 
 After editing any content, run `node tests/run-all.js` and `node tools/gen-docs.js` to re-verify and regenerate the keys.
+
+## 8. Send results to a Google Sheet (optional)
+
+Without this, students download a JSON file and hand it in. With it, each student enters a **class code** at the start and the result arrives in your Sheet when they submit. You do this once, in about 10 minutes.
+
+1. Create a new Google Sheet in your own account, for example "Wildcats Quest Results".
+2. **Extensions -> Apps Script.** Delete the sample code, open `apps-script/Code.gs` from this folder, copy **all** of it, paste it in, and save.
+3. Reload the Sheet. A **Wildcats Quest** menu appears. Choose **Wildcats Quest -> 1. Set up tabs (first time)** and approve the permissions (it only touches this Sheet).
+4. On the **ClassCodes** tab replace the sample codes (`QUEST1`, `QUEST2`) with your own, one per row. Codes are not case-sensitive. Write them on the board; do not post them ahead of time.
+5. In the Apps Script editor choose **Deploy -> New deployment -> Web app**. Set **Execute as: Me** and **Who has access: Anyone**. Deploy and copy the **Web app URL** (ends in `/exec`). If your school's Google domain blocks "Anyone," deploy from a personal Google account. Students never sign in to anything.
+6. Open `js/teacher-config.js`, uncomment or add `backend: { url: 'PASTE-THE-URL-HERE' },` inside `WWQ.applyConfig({ ... })`, commit and publish.
+7. **Test:** open the student link, enter one of your codes and a fake ID, finish (or use a test copy), submit, and check that a row appears on **Summary**. Then clear your test rows with **Wildcats Quest -> Wipe ALL results**.
+
+**What you get**
+
+| Tab | Shows |
+|---|---|
+| **Summary** | One row per student: percent, points, letter (if enabled), completion, first-attempt points, attempts used, minutes, points per mission. **File -> Download -> CSV** to import into your gradebook. |
+| **Detail** | One row per student per question: points, first-attempt points, attempts. |
+| **Reteach** | Topics ranked by how many points the class missed, plus the 10 most-missed questions (flagged if the class averages under 50%). Start reteaching at the top. |
+| **Resubmissions** | A second submission under an ID that already has a result (see below). |
+| **ClassCodes / Log** | Your codes; errors from the script. |
+
+**Retakes and resets.** The Sheet keeps the **first** result for each ID + class code. If a student is reset on their Chromebook (Teacher reset) and submits again, the new result goes to **Resubmissions** instead of overwriting the first. To use it for the gradebook choose **Wildcats Quest -> Use a resubmission for one student** and type the ID; the two results swap places, so nothing is lost.
+
+**If the network fails.** The student still sees the full results page, with "Not sent yet" and a **Try sending again** button; the page also retries on its own and when the connection returns. They can always press **Download results (JSON)** as a backup.
+
+**Honest limits.** The page scores in the browser and sends the numbers, so a technically capable student could send altered numbers or look up the class code in the page's network traffic. The class code is checked on the server (it is not stored in the web page), but treat the Sheet like any other student-submitted record. A typed ID is not verified identity: tell students exactly what ID to use so rows match your roster.

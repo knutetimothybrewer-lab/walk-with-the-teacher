@@ -79,7 +79,7 @@
 
   /* ---------- footer note ---------- */
   Sh.footnote = function (state) {
-    return h('div.footnote.noprint', h('span', 'Saved only in this browser on this device. Clearing site data can erase it, so download a recovery file now and then. Nothing is sent anywhere.'),
+    return h('div.footnote.noprint', h('span', 'Saved only in this browser on this device. Clearing site data can erase it, so download a recovery file now and then. ' + (W.Sync.enabled() ? 'Only your final result is sent to your teacher, when you submit.' : 'Nothing is sent anywhere.')),
       h('span', h('button', { type: 'button', onclick: function () { Sh.teacher(); } }, 'Teacher reset')));
   };
 
@@ -159,9 +159,28 @@
       App().submitting = false;
       if (!res.ok) { UI.modal({ title: 'Cannot submit yet', body: ['Some required work is not finished.'], actions: [] }); return; }
       App().state = res.state; if (!res.persisted && !res.already) { UI.toast('Submitted. Browser saving is unavailable, so download your final report now.', 'bad', 8000); }
+      if (!res.already && W.Sync.enabled()) { W.Sync.queue(W.Sync.payload(res.state, res.state.final.report)); Sh.startSync(); }
       App().go({ view: 'results' });
     } });
     m = UI.modal({ title: 'Submit and lock?', body: [h('p', h('b', 'This cannot be undone by you.'), ' Only a teacher can reset it. You will see your results immediately.'), h('p.small.muted', 'Tip: if you are not sure about an item, press Cancel and go back first.')], actions: [UI.btn('Cancel', { onclick: function () { m.close(); } }), yes], focus: '.btn' });
+  };
+
+  /* ---------- sending results to the teacher's Google Sheet (only when config.backend.url is set) ---------- */
+  Sh.syncCard = function () {
+    var box = h('div.card.flat.noprint#sync-card', { style: { marginBottom: '16px' }, role: 'status' }), retry = null;
+    function paint(r) {
+      U.clear(box); var pend = W.Sync.pending();
+      if (r && r.rejected) box.appendChild(UI.callout('bad', 'alert', [h('b', 'Your teacher could not accept the class code. '), 'Your work is saved here. Show your teacher this screen and use Download results (JSON) below.']));
+      else if (!pend) box.appendChild(UI.callout('ok', 'check', [h('b', 'Sent to your teacher. '), r && r.duplicate ? 'Your teacher already had a result under this ID, so this one was saved separately for them to review.' : 'You do not need to do anything else.']));
+      else { retry = UI.btn('Try sending again', { icon: 'right', onclick: function () { retry.disabled = true; Sh._sync.now().then(function () { retry.disabled = false; }); } });
+        box.appendChild(UI.callout('warn', 'alert', [h('b', 'Not sent yet. '), 'Your score is saved on this device and the page keeps trying. If it stays red, press the button or tell your teacher.', h('div', { style: { marginTop: '8px' } }, retry)])); }
+    }
+    Sh._paint = paint; paint(null); return box;
+  };
+  Sh.startSync = function () {
+    if (!W.Sync.enabled() || Sh._sync) { if (Sh._sync) Sh._sync.now(); return; }
+    Sh._sync = W.Sync.retryLoop(function (r) { if (Sh._paint && document.getElementById('sync-card')) Sh._paint(r); });
+    Sh._sync.now();
   };
 
   /* ---------- results (read-only) ---------- */
@@ -170,6 +189,7 @@
     wrap.appendChild(h('div.lockbanner.noprint', A.iconEl('lock'), h('div', h('b', 'Submitted and locked. '), 'This report is read-only. You can view explanations and download your results, but answers cannot be changed.')));
     wrap.appendChild(h('div.stagehead', h('div', h('div.crumb', 'Wildcats Wellness Quest · Final results'), h('h1#stage-title', { tabindex: '-1' }, 'Your results')),
       h('div.row.noprint', UI.btn('Download results (JSON)', { icon: 'download', cls: 'primary', onclick: Sh.downloadRecord }), UI.btn('Print / Save as PDF', { icon: 'print', onclick: function () { root.print(); } }), UI.btn('Review my answers', { icon: 'eye', onclick: function () { App().go({ m: 1, s: '1.1' }); } }))));
+    if (W.Sync.enabled()) wrap.appendChild(Sh.syncCard());
     wrap.appendChild(h('div.card.flat', { style: { marginBottom: '16px' } }, h('div.grid.c3', h('div', h('div.xs.muted', C.identifierLabel), h('b', rep.student.identifier || '(not entered)')), h('div', h('div.xs.muted', 'Class period'), h('b', rep.student.period || '—')), h('div', h('div.xs.muted', 'Submitted'), h('b', rep.session.submittedAt ? new Date(rep.session.submittedAt).toLocaleString() : '—'))),
       h('div.grid.c3', { style: { marginTop: '8px' } }, h('div', h('div.xs.muted', 'Session ID'), h('b', rep.session.id)), h('div', h('div.xs.muted', 'Assessment version'), h('b', rep.assessmentVersion)), h('div', h('div.xs.muted', 'Record type'), h('b', rep.session.teacherAuthorizedReset ? 'Teacher-authorized new attempt (local, unverified)' : 'Original session')))));
     var scoreNum = h('div.num', h('span', rep.scores.earnedDisplay), h('small', ' / 100'));
@@ -195,7 +215,7 @@
     wrap.appendChild(h('details.card', { style: { marginTop: '16px' } }, h('summary', { style: { cursor: 'pointer', fontWeight: '800' } }, 'Every item: attempts, first try and final points'), it));
     if (state.session.reset) wrap.appendChild(h('div.callout.info', { style: { marginTop: '16px' } }, A.iconEl('key'), h('div', h('b', 'Teacher-authorized new attempt. '), 'This session began after a teacher reset on ' + new Date(state.session.reset.at).toLocaleString() + '. This note is recorded locally and is not independently verified.')));
     wrap.appendChild(Sh.practiceSection(state));
-    wrap.appendChild(h('div.card.flat', { style: { marginTop: '16px' } }, h('h3', 'How to hand this in'), h('p.small', 'Press “Download results (JSON)” and give that file to your teacher the way they told you (for example, upload it to your class assignment). The printed report can also be saved as a PDF. Nothing is sent automatically.')));
+    wrap.appendChild(h('div.card.flat', { style: { marginTop: '16px' } }, h('h3', 'How to hand this in'), h('p.small', W.Sync.enabled() ? 'Your result is sent to your teacher automatically (see the box at the top). If it says “Not sent yet,” or your teacher asks for it, press “Download results (JSON)” and hand in that file the way they told you. The printed report can also be saved as a PDF.' : 'Press “Download results (JSON)” and give that file to your teacher the way they told you (for example, upload it to your class assignment). The printed report can also be saved as a PDF. Nothing is sent automatically.')));
     wrap.appendChild(h('p.xs.muted', 'Simulation points in Mission 6 are fictional teaching weights and never count toward your score. Practice questions never change your grade. This is a client-side record that can’t be independently verified.'));
     wrap.appendChild(Sh.footnote(state));
     return wrap;
