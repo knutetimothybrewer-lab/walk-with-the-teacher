@@ -68,15 +68,15 @@ try {
     const ids = await p.locator('article.item').evaluateAll((els) => els.map((e) => e.dataset.qid)); const id = ids[0], q = authored[id];
     const item = p.locator(`article.item[data-qid="${id}"]`);
     // a wrong answer for any type: swap two assignments / pick another option
-    const wrongAns = () => { if (q.type === 'sort' || q.type === 'match') { const a = { ...q.ans }; const k = Object.keys(a); const keys = (q.bins || q.choices).map((x) => x[0]); a[k[0]] = keys.find((x) => x !== a[k[0]]); return a; } if (q.type === 'mc') return q.opts.map((o) => o[0]).find((k) => k !== q.ans); return null; };
+    const wrongAns = () => wrongFor(q, 1);
     const w = wrongAns(); ok('first question is wrong-answerable in the test', w != null, q.type);
     await setAnswer(p, q, w); await check(p, q);
     ok('wrong answer 1: hint shown, no answer or explanation revealed', (await item.locator('.hintbox').count()) === 1 && (await item.locator('.why').count()) === 0 && (await item.innerText()).includes('2 attempts remaining') && (await item.innerText()).includes('85%'));
     await p.reload(); await p.waitForSelector('article.item[data-qid="' + id + '"]');
     ok('refresh does not restore attempts (1 attempt still used)', (await state(p)).answers[id].attempts.length === 1 && (await p.locator(`article.item[data-qid="${id}"] .pip.used`).count()) === 1);
-    await setAnswer(p, q, wrongAns2(q)); await check(p, q);
+    await setAnswer(p, q, wrongFor(q, 2)); await check(p, q);
     ok('wrong answer 2: still no reveal; 75% tier shown', (await p.locator(`article.item[data-qid="${id}"] .why`).count()) === 0 && (await p.locator(`article.item[data-qid="${id}"]`).innerText()).includes('75%'));
-    await setAnswer(p, q, wrongAns3(q)); await check(p, q);
+    await setAnswer(p, q, wrongFor(q, 3)); await check(p, q);
     ok('wrong answer 3: question locks at zero and shows the explanation', (await p.locator(`article.item[data-qid="${id}"] .fb.out .why`).count()) === 1 && (await state(p)).answers[id].status === 'locked');
     ok('locked question cannot be changed', (await p.locator(`article.item[data-qid="${id}"] button.btn.primary`).count()) === 0 || (await p.locator(`article.item[data-qid="${id}"] button.btn.primary`).isHidden()));
     ok('HUD shows progress but never a grade', (await p.locator('#hud').innerText()).includes('% done') && !/score|grade|points earned/i.test(await p.locator('#hud').innerText()));
@@ -146,10 +146,11 @@ try {
     const tile = p.locator('article.item[data-qid="practice"] .tile[data-k="a"]'); await tile.focus(); await p.keyboard.press('Enter');
     const bin = p.locator('article.item[data-qid="practice"] .bin[data-bin="f"]'); await bin.focus(); await p.keyboard.press('Enter');
     ok('sort works from the keyboard (no dragging required)', (await p.locator('article.item[data-qid="practice"] .bin[data-bin="f"] .tile[data-k="a"]').count()) === 1);
+    await p.locator('article.item[data-qid="practice"]').evaluate((e) => e.scrollIntoView({ block: 'center', behavior: 'instant' })); await p.waitForTimeout(900);
     const t2 = p.locator('article.item[data-qid="practice"] .tile[data-k="b"]'), box = await t2.boundingBox(), vb = await p.locator('article.item[data-qid="practice"] .bin[data-bin="v"]').boundingBox();
     await p.mouse.move(box.x + 10, box.y + 10); await p.mouse.down(); await p.mouse.move(vb.x + 40, vb.y + 40, { steps: 8 }); await p.mouse.up();
     ok('sort works with real mouse drag-and-drop', (await p.locator('article.item[data-qid="practice"] .bin[data-bin="v"] .tile[data-k="b"]').count()) === 1);
-    const prac = p.locator('article.item[data-qid="practice"]'); for (const [k, bn] of [['c', 'f'], ['d', 'v']]) { await prac.locator(`.tile[data-k="${k}"]`).click(); await prac.locator(`[data-bin="${bn}"]`).first().click(); }
+    const prac = p.locator('article.item[data-qid="practice"]'); for (const [k, bn] of [['c', 'f'], ['d', 'v'], ['a', 'f']]) { await prac.locator(`.tile[data-k="${k}"]`).click(); await prac.locator(`[data-bin="${bn}"]`).first().click(); }
     await prac.locator('button.btn.primary', { hasText: 'Check answer' }).click(); await p.waitForSelector('article.item[data-qid="practice"] .fb.right'); ok('practice question is graded (unscored)', true);
     await startMission1(p);
     const overflow = await p.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth); ok('Chromebook 1366x768: no horizontal scrolling', overflow <= 1, String(overflow));
@@ -161,7 +162,7 @@ try {
   { const p = await newPage({ backend: true, server: true }); await signIn(p, 'Sol', 'Server', 'Block 8/9', 'UNIT7'); await startMission1(p);
     ok('server-grading build never downloads the hashed-key content file', p.reqs.some((u) => u.endsWith('content/public.server.js')) && !p.reqs.some((u) => u.endsWith('content/public.js')));
     const id = await p.locator('article.item').first().getAttribute('data-qid'), q = authored[id];
-    const wf = (n) => (q.type === 'num' ? q.ans + n : q.type === 'mc' ? q.opts.map((o) => o[0]).filter((k) => k !== q.ans)[n - 1] : (() => { const a = { ...q.ans }; const keys = (q.bins || q.choices).map((x) => x[0]); const k = Object.keys(a)[n - 1]; a[k] = keys.find((x) => x !== a[k]); return a; })());
+    const wf = (n) => wrongFor(q, n);
     await setAnswer(p, q, wf(1)); await check(p, q); await p.waitForSelector(`article.item[data-qid="${id}"] .fb.wrong`);
     ok('server mode: wrong answer 1 gives a hint and no explanation', (await p.locator(`article.item[data-qid="${id}"] .hintbox`).count()) === 1 && (await p.locator(`article.item[data-qid="${id}"] .why`).count()) === 0);
     const sess = () => env.book.get('SESSIONS').slice(1).find((r) => r[2] === 'Sol'); ok('server recorded attempt 1', JSON.parse(sess()[12])[id].length === 1 && JSON.parse(sess()[12])[id][0].c === false);
@@ -172,5 +173,8 @@ try {
   await browser.close(); await new Promise((r) => backend.close(r)); web.close();
   const failed = results.filter((r) => !r[1]); console.log(`\n${results.length - failed.length}/${results.length} end-to-end checks passed`); process.exit(failed.length ? 1 : 0);
 }
-function wrongAns2(q) { if (q.type === 'mc') return q.opts.map((o) => o[0]).filter((k) => k !== q.ans)[1]; const a = { ...q.ans }; const keys = (q.bins || q.choices).map((x) => x[0]); const k = Object.keys(a); a[k[1]] = keys.find((x) => x !== a[k[1]]); return a; }
-function wrongAns3(q) { if (q.type === 'mc') return q.opts.map((o) => o[0]).filter((k) => k !== q.ans)[2]; const a = { ...q.ans }; const keys = (q.bins || q.choices).map((x) => x[0]); const k = Object.keys(a); a[k[2]] = keys.find((x) => x !== a[k[2]]); return a; }
+function wrongFor(q, n) {
+  if (q.type === 'num') return q.ans + n;
+  if (q.type === 'mc') return q.opts.map((o) => o[0]).filter((k) => k !== q.ans)[n - 1];
+  const a = { ...q.ans }; const keys = (q.bins || q.choices).map((x) => x[0]); const k = Object.keys(a)[n - 1]; a[k] = keys.find((x) => x !== a[k]); return a;
+}

@@ -7,7 +7,7 @@ Run on 2026-10-07 against content version 1.0.0.
 |---|---|---|
 | Unit tests (scoring, grading, randomization, calculations, plans, analytics, CSV, storage, content rules) | `npm test` | 25 tests, all pass |
 | Google Apps Script backend (real `Code.gs` + `KeyData.gs` against a mock of Google Sheets) | `npm test` | 11 tests, all pass |
-| End-to-end browser tests (Chromium via Playwright; real UI, real `Code.gs` behind a local endpoint) | `node tests/e2e/run.mjs` | see the final line of the log: all checks pass (E2E_COUNT) |
+| End-to-end browser tests (Chromium via Playwright; real UI, real `Code.gs` behind a local endpoint) | `node tests/e2e/run.mjs` | see the final line of the log: 62 checks, all pass |
 
 ## What the tests cover (against the quality-control list)
 | Requirement | How it is tested |
