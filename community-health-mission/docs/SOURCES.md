@@ -1,0 +1,21 @@
+# Sources and verification register
+
+Access date: 2026-10-07. **Status honesty:** the builder's network blocked direct fetches of agency pages, so the facts below were checked only against search-result excerpts, never against a fully loaded page. No page date was retrieved. **Please open each URL and confirm before classroom use.**
+
+| Organization | Page title | URL | Publication/update date | Supported claim | Tasks | Verification status |
+|---|---|---|---|---|---|---|
+| U.S. EPA / AirNow | Air Quality Index (AQI) Basics | https://www.airnow.gov/aqi/aqi-basics/ | Not retrieved | Six AQI categories and ranges: Good 0-50, Moderate 51-100, Unhealthy for Sensitive Groups 101-150, Unhealthy 151-200, Very Unhealthy 201-300, Hazardous 301+; higher AQI means greater health concern; sensitive groups affected first. | M3-U2, M6-U2, M6-U5 | Category ranges confirmed from search-result excerpt; page not fetched |
+| U.S. EPA | UV Index Scale | https://www.epa.gov/sunsafety/uv-index-scale-0 | Not retrieved | UV Index 8-10 Very High and 11+ Extreme; protection includes shade, hat, sunglasses, protective clothing, SPF 30+ sunscreen reapplied about every 2 hours, and limiting midday sun. No individual burn clock is given or used. | M3-U3 | Confirmed from search-result excerpts (EPA snapshot and NWS UV index page); page not fetched |
+| CDC / NIOSH | Understand Noise Exposure | https://www.cdc.gov/niosh/noise/prevent/understand.html | Not retrieved | NIOSH recommended exposure limit (REL) 85 dBA averaged over 8 hours with a 3 dBA exchange rate (time halves per 3 dBA). It is an occupational recommendation and not a guarantee of safety. | M3-U1, M3-U4 | REL and exchange rate confirmed from search-result excerpt; page not fetched |
+| National Weather Service | Heat information (Heat Index) | https://www.weather.gov/lwx/heat | Not retrieved | Heat index categories (caution, extreme caution, danger, extreme danger) and that values are for shade and light wind; direct sun can add up to about 15 °F. Category edges differ slightly between excerpts, so tasks use only a value (98 °F) inside "extreme caution" under either edge and state no cancel threshold. | M3-U5 | Confirmed from search-result excerpts of NWS chart material; page not fetched. Verify category edges. |
+| CDC | Drinking Water Advisories: An Overview | https://www.cdc.gov/water-emergency/about/drinking-water-advisories-an-overview.html | Not retrieved | Boil-water, do-not-drink and do-not-use advisories differ; boiling kills germs but does not remove chemicals; follow the advisory instructions. | M3-U6 | Confirmed from search-result excerpt; page not fetched |
+| U.S. Federal Trade Commission | Disclosures 101 for Social Media Influencers | https://www.ftc.gov/business-guidance/resources/disclosures-101-social-media-influencers | Not retrieved | Material connections (such as payment or free products) should be disclosed clearly and conspicuously; abbreviations such as "sp" are not adequate disclosures. | M5-U2 | Confirmed from search-result excerpts of secondary law-firm summaries; FTC page not fetched. Verify wording. |
+| Google | Web Apps (Apps Script guide) | https://developers.google.com/apps-script/guides/web | Not retrieved | Apps Script web app deployment, access and execute-as settings. | Deployment docs | Not fetched; setup instructions are written from general knowledge and must be checked against the current Google UI |
+| Google | HTML Service (Apps Script guide) | https://developers.google.com/apps-script/guides/html | Not retrieved | HtmlService, templates and google.script.run. | Deployment docs | Not fetched |
+
+## Original classroom data and fictional scenarios
+
+- **Original classroom data: fictional disparities table (Riverview, East Junction, Pine Hills, Lakeview)** — tasks: M4-U1, M4-U2, M4-U3, M4-U4
+- **Fictional generated scenarios: Riverbend profile details, picnic outbreak table, SparkUp post, source cards, district practice log, Eastbrook County** — tasks: M1-*, M2-*, M5-*, M6-*
+
+No health statistics from real surveys are used. Every number in a task is either original classroom data, a fictional scenario value, or a rule from the guidance above. Fictional organizations (Eastbrook County Health Department, Healthy Teens Alliance, SparkUp, @maya.moves, etc.) are not real and no findings are attributed to real agencies.

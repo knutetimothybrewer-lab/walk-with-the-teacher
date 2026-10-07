@@ -1,0 +1,6 @@
+node_modules/
+.devdata/
+*.local.json
+# PRIVATE: answer keys, rubrics, teacher-only material, generated server code that embeds the key
+private/
+dist/apps-script/Code.gs
