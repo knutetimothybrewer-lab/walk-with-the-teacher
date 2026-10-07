@@ -110,6 +110,7 @@ If your school's Google domain blocks "Anyone," deploy from a personal Google ac
 | **Class** | Class average, median, high/low, average time, by-period table (formulas) |
 | **Gradebook** | Last, First, Period, Percent (formula). **File → Download → CSV** to import into your gradebook |
 | **Archive** | Rows moved here when you reset a student |
+| **Class - &lt;code&gt;** | One tab per class code on **ClassCodes** (for example `Class - TRAIL1`): only that class's students, sorted by last name, with a class-average row. Rebuilt after every submission and reset; **Wildcat Trail → Rebuild Items, Reteach and class tabs** rebuilds on demand. **Summary** stays the master list. |
 
 ### Reset a student (retake or absence make-up)
 Any one of these, no code needed: **Wildcat Trail → Reset one student** in the Sheet; or open `teacher.html` on your site, enter your passcode and click **Reset for retake** next to the student. Their old row is saved on **Archive**. The student then enters the same name, period and code and starts fresh with a **new shuffle**. (If the student is on the same Chromebook, nothing else is needed. If you are not using a backend, add `retakeAllowed: true` for them in `config.js`.)

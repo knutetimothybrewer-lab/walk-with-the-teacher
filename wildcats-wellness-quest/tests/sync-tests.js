@@ -12,6 +12,7 @@ function makeBackend() {
     getValues() { const o = []; for (let i = 0; i < this.nr; i++) { const row = []; for (let j = 0; j < this.nc; j++) { const v = (this.sh.cells[this.r - 1 + i] || [])[this.c - 1 + j]; row.push(v === undefined ? '' : v); } o.push(row); } return o; }
     getValue() { return this.getValues()[0][0]; }
     setValues(v) { v.forEach((row, i) => row.forEach((x, j) => this.sh.set(this.r + i, this.c + j, x))); return this; }
+    setFormula(f) { this.sh.set(this.r, this.c, f); return this; } setFontWeight() { return this; } setBackground() { return this; } setNumberFormat() { return this; }
   }
   class Sheet {
     constructor(name) { this.name = name; this.cells = []; }
@@ -92,6 +93,14 @@ function makeBackend() {
   ok(be.call({ action: 'submit', payload: { student: {} } }).reason === 'bad-payload', 'malformed payload rejected');
   const inj = Y.payload(other, other.final.report); inj.session.id = 'WWQ-injectinject'; inj.student.alias = '=HYPERLINK("x")'; delete mem[Y.key()]; Y._mem = []; Y.queue(inj); await Y.flush();
   ok(sum.getRange(4, 2, 1, 1).getValue() === "'=HYPERLINK(\"x\")", 'aliases that look like formulas are stored as plain text');
+
+  console.log('== class tabs');
+  const rows2 = n => be.sheets.get(n) ? be.sheets.get(n).cells.slice(1).filter(r => r[1] && r[0] !== 'Class average' && r[0] !== 'Students').map(r => r[1]) : null;
+  ok(rows2('Class - QUEST1') && rows2('Class - QUEST2'), 'a tab exists for each class code');
+  ok(JSON.stringify(rows2('Class - QUEST1')) === JSON.stringify(['Stu-01']), 'QUEST1 tab holds only its student (' + JSON.stringify(rows2('Class - QUEST1')) + ')');
+  ok(rows2('Class - QUEST2').includes('stu-02'), 'QUEST2 tab holds the other class student');
+  ok(be.sheets.get('Class - QUEST1').cells.flat().some(c => typeof c === 'string' && /^=AVERAGE\(E2:E2\)$/.test(c)), 'class average formula present');
+  be.ctx.rebuildClassTabs_(); ok(rows2('Class - QUEST1').length === 1, 'rebuilding is idempotent (no duplicate rows)');
 
   console.log('== results screen wiring');
   const src = fs.readFileSync(path.join(__dirname, '..', 'js', 'shell.js'), 'utf8') + fs.readFileSync(path.join(__dirname, '..', 'js', 'views.js'), 'utf8');

@@ -5,7 +5,7 @@
  * as a Web app (README §6). It does five things:
  *   1. Checks class codes on the SERVER (so codes are not readable in the page).
  *   2. Stores one final record per student (name + period + code) — no duplicates.
- *   3. Writes tabs: Summary, Detail, Items, Reteach, Class, Gradebook, Archive.
+ *   3. Writes tabs: Summary, Detail, Items, Reteach, Class, Gradebook, Archive, and one "Class - <code>" tab per class code.
  *   4. Lets YOU (passcode-protected) list students and reset one for a retake.
  *   5. Adds a "Wildcat Trail" menu to the Sheet for the same teacher tools.
  *
@@ -325,7 +325,47 @@ function rebuildReports_() {
     if (typeof r[3] === 'number') rt.getRange(i + 1, 4).setNumberFormat('0%');
   });
   rt.setColumnWidth(1, 330); rt.setColumnWidth(2, 360); rt.setColumnWidth(3, 200); rt.setColumnWidth(4, 360); rt.setColumnWidth(5, 220);
+  rebuildClassTabs_();
 }
+
+/* ------------------------------------------------------- per-class tabs */
+/* One tab per class code ("Class - <code>"), rebuilt from Summary: only that class's students, sorted by name,
+   with a class-average row. Summary stays the master list. Rebuilt after every submission, reset and wipe, and from the menu. */
+var CLASS_TAB_PREFIX = 'Class - ';
+var CLASS_COL = 5, SORT_COLS = [2, 3], PCT_COL = 6;   // 1-based columns on Summary: class code, sort-by, percent
+
+function classTabName_(code) { return (CLASS_TAB_PREFIX + String(code).replace(/[\[\]*?:\/\\]/g, '-')).slice(0, 99); }
+
+function rebuildClassTabs_(onlyCode) {
+  try {
+    var cs = ss_().getSheetByName(SHEETS.codes), codes = [], seen = {};
+    if (cs && cs.getLastRow() > 1) cs.getRange(2, 1, cs.getLastRow() - 1, 1).getValues().forEach(function (r) {
+      var raw = String(r[0]).trim(), k = norm_(raw);
+      if (k && !seen[k]) { seen[k] = 1; codes.push(raw); }
+    });
+    if (onlyCode) codes = codes.filter(function (c) { return norm_(c) === norm_(onlyCode); });
+    if (!codes.length) return;
+    var sum = ss_().getSheetByName(SHEETS.summary), hlen = summaryHeader_().length, head = summaryHeader_().slice(0, hlen - 1);
+    var all = sum && sum.getLastRow() > 1 ? sum.getRange(2, 1, sum.getLastRow() - 1, hlen).getValues() : [];
+    codes.forEach(function (code) {
+      var rows = all.filter(function (r) { return norm_(r[CLASS_COL - 1]) === norm_(code); })
+        .sort(function (a, b) {
+          for (var i = 0; i < SORT_COLS.length; i++) { var x = norm_(a[SORT_COLS[i] - 1]), y = norm_(b[SORT_COLS[i] - 1]); if (x !== y) return x < y ? -1 : 1; }
+          return 0;
+        }).map(function (r) { return r.slice(0, hlen - 1); });
+      var tab = sheet_(classTabName_(code)); tab.clear();
+      tab.getRange(1, 1, 1, head.length).setValues([head]).setFontWeight('bold').setBackground('#e8ebf7'); tab.setFrozenRows(1);
+      if (!rows.length) return;
+      tab.getRange(2, 1, rows.length, head.length).setValues(rows);
+      var last = rows.length + 1, pc = PCT_COL, r0 = last + 2, col = function (n) { return String.fromCharCode(64 + n); };
+      tab.getRange(r0, 1, 1, 1).setValues([['Class average']]).setFontWeight('bold');
+      tab.getRange(r0, pc).setFormula('=AVERAGE(' + col(pc) + '2:' + col(pc) + last + ')').setNumberFormat('0.0');
+      tab.getRange(r0, pc + 1).setFormula('=AVERAGE(' + col(pc + 1) + '2:' + col(pc + 1) + last + ')').setNumberFormat('0.0');
+      tab.getRange(r0 + 1, 1, 1, 2).setValues([['Students', rows.length]]).setFontWeight('bold');
+    });
+  } catch (err) { log_('class-tabs', String(err && err.stack || err)); }
+}
+
 
 /* ------------------------------------------------------------- teacher menu */
 
@@ -335,7 +375,7 @@ function onOpen() {
     .addItem('2. Set teacher passcode', 'menuSetPasscode')
     .addSeparator()
     .addItem('Reset one student (retake / makeup)', 'menuReset')
-    .addItem('Rebuild Items and Reteach tabs', 'menuRebuild')
+    .addItem('Rebuild Items, Reteach and class tabs', 'menuRebuild')
     .addSeparator()
     .addItem('Wipe ALL results (use after the pilot)', 'menuWipe')
     .addToUi();

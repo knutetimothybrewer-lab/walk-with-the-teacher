@@ -95,6 +95,7 @@ Without this, students download a JSON file and hand it in. With it, each studen
 | **Summary** | One row per student: percent, points, letter (if enabled), completion, first-attempt points, attempts used, minutes, points per mission. **File -> Download -> CSV** to import into your gradebook. |
 | **Detail** | One row per student per question: points, first-attempt points, attempts. |
 | **Reteach** | Topics ranked by how many points the class missed, plus the 10 most-missed questions (flagged if the class averages under 50%). Start reteaching at the top. |
+| **Class - &lt;code&gt;** | One tab per class code on **ClassCodes** (for example `Class - QUEST1`): only that class's students, sorted by ID, with a class-average row. Rebuilt after every submission; **Wildcats Quest → Rebuild class tabs** rebuilds on demand. **Summary** stays the master list. |
 | **Resubmissions** | A second submission under an ID that already has a result (see below). |
 | **ClassCodes / Log** | Your codes; errors from the script. |
 
