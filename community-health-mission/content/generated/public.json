@@ -1,0 +1,4051 @@
+{
+ "version": "2026.1.0",
+ "title": "Community Health Mission",
+ "demo": false,
+ "modules": [
+  {
+   "id": 1,
+   "key": "neighborhood",
+   "title": "Neighborhood Investigation",
+   "place": "Riverbend Neighborhood",
+   "mission": "The youth advisory team has been asked to study Riverbend, one neighborhood in our fictional county. Look at how the place is set up, not at blaming the people who live there. Find the conditions that shape health, who is affected, what the community already does well, and where $1 million can help most.",
+   "colors": {
+    "a": "#0f766e",
+    "b": "#e6f4f1"
+   },
+   "minutes": 8,
+   "points": 18,
+   "explorer": {
+    "kind": "neighborhood",
+    "data": {
+     "profiles": [
+      {
+       "id": "riverbend",
+       "name": "Riverbend",
+       "tag": "Scored case",
+       "summary": "Car-dependent neighborhood",
+       "facts": [
+        "Most errands need a car; the bus is infrequent.",
+        "The only full grocery store and the main clinic are across the highway.",
+        "Strengths: a volunteer-run neighborhood association, community garden, and a park walking loop."
+       ]
+      },
+      {
+       "id": "eastgate",
+       "name": "Eastgate",
+       "tag": "Compare only",
+       "summary": "Highway and housing concerns",
+       "facts": [
+        "A busy highway runs beside many homes (noise and traffic air pollution concerns).",
+        "Residents report housing quality concerns such as mold and heating problems.",
+        "Strengths: active faith and youth groups and strong neighbor networks."
+       ]
+      },
+      {
+       "id": "pineridge",
+       "name": "Pine Ridge County",
+       "tag": "Compare only",
+       "summary": "Long distances, unreliable internet",
+       "facts": [
+        "Services are spread out; travel to care can take a long time.",
+        "Internet is unreliable, which limits online appointments and information.",
+        "Strengths: dependable volunteer groups and a close-knit community."
+       ]
+      }
+     ],
+     "spots": [
+      {
+       "id": "bus",
+       "t": "Bus stop, Route 4",
+       "x": 150,
+       "y": 250,
+       "kind": "transport",
+       "info": "The bus comes about once an hour on weekdays and does not run on Sundays. A trip to the grocery store takes about 55 minutes with one transfer."
+      },
+      {
+       "id": "grocery",
+       "t": "Grocery store",
+       "x": 520,
+       "y": 110,
+       "kind": "food",
+       "info": "The only full grocery store is about 5 miles away on the far side of the highway. By car it is about 10 minutes; there is no sidewalk route."
+      },
+      {
+       "id": "clinic",
+       "t": "Community clinic",
+       "x": 540,
+       "y": 300,
+       "kind": "care",
+       "info": "Open weekdays 9 a.m.-4 p.m. and about 6 miles away. Routine appointments can take a few weeks to schedule. Many families have only one car."
+      },
+      {
+       "id": "corner",
+       "t": "Corner store",
+       "x": 230,
+       "y": 160,
+       "kind": "food",
+       "info": "Within walking distance. It stocks snacks, drinks and few fresh items."
+      },
+      {
+       "id": "park",
+       "t": "Neighborhood park",
+       "x": 90,
+       "y": 110,
+       "kind": "strength",
+       "info": "A well-kept park with a walking loop. A volunteer walking club meets there on weekends."
+      },
+      {
+       "id": "hall",
+       "t": "Neighborhood association hall",
+       "x": 330,
+       "y": 250,
+       "kind": "strength",
+       "info": "Volunteers run a monthly food pantry, a ride-share board and weekly neighbor gatherings."
+      },
+      {
+       "id": "garden",
+       "t": "Community garden",
+       "x": 320,
+       "y": 60,
+       "kind": "strength",
+       "info": "A small garden maintained by volunteers. Produce is shared with neighbors during the growing season."
+      },
+      {
+       "id": "school",
+       "t": "Elementary school",
+       "x": 400,
+       "y": 190,
+       "kind": "school",
+       "info": "Within walking distance for many students. After-school clubs are offered, and a school bus serves children who live farther away."
+      }
+     ],
+     "routes": [
+      {
+       "to": "grocery",
+       "car": 10,
+       "noCar": 55,
+       "note": "bus with 1 transfer"
+      },
+      {
+       "to": "clinic",
+       "car": 12,
+       "noCar": 65,
+       "note": "bus with 1 transfer plus walking"
+      }
+     ],
+     "budgetOptions": [
+      {
+       "id": "transit",
+       "t": "Add weekday evening and Sunday bus service with a direct highway-crossing route",
+       "cost": 450,
+       "domain": "transportation",
+       "note": "Targets: car dependence, reaching grocery and clinic"
+      },
+      {
+       "id": "mobile",
+       "t": "Run a mobile clinic that visits the neighborhood three days a week",
+       "cost": 500,
+       "domain": "healthcare",
+       "note": "Targets: clinic distance and hours"
+      },
+      {
+       "id": "market",
+       "t": "Start a weekly farmers market with a produce delivery option for older adults",
+       "cost": 300,
+       "domain": "food",
+       "note": "Targets: fresh food access"
+      },
+      {
+       "id": "sidewalk",
+       "t": "Build safe sidewalks and a crosswalk from the neighborhood to the school and park",
+       "cost": 400,
+       "domain": "safety",
+       "note": "Targets: safe walking and activity"
+      },
+      {
+       "id": "programs",
+       "t": "Add evening activity programs at the park and association hall",
+       "cost": 350,
+       "domain": "recreation",
+       "note": "Targets: physical activity and connection"
+      },
+      {
+       "id": "hospital",
+       "t": "Build a new full-service hospital in Riverbend",
+       "cost": 5000,
+       "domain": "healthcare",
+       "note": "Not affordable within this challenge"
+      },
+      {
+       "id": "billboard",
+       "t": "Buy billboards telling residents to eat healthier and see a doctor",
+       "cost": 200,
+       "domain": "awareness",
+       "note": "Awareness only; no change in access"
+      }
+     ],
+     "note": "Classroom case based on the community case files. Numbers are illustrative."
+    }
+   },
+   "units": [
+    {
+     "id": "M1-U1",
+     "points": 4,
+     "minutes": 1.5,
+     "title": "Name the condition",
+     "prompt": "Each card is evidence from Riverbend. Choose the type of community condition (determinant) it shows best.",
+     "needsGraph": false,
+     "fields": [
+      {
+       "id": "f1",
+       "type": "match",
+       "rows": [
+        {
+         "id": "r1",
+         "t": "The bus comes once an hour and does not run on Sundays."
+        },
+        {
+         "id": "r2",
+         "t": "The nearest store within walking distance sells mostly snacks and drinks."
+        },
+        {
+         "id": "r3",
+         "t": "The clinic is open weekdays 9-4 and routine visits take weeks to schedule."
+        },
+        {
+         "id": "r4",
+         "t": "A park walking loop hosts a weekend volunteer walking club."
+        },
+        {
+         "id": "r5",
+         "t": "Neighbors run a ride-share board and weekly gatherings at the hall."
+        },
+        {
+         "id": "r6",
+         "t": "Some older apartments have mold and unreliable heat."
+        }
+       ],
+       "cats": [
+        {
+         "id": "transport",
+         "t": "Transportation"
+        },
+        {
+         "id": "food",
+         "t": "Food environment"
+        },
+        {
+         "id": "care",
+         "t": "Healthcare access"
+        },
+        {
+         "id": "rec",
+         "t": "Recreation / physical activity"
+        },
+        {
+         "id": "connect",
+         "t": "Social connectedness"
+        },
+        {
+         "id": "housing",
+         "t": "Housing"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "id": "M1-U2",
+     "points": 3,
+     "minutes": 1,
+     "title": "Choices or surroundings?",
+     "prompt": "Select every statement that describes an environmental or systemic influence on Riverbend residents' health. Do not select statements that only describe an individual's own decision.",
+     "needsGraph": false,
+     "fields": [
+      {
+       "id": "f1",
+       "type": "multi",
+       "options": [
+        {
+         "id": "a",
+         "t": "The bus does not run on Sundays, so some residents cannot reach the store or clinic."
+        },
+        {
+         "id": "b",
+         "t": "A resident decides to skip breakfast on school mornings."
+        },
+        {
+         "id": "c",
+         "t": "There is no sidewalk route across the highway to the grocery store."
+        },
+        {
+         "id": "d",
+         "t": "A teen chooses to stay up late playing video games."
+        },
+        {
+         "id": "e",
+         "t": "Routine clinic appointments take weeks to schedule."
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "id": "M1-U3",
+     "points": 4,
+     "minutes": 1.5,
+     "title": "Choose the evidence",
+     "prompt": "Claim: \"Trips to healthy food and health care take a long time without a car in Riverbend.\" On the map, select ONLY the places whose evidence directly supports this claim. Then select the groups most likely to be affected.",
+     "needsGraph": false,
+     "fields": [
+      {
+       "id": "f1",
+       "type": "mapselect",
+       "label": "Map evidence (select on the map or in the list):",
+       "options": [
+        {
+         "id": "bus",
+         "t": "Bus stop, Route 4"
+        },
+        {
+         "id": "grocery",
+         "t": "Grocery store"
+        },
+        {
+         "id": "clinic",
+         "t": "Community clinic"
+        },
+        {
+         "id": "corner",
+         "t": "Corner store"
+        },
+        {
+         "id": "park",
+         "t": "Neighborhood park"
+        },
+        {
+         "id": "hall",
+         "t": "Neighborhood association hall"
+        },
+        {
+         "id": "garden",
+         "t": "Community garden"
+        },
+        {
+         "id": "school",
+         "t": "Elementary school"
+        }
+       ]
+      },
+      {
+       "id": "f2",
+       "type": "multi",
+       "label": "Groups most likely to be affected (select all that apply):",
+       "options": [
+        {
+         "id": "g1",
+         "t": "Older adults who do not drive"
+        },
+        {
+         "id": "g2",
+         "t": "Teens who rely on others for rides"
+        },
+        {
+         "id": "g3",
+         "t": "Families with one car and shift work"
+        },
+        {
+         "id": "g4",
+         "t": "Residents with a car and flexible schedules"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "id": "M1-U4",
+     "points": 3,
+     "minutes": 1.5,
+     "title": "Responsible conclusions",
+     "prompt": "Choose the claim that best fits the Riverbend evidence, then the reason that best supports it.",
+     "needsGraph": false,
+     "fields": [
+      {
+       "id": "claim",
+       "type": "single",
+       "label": "Claim",
+       "options": [
+        {
+         "id": "a",
+         "t": "Riverbend residents are unhealthy because they make poor choices."
+        },
+        {
+         "id": "b",
+         "t": "Several overlapping conditions limit access in Riverbend, and community strengths can be built on."
+        },
+        {
+         "id": "c",
+         "t": "Because Riverbend is car-dependent, its residents will all develop chronic disease."
+        },
+        {
+         "id": "d",
+         "t": "Riverbend has no strengths, so outside groups must fix everything."
+        }
+       ]
+      },
+      {
+       "id": "reason",
+       "type": "single",
+       "label": "Best reason",
+       "options": [
+        {
+         "id": "a",
+         "t": "Transportation, food and clinic access overlap, and the hall, garden and park already help neighbors."
+        },
+        {
+         "id": "b",
+         "t": "People who live far from stores do not care about health."
+        },
+        {
+         "id": "c",
+         "t": "The case file lists conditions, so every resident has the same outcome."
+        },
+        {
+         "id": "d",
+         "t": "The corner store is the only evidence needed."
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "id": "M1-U5",
+     "points": 4,
+     "minutes": 2.5,
+     "title": "$1 Million Challenge",
+     "prompt": "Fund exactly TWO interventions without going over $1 million. Then pick the reason that best justifies your pair. Several pairs can be correct.",
+     "needsGraph": false,
+     "fields": [
+      {
+       "id": "pick",
+       "type": "budget",
+       "label": "Choose exactly two interventions",
+       "budget": 1000,
+       "need": 2,
+       "options": [
+        {
+         "id": "transit",
+         "t": "Add weekday evening and Sunday bus service with a direct highway-crossing route",
+         "cost": 450,
+         "domain": "transportation",
+         "note": "Targets: car dependence, reaching grocery and clinic"
+        },
+        {
+         "id": "mobile",
+         "t": "Run a mobile clinic that visits the neighborhood three days a week",
+         "cost": 500,
+         "domain": "healthcare",
+         "note": "Targets: clinic distance and hours"
+        },
+        {
+         "id": "market",
+         "t": "Start a weekly farmers market with a produce delivery option for older adults",
+         "cost": 300,
+         "domain": "food",
+         "note": "Targets: fresh food access"
+        },
+        {
+         "id": "sidewalk",
+         "t": "Build safe sidewalks and a crosswalk from the neighborhood to the school and park",
+         "cost": 400,
+         "domain": "safety",
+         "note": "Targets: safe walking and activity"
+        },
+        {
+         "id": "programs",
+         "t": "Add evening activity programs at the park and association hall",
+         "cost": 350,
+         "domain": "recreation",
+         "note": "Targets: physical activity and connection"
+        },
+        {
+         "id": "hospital",
+         "t": "Build a new full-service hospital in Riverbend",
+         "cost": 5000,
+         "domain": "healthcare",
+         "note": "Not affordable within this challenge"
+        },
+        {
+         "id": "billboard",
+         "t": "Buy billboards telling residents to eat healthier and see a doctor",
+         "cost": 200,
+         "domain": "awareness",
+         "note": "Awareness only; no change in access"
+        }
+       ]
+      },
+      {
+       "id": "why",
+       "type": "single",
+       "label": "Best justification",
+       "options": [
+        {
+         "id": "a",
+         "t": "They are affordable together and each addresses a different documented barrier in the Riverbend evidence."
+        },
+        {
+         "id": "b",
+         "t": "They cost the least, so cost is the only thing that matters."
+        },
+        {
+         "id": "c",
+         "t": "They tell residents what to do, so behavior will change."
+        },
+        {
+         "id": "d",
+         "t": "They are the most visible to people driving by."
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 2,
+   "key": "ops",
+   "title": "Public Health Operations Center",
+   "place": "County Health Operations Center",
+   "mission": "Reports of stomach illness are arriving after a neighborhood picnic. Your team helps the county health department decide what the data can and cannot tell us, and what each level of government does. Compare who ate what before you decide what caused the illness.",
+   "colors": {
+    "a": "#1e3a8a",
+    "b": "#e6ecfb"
+   },
+   "minutes": 6,
+   "points": 12,
+   "explorer": {
+    "kind": "ops",
+    "data": {
+     "foods": [
+      {
+       "id": "chicken",
+       "t": "Chicken salad",
+       "ate": {
+        "ill": 14,
+        "well": 4
+       },
+       "notAte": {
+        "ill": 1,
+        "well": 11
+       }
+      },
+      {
+       "id": "pasta",
+       "t": "Pasta salad",
+       "ate": {
+        "ill": 9,
+        "well": 11
+       },
+       "notAte": {
+        "ill": 6,
+        "well": 4
+       }
+      },
+      {
+       "id": "fruit",
+       "t": "Fruit cup",
+       "ate": {
+        "ill": 8,
+        "well": 7
+       },
+       "notAte": {
+        "ill": 7,
+        "well": 8
+       }
+      },
+      {
+       "id": "lemonade",
+       "t": "Lemonade",
+       "ate": {
+        "ill": 11,
+        "well": 11
+       },
+       "notAte": {
+        "ill": 4,
+        "well": 4
+       }
+      },
+      {
+       "id": "brownie",
+       "t": "Brownies",
+       "ate": {
+        "ill": 6,
+        "well": 6
+       },
+       "notAte": {
+        "ill": 9,
+        "well": 9
+       }
+      }
+     ],
+     "timeline": [
+      {
+       "day": "Sat",
+       "note": "Maple Street picnic, about 60 people attend. Food sits on tables in warm sun for several hours.",
+       "cases": 0
+      },
+      {
+       "day": "Sun",
+       "note": "First reports: stomach pain, vomiting. Two people visit urgent care.",
+       "cases": 3
+      },
+      {
+       "day": "Mon",
+       "note": "A school nurse notices several absent students and reports it to the county health department.",
+       "cases": 9
+      },
+      {
+       "day": "Tue",
+       "note": "Health department staff call attendees to ask who is ill and what they ate.",
+       "cases": 15
+      }
+     ],
+     "total": 30,
+     "ill": 15,
+     "note": "Fictional outbreak created for this assessment. No real people, place or agency."
+    }
+   },
+   "units": [
+    {
+     "id": "M2-U1",
+     "points": 3,
+     "minutes": 1.5,
+     "title": "Individual care or population protection?",
+     "prompt": "Decide whether each action is mainly healthcare for one person, mainly public health for a population, or both. Remember that healthcare also includes prevention and public health also responds to existing threats.",
+     "needsGraph": false,
+     "fields": [
+      {
+       "id": "f1",
+       "type": "match",
+       "rows": [
+        {
+         "id": "r1",
+         "t": "A doctor treats one student's ear infection."
+        },
+        {
+         "id": "r2",
+         "t": "A county program tracks flu cases in all schools to spot a spike."
+        },
+        {
+         "id": "r3",
+         "t": "A clinic gives a student a routine vaccine at a check-up, which also adds to community protection."
+        },
+        {
+         "id": "r4",
+         "t": "A health inspector investigates a restaurant after several people become ill."
+        },
+        {
+         "id": "r5",
+         "t": "A provider screens a teen for high blood pressure at an annual visit."
+        }
+       ],
+       "cats": [
+        {
+         "id": "hc",
+         "t": "Mainly healthcare (individual)"
+        },
+        {
+         "id": "ph",
+         "t": "Mainly public health (population)"
+        },
+        {
+         "id": "both",
+         "t": "Both"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "id": "M2-U2",
+     "points": 3,
+     "minutes": 1.5,
+     "title": "Who ate what?",
+     "prompt": "Use the exposure table in the Operations Center. Of the people who ate chicken salad, what percent became ill? Of those who did NOT eat it, what percent became ill? Then choose the best conclusion.",
+     "needsGraph": true,
+     "fields": [
+      {
+       "id": "ate",
+       "type": "num",
+       "label": "Percent ill among people who ate chicken salad",
+       "unit": "%"
+      },
+      {
+       "id": "not",
+       "type": "num",
+       "label": "Percent ill among people who did not eat chicken salad",
+       "unit": "%"
+      },
+      {
+       "id": "claim",
+       "type": "single",
+       "label": "Best conclusion",
+       "options": [
+        {
+         "id": "a",
+         "t": "Chicken salad is the leading suspect, but more evidence is needed before confirming the cause."
+        },
+        {
+         "id": "b",
+         "t": "The chicken salad definitely caused the illness because the cluster happened after the picnic."
+        },
+        {
+         "id": "c",
+         "t": "The lemonade is the leading suspect because it was the most-eaten item."
+        },
+        {
+         "id": "d",
+         "t": "No food can be linked, so the data are useless."
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "id": "M2-U3",
+     "points": 3,
+     "minutes": 1.5,
+     "title": "Agent, host, environment, and next steps",
+     "prompt": "First, match each piece of the picnic scenario to the agent-host-environment triangle. Then put the investigation steps in the order a health department would usually do them.",
+     "needsGraph": false,
+     "fields": [
+      {
+       "id": "tri",
+       "type": "match",
+       "rows": [
+        {
+         "id": "r1",
+         "t": "A disease-causing germ (such as a bacterium) that may be in the food"
+        },
+        {
+         "id": "r2",
+         "t": "The people who ate at the picnic"
+        },
+        {
+         "id": "r3",
+         "t": "Food sitting for hours on a table in warm sun"
+        }
+       ],
+       "cats": [
+        {
+         "id": "agent",
+         "t": "Agent"
+        },
+        {
+         "id": "host",
+         "t": "Host"
+        },
+        {
+         "id": "env",
+         "t": "Environment"
+        }
+       ]
+      },
+      {
+       "id": "ord",
+       "type": "order",
+       "label": "Order the steps",
+       "items": [
+        {
+         "id": "s3",
+         "t": "Compare who ate what among ill and well people"
+        },
+        {
+         "id": "s5",
+         "t": "Use findings to take action (for example remove the food and advise the public)"
+        },
+        {
+         "id": "s1",
+         "t": "Collect and count the case reports (surveillance)"
+        },
+        {
+         "id": "s4",
+         "t": "Test samples and inspect how food was prepared and stored"
+        },
+        {
+         "id": "s2",
+         "t": "Interview ill and well attendees about what they ate"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "id": "M2-U4",
+     "points": 3,
+     "minutes": 1.5,
+     "title": "Prevent it, find it, reduce harm; and who does what",
+     "prompt": "Classify each action by prevention level, then match each task to the organization that most commonly does it. (Responsibilities can vary by state and county, so choose the best typical match.)",
+     "needsGraph": false,
+     "fields": [
+      {
+       "id": "lvl",
+       "type": "match",
+       "rows": [
+        {
+         "id": "r1",
+         "t": "A school hosts a vaccination clinic before flu season."
+        },
+        {
+         "id": "r2",
+         "t": "A county offers blood-pressure screening at a community fair to find problems early."
+        },
+        {
+         "id": "r3",
+         "t": "A rehabilitation program helps people recover from a stroke and prevent complications."
+        }
+       ],
+       "cats": [
+        {
+         "id": "pri",
+         "t": "Primary prevention"
+        },
+        {
+         "id": "sec",
+         "t": "Secondary prevention"
+        },
+        {
+         "id": "ter",
+         "t": "Tertiary prevention"
+        }
+       ]
+      },
+      {
+       "id": "who",
+       "type": "match",
+       "rows": [
+        {
+         "id": "w1",
+         "t": "Inspect local restaurant kitchens and run a neighborhood immunization clinic"
+        },
+        {
+         "id": "w2",
+         "t": "Fund research into new treatments"
+        },
+        {
+         "id": "w3",
+         "t": "Track diseases nationally and give outbreak guidance and support"
+        },
+        {
+         "id": "w4",
+         "t": "Set and enforce air and water pollution standards"
+        }
+       ],
+       "cats": [
+        {
+         "id": "local",
+         "t": "Local health department"
+        },
+        {
+         "id": "nih",
+         "t": "NIH"
+        },
+        {
+         "id": "cdc",
+         "t": "CDC"
+        },
+        {
+         "id": "epa",
+         "t": "Environmental protection agency"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 3,
+   "key": "lab",
+   "title": "Environmental Safety Lab",
+   "place": "Environmental Safety Lab",
+   "mission": "Your team helps a school and a community plan safe activities. Explore how hazard, exposure, intensity, duration and susceptibility change risk. Exploring is unlimited and ungraded; only a submitted answer uses an attempt. Good plans use layers of protection before, during and after an activity, name who decides, and say when to modify, pause or stop.",
+   "colors": {
+    "a": "#b45309",
+    "b": "#fef3e2"
+   },
+   "minutes": 11,
+   "points": 22,
+   "explorer": {
+    "kind": "lab",
+    "data": {
+     "scenarios": {
+      "smoke": {
+       "id": "smoke",
+       "title": "Soccer practice in wildfire smoke",
+       "badge": "AQI forecast 135-155",
+       "hazard": "Wildfire smoke (PM2.5)",
+       "setup": "The varsity soccer team has an outdoor practice this afternoon. The AirNow forecast for the field area is an AQI of 135 to 155 (the range crosses from \"Unhealthy for Sensitive Groups\" into \"Unhealthy\"). Two players have asthma.",
+       "exposure": [
+        "loc",
+        "dur",
+        "inten",
+        "mon",
+        "sens"
+       ],
+       "controls": [
+        {
+         "id": "loc",
+         "label": "Location",
+         "options": [
+          {
+           "id": "out",
+           "t": "Outdoor field",
+           "w": 3
+          },
+          {
+           "id": "in",
+           "t": "Indoor gym, doors closed",
+           "w": 1
+          }
+         ]
+        },
+        {
+         "id": "dur",
+         "label": "Duration",
+         "options": [
+          {
+           "id": "30",
+           "t": "30 minutes",
+           "w": 1
+          },
+          {
+           "id": "60",
+           "t": "60 minutes",
+           "w": 2
+          },
+          {
+           "id": "90",
+           "t": "90 minutes",
+           "w": 3
+          },
+          {
+           "id": "120",
+           "t": "120 minutes",
+           "w": 4
+          }
+         ]
+        },
+        {
+         "id": "inten",
+         "label": "Effort level",
+         "options": [
+          {
+           "id": "full",
+           "t": "Full scrimmage",
+           "w": 3
+          },
+          {
+           "id": "mod",
+           "t": "Moderate drills",
+           "w": 2
+          },
+          {
+           "id": "light",
+           "t": "Light skills work",
+           "w": 1
+          }
+         ]
+        },
+        {
+         "id": "mon",
+         "label": "Air checks (before)",
+         "options": [
+          {
+           "id": "none",
+           "t": "No air check",
+           "w": 2
+          },
+          {
+           "id": "once",
+           "t": "Check AirNow once before practice",
+           "w": 1
+          },
+          {
+           "id": "hourly",
+           "t": "Check before and again every hour",
+           "w": 0
+          }
+         ]
+        },
+        {
+         "id": "sens",
+         "label": "Players who are more sensitive (during)",
+         "options": [
+          {
+           "id": "same",
+           "t": "Treat everyone the same",
+           "w": 2
+          },
+          {
+           "id": "plan",
+           "t": "Players with asthma follow their own care plans and may ease up or sit out with no penalty",
+           "w": 0
+          }
+         ]
+        },
+        {
+         "id": "after",
+         "label": "After practice",
+         "options": [
+          {
+           "id": "none",
+           "t": "Nothing special",
+           "w": 0
+          },
+          {
+           "id": "report",
+           "t": "Players report cough, wheeze or chest tightness to an adult and follow care plans",
+           "w": 0
+          }
+         ]
+        },
+        {
+         "id": "who",
+         "label": "Who can modify, pause or stop practice?",
+         "options": [
+          {
+           "id": "each",
+           "t": "Each player decides alone",
+           "w": 0
+          },
+          {
+           "id": "adult",
+           "t": "A named adult (coach or athletic director) with the authority to act",
+           "w": 0
+          },
+          {
+           "id": "vote",
+           "t": "The team votes when practice is over",
+           "w": 0
+          },
+          {
+           "id": "none",
+           "t": "No one; the schedule is fixed",
+           "w": 0
+          }
+         ]
+        },
+        {
+         "id": "trig",
+         "label": "When to act",
+         "options": [
+          {
+           "id": "collapse",
+           "t": "Only after a player collapses",
+           "w": 0
+          },
+          {
+           "id": "tier",
+           "t": "Ease up or move indoors as AQI is in the sensitive-group range; pause or move indoors if AQI reaches Unhealthy or anyone has symptoms",
+           "w": 0
+          },
+          {
+           "id": "never",
+           "t": "Never; the schedule is the schedule",
+           "w": 0
+          },
+          {
+           "id": "haz",
+           "t": "Only when AQI reaches Hazardous",
+           "w": 0
+          }
+         ]
+        }
+       ]
+      },
+      "uv": {
+       "id": "uv",
+       "title": "Lifeguard in high UV",
+       "badge": "UV Index 10 (Very High)",
+       "hazard": "Ultraviolet (UV) radiation",
+       "setup": "A lifeguard at the county pool works an outdoor shift on a clear, summer day. The forecast UV Index is 10 (Very High). A guard must stay watchful and cannot simply leave the stand.",
+       "exposure": [
+        "shift",
+        "shade",
+        "cover",
+        "sun",
+        "mon"
+       ],
+       "controls": [
+        {
+         "id": "shift",
+         "label": "Shift pattern",
+         "options": [
+          {
+           "id": "straight",
+           "t": "Four hours straight on the stand",
+           "w": 3
+          },
+          {
+           "id": "rotate",
+           "t": "Rotate positions about every two hours, with breaks in shade",
+           "w": 1
+          }
+         ]
+        },
+        {
+         "id": "shade",
+         "label": "Shade",
+         "options": [
+          {
+           "id": "none",
+           "t": "No shade",
+           "w": 3
+          },
+          {
+           "id": "shade",
+           "t": "Shade canopy over the stand and a shaded break spot",
+           "w": 1
+          }
+         ]
+        },
+        {
+         "id": "cover",
+         "label": "Clothing and eyewear",
+         "options": [
+          {
+           "id": "tank",
+           "t": "Tank top and shorts",
+           "w": 3
+          },
+          {
+           "id": "hat",
+           "t": "Wide-brim hat and UV-blocking sunglasses",
+           "w": 1
+          },
+          {
+           "id": "full",
+           "t": "Hat, sunglasses and a lightweight cover-up shirt",
+           "w": 0
+          }
+         ]
+        },
+        {
+         "id": "sun",
+         "label": "Sunscreen",
+         "options": [
+          {
+           "id": "none",
+           "t": "None; the water is cold",
+           "w": 3
+          },
+          {
+           "id": "once",
+           "t": "Applied once at the start of the shift",
+           "w": 2
+          },
+          {
+           "id": "reapply",
+           "t": "SPF 30+ broad-spectrum applied before the shift and reapplied about every 2 hours and after swimming or sweating",
+           "w": 0
+          }
+         ]
+        },
+        {
+         "id": "mon",
+         "label": "Monitoring",
+         "options": [
+          {
+           "id": "ignore",
+           "t": "Ignore the UV forecast",
+           "w": 2
+          },
+          {
+           "id": "check",
+           "t": "Check the UV Index forecast and plan for the strongest midday hours",
+           "w": 0
+          }
+         ]
+        },
+        {
+         "id": "who",
+         "label": "Who can change the plan?",
+         "options": [
+          {
+           "id": "guard",
+           "t": "Each guard alone",
+           "w": 0
+          },
+          {
+           "id": "manager",
+           "t": "The pool manager or head lifeguard",
+           "w": 0
+          },
+          {
+           "id": "swimmers",
+           "t": "The swimmers",
+           "w": 0
+          },
+          {
+           "id": "none",
+           "t": "No one",
+           "w": 0
+          }
+         ]
+        },
+        {
+         "id": "trig",
+         "label": "When to act",
+         "options": [
+          {
+           "id": "burn",
+           "t": "Only after someone is sunburned",
+           "w": 0
+          },
+          {
+           "id": "tier",
+           "t": "Add shade, rotation and cover as UV is high; rotate a guard out for signs of overexposure or heat illness while keeping the pool covered",
+           "w": 0
+          },
+          {
+           "id": "never",
+           "t": "Never change the plan",
+           "w": 0
+          },
+          {
+           "id": "cold",
+           "t": "Only if the water temperature drops",
+           "w": 0
+          }
+         ]
+        }
+       ]
+      },
+      "heat": {
+       "id": "heat",
+       "title": "Football practice in extreme heat",
+       "badge": "Heat index near 98 °F in sun",
+       "hazard": "Heat and humidity",
+       "setup": "The football team plans practice. The forecast heat index is near 98 °F (National Weather Service \"extreme caution\" range), and the practice field is in full sun, which can make it feel hotter than the shade-based heat index. Players wear helmets and pads. It is the second day of preseason.",
+       "exposure": [
+        "time",
+        "gear",
+        "acc",
+        "rest",
+        "cool",
+        "mon"
+       ],
+       "controls": [
+        {
+         "id": "time",
+         "label": "Practice time",
+         "options": [
+          {
+           "id": "pm",
+           "t": "Mid-afternoon",
+           "w": 3
+          },
+          {
+           "id": "eve",
+           "t": "Early evening",
+           "w": 2
+          },
+          {
+           "id": "am",
+           "t": "Early morning",
+           "w": 1
+          }
+         ]
+        },
+        {
+         "id": "gear",
+         "label": "Equipment and contact",
+         "options": [
+          {
+           "id": "full",
+           "t": "Full pads and contact",
+           "w": 3
+          },
+          {
+           "id": "light",
+           "t": "Helmets only, no contact",
+           "w": 1
+          }
+         ]
+        },
+        {
+         "id": "acc",
+         "label": "Build-up over days",
+         "options": [
+          {
+           "id": "jump",
+           "t": "Full-intensity practice from day 1",
+           "w": 3
+          },
+          {
+           "id": "grad",
+           "t": "Gradual increase over the first days (acclimatization)",
+           "w": 0
+          }
+         ]
+        },
+        {
+         "id": "rest",
+         "label": "Rest and fluids",
+         "options": [
+          {
+           "id": "rare",
+           "t": "Water only at the end",
+           "w": 3
+          },
+          {
+           "id": "freq",
+           "t": "Scheduled rest and water breaks in shade, adjusted to conditions",
+           "w": 0
+          }
+         ]
+        },
+        {
+         "id": "cool",
+         "label": "Cooling and staff",
+         "options": [
+          {
+           "id": "none",
+           "t": "No cooling plan",
+           "w": 2
+          },
+          {
+           "id": "yes",
+           "t": "Cooling station ready (shade, fans, cold water/ice towels) with a trained staff member on site",
+           "w": 0
+          }
+         ]
+        },
+        {
+         "id": "mon",
+         "label": "Monitoring",
+         "options": [
+          {
+           "id": "feel",
+           "t": "Judge by feel",
+           "w": 2
+          },
+          {
+           "id": "check",
+           "t": "Check heat index or WBGT before and during, and watch players for symptoms",
+           "w": 0
+          }
+         ]
+        },
+        {
+         "id": "who",
+         "label": "Who can modify, pause or stop practice?",
+         "options": [
+          {
+           "id": "player",
+           "t": "Each player alone",
+           "w": 0
+          },
+          {
+           "id": "staff",
+           "t": "The athletic trainer or coach named in a written heat plan",
+           "w": 0
+          },
+          {
+           "id": "fans",
+           "t": "The crowd",
+           "w": 0
+          },
+          {
+           "id": "none",
+           "t": "No one",
+           "w": 0
+          }
+         ]
+        },
+        {
+         "id": "trig",
+         "label": "When to act",
+         "options": [
+          {
+           "id": "plan",
+           "t": "Follow the school's written heat plan: modify with rising readings or symptoms, pause to cool, and stop and call emergency services for confusion, collapse or other signs of heat stroke",
+           "w": 0
+          },
+          {
+           "id": "125",
+           "t": "Only if the heat index reaches 125",
+           "w": 0
+          },
+          {
+           "id": "feel",
+           "t": "Only when the coach feels uncomfortable",
+           "w": 0
+          },
+          {
+           "id": "never",
+           "t": "Never",
+           "w": 0
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "noise": {
+      "rel": 85,
+      "hours": 8,
+      "exchange": 3,
+      "table": [
+       {
+        "db": 85,
+        "minutes": 480
+       },
+       {
+        "db": 88,
+        "minutes": 240
+       },
+       {
+        "db": 91,
+        "minutes": 120
+       },
+       {
+        "db": 94,
+        "minutes": 60
+       },
+       {
+        "db": 97,
+        "minutes": 30
+       },
+       {
+        "db": 100,
+        "minutes": 15
+       },
+       {
+        "db": 103,
+        "minutes": 7.5
+       },
+       {
+        "db": 106,
+        "minutes": 3.75
+       }
+      ],
+      "caution": "This is an occupational recommended limit for a workday. It is not a guarantee that listening below it is risk-free, and it is not a guarantee of safety at any level for every person.",
+      "controls": {
+       "level": [
+        {
+         "id": "95",
+         "t": "Concert at 95 dBA",
+         "db": 95
+        },
+        {
+         "id": "100",
+         "t": "Concert at 100 dBA",
+         "db": 100
+        },
+        {
+         "id": "105",
+         "t": "Concert at 105 dBA",
+         "db": 105
+        }
+       ],
+       "minutes": [
+        30,
+        60,
+        120,
+        180
+       ],
+       "protect": [
+        {
+         "id": "none",
+         "t": "No hearing protection",
+         "adj": 0
+        },
+        {
+         "id": "plugs",
+         "t": "Well-fitted earplugs (illustrative -15 dB)",
+         "adj": -15
+        }
+       ],
+       "dist": [
+        {
+         "id": "near",
+         "t": "Near the speakers",
+         "adj": 0
+        },
+        {
+         "id": "far",
+         "t": "Farther back (illustrative -6 dB)",
+         "adj": -6
+        }
+       ]
+      }
+     },
+     "advisories": [
+      {
+       "id": "boil",
+       "t": "Boil-water advisory",
+       "d": "Germs (microbes) may be in the water. Boiling can make water safe for drinking and cooking, as the advisory instructs."
+      },
+      {
+       "id": "dnd",
+       "t": "Do-not-drink advisory",
+       "d": "Chemicals or toxins may be in the water. Boiling will NOT remove them. Use bottled or other safe water for drinking and cooking as instructed."
+      },
+      {
+       "id": "dnu",
+       "t": "Do-not-use advisory",
+       "d": "Contact may be harmful. Do not drink, cook with, or wash with the tap water; use other safe water as instructed."
+      }
+     ],
+     "aqi": [
+      {
+       "r": "0-50",
+       "n": "Good",
+       "c": "#00e400",
+       "fg": "#000"
+      },
+      {
+       "r": "51-100",
+       "n": "Moderate",
+       "c": "#ffff00",
+       "fg": "#000"
+      },
+      {
+       "r": "101-150",
+       "n": "Unhealthy for Sensitive Groups",
+       "c": "#ff7e00",
+       "fg": "#000"
+      },
+      {
+       "r": "151-200",
+       "n": "Unhealthy",
+       "c": "#ff0000",
+       "fg": "#fff"
+      },
+      {
+       "r": "201-300",
+       "n": "Very Unhealthy",
+       "c": "#8f3f97",
+       "fg": "#fff"
+      },
+      {
+       "r": "301+",
+       "n": "Hazardous",
+       "c": "#7e0023",
+       "fg": "#fff"
+      }
+     ],
+     "refs": [
+      {
+       "t": "AQI is a color-coded index of outdoor air quality. It is not a direct measure of any person's dose; breathing hard for longer or having asthma changes what you take in. (AirNow AQI basics)"
+      },
+      {
+       "t": "UV Index 8-10 is Very High; 11+ is Extreme. Guidance: seek shade, cover up, wear a hat and sunglasses, and use SPF 30+ sunscreen reapplied about every 2 hours. (EPA UV Index scale)"
+      },
+      {
+       "t": "Heat index is calculated for shade and light wind. Direct sun can raise the \"feel\" substantially. Heat risk also depends on activity, equipment and acclimatization. (National Weather Service)"
+      },
+      {
+       "t": "NIOSH recommended exposure limit: 85 dBA for 8 hours, halving the time for every 3 dBA increase (occupational guidance). (CDC/NIOSH)"
+      }
+     ]
+    }
+   },
+   "units": [
+    {
+     "id": "M3-U1",
+     "points": 3,
+     "minutes": 1.5,
+     "title": "Risk vocabulary and time scales",
+     "prompt": "Match each example to the risk idea it shows. Then decide whether each health effect is mainly short-term or long-term.",
+     "needsGraph": false,
+     "fields": [
+      {
+       "id": "vocab",
+       "type": "match",
+       "rows": [
+        {
+         "id": "r1",
+         "t": "Tiny smoke particles (PM2.5) or secondhand smoke in the air"
+        },
+        {
+         "id": "r2",
+         "t": "A player breathes smoky air during practice"
+        },
+        {
+         "id": "r3",
+         "t": "The AQI on the same field rises from 60 to 150"
+        },
+        {
+         "id": "r4",
+         "t": "A rehearsal runs 3 hours instead of 30 minutes"
+        },
+        {
+         "id": "r5",
+         "t": "A player with asthma may react at lower levels than teammates"
+        }
+       ],
+       "cats": [
+        {
+         "id": "haz",
+         "t": "Hazard"
+        },
+        {
+         "id": "exp",
+         "t": "Exposure (contact)"
+        },
+        {
+         "id": "int",
+         "t": "Intensity (how much)"
+        },
+        {
+         "id": "dur",
+         "t": "Duration (how long)"
+        },
+        {
+         "id": "sus",
+         "t": "Susceptibility"
+        }
+       ]
+      },
+      {
+       "id": "time",
+       "type": "match",
+       "rows": [
+        {
+         "id": "s1",
+         "t": "Cough and sore throat after a smoky practice"
+        },
+        {
+         "id": "s2",
+         "t": "Lasting hearing loss after years of loud noise"
+        },
+        {
+         "id": "s3",
+         "t": "Higher chance of lung problems after years of breathing polluted air or secondhand smoke"
+        },
+        {
+         "id": "s4",
+         "t": "Painful sunburn the night after a day outdoors"
+        }
+       ],
+       "cats": [
+        {
+         "id": "short",
+         "t": "Mainly short-term"
+        },
+        {
+         "id": "long",
+         "t": "Mainly long-term (builds up)"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "id": "M3-U2",
+     "points": 4,
+     "minutes": 2,
+     "title": "Plan: soccer practice in smoke",
+     "prompt": "Use the lab to build a plan for the soccer practice. A strong plan lowers exposure, protects sensitive players, checks conditions, names who decides, and says when to act.",
+     "needsGraph": false,
+     "fields": [
+      {
+       "id": "plan",
+       "type": "simplan",
+       "scenario": "smoke"
+      }
+     ]
+    },
+    {
+     "id": "M3-U3",
+     "points": 4,
+     "minutes": 2,
+     "title": "Plan: lifeguard in high UV",
+     "prompt": "Build a layered UV plan for the lifeguard. There is no exact \"time until burn\" for any one person, so plan for protection and monitoring, not a stopwatch.",
+     "needsGraph": false,
+     "fields": [
+      {
+       "id": "plan",
+       "type": "simplan",
+       "scenario": "uv"
+      }
+     ]
+    },
+    {
+     "id": "M3-U4",
+     "points": 4,
+     "minutes": 2,
+     "title": "Loud concerts and the time-limit chart",
+     "prompt": "Use the noise chart in the lab. Each 3 dBA increase cuts the recommended time in half. Read or work out the answer, then choose the best conclusion.",
+     "needsGraph": true,
+     "fields": [
+      {
+       "id": "min",
+       "type": "num",
+       "label": "At 100 dBA, about how many minutes per day does the NIOSH recommended exposure limit allow?",
+       "unit": "minutes"
+      },
+      {
+       "id": "claim",
+       "type": "single",
+       "label": "A student attends a 100-dBA concert for 30 minutes without hearing protection. Best conclusion:",
+       "options": [
+        {
+         "id": "a",
+         "t": "It is safe, because 30 minutes is much shorter than 8 hours."
+        },
+        {
+         "id": "b",
+         "t": "It is over the occupational recommended time for that level, so protection, distance or shorter time would reduce the risk. Being under a limit would still not guarantee zero risk."
+        },
+        {
+         "id": "c",
+         "t": "Only sounds above 120 dBA ever matter."
+        },
+        {
+         "id": "d",
+         "t": "Any one loud event causes permanent hearing loss for everyone."
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "id": "M3-U5",
+     "points": 4,
+     "minutes": 2.5,
+     "title": "Plan: football practice in heat",
+     "prompt": "Build a plan for the football practice. Include who decides and when to modify, pause or stop. The plan should rely on a written school heat plan and conditions, not one magic number.",
+     "needsGraph": false,
+     "fields": [
+      {
+       "id": "plan",
+       "type": "simplan",
+       "scenario": "heat"
+      }
+     ]
+    },
+    {
+     "id": "M3-U6",
+     "points": 3,
+     "minutes": 1,
+     "title": "Water advisory decisions",
+     "prompt": "Match each situation to the best advisory type. Then answer the boiling question. Always follow the advisory your local officials issue.",
+     "needsGraph": false,
+     "fields": [
+      {
+       "id": "m",
+       "type": "match",
+       "rows": [
+        {
+         "id": "r1",
+         "t": "Tests found germs in the water supply. Officials say water is safe to drink after boiling."
+        },
+        {
+         "id": "r2",
+         "t": "A chemical spill reached the water system. Swallowing the water could be harmful."
+        },
+        {
+         "id": "r3",
+         "t": "Tap water could be harmful to drink and also to touch or bathe in."
+        }
+       ],
+       "cats": [
+        {
+         "id": "boil",
+         "t": "Boil-water advisory"
+        },
+        {
+         "id": "dnd",
+         "t": "Do-not-drink advisory"
+        },
+        {
+         "id": "dnu",
+         "t": "Do-not-use advisory"
+        }
+       ]
+      },
+      {
+       "id": "boil",
+       "type": "single",
+       "label": "A family under a do-not-drink advisory for a chemical spill boils their tap water. What happens?",
+       "options": [
+        {
+         "id": "a",
+         "t": "Boiling removes the chemicals, so the water is safe."
+        },
+        {
+         "id": "b",
+         "t": "Boiling does not remove chemicals; they should use the safe water the advisory names, such as bottled water."
+        },
+        {
+         "id": "c",
+         "t": "Boiling for ten minutes always makes any water safe."
+        },
+        {
+         "id": "d",
+         "t": "Cooling it in the fridge first makes it safe."
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 4,
+   "key": "data",
+   "title": "Health Data Observatory",
+   "place": "Health Data Observatory",
+   "mission": "The advisory team receives a small table comparing four fictional communities. Read the graphs and the table, make careful comparisons, and decide what the data can and cannot say. These numbers are fictional classroom data about community averages. They do not describe any real place or predict anything about an individual student.",
+   "colors": {
+    "a": "#4338ca",
+    "b": "#eceafd"
+   },
+   "minutes": 6,
+   "points": 12,
+   "explorer": {
+    "kind": "data",
+    "data": {
+     "table": {
+      "title": "Fictional classroom data: four communities",
+      "cols": [
+       {
+        "id": "asthma",
+        "t": "Asthma ER visits per 1,000",
+        "unit": "per 1,000",
+        "max": 50,
+        "fmt": "num"
+       },
+       {
+        "id": "food",
+        "t": "Food insecurity",
+        "unit": "% of households",
+        "max": 30,
+        "fmt": "pct"
+       },
+       {
+        "id": "provider",
+        "t": "No regular healthcare provider",
+        "unit": "% of residents",
+        "max": 30,
+        "fmt": "pct"
+       },
+       {
+        "id": "life",
+        "t": "Average life expectancy",
+        "unit": "years",
+        "max": 90,
+        "fmt": "yrs"
+       }
+      ],
+      "rows": [
+       {
+        "id": "riverview",
+        "t": "Riverview",
+        "asthma": 18,
+        "food": 9,
+        "provider": 7,
+        "life": 80.6
+       },
+       {
+        "id": "eastjunction",
+        "t": "East Junction",
+        "asthma": 42,
+        "food": 24,
+        "provider": 18,
+        "life": 74.8
+       },
+       {
+        "id": "pinehills",
+        "t": "Pine Hills",
+        "asthma": 25,
+        "food": 14,
+        "provider": 11,
+        "life": 78.1
+       },
+       {
+        "id": "lakeview",
+        "t": "Lakeview",
+        "asthma": 14,
+        "food": 7,
+        "provider": 6,
+        "life": 81.4
+       }
+      ]
+     }
+    }
+   },
+   "units": [
+    {
+     "id": "M4-U1",
+     "points": 3,
+     "minutes": 1.5,
+     "title": "Which evidence supports a priority?",
+     "prompt": "Use the four charts or the table. Choose the community that shows the greatest need on these measures, then select every statement that the table supports.",
+     "needsGraph": true,
+     "fields": [
+      {
+       "id": "who",
+       "type": "single",
+       "label": "Community showing the greatest burden on all four measures",
+       "options": [
+        {
+         "id": "a",
+         "t": "Riverview"
+        },
+        {
+         "id": "b",
+         "t": "East Junction"
+        },
+        {
+         "id": "c",
+         "t": "Pine Hills"
+        },
+        {
+         "id": "d",
+         "t": "Lakeview"
+        }
+       ]
+      },
+      {
+       "id": "sup",
+       "type": "multi",
+       "label": "Statements the table supports",
+       "options": [
+        {
+         "id": "a",
+         "t": "East Junction has the highest rate of asthma ER visits (42 per 1,000)."
+        },
+        {
+         "id": "b",
+         "t": "East Junction has the lowest average life expectancy (74.8 years)."
+        },
+        {
+         "id": "c",
+         "t": "Lakeview has the highest food insecurity."
+        },
+        {
+         "id": "d",
+         "t": "Pine Hills has the highest percentage of residents with no regular healthcare provider."
+        },
+        {
+         "id": "e",
+         "t": "Food insecurity is lower in Riverview (9%) than in Pine Hills (14%)."
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "id": "M4-U2",
+     "points": 3,
+     "minutes": 1.5,
+     "title": "How big is the gap?",
+     "prompt": "Use the table to compare East Junction with Lakeview. Enter your answers as numbers.",
+     "needsGraph": true,
+     "fields": [
+      {
+       "id": "diff",
+       "type": "num",
+       "label": "How many more asthma ER visits per 1,000 does East Junction have than Lakeview?",
+       "unit": "per 1,000"
+      },
+      {
+       "id": "ratio",
+       "type": "num",
+       "label": "East Junction's asthma ER rate is how many times Lakeview's? (round to one decimal)",
+       "unit": "×"
+      },
+      {
+       "id": "life",
+       "type": "num",
+       "label": "How many more years is Lakeview's average life expectancy than East Junction's?",
+       "unit": "years"
+      }
+     ]
+    },
+    {
+     "id": "M4-U3",
+     "points": 3,
+     "minutes": 1.5,
+     "title": "Patterns are not proof",
+     "prompt": "Pick the claim the table does NOT support, explain why, and say what the table tells you about one student.",
+     "needsGraph": true,
+     "fields": [
+      {
+       "id": "claim",
+       "type": "single",
+       "label": "Unsupported claim",
+       "options": [
+        {
+         "id": "a",
+         "t": "East Junction has higher food insecurity and lower life expectancy than Lakeview."
+        },
+        {
+         "id": "b",
+         "t": "Food insecurity causes the shorter life expectancy in East Junction."
+        },
+        {
+         "id": "c",
+         "t": "In this table, communities with higher food insecurity also have higher asthma ER visit rates."
+        },
+        {
+         "id": "d",
+         "t": "Riverview has a lower asthma ER rate than Pine Hills."
+        }
+       ]
+      },
+      {
+       "id": "why",
+       "type": "single",
+       "label": "Why it is unsupported",
+       "options": [
+        {
+         "id": "a",
+         "t": "The table shows a pattern among four communities, not why it happens; income, housing, air, access and other factors could contribute."
+        },
+        {
+         "id": "b",
+         "t": "Because the numbers are too large to be true."
+        },
+        {
+         "id": "c",
+         "t": "Because averages are always wrong."
+        },
+        {
+         "id": "d",
+         "t": "Because food has nothing to do with health."
+        }
+       ]
+      },
+      {
+       "id": "ind",
+       "type": "single",
+       "label": "A student lives in Pine Hills. What does the table tell you about that student's own health?",
+       "options": [
+        {
+         "id": "a",
+         "t": "Nothing certain; community averages describe groups, not individuals."
+        },
+        {
+         "id": "b",
+         "t": "The student will have a life expectancy of exactly 78.1 years."
+        },
+        {
+         "id": "c",
+         "t": "The student has asthma."
+        },
+        {
+         "id": "d",
+         "t": "The student's family has food insecurity."
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "id": "M4-U4",
+     "points": 3,
+     "minutes": 1.5,
+     "title": "What would you want next?",
+     "prompt": "Before recommending an intervention for East Junction, select ALL additional information that would be useful and appropriate to gather.",
+     "needsGraph": true,
+     "fields": [
+      {
+       "id": "more",
+       "type": "multi",
+       "options": [
+        {
+         "id": "a",
+         "t": "How many people each number is based on, and how they were counted (sample size and method)."
+        },
+        {
+         "id": "b",
+         "t": "Which years the numbers cover, and whether they are changing over time."
+        },
+        {
+         "id": "c",
+         "t": "What services, strengths and priorities exist in East Junction according to residents."
+        },
+        {
+         "id": "d",
+         "t": "Other factors that might explain the pattern, such as income, housing, air quality and transportation."
+        },
+        {
+         "id": "e",
+         "t": "Private health records of individual residents."
+        },
+        {
+         "id": "f",
+         "t": "Which community has the most popular sports team."
+        },
+        {
+         "id": "g",
+         "t": "A list of who is to blame for the numbers."
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 5,
+   "key": "media",
+   "title": "Media and Source Studio",
+   "place": "Media and Source Studio",
+   "mission": "A sponsored post is going around the school. The advisory team decides how to read it and which sources to trust. Use Audience -> Emotion -> Message -> Action to see how it works, P.A.U.S.E. to question it, and STOP to pick useful information. A marketing technique does not automatically make a claim false; check the evidence.",
+   "colors": {
+    "a": "#6d28d9",
+    "b": "#f1ebfd"
+   },
+   "minutes": 8,
+   "points": 16,
+   "explorer": {
+    "kind": "media",
+    "data": {
+     "post": {
+      "note": "Constructed classroom example. Not a real product, person or agency.",
+      "user": "@maya.moves",
+      "followers": "48K followers",
+      "bio": "Soccer | Trainer | Official SparkUp Partner",
+      "caption": "Be the athlete you're meant to be! SparkUp Boost is all-natural, plant-powered energy that boosts your focus. Over 50,000 cans sold THIS WEEK. Only 2 hours left for 30% off with code MAYA30!",
+      "tags": "#fuelyourgame #teamsparkup #grind #sp",
+      "stats": {
+       "likes": "12.4K likes",
+       "rating": "4.9 stars (from the brand's website)"
+      },
+      "label": {
+       "serving": "1 can (12 fl oz)",
+       "caffeine": "200 mg caffeine",
+       "sugar": "28 g sugar",
+       "blend": "Plant extract blend (amounts not listed)"
+      },
+      "cues": [
+       {
+        "id": "halo",
+        "t": "\"all-natural, plant-powered\"",
+        "kind": "Health halo",
+        "note": "Words that sound healthy do not tell you what is in the product or whether it is good for you."
+       },
+       {
+        "id": "identity",
+        "t": "\"Be the athlete you're meant to be\"",
+        "kind": "Aspirational identity",
+        "note": "Links the product to who you want to be."
+       },
+       {
+        "id": "social",
+        "t": "\"50,000 cans sold\", \"4.9 stars\", \"12.4K likes\"",
+        "kind": "Social proof",
+        "note": "Popularity is not evidence that something works or is safe."
+       },
+       {
+        "id": "scarcity",
+        "t": "\"Only 2 hours left\"",
+        "kind": "Scarcity",
+        "note": "Time pressure discourages checking the evidence."
+       },
+       {
+        "id": "influencer",
+        "t": "@maya.moves with 48K followers",
+        "kind": "Influencer endorsement",
+        "note": "A trusted face is not the same as an independent source."
+       },
+       {
+        "id": "disclosure",
+        "t": "\"#sp\" at the end of a hashtag list",
+        "kind": "Disclosure (unclear)",
+        "note": "Clear sponsorship disclosure should be easy to notice and understand. \"sp\" is an abbreviation that many viewers will not recognize."
+       },
+       {
+        "id": "code",
+        "t": "Discount code MAYA30",
+        "kind": "Financial relationship",
+        "note": "A personal code can pay or credit the influencer when you buy."
+       },
+       {
+        "id": "claim",
+        "t": "\"boosts your focus\"",
+        "kind": "Health claim, no evidence shown",
+        "note": "No study, amount or source is given for this claim."
+       }
+      ]
+     },
+     "sources": [
+      {
+       "id": "A",
+       "t": "Eastbrook County Youth Survey 2026",
+       "type": "Local government report",
+       "author": "Eastbrook County Health Department staff (fictional)",
+       "purpose": "Track youth health in the county",
+       "date": "March 2026",
+       "place": "Six county high schools",
+       "methods": "Randomly chosen classrooms; anonymous; methods appendix published",
+       "n": "1,240 students",
+       "cites": "Methods and questionnaire posted"
+      },
+      {
+       "id": "B",
+       "t": "National Youth Beverage Survey 2019",
+       "type": "National government survey (.gov)",
+       "author": "Fictional federal survey office",
+       "purpose": "Describe beverage use across the country",
+       "date": "2019",
+       "place": "Nationwide",
+       "methods": "National sample; published methods",
+       "n": "14,000 students",
+       "cites": "Full report with citations"
+      },
+      {
+       "id": "C",
+       "t": "\"9 out of 10 teens love SparkUp\"",
+       "type": "Advertisement",
+       "author": "SparkUp (brand)",
+       "purpose": "Sell the product",
+       "date": "Not shown",
+       "place": "Not stated",
+       "methods": "Not shown",
+       "n": "Not shown",
+       "cites": "None"
+      },
+      {
+       "id": "D",
+       "t": "\"Everyone at my school drinks them!\"",
+       "type": "Sponsored influencer story",
+       "author": "@maya.moves (paid brand partner)",
+       "purpose": "Promote the product",
+       "date": "Last week",
+       "place": "One school",
+       "methods": "Personal impression",
+       "n": "Not shown",
+       "cites": "None"
+      },
+      {
+       "id": "E",
+       "t": "Healthy Teens Alliance Report",
+       "type": "Advocacy nonprofit report",
+       "author": "Healthy Teens Alliance (fictional)",
+       "purpose": "Persuade schools to limit energy-drink sales",
+       "date": "2026",
+       "place": "Two county schools",
+       "methods": "Voluntary online survey; methods described",
+       "n": "300 students",
+       "cites": "Sources listed"
+      },
+      {
+       "id": "F",
+       "t": "Study: Evening caffeine and teen sleep",
+       "type": "Peer-reviewed journal article",
+       "author": "University research team (fictional)",
+       "purpose": "Test how evening caffeine relates to sleep",
+       "date": "2024",
+       "place": "A different region",
+       "methods": "Four-week monitored study; reviewed by outside experts",
+       "n": "400 teens",
+       "cites": "Full references"
+      },
+      {
+       "id": "G",
+       "t": "Local news story: \"Teens turn to energy drinks\"",
+       "type": "News article",
+       "author": "Eastbrook Daily (fictional)",
+       "purpose": "Inform readers",
+       "date": "April 2026",
+       "place": "Eastbrook County",
+       "methods": "Quotes one student and summarizes the county survey",
+       "n": "Not applicable",
+       "cites": "Names the county survey but gives no link"
+      }
+     ],
+     "pause": [
+      [
+       "P",
+       "Purpose",
+       "Why was this made? What does it want you to do?"
+      ],
+      [
+       "A",
+       "Audience",
+       "Who is it aimed at?"
+      ],
+      [
+       "U",
+       "Unspoken message",
+       "What does it suggest without saying?"
+      ],
+      [
+       "S",
+       "Source",
+       "Who made it and who benefits?"
+      ],
+      [
+       "E",
+       "Evidence",
+       "What proof is shown?"
+      ]
+     ],
+     "stop": [
+      [
+       "S",
+       "Source",
+       "Who is behind it? Any conflict of interest?"
+      ],
+      [
+       "T",
+       "Timeliness",
+       "Is it recent enough for this question?"
+      ],
+      [
+       "O",
+       "Objective",
+       "What is it trying to do?"
+      ],
+      [
+       "P",
+       "Proof",
+       "Are methods, sample and citations traceable?"
+      ]
+     ]
+    }
+   },
+   "units": [
+    {
+     "id": "M5-U1",
+     "points": 3,
+     "minutes": 1.5,
+     "title": "Name the technique",
+     "prompt": "Match each excerpt from marketing messages to the technique it uses.",
+     "needsGraph": false,
+     "fields": [
+      {
+       "id": "f1",
+       "type": "match",
+       "rows": [
+        {
+         "id": "r1",
+         "t": "\"All-natural, plant-powered.\""
+        },
+        {
+         "id": "r2",
+         "t": "\"50,000 cans sold this week.\""
+        },
+        {
+         "id": "r3",
+         "t": "\"Only 2 hours left!\""
+        },
+        {
+         "id": "r4",
+         "t": "\"Be the athlete you're meant to be.\""
+        },
+        {
+         "id": "r5",
+         "t": "\"Without it you'll fall behind and let your whole team down.\""
+        },
+        {
+         "id": "r6",
+         "t": "\"Use my code. I swear by it.\""
+        }
+       ],
+       "cats": [
+        {
+         "id": "halo",
+         "t": "Health halo"
+        },
+        {
+         "id": "proof",
+         "t": "Social proof"
+        },
+        {
+         "id": "scarce",
+         "t": "Scarcity"
+        },
+        {
+         "id": "ident",
+         "t": "Aspirational identity"
+        },
+        {
+         "id": "fear",
+         "t": "Fear appeal"
+        },
+        {
+         "id": "endorse",
+         "t": "Influencer endorsement"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "id": "M5-U2",
+     "points": 3,
+     "minutes": 1.5,
+     "title": "Follow the money",
+     "prompt": "Inspect the post in the studio. Select every detail that signals a financial relationship or a weak disclosure, then answer the question below.",
+     "needsGraph": false,
+     "fields": [
+      {
+       "id": "cues",
+       "type": "multi",
+       "options": [
+        {
+         "id": "a",
+         "t": "The \"#sp\" tag buried at the end of a hashtag list."
+        },
+        {
+         "id": "b",
+         "t": "The personal discount code MAYA30."
+        },
+        {
+         "id": "c",
+         "t": "The post has 12.4K likes."
+        },
+        {
+         "id": "d",
+         "t": "The photo shows Maya training outdoors."
+        },
+        {
+         "id": "e",
+         "t": "Her profile says \"Official SparkUp Partner\"."
+        }
+       ]
+      },
+      {
+       "id": "false",
+       "type": "single",
+       "label": "Does a sponsorship by itself show that the claim \"boosts your focus\" is false?",
+       "options": [
+        {
+         "id": "a",
+         "t": "No. It signals a possible bias, so check the evidence for the claim."
+        },
+        {
+         "id": "b",
+         "t": "Yes. Sponsored claims are always false."
+        },
+        {
+         "id": "c",
+         "t": "No. Sponsored claims never need checking."
+        },
+        {
+         "id": "d",
+         "t": "Yes, but only if the post has fewer than 1,000 likes."
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "id": "M5-U3",
+     "points": 3,
+     "minutes": 1.5,
+     "title": "P.A.U.S.E. the post",
+     "prompt": "Match each observation about the post to the P.A.U.S.E. step it answers.",
+     "needsGraph": false,
+     "fields": [
+      {
+       "id": "f1",
+       "type": "match",
+       "rows": [
+        {
+         "id": "r1",
+         "t": "The goal is to get viewers to buy SparkUp Boost."
+        },
+        {
+         "id": "r2",
+         "t": "The post is aimed at teen athletes."
+        },
+        {
+         "id": "r3",
+         "t": "It suggests you cannot be a real athlete without the drink."
+        },
+        {
+         "id": "r4",
+         "t": "The speaker is a paid brand partner who earns from sales."
+        },
+        {
+         "id": "r5",
+         "t": "No study or ingredient amounts support \"boosts your focus\"."
+        }
+       ],
+       "cats": [
+        {
+         "id": "P",
+         "t": "Purpose"
+        },
+        {
+         "id": "A",
+         "t": "Audience"
+        },
+        {
+         "id": "U",
+         "t": "Unspoken message"
+        },
+        {
+         "id": "S",
+         "t": "Source"
+        },
+        {
+         "id": "E",
+         "t": "Evidence"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "id": "M5-U4",
+     "points": 3,
+     "minutes": 1.5,
+     "title": "Judge the claim",
+     "prompt": "Look at the label and caption. Choose the best conclusion about \"boosts your focus\", then the best reason.",
+     "needsGraph": false,
+     "fields": [
+      {
+       "id": "claim",
+       "type": "single",
+       "label": "Conclusion",
+       "options": [
+        {
+         "id": "a",
+         "t": "The ad gives no evidence for \"boosts your focus\", so the claim is unsupported here; the product might still have effects, but the ad has not shown them."
+        },
+        {
+         "id": "b",
+         "t": "The claim is proven because many people bought it."
+        },
+        {
+         "id": "c",
+         "t": "The claim must be false because it is an ad."
+        },
+        {
+         "id": "d",
+         "t": "The claim is proven because an athlete said it."
+        }
+       ]
+      },
+      {
+       "id": "reason",
+       "type": "single",
+       "label": "Best reason",
+       "options": [
+        {
+         "id": "a",
+         "t": "It relies on popularity, identity and an endorser instead of a study, amounts or a source."
+        },
+        {
+         "id": "b",
+         "t": "Ads are never allowed to include true statements."
+        },
+        {
+         "id": "c",
+         "t": "The label lists caffeine, so nothing else matters."
+        },
+        {
+         "id": "d",
+         "t": "It has too many hashtags."
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "id": "M5-U5",
+     "points": 4,
+     "minutes": 2,
+     "title": "Apply STOP",
+     "prompt": "Use the source cards. Choose the most useful source for each question and the cards with a direct financial interest in sales.",
+     "needsGraph": false,
+     "fields": [
+      {
+       "id": "q1",
+       "type": "single",
+       "label": "Question 1: How common is energy-drink use among students in our county's high schools right now?",
+       "options": [
+        {
+         "id": "A",
+         "t": "Card A: Eastbrook County Youth Survey 2026"
+        },
+        {
+         "id": "B",
+         "t": "Card B: National Youth Beverage Survey 2019"
+        },
+        {
+         "id": "C",
+         "t": "Card C: \"9 out of 10 teens love SparkUp\""
+        },
+        {
+         "id": "D",
+         "t": "Card D: \"Everyone at my school drinks them!\""
+        },
+        {
+         "id": "E",
+         "t": "Card E: Healthy Teens Alliance Report"
+        },
+        {
+         "id": "F",
+         "t": "Card F: Study: Evening caffeine and teen sleep"
+        },
+        {
+         "id": "G",
+         "t": "Card G: Local news story: \"Teens turn to energy drinks\""
+        }
+       ]
+      },
+      {
+       "id": "q2",
+       "type": "single",
+       "label": "Question 2: Does caffeine late in the day change how teens sleep?",
+       "options": [
+        {
+         "id": "A",
+         "t": "Card A: Eastbrook County Youth Survey 2026"
+        },
+        {
+         "id": "B",
+         "t": "Card B: National Youth Beverage Survey 2019"
+        },
+        {
+         "id": "C",
+         "t": "Card C: \"9 out of 10 teens love SparkUp\""
+        },
+        {
+         "id": "D",
+         "t": "Card D: \"Everyone at my school drinks them!\""
+        },
+        {
+         "id": "E",
+         "t": "Card E: Healthy Teens Alliance Report"
+        },
+        {
+         "id": "F",
+         "t": "Card F: Study: Evening caffeine and teen sleep"
+        },
+        {
+         "id": "G",
+         "t": "Card G: Local news story: \"Teens turn to energy drinks\""
+        }
+       ]
+      },
+      {
+       "id": "coi",
+       "type": "multi",
+       "label": "Which cards come from someone who profits directly from SparkUp sales?",
+       "options": [
+        {
+         "id": "A",
+         "t": "Card A: Eastbrook County Youth Survey 2026"
+        },
+        {
+         "id": "B",
+         "t": "Card B: National Youth Beverage Survey 2019"
+        },
+        {
+         "id": "C",
+         "t": "Card C: \"9 out of 10 teens love SparkUp\""
+        },
+        {
+         "id": "D",
+         "t": "Card D: \"Everyone at my school drinks them!\""
+        },
+        {
+         "id": "E",
+         "t": "Card E: Healthy Teens Alliance Report"
+        },
+        {
+         "id": "F",
+         "t": "Card F: Study: Evening caffeine and teen sleep"
+        },
+        {
+         "id": "G",
+         "t": "Card G: Local news story: \"Teens turn to energy drinks\""
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": 6,
+   "key": "action",
+   "title": "Community Action Council",
+   "place": "Community Action Council Hall",
+   "mission": "The council will hear your plan. First, learn the difference between awareness and advocacy. Next, repair a weak plan, choose how to measure success, build an ethical counter-message to the sponsored post, and defend your choices with evidence and reasons. Your plan appears on the final screen as a printable product. Note: this builder checks the quality of the reasoning you select; it does not replace writing a full essay.",
+   "colors": {
+    "a": "#047857",
+    "b": "#e2f6ee"
+   },
+   "minutes": 9,
+   "points": 20,
+   "explorer": {
+    "kind": "action",
+    "data": {
+     "evidence": [
+      {
+       "id": "e1",
+       "t": "Posts from friends say smoke is bad."
+      },
+      {
+       "id": "e2",
+       "t": "A fictional district practice log shows 6 outdoor practices held on days when the AirNow AQI was 101 or higher, and 14 players on the asthma roster."
+      },
+      {
+       "id": "e3",
+       "t": "A news headline about smoke in another state."
+      },
+      {
+       "id": "e4",
+       "t": "A rumor that the coach \"does not care\"."
+      }
+     ],
+     "advocacyControls": [
+      {
+       "id": "aud",
+       "label": "Audience (who has the power to act?)",
+       "options": [
+        {
+         "id": "all",
+         "t": "All teens in the world"
+        },
+        {
+         "id": "ad",
+         "t": "The athletic director and school board"
+        },
+        {
+         "id": "super",
+         "t": "The district superintendent, who can set district-wide policy"
+        },
+        {
+         "id": "chat",
+         "t": "A group chat of friends"
+        }
+       ]
+      },
+      {
+       "id": "sol",
+       "label": "Solution (what should change?)",
+       "options": [
+        {
+         "id": "tell",
+         "t": "Tell people to be careful"
+        },
+        {
+         "id": "proto",
+         "t": "Adopt an air-quality activity protocol: check AirNow, ease up or move indoors at set AQI levels, and name who decides"
+        },
+        {
+         "id": "ban",
+         "t": "Ban all outdoor activity for the entire year"
+        },
+        {
+         "id": "viral",
+         "t": "Make a viral post"
+        }
+       ]
+      },
+      {
+       "id": "msg",
+       "label": "Message (accurate and audience-appropriate)",
+       "options": [
+        {
+         "id": "fear",
+         "t": "\"Smoke will ruin your lungs forever!\""
+        },
+        {
+         "id": "shame",
+         "t": "\"Players who practice in smoke are careless.\""
+        },
+        {
+         "id": "fact",
+         "t": "\"On days when AirNow shows AQI 101 or higher, sensitive players should ease up, and the whole team should move indoors at 151 or above. Ask your coach to check AirNow before practice.\""
+        },
+        {
+         "id": "vague",
+         "t": "\"Air is bad. Do something.\""
+        }
+       ]
+      },
+      {
+       "id": "pers",
+       "label": "Personal protection while the policy is pending",
+       "options": [
+        {
+         "id": "none",
+         "t": "No special steps are needed"
+        },
+        {
+         "id": "plan",
+         "t": "Check AirNow, follow your own asthma action plan if you have one, ease up or go indoors, and tell the coach about symptoms"
+        },
+        {
+         "id": "hold",
+         "t": "Hold your breath during drills"
+        },
+        {
+         "id": "mask",
+         "t": "Rely only on a cloth mask and keep playing hard"
+        }
+       ]
+      },
+      {
+       "id": "eval",
+       "label": "Evaluation (how will you know it worked?)",
+       "options": [
+        {
+         "id": "likes",
+         "t": "Count likes on our post"
+        },
+        {
+         "id": "four",
+         "t": "Track reach (coaches who received it), understanding (quick check), action (policy adopted, practices changed) and improvement (fewer symptom reports on smoky days)"
+        },
+        {
+         "id": "happy",
+         "t": "Ask if the principal seems happy"
+        },
+        {
+         "id": "none",
+         "t": "No evaluation needed"
+        }
+       ]
+      }
+     ],
+     "counterControls": [
+      {
+       "id": "fact",
+       "label": "Accurate fact and source",
+       "options": [
+        {
+         "id": "poison",
+         "t": "\"Energy drinks are poison.\""
+        },
+        {
+         "id": "label",
+         "t": "SparkUp's label lists 200 mg of caffeine per can and does not list the amounts in its plant blend. (Source: the product label in the studio)"
+        },
+        {
+         "id": "heart",
+         "t": "\"Everyone who drinks them gets heart disease.\""
+        },
+        {
+         "id": "nine",
+         "t": "\"9 out of 10 teens love them.\""
+        }
+       ]
+      },
+      {
+       "id": "alt",
+       "label": "Healthier alternative",
+       "options": [
+        {
+         "id": "push",
+         "t": "Just push through practice tired"
+        },
+        {
+         "id": "basics",
+         "t": "Water, a regular meal or snack, and enough sleep to support energy for practice"
+        },
+        {
+         "id": "other",
+         "t": "Switch to a different energy drink"
+        },
+        {
+         "id": "skip",
+         "t": "Skip practice"
+        }
+       ]
+      },
+      {
+       "id": "vis",
+       "label": "Visual",
+       "options": [
+        {
+         "id": "skull",
+         "t": "A skull and crossbones over the can"
+        },
+        {
+         "id": "mock",
+         "t": "A photo mocking teens who drink it"
+        },
+        {
+         "id": "side",
+         "t": "The label facts shown beside a water bottle and a sleep icon, each with a text label"
+        },
+        {
+         "id": "celeb",
+         "t": "A celebrity photo with no source"
+        }
+       ]
+      },
+      {
+       "id": "cta",
+       "label": "Call to action",
+       "options": [
+        {
+         "id": "never",
+         "t": "\"Never trust any ad again.\""
+        },
+        {
+         "id": "check",
+         "t": "\"Check the label and ask for the evidence before you buy. Talk with your coach or health teacher about fueling for practice.\""
+        },
+        {
+         "id": "shame",
+         "t": "\"Shame friends who buy it.\""
+        },
+        {
+         "id": "buy",
+         "t": "\"Buy our brand instead.\""
+        }
+       ]
+      },
+      {
+       "id": "tone",
+       "label": "Tone",
+       "options": [
+        {
+         "id": "respect",
+         "t": "Respectful and specific to teen athletes; no blame"
+        },
+        {
+         "id": "mock",
+         "t": "Mocking and stereotyping teens"
+        },
+        {
+         "id": "panic",
+         "t": "Alarming and exaggerated"
+        },
+        {
+         "id": "pity",
+         "t": "Pitying and talking down"
+        }
+       ]
+      }
+     ],
+     "problem": "At Riverbend High, outdoor practices continue on smoky days because there is no clear air-quality rule, and some players have asthma.",
+     "weak": {
+      "aud": "all",
+      "sol": "tell",
+      "msg": "fear",
+      "pers": "none",
+      "eval": "likes"
+     },
+     "steps": [
+      "Problem",
+      "Evidence",
+      "Audience",
+      "Solution",
+      "Message",
+      "Action",
+      "Evaluation"
+     ],
+     "note": "Fictional classroom case. The practice log and roster numbers are invented for this assessment."
+    }
+   },
+   "units": [
+    {
+     "id": "M6-U1",
+     "points": 4,
+     "minutes": 2,
+     "title": "Awareness or advocacy, and the planning order",
+     "prompt": "Classify each action. Then put the advocacy planning steps in order.",
+     "needsGraph": false,
+     "fields": [
+      {
+       "id": "cls",
+       "type": "match",
+       "rows": [
+        {
+         "id": "r1",
+         "t": "Hang posters explaining what the AQI colors mean."
+        },
+        {
+         "id": "r2",
+         "t": "Ask the school board to adopt an air-quality activity policy at its next meeting."
+        },
+        {
+         "id": "r3",
+         "t": "Post a video explaining how wildfire smoke affects breathing."
+        },
+        {
+         "id": "r4",
+         "t": "Meet the athletic director with a one-page proposal and local data."
+        }
+       ],
+       "cats": [
+        {
+         "id": "aw",
+         "t": "Awareness (informs people)"
+        },
+        {
+         "id": "adv",
+         "t": "Advocacy (asks decision-makers to change something)"
+        }
+       ]
+      },
+      {
+       "id": "ord",
+       "type": "order",
+       "label": "Order the steps",
+       "items": [
+        {
+         "id": "p5",
+         "t": "Message"
+        },
+        {
+         "id": "p2",
+         "t": "Evidence"
+        },
+        {
+         "id": "p7",
+         "t": "Evaluation"
+        },
+        {
+         "id": "p4",
+         "t": "Solution"
+        },
+        {
+         "id": "p1",
+         "t": "Problem"
+        },
+        {
+         "id": "p6",
+         "t": "Action"
+        },
+        {
+         "id": "p3",
+         "t": "Audience"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "id": "M6-U2",
+     "points": 4,
+     "minutes": 2,
+     "title": "Repair the weak plan",
+     "prompt": "The council received a weak plan (shown in the builder). Replace each weak part with a better choice. The plan must be consistent: the audience must have the power to act on the solution.",
+     "needsGraph": false,
+     "fields": [
+      {
+       "id": "plan",
+       "type": "simplan",
+       "scenario": "adv"
+      }
+     ]
+    },
+    {
+     "id": "M6-U3",
+     "points": 4,
+     "minutes": 1.5,
+     "title": "Measuring success",
+     "prompt": "Classify each measure. Then pick the weakest evidence that the plan improved health protection.",
+     "needsGraph": false,
+     "fields": [
+      {
+       "id": "ms",
+       "type": "match",
+       "rows": [
+        {
+         "id": "r1",
+         "t": "How many coaches received the proposal"
+        },
+        {
+         "id": "r2",
+         "t": "Percent of players who can say what an AQI of 151 or higher means on a quick check"
+        },
+        {
+         "id": "r3",
+         "t": "The school board votes to adopt the protocol"
+        },
+        {
+         "id": "r4",
+         "t": "Fewer symptom reports on smoky-AQI days after the policy"
+        }
+       ],
+       "cats": [
+        {
+         "id": "reach",
+         "t": "Reach"
+        },
+        {
+         "id": "und",
+         "t": "Understanding"
+        },
+        {
+         "id": "act",
+         "t": "Action"
+        },
+        {
+         "id": "imp",
+         "t": "Improvement"
+        }
+       ]
+      },
+      {
+       "id": "weak",
+       "type": "single",
+       "label": "Weakest evidence that the plan improved protection:",
+       "options": [
+        {
+         "id": "a",
+         "t": "The post got a lot of likes."
+        },
+        {
+         "id": "b",
+         "t": "The board adopted the protocol."
+        },
+        {
+         "id": "c",
+         "t": "Fewer symptom reports on smoky days."
+        },
+        {
+         "id": "d",
+         "t": "Practices were moved indoors on days over the set AQI."
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "id": "M6-U4",
+     "points": 4,
+     "minutes": 2,
+     "title": "Ethical counter-message",
+     "prompt": "Build a counter-message to the SparkUp post from the studio. It must be accurate, give a healthier alternative, avoid fearmongering, shame, stereotypes and exaggeration, and ask for a specific action.",
+     "needsGraph": false,
+     "fields": [
+      {
+       "id": "plan",
+       "type": "simplan",
+       "scenario": "counter"
+      }
+     ]
+    },
+    {
+     "id": "M6-U5",
+     "points": 4,
+     "minutes": 1.5,
+     "title": "Defend your choices",
+     "prompt": "Choose the evidence for the problem, then match each plan choice to the reason that best defends it.",
+     "needsGraph": false,
+     "fields": [
+      {
+       "id": "ev",
+       "type": "single",
+       "label": "Best evidence for the problem",
+       "options": [
+        {
+         "id": "e1",
+         "t": "Posts from friends say smoke is bad."
+        },
+        {
+         "id": "e2",
+         "t": "A fictional district practice log shows 6 outdoor practices held on days when the AirNow AQI was 101 or higher, and 14 players on the asthma roster."
+        },
+        {
+         "id": "e3",
+         "t": "A news headline about smoke in another state."
+        },
+        {
+         "id": "e4",
+         "t": "A rumor that the coach \"does not care\"."
+        }
+       ]
+      },
+      {
+       "id": "why",
+       "type": "match",
+       "rows": [
+        {
+         "id": "r1",
+         "t": "We chose the athletic director and school board as the audience."
+        },
+        {
+         "id": "r2",
+         "t": "We chose an AQI-based protocol as the solution."
+        },
+        {
+         "id": "r3",
+         "t": "We avoided \"Smoke will ruin your lungs forever!\""
+        },
+        {
+         "id": "r4",
+         "t": "We track symptoms and policy adoption, not just likes."
+        }
+       ],
+       "cats": [
+        {
+         "id": "power",
+         "t": "They can adopt and enforce rules for practices."
+        },
+        {
+         "id": "aqi",
+         "t": "AQI levels connect air conditions to specific actions, including for sensitive groups."
+        },
+        {
+         "id": "exag",
+         "t": "Exaggerated fear is inaccurate and can make people dismiss the message."
+        },
+        {
+         "id": "meas",
+         "t": "It shows whether action and improvement actually happened."
+        },
+        {
+         "id": "cheap",
+         "t": "It is the cheapest option."
+        },
+        {
+         "id": "views",
+         "t": "It will get the most views."
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "simplans": {
+  "smoke": {
+   "controls": [
+    {
+     "id": "loc",
+     "label": "Location",
+     "options": [
+      {
+       "id": "out",
+       "t": "Outdoor field",
+       "w": 3
+      },
+      {
+       "id": "in",
+       "t": "Indoor gym, doors closed",
+       "w": 1
+      }
+     ]
+    },
+    {
+     "id": "dur",
+     "label": "Duration",
+     "options": [
+      {
+       "id": "30",
+       "t": "30 minutes",
+       "w": 1
+      },
+      {
+       "id": "60",
+       "t": "60 minutes",
+       "w": 2
+      },
+      {
+       "id": "90",
+       "t": "90 minutes",
+       "w": 3
+      },
+      {
+       "id": "120",
+       "t": "120 minutes",
+       "w": 4
+      }
+     ]
+    },
+    {
+     "id": "inten",
+     "label": "Effort level",
+     "options": [
+      {
+       "id": "full",
+       "t": "Full scrimmage",
+       "w": 3
+      },
+      {
+       "id": "mod",
+       "t": "Moderate drills",
+       "w": 2
+      },
+      {
+       "id": "light",
+       "t": "Light skills work",
+       "w": 1
+      }
+     ]
+    },
+    {
+     "id": "mon",
+     "label": "Air checks (before)",
+     "options": [
+      {
+       "id": "none",
+       "t": "No air check",
+       "w": 2
+      },
+      {
+       "id": "once",
+       "t": "Check AirNow once before practice",
+       "w": 1
+      },
+      {
+       "id": "hourly",
+       "t": "Check before and again every hour",
+       "w": 0
+      }
+     ]
+    },
+    {
+     "id": "sens",
+     "label": "Players who are more sensitive (during)",
+     "options": [
+      {
+       "id": "same",
+       "t": "Treat everyone the same",
+       "w": 2
+      },
+      {
+       "id": "plan",
+       "t": "Players with asthma follow their own care plans and may ease up or sit out with no penalty",
+       "w": 0
+      }
+     ]
+    },
+    {
+     "id": "after",
+     "label": "After practice",
+     "options": [
+      {
+       "id": "none",
+       "t": "Nothing special",
+       "w": 0
+      },
+      {
+       "id": "report",
+       "t": "Players report cough, wheeze or chest tightness to an adult and follow care plans",
+       "w": 0
+      }
+     ]
+    },
+    {
+     "id": "who",
+     "label": "Who can modify, pause or stop practice?",
+     "options": [
+      {
+       "id": "each",
+       "t": "Each player decides alone",
+       "w": 0
+      },
+      {
+       "id": "adult",
+       "t": "A named adult (coach or athletic director) with the authority to act",
+       "w": 0
+      },
+      {
+       "id": "vote",
+       "t": "The team votes when practice is over",
+       "w": 0
+      },
+      {
+       "id": "none",
+       "t": "No one; the schedule is fixed",
+       "w": 0
+      }
+     ]
+    },
+    {
+     "id": "trig",
+     "label": "When to act",
+     "options": [
+      {
+       "id": "collapse",
+       "t": "Only after a player collapses",
+       "w": 0
+      },
+      {
+       "id": "tier",
+       "t": "Ease up or move indoors as AQI is in the sensitive-group range; pause or move indoors if AQI reaches Unhealthy or anyone has symptoms",
+       "w": 0
+      },
+      {
+       "id": "never",
+       "t": "Never; the schedule is the schedule",
+       "w": 0
+      },
+      {
+       "id": "haz",
+       "t": "Only when AQI reaches Hazardous",
+       "w": 0
+      }
+     ]
+    }
+   ],
+   "meta": {
+    "title": "Soccer practice in wildfire smoke",
+    "badge": "AQI forecast 135-155",
+    "setup": "The varsity soccer team has an outdoor practice this afternoon. The AirNow forecast for the field area is an AQI of 135 to 155 (the range crosses from \"Unhealthy for Sensitive Groups\" into \"Unhealthy\"). Two players have asthma.",
+    "hazard": "Wildfire smoke (PM2.5)",
+    "exposure": [
+     "loc",
+     "dur",
+     "inten",
+     "mon",
+     "sens"
+    ]
+   }
+  },
+  "uv": {
+   "controls": [
+    {
+     "id": "shift",
+     "label": "Shift pattern",
+     "options": [
+      {
+       "id": "straight",
+       "t": "Four hours straight on the stand",
+       "w": 3
+      },
+      {
+       "id": "rotate",
+       "t": "Rotate positions about every two hours, with breaks in shade",
+       "w": 1
+      }
+     ]
+    },
+    {
+     "id": "shade",
+     "label": "Shade",
+     "options": [
+      {
+       "id": "none",
+       "t": "No shade",
+       "w": 3
+      },
+      {
+       "id": "shade",
+       "t": "Shade canopy over the stand and a shaded break spot",
+       "w": 1
+      }
+     ]
+    },
+    {
+     "id": "cover",
+     "label": "Clothing and eyewear",
+     "options": [
+      {
+       "id": "tank",
+       "t": "Tank top and shorts",
+       "w": 3
+      },
+      {
+       "id": "hat",
+       "t": "Wide-brim hat and UV-blocking sunglasses",
+       "w": 1
+      },
+      {
+       "id": "full",
+       "t": "Hat, sunglasses and a lightweight cover-up shirt",
+       "w": 0
+      }
+     ]
+    },
+    {
+     "id": "sun",
+     "label": "Sunscreen",
+     "options": [
+      {
+       "id": "none",
+       "t": "None; the water is cold",
+       "w": 3
+      },
+      {
+       "id": "once",
+       "t": "Applied once at the start of the shift",
+       "w": 2
+      },
+      {
+       "id": "reapply",
+       "t": "SPF 30+ broad-spectrum applied before the shift and reapplied about every 2 hours and after swimming or sweating",
+       "w": 0
+      }
+     ]
+    },
+    {
+     "id": "mon",
+     "label": "Monitoring",
+     "options": [
+      {
+       "id": "ignore",
+       "t": "Ignore the UV forecast",
+       "w": 2
+      },
+      {
+       "id": "check",
+       "t": "Check the UV Index forecast and plan for the strongest midday hours",
+       "w": 0
+      }
+     ]
+    },
+    {
+     "id": "who",
+     "label": "Who can change the plan?",
+     "options": [
+      {
+       "id": "guard",
+       "t": "Each guard alone",
+       "w": 0
+      },
+      {
+       "id": "manager",
+       "t": "The pool manager or head lifeguard",
+       "w": 0
+      },
+      {
+       "id": "swimmers",
+       "t": "The swimmers",
+       "w": 0
+      },
+      {
+       "id": "none",
+       "t": "No one",
+       "w": 0
+      }
+     ]
+    },
+    {
+     "id": "trig",
+     "label": "When to act",
+     "options": [
+      {
+       "id": "burn",
+       "t": "Only after someone is sunburned",
+       "w": 0
+      },
+      {
+       "id": "tier",
+       "t": "Add shade, rotation and cover as UV is high; rotate a guard out for signs of overexposure or heat illness while keeping the pool covered",
+       "w": 0
+      },
+      {
+       "id": "never",
+       "t": "Never change the plan",
+       "w": 0
+      },
+      {
+       "id": "cold",
+       "t": "Only if the water temperature drops",
+       "w": 0
+      }
+     ]
+    }
+   ],
+   "meta": {
+    "title": "Lifeguard in high UV",
+    "badge": "UV Index 10 (Very High)",
+    "setup": "A lifeguard at the county pool works an outdoor shift on a clear, summer day. The forecast UV Index is 10 (Very High). A guard must stay watchful and cannot simply leave the stand.",
+    "hazard": "Ultraviolet (UV) radiation",
+    "exposure": [
+     "shift",
+     "shade",
+     "cover",
+     "sun",
+     "mon"
+    ]
+   }
+  },
+  "heat": {
+   "controls": [
+    {
+     "id": "time",
+     "label": "Practice time",
+     "options": [
+      {
+       "id": "pm",
+       "t": "Mid-afternoon",
+       "w": 3
+      },
+      {
+       "id": "eve",
+       "t": "Early evening",
+       "w": 2
+      },
+      {
+       "id": "am",
+       "t": "Early morning",
+       "w": 1
+      }
+     ]
+    },
+    {
+     "id": "gear",
+     "label": "Equipment and contact",
+     "options": [
+      {
+       "id": "full",
+       "t": "Full pads and contact",
+       "w": 3
+      },
+      {
+       "id": "light",
+       "t": "Helmets only, no contact",
+       "w": 1
+      }
+     ]
+    },
+    {
+     "id": "acc",
+     "label": "Build-up over days",
+     "options": [
+      {
+       "id": "jump",
+       "t": "Full-intensity practice from day 1",
+       "w": 3
+      },
+      {
+       "id": "grad",
+       "t": "Gradual increase over the first days (acclimatization)",
+       "w": 0
+      }
+     ]
+    },
+    {
+     "id": "rest",
+     "label": "Rest and fluids",
+     "options": [
+      {
+       "id": "rare",
+       "t": "Water only at the end",
+       "w": 3
+      },
+      {
+       "id": "freq",
+       "t": "Scheduled rest and water breaks in shade, adjusted to conditions",
+       "w": 0
+      }
+     ]
+    },
+    {
+     "id": "cool",
+     "label": "Cooling and staff",
+     "options": [
+      {
+       "id": "none",
+       "t": "No cooling plan",
+       "w": 2
+      },
+      {
+       "id": "yes",
+       "t": "Cooling station ready (shade, fans, cold water/ice towels) with a trained staff member on site",
+       "w": 0
+      }
+     ]
+    },
+    {
+     "id": "mon",
+     "label": "Monitoring",
+     "options": [
+      {
+       "id": "feel",
+       "t": "Judge by feel",
+       "w": 2
+      },
+      {
+       "id": "check",
+       "t": "Check heat index or WBGT before and during, and watch players for symptoms",
+       "w": 0
+      }
+     ]
+    },
+    {
+     "id": "who",
+     "label": "Who can modify, pause or stop practice?",
+     "options": [
+      {
+       "id": "player",
+       "t": "Each player alone",
+       "w": 0
+      },
+      {
+       "id": "staff",
+       "t": "The athletic trainer or coach named in a written heat plan",
+       "w": 0
+      },
+      {
+       "id": "fans",
+       "t": "The crowd",
+       "w": 0
+      },
+      {
+       "id": "none",
+       "t": "No one",
+       "w": 0
+      }
+     ]
+    },
+    {
+     "id": "trig",
+     "label": "When to act",
+     "options": [
+      {
+       "id": "plan",
+       "t": "Follow the school's written heat plan: modify with rising readings or symptoms, pause to cool, and stop and call emergency services for confusion, collapse or other signs of heat stroke",
+       "w": 0
+      },
+      {
+       "id": "125",
+       "t": "Only if the heat index reaches 125",
+       "w": 0
+      },
+      {
+       "id": "feel",
+       "t": "Only when the coach feels uncomfortable",
+       "w": 0
+      },
+      {
+       "id": "never",
+       "t": "Never",
+       "w": 0
+      }
+     ]
+    }
+   ],
+   "meta": {
+    "title": "Football practice in extreme heat",
+    "badge": "Heat index near 98 °F in sun",
+    "setup": "The football team plans practice. The forecast heat index is near 98 °F (National Weather Service \"extreme caution\" range), and the practice field is in full sun, which can make it feel hotter than the shade-based heat index. Players wear helmets and pads. It is the second day of preseason.",
+    "hazard": "Heat and humidity",
+    "exposure": [
+     "time",
+     "gear",
+     "acc",
+     "rest",
+     "cool",
+     "mon"
+    ]
+   }
+  },
+  "adv": {
+   "controls": [
+    {
+     "id": "aud",
+     "label": "Audience (who has the power to act?)",
+     "options": [
+      {
+       "id": "all",
+       "t": "All teens in the world"
+      },
+      {
+       "id": "ad",
+       "t": "The athletic director and school board"
+      },
+      {
+       "id": "super",
+       "t": "The district superintendent, who can set district-wide policy"
+      },
+      {
+       "id": "chat",
+       "t": "A group chat of friends"
+      }
+     ]
+    },
+    {
+     "id": "sol",
+     "label": "Solution (what should change?)",
+     "options": [
+      {
+       "id": "tell",
+       "t": "Tell people to be careful"
+      },
+      {
+       "id": "proto",
+       "t": "Adopt an air-quality activity protocol: check AirNow, ease up or move indoors at set AQI levels, and name who decides"
+      },
+      {
+       "id": "ban",
+       "t": "Ban all outdoor activity for the entire year"
+      },
+      {
+       "id": "viral",
+       "t": "Make a viral post"
+      }
+     ]
+    },
+    {
+     "id": "msg",
+     "label": "Message (accurate and audience-appropriate)",
+     "options": [
+      {
+       "id": "fear",
+       "t": "\"Smoke will ruin your lungs forever!\""
+      },
+      {
+       "id": "shame",
+       "t": "\"Players who practice in smoke are careless.\""
+      },
+      {
+       "id": "fact",
+       "t": "\"On days when AirNow shows AQI 101 or higher, sensitive players should ease up, and the whole team should move indoors at 151 or above. Ask your coach to check AirNow before practice.\""
+      },
+      {
+       "id": "vague",
+       "t": "\"Air is bad. Do something.\""
+      }
+     ]
+    },
+    {
+     "id": "pers",
+     "label": "Personal protection while the policy is pending",
+     "options": [
+      {
+       "id": "none",
+       "t": "No special steps are needed"
+      },
+      {
+       "id": "plan",
+       "t": "Check AirNow, follow your own asthma action plan if you have one, ease up or go indoors, and tell the coach about symptoms"
+      },
+      {
+       "id": "hold",
+       "t": "Hold your breath during drills"
+      },
+      {
+       "id": "mask",
+       "t": "Rely only on a cloth mask and keep playing hard"
+      }
+     ]
+    },
+    {
+     "id": "eval",
+     "label": "Evaluation (how will you know it worked?)",
+     "options": [
+      {
+       "id": "likes",
+       "t": "Count likes on our post"
+      },
+      {
+       "id": "four",
+       "t": "Track reach (coaches who received it), understanding (quick check), action (policy adopted, practices changed) and improvement (fewer symptom reports on smoky days)"
+      },
+      {
+       "id": "happy",
+       "t": "Ask if the principal seems happy"
+      },
+      {
+       "id": "none",
+       "t": "No evaluation needed"
+      }
+     ]
+    }
+   ],
+   "meta": {}
+  },
+  "counter": {
+   "controls": [
+    {
+     "id": "fact",
+     "label": "Accurate fact and source",
+     "options": [
+      {
+       "id": "poison",
+       "t": "\"Energy drinks are poison.\""
+      },
+      {
+       "id": "label",
+       "t": "SparkUp's label lists 200 mg of caffeine per can and does not list the amounts in its plant blend. (Source: the product label in the studio)"
+      },
+      {
+       "id": "heart",
+       "t": "\"Everyone who drinks them gets heart disease.\""
+      },
+      {
+       "id": "nine",
+       "t": "\"9 out of 10 teens love them.\""
+      }
+     ]
+    },
+    {
+     "id": "alt",
+     "label": "Healthier alternative",
+     "options": [
+      {
+       "id": "push",
+       "t": "Just push through practice tired"
+      },
+      {
+       "id": "basics",
+       "t": "Water, a regular meal or snack, and enough sleep to support energy for practice"
+      },
+      {
+       "id": "other",
+       "t": "Switch to a different energy drink"
+      },
+      {
+       "id": "skip",
+       "t": "Skip practice"
+      }
+     ]
+    },
+    {
+     "id": "vis",
+     "label": "Visual",
+     "options": [
+      {
+       "id": "skull",
+       "t": "A skull and crossbones over the can"
+      },
+      {
+       "id": "mock",
+       "t": "A photo mocking teens who drink it"
+      },
+      {
+       "id": "side",
+       "t": "The label facts shown beside a water bottle and a sleep icon, each with a text label"
+      },
+      {
+       "id": "celeb",
+       "t": "A celebrity photo with no source"
+      }
+     ]
+    },
+    {
+     "id": "cta",
+     "label": "Call to action",
+     "options": [
+      {
+       "id": "never",
+       "t": "\"Never trust any ad again.\""
+      },
+      {
+       "id": "check",
+       "t": "\"Check the label and ask for the evidence before you buy. Talk with your coach or health teacher about fueling for practice.\""
+      },
+      {
+       "id": "shame",
+       "t": "\"Shame friends who buy it.\""
+      },
+      {
+       "id": "buy",
+       "t": "\"Buy our brand instead.\""
+      }
+     ]
+    },
+    {
+     "id": "tone",
+     "label": "Tone",
+     "options": [
+      {
+       "id": "respect",
+       "t": "Respectful and specific to teen athletes; no blame"
+      },
+      {
+       "id": "mock",
+       "t": "Mocking and stereotyping teens"
+      },
+      {
+       "id": "panic",
+       "t": "Alarming and exaggerated"
+      },
+      {
+       "id": "pity",
+       "t": "Pitying and talking down"
+      }
+     ]
+    }
+   ],
+   "meta": {}
+  }
+ },
+ "references": [
+  {
+   "org": "U.S. EPA / AirNow",
+   "title": "Air Quality Index (AQI) Basics",
+   "url": "https://www.airnow.gov/aqi/aqi-basics/",
+   "claim": "Six AQI categories and ranges: Good 0-50, Moderate 51-100, Unhealthy for Sensitive Groups 101-150, Unhealthy 151-200, Very Unhealthy 201-300, Hazardous 301+; higher AQI means greater health concern; sensitive groups affected first.",
+   "tasks": [
+    "M3-U2",
+    "M6-U2",
+    "M6-U5"
+   ]
+  },
+  {
+   "org": "U.S. EPA",
+   "title": "UV Index Scale",
+   "url": "https://www.epa.gov/sunsafety/uv-index-scale-0",
+   "claim": "UV Index 8-10 Very High and 11+ Extreme; protection includes shade, hat, sunglasses, protective clothing, SPF 30+ sunscreen reapplied about every 2 hours, and limiting midday sun. No individual burn clock is given or used.",
+   "tasks": [
+    "M3-U3"
+   ]
+  },
+  {
+   "org": "CDC / NIOSH",
+   "title": "Understand Noise Exposure",
+   "url": "https://www.cdc.gov/niosh/noise/prevent/understand.html",
+   "claim": "NIOSH recommended exposure limit (REL) 85 dBA averaged over 8 hours with a 3 dBA exchange rate (time halves per 3 dBA). It is an occupational recommendation and not a guarantee of safety.",
+   "tasks": [
+    "M3-U1",
+    "M3-U4"
+   ]
+  },
+  {
+   "org": "National Weather Service",
+   "title": "Heat information (Heat Index)",
+   "url": "https://www.weather.gov/lwx/heat",
+   "claim": "Heat index categories (caution, extreme caution, danger, extreme danger) and that values are for shade and light wind; direct sun can add up to about 15 °F. Category edges differ slightly between excerpts, so tasks use only a value (98 °F) inside \"extreme caution\" under either edge and state no cancel threshold.",
+   "tasks": [
+    "M3-U5"
+   ]
+  },
+  {
+   "org": "CDC",
+   "title": "Drinking Water Advisories: An Overview",
+   "url": "https://www.cdc.gov/water-emergency/about/drinking-water-advisories-an-overview.html",
+   "claim": "Boil-water, do-not-drink and do-not-use advisories differ; boiling kills germs but does not remove chemicals; follow the advisory instructions.",
+   "tasks": [
+    "M3-U6"
+   ]
+  },
+  {
+   "org": "U.S. Federal Trade Commission",
+   "title": "Disclosures 101 for Social Media Influencers",
+   "url": "https://www.ftc.gov/business-guidance/resources/disclosures-101-social-media-influencers",
+   "claim": "Material connections (such as payment or free products) should be disclosed clearly and conspicuously; abbreviations such as \"sp\" are not adequate disclosures.",
+   "tasks": [
+    "M5-U2"
+   ]
+  }
+ ],
+ "tutorial": {
+  "minutes": 3,
+  "steps": [
+   "You are joining the county youth advisory team. Your job: investigate a fictional county, then present an evidence-based plan.",
+   "Click a glowing place on the county map to travel there. Each place has a mission, an investigation panel, and scored questions.",
+   "Exploring is free and unlimited. Only pressing Submit on a question uses an attempt, and every question gives you three submitted attempts.",
+   "Credit for a question: correct on attempt 1 = 100%, attempt 2 = 85%, attempt 3 = 75%, never correct = 0%.",
+   "You can use the keyboard (Tab, arrow keys, Enter, Space) for everything. Use the Motion toggle in the top bar to turn animations off."
+  ],
+  "practice": {
+   "prompt": "Practice question (not scored): which button uses up an attempt on a real question?",
+   "options": [
+    {
+     "id": "a",
+     "t": "Selecting an answer choice"
+    },
+    {
+     "id": "b",
+     "t": "Submit"
+    },
+    {
+     "id": "c",
+     "t": "Exploring the map"
+    }
+   ],
+   "correct": "b",
+   "feedback": "Right. Selecting and exploring never use an attempt; Submit does."
+  }
+ },
+ "totalPoints": 100
+}

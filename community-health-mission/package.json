@@ -1,0 +1,14 @@
+{
+  "name": "community-health-mission",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Community & Environmental Health summative assessment (Apps Script + Google Sheets backend, portable frontend).",
+  "scripts": {
+    "build": "node tools/build.js",
+    "start": "node tools/dev-server.js",
+    "test": "node --test tests/*.test.js",
+    "test:e2e": "node tests/e2e/walkthrough.js",
+    "docs": "node tools/gen-docs.js"
+  },
+  "devDependencies": { "playwright": "1.56.1" }
+}
