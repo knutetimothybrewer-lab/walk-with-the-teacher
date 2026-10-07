@@ -1,0 +1,39 @@
+@font-face { font-family: 'Fraunces'; src: url('../assets/fonts/fraunces-latin-600-normal.woff2') format('woff2'); font-weight: 600; font-display: swap; }
+@font-face { font-family: 'Fraunces'; src: url('../assets/fonts/fraunces-latin-800-normal.woff2') format('woff2'); font-weight: 800; font-display: swap; }
+@font-face { font-family: 'Atkinson Hyperlegible'; src: url('../assets/fonts/atkinson-hyperlegible-latin-400-normal.woff2') format('woff2'); font-weight: 400; font-display: swap; }
+@font-face { font-family: 'Atkinson Hyperlegible'; src: url('../assets/fonts/atkinson-hyperlegible-latin-700-normal.woff2') format('woff2'); font-weight: 700; font-display: swap; }
+@font-face { font-family: 'OpenDyslexic'; src: url('../assets/fonts/opendyslexic-latin-400-normal.woff2') format('woff2'); font-weight: 400; font-display: swap; }
+@font-face { font-family: 'OpenDyslexic'; src: url('../assets/fonts/opendyslexic-latin-700-normal.woff2') format('woff2'); font-weight: 700; font-display: swap; }
+
+:root {
+  --font-ui: 'Atkinson Hyperlegible', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-display: 'Fraunces', Georgia, 'Times New Roman', serif;
+  --fs: 17px;
+  --ink: #eef3fb;
+  --ink-dim: #b4c0d4;
+  --ink-faint: #8a98b0;
+  --bg0: #08101f; --bg1: #101b34;
+  --panel: rgba(14, 24, 44, .86);
+  --panel-solid: #0f1a31;
+  --panel-2: rgba(255, 255, 255, .055);
+  --line: rgba(160, 185, 230, .22);
+  --line-strong: rgba(190, 210, 245, .45);
+  --accent: #5ee0d0; --accent-ink: #04141a; --accent-2: #7cc4ff;
+  --good: #6fe3a1; --bad: #ff8a7a; --warn: #ffc857;
+  --focus: #ffe27a;
+  --radius: 14px; --radius-sm: 9px;
+  --shadow: 0 10px 40px rgba(0, 0, 0, .35);
+  --ease: cubic-bezier(.2, .8, .2, 1);
+}
+body[data-theme="entry"]    { --bg0:#07101f; --bg1:#12203d; --accent:#5ee0d0; --accent-2:#7cc4ff; --accent-ink:#031519; }
+body[data-theme="brain"]    { --bg0:#0a0821; --bg1:#1b1446; --accent:#a58bff; --accent-2:#59c4ff; --accent-ink:#0d0626; }
+body[data-theme="nicotine"] { --bg0:#031419; --bg1:#0a3640; --accent:#3fdccb; --accent-2:#8fe9f5; --accent-ink:#021a1c; }
+body[data-theme="alcohol"]  { --bg0:#190d05; --bg1:#3b1807; --accent:#ffb347; --accent-2:#ff7f5a; --accent-ink:#2a1100; --bad:#ff9d8a; }
+body[data-theme="cannabis"] { --bg0:#0b150e; --bg1:#17281b; --accent:#8ad896; --accent-2:#c8e6a0; --accent-ink:#081a0d; }
+body[data-theme="opioid"]   { --bg0:#050a1b; --bg1:#101a3b; --accent:#ff5d6e; --accent-2:#69b0ff; --accent-ink:#2b0409; }
+body[data-theme="pressure"] { --bg0:#11101c; --bg1:#221c36; --accent:#ff93b6; --accent-2:#86c8ff; --accent-ink:#2a0a17; }
+body[data-theme="claim"]    { --bg0:#14110b; --bg1:#272014; --accent:#ecc95d; --accent-2:#f0a37a; --accent-ink:#241b04; }
+body[data-theme="final"]    { --bg0:#080f20; --bg1:#1d2548; --accent:#f3cf6a; --accent-2:#6fe0d2; --accent-ink:#241b04; }
+body[data-theme="results"]  { --bg0:#07101f; --bg1:#14264a; --accent:#6fe0d2; --accent-2:#f3cf6a; --accent-ink:#031519; }
+html[data-size="large"] { --fs: 19.5px; }
+html[data-font="dyslexic"] { --font-ui: 'OpenDyslexic', 'Atkinson Hyperlegible', sans-serif; }

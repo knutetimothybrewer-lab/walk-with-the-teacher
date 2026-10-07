@@ -1,0 +1,16 @@
+{
+  "name": "signal-substance-use-summative",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "SIGNAL: interactive, self-grading Grade 10 Health summative on substance use (static site; Google Apps Script backend).",
+  "scripts": {
+    "build": "node tools/build.js",
+    "release": "node tools/release.js",
+    "test": "node --test tests/unit.test.js tests/gas.test.js",
+    "test:e2e": "node tests/e2e/behaviors.mjs && node tests/e2e/run.mjs",
+    "test:backend": "node tests/e2e/backend.mjs",
+    "serve": "node tools/serve.js 8080",
+    "hash": "node tools/hash.js"
+  }
+}

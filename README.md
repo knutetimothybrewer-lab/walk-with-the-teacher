@@ -10,6 +10,10 @@ Student link once GitHub Pages is on: `https://YOUR-USER.github.io/walk-with-the
 
 Start with `health-summative/README.md` (setup and deploy), `health-summative/ROLLOUT.md` (counselor email, pilot plan, day-of checklist) and `health-summative/DISCREPANCIES.md` (things to confirm against your slides).
 
+## SIGNAL: Substance Use Summative (`substance-use-summative/`)
+
+An immersive, self-grading, ~55-minute Grade 10 Health summative on substance use: eight missions, five simulations (reaction time, an alcohol BAC model, overdose response, a branching social-pressure conversation, an Evidence Lab), interactive graphs, three attempts per question (100/85/75/0), a 100-point score, a Google Sheets backend with server-side re-scoring, a teacher dashboard, and a hidden Preview Mode. Start with `substance-use-summative/README.md` and **`docs/DISCREPANCIES.md`** (the unit's slides were not available when this was built).
+
 ## BodyLab — Health Metrics Explorer (`body-lab.html`)
 
 A single-file, offline classroom app (open `body-lab.html` in Chrome/Edge/Firefox/Safari).
