@@ -1,5 +1,7 @@
 // Browser-side helpers injected with page.addInitScript / evaluate. They drive the REAL engine (WWQ.Policy / WWQ.Store).
 module.exports.BROWSER = `
+// Tests run with the Sheet backend OFF unless a test sets window.__KEEP_BACKEND (so they never call the teacher's real Apps Script).
+document.addEventListener('DOMContentLoaded', () => { if (window.WWQ && !window.__KEEP_BACKEND) window.WWQ.CONFIG.backend.url = ''; });
 window.__T = {
   extreme(v, dir) {
     const r = {}; const order = v.parts.slice().sort((a, b) => (a.dep ? 1 : 0) - (b.dep ? 1 : 0));

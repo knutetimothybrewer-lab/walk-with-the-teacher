@@ -17,7 +17,8 @@ WWQ.applyConfig({
   // motion: 'auto',                       // 'auto' | 'on' | 'off'
   // letterGrades: { enabled: true },      // uses the bands in config.js; edit bands here if you like
   // identifierLabel: 'Student alias or teacher-approved ID',
-  // backend: { url: 'https://script.google.com/macros/s/XXXX/exec' },  // OPTIONAL: send results to your Google Sheet (docs/TEACHER_SETUP.md, section 8)
+  // Results go to the teacher's Google Sheet (docs/TEACHER_SETUP.md, section 8). Remove this line to turn it off.
+  backend: { url: 'https://script.google.com/a/macros/nccvt.k12.de.us/s/AKfycbzERsUKDpHI_ziyr7eD1pDX-I0VR92Y5nqJlFxwhpNrkWHSF02VkZpS3BUDWu1-K6cD/exec' },
 
   // PASTE THE GENERATED PASSCODE BLOCK HERE (replace the default below):
   teacher: { configured: false }
