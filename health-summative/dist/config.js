@@ -42,7 +42,7 @@ export default {
      Leave '' to run in "local only" mode: students still get a score and a
      completion code, but nothing is sent to a Sheet. */
   backend: {
-    url: '',
+    url: 'https://script.google.com/macros/s/AKfycbzMoyRYWK0-u7Kmw33YInX8QhqlwVnhfLzNmasA0sqYpajViNWCesjg0bgKFVDDd03XSw/exec',
     /* true  = the SERVER checks the class code (recommended once a backend is set);
        false = only the list above is checked. */
     serverValidatesCode: true,
