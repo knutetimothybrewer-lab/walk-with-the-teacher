@@ -43,6 +43,14 @@
     identifierLabel: 'Student alias or teacher-approved ID',
     requireIdentifier: true,
 
+    // Optional Google Sheet backend (see docs/TEACHER_SETUP.md, "Send results to a Google Sheet").
+    // Leave url '' to keep the original behavior: nothing is sent anywhere and students hand in a downloaded file.
+    // With a url set, students also enter a class code (checked against your Sheet) and results are sent when they submit.
+    backend: {
+      url: '',                 // the Apps Script "Web app" URL, ends in /exec
+      allowOfflineStart: true  // if the server cannot be reached at the start, let the student begin (the code is checked again on send)
+    },
+
     // Teacher reset passcode verifier. Generate with teacher/passcode-setup.html or tools/make-passcode.js.
     // NOTHING is active by default: until a teacher sets this, the reset control stays disabled.
     teacher: {

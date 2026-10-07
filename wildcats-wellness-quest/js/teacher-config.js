@@ -17,6 +17,7 @@ WWQ.applyConfig({
   // motion: 'auto',                       // 'auto' | 'on' | 'off'
   // letterGrades: { enabled: true },      // uses the bands in config.js; edit bands here if you like
   // identifierLabel: 'Student alias or teacher-approved ID',
+  // backend: { url: 'https://script.google.com/macros/s/XXXX/exec' },  // OPTIONAL: send results to your Google Sheet (docs/TEACHER_SETUP.md, section 8)
 
   // PASTE THE GENERATED PASSCODE BLOCK HERE (replace the default below):
   teacher: { configured: false }

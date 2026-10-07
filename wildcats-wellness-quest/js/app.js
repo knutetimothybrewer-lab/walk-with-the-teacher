@@ -109,6 +109,7 @@
     try { var mq = root.matchMedia('(prefers-reduced-motion: reduce)'); mq.addEventListener && mq.addEventListener('change', UI.applyMotion); } catch (e) { /* ignore */ }
     if (!App.ro()) St.save(st);
     App.render(true);
+    if (App.ro() && W.Sync.enabled() && W.Sync.pending()) W.Shell.startSync();
     if (init.mode === 'resumed' && pr.started) UI.toast('Welcome back. Your saved work was restored.', 'ok');
     if (init.notices.indexOf('active-inconsistent') >= 0 || init.notices.indexOf('marker-inconsistent') >= 0) {
       var mm = UI.modal({ title: 'Saved data needs attention', body: [h('div.callout.warn', A.iconEl('alert'), h('div', 'Your saved data on this device looked inconsistent, so it was not loaded. Nothing was deleted. Ask your teacher for help, or load a recovery file from Settings.'))], actions: [UI.btn('OK', { cls: 'primary', onclick: function () { mm.close(); } })] });
