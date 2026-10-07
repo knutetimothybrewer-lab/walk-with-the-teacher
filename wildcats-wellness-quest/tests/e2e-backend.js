@@ -22,7 +22,7 @@ const server = http.createServer((req, res) => {
     if (!submitUp) return route.abort();
     received.push(body.payload); return route.fulfill({ status: 200, headers: cors, contentType: 'application/json', body: JSON.stringify({ ok: true, status: 'new' }) });
   });
-  await page.addInitScript(BROWSER); await page.goto(base + 'index.html'); await page.waitForSelector('#stage-title');
+  await page.addInitScript('window.__KEEP_BACKEND = true;'); await page.addInitScript(BROWSER); await page.goto(base + 'index.html'); await page.waitForSelector('#stage-title');
 
   console.log('== Class code at the start');
   ok(await page.locator('#classcode').count() === 1, 'class code field is shown when the backend is on');
