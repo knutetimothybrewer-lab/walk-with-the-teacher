@@ -77,13 +77,14 @@ function welcome(app, existing) {
     }
     submit.disabled = true; submit.textContent = 'Checking…';
     let r;
-    try { r = await app.start(student); } catch (ex) { r = { ok: false, reason: 'network' }; }
+    try { r = await app.start(student); } catch (ex) { r = { ok: false, reason: 'error', detail: String((ex && ex.message) || ex).slice(0, 120) }; }
     if (!r.ok) {
       submit.disabled = false; submit.textContent = 'Start the trail';
       const msg = r.reason === 'duplicate' ? 'A final score for this name and period is already on record. If you need a retake, ask your teacher to reset it.'
         : r.reason === 'network' ? "We couldn't reach the server to check your code. Check your Wi-Fi and try again, or ask your teacher."
-          : "Hmm, that class code didn't work. Check it with your teacher and try again.";
-      return showErr(err, msg);
+          : r.reason === 'error' ? 'Something went wrong starting the trail. Try again, or ask your teacher.'
+            : "Hmm, that class code didn't work. Check it with your teacher and try again.";
+      return showErr(err, r.detail ? `${msg} (Technical detail for your teacher: ${r.detail})` : msg);
     }
     app.render();
   });
