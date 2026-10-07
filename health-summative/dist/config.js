@@ -84,7 +84,7 @@ export default {
   /* ---- Remove questions without touching the content files ------------------
      List item ids (shown in CONTENT-MAP.md and TIMING.md) that should be left
      out for everyone, e.g. after your pilot: disabledItems: ['s5-04', 's9-08'] */
-  disabledItems: ["s1-05","s2-01","s2-02","s2-04","s2-05","s2-08","s3-01","s3-03","s3-04","s3-06","s3-07","s4-01","s4-02","s4-03","s4-04","s4-06","s4-07","s4-08","s4-09","s4-10","s5-03","s5-04","s5-06","s5-07","s5-08","s5-09","s5-10","s6-01","s6-03","s6-05","s6-06","s6-07","s6-08","s7-01","s7-02","s7-04","s7-06","s8-02","s8-c1a","s8-c1b","s8-c1c","s8-c1d","s8-c2a","s8-c2b","s8-c2c","s8-08","s8-10","s9-01","s9-02","s9-04","s9-06","s9-07","s9-08","s10-c1","s10-c2","s10-c3","s10-c4","s10-c5","s10-c6","s10-c7","s10-c8"], /* TEMPORARY SHORT TEST - REVERT */
+  disabledItems: [],
 
   /* ---- Timing (used only for the pace hint; never enforced) ------------------ */
   targetMinutes: 45,
