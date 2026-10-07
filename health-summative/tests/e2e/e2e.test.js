@@ -25,10 +25,10 @@ async function newPage({ viewport = { width: 1366, height: 768 }, reducedMotion 
   const errors = [];
   page.on('console', m => { if (m.type() === 'error') errors.push(m.text()); });
   page.on('pageerror', e => errors.push(String(e)));
-  if (withBackend || overrides || extra) {
+  { // always intercept config.js so tests never depend on (or call) the teacher's real backend URL
     await page.route('**/config.js', async route => {
       let src = fs.readFileSync(new URL('../../config.js', import.meta.url), 'utf8');
-      if (withBackend) src = src.replace("url: ''", `url: '${backend.url}'`);
+      src = src.replace(/url: '[^']*'/, `url: '${withBackend ? backend.url : ''}'`);
       if (overrides) src = src.replace('studentOverrides: {', `studentOverrides: ${JSON.stringify(overrides)}, _unused: {`);
       if (extra) src = src.replace("assessmentVersion: 'mh-1.0'", `assessmentVersion: 'mh-1.0', ...${JSON.stringify(extra)}`);
       await route.fulfill({ contentType: 'text/javascript', body: src });

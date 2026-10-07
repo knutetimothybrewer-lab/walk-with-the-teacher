@@ -31,9 +31,9 @@ export async function checkClassCode(cfg, student) {
     const r = await post(cfg, { action: 'start', student });
     if (r && r.ok) return { ok: true, via: 'server', status: r.status || 'new' };
     return { ok: false, via: 'server', reason: r && r.reason ? r.reason : 'code' };
-  } catch {
+  } catch (e) {
     if (cfg.backend.allowOfflineStart && local) return { ok: true, via: 'offline-local' };
-    return { ok: false, via: 'offline', reason: 'network' };
+    return { ok: false, via: 'offline', reason: 'network', detail: String((e && e.message) || e).slice(0, 120) };
   }
 }
 
