@@ -20,6 +20,6 @@ WWQ.applyConfig({
   // Results go to the teacher's Google Sheet (docs/TEACHER_SETUP.md, section 8). Remove this line to turn it off.
   backend: { url: 'https://script.google.com/a/macros/nccvt.k12.de.us/s/AKfycbzERsUKDpHI_ziyr7eD1pDX-I0VR92Y5nqJlFxwhpNrkWHSF02VkZpS3BUDWu1-K6cD/exec' },
 
-  // PASTE THE GENERATED PASSCODE BLOCK HERE (replace the default below):
-  teacher: { configured: false }
+  // Teacher reset passcode (salted, iterated SHA-256 verifier; the passcode itself is not stored here):
+  teacher: { configured: true, salt: '38af52cb09829b7724d89c4a349d170d', iterations: 30000, verifier: 'dbb176c4635cae8c5bf606605524985723be3895074ec3125001558fc31e9dde', freeTries: 3, cooldownSeconds: 30 }
 });
