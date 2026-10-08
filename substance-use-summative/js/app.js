@@ -17,6 +17,7 @@ const $main = document.getElementById('main'), $top = document.getElementById('t
 const params = new URLSearchParams(location.search);
 let PREVIEW = false, store = makeStore(CONFIG.storagePrefix), session = null, current = null, resultsView = null, submitTimer = null;
 const api = {}; // exposed to Preview Mode only
+const BUILD = 'build 2026-10-08c (start-over fix)';
 
 // ---------------------------------------------------------------------------------- settings
 let settings = {};
@@ -39,6 +40,7 @@ function openSettings() {
     storageWorks() ? '' : h('p.err', 'This browser is blocking saved progress. Do not close this tab.'),
     // Demo sessions only (DEMO2026): lets a teacher test again without clearing browser data. Real sessions can never be restarted by the student.
     session && session.state.demo ? h('div.toggle', h('div', h('strong', 'Start over (demo only)'), h('div.small.muted', 'Erases this DEMO session and returns to sign-in.')), h('button.btn.small.warn', { type: 'button', onclick: () => { const st = session.state; clearInterval(clockIv); session = null; /* so pagehide cannot re-save it */ store.clearSession(); store.clearLock(st.student.name, st.student.code); location.reload(); } }, 'Start over')) : '',
+    h('p.small.muted', { style: { marginTop: '.6rem' } }, `Page version: ${BUILD}`),
     h('div.dlg-actions', h('button.btn.primary', { type: 'button', onclick: () => d.close() }, 'Done')));
   d.showModal();
 }
