@@ -13,7 +13,7 @@ function login(msg) {
   const f = h('form.panel', { onsubmit: async (e) => { e.preventDefault(); pass = inp.value; await load(); } }, h('h2', 'Teacher dashboard'),
     hasBackend() ? h('p.muted', 'Enter the TEACHER_PASSCODE you set in Apps Script (Project Settings > Script properties).') : h('p.err', 'No backend is configured in js/config.js, so there is no data to show.'),
     h('div.field', inp), h('div.err', msg || ''), h('button.btn.primary', { type: 'submit' }, 'Open dashboard'));
-  main.replaceChildren(h('section.screen.narrow', h('div.kicker', 'SIGNAL'), f)); inp.focus();
+  main.replaceChildren(h('section.screen.narrow', f)); inp.focus();
 }
 async function load() {
   main.replaceChildren(h('section.screen', h('p', 'Loading…')));
@@ -39,7 +39,7 @@ function render() {
   const qt = h('table.data', h('caption', 'Most-missed questions (hardest first; LIVE submissions only)'), h('thead', h('tr', ['Question', 'Concept', 'Students', '% first try', '% eventually correct', '% missed', 'Avg attempts'].map((x) => h('th', x)))),
     h('tbody', qs.map((q) => h('tr', h('td', q.qid), h('td', q.topic), h('td', q.n), h('td', q.firstPct + '%'), h('td', q.correctPct + '%'), h('td', q.missedPct + '%'), h('td', q.avgAttempts)))));
   const cls = h('table.data', h('caption', 'Class averages (LIVE)'), h('thead', h('tr', h('th', 'Class'), h('th', 'Students'), h('th', 'Average %'))), h('tbody', data.classes.map((c) => h('tr', h('td', c.code), h('td', c.n), h('td', c.avg + '%')))));
-  main.replaceChildren(h('section.screen', h('div.row.spread', h('div', h('div.kicker', 'SIGNAL'), h('h1', { style: { fontSize: '2rem' } }, 'Teacher dashboard')),
+  main.replaceChildren(h('section.screen', h('div.row.spread', h('div', h('h1', { style: { fontSize: '2rem' } }, 'Teacher dashboard')),
     h('div.row', sel, tog, h('button.btn.small', { type: 'button', onclick: load }, 'Refresh'), h('button.btn.small', { type: 'button', onclick: csv }, 'Download CSV'), h('button.btn.small', { type: 'button', onclick: async () => { const r = await send('t_analytics', { pass }); toast(r && r.ok ? 'Analytics tab rebuilt.' : 'Could not rebuild.'); } }, 'Rebuild Analytics tab'))),
     h('div.panel', { style: { overflowX: 'auto' } }, stu), h('div.grid2', { style: { marginTop: '1rem' } }, h('div.panel', h('h3', 'Average by content domain'), h('div.bars', dom)), h('div.panel', { style: { overflowX: 'auto' } }, cls)),
     h('div.panel', { style: { marginTop: '1rem', overflowX: 'auto' } }, qt),

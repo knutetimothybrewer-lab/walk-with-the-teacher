@@ -34,7 +34,7 @@ var SUMMARY_HEADERS = ['Timestamp', 'Student Name', 'Class Code', 'Period', 'Ass
 var QUESTION_HEADERS = ['Timestamp', 'Student', 'Class Code', 'Period', 'Session ID', 'Mode', 'Question ID', 'Topic', 'Domain', 'Question Type',
   'Attempt 1', 'Attempt 2', 'Attempt 3', 'Final Result', 'Points Earned', 'Points Possible', 'Last Attempt Time', 'Responses (canonical)'];
 var SESSION_HEADERS = ['Session ID', 'Name', 'NameKey', 'Period', 'Class Code', 'Mode', 'Version ID', 'Content Version', 'Started', 'Last Seen', 'Status', 'Attempts JSON', 'Stage IDs', 'Confirmation ID'];
-var CONFIG_HEADERS = ['Class Code', 'Label', 'Active'];
+var CONFIG_HEADERS = ['Class Code', 'Label', 'Active', 'Period'];
 
 // ============================================================================================ entry points
 function doGet() { return json_({ ok: true, app: 'SIGNAL', version: APP_VERSION, contentVersion: typeof CONTENT_VERSION !== 'undefined' ? CONTENT_VERSION : null }); }
@@ -56,6 +56,7 @@ function route_(b) {
   switch (b.action) {
     case 'ping': return { ok: true, app: 'SIGNAL', version: APP_VERSION, sheets: ss_().getName() };
     case 'validate': return validate_(b);
+    case 'classes': return classes_();
     case 'start': return start_(b);
     case 'check': return check_(b);
     case 'submit': return submit_(b);
@@ -74,10 +75,11 @@ function setup() {
   ensureSheet_(ss, TABS.summary, SUMMARY_HEADERS);
   ensureSheet_(ss, TABS.questions, QUESTION_HEADERS);
   var cfg = ensureSheet_(ss, TABS.config, CONFIG_HEADERS);
+  if (String(cfg.getRange(1, 4).getValue()) === '') cfg.getRange(1, 4).setValue('Period').setFontWeight('bold').setBackground('#10203a').setFontColor('#ffffff');
   ensureSheet_(ss, TABS.sessions, SESSION_HEADERS);
   ensureSheet_(ss, TABS.analytics, ['Analytics are written here by "Rebuild analytics" (SIGNAL menu) and after each real submission.']);
   if (cfg.getLastRow() < 2) {
-    cfg.getRange(2, 1, 3, 3).setValues([['HEALTH2', 'Period 2 (EXAMPLE: CHANGE ME)', true], ['HEALTH3', 'Period 3 (EXAMPLE: CHANGE ME)', true], ['HEALTH5', 'Period 5 (EXAMPLE: CHANGE ME)', true]]);
+    cfg.getRange(2, 1, 3, 4).setValues([['HEALTH2', 'Period 2 (EXAMPLE: CHANGE ME)', true, '2'], ['HEALTH3', 'Period 3 (EXAMPLE: CHANGE ME)', true, '3'], ['HEALTH5', 'Period 5 (EXAMPLE: CHANGE ME)', true, '5']]);
   }
   var props = PropertiesService.getScriptProperties();
   if (!props.getProperty('TEACHER_PASSCODE')) props.setProperty('TEACHER_PASSCODE', 'ChangeMe-' + Math.floor(1000 + Math.random() * 9000));
@@ -111,11 +113,11 @@ function confirmId_(sid) { return 'SIG-' + sha256hex_('confirm|' + sid).slice(0,
 function classLookup_(code) {
   var c = codeKey_(code);
   if (c === DEMO_CODE) return { ok: true, label: 'DEMO', demo: true };
-  var sh = sheet_(TABS.config), rows = sh.getLastRow() > 1 ? sh.getRange(2, 1, sh.getLastRow() - 1, 3).getValues() : [];
+  var sh = sheet_(TABS.config), rows = sh.getLastRow() > 1 ? sh.getRange(2, 1, sh.getLastRow() - 1, 4).getValues() : [];
   for (var i = 0; i < rows.length; i++) {
     if (codeKey_(rows[i][0]) === c) {
       var active = rows[i][2]; if (active === false || String(active).toUpperCase() === 'FALSE' || String(active).toUpperCase() === 'NO') return { ok: false, error: 'invalid-code' };
-      return { ok: true, label: String(rows[i][1] || ''), demo: false };
+      return { ok: true, label: String(rows[i][1] || ''), demo: false, period: String(rows[i][3] || '') };
     }
   }
   return { ok: false, error: 'invalid-code' };
@@ -137,13 +139,24 @@ function latestFor_(name, code) {
 }
 
 // ============================================================================================ actions
+/** Public list for the sign-in drop-down: class labels and periods only. Codes are never returned. */
+function classes_() {
+  var sh = sheet_(TABS.config), rows = sh.getLastRow() > 1 ? sh.getRange(2, 1, sh.getLastRow() - 1, 4).getValues() : [], seen = {}, out = [];
+  rows.forEach(function (r) {
+    var active = r[2]; if (!r[0] || active === false || ['FALSE', 'NO'].indexOf(String(active).toUpperCase()) >= 0) return;
+    var period = String(r[3] || '').trim(), label = String(r[1] || '').trim(), value = period || label || String(r[0]);
+    if (seen[value]) return; seen[value] = true; out.push({ value: value, label: label || ('Period ' + period) });
+  });
+  return { ok: true, classes: out };
+}
+
 function validate_(b) {
   var cls = classLookup_(b.code); if (!cls.ok) return cls;
   if (!cls.demo && b.name) {
     var l = latestFor_(b.name, b.code);
     if (l) { if (l.vals[10] === 'completed') return { ok: false, error: 'already-completed' }; if (l.vals[10] === 'reset') return { ok: true, label: cls.label, demo: false, reset: true }; }
   }
-  return { ok: true, label: cls.label, demo: cls.demo };
+  return { ok: true, label: cls.label, demo: cls.demo, period: cls.period || '' };
 }
 
 function start_(b) {
@@ -151,7 +164,7 @@ function start_(b) {
   var sid = String(b.sid || ''); if (!sid) return { ok: false, error: 'bad-request' };
   if (findSession_(sid)) return { ok: true, resumed: true };
   if (!cls.demo) { var l = latestFor_(s.name, s.code); if (l && l.vals[10] === 'completed') return { ok: false, error: 'already-completed' }; }
-  sheet_(TABS.sessions).appendRow([sid, norm_(s.name), nameKey_(s.name), String(s.period), codeKey_(s.code), cls.demo ? 'DEMO' : 'LIVE', b.versionId || '', b.contentVersion || '',
+  sheet_(TABS.sessions).appendRow([sid, norm_(s.name), nameKey_(s.name), String(cls.period || s.period), codeKey_(s.code), cls.demo ? 'DEMO' : 'LIVE', b.versionId || '', b.contentVersion || '',
     new Date(b.startedAt || Date.now()), new Date(), 'started', '{}', JSON.stringify(b.stageIds || []), '']);
   return { ok: true };
 }
@@ -222,18 +235,18 @@ function submit_(b) {
   var integrity = (b.tamper ? 'Local data modified' : 'OK') + (mismatch ? '; client/server score mismatch' : '');
   var displayName = (cls.demo ? '[DEMO] ' : '') + norm_(s.name);
   var doms = DOMAIN_ORDER.map(function (d) { var x = t.byDomain[d]; return x.p ? Math.round(x.e / x.p * 1000) / 10 : ''; });
-  sheet_(TABS.summary).appendRow([now, displayName, codeKey_(s.code), String(s.period), b.contentVersion || CONTENT_VERSION, b.versionId || '', started, done,
+  sheet_(TABS.summary).appendRow([now, displayName, codeKey_(s.code), String(cls.period || s.period), b.contentVersion || CONTENT_VERSION, b.versionId || '', started, done,
     Math.round((Number(b.activeMs) || (done - started)) / 600) / 100, t.earned, t.possible, pct, t.first, t.second, t.third, t.missed,
     cls.demo ? 'DEMO: completed' : 'Completed', mode, integrity, sid, conf].concat(doms));
   var qrows = sc.rows.map(function (r) {
     var cell = function (i) { return r.results[i] ? (r.results[i].ok ? 'Correct' : 'Incorrect') : ''; };
     var last = r.results.length ? new Date(r.results[r.results.length - 1].t || now) : '';
-    return [now, displayName, codeKey_(s.code), String(s.period), sid, mode, r.qid, r.k.t, DOMAIN_NAMES[r.k.d], r.k.y, cell(0), cell(1), cell(2), r.final, r.earned, r.k.p, last,
+    return [now, displayName, codeKey_(s.code), String(cls.period || s.period), sid, mode, r.qid, r.k.t, DOMAIN_NAMES[r.k.d], r.k.y, cell(0), cell(1), cell(2), r.final, r.earned, r.k.p, last,
       r.results.map(function (x) { return x.resp; }).join(' || ').slice(0, 500)];
   });
   if (qrows.length) { var qs = sheet_(TABS.questions); qs.getRange(qs.getLastRow() + 1, 1, qrows.length, QUESTION_HEADERS.length).setValues(qrows); }
   if (se) { se.sh.getRange(se.row, 10, 1, 1).setValue(now); se.sh.getRange(se.row, 11).setValue('completed'); se.sh.getRange(se.row, 14).setValue(conf); }
-  else sheet_(TABS.sessions).appendRow([sid, norm_(s.name), nameKey_(s.name), String(s.period), codeKey_(s.code), mode, b.versionId || '', b.contentVersion || '', started, now, 'completed', '{}', JSON.stringify(stageIds), conf]);
+  else sheet_(TABS.sessions).appendRow([sid, norm_(s.name), nameKey_(s.name), String(cls.period || s.period), codeKey_(s.code), mode, b.versionId || '', b.contentVersion || '', started, now, 'completed', '{}', JSON.stringify(stageIds), conf]);
   if (!cls.demo) { try { rebuildAnalytics(); } catch (e) { /* analytics are optional */ } }
   return { ok: true, confirmationId: conf, score: { earned: t.earned, possible: t.possible }, mismatch: !!mismatch };
 }

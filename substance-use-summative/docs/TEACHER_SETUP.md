@@ -44,3 +44,6 @@ The link and their class code. Nothing else. Tell them: use Chrome, do not use p
 
 ## Changing questions
 Edit `authoring/mN.js`, run `npm run build`, and (if you use the Sheet backend) paste the regenerated `google-apps-script/KeyData.gs` into Apps Script and redeploy. Rebuild changes the content version, which keeps scores from different versions separate.
+
+## Naming
+The title students see on the sign-in page and top bar is `appName` in `js/config.js` (default "Substance Abuse Summative"). Change it to whatever your course calls the assessment.

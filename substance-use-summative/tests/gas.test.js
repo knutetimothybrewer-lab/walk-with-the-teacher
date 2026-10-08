@@ -128,3 +128,19 @@ test('sampleSubmission() self-test from the setup guide runs cleanly', () => {
   const env = makeEnv(root); env.run('sampleSubmission()');
   assert.equal(env.book.get('Summary').length, 2); assert.equal(env.book.get('Summary')[1][17], 'DEMO');
 });
+
+test('Config tab drives the sign-in: classes list shows labels/periods (never codes) and the Sheet period wins', () => {
+  const env = makeEnv(root); env.run('setup()');
+  const cfg = env.book.get('Config');
+  cfg.push(['BIO-A', 'Ms. Lee: Block A', true, 'A'], ['OLD', 'Retired', false, '9']);
+  const r = env.call({ action: 'classes' });
+  assert.equal(r.ok, true);
+  assert.ok(r.classes.some((c) => c.value === 'A' && c.label === 'Ms. Lee: Block A'));
+  assert.ok(!JSON.stringify(r).includes('BIO-A') && !JSON.stringify(r).includes('HEALTH2'), 'codes are never exposed');
+  assert.ok(!r.classes.some((c) => c.value === '9'), 'inactive rows hidden');
+  assert.equal(env.call({ action: 'validate', code: 'bio-a' }).period, 'A');
+  const s = session('p1'), st = student('Pat Period', 'BIO-A'); st.period = '7';
+  env.call({ action: 'start', sid: 'S-P', student: st, stageIds: s.stageIds });
+  env.call({ action: 'submit', sid: 'S-P', student: st, stageIds: s.stageIds, attempts: s.attempts });
+  assert.equal(env.book.get('Summary')[1][3], 'A', 'Summary uses the Sheet period, not the student dropdown');
+});
