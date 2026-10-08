@@ -21,5 +21,5 @@ WWQ.applyConfig({
   backend: { url: 'https://script.google.com/a/macros/nccvt.k12.de.us/s/AKfycbzERsUKDpHI_ziyr7eD1pDX-I0VR92Y5nqJlFxwhpNrkWHSF02VkZpS3BUDWu1-K6cD/exec' },
 
   // Teacher reset passcode (salted, iterated SHA-256 verifier; the passcode itself is not stored here):
-  teacher: { configured: true, salt: '38af52cb09829b7724d89c4a349d170d', iterations: 30000, verifier: 'dbb176c4635cae8c5bf606605524985723be3895074ec3125001558fc31e9dde', freeTries: 3, cooldownSeconds: 30 }
+  teacher: { configured: true, salt: 'c6b312096c7de60ddf23e94804e3e944', iterations: 30000, verifier: 'c946ad45af22bde2850297a1acc02442f3c61da6d1cf28a1a869c04496bae525', freeTries: 3, cooldownSeconds: 30 }
 });

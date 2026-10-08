@@ -124,7 +124,7 @@ Each summative has a private way for the teacher to click through the whole asse
 |---|---|
 | `health-summative/` (Wildcat Wellness Trail) | Type the teacher code (default `WALK-TEACHER`) in the **Class code** box. See its README, section 10b, to change it. |
 | `wildcats-wellness-quest/` | Footer **Teacher reset** -> teacher passcode -> **Open teacher mode**. |
-| `substance-use-summative/` (SIGNAL) | Add `?preview=1` to the address and enter the preview passcode (default `SIGNAL-PREVIEW`). **Continue** is never locked in Preview Mode. |
+| `substance-use-summative/` (SIGNAL) | Add `?preview=1` to the address and enter the preview passcode (default `WALK-TEACHER`). **Continue** is never locked in Preview Mode. |
 | `community-health-mission/` | **Teacher sign-in** on the sign-in screen, then **Start preview** (server-checked passcode). |
 
 ## Wildcats Wellness Quest (`wildcats-wellness-quest/`)

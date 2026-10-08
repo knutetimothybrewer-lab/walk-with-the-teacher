@@ -27,7 +27,7 @@ export const CONFIG = {
 
   // --- Preview Mode (teacher/developer tools). Passcode is stored as a hash. Default passcode: see docs.
   previewSalt: 'sig-preview-v1',
-  previewPasscodeHash: '88bb172b0185653300aa9f6c39a61c2474385676a21739b73c7ccdd910b208d9',
+  previewPasscodeHash: 'f7a7231b894d34f1351a5e793997a8ee31a46cbd406f47d1ba9a906cd16a4cea',
 
   periods: ['1', '2', '3', '4', '5', '6', '7', '8'],
   // Display only. Scoring rules live in js/scoring.js (100% / 85% / 75%, three attempts).
