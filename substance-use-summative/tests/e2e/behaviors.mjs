@@ -145,7 +145,7 @@ await ok('Preview Mode is hidden from students and needs the passcode', async ()
   const { ctx, p } = await fresh(); await p.goto(URL); const body = await p.content();
   assert.ok(!/preview/i.test(await p.locator('main').innerText()), 'no preview text on the student screen'); assert.equal(await p.locator('#pv').count(), 0);
   p.once('dialog', (d) => d.accept('wrong')); await p.goto(URL + '?preview=1'); await p.waitForSelector('#f-name'); assert.equal(await p.locator('#pv').count(), 0);
-  p.once('dialog', (d) => d.accept('SIGNAL-PREVIEW')); await p.goto(URL + '?preview=1'); await p.waitForSelector('#pv'); await p.waitForSelector('article.item');
+  p.once('dialog', (d) => d.accept('WALK-TEACHER')); await p.goto(URL + '?preview=1'); await p.waitForSelector('#pv'); await p.waitForSelector('article.item');
   assert.ok(await p.locator('.pv-banner').count());
   await p.locator('#pv button:has-text("Questions")').click();
   await p.locator('#pv button:has-text("✓ attempt 2")').first().click(); await p.waitForSelector('article.item .fb.right');
@@ -158,7 +158,7 @@ await ok('Preview Mode is hidden from students and needs the passcode', async ()
 
 await ok('Preview Mode: Continue is never locked, so the whole assessment can be clicked through without answering', async () => {
   const { ctx, p } = await fresh();
-  p.once('dialog', (d) => d.accept('SIGNAL-PREVIEW')); await p.goto(URL + '?preview=1'); await p.waitForSelector('#pv'); await p.waitForSelector('article.item');
+  p.once('dialog', (d) => d.accept('WALK-TEACHER')); await p.goto(URL + '?preview=1'); await p.waitForSelector('#pv'); await p.waitForSelector('article.item');
   let steps = 0;
   while (steps++ < 400) {
     const nb = p.locator('.navrow .btn.primary');

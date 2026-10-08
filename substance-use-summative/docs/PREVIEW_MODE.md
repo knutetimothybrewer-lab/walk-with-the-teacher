@@ -3,7 +3,7 @@
 Preview Mode is deliberately **not** reachable from any student screen.
 
 ## How to open it
-Add `?preview=1` to the address: `https://.../index.html?preview=1`. Enter the passcode when asked (default `SIGNAL-PREVIEW`). **Change the default**:
+Add `?preview=1` to the address: `https://.../index.html?preview=1`. Enter the passcode when asked (default `WALK-TEACHER`). **Change the default**:
 
 ```bash
 node tools/hash.js --preview "your new passcode"     # paste the output into previewPasscodeHash in js/config.js

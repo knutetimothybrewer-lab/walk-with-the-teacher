@@ -124,8 +124,10 @@ Each summative has a private way for the teacher to click through the whole asse
 |---|---|
 | `health-summative/` (Wildcat Wellness Trail) | Type the teacher code (default `WALK-TEACHER`) in the **Class code** box. See its README, section 10b, to change it. |
 | `wildcats-wellness-quest/` | Footer **Teacher reset** -> teacher passcode -> **Open teacher mode**. |
-| `substance-use-summative/` (SIGNAL) | Add `?preview=1` to the address and enter the preview passcode (default `SIGNAL-PREVIEW`). **Continue** is never locked in Preview Mode. |
+| `substance-use-summative/` (SIGNAL) | Add `?preview=1` to the address and enter the preview passcode (default `WALK-TEACHER`). **Continue** is never locked in Preview Mode. |
 | `community-health-mission/` | **Teacher sign-in** on the sign-in screen, then **Start preview** (server-checked passcode). |
+
+The shared teacher code is **`WALK-TEACHER`** (type it in capitals) for the first three. Community Health Mission checks its passcode on the server, so set it to the same value in the spreadsheet's teacher menu. Each app stores only a hash or verifier of it, so changing it later means regenerating each one (see each app's README).
 
 ## Wildcats Wellness Quest (`wildcats-wellness-quest/`)
 
