@@ -1,0 +1,295 @@
+{
+  "meta": {
+    "contentSet": "demo",
+    "structureHash": "ecfbaa3f874f9fe66398568004da1fc239fa55cdc307243fbfa2923a6ab1f605",
+    "itemCount": 9,
+    "points": 18,
+    "version": "demo-1"
+  },
+  "items": {
+    "D1-01": {
+      "id": "D1-01",
+      "chapter": "d1",
+      "type": "assign",
+      "points": 2,
+      "order": 1,
+      "unlockAfter": null,
+      "struct": {
+        "fill": "targets",
+        "cardIds": [
+          "c168f2",
+          "c62429",
+          "c6731f",
+          "c9e149"
+        ],
+        "targetIds": [
+          "m1",
+          "m2",
+          "m3"
+        ]
+      },
+      "key": {
+        "map": {
+          "m1": "c6731f",
+          "m2": "c62429",
+          "m3": "c168f2"
+        }
+      },
+      "hints": [
+        "Look at the shapes first and match the obvious ones.",
+        "The triangle sits on top of the building; the tall rectangle is where you walk in."
+      ],
+      "explanation": "Marker 1 is the roof, marker 2 is the door, marker 3 is the window. There is no chimney in the picture.",
+      "feedback": null
+    },
+    "D1-02": {
+      "id": "D1-02",
+      "chapter": "d1",
+      "type": "assign",
+      "points": 2,
+      "order": 2,
+      "unlockAfter": null,
+      "struct": {
+        "fill": "cards",
+        "cardIds": [
+          "c4eaa8",
+          "c52525",
+          "c85d06",
+          "c8f7e9",
+          "cd8f43",
+          "ce1c2a"
+        ],
+        "targetIds": [
+          "g0bd22",
+          "g3d1b2"
+        ]
+      },
+      "key": {
+        "map": {
+          "c4eaa8": "g0bd22",
+          "c8f7e9": "g3d1b2",
+          "cd8f43": "g0bd22",
+          "c52525": "g3d1b2",
+          "c85d06": "g0bd22",
+          "ce1c2a": "g3d1b2"
+        }
+      },
+      "hints": [
+        "Think about which animals have feathers.",
+        "Mammals feed their young milk. Whales do too, even though they live in water."
+      ],
+      "explanation": "Dogs, whales, and cats are mammals. Eagles, owls, and penguins are birds.",
+      "feedback": null
+    },
+    "D1-03": {
+      "id": "D1-03",
+      "chapter": "d1",
+      "type": "order",
+      "points": 2,
+      "order": 3,
+      "unlockAfter": null,
+      "struct": {
+        "stepIds": [
+          "s3303e",
+          "s3b5dd",
+          "sc603c",
+          "sdb640",
+          "se6ba8"
+        ]
+      },
+      "key": {
+        "order": [
+          "se6ba8",
+          "sc603c",
+          "s3303e",
+          "s3b5dd",
+          "sdb640"
+        ]
+      },
+      "hints": [
+        "Water comes first and drying comes last.",
+        "You cannot rinse soap that has not been added yet."
+      ],
+      "explanation": "Wet, soap, scrub for 20 seconds, rinse, then dry.",
+      "feedback": null
+    },
+    "D2-01": {
+      "id": "D2-01",
+      "chapter": "d2",
+      "type": "single",
+      "points": 2,
+      "order": 4,
+      "unlockAfter": null,
+      "struct": {
+        "optionIds": [
+          "o08c22",
+          "o4a21f",
+          "o58d67",
+          "o70743",
+          "oaa3bc"
+        ]
+      },
+      "key": {
+        "correct": "o4a21f"
+      },
+      "hints": [
+        "Think about what Lee needs to know before replying.",
+        "The best step uses a plan and honest words."
+      ],
+      "explanation": "A plan for study time plus an honest reply protects both the test and the friendship. Story continues: Lee studies.",
+      "feedback": {
+        "o4a21f": "Lee plans an hour of studying and texts back, \"Maybe after 8!\"",
+        "oaa3bc": "Lee scrolls for an hour and feels stressed.",
+        "o08c22": "Lee plays until late and feels behind.",
+        "o58d67": "The friend finds out and feels confused.",
+        "o70743": "The morning arrives and there is no time left."
+      }
+    },
+    "D2-02": {
+      "id": "D2-02",
+      "chapter": "d2",
+      "type": "single",
+      "points": 2,
+      "order": 5,
+      "unlockAfter": "D2-01",
+      "struct": {
+        "optionIds": [
+          "o10b93",
+          "o50411",
+          "o8fee1",
+          "oa8f7c",
+          "oc1b7c"
+        ]
+      },
+      "key": {
+        "correct": "o8fee1"
+      },
+      "hints": [
+        "Rest helps memory, so think about sleep.",
+        "One option keeps both the friendship and the sleep."
+      ],
+      "explanation": "Replying and sleeping on time balances the friendship and the test.",
+      "feedback": null
+    },
+    "D2-03": {
+      "id": "D2-03",
+      "chapter": "d2",
+      "type": "multi",
+      "points": 2,
+      "order": 6,
+      "unlockAfter": null,
+      "struct": {
+        "optionIds": [
+          "o08c39",
+          "o2f0e9",
+          "o8a420",
+          "oa2188",
+          "ob8af3",
+          "oc51e9",
+          "oebdd7"
+        ]
+      },
+      "key": {
+        "correct": [
+          "o8a420",
+          "oa2188",
+          "oc51e9",
+          "oebdd7"
+        ]
+      },
+      "hints": [
+        "A prime number has exactly two factors.",
+        "Check each number: can it be divided evenly by anything besides 1 and itself?"
+      ],
+      "explanation": "2, 3, 5, and 7 are prime. 4, 6, and 9 have other factors.",
+      "feedback": null
+    },
+    "D2-04": {
+      "id": "D2-04",
+      "chapter": "d2",
+      "type": "numeric",
+      "points": 2,
+      "order": 7,
+      "unlockAfter": null,
+      "struct": {
+        "range": [
+          0,
+          20
+        ]
+      },
+      "key": {
+        "value": 6,
+        "tolerance": 0
+      },
+      "hints": [
+        "Find the Friday bar for Week 2 and the Monday bar for Week 1.",
+        "Subtract the smaller from the larger."
+      ],
+      "explanation": "Friday of Week 2 is 10 and Monday of Week 1 is 4. The difference is 6.",
+      "feedback": null
+    },
+    "D3-01": {
+      "id": "D3-01",
+      "chapter": "d3",
+      "type": "assign",
+      "points": 2,
+      "order": 8,
+      "unlockAfter": null,
+      "struct": {
+        "fill": "cards",
+        "cardIds": [
+          "c023dd",
+          "c38e37",
+          "cc427a",
+          "ce06be",
+          "ce6f20"
+        ],
+        "targetIds": [
+          "g349c1",
+          "g9487e"
+        ]
+      },
+      "key": {
+        "map": {
+          "cc427a": "g9487e",
+          "c023dd": "g9487e",
+          "ce06be": "g349c1",
+          "c38e37": "g349c1",
+          "ce6f20": "g9487e"
+        }
+      },
+      "hints": [
+        "Check each statement against the exact words in the notices.",
+        "If the notice does not say it, it is not supported."
+      ],
+      "explanation": "The library opens at 9, and the gym is open from 3 to 6. The library is closed on holidays, and the gym is open every day.",
+      "feedback": null
+    },
+    "D3-02": {
+      "id": "D3-02",
+      "chapter": "d3",
+      "type": "single",
+      "points": 2,
+      "order": 9,
+      "unlockAfter": "D3-01",
+      "struct": {
+        "optionIds": [
+          "o182f1",
+          "o65f90",
+          "od7763",
+          "oe2e8e",
+          "ofa441"
+        ]
+      },
+      "key": {
+        "correct": "od7763"
+      },
+      "hints": [
+        "Library: 9 to 5. Gym: 3 to 6.",
+        "Find the overlap between the two time ranges."
+      ],
+      "explanation": "The library closes at 5 and the gym opens at 3, so they overlap from 3 to 5.",
+      "feedback": null
+    }
+  }
+}

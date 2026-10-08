@@ -1,0 +1,917 @@
+/*
+ * Unit 8 — Family Life & Sexuality summative: SERVER CORE.
+ *
+ * One portable file that runs in three places:
+ *   - Node (unit tests, the mock HTTP server used by the end-to-end tests)
+ *   - the browser (demo mode, when js/config.js has no API_URL)
+ *   - Google Apps Script V8 (tools/build-apps-script.js concatenates this file into Code.gs)
+ *
+ * It holds ALL grading, timer and session rules. It contains no secrets and no answer keys:
+ * keys come from the item bank that the `store` hands it (ItemBank sheet in production).
+ * Everything here is synchronous so the same code works behind Apps Script's LockService.
+ *
+ * Environment contract (see createServer):
+ *   env.now()                -> ms since epoch (server clock; tests inject a fake)
+ *   env.uuid()               -> random UUID string
+ *   env.store                -> storage adapter (see server/memory-store.js for the reference implementation)
+ */
+var W8Core = (function () {
+  'use strict';
+
+  var VERSION = '1.0.0';
+  var BLOCKS = ['Block 1/2', 'Block 3/4', 'Block 6/7', 'Block 8/9'];
+  var CREDIT = [1, 0.85, 0.75]; // attempt 1 / 2 / 3. All three wrong = 0 and the item locks.
+  var MAX_ATTEMPTS = 3;
+  var STATUS = { REGISTERED: 'registered', IN_PROGRESS: 'in_progress', SUBMITTED: 'submitted', AUTO: 'auto_submitted', RESET: 'reset' };
+  var SUBMISSION = { student: 'Student Submit', auto: 'Time Expired — Auto-Submitted' };
+  var MIN_ALLOWED = 10, MAX_ALLOWED = 600;
+  var STUDENT_TOKEN_UNSTARTED_MS = 12 * 3600 * 1000;
+  var STUDENT_TOKEN_AFTER_DEADLINE_MS = 3 * 3600 * 1000;
+  var TEACHER_TOKEN_MS = 2 * 3600 * 1000;
+  var PW_ROUNDS = 2000;
+
+  /* ---------------------------------------------------------------------------------------- errors */
+  function ApiError(code, message, extra) {
+    this.name = 'ApiError';
+    this.code = code;
+    this.message = message;
+    this.extra = extra || null;
+  }
+  ApiError.prototype = Object.create(Error.prototype);
+  ApiError.prototype.constructor = ApiError;
+  function fail(code, message, extra) { throw new ApiError(code, message, extra); }
+
+  /* ---------------------------------------------------------------------------------------- SHA-256 (pure JS) */
+  var K256 = [
+    0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5, 0x3956c25b, 0x59f111f1, 0x923f82a4, 0xab1c5ed5,
+    0xd807aa98, 0x12835b01, 0x243185be, 0x550c7dc3, 0x72be5d74, 0x80deb1fe, 0x9bdc06a7, 0xc19bf174,
+    0xe49b69c1, 0xefbe4786, 0x0fc19dc6, 0x240ca1cc, 0x2de92c6f, 0x4a7484aa, 0x5cb0a9dc, 0x76f988da,
+    0x983e5152, 0xa831c66d, 0xb00327c8, 0xbf597fc7, 0xc6e00bf3, 0xd5a79147, 0x06ca6351, 0x14292967,
+    0x27b70a85, 0x2e1b2138, 0x4d2c6dfc, 0x53380d13, 0x650a7354, 0x766a0abb, 0x81c2c92e, 0x92722c85,
+    0xa2bfe8a1, 0xa81a664b, 0xc24b8b70, 0xc76c51a3, 0xd192e819, 0xd6990624, 0xf40e3585, 0x106aa070,
+    0x19a4c116, 0x1e376c08, 0x2748774c, 0x34b0bcb5, 0x391c0cb3, 0x4ed8aa4a, 0x5b9cca4f, 0x682e6ff3,
+    0x748f82ee, 0x78a5636f, 0x84c87814, 0x8cc70208, 0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2
+  ];
+  function utf8Bytes(str) {
+    var out = [];
+    for (var i = 0; i < str.length; i++) {
+      var c = str.charCodeAt(i);
+      if (c >= 0xd800 && c <= 0xdbff && i + 1 < str.length) {
+        var d = str.charCodeAt(i + 1);
+        if (d >= 0xdc00 && d <= 0xdfff) { c = 0x10000 + ((c - 0xd800) << 10) + (d - 0xdc00); i++; }
+      }
+      if (c < 0x80) out.push(c);
+      else if (c < 0x800) out.push(0xc0 | (c >> 6), 0x80 | (c & 63));
+      else if (c < 0x10000) out.push(0xe0 | (c >> 12), 0x80 | ((c >> 6) & 63), 0x80 | (c & 63));
+      else out.push(0xf0 | (c >> 18), 0x80 | ((c >> 12) & 63), 0x80 | ((c >> 6) & 63), 0x80 | (c & 63));
+    }
+    return out;
+  }
+  function sha256Hex(str) {
+    var bytes = utf8Bytes(String(str));
+    var bitLen = bytes.length * 8;
+    bytes.push(0x80);
+    while (bytes.length % 64 !== 56) bytes.push(0);
+    var hi = Math.floor(bitLen / 4294967296), lo = bitLen >>> 0;
+    bytes.push((hi >>> 24) & 255, (hi >>> 16) & 255, (hi >>> 8) & 255, hi & 255, (lo >>> 24) & 255, (lo >>> 16) & 255, (lo >>> 8) & 255, lo & 255);
+    var H = [0x6a09e667, 0xbb67ae85, 0x3c6ef372, 0xa54ff53a, 0x510e527f, 0x9b05688c, 0x1f83d9ab, 0x5be0cd19];
+    var w = new Array(64);
+    for (var off = 0; off < bytes.length; off += 64) {
+      var t;
+      for (t = 0; t < 16; t++) w[t] = (bytes[off + 4 * t] << 24) | (bytes[off + 4 * t + 1] << 16) | (bytes[off + 4 * t + 2] << 8) | bytes[off + 4 * t + 3];
+      for (t = 16; t < 64; t++) {
+        var s0 = ((w[t - 15] >>> 7) | (w[t - 15] << 25)) ^ ((w[t - 15] >>> 18) | (w[t - 15] << 14)) ^ (w[t - 15] >>> 3);
+        var s1 = ((w[t - 2] >>> 17) | (w[t - 2] << 15)) ^ ((w[t - 2] >>> 19) | (w[t - 2] << 13)) ^ (w[t - 2] >>> 10);
+        w[t] = (w[t - 16] + s0 + w[t - 7] + s1) | 0;
+      }
+      var a = H[0], b = H[1], c = H[2], d = H[3], e = H[4], f = H[5], g = H[6], h = H[7];
+      for (t = 0; t < 64; t++) {
+        var S1 = ((e >>> 6) | (e << 26)) ^ ((e >>> 11) | (e << 21)) ^ ((e >>> 25) | (e << 7));
+        var ch = (e & f) ^ (~e & g);
+        var t1 = (h + S1 + ch + K256[t] + w[t]) | 0;
+        var S0 = ((a >>> 2) | (a << 30)) ^ ((a >>> 13) | (a << 19)) ^ ((a >>> 22) | (a << 10));
+        var mj = (a & b) ^ (a & c) ^ (b & c);
+        var t2 = (S0 + mj) | 0;
+        h = g; g = f; f = e; e = (d + t1) | 0; d = c; c = b; b = a; a = (t1 + t2) | 0;
+      }
+      H[0] = (H[0] + a) | 0; H[1] = (H[1] + b) | 0; H[2] = (H[2] + c) | 0; H[3] = (H[3] + d) | 0;
+      H[4] = (H[4] + e) | 0; H[5] = (H[5] + f) | 0; H[6] = (H[6] + g) | 0; H[7] = (H[7] + h) | 0;
+    }
+    var hex = '';
+    for (var i = 0; i < 8; i++) hex += ('00000000' + (H[i] >>> 0).toString(16)).slice(-8);
+    return hex;
+  }
+  function hashPassword(password, salt) {
+    var h = sha256Hex(salt + ':' + password);
+    for (var i = 0; i < PW_ROUNDS; i++) h = sha256Hex(h + salt + password);
+    return h;
+  }
+  function constEq(a, b) {
+    a = String(a); b = String(b);
+    var diff = a.length ^ b.length;
+    for (var i = 0; i < Math.max(a.length, b.length); i++) diff |= (a.charCodeAt(i) || 0) ^ (b.charCodeAt(i) || 0);
+    return diff === 0;
+  }
+
+  /* canonical JSON (sorted keys) so content/structure hashes are identical everywhere */
+  function canon(v) {
+    if (v === null || typeof v !== 'object') return JSON.stringify(v);
+    if (Array.isArray(v)) return '[' + v.map(canon).join(',') + ']';
+    return '{' + Object.keys(v).sort().map(function (k) { return JSON.stringify(k) + ':' + canon(v[k]); }).join(',') + '}';
+  }
+
+  /* ---------------------------------------------------------------------------------------- small helpers */
+  function round2(n) { return Math.round(n * 100) / 100; }
+  function round1(n) { return Math.round(n * 10) / 10; }
+  function clone(o) { return o === undefined ? undefined : JSON.parse(JSON.stringify(o)); }
+  function normName(s) {
+    var raw = String(s || '').toLowerCase().trim();
+    var n = raw.replace(/[^a-z0-9À-ɏ]/g, '');
+    return n || raw;
+  }
+  function normCode(s) { return String(s || '').trim().toUpperCase().replace(/\s+/g, ''); }
+  function normId(s) { return String(s || '').trim().toUpperCase(); }
+  function cleanText(s, max) {
+    s = String(s == null ? '' : s).replace(/[\u0000-\u001f\u007f<>]/g, '').replace(/\s+/g, ' ').trim();
+    return s.length > max ? s.slice(0, max) : s;
+  }
+  function isStr(x) { return typeof x === 'string'; }
+  function setOf(arr) { var o = {}; arr.forEach(function (x) { o[x] = true; }); return o; }
+  function sameSet(a, b) {
+    if (a.length !== b.length) return false;
+    var sb = setOf(b);
+    for (var i = 0; i < a.length; i++) if (!sb[a[i]]) return false;
+    return true;
+  }
+  function randomCode(env, len) {
+    var alphabet = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789'; // no 0/O/1/I/L
+    var u = env.uuid().replace(/-/g, '');
+    var out = '';
+    for (var i = 0; i < len; i++) out += alphabet.charAt(parseInt(u.substr(i * 2, 2), 16) % alphabet.length);
+    return out;
+  }
+
+  /* ---------------------------------------------------------------------------------------- grading */
+  /**
+   * Validates the SHAPE of a response against the public structure of the item.
+   * Returns null when fine, or a message when malformed/incomplete. A malformed or incomplete response
+   * never consumes an attempt.
+   */
+  function validateResponse(item, resp) {
+    var st = item.struct || {};
+    if (!resp || typeof resp !== 'object') return 'No answer was received. Choose or place your answer, then press Check.';
+    var i, k;
+    switch (item.type) {
+      case 'single':
+        if (!isStr(resp.choice) || !setOf(st.optionIds || [])[resp.choice]) return 'Choose one of the options, then press Check.';
+        return null;
+      case 'multi': {
+        if (!Array.isArray(resp.choices) || !resp.choices.length) return 'Select at least one option, then press Check.';
+        var seen = {}, opts = setOf(st.optionIds || []);
+        for (i = 0; i < resp.choices.length; i++) {
+          if (!isStr(resp.choices[i]) || !opts[resp.choices[i]] || seen[resp.choices[i]]) return 'One of the selections was not valid. Reload the question and try again.';
+          seen[resp.choices[i]] = true;
+        }
+        return null;
+      }
+      case 'assign': {
+        var map = resp.map;
+        if (!map || typeof map !== 'object' || Array.isArray(map)) return 'Place your cards, then press Check.';
+        var cardSet = setOf(st.cardIds || []), targetSet = setOf(st.targetIds || []);
+        var keys = Object.keys(map);
+        if (st.fill === 'targets') {
+          // match / label: every target gets exactly one distinct card; spare cards are decoys
+          if (keys.length !== (st.targetIds || []).length) return 'Fill every box before pressing Check.';
+          var used = {};
+          for (i = 0; i < keys.length; i++) {
+            k = keys[i];
+            if (!targetSet[k] || !isStr(map[k]) || !cardSet[map[k]] || used[map[k]]) return 'Each box needs a different label. Check your placements.';
+            used[map[k]] = true;
+          }
+        } else {
+          // classify: every card goes into exactly one group
+          if (keys.length !== (st.cardIds || []).length) return 'Sort every card before pressing Check.';
+          for (i = 0; i < keys.length; i++) {
+            k = keys[i];
+            if (!cardSet[k] || !isStr(map[k]) || !targetSet[map[k]]) return 'One of the placements was not valid. Reload the question and try again.';
+          }
+        }
+        return null;
+      }
+      case 'order': {
+        var ids = st.stepIds || [];
+        if (!Array.isArray(resp.order) || resp.order.length !== ids.length || !sameSet(resp.order, ids)) return 'Put every step in your order, then press Check.';
+        return null;
+      }
+      case 'numeric': {
+        var v = resp.value;
+        if (typeof v === 'string' && v.trim() !== '') v = Number(v);
+        if (typeof v !== 'number' || !isFinite(v)) return 'Enter a number, then press Check.';
+        var lim = st.range || [-1e6, 1e6];
+        if (v < lim[0] || v > lim[1]) return 'That number is outside the range for this question.';
+        return null;
+      }
+      default:
+        return 'Unknown question type.';
+    }
+  }
+
+  function gradeResponse(item, resp) {
+    var key = item.key || {};
+    var i;
+    switch (item.type) {
+      case 'single': return resp.choice === key.correct;
+      case 'multi': return sameSet(resp.choices, key.correct || []);
+      case 'assign': {
+        var m = key.map || {}, ks = Object.keys(m);
+        // validateResponse already guaranteed the response covers every card (classify) or every target (match/label)
+        for (i = 0; i < ks.length; i++) if (resp.map[ks[i]] !== m[ks[i]]) return false;
+        return true;
+      }
+      case 'order': {
+        var o = key.order || [];
+        for (i = 0; i < o.length; i++) if (resp.order[i] !== o[i]) return false;
+        return resp.order.length === o.length;
+      }
+      case 'numeric': {
+        var v = typeof resp.value === 'string' ? Number(resp.value) : resp.value;
+        return Math.abs(v - key.value) <= (key.tolerance || 0) + 1e-9;
+      }
+    }
+    return false;
+  }
+
+  /* ---------------------------------------------------------------------------------------- scoring */
+  function computeResult(session, bank) {
+    var pts = 0, possible = 0, answered = 0, byCh = {}, chOrder = [];
+    (session.itemSet || []).forEach(function (id) {
+      var bi = bank.items[id];
+      if (!bi) return;
+      var st = session.items[id];
+      var ch = bi.chapter;
+      if (!byCh[ch]) { byCh[ch] = { earned: 0, possible: 0, answered: 0, items: 0 }; chOrder.push(ch); }
+      byCh[ch].possible += bi.points; byCh[ch].items++; possible += bi.points;
+      if (st && (st.ok || st.l)) { answered++; byCh[ch].answered++; }
+      var e = st ? (st.c || 0) * bi.points : 0;
+      byCh[ch].earned += e; pts += e;
+    });
+    chOrder.forEach(function (c) { byCh[c].earned = round2(byCh[c].earned); byCh[c].possible = round2(byCh[c].possible); });
+    return {
+      points: round2(pts), possible: round2(possible),
+      percent: possible ? round1(pts / possible * 100) : 0,
+      answered: answered, total: (session.itemSet || []).length, chapters: byCh
+    };
+  }
+  function attemptsTotal(session) {
+    var n = 0; Object.keys(session.items || {}).forEach(function (id) { n += session.items[id].a || 0; }); return n;
+  }
+
+  /* ---------------------------------------------------------------------------------------- server */
+  function createServer(env) {
+    var store = env.store;
+
+    function now() { return env.now(); }
+
+    function getConfig() {
+      var c = store.getConfig() || {};
+      var codes = c.classCodes || {};
+      return {
+        classCodes: codes,
+        defaultMinutes: c.defaultMinutes || 90,
+        showScore: c.showScore !== false,
+        open: c.open !== false,
+        disabledItems: c.disabledItems || []
+      };
+    }
+
+    /* ---------- views ---------- */
+    function itemView(session, bi, st) {
+      var v = { a: 0, ok: 0, l: 0, c: null };
+      if (!st) return v;
+      v.a = st.a || 0; v.ok = st.ok ? 1 : 0; v.l = st.l ? 1 : 0;
+      var done = v.ok || v.l;
+      v.c = done ? (st.c || 0) : null;
+      if (!done && v.a > 0) v.hints = (bi.hints || []).slice(0, Math.min(v.a, 2));
+      if (done) { v.hints = (bi.hints || []).slice(0, Math.min(v.a - (v.ok ? 1 : 0), 2)); v.ex = bi.explanation || ''; }
+      if (st.fb) v.fb = st.fb;
+      return v;
+    }
+    function sessionView(s, cfg) {
+      return {
+        studentId: s.studentId, firstName: s.firstName, lastName: s.lastName, block: s.block,
+        status: s.status, preview: !!s.preview,
+        startTime: s.startTime || null, deadline: s.deadline || null,
+        allowedMinutes: s.allowedMinutes || cfg.defaultMinutes,
+        submittedAt: s.submittedAt || null, submissionType: s.submissionType || null,
+        resetCount: s.resetCount || 0
+      };
+    }
+    function stateView(s, bank, cfg) {
+      var items = {}, ids = [];
+      (s.itemSet || []).forEach(function (id) {
+        if (!bank.items[id]) return; // item removed from the bank after this session began
+        ids.push(id); items[id] = itemView(s, bank.items[id], s.items[id]);
+      });
+      var out = {
+        serverNow: now(), session: sessionView(s, cfg), items: items, itemIds: ids,
+        pos: s.pos || null, ui: s.ui || {}, bank: bank.meta, showScore: cfg.showScore
+      };
+      if (s.status === STATUS.SUBMITTED || s.status === STATUS.AUTO) out.completion = completionView(s, cfg);
+      return out;
+    }
+    function completionView(s, cfg) {
+      var r = s.result || computeResult(s, store.getBank());
+      var out = { submissionType: s.submissionType, submittedAt: s.submittedAt, showScore: cfg.showScore, answered: r.answered, total: r.total };
+      if (cfg.showScore) { out.points = r.points; out.possible = r.possible; out.percent = r.percent; out.chapters = r.chapters; }
+      return out;
+    }
+
+    /* ---------- lifecycle ---------- */
+    function finalize(s, type, at) {
+      if (s.status === STATUS.SUBMITTED || s.status === STATUS.AUTO) return s;
+      var bank = store.getBank();
+      s.status = type === 'auto' ? STATUS.AUTO : STATUS.SUBMITTED;
+      s.submissionType = type === 'auto' ? SUBMISSION.auto : SUBMISSION.student;
+      s.submittedAt = type === 'auto' && s.deadline ? Math.min(at, s.deadline) : at;
+      s.result = computeResult(s, bank);
+      s.dirty = false;
+      s.tokenExp = at + STUDENT_TOKEN_AFTER_DEADLINE_MS;
+      store.saveSession(s);
+      store.onSessionChanged && store.onSessionChanged(s, type === 'auto' ? 'auto' : 'final');
+      return s;
+    }
+    function expireIfDue(s) {
+      if (s && !s.preview && s.status === STATUS.IN_PROGRESS && s.deadline && now() > s.deadline) return finalize(s, 'auto', now());
+      return s;
+    }
+    function isFinal(s) { return s.status === STATUS.SUBMITTED || s.status === STATUS.AUTO; }
+
+    function requireSession(req) {
+      if (!req.token || !isStr(req.token)) fail('NO_SESSION', 'Please sign in again.');
+      var s = store.findSessionByToken(req.token);
+      if (!s) fail('NO_SESSION', 'Your session was not found or you signed in somewhere else. Please sign in again.');
+      if (s.tokenExp && now() > s.tokenExp) fail('NO_SESSION', 'Your sign-in expired. Please sign in again.');
+      return s;
+    }
+    function newToken(s) {
+      s.token = env.uuid();
+      s.tokenExp = (s.status === STATUS.IN_PROGRESS && s.deadline ? s.deadline : now()) + (s.status === STATUS.IN_PROGRESS ? STUDENT_TOKEN_AFTER_DEADLINE_MS : STUDENT_TOKEN_UNSTARTED_MS);
+    }
+
+    /* ---------- teacher auth ---------- */
+    function requireTeacher(req) {
+      var exp = req.tt ? store.getTeacherTokenExp(req.tt) : 0;
+      if (!exp || now() > exp) fail('TEACHER_AUTH', 'Your teacher session expired. Sign in again.');
+      return true;
+    }
+
+    /* =========================================================================================== actions */
+    var actions = {};
+
+    actions.ping = function () {
+      var cfg = getConfig(), bank = store.getBank();
+      return { version: VERSION, open: cfg.open, blocks: BLOCKS, bank: bank ? bank.meta : null };
+    };
+
+    actions.login = function (req) {
+      return store.withLock(function () {
+        var cfg = getConfig();
+        var first = cleanText(req.firstName, 40), last = cleanText(req.lastName, 40);
+        var sid = normId(req.studentId), block = String(req.block || ''), code = normCode(req.classCode);
+        if (!first || !last) fail('BAD_INPUT', 'Enter your first and last name.');
+        if (!/^[A-Z0-9][A-Z0-9_-]{2,19}$/.test(sid)) fail('BAD_INPUT', 'Your student ID should be 3 to 20 letters or numbers.');
+        if (BLOCKS.indexOf(block) < 0) fail('BAD_INPUT', 'Choose your class block from the list.');
+        if (!code) fail('BAD_INPUT', 'Enter the class code your teacher gave you.');
+        var expected = normCode(cfg.classCodes[block]);
+        if (!expected || !constEq(code, expected)) fail('BAD_CODE', 'That class code does not match the block you chose. Check the code and the block, or ask your teacher.');
+
+        var s = store.findSessionById(sid);
+        if (s) {
+          if (normName(s.lastName) !== normName(last)) fail('ID_MISMATCH', 'That student ID is already used with a different last name. Check your ID or ask your teacher.');
+          expireIfDue(s);
+          var started = s.status === STATUS.IN_PROGRESS || isFinal(s);
+          if (started && s.block !== block) fail('BLOCK_LOCKED', 'Your record is locked to ' + s.block + '. Choose that block, or ask your teacher.');
+          if (!started) {
+            if (!cfg.open) fail('CLOSED', 'This assessment is not open right now. Ask your teacher.');
+            s.block = block; s.firstName = first; s.lastName = last;
+          }
+        } else {
+          if (!cfg.open) fail('CLOSED', 'This assessment is not open right now. Ask your teacher.');
+          s = {
+            studentId: sid, firstName: first, lastName: last, block: block, status: STATUS.REGISTERED, epoch: 1,
+            createdAt: now(), startTime: null, deadline: null, allowedMinutes: null, submittedAt: null, submissionType: null,
+            itemSet: [], items: {}, pos: null, ui: {}, resetCount: 0, result: null, preview: false, dirty: false
+          };
+        }
+        newToken(s);
+        s.lastActionAt = now();
+        store.saveSession(s);
+        store.onSessionChanged && store.onSessionChanged(s, 'login');
+        var out = stateView(s, store.getBank(), cfg);
+        out.token = s.token;
+        out.resumed = s.status === STATUS.IN_PROGRESS;
+        return out;
+      });
+    };
+
+    actions.begin = function (req) {
+      return store.withLock(function () {
+        var s = requireSession(req), cfg = getConfig(), bank = store.getBank();
+        expireIfDue(s);
+        if (isFinal(s)) fail('FINALIZED', 'This assessment was already submitted.');
+        if (s.status === STATUS.IN_PROGRESS) { var again = stateView(s, bank, cfg); return again; }
+        if (!s.preview && !cfg.open) fail('CLOSED', 'This assessment is not open right now. Ask your teacher.');
+        var disabled = setOf(cfg.disabledItems);
+        s.itemSet = Object.keys(bank.items).filter(function (id) { return s.preview || !disabled[id]; })
+          .sort(function (a, b) { return bank.items[a].order - bank.items[b].order; });
+        s.items = {};
+        s.status = STATUS.IN_PROGRESS;
+        s.startTime = now();
+        if (!s.preview) {
+          s.allowedMinutes = s.allowedMinutes || cfg.defaultMinutes;
+          s.deadline = s.startTime + s.allowedMinutes * 60000;
+          s.tokenExp = s.deadline + STUDENT_TOKEN_AFTER_DEADLINE_MS;
+        } else {
+          s.deadline = null; s.tokenExp = s.startTime + TEACHER_TOKEN_MS;
+        }
+        s.pos = null; s.ui = {}; s.result = null; s.lastActionAt = now();
+        store.saveSession(s);
+        store.onSessionChanged && store.onSessionChanged(s, 'begin');
+        return stateView(s, bank, cfg);
+      });
+    };
+
+    actions.state = function (req) {
+      var s = requireSession(req);
+      var cfg = getConfig();
+      if (!s.preview && s.status === STATUS.IN_PROGRESS && s.deadline && now() > s.deadline) {
+        s = store.withLock(function () { var f = store.findSessionById(s.studentId) || s; return expireIfDue(f); });
+      }
+      return stateView(s, store.getBank(), cfg);
+    };
+
+    actions.submit = function (req) {
+      return store.withLock(function () {
+        var s = requireSession(req), cfg = getConfig(), bank = store.getBank();
+        var t = now();
+        if (!s.preview && s.status === STATUS.IN_PROGRESS && s.deadline && t > s.deadline) {
+          finalize(s, 'auto', t);
+          fail('EXPIRED', 'Time is up. Your work was submitted automatically.', { completion: completionView(s, cfg), submissionType: s.submissionType });
+        }
+        if (isFinal(s)) fail('FINALIZED', 'This assessment was already submitted.', { completion: completionView(s, cfg) });
+        if (s.status !== STATUS.IN_PROGRESS) fail('NOT_STARTED', 'Press Begin Assessment first.');
+        var id = String(req.itemId || '');
+        var bi = bank.items[id];
+        if (!bi || (s.itemSet || []).indexOf(id) < 0) fail('NO_SUCH_ITEM', 'That question is not part of this assessment.');
+        var rid = isStr(req.reqId) ? req.reqId.slice(0, 64) : '';
+        var st = s.items[id] || (s.items[id] = { a: 0, ok: 0, l: 0, c: 0 });
+
+        if (rid && st.rid === rid && st.last) {
+          var dup = clone(st.last); dup.duplicate = true; dup.serverNow = t; return dup;
+        }
+        if (st.ok || st.l) {
+          return { itemId: id, alreadyDone: true, state: itemView(s, bi, st), serverNow: t, deadline: s.deadline };
+        }
+        if (bi.unlockAfter && !s.preview) {
+          var prev = s.items[bi.unlockAfter];
+          if (!prev || !(prev.ok || prev.l)) fail('STAGE_LOCKED', 'Finish the earlier step first.');
+        }
+        var problem = validateResponse(bi, req.response);
+        if (problem) fail('BAD_RESPONSE', problem);
+
+        var correct = gradeResponse(bi, req.response);
+        st.a += 1;
+        var res = { itemId: id, correct: correct, attempt: st.a, serverNow: t, deadline: s.deadline };
+        var optFb = bi.feedback && bi.type === 'single' && bi.feedback[req.response.choice];
+        st.fb = optFb || '';
+        if (correct) {
+          st.ok = 1; st.c = CREDIT[st.a - 1];
+          res.attemptsRemaining = 0; res.locked = false; res.creditEarned = st.c;
+        } else if (st.a >= MAX_ATTEMPTS) {
+          st.l = 1; st.c = 0;
+          res.attemptsRemaining = 0; res.locked = true; res.creditEarned = 0;
+        } else {
+          res.attemptsRemaining = MAX_ATTEMPTS - st.a; res.locked = false; res.creditEarned = null;
+          res.hint = (bi.hints || [])[st.a - 1] || null; res.hintLevel = st.a;
+        }
+        res.pointsEarned = res.creditEarned == null ? null : round2(res.creditEarned * bi.points);
+        if (st.ok || st.l) res.explanation = bi.explanation || '';
+        if (optFb) res.narrative = optFb;
+        st.ts = t;
+        st.rid = rid || undefined;
+        res.state = itemView(s, bi, st);
+        st.last = clone(res); delete st.last.state;
+        if (req.pos && typeof req.pos === 'object') s.pos = cleanPos(req.pos);
+        s.lastActionAt = t; s.dirty = true;
+        store.saveSession(s);
+        store.appendResponse({
+          ts: t, studentId: s.studentId, block: s.block, epoch: s.epoch || 1, itemId: id, attempt: st.a,
+          correct: correct ? 1 : 0, credit: res.creditEarned, response: req.response, reqId: rid, preview: s.preview ? 1 : 0
+        });
+        return res;
+      });
+    };
+
+    function cleanPos(p) {
+      return { ch: cleanText(p.ch, 24), unit: cleanText(p.unit, 40), item: cleanText(p.item, 24) };
+    }
+
+    actions.position = function (req) {
+      return store.withLock(function () {
+        var s = requireSession(req);
+        expireIfDue(s);
+        if (s.status !== STATUS.IN_PROGRESS) return { saved: false, status: s.status, serverNow: now() };
+        if (req.pos && typeof req.pos === 'object') s.pos = cleanPos(req.pos);
+        if (req.ui && typeof req.ui === 'object') {
+          var js = JSON.stringify(req.ui);
+          if (js.length <= 2000) s.ui = req.ui;
+        }
+        s.lastActionAt = now();
+        store.saveSession(s);
+        return { saved: true, deadline: s.deadline, serverNow: now() };
+      });
+    };
+
+    actions.finish = function (req) {
+      return store.withLock(function () {
+        var s = requireSession(req), cfg = getConfig();
+        expireIfDue(s);
+        if (isFinal(s)) return { completion: completionView(s, cfg), already: true, serverNow: now() };
+        if (s.status !== STATUS.IN_PROGRESS) fail('NOT_STARTED', 'Press Begin Assessment first.');
+        if (req.confirm !== true) fail('NEEDS_CONFIRM', 'Confirm that you want to submit.');
+        if (s.preview) { s.status = STATUS.SUBMITTED; s.submissionType = SUBMISSION.student; s.submittedAt = now(); s.result = computeResult(s, store.getBank()); store.saveSession(s); return { completion: completionView(s, cfg), serverNow: now() }; }
+        finalize(s, 'student', now());
+        return { completion: completionView(s, cfg), serverNow: now() };
+      });
+    };
+
+    /* ---------------------------------------------------------------- sweep (time-driven trigger) */
+    function sweep() {
+      return store.withLock(function () {
+        var list = store.listSessions({ preview: false }), n = 0, t = now();
+        list.forEach(function (s) {
+          if (s.status === STATUS.IN_PROGRESS && s.deadline && t > s.deadline) { finalize(s, 'auto', t); n++; }
+        });
+        store.onSweep && store.onSweep(list);
+        return n;
+      });
+    }
+
+    /* =========================================================================================== teacher */
+    var BASE_PUBLIC_ITEM_FIELDS = ['id', 'chapter', 'type', 'points', 'order'];
+
+    actions.teacherLogin = function (req) {
+      var pw = String(req.password || '');
+      var rec = store.getTeacherHash();
+      if (!rec || !rec.hash) fail('TEACHER_NOT_SET', 'The teacher password has not been set yet. Follow the setup steps (Set teacher password).');
+      var fails = store.getCounter('tfail');
+      if (fails >= 5 && store.sleep) store.sleep(Math.min(8, fails - 3) * 1000);
+      var ok = pw.length > 0 && constEq(hashPassword(pw, rec.salt), rec.hash);
+      if (!ok) { store.bumpCounter('tfail', 600); fail('TEACHER_PASSWORD', 'That password is not correct.'); }
+      store.clearCounter('tfail');
+      var tok = env.uuid();
+      store.putTeacherToken(tok, now() + TEACHER_TOKEN_MS);
+      return { teacherToken: tok, expiresAt: now() + TEACHER_TOKEN_MS };
+    };
+    actions.tLogout = function (req) { requireTeacher(req); store.delTeacherToken(req.tt); return {}; };
+
+    function rosterRow(s, bank, cfg, t) {
+      var r = s.result || computeResult(s, bank);
+      var label = { registered: 'not started', reset: 'not started', in_progress: 'in progress', submitted: 'submitted', auto_submitted: 'auto-submitted' }[s.status];
+      return {
+        studentId: s.studentId, firstName: s.firstName, lastName: s.lastName, block: s.block,
+        status: s.status, statusLabel: label, startTime: s.startTime, deadline: s.deadline,
+        remainingMs: s.status === STATUS.IN_PROGRESS && s.deadline ? s.deadline - t : null,
+        allowedMinutes: s.allowedMinutes || cfg.defaultMinutes, chapter: s.pos ? s.pos.ch : null,
+        points: r.points, possible: r.possible, percent: r.percent, answered: r.answered, total: r.total,
+        attempts: attemptsTotal(s), submittedAt: s.submittedAt, submissionType: s.submissionType,
+        resetCount: s.resetCount || 0, lastActionAt: s.lastActionAt || null
+      };
+    }
+
+    actions.tRoster = function (req) {
+      requireTeacher(req);
+      sweep();
+      var bank = store.getBank(), cfg = getConfig(), t = now();
+      var list = store.listSessions({ preview: false });
+      if (req.block) list = list.filter(function (s) { return s.block === req.block; });
+      return { rows: list.map(function (s) { return rosterRow(s, bank, cfg, t); }), serverNow: t };
+    };
+
+    actions.tStudent = function (req) {
+      requireTeacher(req);
+      var s = store.findSessionById(normId(req.studentId));
+      if (!s) fail('NOT_FOUND', 'No student with that ID.');
+      expireIfDue(s);
+      var bank = store.getBank(), cfg = getConfig();
+      var items = (s.itemSet || []).map(function (id) {
+        var bi = bank.items[id], st = s.items[id] || {};
+        return { id: id, chapter: bi.chapter, points: bi.points, a: st.a || 0, ok: st.ok ? 1 : 0, l: st.l ? 1 : 0, c: st.c || 0, earned: round2((st.c || 0) * bi.points) };
+      });
+      var hist = store.listHistory().filter(function (h) { return h.studentId === s.studentId; });
+      return { row: rosterRow(s, bank, cfg, now()), items: items, result: s.result || computeResult(s, bank), history: hist, serverNow: now() };
+    };
+
+    actions.tReset = function (req) {
+      requireTeacher(req);
+      return store.withLock(function () {
+        var s = store.findSessionById(normId(req.studentId));
+        if (!s) fail('NOT_FOUND', 'No student with that ID.');
+        if (normName(req.lastName) !== normName(s.lastName)) fail('CONFIRM_MISMATCH', 'The last name you typed does not match this student. Nothing was changed.');
+        expireIfDue(s);
+        var bank = store.getBank();
+        var snap = {
+          studentId: s.studentId, firstName: s.firstName, lastName: s.lastName, block: s.block, epoch: s.epoch || 1,
+          status: s.status, startTime: s.startTime, deadline: s.deadline, submittedAt: s.submittedAt, submissionType: s.submissionType,
+          allowedMinutes: s.allowedMinutes, items: clone(s.items), itemSet: clone(s.itemSet), result: s.result || computeResult(s, bank),
+          resetAt: now(), resetNo: (s.resetCount || 0) + 1, reason: cleanText(req.reason, 120)
+        };
+        Object.keys(snap.items || {}).forEach(function (id) { delete snap.items[id].last; delete snap.items[id].rid; });
+        store.appendHistory(snap);
+        s.resetCount = (s.resetCount || 0) + 1;
+        s.epoch = (s.epoch || 1) + 1;
+        s.status = STATUS.RESET;
+        s.items = {}; s.itemSet = []; s.pos = null; s.ui = {}; s.result = null;
+        s.startTime = null; s.deadline = null; s.submittedAt = null; s.submissionType = null; s.dirty = false;
+        s.token = env.uuid(); s.tokenExp = now(); // any open tab is signed out
+        s.lastActionAt = now();
+        store.saveSession(s);
+        store.onSessionChanged && store.onSessionChanged(s, 'reset');
+        return { reset: true, resetCount: s.resetCount, previous: { status: snap.status, percent: snap.result.percent, points: snap.result.points } };
+      });
+    };
+
+    actions.tSetTime = function (req) {
+      requireTeacher(req);
+      return store.withLock(function () {
+        var s = store.findSessionById(normId(req.studentId));
+        if (!s) fail('NOT_FOUND', 'No student with that ID.');
+        expireIfDue(s);
+        if (isFinal(s)) fail('ALREADY_FINAL', 'This student already submitted. Use Reset Student Progress to give a fresh attempt.');
+        var cfg = getConfig(), t = now();
+        var mins;
+        if (req.addMinutes != null) {
+          var add = Number(req.addMinutes);
+          if (!isFinite(add) || add < 1 || add > 240) fail('BAD_INPUT', 'Add between 1 and 240 minutes.');
+          mins = (s.allowedMinutes || cfg.defaultMinutes) + Math.round(add);
+        } else {
+          mins = Math.round(Number(req.allowedMinutes));
+        }
+        if (!isFinite(mins) || mins < MIN_ALLOWED || mins > MAX_ALLOWED) fail('BAD_INPUT', 'Time must be between ' + MIN_ALLOWED + ' and ' + MAX_ALLOWED + ' minutes.');
+        if (s.status === STATUS.IN_PROGRESS) {
+          var nd = s.startTime + mins * 60000;
+          if (nd <= t) fail('TIME_TOO_SHORT', 'That would end the session right now. Choose a longer time.');
+          s.deadline = nd; s.tokenExp = nd + STUDENT_TOKEN_AFTER_DEADLINE_MS;
+        }
+        s.allowedMinutes = mins;
+        store.saveSession(s);
+        store.onSessionChanged && store.onSessionChanged(s, 'time');
+        return { allowedMinutes: mins, deadline: s.deadline, serverNow: t };
+      });
+    };
+
+    actions.tGetSettings = function (req) {
+      requireTeacher(req);
+      var cfg = getConfig(), bank = store.getBank();
+      var items = Object.keys(bank.items).sort(function (a, b) { return bank.items[a].order - bank.items[b].order; }).map(function (id) {
+        var b = bank.items[id]; return { id: id, chapter: b.chapter, points: b.points, type: b.type };
+      });
+      var pw = store.getTeacherHash();
+      return { settings: { classCodes: cfg.classCodes, defaultMinutes: cfg.defaultMinutes, showScore: cfg.showScore, open: cfg.open, disabledItems: cfg.disabledItems }, blocks: BLOCKS, items: items, passwordSet: !!(pw && pw.hash), bank: bank.meta };
+    };
+
+    actions.tSetSettings = function (req) {
+      requireTeacher(req);
+      return store.withLock(function () {
+        var cfg = getConfig(), inp = req.settings || {}, bank = store.getBank();
+        if (inp.classCodes) {
+          BLOCKS.forEach(function (b) {
+            if (inp.classCodes[b] != null) {
+              var c = normCode(inp.classCodes[b]);
+              if (c.length < 4 || c.length > 24 || !/^[A-Z0-9_-]+$/.test(c)) fail('BAD_INPUT', 'Class codes must be 4 to 24 letters or numbers (' + b + ').');
+              if (c === 'WALKTEACHER' || c === 'WALK-TEACHER') fail('BAD_INPUT', 'That code is reserved for teacher sign-in. Pick another.');
+              cfg.classCodes[b] = c;
+            }
+          });
+        }
+        if (inp.defaultMinutes != null) {
+          var m = Math.round(Number(inp.defaultMinutes));
+          if (!isFinite(m) || m < MIN_ALLOWED || m > MAX_ALLOWED) fail('BAD_INPUT', 'Default time must be between ' + MIN_ALLOWED + ' and ' + MAX_ALLOWED + ' minutes.');
+          cfg.defaultMinutes = m;
+        }
+        if (inp.showScore != null) cfg.showScore = !!inp.showScore;
+        if (inp.open != null) cfg.open = !!inp.open;
+        if (Array.isArray(inp.disabledItems)) {
+          cfg.disabledItems = inp.disabledItems.filter(function (id) { return bank.items[id]; });
+          var remaining = Object.keys(bank.items).filter(function (id) { return cfg.disabledItems.indexOf(id) < 0; });
+          if (!remaining.length) fail('BAD_INPUT', 'At least one question must stay on.');
+        }
+        store.setConfig(cfg);
+        return { settings: cfg };
+      });
+    };
+
+    actions.tSetPassword = function (req) {
+      requireTeacher(req);
+      var pw = String(req.newPassword || '');
+      if (pw.length < 8) fail('BAD_INPUT', 'Use at least 8 characters.');
+      return store.withLock(function () {
+        var salt = env.uuid();
+        store.setTeacherHash({ salt: salt, hash: hashPassword(pw, salt) });
+        return { changed: true };
+      });
+    };
+
+    actions.tPreviewStart = function (req) {
+      requireTeacher(req);
+      return store.withLock(function () {
+        var s = store.getPreview();
+        if (!s) {
+          s = { studentId: 'PREVIEW', firstName: 'Teacher', lastName: 'Preview', block: BLOCKS[0], status: STATUS.REGISTERED, epoch: 1, createdAt: now(), itemSet: [], items: {}, pos: null, ui: {}, resetCount: 0, preview: true };
+        }
+        if (s.status === STATUS.REGISTERED || s.status === STATUS.RESET) {
+          s.token = env.uuid(); s.tokenExp = now() + TEACHER_TOKEN_MS;
+          store.saveSession(s);
+          var begun = actions.begin({ token: s.token });
+          begun.token = s.token; return begun;
+        }
+        s.token = env.uuid(); s.tokenExp = now() + TEACHER_TOKEN_MS;
+        if (s.status !== STATUS.IN_PROGRESS) { s.status = STATUS.IN_PROGRESS; }
+        store.saveSession(s);
+        var v = stateView(s, store.getBank(), getConfig()); v.token = s.token; return v;
+      });
+    };
+    actions.tPreviewReset = function (req) {
+      requireTeacher(req);
+      return store.withLock(function () { store.clearPreview(); return { cleared: true }; });
+    };
+    actions.tKeys = function (req) {
+      requireTeacher(req);
+      var bank = store.getBank(), out = {};
+      var want = Array.isArray(req.itemIds) ? req.itemIds : Object.keys(bank.items);
+      want.forEach(function (id) {
+        var b = bank.items[id]; if (!b) return;
+        out[id] = { key: b.key, hints: b.hints, explanation: b.explanation, feedback: b.feedback || null };
+      });
+      return { keys: out };
+    };
+
+    actions.tAnalytics = function (req) {
+      requireTeacher(req);
+      sweep();
+      return { analytics: analytics(store.listSessions({ preview: false }), store.getBank(), store.listHistory(), now(), getConfig()), serverNow: now() };
+    };
+
+    actions.tExport = function (req) {
+      requireTeacher(req);
+      sweep();
+      var bank = store.getBank(), cfg = getConfig(), t = now();
+      var ids = Object.keys(bank.items).sort(function (a, b) { return bank.items[a].order - bank.items[b].order; });
+      var chapters = []; ids.forEach(function (id) { if (chapters.indexOf(bank.items[id].chapter) < 0) chapters.push(bank.items[id].chapter); });
+      var head = ['Student ID', 'Last name', 'First name', 'Block', 'Status', 'Started', 'Deadline', 'Submitted', 'Minutes used', 'Submission type', 'Points', 'Possible', 'Percent']
+        .concat(chapters.map(function (c) { return c.toUpperCase() + ' points'; })).concat(['Resets', 'Allowed minutes']);
+      var rows = store.listSessions({ preview: false }).map(function (s) {
+        var r = s.result || computeResult(s, bank);
+        var used = s.startTime ? Math.round(((s.submittedAt || Math.min(t, s.deadline || t)) - s.startTime) / 600) / 100 : '';
+        return [s.studentId, s.lastName, s.firstName, s.block, rosterRow(s, bank, cfg, t).statusLabel, iso(s.startTime), iso(s.deadline), iso(s.submittedAt), used, s.submissionType || '', r.points, r.possible, r.percent]
+          .concat(chapters.map(function (c) { return r.chapters[c] ? r.chapters[c].earned : ''; })).concat([s.resetCount || 0, s.allowedMinutes || cfg.defaultMinutes]);
+      });
+      var ihead = ['Student ID', 'Last name', 'First name', 'Block'].concat(ids.reduce(function (a, id) { return a.concat([id + ' attempts', id + ' credit']); }, []));
+      var irows = store.listSessions({ preview: false }).map(function (s) {
+        var r = [s.studentId, s.lastName, s.firstName, s.block];
+        ids.forEach(function (id) { var st = s.items[id]; r.push(st ? st.a || 0 : ''); r.push(st && (st.ok || st.l) ? st.c : ''); });
+        return r;
+      });
+      return { roster: [head].concat(rows), items: [ihead].concat(irows), serverNow: t };
+    };
+
+    actions.tTest = function (req) {
+      requireTeacher(req);
+      var checks = [], cfg = getConfig();
+      function add(name, ok, detail) { checks.push({ name: name, ok: !!ok, detail: detail || '' }); }
+      var pw = store.getTeacherHash();
+      add('Teacher password is set', pw && pw.hash, pw && pw.hash ? '' : 'Run Unit 8 menu > Set teacher password.');
+      var missing = BLOCKS.filter(function (b) { return !cfg.classCodes[b]; });
+      add('Class codes set for all four blocks', !missing.length, missing.length ? 'Missing: ' + missing.join(', ') : '');
+      var bank = null;
+      try { bank = store.getBank(); } catch (e) { bank = null; }
+      var n = bank ? Object.keys(bank.items).length : 0;
+      add('Item bank loaded', n > 0, n ? n + ' items, ' + round2(Object.keys(bank.items).reduce(function (a, id) { return a + bank.items[id].points; }, 0)) + ' points' : 'Run seedItemBank() (see SETUP.md step 6).');
+      if (store.selfTest) store.selfTest(add);
+      add('Server clock', true, new Date(now()).toISOString());
+      add('Assessment is ' + (cfg.open ? 'OPEN' : 'CLOSED'), true, cfg.open ? 'Students can sign in.' : 'Students cannot start until you open it in Settings.');
+      return { checks: checks, bank: bank ? bank.meta : null, version: VERSION, serverNow: now() };
+    };
+
+    actions.tForceSubmit = function (req) {
+      requireTeacher(req);
+      return store.withLock(function () {
+        var s = store.findSessionById(normId(req.studentId));
+        if (!s) fail('NOT_FOUND', 'No student with that ID.');
+        if (s.status !== STATUS.IN_PROGRESS) fail('BAD_STATE', 'Only an in-progress session can be submitted.');
+        finalize(s, 'student', now());
+        return { submitted: true };
+      });
+    };
+
+    function iso(ms) { return ms ? new Date(ms).toISOString() : ''; }
+
+    /* ---------- analytics ---------- */
+    function analytics(sessions, bank, history, t, cfg) {
+      var ids = Object.keys(bank.items).sort(function (a, b) { return bank.items[a].order - bank.items[b].order; });
+      var out = { byBlock: {}, items: [], mostMissed: [], nearDeadline: [], autoSubmitCount: 0, resets: [], chapters: [], completion: {} };
+      var chapters = []; ids.forEach(function (id) { if (chapters.indexOf(bank.items[id].chapter) < 0) chapters.push(bank.items[id].chapter); });
+      out.chapters = chapters;
+      BLOCKS.forEach(function (b) { out.byBlock[b] = { students: 0, final: 0, inProgress: 0, notStarted: 0, auto: 0, avgPercent: null, chapterPercent: {}, avgMinutes: null }; });
+      var acc = {}; BLOCKS.forEach(function (b) { acc[b] = { pct: 0, n: 0, mins: 0, ch: {} }; chapters.forEach(function (c) { acc[b].ch[c] = { e: 0, p: 0 }; }); });
+      var itemAcc = {}; ids.forEach(function (id) { itemAcc[id] = { n: 0, attempts: 0, credit: 0, locked: 0, first: 0 }; });
+      var allMins = [];
+      sessions.forEach(function (s) {
+        var b = out.byBlock[s.block]; if (!b) return;
+        b.students++;
+        if (s.status === STATUS.IN_PROGRESS) {
+          b.inProgress++;
+          if (s.deadline && s.deadline - t <= 10 * 60000) out.nearDeadline.push({ studentId: s.studentId, name: s.firstName + ' ' + s.lastName, block: s.block, remainingMs: s.deadline - t });
+        } else if (s.status === STATUS.REGISTERED || s.status === STATUS.RESET) b.notStarted++;
+        else {
+          b.final++;
+          if (s.status === STATUS.AUTO) { b.auto++; out.autoSubmitCount++; }
+          var r = s.result || computeResult(s, bank);
+          acc[s.block].pct += r.percent; acc[s.block].n++;
+          var mins = s.startTime && s.submittedAt ? (s.submittedAt - s.startTime) / 60000 : null;
+          if (mins != null) { acc[s.block].mins += mins; allMins.push(mins); }
+          chapters.forEach(function (c) { if (r.chapters[c]) { acc[s.block].ch[c].e += r.chapters[c].earned; acc[s.block].ch[c].p += r.chapters[c].possible; } });
+        }
+        if (s.status === STATUS.SUBMITTED || s.status === STATUS.AUTO) {
+          ids.forEach(function (id) {
+            if ((s.itemSet || []).indexOf(id) < 0) return;
+            var st = s.items[id], ia = itemAcc[id];
+            ia.n++;
+            if (st) { ia.attempts += st.a || 0; ia.credit += st.c || 0; if (st.l) ia.locked++; if (st.ok && st.a === 1) ia.first++; }
+          });
+        }
+      });
+      BLOCKS.forEach(function (b) {
+        var a = acc[b];
+        if (a.n) {
+          out.byBlock[b].avgPercent = round1(a.pct / a.n);
+          out.byBlock[b].avgMinutes = round1(a.mins / a.n);
+          chapters.forEach(function (c) { out.byBlock[b].chapterPercent[c] = a.ch[c].p ? round1(a.ch[c].e / a.ch[c].p * 100) : null; });
+        }
+      });
+      ids.forEach(function (id) {
+        var ia = itemAcc[id], bi = bank.items[id];
+        out.items.push({
+          id: id, chapter: bi.chapter, points: bi.points, n: ia.n,
+          avgAttempts: ia.n ? round2(ia.attempts / ia.n) : null,
+          avgCreditPct: ia.n ? round1(ia.credit / ia.n * 100) : null,
+          firstTryPct: ia.n ? round1(ia.first / ia.n * 100) : null,
+          lockedPct: ia.n ? round1(ia.locked / ia.n * 100) : null
+        });
+      });
+      out.mostMissed = out.items.filter(function (i) { return i.n > 0; }).slice().sort(function (a, b) { return a.avgCreditPct - b.avgCreditPct; }).slice(0, 10);
+      allMins.sort(function (a, b) { return a - b; });
+      if (allMins.length) {
+        out.completion = { n: allMins.length, mean: round1(allMins.reduce(function (a, x) { return a + x; }, 0) / allMins.length), median: round1(allMins[Math.floor(allMins.length / 2)]), min: round1(allMins[0]), max: round1(allMins[allMins.length - 1]) };
+      }
+      out.resets = history.slice(-50).reverse().map(function (h) {
+        return { studentId: h.studentId, name: h.firstName + ' ' + h.lastName, block: h.block, resetAt: h.resetAt, resetNo: h.resetNo, previousStatus: h.status, previousPercent: h.result ? h.result.percent : null, reason: h.reason || '' };
+      });
+      return out;
+    }
+
+    /* =========================================================================================== dispatcher */
+    var STUDENT_ACTIONS = ['ping', 'login', 'begin', 'state', 'submit', 'position', 'finish'];
+    function handle(req) {
+      var t = now();
+      try {
+        if (!req || typeof req !== 'object' || !isStr(req.action)) fail('BAD_REQUEST', 'Malformed request.');
+        var fn = actions[req.action];
+        if (!fn || !Object.prototype.hasOwnProperty.call(actions, req.action)) fail('BAD_REQUEST', 'Unknown action.');
+        if (req.action.charAt(0) === 't' && req.action !== 'teacherLogin') requireTeacher(req);
+        var out = fn(req) || {};
+        out.ok = true; if (out.serverNow == null) out.serverNow = now();
+        return out;
+      } catch (e) {
+        if (e instanceof ApiError) {
+          var r = { ok: false, error: { code: e.code, message: e.message }, serverNow: now() };
+          if (e.extra) Object.keys(e.extra).forEach(function (k) { r[k] = e.extra[k]; });
+          return r;
+        }
+        if (env.log) env.log('INTERNAL ' + (e && e.stack ? e.stack : e));
+        return { ok: false, error: { code: 'INTERNAL', message: 'Something went wrong on the server. Try again in a moment. If it keeps happening, tell your teacher.', detail: env.debug ? String(e && e.stack || e) : undefined }, serverNow: t };
+      }
+    }
+
+    return { handle: handle, sweep: sweep, computeResult: computeResult, actions: actions };
+  }
+
+  return {
+    VERSION: VERSION, BLOCKS: BLOCKS, CREDIT: CREDIT, MAX_ATTEMPTS: MAX_ATTEMPTS, STATUS: STATUS, SUBMISSION: SUBMISSION,
+    createServer: createServer, sha256Hex: sha256Hex, hashPassword: hashPassword, canon: canon, randomCode: randomCode,
+    validateResponse: validateResponse, gradeResponse: gradeResponse, computeResult: computeResult, ApiError: ApiError,
+    normName: normName, normCode: normCode, normId: normId, round2: round2
+  };
+})();
+
+if (typeof module !== 'undefined' && module.exports) module.exports = W8Core;

@@ -1,0 +1,9 @@
+# Answer keys, hints, explanations and the plaintext authoring source NEVER go in git.
+# The encrypted backup lives in vault/ (see docs/SECURITY.md and tools/vault.js).
+authoring/
+private/
+node_modules/
+test-results/
+playwright-report/
+*.local
+.DS_Store

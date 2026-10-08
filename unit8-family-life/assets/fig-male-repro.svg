@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 380" role="img" aria-labelledby="t d">
+  <title id="t">Male reproductive system, side view cross-section (simplified schematic)</title>
+  <desc id="d">A simplified side-view diagram. The bladder sits at the top. Below it is the small, round prostate gland. A narrow tube, the urethra, runs from the bladder through the prostate and along the length of the penis to its tip. In the sac below, an oval testis has a curved epididymis along its back. A narrow tube, the vas deferens, rises from the epididymis, loops up behind the bladder and joins the urethra at the prostate. A small seminal vesicle sits behind the bladder.</desc>
+  <rect width="420" height="380" fill="#f7fbfc"/>
+  <!-- leader lines -->
+  <g stroke="#3d6b78" stroke-width="1.6" fill="none">
+    <path d="M150 300 L240 282"/>
+    <path d="M380 304 L288 286"/>
+    <path d="M380 190 L297 182"/>
+    <path d="M150 112 L209 122"/>
+    <path d="M62 168 L166 214"/>
+  </g>
+  <!-- bladder (context) -->
+  <ellipse cx="232" cy="62" rx="58" ry="36" fill="#d8eef2" stroke="#2f6877" stroke-width="2"/>
+  <text x="232" y="66" text-anchor="middle" font-family="system-ui, sans-serif" font-size="13" font-style="italic" fill="#3d6b78">bladder</text>
+  <!-- seminal vesicle (unlabeled, behind the bladder) -->
+  <ellipse cx="292" cy="98" rx="19" ry="11" transform="rotate(35 292 98)" fill="#bfe0e8" stroke="#2f6877" stroke-width="1.6"/>
+  <!-- penis shaft as a capsule around the urethra -->
+  <path d="M226 170 L110 244" fill="none" stroke="#2f6877" stroke-width="40" stroke-linecap="round"/>
+  <path d="M226 170 L110 244" fill="none" stroke="#e6f3f6" stroke-width="36" stroke-linecap="round"/>
+  <!-- urethra: bladder neck, through the prostate, along the penis -->
+  <path d="M232 94 L232 146 Q232 172 204 190 L112 244" fill="none" stroke="#2f6877" stroke-width="6" stroke-linecap="round"/>
+  <path d="M232 94 L232 146 Q232 172 204 190 L112 244" fill="none" stroke="#e6f3f6" stroke-width="2.2" stroke-linecap="round"/>
+  <!-- prostate -->
+  <ellipse cx="232" cy="122" rx="25" ry="21" fill="#8fc3d0" stroke="#2f6877" stroke-width="2" opacity="0.96"/>
+  <path d="M232 100 L232 144" fill="none" stroke="#e6f3f6" stroke-width="2.2"/>
+  <!-- vas deferens: up from the epididymis, behind the bladder, into the urethra at the prostate -->
+  <path d="M278 240 C304 214 306 160 296 132 C290 114 270 116 256 122" fill="none" stroke="#2f6877" stroke-width="6.5" stroke-linecap="round"/>
+  <path d="M278 240 C304 214 306 160 296 132 C290 114 270 116 256 122" fill="none" stroke="#9ccbd7" stroke-width="3.2" stroke-linecap="round"/>
+  <!-- scrotum, testis, epididymis -->
+  <path d="M214 276 C214 246 240 232 266 236 C298 240 312 264 308 294 C304 330 276 348 248 342 C222 336 214 306 214 276 Z" fill="#eef7f9" stroke="#2f6877" stroke-width="2"/>
+  <ellipse cx="256" cy="288" rx="28" ry="40" transform="rotate(10 256 288)" fill="#8fc3d0" stroke="#2f6877" stroke-width="2"/>
+  <path d="M278 240 C300 252 304 292 288 326" fill="none" stroke="#2f6877" stroke-width="8" stroke-linecap="round"/>
+  <path d="M278 240 C300 252 304 292 288 326" fill="none" stroke="#c4e2ea" stroke-width="4" stroke-linecap="round"/>
+  <text x="14" y="366" font-family="system-ui, sans-serif" font-size="12" fill="#3d6b78">Side view, simplified (not to scale)</text>
+</svg>
