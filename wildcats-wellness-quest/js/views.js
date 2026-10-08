@@ -84,7 +84,7 @@
     var needsCode = function () { return useCode && !started && (st.student.code || '').trim().length < 2; };
     var avs = h('div.avatars', { role: 'radiogroup', 'aria-label': 'Choose your avatar' });
     W.AVATARS.forEach(function (a) { avs.appendChild(h('label.opt', h('input', { type: 'radio', name: 'avatar', value: a.id, checked: st.student.avatar === a.id, disabled: ro || null, 'data-fk': 'av-' + a.id, onchange: function () { st.student.avatar = a.id; env.save(); env.rerender(); } }), h('span.mark', A.iconEl('check')), U.svg(A.avatar(a)), h('span.small', { style: { fontWeight: '700' } }, a.name))); });
-    var begin = function () { st.student.alias = st.student.alias.trim(); st.student.code = (st.student.code || '').trim(); st.progress.started = true; if (!st.timing.startedAt) st.timing.startedAt = U.nowISO(); env.save(true); W.App.go({ m: 0, s: '0.2' }); };
+    var begin = function () { st.student.alias = st.student.alias.trim(); st.student.code = (st.student.code || '').trim(); st.progress.started = true; if (!st.timing.startedAt) st.timing.startedAt = U.nowISO(); if (!st.timing.beganAt) st.timing.beganAt = U.nowISO(); env.save(true); W.App.go({ m: 0, s: '0.2' }); };
     var startBtn = UI.btn(started ? 'Continue to How it works' : 'Start my quest', { cls: 'primary big pulse', id: 'btn-start', icon: 'right', disabled: (C.requireIdentifier && st.student.alias.trim().length < 2) || needsCode(),
       onclick: function () {
         if (!useCode || started) { begin(); return; }
@@ -98,7 +98,7 @@
     env.refreshStart = function () { startBtn.disabled = (C.requireIdentifier && alias.value.trim().length < 2) || needsCode(); };
     var left = h('div.stack', h('div.display', 'Wildcats Wellness Quest', h('br'), h('span', { style: { color: 'var(--brand)' } }, 'Small Choices, Whole Health')),
       h('p.lead', 'Walk the Wildcat High campus with Pounce and Jordan, a fictional classmate. Investigate situations, play a simulation, and show what you understand about wellness.'),
-      h('div.callout.info', A.iconEl('clock'), h('div', h('b', 'Designed for about ' + C.timeGuidance.rangeMinutes[0] + '\u2013' + C.timeGuidance.rangeMinutes[1] + ' minutes. '), 'Some students need more. No timers, no speed points. Progress saves as you go.')));
+      h('div.callout.info', A.iconEl('clock'), h('div', h('b', 'Designed for about ' + C.timeGuidance.rangeMinutes[0] + '\u2013' + C.timeGuidance.rangeMinutes[1] + ' minutes. '), 'You have a ' + (C.timeLimitMinutes > 0 ? C.timeLimitMinutes + '-minute limit, counted from when you press Start; a countdown shows at the top and your work is submitted automatically at zero. ' : 'No timer. ') + 'No speed points. Progress saves as you go.')));
     var form = h('div.card.stack', h('div', h('label.field', { 'for': 'alias' }, C.identifierLabel), alias, h('p.hint-line#alias-help', 'Use the alias or ID your teacher gave you. This is typed text, not a verified identity. Do not enter private health information.')),
       h('div', h('label.field', { 'for': 'period' }, 'Class period (optional)'), period),
       useCode ? h('div', h('label.field', { 'for': 'classcode' }, 'Class code'), code, codeMsg) : null,

@@ -2,6 +2,7 @@
   'use strict';
   // Deterministic grading. All-or-nothing per unit. No keyword matching of free text.
   var MAX_ATTEMPTS = 3;
+  var TIME_LIMIT_MIN = 90;   // hard limit, counted from the moment the student joins; 0 turns it off
   var CREDIT = [1, 0.85, 0.75];
 
   function isStr(x) { return typeof x === 'string'; }
@@ -185,7 +186,7 @@
     return r;
   }
 
-  var api = { MAX_ATTEMPTS: MAX_ATTEMPTS, CREDIT: CREDIT, validateUnit: validateUnit, validateField: validateField, gradeUnit: gradeUnit, gradeField: gradeField,
+  var api = { MAX_ATTEMPTS: MAX_ATTEMPTS, TIME_LIMIT_MIN: TIME_LIMIT_MIN, CREDIT: CREDIT, validateUnit: validateUnit, validateField: validateField, gradeUnit: gradeUnit, gradeField: gradeField,
     creditFor: creditFor, round2: round2, formatKey: formatKey, makeCorrect: makeCorrect, makeWrong: makeWrong };
   if (typeof module !== 'undefined' && module.exports) module.exports = api; else root.CHM_grading = api;
 })(typeof globalThis !== 'undefined' ? globalThis : this);

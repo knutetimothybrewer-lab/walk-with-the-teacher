@@ -32,5 +32,8 @@ export const CONFIG = {
 
   periods: ['Block 1/2', 'Block 3/4', 'Block 6/7', 'Block 8/9'],
   // Display only. Scoring rules live in js/scoring.js (100% / 85% / 75%, three attempts).
+  // Hard time limit, counted from the moment the student starts. When it reaches zero the assessment submits automatically
+  // with whatever has been answered. Set to 0 to turn the limit off.
+  timeLimitMinutes: 90,
   storagePrefix: 'sig'
 };

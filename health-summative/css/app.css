@@ -46,6 +46,9 @@ a { color: var(--teal-d); }
 .progress span { display: block; height: 100%; width: 0; background: linear-gradient(90deg, #6fd3d0, #ffd98a, #ff9a8b); border-radius: 99px; transition: width .6s ease; }
 .bar-chip { font-size: .8rem; font-weight: 700; padding: 3px 10px; border-radius: 99px; background: rgba(255, 255, 255, .14); white-space: nowrap; }
 .bar-chip.soft { background: transparent; border: 1px solid rgba(255, 255, 255, .3); font-weight: 600; }
+.bar-chip.timer { font-variant-numeric: tabular-nums; border: 1px solid rgba(255, 255, 255, .3); }
+.bar-chip.timer.warn { background: rgba(255, 217, 138, .28); color: #ffe9b8; border-color: #ffd98a; }
+.bar-chip.timer.crit { background: #b3261e; color: #fff; border-color: #b3261e; }
 .bar-chip.pts { background: rgba(255, 217, 138, .22); color: #ffe9b8; }
 .bar-btns { display: flex; gap: 8px; margin-left: auto; }
 .bar-btn { background: rgba(255, 255, 255, .14); color: #fff; border: 1px solid rgba(255, 255, 255, .35); border-radius: 12px; padding: 6px 12px; min-height: 40px; font-weight: 700; }

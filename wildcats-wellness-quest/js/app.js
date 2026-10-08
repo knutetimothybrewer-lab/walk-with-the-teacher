@@ -42,6 +42,41 @@
     App.save(true); App.render(true);
   };
 
+  /* ---------- time limit (CONFIG.timeLimitMinutes) ---------- */
+  App.deadline = function () {
+    var st = App.state, lim = W.CONFIG.timeLimitMinutes > 0 ? W.CONFIG.timeLimitMinutes * 60000 : 0;
+    if (!lim || !st || App.ro() || W.Teacher.active || !st.progress.started) return 0;
+    var t = Date.parse(st.timing.beganAt || st.timing.startedAt); return t ? t + lim : 0;
+  };
+  function fmtLeft(ms) { var t = Math.max(0, Math.ceil(ms / 1000)), hh = Math.floor(t / 3600), mm = Math.floor(t % 3600 / 60), ss = t % 60; return hh ? hh + ':' + (mm < 10 ? '0' : '') + mm + ':' + (ss < 10 ? '0' : '') + ss : mm + ':' + (ss < 10 ? '0' : '') + ss; }
+  App.timeChip = function () {
+    var d = App.deadline(); if (!d) return null;
+    return h('span.savechip.timechip#timechip', { role: 'timer' }, h('span.sr-only', 'Time remaining: '), h('span#timeleft', fmtLeft(d - Date.now())));
+  };
+  App.tick = function () {
+    var d = App.deadline(); if (!d) return;
+    var left = d - Date.now(), mins = left / 60000, chip = document.getElementById('timechip'), txt = document.getElementById('timeleft');
+    if (txt) txt.textContent = fmtLeft(left);
+    if (chip) { chip.classList.toggle('warn', mins <= 15 && mins > 5); chip.classList.toggle('crit', mins <= 5); }
+    var w = App.state.timing.warned = App.state.timing.warned || {};
+    for (var i = 0, ms = [15, 5, 1]; i < ms.length; i++) if (mins <= ms[i] && mins > 0 && !w[ms[i]]) { w[ms[i]] = 1; UI.toast(ms[i] + ' minute' + (ms[i] > 1 ? 's' : '') + ' left. Your work will be submitted automatically when time runs out.', 'bad', 9000); UI.announce(ms[i] + ' minutes left.'); break; }
+    if (left <= 0) App.expire();
+  };
+  App.expire = function () {
+    var st = App.state; if (!st || App.ro() || App.submitting) return;
+    App.submitting = true;
+    UI.modalStack.slice().forEach(function (m) { m.close(); });
+    W.ITEMS.forEach(function (it) { var rec = St.ensureItem(st, it.id); if (W.ItemsUI.status(it, rec) === 'ready') P.submit(it, rec, W.ItemsUI.responseOf(it, rec)); });
+    var res = St.submitFinal(st, { force: true });
+    App.submitting = false;
+    if (!res.ok) return;
+    App.state = res.state;
+    if (!res.persisted && !res.already) UI.toast('Time is up. Browser saving is unavailable, so download your final report now.', 'bad', 8000);
+    if (!res.already && W.Sync.enabled() && !W.Teacher.active) { W.Sync.queue(W.Sync.payload(res.state, res.state.final.report)); Sh.startSync(); }
+    UI.toast('Time is up. Your work was submitted.', 'bad', 8000);
+    App.go({ view: 'results' });
+  };
+
   /* ---------- saving ---------- */
   App.save = function (now) {
     if (App.ro() && !now) return;
@@ -110,6 +145,7 @@
     try { var mq = root.matchMedia('(prefers-reduced-motion: reduce)'); mq.addEventListener && mq.addEventListener('change', UI.applyMotion); } catch (e) { /* ignore */ }
     if (!App.ro()) St.save(st);
     App.render(true);
+    root.setInterval(App.tick, 1000); App.tick();
     if (App.ro() && W.Sync.enabled() && W.Sync.pending()) W.Shell.startSync();
     if (init.mode === 'resumed' && pr.started) UI.toast('Welcome back. Your saved work was restored.', 'ok');
     if (init.notices.indexOf('active-inconsistent') >= 0 || init.notices.indexOf('marker-inconsistent') >= 0) {

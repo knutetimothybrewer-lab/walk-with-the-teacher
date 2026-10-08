@@ -22,7 +22,10 @@
     // Maximum share of an item's points available on attempt 1, 2, 3 (teacher-selected grading policy).
     caps: [1, 0.9, 0.75],
 
-    // Pacing guidance only. Nothing is ever enforced, timed out or speed-scored.
+    // Hard time limit in minutes, counted from the moment the student presses Begin (the clock keeps running across refreshes).
+    // At zero, any answer that is selected but not yet submitted is submitted, the assessment is locked and sent, and anything
+    // unanswered earns 0. Set to 0 for no limit. The pacing guide below is guidance only and is never speed-scored.
+    timeLimitMinutes: 90,
     timeGuidance: { targetMinutes: 36, rangeMinutes: [30, 40], extendedMultiplier: 1.5, extendedTime: false },
     // Show optional deeper-exploration extras inside missions (never required, never scored).
     extendedExploration: false,

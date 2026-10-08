@@ -32,6 +32,36 @@ export const app = {
     if (existing) { this.session = existing; this.plan = buildPlan(content, existing, cfg); }
     screens.welcome(this, existing);
     this.chrome();
+    setInterval(() => this.tickTimer(), 1000);
+  },
+
+  /* ---------- time limit ---------- */
+  limitMinutes(s) {
+    const ov = (s && s.settings) || {};
+    if (typeof ov.timeLimitMinutes === 'number') return ov.timeLimitMinutes;
+    return ov.extendedTime ? 0 : (cfg.timeLimitMinutes || 0);
+  },
+  fmtLeft(ms) {
+    const t = Math.max(0, Math.ceil(ms / 1000)), hh = Math.floor(t / 3600), mm = Math.floor(t % 3600 / 60), ss = t % 60;
+    return hh ? `${hh}:${String(mm).padStart(2, '0')}:${String(ss).padStart(2, '0')}` : `${mm}:${String(ss).padStart(2, '0')}`;
+  },
+  tickTimer() {
+    const s = this.session, chip = $('#timeChip');
+    const lim = s && !s.teacher && s.status !== 'final' ? this.limitMinutes(s) : 0;
+    if (!lim) { chip.hidden = true; return; }
+    const left = s.startedAt + lim * 60000 - Date.now(), mins = left / 60000;
+    chip.hidden = false; $('#timeVal').textContent = this.fmtLeft(left);
+    chip.classList.toggle('warn', mins <= 15 && mins > 5); chip.classList.toggle('crit', mins <= 5);
+    s.timeWarned = s.timeWarned || {};
+    for (const m of [15, 5, 1]) if (mins <= m && mins > 0 && !s.timeWarned[m]) { s.timeWarned[m] = 1; s.save(); announce(`${m} minute${m > 1 ? 's' : ''} left. Your answers will be submitted automatically when time runs out.`); break; }
+    if (left <= 0) this.timeExpired();
+  },
+  timeExpired() {
+    const s = this.session; if (!s || s.status === 'final') return;
+    document.querySelectorAll('dialog[open]').forEach(d => d.close());
+    s.timedOut = true;
+    this.finish();
+    announce('Time is up. Your answers were submitted.');
   },
 
   async start(student, { retakeOf } = {}) {
@@ -187,7 +217,7 @@ export const app = {
       };
     });
     return {
-      v: 1, assessmentVersion: cfg.assessmentVersion, student: s.student, retakeNo: s.retakeNo,
+      v: 1, assessmentVersion: cfg.assessmentVersion, timedOut: !!s.timedOut, student: s.student, retakeNo: s.retakeNo,
       startedAt: s.startedAt, endedAt: s.endedAt, totalSeconds: Math.round((s.endedAt - s.startedAt) / 1000),
       activeSeconds: Math.round(s.activeMs / 1000),
       percent: t.percent, earned: t.earned, possible: t.possible, completion: s.completion,
@@ -220,6 +250,7 @@ export const app = {
     const s = this.session, p = this.plan;
     const active = s && s.status !== 'final' && p;
     $('#barMid').hidden = !s;
+    this.tickTimer();
     $('#trailBtn').hidden = !(s && p);
     if (!s || !p) { setSky(0); return; }
     const total = p.all.length;
@@ -236,10 +267,10 @@ export const app = {
     const target = Math.round(earned * 10) / 10;
     if (animatePts && !settings.reducedMotion()) countTo(val, parseFloat(val.textContent) || 0, target);
     else val.textContent = String(target);
-    // gentle pace hint (never a cutoff)
+    // gentle pace hint (hidden while a hard time limit is active)
     const pace = $('#paceChip');
     const ov = s.settings || {};
-    const showPace = cfg.features.paceIndicator && !ov.extendedTime && s.status !== 'final';
+    const showPace = cfg.features.paceIndicator && !ov.extendedTime && s.status !== 'final' && !this.limitMinutes(s);
     pace.hidden = !showPace;
     if (showPace) {
       let sec = 0;

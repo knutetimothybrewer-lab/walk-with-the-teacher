@@ -50,6 +50,7 @@
       h('h1', 'Mission report'), h('p', f.student.name + ' · Roster ID ' + f.student.rosterId + (f.student.period ? ' · Period ' + f.student.period : '') + (f.student.section ? ' · ' + f.student.section : '')),
       h('div.scorebox', h('div.big', r.pctDisplay + '%'), h('div', h('strong', CHM.pts(r.earned) + ' of ' + r.possible + ' points'), h('div.small', 'Earned grade = points earned ÷ total points × 100')),
         h('div.stats', h('span', h('strong', r.completed + ' of ' + r.units), ' questions completed'), h('span', h('strong', r.correct), ' answered correctly'), h('span', h('strong', r.firstTryCorrect), ' correct on the first attempt'), h('span', h('strong', r.attempts), ' attempts submitted in all'))),
+      f.timedOut ? h('p.fbox.warn', { role: 'status' }, h('strong', 'Time limit reached. '), 'Your time ran out, so the answers you had submitted were locked and sent automatically. Anything unfinished counts as 0.') : null,
       h('div.statusrow', chip('ok', '✓ Progress saved'), chip('ok', '✓ Finalized on server · ' + stamp(f.finalizedAt)), gbChip, retry),
       h('p.small', 'Receipt ID: ', h('strong.mono', f.receiptId), ' · Server time: ' + stamp(f.finalizedAt) + ' · Time from start: about ' + Math.round(f.elapsedMinutes) + ' min (guide only)'),
       h('div.row.noprint', h('button.btn', { type: 'button', onclick: function () { window.print(); } }, '🖨 Print receipt'), h('button.btn', { type: 'button', onclick: function () { CHM.download('receipt-' + f.receiptId + '.txt', receiptText(f)); } }, '⬇ Download receipt')));

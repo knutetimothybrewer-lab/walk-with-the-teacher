@@ -203,3 +203,6 @@ table.tbl td.neg { color: var(--bad); } table.tbl td.pos { color: var(--ok); } t
 .teacher-bar .tm-note { opacity: .9; font-size: .9rem; margin-right: auto; }
 body:has(.teacher-bar) { padding-bottom: 84px; }
 @media print { .teacher-bar { display: none; } }
+.savechip.timechip { font-variant-numeric: tabular-nums; }
+.savechip.timechip.warn { background: var(--warn-soft); color: var(--warn); border-color: #f0cf9b; }
+.savechip.timechip.crit { background: #b3261e; color: #fff; border-color: #b3261e; }

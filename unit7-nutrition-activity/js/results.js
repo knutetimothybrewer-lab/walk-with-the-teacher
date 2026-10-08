@@ -31,6 +31,7 @@ export function renderResults(host, { session, totals, submit, onRetry, onDownlo
   const screen = h('section.screen', { 'aria-labelledby': 'rh' },
     h('div.kicker', 'Mission complete'), h('h1.complete-banner#rh', 'UNIT 7 COMPLETE'),
     h('div.row', { style: { marginBottom: '.6rem' } }, h('strong', `${st.first} ${st.last}`), h('span.pill', st.block), previewNote ? h('span.pill.demo', 'PREVIEW') : ''),
+    s.timedOut ? h('div.panel', { role: 'status' }, h('strong', 'Time limit reached.'), ` The ${Math.round((s.completedAt - s.startedAt) / 60000)}-minute limit ended, so your answers so far were submitted automatically. Anything left unanswered counts as 0.`) : '',
     h('div.grid2', { style: { alignItems: 'stretch' } },
       h('div.panel', big, mode === 'hidden' ? h('p.lead', 'Your score will be shared by your teacher.') : pts, h('p.muted', { style: { marginTop: '.5rem' } }, `Completion time: ${fmtDur(s.activeMs)} active (${fmtDur(wall)} total)`)),
       statusBox),

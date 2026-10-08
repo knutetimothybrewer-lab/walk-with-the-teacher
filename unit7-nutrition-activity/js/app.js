@@ -80,7 +80,35 @@ function updateHud() {
     m && s.pos.s >= 0 && !s.completedAt ? h('span.stepc', `Step ${Math.min(s.pos.s + 1, m.resolved.length)} of ${m.resolved.length}`) : '');
 }
 let clockIv = null;
-function startClock() { clearInterval(clockIv); clockIv = setInterval(() => { if (!session || session.state.completedAt) return; session.tickActive(); const sec = Math.floor(session.state.activeMs / 1000); document.getElementById('clock').textContent = `${Math.floor(sec / 60)}:${String(sec % 60).padStart(2, '0')}`; if (sec % 10 === 0) session.save(); }, 1000); }
+// ---- hard time limit (CONFIG.timeLimitMinutes): counted on the wall clock from state.startedAt, so refreshing or reopening cannot add time.
+const limitMs = () => (CONFIG.timeLimitMinutes > 0 ? CONFIG.timeLimitMinutes * 60000 : 0);
+const fmtClock = (ms) => { const t = Math.max(0, Math.ceil(ms / 1000)), hh = Math.floor(t / 3600), mm = Math.floor(t % 3600 / 60), ss = t % 60; return hh ? `${hh}:${String(mm).padStart(2, '0')}:${String(ss).padStart(2, '0')}` : `${mm}:${String(ss).padStart(2, '0')}`; };
+function paintCountdown() {
+  const box = document.getElementById('countdown'), lim = limitMs();
+  if (!lim || !session || session.state.completedAt || (PREVIEW && !session.state.timeLimitOn)) { box.hidden = true; return false; }
+  const left = session.state.startedAt + lim - Date.now(), mins = left / 60000;
+  box.hidden = false; document.getElementById('countdown-text').textContent = fmtClock(left);
+  box.classList.toggle('warn', mins <= 15 && mins > 5); box.classList.toggle('crit', mins <= 5);
+  const s = session.state, warned = s.timeWarned || (s.timeWarned = {});
+  for (const m of [15, 5, 1]) if (mins <= m && mins > 0 && !warned[m]) { warned[m] = 1; toast(`${m} minute${m > 1 ? 's' : ''} left. Your answers will be submitted automatically when time runs out.`); break; }
+  return left <= 0;
+}
+async function timeExpired() {
+  if (!session || session.state.completedAt) return;
+  clearCurrent(); const d = document.getElementById('dlg'); if (d.open) d.close();
+  session.state.timedOut = true; toast('Time is up. Submitting your answers now.');
+  await finalize();
+}
+function startClock() {
+  clearInterval(clockIv);
+  const tick = () => {
+    if (!session || session.state.completedAt) { document.getElementById('countdown').hidden = true; return; }
+    session.tickActive(); const s = Math.floor(session.state.activeMs / 1000);
+    document.getElementById('clock').textContent = `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`; if (s % 10 === 0) session.save();
+    if (paintCountdown()) timeExpired();
+  };
+  clockIv = setInterval(tick, 1000); tick();
+}
 
 // ---------------------------------------------------------------------------------- grading
 async function grade(q, resp, n) {

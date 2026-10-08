@@ -9,7 +9,7 @@ const write = (p, s) => { const f = path.join(ROOT, p); fs.mkdirSync(path.dirnam
 const jsonSafe = o => JSON.stringify(o).replace(/</g, '\\u003c').replace(new RegExp('\\u2028', 'g'), '\\u2028').replace(new RegExp('\\u2029', 'g'), '\\u2029');
 
 const css = ['tokens', 'app', 'visuals'].map(n => read('web/css/' + n + '.css')).join('\n');
-const FRONT = ['00-util', '10-transport', '30-map', '40-fields', '50-explorers-a', '51-explorers-b', '60-app', '65-final', '70-teacher'].map(n => read('web/js/' + n + '.js')).join('\n');
+const FRONT = ['00-util', '10-transport', '30-map', '40-fields', '50-explorers-a', '51-explorers-b', '60-app', '62-timer', '65-final', '70-teacher'].map(n => read('web/js/' + n + '.js')).join('\n');
 const grading = read('server/grading.js');
 const core = read('server/core.js');
 const memory = read('server/stores/memory.js');

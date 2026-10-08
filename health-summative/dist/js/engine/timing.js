@@ -1,5 +1,5 @@
 /* timing.js — estimated seconds for a typical student. Used by the gentle pace
-   hint in the app and by tools/timing.js to produce TIMING.md. Never enforced. */
+   hint in the app and by tools/timing.js to produce TIMING.md. Guidance only; the enforced limit is config.timeLimitMinutes. */
 
 const WPS = 3.5; // typical 15-year-old, easy text on a screen: about 210 words per minute
 
