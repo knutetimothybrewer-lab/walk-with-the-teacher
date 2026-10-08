@@ -23,11 +23,11 @@ export const CONFIG = {
 
   // ---- 4. TEACHER CODES (stored as one-way hashes so they are not readable in this file) -----------
   // Make a hash: open  teacher/setup.html  in your site, type the code, copy the line it gives you.
-  //   Default RESET code:    RESET-7-TEACHER      <- CHANGE IT
-  //   Default PREVIEW code:  PREVIEW-7-TEACHER    <- CHANGE IT
+  //   RESET code:    WALK-TEACHER
+  //   PREVIEW (teacher mode) code:  WALK-TEACHER
   //   Default DASHBOARD code (offline sandbox only): DASH-7-TEACHER  <- CHANGE IT
-  resetCodeHash: '54b1d4c7de21fe4d04bf12bce580c43d2987c685f00c173111cae77ca965b46d',   // = RESET-7-TEACHER (CHANGE IT)
-  previewPasscodeHash: 'e913367ae59e322feb8da114a487bb25d4d5427766d748f16391adc90c502d73', // = PREVIEW-7-TEACHER (CHANGE IT)
+  resetCodeHash: '75612e18810b17804293b21e1a4c7e6fb95d76a34e49a787586ba595164ef948',   // = WALK-TEACHER
+  previewPasscodeHash: 'e9cbdc47081386550e24c3f5602658f4b0090588bf01d2f18ffe23d68a128861', // = WALK-TEACHER
   teacherPasscodeHash: '09a30742d010e8a1ed49aab9af8963d0cd82de35fbc1973af8e816bdb2d58ce5',  // = DASH-7-TEACHER (CHANGE IT)
   hashSalt: 'u7-v1',          // do not change after you have made hashes
 

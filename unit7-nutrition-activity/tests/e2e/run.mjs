@@ -12,7 +12,7 @@ import { loadAuthored, authored, setAnswer, check, statusOf, exploreScene, findC
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 await loadAuthored();
 const PORT = 8097, BPORT = 8098, BASE = `http://localhost:${PORT}`;
-const env = makeEnv(root); env.run('setupGradebook()'); env.props.RESET_CODE = 'RESET-7-TEACHER';
+const env = makeEnv(root); env.run('setupGradebook()'); env.props.RESET_CODE = 'WALK-TEACHER';
 const backend = http.createServer((req, res) => { let b = ''; req.on('data', (c) => (b += c)); req.on('end', () => { res.setHeader('Access-Control-Allow-Origin', '*'); res.setHeader('Content-Type', 'application/json'); if (req.method === 'OPTIONS') { res.setHeader('Access-Control-Allow-Headers', '*'); return res.end(); } res.end(env.sandbox.doPost({ postData: { contents: b } })._s); }); });
 await new Promise((r) => backend.listen(BPORT, r));
 const web = await startStatic(PORT);
@@ -101,7 +101,7 @@ try {
     ok('same student cannot begin again, even with cleared storage or another device (server records completion)', (await q2.locator('#e-msg').innerText()).includes('already submitted'));
     await q2.click('text=Teacher reset'); await q2.fill('#dlg input[type=password]', 'wrong-code'); await q2.fill('#dlg input[placeholder="Student first name"]', 'Maya'); await q2.fill('#dlg input[placeholder="Student last name"]', 'Okafor'); await q2.selectOption('#dlg select', 'Block 6/7'); await q2.click('text=Reset this student');
     ok('wrong reset code is refused', (await q2.locator('#dlg .err').innerText()).includes('not correct'));
-    await q2.fill('#dlg input[type=password]', 'RESET-7-TEACHER'); await q2.click('text=Reset this student'); await q2.waitForTimeout(800);
+    await q2.fill('#dlg input[type=password]', 'WALK-TEACHER'); await q2.click('text=Reset this student'); await q2.waitForTimeout(800);
     ok('reset marks the earlier sheet row superseded', env.book.get('MASTER RESULTS')[1][26] === 'RESET: superseded');
     await signIn(q2, 'Maya', 'Okafor', 'Block 6/7', 'UNIT7'); await q2.waitForSelector('text=Welcome', { timeout: 8000 }); ok('after reset the student can start again', true);
     ok('no console errors after reset', q2.errs.length === 0, q2.errs.join('|')); await q2.context().close();
@@ -129,7 +129,7 @@ try {
     ok('no console errors on the dashboard', p.errs.length === 0, p.errs.join('|')); await p.context().close(); }
 
   // ---- 5. preview mode
-  { const p = await newPage(); p.on('dialog', (d) => d.accept('PREVIEW-7-TEACHER')); await p.goto(BASE + '/index.html?preview'); await p.waitForSelector('.pv-banner'); await p.waitForSelector('article.item');
+  { const p = await newPage(); p.on('dialog', (d) => d.accept('WALK-TEACHER')); await p.goto(BASE + '/index.html?preview'); await p.waitForSelector('.pv-banner'); await p.waitForSelector('article.item');
     ok('Preview Mode is visibly labelled', (await p.locator('.pv-banner').innerText()).includes('PREVIEW MODE') && (await p.locator('#pv').count()) === 1);
     await p.locator('#pv button', { hasText: 'Questions' }).click(); await p.locator('#pv button', { hasText: 'Show correct answer' }).first().click(); await p.waitForTimeout(200);
     ok('preview shows the correct answer', (await p.locator('#pv pre').first().innerText()).trim().length >= 1);

@@ -195,7 +195,7 @@ test('health-sensitive design: no weights, BMI, dieting, calorie-restriction goa
 test('config: default teacher codes hash correctly; four blocks exactly as specified', () => {
   assert.deepEqual(CONFIG.blocks, ['Block 1/2', 'Block 3/4', 'Block 6/7', 'Block 8/9']);
   const h = (k, v) => sha256(CONFIG.hashSalt + '|' + k + '|' + v);
-  assert.equal(CONFIG.resetCodeHash, h('reset', 'RESET-7-TEACHER')); assert.equal(CONFIG.previewPasscodeHash, h('preview', 'PREVIEW-7-TEACHER')); assert.equal(CONFIG.teacherPasscodeHash, h('dash', 'DASH-7-TEACHER'));
+  assert.equal(CONFIG.resetCodeHash, h('reset', 'WALK-TEACHER')); assert.equal(CONFIG.previewPasscodeHash, h('preview', 'WALK-TEACHER')); assert.equal(CONFIG.teacherPasscodeHash, h('dash', 'DASH-7-TEACHER'));
   assert.ok(CONFIG.classCodes.length >= 1); assert.ok(['full', 'score', 'hidden'].includes(CONFIG.studentResults));
 });
 
