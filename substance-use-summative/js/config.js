@@ -10,7 +10,7 @@ export const CONFIG = {
   teacherName: '',
 
   // --- Results backend (Google Apps Script web app URL ending in /exec). Leave '' to run without one.
-  backendUrl: '',
+  backendUrl: 'https://script.google.com/macros/s/AKfycbxZNAfsYSW0ie_Z4TWPgpyKLIIh6AxG2QLh8Zn1K6kdvPJ8ihQugEjBmLI0OGkwZlrFyQ/exec',
   backendKind: 'apps-script',        // 'apps-script' (full features) or 'webhook' (submit-only; e.g. Power Automate)
   allowOfflineStart: true,           // if the server cannot be reached, still allow a valid local code to begin
   gradingMode: 'local',              // 'local' (hashed keys in the page) or 'server' (build with --strip; needs backend)
