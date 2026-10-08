@@ -37,6 +37,8 @@ function openSettings() {
     h('div.toggle', h('label', h('strong', 'Animation'), h('div.small.muted', 'Motion never carries information that is not also in text.')), motion),
     tog('sound', 'Sound effects', 'Short tones after you check an answer. Off by default.'), tog('timer', 'Show timer', 'Shows time on task in the top bar. Off by default.'),
     storageWorks() ? '' : h('p.err', 'This browser is blocking saved progress. Do not close this tab.'),
+    // Demo sessions only (DEMO2026): lets a teacher test again without clearing browser data. Real sessions can never be restarted by the student.
+    session && session.state.demo ? h('div.toggle', h('div', h('strong', 'Start over (demo only)'), h('div.small.muted', 'Erases this DEMO session and returns to sign-in.')), h('button.btn.small.warn', { type: 'button', onclick: () => { const st = session.state; store.clearSession(); store.clearLock(st.student.name, st.student.code); location.reload(); } }, 'Start over')) : '',
     h('div.dlg-actions', h('button.btn.primary', { type: 'button', onclick: () => d.close() }, 'Done')));
   d.showModal();
 }
