@@ -197,3 +197,9 @@ table.tbl td.neg { color: var(--bad); } table.tbl td.pos { color: var(--ok); } t
 @media (max-width: 640px) { .actionbar { margin-left: calc(var(--s3) * -1); margin-right: calc(var(--s3) * -1); } .post-top { flex-wrap: wrap; } }
 
 .how h2, .daygroup > h2 { font-size: var(--t-md); } .daygroup > h2 { margin: var(--s4) 0 var(--s2); display: flex; gap: var(--s2); align-items: center; } .card > h2:first-child { margin-top: 0; }
+
+/* ---------- teacher mode bar (shown only after the teacher passcode opens teacher mode) ---------- */
+.teacher-bar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 60; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; padding: 8px 14px; background: #2b1a4a; color: #fff; border-top: 3px solid #f5b83d; box-shadow: 0 -6px 20px rgba(0, 0, 0, .3); }
+.teacher-bar .tm-note { opacity: .9; font-size: .9rem; margin-right: auto; }
+body:has(.teacher-bar) { padding-bottom: 84px; }
+@media print { .teacher-bar { display: none; } }

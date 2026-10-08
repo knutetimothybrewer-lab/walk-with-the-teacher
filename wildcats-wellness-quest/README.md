@@ -65,6 +65,10 @@ Give students **one link**. Each student enters the alias or ID you assign, work
 | `letterGrades` | disabled | Optional letter grade (boundaries use the unrounded total) |
 | `assessmentVersion` | `wwq-1.0` | Part of browser-storage keys; change only between class sets (see setup guide) |
 
+## Teacher mode (click through without answering)
+
+**Teacher reset** (footer) -> enter your teacher passcode -> **Open teacher mode**. All missions open, and a bar offers **Fill this step / Fill this mission / Fill everything and review** so you can see every screen, the Review page and the Results page. It runs only in that tab, never touches a student's saved record and sends nothing to the Sheet. See [docs/TEACHER_SETUP.md](docs/TEACHER_SETUP.md).
+
 ## Scoring and attempts
 
 - Item score = **rubric fraction x item points x attempt cap** (100% / 90% / 75%). The best earned value across attempts is kept; only the final total is rounded (displayed to one decimal; letter boundaries use the unrounded total).

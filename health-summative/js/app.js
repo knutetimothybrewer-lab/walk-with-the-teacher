@@ -12,6 +12,7 @@ import { checkClassCode, queueFinal, startRetryLoop } from './engine/sync.js';
 import { completionCode } from './engine/code.js';
 import { plain } from './ui/dom.js';
 import { initSky, setSky } from './ui/sky.js';
+import { isTeacherCode, TEACHER_STUDENT } from './engine/teacher.js';
 
 const cfg = config;
 const root = $('#app');
@@ -50,6 +51,51 @@ export const app = {
     if (local) { this.session = local; this.plan = buildPlan(content, local, cfg); settings.applyOverride(override); return { ok: true, resumed: 'progress' }; }
     void retakeOf;
     return this.begin(student, check, 0, override);
+  },
+
+  /** Teacher mode: a fresh, throwaway session that never talks to the Sheet. */
+  async startTeacher(rawCode) {
+    if (!(await isTeacherCode(cfg, rawCode))) return false;
+    const student = { ...TEACHER_STUDENT };
+    Session.remove(cfg, studentKey(student));
+    const sess = Session.create(student, cfg, { codeVerified: 'teacher' });
+    sess.teacher = true;
+    this.session = sess; this.plan = buildPlan(content, sess, cfg);
+    sess.save();
+    return true;
+  },
+
+  /** Teacher mode: one button that moves forward from wherever you are. Questions are marked
+      as skipped (full points, nothing recorded). */
+  teacherNext() {
+    const s = this.session; if (!s || !s.teacher || s.status === 'final') return;
+    const { station, step, phase } = s.pos; const st = this.plan.stations[station];
+    if (phase === 'intro') return this.beginStation();
+    if (phase === 'end') return this.nextStation();
+    const rec = st.steps[step];
+    if (!rec.explore) s.skip(rec);
+    this.next();
+  },
+  teacherSkipStation() {
+    const s = this.session; if (!s || !s.teacher || s.status === 'final') return;
+    this.plan.stations[s.pos.station].steps.forEach(r => { if (!r.explore) s.skip(r); });
+    s.stationsDone[s.pos.station] = true;
+    this.go({ phase: 'end' });
+  },
+  teacherToResults() {
+    const s = this.session; if (!s || !s.teacher || s.status === 'final') return;
+    this.plan.all.forEach(r => { if (!r.explore) s.skip(r); });
+    this.plan.stations.forEach(st => { s.stationsDone[st.index] = true; });
+    this.finish();
+  },
+  teacherJump(stationIdx) {
+    const s = this.session; if (!s || !s.teacher || s.status === 'final') return;
+    this.go({ station: stationIdx, step: 0, phase: 'intro' });
+  },
+  teacherExit() {
+    const s = this.session; if (s) Session.remove(cfg, s.sk);
+    document.getElementById('teacherBar') && document.getElementById('teacherBar').remove();
+    this.switchStudent();
   },
 
   begin(student, check, retakeNo, override) {
@@ -123,6 +169,7 @@ export const app = {
     s.completion = completionCode({ first: s.student.first, last: s.student.last, code: s.student.code, percent: t.percent, earned: t.earned, endedAt: s.endedAt });
     s.status = 'final';
     s.save();
+    if (s.teacher) { this.render(); return; }
     queueFinal(cfg, this.payload());
     this.retry = startRetryLoop(cfg, (r) => { s.sent = r.pending === 0 && !r.noBackend; s.save(); screens.updateSync && screens.updateSync(this, r); });
     this.render();
@@ -152,7 +199,24 @@ export const app = {
   /* ---------- chrome: header, progress, sky, pace ---------- */
   secondsFor(rec) { return rec.explore ? 30 : estimateSeconds(rec.item, content.passages); },
 
+  teacherBar() {
+    const s = this.session, old = document.getElementById('teacherBar');
+    if (!(s && s.teacher && this.plan)) { if (old) old.remove(); return; }
+    const fin = s.status === 'final';
+    const bar = old || h('div', { id: 'teacherBar', class: 'teacher-bar', role: 'region', 'aria-label': 'Teacher mode controls' });
+    const btn = (label, fn, id, primary) => { const b = h('button', { type: 'button', class: primary ? 'btn-primary' : 'btn-quiet', id }, label); b.addEventListener('click', fn); return b; };
+    const jump = h('select', { id: 'tm-jump', 'aria-label': 'Jump to station' }, h('option', { value: '' }, 'Jump to station…'),
+      ...this.plan.stations.map(st => h('option', { value: String(st.index) }, `${st.num}. ${st.short || st.title}`)));
+    jump.addEventListener('change', () => { if (jump.value !== '') this.teacherJump(Number(jump.value)); });
+    bar.replaceChildren(
+      h('strong', {}, 'Teacher mode'), h('span', { class: 'tm-note' }, 'Nothing is scored or sent.'),
+      ...(fin ? [] : [btn('Next →', () => this.teacherNext(), 'tm-next', true), btn('Skip station', () => this.teacherSkipStation(), 'tm-station'), btn('Skip to results', () => this.teacherToResults(), 'tm-results'), jump]),
+      btn('Exit teacher mode', () => this.teacherExit(), 'tm-exit'));
+    if (!old) document.body.append(bar);
+  },
+
   chrome(animatePts) {
+    this.teacherBar();
     const s = this.session, p = this.plan;
     const active = s && s.status !== 'final' && p;
     $('#barMid').hidden = !s;

@@ -138,6 +138,18 @@ First name, last name or initial, class period, the class code, scores, per-ques
 * **Skip** on sensitive questions and both conversation scenes (full credit, logged only as "skipped").
 * Keyboard operable everywhere (including sorting without drag), screen-reader live regions, visible focus, never color alone (every state has an icon and hidden text), text size and dyslexia-friendly font options, `prefers-reduced-motion` respected, optional read-aloud (browser voice, no network). Red and orange appear **only** on the Red Flags station and the Help dialog.
 
+## 10b. Teacher mode (click through without answering)
+
+On the first screen, type the teacher code into the **Class code** box (leave name and period blank) and press **Start the trail**. Default code: `WALK-TEACHER` (not case-sensitive). A purple bar appears at the bottom:
+
+* **Next →** moves forward from wherever you are (intro, each question, station end). Questions are skipped, not answered.
+* **Skip station**, **Jump to station…**, **Skip to results** (shows the results page at 100%).
+* **Exit teacher mode** removes the preview and returns to the sign-in screen.
+
+Teacher mode never calls the Sheet (not even to check the code), never queues a score and is labelled "nothing was recorded" on the results page. It uses its own saved record ("Teacher Preview"), so it cannot collide with a student's.
+
+Change the code: `node tools/teacher-code.js "YOUR NEW CODE"` and paste the line it prints over `teacherCodeHash` in `config.js` (then `npm run build`). Set it to `''` to switch teacher mode off. Like the class codes, this is a classroom gate rather than real security: the app runs in the browser.
+
 ## 11. Testing and tools
 
 ```

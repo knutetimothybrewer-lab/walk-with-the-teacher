@@ -156,5 +156,24 @@ await ok('Preview Mode is hidden from students and needs the passcode', async ()
   await ctx.close();
 });
 
+await ok('Preview Mode: Continue is never locked, so the whole assessment can be clicked through without answering', async () => {
+  const { ctx, p } = await fresh();
+  p.once('dialog', (d) => d.accept('SIGNAL-PREVIEW')); await p.goto(URL + '?preview=1'); await p.waitForSelector('#pv'); await p.waitForSelector('article.item');
+  let steps = 0;
+  while (steps++ < 400) {
+    const nb = p.locator('.navrow .btn.primary');
+    if (await p.locator('text=Ready to submit?').count()) break;
+    assert.equal(await nb.isDisabled(), false, 'Continue open on step ' + steps);
+    await p.locator('#pv-next').click(); await p.waitForTimeout(40);
+  }
+  await p.waitForSelector('text=Ready to submit?');
+  assert.ok(steps > 10, 'walked many steps (' + steps + ')');
+  // a normal student still cannot skip
+  const s2 = await fresh(); await login(s2.p); await toFirstMission(s2.p);
+  await s2.p.waitForSelector('article.item, .simhost');
+  assert.equal(await s2.p.locator('.navrow .btn.primary').first().isDisabled(), true, 'students stay gated');
+  await s2.ctx.close(); await ctx.close();
+});
+
 console.log(results.join('\n')); await b.close(); srv.close();
 process.exit(results.some((r) => r.startsWith('FAIL')) ? 1 : 0);
