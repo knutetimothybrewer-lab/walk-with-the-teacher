@@ -1757,7 +1757,7 @@ CHM.explorers.plain = function (data) { return h('div.callout', data.note || '')
       h('label.fl', 'Class code', h('input', { name: 'code', required: true, autocomplete: 'off', autocapitalize: 'characters', oninput: function (e) { f.classCode = e.target.value; } })),
       h('label.fl', 'Roster ID (from your teacher)', h('input', { name: 'roster', required: true, autocomplete: 'off', oninput: function (e) { f.rosterId = e.target.value; } })),
       h('label.fl', 'Display name', h('input', { name: 'name', required: true, autocomplete: 'off', oninput: function (e) { f.name = e.target.value; } })),
-      h('label.fl', 'Class period', h('input', { name: 'period', autocomplete: 'off', oninput: function (e) { f.period = e.target.value; } })), tokenRow, err, go,
+      h('label.fl', 'Class block', h('select', { name: 'period', onchange: function (e) { f.period = e.target.value; } }, [''].concat(['Block 1/2', 'Block 3/4', 'Block 6/7', 'Block 8/9']).map(function (b) { return h('option', { value: b }, b || 'Choose your block\u2026'); }))), tokenRow, err, go,
       h('p.small', 'Privacy: use only the roster ID and name your teacher asked for. Do not type health information about yourself or anyone else. Every scenario in this assessment is fictional.'));
     var intro = h('section.hero', h('div.hero-art', CHM.guideSvg(84)), h('h1', 'Community Health Mission'),
       h('p.lead', 'Join the youth advisory team. Investigate a fictional county, make evidence-based decisions, and present a plan to the community.'),

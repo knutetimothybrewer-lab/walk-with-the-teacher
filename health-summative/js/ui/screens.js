@@ -28,7 +28,7 @@ function welcome(app, existing) {
   const field = (id, label, input, hint) => h('div', { class: 'field' }, h('label', { for: id }, label), input, hint ? h('small', { id: id + '-h' }, hint) : null);
   const first = h('input', { id: 'f-first', name: 'first', type: 'text', autocomplete: 'off', maxlength: '30', required: true, 'aria-describedby': 'f-first-h' });
   const last = h('input', { id: 'f-last', name: 'last', type: 'text', autocomplete: 'off', maxlength: '30', required: true, 'aria-describedby': 'f-last-h' });
-  const period = h('select', { id: 'f-period', name: 'period', required: true }, h('option', { value: '' }, 'Choose…'), ...cfg.periods.map(p => h('option', { value: p }, p === 'Other' ? 'Other' : `Period ${p}`)));
+  const period = h('select', { id: 'f-period', name: 'period', required: true }, h('option', { value: '' }, 'Choose…'), ...cfg.periods.map(p => h('option', { value: p }, /^\d+$/.test(p) ? `Period ${p}` : p)));
   const code = h('input', { id: 'f-code', name: 'code', type: 'text', autocomplete: 'off', autocapitalize: 'characters', spellcheck: 'false', maxlength: '20', required: true, 'aria-describedby': 'f-code-h' });
 
   if (existing && existing.status !== 'final') {

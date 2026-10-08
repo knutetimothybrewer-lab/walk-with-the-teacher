@@ -77,7 +77,8 @@
   Views.setup = function (m, stage, env) {
     var st = env.state, C = W.CONFIG, started = st.progress.started, ro = env.readOnly;
     var alias = h('input.txt#alias', { type: 'text', maxlength: '60', autocomplete: 'off', 'data-fk': 'alias', value: st.student.alias, disabled: ro || null, 'aria-describedby': 'alias-help', oninput: function (e) { st.student.alias = e.target.value.slice(0, 60); env.save(); env.refresh(); } });
-    var period = h('input.txt#period', { type: 'text', maxlength: '20', autocomplete: 'off', 'data-fk': 'period', value: st.student.period, disabled: ro || null, oninput: function (e) { st.student.period = e.target.value.slice(0, 20); env.save(); } });
+    var BLOCKS = C.blocks || ['Block 1/2', 'Block 3/4', 'Block 6/7', 'Block 8/9'];
+    var period = h('select.txt#period', { 'data-fk': 'period', disabled: ro || null, onchange: function (e) { st.student.period = e.target.value.slice(0, 20); env.save(); } }, h('option', { value: '' }, 'Choose your block\u2026'), BLOCKS.map(function (b) { return h('option', { value: b, selected: st.student.period === b ? true : null }, b); }));
     var useCode = W.Sync.enabled(), codeMsg = h('p.hint-line#code-msg', { role: 'status' }, 'Your teacher will give you the class code.');
     var code = h('input.txt#classcode', { type: 'text', maxlength: '40', autocomplete: 'off', autocapitalize: 'characters', 'data-fk': 'code', value: st.student.code || '', disabled: ro || started || null, 'aria-describedby': 'code-msg', oninput: function (e) { st.student.code = e.target.value.slice(0, 40); env.save(); env.refresh(); } });
     var needsCode = function () { return useCode && !started && (st.student.code || '').trim().length < 2; };

@@ -88,7 +88,7 @@ function screenEntry(message, kind = 'err') {
   const name = h('input.input#f-name', { type: 'text', autocomplete: 'off', required: true, placeholder: 'First and last name', maxlength: 60, 'aria-describedby': 'e-msg' });
   const period = h('select.input#f-period', { required: true });
   const fillPeriods = (list) => { period.replaceChildren(h('option', { value: '' }, 'Choose…'), ...list.map((c) => h('option', { value: c.value }, c.label))); };
-  fillPeriods(CONFIG.periods.map((p) => ({ value: p, label: 'Period ' + p })));
+  fillPeriods(CONFIG.periods.map((p) => ({ value: p, label: p })));
   if (hasBackend() && CONFIG.backendKind === 'apps-script') send('classes', {}).then((r) => { if (r && r.ok && r.classes && r.classes.length) fillPeriods(r.classes); });
   const code = h('input.input#f-code', { type: 'text', autocomplete: 'off', autocapitalize: 'characters', spellcheck: 'false', required: true, placeholder: 'Class code', maxlength: 24, 'aria-describedby': 'e-msg' });
   const msg = h('div.err#e-msg', { role: 'alert' }, message || '');

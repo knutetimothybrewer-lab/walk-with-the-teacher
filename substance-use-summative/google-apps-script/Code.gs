@@ -155,7 +155,7 @@ function latestFor_(name, code) {
 /** One tab per class: named after the Config tab's Label (or Period, or the code). DEMO runs go to a "DEMO" tab. */
 function classTabName_(cls, code) {
   var raw = cls.demo ? 'DEMO' : String(cls.label || cls.period || code);
-  var name = raw.replace(/[\[\]*?:\/\\]/g, '-').trim().slice(0, 90) || codeKey_(code);
+  var name = raw.replace(/[\[\]*?:\/\\]/g, '-').trim().toUpperCase().slice(0, 90) || codeKey_(code);
   for (var k in TABS) if (TABS[k].toLowerCase() === name.toLowerCase()) name = name + ' (class)';
   return name;
 }
