@@ -3,8 +3,9 @@
 //  Nothing in here is an answer key. Class codes are stored only as one-way hashes.
 // ======================================================================================================
 export const CONFIG = {
-  appName: 'SIGNAL',
-  assessmentTitle: 'Substance Use Summative',
+  // Shown on the sign-in page and top bar. Change freely (for example 'Health 10: Substance Use Unit Assessment').
+  appName: 'Substance Use Summative',
+  assessmentTitle: 'An interactive investigation of what you learned',
   schoolName: '',
   teacherName: '',
 

@@ -82,7 +82,10 @@ function screenEntry(message, kind = 'err') {
   $top.hidden = true; clearInterval(clockIv);
   setBackground('entry');
   const name = h('input.input#f-name', { type: 'text', autocomplete: 'off', required: true, placeholder: 'First and last name', maxlength: 60, 'aria-describedby': 'e-msg' });
-  const period = h('select.input#f-period', { required: true }, h('option', { value: '' }, 'Choose…'), CONFIG.periods.map((p) => h('option', { value: p }, 'Period ' + p)));
+  const period = h('select.input#f-period', { required: true });
+  const fillPeriods = (list) => { period.replaceChildren(h('option', { value: '' }, 'Choose…'), ...list.map((c) => h('option', { value: c.value }, c.label))); };
+  fillPeriods(CONFIG.periods.map((p) => ({ value: p, label: 'Period ' + p })));
+  if (hasBackend() && CONFIG.backendKind === 'apps-script') send('classes', {}).then((r) => { if (r && r.ok && r.classes && r.classes.length) fillPeriods(r.classes); });
   const code = h('input.input#f-code', { type: 'text', autocomplete: 'off', autocapitalize: 'characters', spellcheck: 'false', required: true, placeholder: 'Class code', maxlength: 24, 'aria-describedby': 'e-msg' });
   const msg = h('div.err#e-msg', { role: 'alert' }, message || '');
   if (kind === 'ok') msg.style.color = 'var(--good)';
@@ -107,14 +110,14 @@ function screenEntry(message, kind = 'err') {
     } catch (err) { msg.textContent = 'Something went wrong: ' + (err && err.message || err); btn.disabled = false; }
   };
   const screen = h('section.screen', h('div.hero',
-    h('div', h('div.kicker', 'Grade 10 Health • Summative'), h('h1', h('span', 'SIGNAL'), h('br'), 'Substance Use Investigation'),
-      h('p.lead', 'Eight missions. Brain science, nicotine, alcohol, medications, emergencies, pressure and evidence. Show what you can do with what you learned.'),
+    h('div', h('div.kicker', 'Grade 10 Health'), h('h1', CONFIG.appName),
+      h('p.lead', CONFIG.assessmentTitle + '. Eight missions on brain science, nicotine, alcohol, medications, emergencies, pressure and evidence.'),
       heroWave(), CONFIG.schoolName || CONFIG.teacherName ? h('p.small.muted', [CONFIG.schoolName, CONFIG.teacherName].filter(Boolean).join(' • ')) : ''),
     form));
   setScreen(screen, { theme: 'entry' }); name.focus();
 }
 
-async function beginSession({ name, period, code }) {
+async function beginSession({ name, period, code }) {  // the Sheet's period for this class code wins over the dropdown
   const hash = hashCode(code);
   const localOk = CONFIG.classCodeHashes.includes(hash), localDemo = hash === CONFIG.demoCodeHash;
   let demo = localDemo, label = '';
@@ -125,7 +128,7 @@ async function beginSession({ name, period, code }) {
   }
   if (hasBackend() && CONFIG.backendKind === 'apps-script') {
     const r = await send('validate', { code, name, period });
-    if (r && r.ok) { demo = !!r.demo || localDemo; label = r.label || ''; if (r.reset) store.clearLock(name, code); }
+    if (r && r.ok) { demo = !!r.demo || localDemo; label = r.label || ''; if (r.period) period = String(r.period); if (r.reset) store.clearLock(name, code); }
     else if (r && r.error === 'invalid-code') return 'That class code is not valid. Check it and try again.';
     else if (r && r.error === 'already-completed') return 'Our records show this assessment was already submitted. Ask your teacher if it needs to be reset.';
     else if (CONFIG.allowOfflineStart && (localOk || localDemo)) toast('Could not reach the server. Starting offline; results will send when the connection returns.');
@@ -307,6 +310,7 @@ async function boot() {
     PREVIEW = true; store = makeStore('sigp');
   }
   settings = store.getSettings(); applySettings(); buildTrail();
+  document.getElementById('brand-name').textContent = CONFIG.appName; document.title = CONFIG.appName;
   window.addEventListener('pagehide', () => session && session.save());
   document.addEventListener('visibilitychange', () => session && session.save());
   const saved = store.loadSession();
