@@ -53,6 +53,21 @@ You need: a Google account allowed by your school to use Apps Script, and the pr
 - A shared class code plus a self-typed roster ID **cannot prove who is at the keyboard**, and a student could type a classmate's roster ID. Use `RequireRoster` with per-student tokens for stronger matching; still, only proctoring gives real assurance. See `docs/SECURITY_PRIVACY.md`.
 - Apps Script limits (consumer vs Workspace accounts differ; check Google's current quotas page): roughly 30 simultaneous executions per user, and daily limits on script runtime and spreadsheet operations. A class of 30 submitting in the same second can briefly hit those; the app automatically retries with the same request ID (no attempt is lost or doubled), and a stagger of a few seconds helps. Large simultaneous starts (60+) should be split across two script deployments or sections. Your school may restrict web apps or require sign-in.
 
+## Easy mode: GitHub Pages + Google Sheet (static build, `play/`)
+
+This is the same style as the other summatives: students open a GitHub Pages link, the page grades in the browser, and a small script on your Sheet records the finished result. **The answer key is inside `play/index.html`, which is public in this repository. Anyone who opens that file can read the answers. This was chosen deliberately by the teacher; use the server-based setup above if that is not acceptable.** Progress is saved on the student's own device (a different device starts over). Because the browser does the grading, a technically skilled student could send altered numbers to the Sheet.
+
+1. Create a blank Google Sheet named `CHM Results (PRIVATE)`. Do not share it. Open *Extensions -> Apps Script*, replace everything in `Code.gs` with the contents of `play/SheetReceiver.gs`, and save. (Do not paste the old answer-key `Code.gs`, `Index.html` or manifest.)
+2. Reload the sheet. In the new **Community Health Mission** menu run **1. Set up this spreadsheet** (authorize it), then **2. Add a class code** for each class (for example `HEALTH3A`; students type it in any capitalization).
+3. *Deploy -> New deployment -> Web app*. Execute as **Me**, who has access **Anyone**. Copy the link ending in `/exec`.
+4. Edit `play/config.js` on GitHub and paste that link between the quotes of `window.CHM_RESULTS_URL = "";`. Commit.
+5. Turn on GitHub Pages (Settings -> Pages -> deploy from the main branch). The student link is `https://<your-account>.github.io/walk-with-the-teacher/community-health-mission/play/`.
+6. Test: open the link, use your test class code, finish (or use Teacher sign-in -> passcode `WALK-TEACHER` -> Start preview for a quick look; preview never writes grades). Confirm a row appears on `Summary` and rows on `Responses`. Menu **3. Refresh Reteach tab** builds the "what should I reteach" table.
+
+Class codes are checked by the Sheet, so a student with a wrong code is stopped before starting. If the student is offline at the end, the result stays "pending" and the **Retry** button sends it; resending never double-counts.
+
+Rebuild after changing content: `node private/regen-keys.js && npm run build` (also refreshes `play/`). `npm run test:play` runs a real-browser check of this build.
+
 ## Student experience (for your review)
 Class code → entry briefing (3 min, ungraded) → county map with a guide character → six locations → final review → submit → results with module breakdown, attempts, strengths/areas, server timestamp, receipt ID, printable/downloadable receipt, answers and explanations, and the student's own **Community Health Action Plan**. Status chips separate **Progress saved**, **Finalized on server**, and **Recorded in teacher gradebook**.
 

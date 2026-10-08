@@ -10,7 +10,7 @@ function makeEnv() {
     getValue() { return this.sh.cell(this.r, this.c); }
     setValues(v) { stats.sheetWrites++; v.forEach((row, i) => row.forEach((x, j) => this.sh.set(this.r + i, this.c + j, x))); return this; }
     setValue(x) { stats.sheetWrites++; this.sh.set(this.r, this.c, x); return this; }
-    setFontWeight() { return this; } setNumberFormat() { return this; }
+    setFontWeight() { return this; } setNumberFormat() { return this; } setBackground() { return this; } setFormulas(v) { return this.setValues(v); }
     getRow() { return this.r; }
     createTextFinder(t) { const self = this; let entire = false; const tf = { matchEntireCell(b) { entire = b; return tf; }, findNext() { for (let i = 0; i < self.nr; i++) for (let j = 0; j < self.nc; j++) { const v = self.sh.cell(self.r + i, self.c + j); if (entire ? String(v) === t : String(v).includes(t)) return new Range(self.sh, self.r + i, self.c + j, 1, 1); } return null; } }; return tf; }
   }
@@ -21,7 +21,7 @@ function makeEnv() {
     getRange(r, c, nr, nc) { if (typeof r === 'string') { const m = /^([A-Z]):[A-Z]$/.exec(r); return new Range(this, 1, m[1].charCodeAt(0) - 64, this.rows.length, 1); } return new Range(this, r, c, nr || 1, nc || 1); }
     getLastRow() { return this.rows.length; }
     appendRow(a) { stats.sheetWrites++; this.rows.push(a.slice()); }
-    setFrozenRows() {} hideSheet() { this.hidden = true; } getCharts() { return []; } clear() { this.rows = []; return this; }
+    setFrozenRows() {} setFrozenColumns() {} hideSheet() { this.hidden = true; } getCharts() { return []; } clear() { this.rows = []; return this; }
   }
   class Spreadsheet { constructor() { this.sheets = {}; } getSheetByName(n) { return this.sheets[n] || null; } insertSheet(n) { return this.sheets[n] = new Sheet(n); } getName() { return 'Test Results'; } getId() { return 'SHEET123'; } toast() {} }
   const ss = new Spreadsheet();
@@ -44,4 +44,4 @@ function loadCode() {
   vm.runInContext(fs.readFileSync(path.join(__dirname, '..', 'dist', 'apps-script', 'Code.gs'), 'utf8'), env.ctx, { filename: 'Code.gs' });
   return env;
 }
-module.exports = { loadCode };
+module.exports = { loadCode, makeEnv };

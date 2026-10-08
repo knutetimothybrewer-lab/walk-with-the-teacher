@@ -42,6 +42,36 @@ function main() {
     oauthScopes: ['https://www.googleapis.com/auth/spreadsheets', 'https://www.googleapis.com/auth/script.container.ui', 'https://www.googleapis.com/auth/userinfo.email'],
     webapp: { executeAs: 'USER_DEPLOYING', access: 'ANYONE' } }, null, 2));
 
+  // 2b) Static "play" build (teacher-approved: answer key is embedded in the page). Engine runs in the browser; results post to a Sheet receiver.
+  if (priv) {
+    const crypto = require('crypto');
+    const pass = process.env.CHM_TEACHER_PASSCODE || 'WALK-TEACHER', salt = 'chm-static';
+    const teacher = JSON.stringify({ salt: salt, hash: crypto.createHash('sha256').update(salt + pass).digest('hex'), emails: [] });
+    const playExtra = ['<script src="config.js"></script>', '<script>', grading, sha, core, read('server/stores/memory.js'), read('server/stores/browser.js').replace(/require\('\.\/memory'\)/g, 'null'),
+      'var CHM_PRIVATE = ' + jsonSafe(priv) + ';',
+      '(function(){var env={sha256:CHM_sha256,randomId:function(n){var a=new Uint8Array(n);crypto.getRandomValues(a);return Array.prototype.map.call(a,function(b){return "abcdefghijklmnopqrstuvwxyz0123456789"[b%36]}).join("")}};',
+      'var storage=null;try{storage=window.localStorage;storage.setItem("chm.t","1");storage.removeItem("chm.t")}catch(e){storage=null}',
+      'var teacher=' + teacher + ';',
+      'var store=new CHM_BrowserStore({pub:CHM_CONTENT,storage:storage,key:"chm.store."+CHM_CONTENT.version,teacher:teacher});store.teacher=teacher;',
+      'var engine=CHM_core.createEngine({pub:CHM_CONTENT,priv:CHM_PRIVATE,store:store,env:env});',
+      'function url(){return (window.CHM_RESULTS_URL||"").trim()}',
+      'function post(body){var c=typeof AbortController!=="undefined"?new AbortController():null,t=c&&setTimeout(function(){c.abort()},20000);',
+      ' return fetch(url(),{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify(body),signal:c?c.signal:undefined}).then(function(r){if(!r.ok)throw new Error("HTTP "+r.status);return r.json()}).then(function(j){if(t)clearTimeout(t);return j},function(e){if(t)clearTimeout(t);throw e})}',
+      'function deliver(id){var p=store.outbox[id];if(!p||!url())return Promise.resolve(false);',
+      ' return post({action:"submit",payload:p}).then(function(j){if(j&&j.ok){store.markAcked(id);return true}return j&&j.reason==="bad-code"?"bad-code":false},function(){return false})}',
+      'window.CHM_STATIC_HANDLE=function(a,p){',
+      ' if(a==="join"&&url()){return post({action:"start",classCode:p.classCode}).then(function(j){if(j&&j.ok===false&&j.reason==="bad-code")return{ok:false,code:"BAD_CLASS",message:"That class code was not found. Check it with your teacher."};return engine.handle(a,p)},function(){return engine.handle(a,p)})}',
+      ' var r=engine.handle(a,p);',
+      ' if((a==="finalize"||a==="retryGradebook")&&r&&r.ok&&r.final&&r.final.gradebook==="pending"){',
+      '  return deliver(p.sessionId).then(function(ok){if(ok===true)return engine.handle("retryGradebook",Object.assign({},p,{requestId:"rg-"+Date.now()}));',
+      '   r.final.error=ok==="bad-code"?"That class code is not set up in the teacher sheet. Tell your teacher.":!url()?"Delivery is not turned on yet (no results link set).":"Could not reach the teacher sheet. Check Wi-Fi and press Retry.";return r})}',
+      ' return r};})();', '</script>'].join('\n');
+    write('play/index.html', page({ transport: 'static' }, pub, playExtra).replace('CHM.boot();', 'CHM.staticHandle = window.CHM_STATIC_HANDLE;\nCHM.boot();'));
+    if (!fs.existsSync(path.join(ROOT, 'play/config.js'))) write('play/config.js', '// Paste your Google Apps Script web app link (ends in /exec) between the quotes. Leave empty to run without delivering results.\nwindow.CHM_RESULTS_URL = "";\n');
+    const units = []; pub.modules.forEach(m => m.units.forEach(u => units.push({ id: u.id, module: m.id, points: u.points })));
+    write('play/SheetReceiver.gs', read('receiver/SheetReceiver.gs').replace('/*UNITS*/[]', JSON.stringify(units)));
+  }
+
   // 3) Demo (separate fictional demo content; the graded answer key is NOT included)
   const d = split.buildDemo();
   const demoExtra = ['<script>', grading, sha, core, memory,
