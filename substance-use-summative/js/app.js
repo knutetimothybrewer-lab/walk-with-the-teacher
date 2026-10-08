@@ -38,7 +38,7 @@ function openSettings() {
     tog('sound', 'Sound effects', 'Short tones after you check an answer. Off by default.'), tog('timer', 'Show timer', 'Shows time on task in the top bar. Off by default.'),
     storageWorks() ? '' : h('p.err', 'This browser is blocking saved progress. Do not close this tab.'),
     // Demo sessions only (DEMO2026): lets a teacher test again without clearing browser data. Real sessions can never be restarted by the student.
-    session && session.state.demo ? h('div.toggle', h('div', h('strong', 'Start over (demo only)'), h('div.small.muted', 'Erases this DEMO session and returns to sign-in.')), h('button.btn.small.warn', { type: 'button', onclick: () => { const st = session.state; store.clearSession(); store.clearLock(st.student.name, st.student.code); location.reload(); } }, 'Start over')) : '',
+    session && session.state.demo ? h('div.toggle', h('div', h('strong', 'Start over (demo only)'), h('div.small.muted', 'Erases this DEMO session and returns to sign-in.')), h('button.btn.small.warn', { type: 'button', onclick: () => { const st = session.state; clearInterval(clockIv); session = null; /* so pagehide cannot re-save it */ store.clearSession(); store.clearLock(st.student.name, st.student.code); location.reload(); } }, 'Start over')) : '',
     h('div.dlg-actions', h('button.btn.primary', { type: 'button', onclick: () => d.close() }, 'Done')));
   d.showModal();
 }
@@ -327,6 +327,6 @@ async function boot() {
     session = new Session(newState({ student: { name: 'Preview Teacher', period: '0', code: 'DEMO2026', label: 'Preview' }, demo: true, content }), content, store);
     session.state.screen = 'mission'; session.state.pos = { m: 0, s: 0 }; session.save(); afterStart();
   } else { if (saved) store.clearSession(); screenEntry(); }
-  if (PREVIEW) { const m = await import('./preview.js'); m.mountPreview({ api: Object.assign(api, { get session() { return session; }, content, store, go, renderStage, startMission, screenResults, screenReview, screenEntry, screenOrient, finalize, trySubmit, send, hasBackend, resetAll() { store.clearSession(); location.reload(); }, setSession(s) { session = s; }, buildTrail, afterStart, toast }) }); }
+  if (PREVIEW) { const m = await import('./preview.js'); m.mountPreview({ api: Object.assign(api, { get session() { return session; }, content, store, go, renderStage, startMission, screenResults, screenReview, screenEntry, screenOrient, finalize, trySubmit, send, hasBackend, resetAll() { clearInterval(clockIv); session = null; store.clearSession(); location.reload(); }, setSession(s) { session = s; }, buildTrail, afterStart, toast }) }); }
 }
 boot();
