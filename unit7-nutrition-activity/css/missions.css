@@ -164,3 +164,6 @@ body.preview #topbar { margin-top: 18px; }
 .stimwrap > .post { max-width: 400px; margin: 0 auto; box-shadow: 0 0 0 2px rgba(255, 255, 255, .15), 0 10px 30px rgba(0, 0, 0, .4); }
 .stimwrap > .nf { margin: 0 auto; }
 .runner .arm, .runner .leg { transform-box: fill-box; transform-origin: 50% 0; }
+
+#pv.min { right: auto; left: 50%; transform: translateX(-50%); width: auto; max-width: 92vw; }
+body.preview main { padding-bottom: 5rem; }

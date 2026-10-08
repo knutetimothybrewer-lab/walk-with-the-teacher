@@ -129,7 +129,7 @@ try {
     ok('no console errors on the dashboard', p.errs.length === 0, p.errs.join('|')); await p.context().close(); }
 
   // ---- 5. preview mode
-  { const p = await newPage(); await p.goto(BASE + '/index.html?preview'); await p.fill('#pv-pass', 'oops'); await p.click('#pv-go'); ok('wrong preview passcode shows a message and stays on the form', (await p.locator('.err').innerText()).includes('not correct')); await p.fill('#pv-pass', 'WALK-TEACHER'); await p.click('#pv-go'); await p.waitForSelector('.pv-banner'); await p.waitForSelector('article.item');
+  { const p = await newPage(); await p.goto(BASE + '/index.html?preview'); await p.fill('#pv-pass', 'oops'); await p.click('#pv-go'); ok('wrong preview passcode shows a message and stays on the form', (await p.locator('.err').innerText()).includes('not correct')); await p.fill('#pv-pass', 'WALK-TEACHER'); await p.click('#pv-go'); await p.waitForSelector('.pv-banner'); await p.waitForSelector('article.item'); await p.locator('#pv .pvhead button').click();
     ok('Preview Mode is visibly labelled', (await p.locator('.pv-banner').innerText()).includes('PREVIEW MODE') && (await p.locator('#pv').count()) === 1);
     await p.locator('#pv button', { hasText: 'Questions' }).click(); await p.locator('#pv button', { hasText: 'Show correct answer' }).first().click(); await p.waitForTimeout(200);
     ok('preview shows the correct answer', (await p.locator('#pv pre').first().innerText()).trim().length >= 1);
@@ -140,6 +140,15 @@ try {
     const real = await p.evaluate(() => Object.keys(localStorage).filter((k) => k.startsWith('u7.')).length); ok('preview uses its own storage namespace (u7p.*)', real === 0);
     await p.context().close();
     const bad = await newPage(); await bad.goto(BASE + '/index.html?preview'); await bad.fill('#pv-pass', 'wrong'); await bad.click('#pv-go'); ok('wrong preview passcode never opens Preview Mode', (await bad.locator('.pv-banner').count()) === 0 && (await bad.locator('#pv').count()) === 0); await bad.context().close(); }
+
+  // ---- 5b. teacher code in the class-code box opens a click-through walk-through (no answering, nothing sent to the Sheet)
+  { const p = await newPage({ backend: true }); await p.goto(BASE + '/index.html'); await p.fill('#f-code', 'WALK-TEACHER'); await p.click('button[type=submit]'); await p.waitForSelector('.pv-banner');
+    let steps = 0; while (steps++ < 80) { const w = p.locator('.wipe'); if (await w.count()) await w.click().catch(() => {}); if (await p.locator('#final-btn').count()) break;
+      const nxt = p.locator('button.btn.primary', { hasText: /Start Mission 1|Continue|Complete mission|Finish and review/ }); await nxt.first().waitFor({ timeout: 8000 }); await nxt.first().click(); await p.waitForTimeout(80); }
+    ok('WALK-TEACHER in the class-code box lets the teacher click through every step without answering', steps > 40 && (await p.locator('#final-btn').count()) === 1, String(steps));
+    const before = env.book.get('MASTER RESULTS').length; await p.click('#final-btn'); await p.click('#confirm-submit'); await p.waitForSelector('text=UNIT 7 COMPLETE'); await p.waitForTimeout(700);
+    ok('teacher walk-through never writes to the gradebook', env.book.get('MASTER RESULTS').length === before);
+    await p.context().close(); }
 
   // ---- 6. keyboard alternative to drag-and-drop, Chromebook layout, mobile layout, reduced motion
   { const p = await newPage({ reduced: true }); await signIn(p); await p.waitForSelector('text=Welcome');

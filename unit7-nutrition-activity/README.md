@@ -204,6 +204,8 @@ Open `.../unit7-nutrition-activity/teacher/` and enter the dashboard passcode. S
 Without a connected Sheet, the dashboard opens an **offline sandbox** (clearly labelled) filled with generated DEMO DATA so you can explore every view.
 
 ## Preview Mode
+Quickest way in: on the normal sign-in screen type the teacher code (`WALK-TEACHER`) into the **Class code** box and press Begin. You get a click-through walk-through of the whole assessment: the Continue button always works, nothing needs answering, and nothing is sent to your Sheet.
+
 `.../unit7-nutrition-activity/?preview` + the preview passcode. A striped banner and a docked toolbar label it as a teacher view that is not a student attempt. It uses separate storage, so it never touches real students. The toolbar can: jump to any mission or step, show the **correct answer** for any question, submit a real **correct** or **wrong** attempt through the actual grader (to test the 100/85/75/0 logic), write synthetic attempts, reset attempts, show scoring tables and the saved data, show which randomized variants a student got (or roll a new version), open every simulation (with "unlock"), preview the final results screen, and test the Google Sheet connection. Hide it with **Alt+Shift+P**.
 
 ## Demo data

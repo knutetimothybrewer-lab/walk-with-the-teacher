@@ -119,6 +119,10 @@ function screenEntry(message, kind = 'err') {
     e.preventDefault();
     const f = normName(first.value), l = normName(last.value), cd = code.value.trim(), bl = block.value;
     msg.style.color = '';
+    if (cd && hashOf('preview', cd) === CONFIG.previewPasscodeHash) { // teacher code: open the click-through walk-through
+      try { sessionStorage.setItem('u7.previewOK', '1'); } catch { /* ignore */ }
+      location.href = location.pathname + '?preview'; return;
+    }
     if (!f) { msg.textContent = 'Please enter your first name.'; first.focus(); return; }
     if (!l) { msg.textContent = 'Please enter your last name.'; last.focus(); return; }
     if (!bl || !CONFIG.blocks.includes(bl)) { msg.textContent = 'Choose your class block from the list.'; block.focus(); return; }
@@ -256,7 +260,7 @@ function renderStage() {
     else { s.screen = 'review'; session.save(); screenReview(); }
   };
   const label = (done) => nextBtn.replaceChildren(si === stages.length - 1 ? (lastMission ? 'Finish and review' : 'Complete mission') : 'Continue', icon('arrow', 20));
-  nextBtn.onclick = () => { if (session.stageDone(stage)) advance(); };
+  nextBtn.onclick = () => { if (PREVIEW || session.stageDone(stage)) advance(); };
 
   if (stage.kind === 'choice') {
     const chosen = () => session.state.choices && session.state.choices[stage.id];
@@ -265,7 +269,7 @@ function renderStage() {
       b.onclick = () => { session.setChoice(stage.id, k); cards.querySelectorAll('.opt').forEach((x) => x.setAttribute('aria-checked', x === b ? 'true' : 'false')); apply(); toast('Choice saved. You can continue.'); };
       return b;
     }));
-    const apply = () => { nextBtn.disabled = !chosen(); status.textContent = chosen() ? 'Choice made.' : 'Make a choice to continue.'; updateHud(); };
+    const apply = () => { nextBtn.disabled = !chosen() && !PREVIEW; status.textContent = chosen() ? 'Choice made.' : 'Make a choice to continue.'; updateHud(); };
     const screen = h('section.screen.narrow', h('div.stagehead', h('div', h('div.kicker', `${mission.kicker} • ${mission.title}`), h('h2', stage.title)), h('div.count', `Step ${si + 1} of ${stages.length}`)),
       h('div.panel', stage.paras.map((p) => h('p', p)), h('p', h('strong', stage.prompt)), cards), h('div.navrow', h('div.row', backBtn, status), nextBtn));
     setScreen(screen, { theme: mission.theme }); label(); apply(); current = { stage };
@@ -279,9 +283,9 @@ function renderStage() {
   const sim = isScene ? (s.sims[stage.id] = s.sims[stage.id] || {}) : null;
   const hostEl = h('div.simhost');
   function applyGates() {
-    parts.forEach((q) => { const ok = session.partAvailable(q, stage.id); items[q.id].setGated(!ok, q.after === '@sim' ? 'Finish exploring the activity above to unlock this question.' : 'Answer the question above first.'); });
+    parts.forEach((q) => { const ok = session.partAvailable(q, stage.id); items[q.id].setGated(!ok && !PREVIEW, q.after === '@sim' ? 'Finish exploring the activity above to unlock this question.' : 'Answer the question above first.'); });
     const done = session.stageDone(stage);
-    nextBtn.disabled = !done; status.textContent = done ? 'Step complete.' : `Complete ${parts.length > 1 ? 'every question' : 'this question'} to continue.`;
+    nextBtn.disabled = !done && !PREVIEW; status.textContent = done ? 'Step complete.' : PREVIEW ? 'Teacher walk-through: you can continue without answering.' : `Complete ${parts.length > 1 ? 'every question' : 'this question'} to continue.`;
     label(); updateTrail();
   }
   function afterChange(q, st) {
@@ -330,7 +334,7 @@ async function finalize() {
 }
 async function trySubmit() {
   const s = session.state; if (s.submit.status === 'done') return;
-  if (!hasBackend()) { s.submit = { status: 'nobackend', confirm: 'LOCAL-' + s.sid.slice(2, 10) }; session.save(); resultsView && resultsView.paintStatus(s.submit); return; }
+  if (!hasBackend() || PREVIEW) { s.submit = { status: 'nobackend', confirm: 'LOCAL-' + s.sid.slice(2, 10) }; session.save(); resultsView && resultsView.paintStatus(s.submit); return; }
   s.submit.status = 'sending'; resultsView && resultsView.paintStatus(s.submit);
   const r = await send('submit', buildSubmission(session, CONFIG.assessmentId));
   if (r && r.ok) { s.submit = { status: 'done', confirm: r.confirmationId, duplicate: !!r.duplicateFlag, mismatch: !!r.mismatch }; if (r.score && typeof r.score.earned === 'number') s.serverScore = r.score; }
@@ -359,12 +363,13 @@ function screenResults() {
 // ---------------------------------------------------------------------------------- boot
 async function boot() {
   if (params.has('preview')) {
+    let verified = false; try { verified = sessionStorage.getItem('u7.previewOK') === '1'; } catch { /* ignore */ }
     // In-page passcode form (a pop-up box can be blocked by the browser). A wrong code says so instead of silently leaving.
     $top.hidden = true; setBackground('entry');
-    await new Promise((resolve) => {
+    if (!verified) await new Promise((resolve) => {
       const inp = h('input.input#pv-pass', { type: 'password', autocomplete: 'off', 'aria-label': 'Preview Mode passcode', placeholder: 'Preview Mode passcode' });
       const msg = h('div.err', { role: 'alert' });
-      const form = h('form.panel', { onsubmit: (e) => { e.preventDefault(); if (hashOf('preview', inp.value) === CONFIG.previewPasscodeHash) resolve(); else { msg.textContent = 'That passcode is not correct. Check for typos and try again.'; inp.select(); } } },
+      const form = h('form.panel', { onsubmit: (e) => { e.preventDefault(); if (hashOf('preview', inp.value) === CONFIG.previewPasscodeHash) { try { sessionStorage.setItem('u7.previewOK', '1'); } catch { /* ignore */ } resolve(); } else { msg.textContent = 'That passcode is not correct. Check for typos and try again.'; inp.select(); } } },
         h('h2', 'Preview Mode (teacher)'), h('p.muted', 'Enter the teacher passcode to preview the assessment. This is not a student attempt.'), h('div.field', inp), msg,
         h('div.row', h('button.btn.primary#pv-go', { type: 'submit' }, 'Open Preview Mode'), h('a.btn.ghost', { href: location.pathname }, 'Back to student sign-in')));
       $main.replaceChildren(h('section.screen.narrow', h('div.kicker', 'Teacher only'), form)); inp.focus();
