@@ -1,0 +1,38 @@
+@font-face { font-family: 'Fraunces'; src: url('../assets/fonts/fraunces-latin-600-normal.woff2') format('woff2'); font-weight: 600; font-display: swap; }
+@font-face { font-family: 'Fraunces'; src: url('../assets/fonts/fraunces-latin-800-normal.woff2') format('woff2'); font-weight: 800; font-display: swap; }
+@font-face { font-family: 'Atkinson Hyperlegible'; src: url('../assets/fonts/atkinson-hyperlegible-latin-400-normal.woff2') format('woff2'); font-weight: 400; font-display: swap; }
+@font-face { font-family: 'Atkinson Hyperlegible'; src: url('../assets/fonts/atkinson-hyperlegible-latin-700-normal.woff2') format('woff2'); font-weight: 700; font-display: swap; }
+@font-face { font-family: 'OpenDyslexic'; src: url('../assets/fonts/opendyslexic-latin-400-normal.woff2') format('woff2'); font-weight: 400; font-display: swap; }
+@font-face { font-family: 'OpenDyslexic'; src: url('../assets/fonts/opendyslexic-latin-700-normal.woff2') format('woff2'); font-weight: 700; font-display: swap; }
+
+:root {
+  --font-ui: 'Atkinson Hyperlegible', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-display: 'Fraunces', Georgia, 'Times New Roman', serif;
+  --fs: 17px;
+  --ink: #eef3fb;
+  --ink-dim: #b4c0d4;
+  --ink-faint: #8a98b0;
+  --bg0: #08101f; --bg1: #101b34;
+  --panel: rgba(14, 24, 44, .86);
+  --panel-solid: #0f1a31;
+  --panel-2: rgba(255, 255, 255, .055);
+  --line: rgba(160, 185, 230, .22);
+  --line-strong: rgba(190, 210, 245, .45);
+  --accent: #5ee0d0; --accent-ink: #04141a; --accent-2: #7cc4ff;
+  --good: #6fe3a1; --bad: #ff8a7a; --warn: #ffc857;
+  --focus: #ffe27a;
+  --radius: 14px; --radius-sm: 9px;
+  --shadow: 0 10px 40px rgba(0, 0, 0, .35);
+  --ease: cubic-bezier(.2, .8, .2, 1);
+}
+body[data-theme="entry"]   { --bg0:#07101f; --bg1:#12294a; --accent:#6be3b0; --accent-2:#ffc857; --accent-ink:#04180f; }
+body[data-theme="fuel"]    { --bg0:#0a1a10; --bg1:#1a3320; --accent:#8be26e; --accent-2:#ffb454; --accent-ink:#0a1f06; }
+body[data-theme="label"]   { --ink:#14181f; --ink-dim:#3a4352; --ink-faint:#5b6678; --bg0:#f5f6f8; --bg1:#e6e9ee; --panel:rgba(255,255,255,.94); --panel-solid:#ffffff; --panel-2:rgba(0,0,0,.045); --line:rgba(20,30,50,.18); --line-strong:rgba(20,30,50,.42); --accent:#11151c; --accent-2:#2257d6; --accent-ink:#ffffff; --good:#157a43; --bad:#b3261e; --warn:#8a5a00; --focus:#d97706; --shadow:0 8px 30px rgba(20,30,50,.14); }
+body[data-theme="move"]    { --bg0:#1b0a14; --bg1:#3b1226; --accent:#ff7a3d; --accent-2:#ffd23f; --accent-ink:#2a0d00; }
+body[data-theme="ads"]     { --bg0:#0b0620; --bg1:#241046; --accent:#ff4fd8; --accent-2:#3df2ff; --accent-ink:#2a0525; }
+body[data-theme="plan"]    { --bg0:#07152b; --bg1:#0f2e55; --accent:#5aa9ff; --accent-2:#7ef0c4; --accent-ink:#031326; }
+body[data-theme="earth"]   { --bg0:#14100a; --bg1:#2a2412; --accent:#9bd35a; --accent-2:#e8b86b; --accent-ink:#13200a; }
+body[data-theme="final"]   { --bg0:#0a1024; --bg1:#241a46; --accent:#ffd36a; --accent-2:#6be3d0; --accent-ink:#241b04; }
+body[data-theme="results"] { --bg0:#07101f; --bg1:#16284d; --accent:#6be3d0; --accent-2:#ffd36a; --accent-ink:#031519; }
+html[data-size="large"] { --fs: 19.5px; }
+html[data-font="dyslexic"] { --font-ui: 'OpenDyslexic', 'Atkinson Hyperlegible', sans-serif; }

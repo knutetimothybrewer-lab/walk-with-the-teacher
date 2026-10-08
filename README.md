@@ -132,3 +132,9 @@ The shared teacher code is **`WALK-TEACHER`** (type it in capitals) for the firs
 ## Wildcats Wellness Quest (`wildcats-wellness-quest/`)
 
 Animated summative assessment for a high school health unit (five dimensions of wellness, health metrics, habits and SMART goals, media literacy, STOP decisions, and the Health by a Thousand Choices simulation). Static site with automatic scoring (100 points), strict 2-3 attempt policy with equivalent retry variants, a locked final report with JSON/print export, and a passcode-protected teacher reset. Optionally sends each student's result (with a class code) to your own Google Sheet via `apps-script/Code.gs`. See `wildcats-wellness-quest/README.md` for setup, GitHub Pages deployment, limits and teacher materials.
+
+## Unit 7: Nutrition & Physical Activity digital summative (`unit7-nutrition-activity/`)
+
+An interactive, self-grading, ~1-hour Grade 10 Health summative on nutrition, labels, physical activity and FITT, marketing literacy, SMART goals and food systems (Food, Inc. 2 concepts). Seven missions, five simulations, plan builder, clickable labels/maps/posts, interactive graphs, three attempts per question (100/85/75/0), required class-block dropdown (Block 1/2, 3/4, 6/7, 8/9), a Google Sheets gradebook that routes each submission to its block (with item analysis and live class analytics), a **teacher analytics dashboard** ("What should I reteach?", block comparison, individual reports, CSV and grade export), Preview Mode and demo data.
+
+Student link once GitHub Pages is on: `https://YOUR-USER.github.io/walk-with-the-teacher/unit7-nutrition-activity/`. Start with `unit7-nutrition-activity/README.md` (setup and deploy), `docs/DISCREPANCIES.md` (the unit's slides were not available when this was built) and `docs/BLUEPRINT.md`.

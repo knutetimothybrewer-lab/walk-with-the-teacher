@@ -1,0 +1,22 @@
+{
+  "name": "unit7-nutrition-activity-summative",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Unit 7: Nutrition & Physical Activity. Interactive digital summative (static site + Google Apps Script/Sheets gradebook + teacher analytics).",
+  "scripts": {
+    "build": "node tools/build.js",
+    "release": "node tools/release.js",
+    "test": "node --test tests/unit.test.js tests/gas.test.js",
+    "test:e2e": "node tests/e2e/run.mjs",
+    "serve": "node tools/serve.js 8080",
+    "hash": "node tools/hash.js",
+    "release:server": "node tools/release.js --server"
+  },
+  "devDependencies": {
+    "playwright": "^1.56.1"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

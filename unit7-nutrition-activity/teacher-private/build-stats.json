@@ -1,0 +1,137 @@
+{
+ "version": "1.0.0",
+ "items": 83,
+ "perMission": {
+  "m1": {
+   "min": 13,
+   "max": 13,
+   "smin": 401,
+   "smax": 404
+  },
+  "m2": {
+   "min": 18,
+   "max": 18,
+   "smin": 670,
+   "smax": 675
+  },
+  "m3": {
+   "min": 16,
+   "max": 16,
+   "smin": 645,
+   "smax": 647
+  },
+  "m4": {
+   "min": 13,
+   "max": 13,
+   "smin": 465,
+   "smax": 466
+  },
+  "m5": {
+   "min": 10,
+   "max": 10,
+   "smin": 327,
+   "smax": 329
+  },
+  "m6": {
+   "min": 21,
+   "max": 21,
+   "smin": 656,
+   "smax": 656
+  },
+  "m7": {
+   "min": 9,
+   "max": 9,
+   "smin": 329,
+   "smax": 341
+  }
+ },
+ "stat": {
+  "pts": 100,
+  "byLvl": {
+   "K": 21,
+   "AP": 44.99999999999999,
+   "AN": 28,
+   "SY": 6
+  },
+  "byDomain": {
+   "found": 13,
+   "labels": 18,
+   "activity": 16,
+   "marketing": 13,
+   "goals": 10,
+   "systems": 21,
+   "integrated": 9
+  },
+  "byType": {
+   "sort": 3,
+   "num": 1.9999999999999998,
+   "slots": 5,
+   "match": 8,
+   "multi": 7,
+   "mc": 17,
+   "seq": 4,
+   "slider": 3,
+   "hotspot": 2,
+   "plan": 1,
+   "spots": 1
+  },
+  "byConcept": {
+   "macro-roles": 2,
+   "energy-calc": 1,
+   "myplate-build": 3,
+   "micro-functions": 2,
+   "produce-data": 2,
+   "balanced-pattern": 2,
+   "food-group-count": 1,
+   "serving-portion": 1,
+   "servings-calc": 2,
+   "pct-dv": 3,
+   "dual-column": 2,
+   "label-reading": 1,
+   "front-vs-label": 2,
+   "ingredient-order": 1,
+   "added-sugar-names": 3.0000000000000004,
+   "product-compare": 3,
+   "fitt-variables": 2,
+   "fitt-apply": 1,
+   "intensity-talk": 2,
+   "effort-scale": 2,
+   "activity-recs": 2,
+   "activity-types": 2,
+   "plan-build": 3,
+   "activity-data": 2,
+   "marketing-tech": 5,
+   "pqvd": 2,
+   "health-halo": 2,
+   "source-credibility": 2,
+   "influence-evidence": 2,
+   "smart-components": 2,
+   "goal-repair": 3,
+   "barriers-strategies": 2,
+   "goal-eval": 2,
+   "goal-process": 1,
+   "food-vocab": 2,
+   "causal-chain": 3,
+   "resilience-efficiency": 3,
+   "food-access": 2,
+   "food-insecurity-data": 2,
+   "ultra-processed": 2,
+   "evidence-docs": 2,
+   "emerging-tech": 2,
+   "regen-ag": 2,
+   "workers-policy": 1,
+   "int-snack": 1,
+   "int-plan": 1,
+   "int-env": 2,
+   "int-claims": 2,
+   "int-goal": 3
+  }
+ },
+ "versionStats": {
+  "min": 100,
+  "max": 100,
+  "secMin": 3493,
+  "secMax": 3518
+ },
+ "mcShare": 17
+}

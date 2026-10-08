@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Unit 7 Setup Helper</title><meta name="robots" content="noindex, nofollow">
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../css/tokens.css"><link rel="stylesheet" href="../css/base.css"><link rel="stylesheet" href="../css/missions.css"><link rel="stylesheet" href="../css/teacher.css">
+</head>
+<body data-theme="results">
+  <main id="main" class="screen narrow" tabindex="-1">
+    <div class="kicker">Teacher setup helper</div>
+    <h1>Make your teacher codes</h1>
+    <p class="lead">Type a code, press the button, and copy the line it prints into <code>js/config.js</code>. Nothing you type here is sent anywhere; it is turned into a one-way code (hash) in your browser.</p>
+    <div class="panel">
+      <div class="field"><label for="kind">Which code is this?</label>
+        <select id="kind" class="input"><option value="reset">Teacher reset code (clears the "already submitted" lock)</option><option value="preview">Preview Mode passcode</option><option value="dash">Offline dashboard passcode (sandbox only)</option></select></div>
+      <div class="field"><label for="code">The code you want to use</label><input id="code" class="input" type="text" autocomplete="off" placeholder="At least 8 characters"></div>
+      <button class="btn primary" id="go" type="button">Make the line for config.js</button>
+      <pre id="out" class="out" aria-live="polite"></pre>
+    </div>
+    <div class="panel"><h3>Class codes</h3><p>Class codes are typed in plain text in <code>js/config.js</code> (<code>classCodes: ['UNIT7']</code>) and in the SETTINGS tab of your Google Sheet. They are not secret from students (you tell them the code); the code only keeps outsiders out.</p></div>
+    <p class="small muted">The dashboard passcode for your Google Sheet is NOT set here. It is created by <code>setupGradebook()</code> and changed from the sheet's "Unit 7 Gradebook" menu.</p>
+  </main>
+  <script type="module">
+    import { CONFIG } from '../js/config.js';
+    import { sha256 } from '../js/sha256.js';
+    const names = { reset: 'resetCodeHash', preview: 'previewPasscodeHash', dash: 'teacherPasscodeHash' };
+    document.getElementById('go').onclick = () => {
+      const k = document.getElementById('kind').value, c = document.getElementById('code').value.trim(), out = document.getElementById('out');
+      if (c.length < 8) { out.textContent = 'Please use at least 8 characters.'; return; }
+      out.textContent = `${names[k]}: '${sha256(CONFIG.hashSalt + '|' + k + '|' + c)}',`;
+    };
+  </script>
+</body>
+</html>
