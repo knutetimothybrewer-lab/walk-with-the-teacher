@@ -116,6 +116,17 @@ Static (no build, no server), progress saved only in the student's browser. One 
 `https://<user>.github.io/<repo>/house-edge/`. See `house-edge/README.md` for teacher instructions, how to edit probabilities,
 payouts, questions and timing, and the tests (`node house-edge/tests/engine.test.js`).
 
+## Teacher mode in every summative
+
+Each summative has a private way for the teacher to click through the whole assessment without answering, which never records a student score:
+
+| Summative | How to open it |
+|---|---|
+| `health-summative/` (Wildcat Wellness Trail) | Type the teacher code (default `WALK-TEACHER`) in the **Class code** box. See its README, section 10b, to change it. |
+| `wildcats-wellness-quest/` | Footer **Teacher reset** -> teacher passcode -> **Open teacher mode**. |
+| `substance-use-summative/` (SIGNAL) | Add `?preview=1` to the address and enter the preview passcode (default `SIGNAL-PREVIEW`). **Continue** is never locked in Preview Mode. |
+| `community-health-mission/` | **Teacher sign-in** on the sign-in screen, then **Start preview** (server-checked passcode). |
+
 ## Wildcats Wellness Quest (`wildcats-wellness-quest/`)
 
 Animated summative assessment for a high school health unit (five dimensions of wellness, health metrics, habits and SMART goals, media literacy, STOP decisions, and the Health by a Thousand Choices simulation). Static site with automatic scoring (100 points), strict 2-3 attempt policy with equivalent retry variants, a locked final report with JSON/print export, and a passcode-protected teacher reset. Optionally sends each student's result (with a class code) to your own Google Sheet via `apps-script/Code.gs`. See `wildcats-wellness-quest/README.md` for setup, GitHub Pages deployment, limits and teacher materials.

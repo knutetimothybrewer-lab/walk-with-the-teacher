@@ -24,6 +24,15 @@ export default {
   classCodes: ['TRAIL1', 'TRAIL2', 'TRAIL3', 'TRAIL4'],
   periods: ['1', '2', '3', '4', '5', '6', '7', '8', 'Other'],
 
+  /* ---- Teacher mode ---------------------------------------------------------
+     Type this code into the "Class code" box on the first screen (names and
+     period can stay blank) to click through the whole assessment without
+     answering anything. Nothing is scored for a real student or sent to the
+     Sheet. Default code: WALK-TEACHER (not case-sensitive). To change it run
+       node tools/teacher-code.js "YOUR NEW CODE"
+     and paste the line it prints over the one below. Set '' to turn it off. */
+  teacherCodeHash: '333ce33c9211d3d5451c9b54fad80cc9a1dc3ea95e8f318f0e1da020e988b569',
+
   /* ---- Scoring -------------------------------------------------------------
      attemptCredit[0] = share of the points earned if right on attempt 1, etc.
      A question not solved after the last attempt earns 0 (the answer and

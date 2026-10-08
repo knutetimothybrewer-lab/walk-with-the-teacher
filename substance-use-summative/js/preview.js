@@ -13,7 +13,8 @@ export function mountPreview({ api }) {
   const dock = h('div#pv', { role: 'region', 'aria-label': 'Preview Mode tools' });
   const body = h('div.pvbody'), tabs = h('div.pvtabs', { role: 'tablist' });
   const min = h('button', { type: 'button', onclick: () => dock.classList.toggle('min') }, 'min');
-  dock.append(h('div.pvhead', h('span', 'PREVIEW'), min), tabs, body); document.body.append(dock);
+  const nxt = h('button#pv-next', { type: 'button', title: 'Same as Continue; always available in Preview Mode', onclick: () => { const b = document.querySelector('.navrow .btn.primary'); if (b && !b.disabled) b.click(); } }, 'Next step →');
+  dock.append(h('div.pvhead', h('span', 'PREVIEW'), nxt, min), tabs, body); document.body.append(dock);
   const S = () => api.session, st = () => S().state, plan = () => S().plan;
   const out = h('pre'); const log = (x) => { out.textContent = typeof x === 'string' ? x : JSON.stringify(x, null, 2); };
   const btn = (label, fn, cls = '') => h('button.small' + cls, { type: 'button', onclick: fn }, label);

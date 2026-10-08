@@ -159,7 +159,7 @@
       App().submitting = false;
       if (!res.ok) { UI.modal({ title: 'Cannot submit yet', body: ['Some required work is not finished.'], actions: [] }); return; }
       App().state = res.state; if (!res.persisted && !res.already) { UI.toast('Submitted. Browser saving is unavailable, so download your final report now.', 'bad', 8000); }
-      if (!res.already && W.Sync.enabled()) { W.Sync.queue(W.Sync.payload(res.state, res.state.final.report)); Sh.startSync(); }
+      if (!res.already && W.Sync.enabled() && !W.Teacher.active) { W.Sync.queue(W.Sync.payload(res.state, res.state.final.report)); Sh.startSync(); }
       App().go({ view: 'results' });
     } });
     m = UI.modal({ title: 'Submit and lock?', body: [h('p', h('b', 'This cannot be undone by you.'), ' Only a teacher can reset it. You will see your results immediately.'), h('p.small.muted', 'Tip: if you are not sure about an item, press Cancel and go back first.')], actions: [UI.btn('Cancel', { onclick: function () { m.close(); } }), yes], focus: '.btn' });
@@ -189,7 +189,7 @@
     wrap.appendChild(h('div.lockbanner.noprint', A.iconEl('lock'), h('div', h('b', 'Submitted and locked. '), 'This report is read-only. You can view explanations and download your results, but answers cannot be changed.')));
     wrap.appendChild(h('div.stagehead', h('div', h('div.crumb', 'Wildcats Wellness Quest · Final results'), h('h1#stage-title', { tabindex: '-1' }, 'Your results')),
       h('div.row.noprint', UI.btn('Download results (JSON)', { icon: 'download', cls: 'primary', onclick: Sh.downloadRecord }), UI.btn('Print / Save as PDF', { icon: 'print', onclick: function () { root.print(); } }), UI.btn('Review my answers', { icon: 'eye', onclick: function () { App().go({ m: 1, s: '1.1' }); } }))));
-    if (W.Sync.enabled()) wrap.appendChild(Sh.syncCard());
+    if (W.Sync.enabled() && !W.Teacher.active) wrap.appendChild(Sh.syncCard());
     wrap.appendChild(h('div.card.flat', { style: { marginBottom: '16px' } }, h('div.grid.c3', h('div', h('div.xs.muted', C.identifierLabel), h('b', rep.student.identifier || '(not entered)')), h('div', h('div.xs.muted', 'Class period'), h('b', rep.student.period || '—')), h('div', h('div.xs.muted', 'Submitted'), h('b', rep.session.submittedAt ? new Date(rep.session.submittedAt).toLocaleString() : '—'))),
       h('div.grid.c3', { style: { marginTop: '8px' } }, h('div', h('div.xs.muted', 'Session ID'), h('b', rep.session.id)), h('div', h('div.xs.muted', 'Assessment version'), h('b', rep.assessmentVersion)), h('div', h('div.xs.muted', 'Record type'), h('b', rep.session.teacherAuthorizedReset ? 'Teacher-authorized new attempt (local, unverified)' : 'Original session')))));
     var scoreNum = h('div.num', h('span', rep.scores.earnedDisplay), h('small', ' / 100'));
@@ -274,6 +274,7 @@
         body.appendChild(h('div.callout.info', A.iconEl('info'), h('div', h('b', 'Current device record: '), (st.student.alias || '(no alias)') + ' · ' + st.session.status + ' · ' + comp.pct.toFixed(0) + '% complete · ' + U.fmt1(P.totals(st).earned) + ' / 100 pts')));
         body.appendChild(h('p', 'Export this student’s report first, then reset the device for the next student. The reset creates a new session and records that a teacher authorized it through this dialog. That record is local and not independently verified.'));
         body.appendChild(h('div.row', UI.btn('Download this report (JSON)', { icon: 'download', onclick: function () { Sh.downloadRecord(); exported = true; paint(); } }), UI.btn('Print report', { icon: 'print', onclick: function () { m.close(); if (st.session.status === 'SUBMITTED') { App().go({ view: 'results' }); setTimeout(function () { root.print(); }, 200); } else root.print(); } })));
+        body.appendChild(h('div.callout.info', A.iconEl('eye'), h('div', h('b', 'Teacher mode: '), 'click through every mission without answering, and fill in answers with one button to preview the review and results pages. It runs only in this browser tab, never touches this device’s student record and sends nothing to the Sheet.', h('div', { style: { marginTop: '8px' } }, UI.btn('Open teacher mode', { cls: 'primary', id: 'btn-teacher-mode', icon: 'right', onclick: function () { m.close(); W.Teacher.enter(); } })))));
         m.actions.appendChild(UI.btn('Close', { onclick: function () { m.close(); } }));
         m.actions.appendChild(UI.btn('Reset this device for a new student…', { cls: 'danger', icon: 'undo', onclick: function () { step = 'confirm'; paint(); } }));
       } else if (step === 'confirm') {

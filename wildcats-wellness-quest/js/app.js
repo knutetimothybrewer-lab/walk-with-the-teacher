@@ -18,11 +18,11 @@
   /* ---------- access rules ---------- */
   App.ro = function () { return !!App.state && App.state.session.status === 'SUBMITTED'; };
   App.unlocked = function (m) {
-    var st = App.state; if (!st) return false; if (App.ro()) return true;
+    var st = App.state; if (!st) return false; if (App.ro() || W.Teacher.active) return true;
     if (m === 0) return true; if (m === 1) return !!st.progress.activities.tutorial && !!st.progress.started;
     return P.missionStatus(st, m - 1).complete;
   };
-  App.canReview = function () { return App.ro() || St.canSubmit(App.state).ok; };
+  App.canReview = function () { return App.ro() || W.Teacher.active || St.canSubmit(App.state).ok; };
   App.openMission = function (m) {
     var st = App.state;
     if (!App.unlocked(m)) { UI.toast(m === 1 ? 'Finish the welcome practice first.' : 'Submit all the work in Mission ' + (m - 1) + ' first.', 'bad'); return; }
@@ -88,7 +88,7 @@
       page.appendChild(Sh.footnote(st));
       document.title = stage.title + ' — ' + (m.id ? 'Mission ' + m.id : 'Welcome') + ' — Wildcats Wellness Quest';
     }
-    main.appendChild(page);
+    main.appendChild(page); W.Teacher.bar();
     var hud = document.querySelector('.hud'), strip = document.querySelector('.strip'), bar = document.getElementById('hudslot');
     var neuHud = Sh.hud(st, App.ro()), neuStrip = Sh.strip(st, App.ro());
     if (hud) hud.parentNode.replaceChild(neuHud, hud); else bar.appendChild(neuHud);
@@ -99,10 +99,11 @@
 
   /* ---------- boot ---------- */
   App.boot = function () {
-    var storage = null; try { storage = root.localStorage; } catch (e) { storage = null; }
+    var storage = W.Teacher.boot(); if (!storage) { try { storage = root.localStorage; } catch (e) { storage = null; } }
     St.useStorage(storage);
     var init = St.init(); App.state = init.state; App.mode = init.mode; App.notices = init.notices;
     var st = App.state, pr = st.progress;
+    W.Teacher.prepare(st);
     if (!pr.started) { pr.pos = { m: 0, s: '0.1' }; pr.view = 'stage'; }
     if (App.ro()) pr.view = 'results';
     UI.applyMotion(); UI.applyText();

@@ -11,6 +11,8 @@ node tools/hash.js --preview "your new passcode"     # paste the output into pre
 
 A pink banner and a pink tool dock appear. Preview Mode uses a separate storage area, so it can never touch a real student's saved attempt, and it signs in as "Preview Teacher" with the DEMO code. `Alt+Shift+P` collapses the dock.
 
+**Click straight through:** in Preview Mode the **Continue** button is never locked, so you can walk every step (the dock's **Next step →** button does the same thing and is never covered by the dock) of every mission (and on to the review and results screens) without answering anything. Use the dock's **Questions** tab if you want a step's questions filled in as well.
+
 ## What the dock does
 | Tab | Tools |
 |---|---|

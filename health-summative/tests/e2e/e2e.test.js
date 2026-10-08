@@ -333,3 +333,54 @@ test('finished stations can be reviewed (read-only); later stations stay locked'
   assert.deepEqual(errors, []);
   await ctx.close();
 });
+
+test('teacher mode: the teacher code clicks through everything without answering, and sends nothing', { timeout: 120000 }, async () => {
+  const { page, ctx, errors } = await newPage({ withBackend: true });
+  const hits = [];
+  page.on('request', r => { if (r.url().startsWith(backend.url)) hits.push(r.postData() || ''); });
+  await page.goto(BASE);
+  assert.equal(await page.locator('#teacherBar').count(), 0, 'no teacher controls for students');
+  await page.fill('#f-code', 'walk-teacher');          // names and period left blank
+  await page.click('button[type=submit]');
+  await page.waitForSelector('.station-intro');
+  assert.equal(await page.locator('#teacherBar').count(), 1);
+  // Next → walks intro → questions → station end → next station without answering
+  const total = content.stations.length;
+  let guard = 0;
+  while (!(await page.locator('.final').count()) && guard++ < 400) {
+    await page.click('#tm-next');
+    await page.waitForTimeout(5);
+  }
+  await page.waitForSelector('.final h1');
+  assert.equal(await finalPercent(page) >= 0, true);
+  assert.match(await page.locator('#syncStatus').innerText(), /nothing was recorded/i);
+  assert.equal(hits.length, 0, 'teacher mode never calls the backend');
+  assert.ok(total > 0);
+  await page.click('#tm-exit');
+  await page.waitForSelector('#f-code');
+  assert.equal(await page.locator('#teacherBar').count(), 0);
+  // a wrong code is still just a wrong class code
+  await page.fill('#f-first', 'A'); await page.fill('#f-last', 'B'); await page.selectOption('#f-period', '1'); await page.fill('#f-code', 'nope');
+  await page.click('button[type=submit]');
+  await page.waitForSelector('.form-err:not([hidden])');
+  assert.deepEqual(errors, []);
+  await ctx.close();
+});
+
+test('teacher mode: skip station, jump and skip-to-results shortcuts', { timeout: 120000 }, async () => {
+  const { page, ctx, errors } = await newPage();
+  await page.goto(BASE);
+  await page.fill('#f-code', 'WALK-TEACHER');
+  await page.click('button[type=submit]');
+  await page.waitForSelector('.station-intro');
+  await page.click('#tm-station');
+  await page.waitForSelector('.station-end');
+  await page.selectOption('#tm-jump', '3');
+  await page.waitForSelector('.station-intro');
+  assert.match(await page.locator('#stationChip').innerText(), /Station 4/);
+  await page.click('#tm-results');
+  await page.waitForSelector('.final h1');
+  assert.equal(await finalPercent(page), 100);
+  assert.deepEqual(errors, []);
+  await ctx.close();
+});

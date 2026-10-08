@@ -44,6 +44,14 @@ See the README, "Deploy on GitHub Pages." The student link is the folder's URL, 
 3. Reset the device (Teacher reset -> Reset this device) so your test data is cleared before class.
 4. Run your own pilot (docs/PILOT_CHECKLIST.md) with a few students on real Chromebooks.
 
+### Teacher mode: click through without answering
+
+1. Press **Teacher reset** in the page footer and enter your **teacher passcode** (the same one that protects the reset).
+2. Press **Open teacher mode**. The page reloads into a purple "Teacher mode" bar.
+3. Every mission is open. Use **Fill this step**, **Fill this mission** or **Fill everything and review** (best answers, full marks) to jump to the Review, Submit and Results pages. **Exit teacher mode** returns to the normal screen.
+
+Teacher mode runs only in that browser tab (session storage). It never reads or changes a student's saved record on the device, never sends anything to the Google Sheet, and ends when you exit or close the tab.
+
 ## 5. Running it in class
 
 - Share **one link**. Students enter the alias or ID you give them and an optional period.

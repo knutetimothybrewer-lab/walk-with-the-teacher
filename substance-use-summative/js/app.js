@@ -210,7 +210,7 @@ function renderStage() {
   function applyGates() {
     parts.forEach((q) => { const ok = session.partAvailable(q, stage.id); items[q.id].setGated(!ok, q.after === '@sim' ? 'Complete the activity on the left to unlock this question.' : 'Answer the question above first.'); });
     const done = session.stageDone(stage), last = si === stages.length - 1;
-    nextBtn.disabled = !done; status.textContent = done ? 'Step complete.' : `Complete ${parts.length > 1 ? 'every question' : 'this question'} to continue.`;
+    nextBtn.disabled = !done && !PREVIEW; status.textContent = done ? 'Step complete.' : PREVIEW ? 'Preview: Continue is open without answering.' : `Complete ${parts.length > 1 ? 'every question' : 'this question'} to continue.`;
     nextBtn.replaceChildren(last ? (mi === content.missions.length - 1 ? 'Finish and review' : 'Complete mission') : 'Continue', icon('arrow', 20));
     updateTrail();
   }
@@ -222,7 +222,7 @@ function renderStage() {
     else { const nx = parts.find((p) => !session.isDone(p.id) && session.partAvailable(p, stage.id)); if (nx && (st === 'correct' || st === 'locked')) setTimeout(() => items[nx.id].el.scrollIntoView({ block: 'nearest', behavior: 'smooth' }), 300); }
   }
   nextBtn.onclick = () => {
-    if (!session.stageDone(stage)) return;
+    if (!session.stageDone(stage) && !PREVIEW) return;
     if (si < stages.length - 1) { s.pos.s = si + 1; session.save(); renderStage(); }
     else if (mi < content.missions.length - 1) { startMission(mi + 1); }
     else { s.screen = 'review'; session.save(); screenReview(); }

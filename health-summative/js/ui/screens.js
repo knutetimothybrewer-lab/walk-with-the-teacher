@@ -71,6 +71,7 @@ function welcome(app, existing) {
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     err.hidden = true;
+    if (await app.startTeacher(code.value)) return app.render();
     const student = { first: first.value.trim(), last: last.value.trim(), period: period.value, code: code.value.trim() };
     if (!student.first || !student.last || !student.period || !student.code) {
       return showErr(err, 'Please fill in all four boxes.');
@@ -223,7 +224,7 @@ function final(app) {
   $('#btn-src2').addEventListener('click', (e) => { sources(app); openDialog($('#sources'), e.currentTarget); });
   $('#btn-resend').addEventListener('click', () => app.retry && app.retry.retryNow());
   updateSync(app, { pending: queueLength(cfg), noBackend: !(cfg.backend && cfg.backend.url) });
-  if (!app.retry) {
+  if (!app.retry && !s.teacher) {
     import('../engine/sync.js').then(m => {
       app.retry = m.startRetryLoop(cfg, (st) => { s.sent = st.pending === 0 && !st.noBackend; s.save(); updateSync(app, st); });
     });
@@ -235,7 +236,11 @@ function updateSync(app, r) {
   if (!el) return;
   const s = app.session;
   const resend = document.getElementById('btn-resend');
-  if (r.noBackend) {
+  if (s.teacher) {
+    el.className = 'sync warn';
+    el.textContent = 'Teacher mode: nothing was recorded or sent.';
+    if (resend) resend.hidden = true;
+  } else if (r.noBackend) {
     el.className = 'sync warn';
     el.textContent = `Show ${app.cfg.teacherName} this code. (Results are saved on this device.)`;
     if (resend) resend.hidden = true;
