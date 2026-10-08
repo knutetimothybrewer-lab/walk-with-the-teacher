@@ -127,6 +127,8 @@ Each summative has a private way for the teacher to click through the whole asse
 | `substance-use-summative/` (SIGNAL) | Add `?preview=1` to the address and enter the preview passcode (default `WALK-TEACHER`). **Continue** is never locked in Preview Mode. |
 | `community-health-mission/` | **Teacher sign-in** on the sign-in screen, then **Start preview** (server-checked passcode). |
 
+The shared teacher code is **`WALK-TEACHER`** (type it in capitals) for the first three. Community Health Mission checks its passcode on the server, so set it to the same value in the spreadsheet's teacher menu. Each app stores only a hash or verifier of it, so changing it later means regenerating each one (see each app's README).
+
 ## Wildcats Wellness Quest (`wildcats-wellness-quest/`)
 
 Animated summative assessment for a high school health unit (five dimensions of wellness, health metrics, habits and SMART goals, media literacy, STOP decisions, and the Health by a Thousand Choices simulation). Static site with automatic scoring (100 points), strict 2-3 attempt policy with equivalent retry variants, a locked final report with JSON/print export, and a passcode-protected teacher reset. Optionally sends each student's result (with a class code) to your own Google Sheet via `apps-script/Code.gs`. See `wildcats-wellness-quest/README.md` for setup, GitHub Pages deployment, limits and teacher materials.
