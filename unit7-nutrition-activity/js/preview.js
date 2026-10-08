@@ -12,7 +12,8 @@ export function mountPreview({ api }) {
   document.body.insertBefore(h('div.pv-banner', 'PREVIEW MODE • TEACHER TOOLS • NOT A STUDENT ATTEMPT • nothing here touches real student data'), document.body.firstChild);
   const dock = h('div#pv', { role: 'region', 'aria-label': 'Preview Mode tools' });
   const body = h('div.pvbody'), tabs = h('div.pvtabs', { role: 'tablist' });
-  const min = h('button', { type: 'button', onclick: () => dock.classList.toggle('min') }, 'min');
+  const min = h('button', { type: 'button', 'aria-expanded': 'false', onclick: () => { const m = dock.classList.toggle('min'); min.textContent = m ? 'open tools' : 'minimize'; min.setAttribute('aria-expanded', String(!m)); } }, 'open tools');
+  dock.classList.add('min'); // starts small so it never covers the Continue button
   dock.append(h('div.pvhead', h('span', 'PREVIEW MODE'), min), tabs, body); document.body.append(dock);
   const S = () => api.session, st = () => S().state, plan = () => S().plan;
   const out = h('pre'); const log = (x) => { out.textContent = typeof x === 'string' ? x : JSON.stringify(x, null, 2); };
