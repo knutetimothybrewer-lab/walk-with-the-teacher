@@ -359,8 +359,16 @@ function screenResults() {
 // ---------------------------------------------------------------------------------- boot
 async function boot() {
   if (params.has('preview')) {
-    const code = window.prompt('Preview Mode passcode');
-    if (!code || hashOf('preview', code) !== CONFIG.previewPasscodeHash) { location.replace(location.pathname); return; }
+    // In-page passcode form (a pop-up box can be blocked by the browser). A wrong code says so instead of silently leaving.
+    $top.hidden = true; setBackground('entry');
+    await new Promise((resolve) => {
+      const inp = h('input.input#pv-pass', { type: 'password', autocomplete: 'off', 'aria-label': 'Preview Mode passcode', placeholder: 'Preview Mode passcode' });
+      const msg = h('div.err', { role: 'alert' });
+      const form = h('form.panel', { onsubmit: (e) => { e.preventDefault(); if (hashOf('preview', inp.value) === CONFIG.previewPasscodeHash) resolve(); else { msg.textContent = 'That passcode is not correct. Check for typos and try again.'; inp.select(); } } },
+        h('h2', 'Preview Mode (teacher)'), h('p.muted', 'Enter the teacher passcode to preview the assessment. This is not a student attempt.'), h('div.field', inp), msg,
+        h('div.row', h('button.btn.primary#pv-go', { type: 'submit' }, 'Open Preview Mode'), h('a.btn.ghost', { href: location.pathname }, 'Back to student sign-in')));
+      $main.replaceChildren(h('section.screen.narrow', h('div.kicker', 'Teacher only'), form)); inp.focus();
+    });
     PREVIEW = true; store = makeStore(CONFIG.storagePrefix + 'p'); document.body.classList.add('preview');
   }
   settings = store.getSettings(); applySettings(); buildTrail();

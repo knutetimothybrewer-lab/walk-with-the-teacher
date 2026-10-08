@@ -129,7 +129,7 @@ try {
     ok('no console errors on the dashboard', p.errs.length === 0, p.errs.join('|')); await p.context().close(); }
 
   // ---- 5. preview mode
-  { const p = await newPage(); p.on('dialog', (d) => d.accept('WALK-TEACHER')); await p.goto(BASE + '/index.html?preview'); await p.waitForSelector('.pv-banner'); await p.waitForSelector('article.item');
+  { const p = await newPage(); await p.goto(BASE + '/index.html?preview'); await p.fill('#pv-pass', 'oops'); await p.click('#pv-go'); ok('wrong preview passcode shows a message and stays on the form', (await p.locator('.err').innerText()).includes('not correct')); await p.fill('#pv-pass', 'WALK-TEACHER'); await p.click('#pv-go'); await p.waitForSelector('.pv-banner'); await p.waitForSelector('article.item');
     ok('Preview Mode is visibly labelled', (await p.locator('.pv-banner').innerText()).includes('PREVIEW MODE') && (await p.locator('#pv').count()) === 1);
     await p.locator('#pv button', { hasText: 'Questions' }).click(); await p.locator('#pv button', { hasText: 'Show correct answer' }).first().click(); await p.waitForTimeout(200);
     ok('preview shows the correct answer', (await p.locator('#pv pre').first().innerText()).trim().length >= 1);
@@ -139,7 +139,7 @@ try {
     ok('preview can show the final results screen', (await p.locator('.pill.demo', { hasText: 'PREVIEW' }).count()) === 1);
     const real = await p.evaluate(() => Object.keys(localStorage).filter((k) => k.startsWith('u7.')).length); ok('preview uses its own storage namespace (u7p.*)', real === 0);
     await p.context().close();
-    const bad = await newPage(); bad.on('dialog', (d) => d.accept('wrong')); await bad.goto(BASE + '/index.html?preview'); await bad.waitForSelector('#f-first'); ok('wrong preview passcode falls back to the normal sign-in', (await bad.locator('.pv-banner').count()) === 0); await bad.context().close(); }
+    const bad = await newPage(); await bad.goto(BASE + '/index.html?preview'); await bad.fill('#pv-pass', 'wrong'); await bad.click('#pv-go'); ok('wrong preview passcode never opens Preview Mode', (await bad.locator('.pv-banner').count()) === 0 && (await bad.locator('#pv').count()) === 0); await bad.context().close(); }
 
   // ---- 6. keyboard alternative to drag-and-drop, Chromebook layout, mobile layout, reduced motion
   { const p = await newPage({ reduced: true }); await signIn(p); await p.waitForSelector('text=Welcome');
