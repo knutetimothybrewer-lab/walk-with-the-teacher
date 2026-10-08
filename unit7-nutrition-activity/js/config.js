@@ -34,7 +34,7 @@ export const CONFIG = {
   // ---- 5. GOOGLE SHEETS CONNECTION -------------------------------------------------------------------
   // Paste the "Web app" URL (ends in /exec) from your Apps Script deployment. Leave '' to run without one
   // (the assessment still works and shows a receipt, but nothing is sent to a sheet).
-  backendUrl: '',
+  backendUrl: 'https://script.google.com/macros/s/AKfycbzGlTjUO1qugO483BTW8vIFBUsS2vQl5kbjSMzkEo4tO8fkTA7NKLK2O70Cy0JDkypaVw/exec',
   allowOfflineStart: true,      // if the sheet cannot be reached, a valid local class code can still begin
   gradingMode: 'local',         // 'local' (default) or 'server' (see README: stricter, needs the build --strip)
 
