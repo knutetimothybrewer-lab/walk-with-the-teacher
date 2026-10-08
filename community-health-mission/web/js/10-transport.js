@@ -16,6 +16,9 @@ CHM.transport = (function () {
         } catch (e) { reject(e); }
       });
     }
+    if (mode === 'static') {   // engine runs in this page; CHM.staticHandle may answer asynchronously (delivery to the Sheet)
+      return Promise.resolve(CHM.staticHandle(action, payload)).then(function (r) { return JSON.parse(JSON.stringify(r)); });
+    }
     if (mode === 'demo') {
       return new Promise(function (resolve) { setTimeout(function () { resolve(JSON.parse(JSON.stringify(CHM.demoHandle(action, payload)))); }, 120); });
     }
