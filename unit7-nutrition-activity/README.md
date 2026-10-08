@@ -67,7 +67,7 @@ node tools/serve.js 8080          # then open http://localhost:8080/
 
 * Student view: `http://localhost:8080/`  (class code **UNIT7** until you change it)
 * Preview Mode: `http://localhost:8080/?preview`  (passcode **WALK-TEACHER** until you change it)
-* Teacher dashboard: `http://localhost:8080/teacher/`  (offline sandbox passcode **DASH-7-TEACHER** until you change it)
+* Teacher dashboard: `http://localhost:8080/teacher/`  (offline sandbox passcode **WALK-TEACHER** until you change it)
 
 Node.js 18 or newer is only needed for the tools and tests. Students and teachers using the finished site need nothing installed.
 
@@ -144,7 +144,7 @@ There are three teacher codes, all in `js/config.js`, all stored as one-way hash
 |---|---|---|
 | `resetCodeHash` | `WALK-TEACHER` | clears the "already submitted" lock for a student |
 | `previewPasscodeHash` | `WALK-TEACHER` | opens Preview Mode (`?preview`) |
-| `teacherPasscodeHash` | `DASH-7-TEACHER` | opens the offline dashboard sandbox when no Sheet is connected |
+| `teacherPasscodeHash` | `WALK-TEACHER` | opens the offline dashboard sandbox when no Sheet is connected |
 
 **To change one:** open `teacher/setup.html` on your site (or locally), choose the code type, type your new code (8+ characters), copy the line it prints into `js/config.js`, and push.
 

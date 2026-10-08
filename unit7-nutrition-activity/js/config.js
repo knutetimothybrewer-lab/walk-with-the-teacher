@@ -25,10 +25,10 @@ export const CONFIG = {
   // Make a hash: open  teacher/setup.html  in your site, type the code, copy the line it gives you.
   //   RESET code:    WALK-TEACHER
   //   PREVIEW (teacher mode) code:  WALK-TEACHER
-  //   Default DASHBOARD code (offline sandbox only): DASH-7-TEACHER  <- CHANGE IT
+  //   Offline DASHBOARD code (sandbox only):  WALK-TEACHER
   resetCodeHash: '75612e18810b17804293b21e1a4c7e6fb95d76a34e49a787586ba595164ef948',   // = WALK-TEACHER
   previewPasscodeHash: 'e9cbdc47081386550e24c3f5602658f4b0090588bf01d2f18ffe23d68a128861', // = WALK-TEACHER
-  teacherPasscodeHash: '09a30742d010e8a1ed49aab9af8963d0cd82de35fbc1973af8e816bdb2d58ce5',  // = DASH-7-TEACHER (CHANGE IT)
+  teacherPasscodeHash: 'd94a302ca56f4af1250602c6331cf60d25c0e5f9f03e389298bd3c802f791a56',  // = WALK-TEACHER
   hashSalt: 'u7-v1',          // do not change after you have made hashes
 
   // ---- 5. GOOGLE SHEETS CONNECTION -------------------------------------------------------------------
