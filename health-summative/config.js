@@ -95,7 +95,16 @@ export default {
      out for everyone, e.g. after your pilot: disabledItems: ['s5-04', 's9-08'] */
   disabledItems: [],
 
-  /* ---- Timing (used only for the pace hint; never enforced) ------------------ */
+  /* ---- Time limit ------------------------------------------------------------
+     Hard limit in minutes, counted from the moment the student starts (the clock
+     keeps running if the page is refreshed or reopened). A countdown shows in the
+     top bar; at zero the work so far is submitted automatically and anything left
+     unanswered earns 0. Set to 0 for no limit. Students listed in studentOverrides
+     with extendedTime: true are not timed unless you also give them their own
+     timeLimitMinutes (for example 'sam rivera|3': { timeLimitMinutes: 135 }). */
+  timeLimitMinutes: 90,
+
+  /* ---- Pace hint (the gentle "about N min left" chip; hidden while a limit is on) */
   targetMinutes: 45,
 
   /* ---- Versioning: change only when you want everyone to start fresh -------- */

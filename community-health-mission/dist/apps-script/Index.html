@@ -173,6 +173,11 @@ dl.plan{display:grid;grid-template-columns:150px 1fr;gap:4px 12px}dl.plan dt{fon
 @media (max-width:1100px){.mgrid,.hub,.login{grid-template-columns:1fr}.cols2{grid-template-columns:1fr}}
 @media (max-width:640px){main{padding:8px}dl.plan{grid-template-columns:1fr}.scorebox .big{font-size:2.4rem}}
 @media print{.topbar,.noprint,.previewbar,.demobar,.skip,.qnav,details:not([open])>*:not(summary){display:none!important}body{background:#fff}.card,.res-head{box-shadow:none;border:1px solid #999;break-inside:avoid}}
+.timechip{font-size:.85rem;font-variant-numeric:tabular-nums;font-weight:700;padding:2px 10px;border-radius:99px;border:1px solid var(--ink2);background:var(--surface2)}
+.timechip.warn{background:var(--warn-bg);color:var(--warn);border-color:var(--warn)}
+.timechip.crit{background:#b3261e;color:#fff;border-color:#b3261e}
+.timebanner{position:fixed;left:50%;top:64px;transform:translateX(-50%);z-index:200;max-width:min(560px,92vw);background:#b3261e;color:#fff;padding:10px 16px;border-radius:10px;font-weight:700;box-shadow:0 6px 24px rgba(0,0,0,.3)}
+.timebanner[hidden]{display:none}
 
 
 </style>
@@ -189,6 +194,7 @@ dl.plan{display:grid;grid-template-columns:150px 1fr;gap:4px 12px}dl.plan dt{fon
   'use strict';
   // Deterministic grading. All-or-nothing per unit. No keyword matching of free text.
   var MAX_ATTEMPTS = 3;
+  var TIME_LIMIT_MIN = 90;   // hard limit, counted from the moment the student joins; 0 turns it off
   var CREDIT = [1, 0.85, 0.75];
 
   function isStr(x) { return typeof x === 'string'; }
@@ -372,7 +378,7 @@ dl.plan{display:grid;grid-template-columns:150px 1fr;gap:4px 12px}dl.plan dt{fon
     return r;
   }
 
-  var api = { MAX_ATTEMPTS: MAX_ATTEMPTS, CREDIT: CREDIT, validateUnit: validateUnit, validateField: validateField, gradeUnit: gradeUnit, gradeField: gradeField,
+  var api = { MAX_ATTEMPTS: MAX_ATTEMPTS, TIME_LIMIT_MIN: TIME_LIMIT_MIN, CREDIT: CREDIT, validateUnit: validateUnit, validateField: validateField, gradeUnit: gradeUnit, gradeField: gradeField,
     creditFor: creditFor, round2: round2, formatKey: formatKey, makeCorrect: makeCorrect, makeWrong: makeWrong };
   if (typeof module !== 'undefined' && module.exports) module.exports = api; else root.CHM_grading = api;
 })(typeof globalThis !== 'undefined' ? globalThis : this);
@@ -1212,6 +1218,7 @@ CHM.explorers.plain = function (data) { return h('div.callout', data.note || '')
     var s = CHM.session, motion = CHM.motionOn();
     var left = h('div.tb-l', h('button.brand', { type: 'button', onclick: function () { if (s) CHM.go('map'); }, 'aria-label': 'Community Health Mission, go to map' }, h('span.logo', { 'aria-hidden': 'true' }, '✚'), h('span', 'Community Health Mission')));
     var right = h('div.tb-r');
+    var tc = s && CHM.timeChipEl && CHM.timeChipEl(); if (tc) right.appendChild(tc);
     if (s) { right.appendChild(h('span.who', s.student.name + (s.preview ? '' : ''))); right.appendChild(h('span#savestat.savestat ' + saveStatus, { role: 'status' }, saveStatus === 'saved' ? '✓ Progress saved' : saveStatus === 'offline' ? '⚠ Offline: not saved yet' : '… Saving')); }
     right.appendChild(h('button.btn.sm.ghost', { type: 'button', 'aria-pressed': String(!motion), onclick: function () { CHM.setMotion(!CHM.motionOn()); CHM.rerender(); } }, motion ? 'Motion: on' : 'Motion: off'));
     if (s && !opts.noNav) right.appendChild(h('button.btn.sm.ghost', { type: 'button', onclick: function () { CHM.go('map'); } }, '🗺 Map'));
@@ -1244,7 +1251,7 @@ CHM.explorers.plain = function (data) { return h('div.callout', data.note || '')
       h('p.small', 'Privacy: use only the roster ID and name your teacher asked for. Do not type health information about yourself or anyone else. Every scenario in this assessment is fictional.'));
     var intro = h('section.hero', h('div.hero-art', CHM.guideSvg(84)), h('h1', 'Community Health Mission'),
       h('p.lead', 'Join the youth advisory team. Investigate a fictional county, make evidence-based decisions, and present a plan to the community.'),
-      h('ul.facts', h('li', 'About 45–60 minutes. This is a guide, not a timer.'), h('li', 'Every graded question gives you 3 submitted attempts.'), h('li', 'Exploring is free; only pressing Submit uses an attempt.')),
+      h('ul.facts', h('li', 'You have 90 minutes from the moment you start. A countdown shows at the top, and your answers are submitted automatically when it reaches zero.'), h('li', 'Every graded question gives you 3 submitted attempts.'), h('li', 'Exploring is free; only pressing Submit uses an attempt.')),
       h('p.small', h('button.linkbtn', { type: 'button', onclick: function () { CHM.go('teacher'); } }, 'Teacher sign-in')));
     mount(h('div.login', intro, form), 'Sign in', { noNav: true });
   }
@@ -1256,6 +1263,7 @@ CHM.explorers.plain = function (data) { return h('div.callout', data.note || '')
     if (r.version !== CHM.content.version) { CHM.session = null; return renderLogin('This page has a different assessment version than your class. Ask your teacher.'); }
     // restore drafts cached locally if newer than server
     Object.keys(CHM.state.activity).forEach(function (k) { if (/^d\d$/.test(k)) Object.assign(drafts, CHM.state.activity[k]); });
+    CHM.timerStart(r.serverTime);
     resendOutbox().then(function () {
       var done = CHM.state.activity.t || CHM.session.preview;
       if (CHM.state.status === 'finalized') CHM.go('results'); else CHM.go(done ? 'map' : 'tutorial');
@@ -1305,7 +1313,7 @@ CHM.explorers.plain = function (data) { return h('div.callout', data.note || '')
     var view = h('div.hub',
       h('div.hub-map', h('h1.sr-h', 'County map'), cm.svg, h('p.small', 'Click a glowing place, or use the mission list. You may visit places in any order; the numbers suggest a route.')),
       h('aside.hub-side', h('h2', 'Your mission'), h('p', 'Investigate the county, then present an evidence-based plan. ' + doneCount + ' of ' + nUnits + ' questions finished.'), list,
-        h('p.small', 'Suggested pacing is a guide only (about 45–60 minutes in all). There is no countdown and nothing locks because of time.'),
+        h('p.small', 'Suggested pacing is about 45–60 minutes in all. You have a 90-minute limit, shown in the top bar; your answers are submitted automatically when it ends.'),
         fin, h('p.small', h('button.linkbtn', { type: 'button', onclick: function () { CHM.go('tutorial'); } }, 'Reopen the briefing'))));
     mount(view, 'County map');
     CHM.hubMap = cm;
@@ -1429,12 +1437,88 @@ CHM.explorers.plain = function (data) { return h('div.callout', data.note || '')
     if (cached && CHM.config.transport !== 'demo') {
       CHM.session = cached;
       CHM.api('getState', {}, { retries: 2 }).then(function (r) {
-        if (r.ok && cached.version === CHM.content.version) { CHM.state = r.state; CHM.state.activity = r.state.activity || {}; CHM.afterJoin({ sessionId: cached.sessionId, token: cached.token, student: cached.student, cls: cached.cls, version: cached.version, state: r.state }); }
+        if (r.ok && cached.version === CHM.content.version) { CHM.state = r.state; CHM.state.activity = r.state.activity || {}; CHM.afterJoin({ sessionId: cached.sessionId, token: cached.token, student: cached.student, cls: cached.cls, version: cached.version, state: r.state, serverTime: r.serverTime }); }
         else { CHM.session = null; CHM.ls.del('session'); renderLogin(r.message && r.code === 'RESET' ? r.message : ''); }
       }, function () { CHM.session = null; renderLogin('Could not reach the server to resume. You can sign in again with the same class code and roster ID.'); });
     } else renderLogin();
   };
   CHM.signOut = function () { CHM.ls.del('session'); CHM.session = null; CHM.teacherToken = null; renderLogin(); };
+})();
+
+'use strict';
+// Countdown for the hard time limit. The server owns the deadline (state.deadline) and enforces it; this file only shows
+// the clock and, at zero, submits what is there. Preview sessions have no deadline, so nothing here applies to them.
+(function () {
+  var iv = null, offset = 0, busy = false, warned = {}, bannerTimer = null;
+
+  function leftMs() { var d = CHM.state && CHM.state.deadline; return d ? Date.parse(d) - (Date.now() + offset) : null; }
+  function fmt(ms) {
+    var t = Math.max(0, Math.ceil(ms / 1000)), hh = Math.floor(t / 3600), mm = Math.floor(t % 3600 / 60), ss = t % 60;
+    return hh ? hh + ':' + (mm < 10 ? '0' : '') + mm + ':' + (ss < 10 ? '0' : '') + ss : mm + ':' + (ss < 10 ? '0' : '') + ss;
+  }
+  function active() { return !!(CHM.session && !CHM.session.preview && CHM.state && CHM.state.status !== 'finalized' && CHM.state.deadline); }
+
+  // Shown in the top bar by 60-app.js.
+  CHM.timeChipEl = function () {
+    if (!active()) return null;
+    return h('span#timechip.timechip', { role: 'timer' }, h('span.sr-only', 'Time remaining: '), h('span#timetxt', fmt(leftMs())));
+  };
+
+  function banner(msg) {
+    var b = document.getElementById('timebanner');
+    if (!b) { b = h('div#timebanner.timebanner', { role: 'alert' }); document.body.appendChild(b); }
+    b.textContent = msg; b.hidden = false; clearTimeout(bannerTimer);
+    bannerTimer = setTimeout(function () { b.hidden = true; }, 9000);
+    CHM.announce(msg);
+  }
+
+  // Submit any answer that is complete but not yet submitted (it counts as the next attempt), then finalize.
+  function submitDrafts(deadlineWall) {
+    var open = [];
+    CHM.content.modules.forEach(function (m) { m.units.forEach(function (u) { var s = CHM.state.units[u.id]; if (s.status === 'open' && CHM.drafts[u.id]) open.push(u); }); });
+    return open.reduce(function (p, u) {
+      return p.then(function () {
+        if (Date.now() > deadlineWall) return;
+        var resp = CHM.drafts[u.id], s = CHM.state.units[u.id];
+        if (CHM_grading.validateUnit(CHM.content, u, resp)) return;
+        return CHM.api('submitUnit', { requestId: CHM.uid(), unitId: u.id, response: resp, expectedAttempt: s.next && s.next.attempt }, { retries: 1 }).then(function (r) {
+          if (r && r.state) CHM.state = Object.assign(r.state, { activity: CHM.state.activity });
+        }, function () { /* the server will still finalize with what it has */ });
+      });
+    }, Promise.resolve());
+  }
+
+  function expire() {
+    if (busy) return; busy = true;
+    banner('Time is up. Submitting your answers now.');
+    submitDrafts(Date.now() + 10000).then(function () {
+      return CHM.api('finalize', { requestId: CHM.uid(), confirm: true }, { retries: 6 });
+    }).then(function (res) {
+      busy = false;
+      if (res && res.ok) { CHM.state = Object.assign(res.state, { activity: CHM.state.activity }); CHM.final = res.final; CHM.go('results'); }
+    }, function () { busy = false; /* offline: the next tick tries again; the server also finalizes on its own */ });
+  }
+
+  function tick() {
+    if (!CHM.session || CHM.session.preview || !CHM.state) return;
+    if (CHM.state.status === 'finalized') {   // the server already closed it (for example, on a refresh after time ran out)
+      if (CHM.view && CHM.view.name !== 'results' && CHM.state.final) { CHM.final = CHM.state.final; CHM.go('results'); }
+      return;
+    }
+    if (!active()) return;
+    var l = leftMs(), mins = l / 60000, chip = document.getElementById('timechip'), txt = document.getElementById('timetxt');
+    if (txt) txt.textContent = fmt(l);
+    if (chip) { chip.classList.toggle('warn', mins <= 15 && mins > 5); chip.classList.toggle('crit', mins <= 5); }
+    [15, 5, 1].some(function (m) {
+      if (mins <= m && mins > 0 && !warned[m]) { warned[m] = 1; banner(m + ' minute' + (m > 1 ? 's' : '') + ' left. Your answers will be submitted automatically when time runs out.'); return true; }
+    });
+    if (l <= 0) expire();
+  }
+
+  CHM.timerStart = function (serverTime) {
+    var t = Date.parse(serverTime); offset = isNaN(t) ? 0 : t - Date.now();
+    clearInterval(iv); iv = setInterval(tick, 1000); tick();
+  };
 })();
 
 'use strict';
@@ -1489,6 +1573,7 @@ CHM.explorers.plain = function (data) { return h('div.callout', data.note || '')
       h('h1', 'Mission report'), h('p', f.student.name + ' · Roster ID ' + f.student.rosterId + (f.student.period ? ' · Period ' + f.student.period : '') + (f.student.section ? ' · ' + f.student.section : '')),
       h('div.scorebox', h('div.big', r.pctDisplay + '%'), h('div', h('strong', CHM.pts(r.earned) + ' of ' + r.possible + ' points'), h('div.small', 'Earned grade = points earned ÷ total points × 100')),
         h('div.stats', h('span', h('strong', r.completed + ' of ' + r.units), ' questions completed'), h('span', h('strong', r.correct), ' answered correctly'), h('span', h('strong', r.firstTryCorrect), ' correct on the first attempt'), h('span', h('strong', r.attempts), ' attempts submitted in all'))),
+      f.timedOut ? h('p.fbox.warn', { role: 'status' }, h('strong', 'Time limit reached. '), 'Your time ran out, so the answers you had submitted were locked and sent automatically. Anything unfinished counts as 0.') : null,
       h('div.statusrow', chip('ok', '✓ Progress saved'), chip('ok', '✓ Finalized on server · ' + stamp(f.finalizedAt)), gbChip, retry),
       h('p.small', 'Receipt ID: ', h('strong.mono', f.receiptId), ' · Server time: ' + stamp(f.finalizedAt) + ' · Time from start: about ' + Math.round(f.elapsedMinutes) + ' min (guide only)'),
       h('div.row.noprint', h('button.btn', { type: 'button', onclick: function () { window.print(); } }, '🖨 Print receipt'), h('button.btn', { type: 'button', onclick: function () { CHM.download('receipt-' + f.receiptId + '.txt', receiptText(f)); } }, '⬇ Download receipt')));

@@ -38,7 +38,7 @@
       sim: { picks: {}, finished: false, compare: null },
       reflections: { m3: '', m7: '', share: false },
       settings: { motion: 'auto', textScale: 1, pacing: false },
-      timing: { startedAt: now, missions: {} },
+      timing: { startedAt: now, beganAt: '', missions: {} },
       meta: { savedAt: now, saveCount: 0, imports: [] },
       final: null
     };
@@ -87,7 +87,7 @@
     if (raw.schema !== SCHEMA) return { ok: false, problems: ['unsupported schema ' + raw.schema] };
     if (raw.assessmentVersion !== ver()) return { ok: false, problems: ['assessment version mismatch (' + raw.assessmentVersion + ')'] };
     var s = raw.session; if (!U.isObj(s) || typeof s.id !== 'string' || !/^WWQ-[0-9a-f]{12}$/.test(s.id)) return { ok: false, problems: ['invalid session id'] };
-    out.session = { id: s.id, createdAt: str(s.createdAt, 40) || out.session.createdAt, status: s.status === 'SUBMITTED' ? 'SUBMITTED' : 'ACTIVE', submittedAt: s.submittedAt ? str(s.submittedAt, 40) : null, resetCount: Math.max(0, s.resetCount | 0), reset: U.isObj(s.reset) ? { at: str(s.reset.at, 40), previousSessionId: str(s.reset.previousSessionId, 20), authorizedVia: str(s.reset.authorizedVia, 120), note: str(s.reset.note, 200) } : null };
+    out.session = { id: s.id, createdAt: str(s.createdAt, 40) || out.session.createdAt, status: s.status === 'SUBMITTED' ? 'SUBMITTED' : 'ACTIVE', timedOut: s.timedOut === true, submittedAt: s.submittedAt ? str(s.submittedAt, 40) : null, resetCount: Math.max(0, s.resetCount | 0), reset: U.isObj(s.reset) ? { at: str(s.reset.at, 40), previousSessionId: str(s.reset.previousSessionId, 20), authorizedVia: str(s.reset.authorizedVia, 120), note: str(s.reset.note, 200) } : null };
     var stu = U.isObj(raw.student) ? raw.student : {};
     out.student = { alias: str(stu.alias, ALIAS_MAX), period: str(stu.period, 20), code: str(stu.code, 40), avatar: W.AVATARS.some(function (a) { return a.id === stu.avatar; }) ? stu.avatar : 'a1' };
     var pr = U.isObj(raw.progress) ? raw.progress : {};
@@ -124,7 +124,7 @@
           rec.finalized = true; rec.finalizedAt = str(src.finalizedAt, 40) || last.at;
           rec.finalizedReason = n >= limit ? 'exhausted' : last.raw >= 1 - 1e-9 ? (n === 1 ? 'full' : 'full-on-retry') : rec.best >= it.pts * P.capFor(n + 1) - 1e-9 ? 'no-gain' : 'kept';
         } else rec.retryReady = src.retryReady === true;
-      }
+      } else if (out.session.timedOut && src.finalized === true) { rec.finalized = true; rec.finalizedReason = 'timeout'; rec.finalizedAt = str(src.finalizedAt, 40); }
       if (!rec.finalized && U.isObj(src.draft)) rec.draft = St.cleanDraft(it, rec, src.draft);
       out.items[id] = rec;
     });
@@ -142,13 +142,13 @@
     var se = U.isObj(raw.settings) ? raw.settings : {};
     out.settings = { motion: ['auto', 'on', 'off'].indexOf(se.motion) >= 0 ? se.motion : 'auto', textScale: [1, 1.125, 1.25].indexOf(se.textScale) >= 0 ? se.textScale : 1, pacing: se.pacing === true };
     var tm = U.isObj(raw.timing) ? raw.timing : {};
-    out.timing = { startedAt: str(tm.startedAt, 40) || out.timing.startedAt, missions: {} };
+    out.timing = { startedAt: str(tm.startedAt, 40) || out.timing.startedAt, beganAt: str(tm.beganAt, 40), missions: {} };
     if (U.isObj(tm.missions)) Object.keys(tm.missions).forEach(function (k) { if (W.MISSION[k | 0] && U.isObj(tm.missions[k])) out.timing.missions[k] = { first: str(tm.missions[k].first, 40), last: str(tm.missions[k].last, 40) }; });
     out.meta = { savedAt: str(raw.meta && raw.meta.savedAt, 40) || U.nowISO(), saveCount: Math.max(0, (raw.meta && raw.meta.saveCount) | 0), imports: Array.isArray(raw.meta && raw.meta.imports) ? raw.meta.imports.slice(-10).map(function (x) { return { at: str(x.at, 40), kind: str(x.kind, 40) }; }) : [] };
     if (out.session.status === 'SUBMITTED') {
       if (!opts.allowSubmitted) return { ok: false, problems: ['submitted record not allowed here'] };
       var allDone = W.ITEMS.every(function (i) { return out.items[i.id] && out.items[i.id].finalized; });
-      if (!allDone) return { ok: false, problems: ['submitted record has unfinalized items'] };
+      if (!allDone && !out.session.timedOut) return { ok: false, problems: ['submitted record has unfinalized items'] };
       var rep = W.Report.build(out, { submittedAt: out.session.submittedAt });
       out.final = { submittedAt: out.session.submittedAt, report: rep };
     }
@@ -189,10 +189,15 @@
     var acts = W.ACTIVITIES.filter(function (a) { return !state.progress.activities[a.id]; });
     return { ok: !open.length && !acts.length, openItems: open.map(function (i) { return i.id; }), openActivities: acts.map(function (a) { return a.id; }) };
   };
-  St.submitFinal = function (state) {
-    var K = St.keys(), existing = rd(K.submitted);
+  /* opts.force (time limit reached): lock the session even though work is unfinished. Unfinished items keep whatever they
+     have already earned (0 if never submitted) and are marked 'timeout'. */
+  St.submitFinal = function (state, opts) {
+    var K = St.keys(), existing = rd(K.submitted), force = !!(opts && opts.force);
     if (state.session.status === 'SUBMITTED' || (existing && existing.state && existing.state.session && existing.state.session.id === state.session.id)) return { ok: true, already: true, state: state };
-    var can = St.canSubmit(state); if (!can.ok) return { ok: false, reason: 'incomplete', detail: can };
+    if (force) {
+      state.session.timedOut = true;
+      W.ITEMS.forEach(function (i) { var rec = St.ensureItem(state, i.id); if (!rec.finalized) P.finalize(rec, 'timeout'); });
+    } else { var can = St.canSubmit(state); if (!can.ok) return { ok: false, reason: 'incomplete', detail: can }; }
     state.session.status = 'SUBMITTED'; state.session.submittedAt = U.nowISO(); state.progress.view = 'review';
     var rep = W.Report.build(state, { submittedAt: state.session.submittedAt });
     state.final = U.deepFreeze({ submittedAt: state.session.submittedAt, report: rep });

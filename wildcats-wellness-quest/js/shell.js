@@ -17,13 +17,13 @@
     var hud = h('header.hud', { role: 'banner' },
       h('button.hud-brand', { type: 'button', 'aria-label': 'Wildcats Wellness Quest, go to the campus map', onclick: function () { App().go({ view: 'map' }); } }, U.svg(A.logo()), h('span', h('b', 'Wildcats Wellness Quest'), h('small', 'Small Choices, Whole Health'))),
       h('div.hud-mid', h('div.where', where), h('div.progrow', h('div.bar', { role: 'progressbar', 'aria-label': 'Completion of required work', 'aria-valuemin': '0', 'aria-valuemax': '100', 'aria-valuenow': String(Math.round(pct)) }, h('i', { style: { width: pct + '%' } })), pctNum, h('span.xs', { style: { opacity: '.85' } }, 'complete'))),
-      h('div.hud-right', chip,
+      h('div.hud-right', App().timeChip(), chip,
         UI.btn('Map', { icon: 'map', onclick: function () { App().go({ view: 'map' }); } }),
         UI.btn('My work', { icon: 'list', onclick: function () { Sh.myWork(); } }),
         UI.btn('Settings', { icon: 'gear', onclick: function () { Sh.settings(); } })));
     if (state.settings.pacing) {
       var mins = Math.max(0, Math.round((Date.now() - Date.parse(state.timing.startedAt || U.nowISO())) / 60000)), tg = W.CONFIG.timeGuidance, target = Math.round(tg.targetMinutes * (tg.extendedTime ? tg.extendedMultiplier : 1));
-      hud.appendChild(h('div.xs', { style: { width: '100%', opacity: '.9' } }, 'Pacing guide only (no timer, nothing is enforced): about ' + mins + ' min since you started; the design estimate is about ' + target + ' min. Take the time you need.'));
+      hud.appendChild(h('div.xs', { style: { width: '100%', opacity: '.9' } }, 'Pacing guide only (it does not change your time limit): about ' + mins + ' min since you started; the design estimate is about ' + target + ' min. Take the time you need.'));
     }
     return hud;
   };
@@ -106,7 +106,7 @@
       return h('label.opt', h('input', { type: 'radio', name: 'mot', value: o[0], checked: st.settings.motion === o[0], onchange: function () { st.settings.motion = o[0]; UI.applyMotion(); App().save(true); } }), h('span.mark', A.iconEl('check')), o[1]); })), h('p.hint-line', 'Turning animation off keeps every number, label and table. Nothing flashes.'));
     var txt = h('fieldset.part', h('legend', 'Text size'), h('div.opts.chips', { role: 'radiogroup', 'aria-label': 'Text size' }, [[1, 'Normal'], [1.125, 'Large'], [1.25, 'Extra large']].map(function (o) {
       return h('label.opt', h('input', { type: 'radio', name: 'txt', value: String(o[0]), checked: st.settings.textScale === o[0], onchange: function () { st.settings.textScale = o[0]; UI.applyText(); App().save(true); } }), h('span.mark', A.iconEl('check')), o[1]); })));
-    var pace = h('label', { style: { display: 'flex', gap: '8px', alignItems: 'center', fontWeight: '600' } }, h('input', { type: 'checkbox', checked: st.settings.pacing, onchange: function (e) { st.settings.pacing = e.target.checked; App().save(true); App().render(); } }), 'Show a pacing guide (no timer, nothing is enforced)');
+    var pace = h('label', { style: { display: 'flex', gap: '8px', alignItems: 'center', fontWeight: '600' } }, h('input', { type: 'checkbox', checked: st.settings.pacing, onchange: function (e) { st.settings.pacing = e.target.checked; App().save(true); App().render(); } }), 'Show a pacing guide (guidance only)');
     var file = h('input', { type: 'file', accept: 'application/json,.json', style: { display: 'none' }, id: 'import-file', onchange: function (e) { var f = e.target.files && e.target.files[0]; if (f) { var r = new FileReader(); r.onload = function () { Sh.importText(String(r.result)); }; r.onerror = function () { Sh.importText(''); }; r.readAsText(f); } e.target.value = ''; } });
     body.appendChild(mot); body.appendChild(txt); body.appendChild(pace);
     body.appendChild(h('div.card.flat', h('h3', 'Recovery file'), h('p.small', 'A recovery file lets you restore your work if this browser’s saved data is cleared. It is for recovery only. It can never start you over or lower your attempt counts.'),
@@ -189,6 +189,7 @@
     wrap.appendChild(h('div.lockbanner.noprint', A.iconEl('lock'), h('div', h('b', 'Submitted and locked. '), 'This report is read-only. You can view explanations and download your results, but answers cannot be changed.')));
     wrap.appendChild(h('div.stagehead', h('div', h('div.crumb', 'Wildcats Wellness Quest · Final results'), h('h1#stage-title', { tabindex: '-1' }, 'Your results')),
       h('div.row.noprint', UI.btn('Download results (JSON)', { icon: 'download', cls: 'primary', onclick: Sh.downloadRecord }), UI.btn('Print / Save as PDF', { icon: 'print', onclick: function () { root.print(); } }), UI.btn('Review my answers', { icon: 'eye', onclick: function () { App().go({ m: 1, s: '1.1' }); } }))));
+    if (state.session.timedOut) wrap.appendChild(h('div.callout.warn', { style: { marginBottom: '16px' } }, A.iconEl('alert'), h('div', h('b', 'Time limit reached. '), 'Your time ran out, so the answers you had submitted were locked and sent automatically. Anything unanswered counts as 0.')));
     if (W.Sync.enabled() && !W.Teacher.active) wrap.appendChild(Sh.syncCard());
     wrap.appendChild(h('div.card.flat', { style: { marginBottom: '16px' } }, h('div.grid.c3', h('div', h('div.xs.muted', C.identifierLabel), h('b', rep.student.identifier || '(not entered)')), h('div', h('div.xs.muted', 'Class period'), h('b', rep.student.period || '—')), h('div', h('div.xs.muted', 'Submitted'), h('b', rep.session.submittedAt ? new Date(rep.session.submittedAt).toLocaleString() : '—'))),
       h('div.grid.c3', { style: { marginTop: '8px' } }, h('div', h('div.xs.muted', 'Session ID'), h('b', rep.session.id)), h('div', h('div.xs.muted', 'Assessment version'), h('b', rep.assessmentVersion)), h('div', h('div.xs.muted', 'Record type'), h('b', rep.session.teacherAuthorizedReset ? 'Teacher-authorized new attempt (local, unverified)' : 'Original session')))));

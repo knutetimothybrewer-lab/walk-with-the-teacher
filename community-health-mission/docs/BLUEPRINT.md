@@ -37,7 +37,7 @@ Why this is uncertain: reading speed varies widely in a 10th-grade class; the th
 4. Observe whether students open the explorers before answering; adjust prompts if not.
 5. Review first-attempt accuracy per item in the `Summary` tab for items that are too easy/hard or ambiguous.
 
-Pacing is shown as a guide only. There is no countdown, no cutoff, nothing locks because of time, and animations are skippable and never required.
+Pacing is shown as a guide. The assessment has a 90-minute hard limit counted from the moment the student joins (`TIME_LIMIT_MIN` in `server/grading.js`; 0 turns it off). The server enforces it: a countdown shows in the top bar, any complete-but-unsubmitted answer is submitted when it reaches zero, the session is finalized, and anything unfinished earns 0. Teacher Preview is never timed. Animations are skippable and never required.
 
 ## Cognitive demand
 See `docs/ALIGNMENT.md`. 93 of 100 points are application, analysis, evaluation or creation (DOK 2–3); 7 points are retrieval foundations (M1-U1, M3-U1). Seven or more interaction formats are used (single choice, exact-set multiselect, matching/classification, sequencing, numeric answers with tolerance, two-tier claim+reason, map selection, budget challenge, simulation plans, structured advocacy). Units requiring graph/table interpretation: M2-U2, M3-U4, M4-U1–U4 (6 units).

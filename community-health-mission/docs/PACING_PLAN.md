@@ -14,6 +14,6 @@ This is a plan, not a measured result. Use it with the pilot checklist at the en
 | 51–53 | Final review and submit; results, receipt | Confirm "Recorded in teacher gradebook" chip for each student |
 | 53–60 | Buffer for retries, reading speed, slow connections | Students who are done may explore explanations |
 
-Options: split across two periods (progress saves; students sign in again with the same code and roster ID); set `PacingFactor` (1.25–1.5) for accommodations; there is no timer, so extended time needs no code change.
+Options: split across two periods (progress saves; students sign in again with the same code and roster ID); set `PacingFactor` (1.25–1.5) for accommodations; the 90-minute limit starts when the student joins, so for an accommodation raise `TIME_LIMIT_MIN` in `server/grading.js` and rebuild (it applies to the whole class code). Students can sign out and return; the clock keeps running.
 
 **Pilot checklist.** Run 5–8 students (include a slower reader and one with accommodations) on real Chromebooks; record start/finish time per location from `Sessions`/`Responses` timestamps; note any question students re-read repeatedly; confirm every student sees the green gradebook chip; check one flaky-Wi-Fi case (disconnect mid-submit, then reconnect).

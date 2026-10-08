@@ -12,6 +12,10 @@
     pub.modules.forEach(function (m) { m.units.forEach(function (u) { u.module = m.id; unitList.push(u); unitById[u.id] = u; }); });
     var totalPoints = unitList.reduce(function (a, u) { return a + u.points; }, 0);
     var REQ_CACHE = 10, TOKEN_TTL = 2 * 60 * 60;
+    // Hard time limit, enforced here (the browser countdown is only a display). Preview sessions are never timed.
+    var TIME_LIMIT_MS = (opts.timeLimitMinutes != null ? opts.timeLimitMinutes : G.TIME_LIMIT_MIN) * 60000, GRACE_MS = 15000;
+    function deadlineOf(s) { return TIME_LIMIT_MS > 0 && !s.preview ? s.createdAt + TIME_LIMIT_MS : 0; }
+    function timeUp(s, slack) { var d = deadlineOf(s); return !!d && now() >= d + (slack || 0); }
 
     function iso(t) { return new Date(t).toISOString(); }
     function fail(code, message, extra) { var r = { ok: false, code: code, message: message }; if (extra) for (var k in extra) r[k] = extra[k]; return r; }
@@ -78,7 +82,9 @@
         us[u.id] = { attempts: x.attempts, status: x.status, last: x.last, hint: x.hint, next: x.status === 'open' ? { attempt: x.attempts + 1, maxCredit: maxCreditNext(x, u) } : null,
           earned: x.status === 'open' ? null : G.round2(x.earned), correctOn: x.correctOn };
       });
-      return { sessionId: s.id, status: s.status, units: us, position: s.position, activity: s.activity, final: s.final ? finalPublic(s) : null, preview: !!s.preview, lastSaved: iso(s.lastSaved), createdAt: iso(s.createdAt) };
+      var dl = deadlineOf(s);
+      return { sessionId: s.id, status: s.status, units: us, position: s.position, activity: s.activity, final: s.final ? finalPublic(s) : null, preview: !!s.preview, lastSaved: iso(s.lastSaved), createdAt: iso(s.createdAt),
+        timeLimitMin: dl ? TIME_LIMIT_MS / 60000 : 0, deadline: dl ? iso(dl) : null };
     }
 
     function classOpen(cls) {
@@ -123,9 +129,17 @@
     function remember(s, requestId, res) { s.requests.push({ id: requestId, res: res }); }
     function okReq(rid) { return typeof rid === 'string' && /^[A-Za-z0-9_\-]{8,64}$/.test(rid); }
 
+    // Past the deadline (plus a short grace for requests already in flight) an unsubmitted session is finalized for the student.
+    function autoFinalizeIfDue(s, preview) {
+      if (s.status === 'finalized' || preview || !timeUp(s, GRACE_MS)) return false;
+      doFinalize(s, false, true); return true;
+    }
     function getState(p) {
-      var L = loadSession(p.sessionId, p.token, p); if (L.err) return L.err;
-      return { ok: true, state: publicState(L.s), serverTime: iso(now()) };
+      return store.withLock(function () {
+        var L = loadSession(p.sessionId, p.token, p); if (L.err) return L.err;
+        autoFinalizeIfDue(L.s, L.preview);
+        return { ok: true, state: publicState(L.s), serverTime: iso(now()) };
+      });
     }
 
     // Core attempt processing (shared by real, preview and scenario flows). Returns the response object.
@@ -134,6 +148,7 @@
       if (!u) return fail('BAD_UNIT', 'Unknown question.');
       var su = s.units[unitId];
       if (s.status === 'finalized') return fail('FINALIZED', 'This assessment was already submitted.');
+      if (!preview && timeUp(s, GRACE_MS)) return fail('TIME_UP', 'The time limit has ended. Your answers so far are being submitted.', { state: publicState(s) });
       if (su.status !== 'open') return fail('LOCKED', 'This question is already finished.', { state: publicState(s) });
       if (expectedAttempt != null && expectedAttempt !== su.attempts + 1) return fail('STALE', 'This question changed in another tab. Your screen was refreshed; nothing was used.', { state: publicState(s) });
       var bad = G.validateUnit(pub, u, response);
@@ -161,6 +176,7 @@
       return store.withLock(function () {
         var L = loadSession(p.sessionId, p.token, p); if (L.err) return L.err;
         var s = L.s, rep = replayOf(s, p.requestId);
+        if (!rep && autoFinalizeIfDue(s, L.preview)) return fail('TIME_UP', 'The time limit has ended. Your answers so far were submitted.', { state: publicState(s) });
         if (rep) { var r = JSON.parse(JSON.stringify(rep)); r.replayed = true; r.state = publicState(s); r.savedAt = iso(s.lastSaved); return r; }
         var res = processSubmit(s, L.preview, p.unitId, p.response, p.requestId, p.expectedAttempt);
         if (!res.ok) return res;
@@ -236,7 +252,7 @@
     }
     function finalPublic(s) {
       var f = s.final, r = computeResults(s);
-      return { receiptId: f.receiptId, finalizedAt: iso(f.finalizedAt), elapsedMinutes: Math.round((f.finalizedAt - s.createdAt) / 600) / 100, gradebook: f.gradebook, results: r, student: { name: s.name, rosterId: s.rosterId, period: s.period, classCode: s.classCode, section: s.section },
+      return { receiptId: f.receiptId, finalizedAt: iso(f.finalizedAt), elapsedMinutes: Math.round((f.finalizedAt - s.createdAt) / 600) / 100, timedOut: !!f.timedOut, gradebook: f.gradebook, results: r, student: { name: s.name, rosterId: s.rosterId, period: s.period, classCode: s.classCode, section: s.section },
         preview: !!s.preview, label: s.preview ? 'Teacher Preview — No Student Grade Recorded' : null, version: s.version };
     }
     function receiptId(s, t) { return (s.preview ? 'PV-' : 'CHM-') + env.sha256(s.id + '|' + t).slice(0, 8).toUpperCase(); }
@@ -249,17 +265,21 @@
         var s = L.s;
         if (s.status === 'finalized') return { ok: true, already: true, state: publicState(s), final: finalPublic(s) };
         var open = unitList.filter(function (u) { return s.units[u.id].status === 'open'; });
-        if (open.length && !L.preview) return fail('INCOMPLETE', open.length + ' question(s) are not finished yet.', { open: open.map(function (u) { return u.id; }) });
-        var t = now();
-        s.status = 'finalized';
-        s.final = { receiptId: receiptId(s, t), finalizedAt: t, gradebook: L.preview ? 'simulated' : 'pending' };
-        if (!L.preview) {
-          flushRows(s);
-          try { store.writeGradebook(s, computeResults(s)); s.final.gradebook = 'recorded'; } catch (e) { s.final.gradebook = 'pending'; s.final.error = String(e && e.message || e).slice(0, 120); }
-        }
-        persist(s, L.preview);
+        var late = timeUp(s, -3000);   // the browser fires at the deadline; allow 3 s of clock difference
+        if (open.length && !L.preview && !late) return fail('INCOMPLETE', open.length + ' question(s) are not finished yet.', { open: open.map(function (u) { return u.id; }) });
+        doFinalize(s, L.preview, open.length > 0 && late);
         return { ok: true, state: publicState(s), final: finalPublic(s) };
       });
+    }
+    function doFinalize(s, preview, timedOut) {
+      var t = now();
+      s.status = 'finalized';
+      s.final = { receiptId: receiptId(s, t), finalizedAt: t, gradebook: preview ? 'simulated' : 'pending', timedOut: !!timedOut };
+      if (!preview) {
+        flushRows(s);
+        try { store.writeGradebook(s, computeResults(s)); s.final.gradebook = 'recorded'; } catch (e) { s.final.gradebook = 'pending'; s.final.error = String(e && e.message || e).slice(0, 120); }
+      }
+      persist(s, preview);
     }
 
     function retryGradebook(p) {

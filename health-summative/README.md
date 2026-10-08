@@ -3,7 +3,7 @@
 An animated, game-like, **self-grading** assessment for a high school (grade 10) Health unit on mental health. Students enter a class code and their name, then "walk a trail from storm to sunrise" through 10 short stations. The sky gets brighter as they go. It grades itself (3 attempts per question, decreasing credit), shows a final score page, and (optionally) sends results to **your** Google Sheet, including a "Reteach" tab that tells you what to teach again.
 
 * Static website: no accounts, no ads, no trackers, no build step. Works on Chromebooks (Chrome), phones and tablets.
-* About **about 48 minutes** for a typical student (see `TIMING.md`). Not enforced: there is no cutoff.
+* About **about 48 minutes** for a typical student (see `TIMING.md`). A 90-minute limit is enforced (`timeLimitMinutes` in `config.js`; 0 turns it off); the work so far is submitted automatically at zero.
 * **64 questions, 93 points**, across 10 stations (+ a welcome screen and a final screen).
 * Safe-messaging approach for a sensitive topic; "Need help? / Take a break" button on every screen; skip any scenario for full credit.
 

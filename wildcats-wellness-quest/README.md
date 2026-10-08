@@ -5,7 +5,7 @@ An animated, walk-through **summative assessment** for a high school health unit
 - Static HTML/CSS/JavaScript. **No server, accounts, API keys, paid services or build step.** Local relative paths only.
 - Runs on Chromebooks (Chrome) from one student link on GitHub Pages.
 - Saves in each student's own browser. **By default nothing is sent anywhere.** Optionally, results can be sent to **your Google Sheet** with a class code (see "Send results to a Google Sheet").
-- Designed for a 30-40-minute class period, **not timed or enforced**. See "Timing, honestly" below.
+- Designed for a 30-40-minute class period, with a **90-minute hard limit** counted from when the student presses Start (`timeLimitMinutes` in `js/config.js`; 0 turns it off). A countdown shows in the top bar, and at zero any selected-but-unsubmitted answer is submitted, the assessment locks and sends, and anything unanswered earns 0. See "Timing, honestly" below.
 
 > **Before using for grades:** set your teacher passcode ([docs/TEACHER_SETUP.md](docs/TEACHER_SETUP.md)), verify the clinical reference values ([docs/SOURCE_REGISTER.md](docs/SOURCE_REGISTER.md)), and run a short pilot on real Chromebooks ([docs/PILOT_CHECKLIST.md](docs/PILOT_CHECKLIST.md)). The six source decks/worksheet were not available when this was built, so slide numbers in the coverage matrix are unverified.
 
@@ -59,7 +59,8 @@ Give students **one link**. Each student enters the alias or ID you assign, work
 |---|---|---|
 | `attemptLimits` | `{ short: 2, complex: 3 }` | Total attempts per scored item (initial submission included); `complex` may be 2 or 3 |
 | `caps` | `[1, 0.9, 0.75]` | Max share of points on attempt 1 / 2 / 3 (a teacher policy, not a research formula) |
-| `timeGuidance` | 36 min target, 30-40 range, `extendedTime: false` | Guidance only; never enforced |
+| `timeLimitMinutes` | `90` | Hard limit from the moment the student presses Start; `0` = no limit |
+| `timeGuidance` | 36 min target, 30-40 range, `extendedTime: false` | Pacing guidance only (the optional pacing line); does not change the limit |
 | `extendedExploration` | `false` | Show optional unscored extras |
 | `motion` | `auto` | Follow device reduced-motion, or force on/off |
 | `letterGrades` | disabled | Optional letter grade (boundaries use the unrounded total) |
@@ -104,7 +105,7 @@ Fully keyboard operable (a keyboard-only run through all seven missions is teste
 
 ## Timing, honestly
 
-The estimate from word counts and selection counts is about **35 minutes for fast readers, 40-44 for typical readers, 55+ for slower readers** ([docs/TEST_REPORT.md](docs/TEST_REPORT.md), `node tools/pacing.js`). This is **not a validated student duration**. Nothing is timed or enforced; plan the period with your pilot data and consider the extended-time setting.
+The estimate from word counts and selection counts is about **35 minutes for fast readers, 40-44 for typical readers, 55+ for slower readers** ([docs/TEST_REPORT.md](docs/TEST_REPORT.md), `node tools/pacing.js`). This is **not a validated student duration**. The 90-minute hard limit is generous against these estimates, but pilot it; plan the period with your pilot data and consider the extended-time setting.
 
 ## Folder map
 

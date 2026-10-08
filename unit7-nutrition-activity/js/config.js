@@ -50,5 +50,8 @@ export const CONFIG = {
   //   'hidden' = confirmation only (you release scores later)
   studentResults: 'full',
 
+  // Hard time limit, counted from the moment the student starts. At zero the assessment submits automatically
+  // with whatever has been answered. Set to 0 to turn the limit off.
+  timeLimitMinutes: 90,
   storagePrefix: 'u7'
 };

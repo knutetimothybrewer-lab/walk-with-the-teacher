@@ -307,3 +307,24 @@ test('simulated classroom: 60 students interleaved, some duplicate/stale request
   sessions.forEach((s, i) => { const st = c.call('getState', { sessionId: s.sessionId, token: s.token }).state; U(c).forEach(u => assert.equal(st.units[u.id].status, 'correct')); const f = c.call('finalize', { sessionId: s.sessionId, token: s.token, requestId: 'fin-' + i + '-0001', confirm: true }); assert.ok(f.ok); assert.equal(f.final.results.pctDisplay, i % 4 === 0 ? '85.0' : '100.0'); });
   assert.equal(c.store.listResponses().length, 60 * 29 + 15 * 29); assert.equal(Object.keys(c.store.gradebook).length, 60);
 });
+
+test('time limit: 90 min from join; finalize allowed with open units only once time is up; late submits rejected; stale sessions auto-finalize', () => {
+  const c = setup(), j = joinStudent(c, 'stu-t1'), u = U(c)[0];
+  assert.equal(j.state.timeLimitMin, 90);
+  const dl = Date.parse(j.state.deadline); assert.equal(dl - Date.parse(j.state.createdAt), 90 * 60000);
+  const fin = () => c.call('finalize', { sessionId: j.sessionId, token: j.token, requestId: c.rid(), confirm: true });
+  c.clock.advance(60 * 60000); assert.equal(fin().code, 'INCOMPLETE');
+  c.clock.advance(30 * 60000 + 10000);                    // 10 s past the deadline: still inside the grace window
+  assert.notEqual(sub(c, j, u, G.makeWrong(c.pub, u, c.priv.units[u.id])).code, 'TIME_UP');
+  c.clock.advance(20000);                                 // beyond the grace window
+  const late = sub(c, j, u, G.makeCorrect(c.pub, u, c.priv.units[u.id]));
+  assert.equal(late.code, 'TIME_UP'); assert.equal(late.state.status, 'finalized'); assert.equal(late.state.final.timedOut, true);
+  const k = joinStudent(c, 'stu-t2'); c.clock.advance(5 * 3600000);
+  const g = c.call('getState', { sessionId: k.sessionId, token: k.token });
+  assert.equal(g.state.status, 'finalized'); assert.equal(g.state.final.results.completed, 0);
+});
+
+test('time limit: teacher preview sessions are never timed', () => {
+  const c = setup(), t = teacher(c), p = c.call('previewStart', { teacherToken: t, revealMode: 'final' });
+  assert.ok(p.ok); assert.equal(p.state.deadline, null); assert.equal(p.state.timeLimitMin, 0);
+});

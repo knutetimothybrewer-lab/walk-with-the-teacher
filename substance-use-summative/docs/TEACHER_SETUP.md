@@ -40,7 +40,7 @@ The link and their class code. Nothing else. Tell them: use Chrome, do not use p
 * Have students sign in **before** you start the timer.
 * If a student is stuck on the sign-in screen, check the class code and the Config tab (Active = TRUE).
 * A student who needs a fresh attempt: teacher dashboard (`/teacher/`), **Reset** next to the name.
-* Accommodations: students can turn on larger text, a dyslexia-friendly font and reduced motion in Settings (the gear). There is no time limit.
+* Accommodations: students can turn on larger text, a dyslexia-friendly font and reduced motion in Settings (the gear). There is a 90-minute limit counted from the moment the student starts (set `timeLimitMinutes` in `js/config.js`; 0 turns it off). A countdown shows in the top bar, and at zero the work so far is submitted automatically.
 
 ## Changing questions
 Edit `authoring/mN.js`, run `npm run build`, and (if you use the Sheet backend) paste the regenerated `google-apps-script/KeyData.gs` into Apps Script and redeploy. Rebuild changes the content version, which keeps scores from different versions separate.

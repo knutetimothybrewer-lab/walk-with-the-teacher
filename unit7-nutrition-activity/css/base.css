@@ -46,6 +46,8 @@ button, input, select, textarea { font: inherit; color: inherit; }
 #trail li:hover .tip, #trail li.cur .tip { opacity: 1; }
 #trail li.cur .tip { opacity: .95; }
 .top-actions { display: flex; align-items: center; gap: .6rem; }
+.countdown.warn { color: #ffd479; border-color: #ffd479; }
+.countdown.crit { color: #fff; background: #b3261e; border-color: #b3261e; }
 .clock { font-variant-numeric: tabular-nums; color: var(--ink-dim); font-size: .9rem; padding: .15rem .55rem; border: 1px solid var(--line); border-radius: 999px; }
 .icon-btn { width: 44px; height: 44px; display: grid; place-items: center; background: transparent; border: 1px solid var(--line); border-radius: 12px; cursor: pointer; color: var(--ink-dim); }
 .icon-btn:hover { color: var(--ink); border-color: var(--line-strong); }

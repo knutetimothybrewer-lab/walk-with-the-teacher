@@ -151,3 +151,8 @@ dl.plan{display:grid;grid-template-columns:150px 1fr;gap:4px 12px}dl.plan dt{fon
 @media (max-width:1100px){.mgrid,.hub,.login{grid-template-columns:1fr}.cols2{grid-template-columns:1fr}}
 @media (max-width:640px){main{padding:8px}dl.plan{grid-template-columns:1fr}.scorebox .big{font-size:2.4rem}}
 @media print{.topbar,.noprint,.previewbar,.demobar,.skip,.qnav,details:not([open])>*:not(summary){display:none!important}body{background:#fff}.card,.res-head{box-shadow:none;border:1px solid #999;break-inside:avoid}}
+.timechip{font-size:.85rem;font-variant-numeric:tabular-nums;font-weight:700;padding:2px 10px;border-radius:99px;border:1px solid var(--ink2);background:var(--surface2)}
+.timechip.warn{background:var(--warn-bg);color:var(--warn);border-color:var(--warn)}
+.timechip.crit{background:#b3261e;color:#fff;border-color:#b3261e}
+.timebanner{position:fixed;left:50%;top:64px;transform:translateX(-50%);z-index:200;max-width:min(560px,92vw);background:#b3261e;color:#fff;padding:10px 16px;border-radius:10px;font-weight:700;box-shadow:0 6px 24px rgba(0,0,0,.3)}
+.timebanner[hidden]{display:none}

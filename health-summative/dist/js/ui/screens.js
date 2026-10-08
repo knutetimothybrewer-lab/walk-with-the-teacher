@@ -182,6 +182,7 @@ function final(app) {
 
   const node = h('section', { class: 'card final' },
     h('p', { class: 'eyebrow' }, `${s.student.first} ${s.student.last} · Period ${s.student.period}`),
+    s.timedOut ? h('p', { class: 'calm', role: 'status' }, 'Time limit reached. Your answers so far were submitted automatically; anything left unanswered counts as 0.') : null,
     h('h1', { id: 'finalH' }, 'Your final score: ', pct, '%'),
     h('p', { class: 'lead' }, `${fmtPts(r.earned)} out of ${fmtPts(r.possible)} points`),
     h('p', { class: 'cheer' }, h('strong', {}, band[1]), ' ', band[2]),

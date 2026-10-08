@@ -62,7 +62,7 @@
     return {
       format: 'wwq-report', schema: 1, assessmentVersion: state.assessmentVersion, app: W.CONFIG.appName + ' — ' + W.CONFIG.subtitle,
       student: { identifier: state.student.alias, period: state.student.period },
-      session: { id: s.id, createdAt: s.createdAt, submittedAt: s.submittedAt || opts.submittedAt || null, status: s.status, teacherAuthorizedReset: s.reset || null, resetCount: s.resetCount || 0, exportedAt: U.nowISO() },
+      session: { id: s.id, createdAt: s.createdAt, submittedAt: s.submittedAt || opts.submittedAt || null, status: s.status, timedOut: !!s.timedOut, teacherAuthorizedReset: s.reset || null, resetCount: s.resetCount || 0, exportedAt: U.nowISO() },
       scores: { earnedPoints: earned, earnedDisplay: U.fmt1(earned), maxPoints: tot.max, percent: percent, percentDisplay: U.fmt1(percent), letter: letter, autoScoredPoints: tot.max, manualReviewPoints: 0, pendingPoints: 0,
         rounding: 'Displayed to one decimal place. Grade boundaries use the unrounded total.' },
       completion: { done: comp.done, total: comp.total, percent: comp.pct, note: 'Completion counts required activities finalized, independent of correctness. It is separate from the earned grade.' },

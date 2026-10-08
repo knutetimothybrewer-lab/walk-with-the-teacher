@@ -43,6 +43,7 @@
     var s = CHM.session, motion = CHM.motionOn();
     var left = h('div.tb-l', h('button.brand', { type: 'button', onclick: function () { if (s) CHM.go('map'); }, 'aria-label': 'Community Health Mission, go to map' }, h('span.logo', { 'aria-hidden': 'true' }, '✚'), h('span', 'Community Health Mission')));
     var right = h('div.tb-r');
+    var tc = s && CHM.timeChipEl && CHM.timeChipEl(); if (tc) right.appendChild(tc);
     if (s) { right.appendChild(h('span.who', s.student.name + (s.preview ? '' : ''))); right.appendChild(h('span#savestat.savestat ' + saveStatus, { role: 'status' }, saveStatus === 'saved' ? '✓ Progress saved' : saveStatus === 'offline' ? '⚠ Offline: not saved yet' : '… Saving')); }
     right.appendChild(h('button.btn.sm.ghost', { type: 'button', 'aria-pressed': String(!motion), onclick: function () { CHM.setMotion(!CHM.motionOn()); CHM.rerender(); } }, motion ? 'Motion: on' : 'Motion: off'));
     if (s && !opts.noNav) right.appendChild(h('button.btn.sm.ghost', { type: 'button', onclick: function () { CHM.go('map'); } }, '🗺 Map'));
@@ -75,7 +76,7 @@
       h('p.small', 'Privacy: use only the roster ID and name your teacher asked for. Do not type health information about yourself or anyone else. Every scenario in this assessment is fictional.'));
     var intro = h('section.hero', h('div.hero-art', CHM.guideSvg(84)), h('h1', 'Community Health Mission'),
       h('p.lead', 'Join the youth advisory team. Investigate a fictional county, make evidence-based decisions, and present a plan to the community.'),
-      h('ul.facts', h('li', 'About 45–60 minutes. This is a guide, not a timer.'), h('li', 'Every graded question gives you 3 submitted attempts.'), h('li', 'Exploring is free; only pressing Submit uses an attempt.')),
+      h('ul.facts', h('li', 'You have 90 minutes from the moment you start. A countdown shows at the top, and your answers are submitted automatically when it reaches zero.'), h('li', 'Every graded question gives you 3 submitted attempts.'), h('li', 'Exploring is free; only pressing Submit uses an attempt.')),
       h('p.small', h('button.linkbtn', { type: 'button', onclick: function () { CHM.go('teacher'); } }, 'Teacher sign-in')));
     mount(h('div.login', intro, form), 'Sign in', { noNav: true });
   }
@@ -87,6 +88,7 @@
     if (r.version !== CHM.content.version) { CHM.session = null; return renderLogin('This page has a different assessment version than your class. Ask your teacher.'); }
     // restore drafts cached locally if newer than server
     Object.keys(CHM.state.activity).forEach(function (k) { if (/^d\d$/.test(k)) Object.assign(drafts, CHM.state.activity[k]); });
+    CHM.timerStart(r.serverTime);
     resendOutbox().then(function () {
       var done = CHM.state.activity.t || CHM.session.preview;
       if (CHM.state.status === 'finalized') CHM.go('results'); else CHM.go(done ? 'map' : 'tutorial');
@@ -136,7 +138,7 @@
     var view = h('div.hub',
       h('div.hub-map', h('h1.sr-h', 'County map'), cm.svg, h('p.small', 'Click a glowing place, or use the mission list. You may visit places in any order; the numbers suggest a route.')),
       h('aside.hub-side', h('h2', 'Your mission'), h('p', 'Investigate the county, then present an evidence-based plan. ' + doneCount + ' of ' + nUnits + ' questions finished.'), list,
-        h('p.small', 'Suggested pacing is a guide only (about 45–60 minutes in all). There is no countdown and nothing locks because of time.'),
+        h('p.small', 'Suggested pacing is about 45–60 minutes in all. You have a 90-minute limit, shown in the top bar; your answers are submitted automatically when it ends.'),
         fin, h('p.small', h('button.linkbtn', { type: 'button', onclick: function () { CHM.go('tutorial'); } }, 'Reopen the briefing'))));
     mount(view, 'County map');
     CHM.hubMap = cm;
@@ -260,7 +262,7 @@
     if (cached && CHM.config.transport !== 'demo') {
       CHM.session = cached;
       CHM.api('getState', {}, { retries: 2 }).then(function (r) {
-        if (r.ok && cached.version === CHM.content.version) { CHM.state = r.state; CHM.state.activity = r.state.activity || {}; CHM.afterJoin({ sessionId: cached.sessionId, token: cached.token, student: cached.student, cls: cached.cls, version: cached.version, state: r.state }); }
+        if (r.ok && cached.version === CHM.content.version) { CHM.state = r.state; CHM.state.activity = r.state.activity || {}; CHM.afterJoin({ sessionId: cached.sessionId, token: cached.token, student: cached.student, cls: cached.cls, version: cached.version, state: r.state, serverTime: r.serverTime }); }
         else { CHM.session = null; CHM.ls.del('session'); renderLogin(r.message && r.code === 'RESET' ? r.message : ''); }
       }, function () { CHM.session = null; renderLogin('Could not reach the server to resume. You can sign in again with the same class code and roster ID.'); });
     } else renderLogin();
