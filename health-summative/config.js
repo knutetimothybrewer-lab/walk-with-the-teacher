@@ -22,7 +22,7 @@ export default {
      who opens the page source can read it). For real validation, turn on
      `backend` below and keep the codes in your Google Sheet instead (README §7). */
   classCodes: ['TRAIL1', 'TRAIL2', 'TRAIL3', 'TRAIL4'],
-  periods: ['1', '2', '3', '4', '5', '6', '7', '8', 'Other'],
+  periods: ['Block 1/2', 'Block 3/4', 'Block 6/7', 'Block 8/9'],
 
   /* ---- Teacher mode ---------------------------------------------------------
      Type this code into the "Class code" box on the first screen (names and

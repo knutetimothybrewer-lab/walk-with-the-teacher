@@ -153,12 +153,12 @@ test('each class gets its own tab (named from the Config label); DEMO runs go to
   env.call({ action: 'submit', sid: 'S-A', student: a, stageIds: s.stageIds, attempts: s.attempts });
   env.call({ action: 'start', sid: 'S-D', student: d, stageIds: s.stageIds });
   env.call({ action: 'submit', sid: 'S-D', student: d, stageIds: s.stageIds, attempts: s.attempts });
-  const tab = env.book.get('Ms. Lee- Period 2'); assert.ok(tab, 'class tab exists'); assert.equal(tab.length, 2); assert.equal(tab[1][1], 'Ann One'); assert.equal(tab[1][9], 100);
+  const tab = env.book.get('MS. LEE- PERIOD 2'); assert.ok(tab, 'class tab exists'); assert.equal(tab.length, 2); assert.equal(tab[1][1], 'Ann One'); assert.equal(tab[1][9], 100);
   assert.equal(env.book.get('DEMO').length, 2);
   assert.equal(env.book.get('Summary').length, 3, 'master Summary keeps every row');
   env.run("PropertiesService.getScriptProperties().setProperty('TEACHER_PASSCODE','pw')");
   env.call({ action: 't_reset', pass: 'pw', sid: 'S-A' });
-  assert.match(env.book.get('Ms. Lee- Period 2')[1][16], /Reset by teacher/);
+  assert.match(env.book.get('MS. LEE- PERIOD 2')[1][16], /Reset by teacher/);
 });
 
 test('createClassTabs() makes a tab for every active Config row, none for inactive ones, and is repeatable', () => {
@@ -166,6 +166,6 @@ test('createClassTabs() makes a tab for every active Config row, none for inacti
   const cfg = env.book.get('Config'); cfg.length = 1;
   cfg.push(['Block 1/2', 'Period 1/2', true, ''], ['Block 3/4', 'Period 3/4', true, ''], ['OLD', 'Retired', false, '']);
   env.run('createClassTabs()'); env.run('createClassTabs()');
-  assert.ok(env.book.has('Period 1-2') && env.book.has('Period 3-4') && !env.book.has('Retired'));
-  assert.equal(env.book.get('Period 1-2')[0][1], 'Student Name');
+  assert.ok(env.book.has('PERIOD 1-2') && env.book.has('PERIOD 3-4') && !env.book.has('Retired'));
+  assert.equal(env.book.get('PERIOD 1-2')[0][1], 'Student Name');
 });

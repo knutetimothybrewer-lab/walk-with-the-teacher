@@ -30,7 +30,7 @@ export const CONFIG = {
   previewSalt: 'sig-preview-v1',
   previewPasscodeHash: 'f7a7231b894d34f1351a5e793997a8ee31a46cbd406f47d1ba9a906cd16a4cea',
 
-  periods: ['1', '2', '3', '4', '5', '6', '7', '8'],
+  periods: ['Block 1/2', 'Block 3/4', 'Block 6/7', 'Block 8/9'],
   // Display only. Scoring rules live in js/scoring.js (100% / 85% / 75%, three attempts).
   storagePrefix: 'sig'
 };

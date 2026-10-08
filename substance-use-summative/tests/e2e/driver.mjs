@@ -91,7 +91,7 @@ export async function playAll(page, opts = {}) {
   const shots = opts.shots;
   await page.goto(opts.url || 'http://localhost:8123/index.html');
   await page.fill('#f-name', opts.name || 'Test Student');
-  await page.selectOption('#f-period', opts.period || '3');
+  await page.selectOption('#f-period', opts.period || 'Block 3/4');
   await page.fill('#f-code', opts.code || 'DEMO2026');
   await page.getByRole('button', { name: /Begin/ }).click();
   await page.waitForSelector('text=Mission 0');

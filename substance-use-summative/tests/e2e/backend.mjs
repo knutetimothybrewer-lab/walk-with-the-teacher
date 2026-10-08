@@ -22,7 +22,7 @@ await ctx.route('https://script.example/exec', async (r) => {
 });
 const p = await ctx.newPage(); const errs = []; p.on('pageerror', (e) => errs.push(e.message));
 p.setDefaultTimeout(15000);
-const seen = await playAll(p, { url: 'http://localhost:8131/index.html', name: 'Sam Carter', code: 'health2', period: '2' });
+const seen = await playAll(p, { url: 'http://localhost:8131/index.html', name: 'Sam Carter', code: 'health2', period: 'Block 1/2' });
 await p.getByRole('button', { name: 'Submit final answers' }).click(); await p.getByRole('button', { name: 'Yes, submit' }).click();
 await p.waitForSelector('text=Summative complete');
 await p.waitForSelector('text=Saved on this device. Waiting to send', { timeout: 8000 }); // first submit was dropped

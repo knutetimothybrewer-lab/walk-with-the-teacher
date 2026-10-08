@@ -8,7 +8,7 @@ const srv = await start(8127), URL = 'http://localhost:8127/index.html';
 const b = await chromium.launch({ executablePath: '/opt/pw-browsers/chromium-1194/chrome-linux/chrome' });
 const results = []; const ok = (name, fn) => fn().then(() => { results.push('PASS ' + name); }).catch((e) => { results.push('FAIL ' + name + ': ' + String(e.message).split('\n')[0]); });
 async function fresh(vp = { width: 1366, height: 768 }) { const ctx = await b.newContext({ viewport: vp }); const p = await ctx.newPage(); p.setDefaultTimeout(8000); p.errs = []; p.on('pageerror', (e) => p.errs.push(e.message)); return { ctx, p }; }
-async function login(p, { name = 'Pat Lee', code = 'DEMO2026', period = '2' } = {}) { await p.goto(URL); await p.fill('#f-name', name); await p.selectOption('#f-period', period); await p.fill('#f-code', code); await p.getByRole('button', { name: /Begin/ }).click(); }
+async function login(p, { name = 'Pat Lee', code = 'DEMO2026', period = 'Block 1/2' } = {}) { await p.goto(URL); await p.fill('#f-name', name); await p.selectOption('#f-period', period); await p.fill('#f-code', code); await p.getByRole('button', { name: /Begin/ }).click(); }
 async function toFirstMission(p) { await p.waitForSelector('text=Mission 0'); await p.getByRole('button', { name: /Start Mission 1/ }).click(); await p.locator('.wipe').click({ force: true }); await p.waitForSelector('article.item'); }
 
 await ok('invalid class code cannot begin; message is shown; no code is exposed in the page source', async () => {
@@ -136,7 +136,7 @@ await ok('completed attempt is locked: results shown after refresh; same student
   const { sha256 } = await import('../../js/util.js');
   const lockKey = 'sig.done.' + sha256('done dana|DEMO2026').slice(0, 16);
   await ctx.addInitScript(([lk]) => { localStorage.removeItem('sig.cur'); localStorage.setItem(lk, '{}'); }, [lockKey]);
-  await p.goto(URL); await p.waitForSelector('#f-name'); await p.fill('#f-name', 'Done Dana'); await p.selectOption('#f-period', '2'); await p.fill('#f-code', 'DEMO2026'); await p.getByRole('button', { name: /Begin/ }).click();
+  await p.goto(URL); await p.waitForSelector('#f-name'); await p.fill('#f-name', 'Done Dana'); await p.selectOption('#f-period', 'Block 1/2'); await p.fill('#f-code', 'DEMO2026'); await p.getByRole('button', { name: /Begin/ }).click();
   await p.waitForSelector('.err:has-text("already submitted")');
   await ctx.close();
 });
