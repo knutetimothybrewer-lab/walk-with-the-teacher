@@ -83,11 +83,24 @@ function setup() {
   }
   var props = PropertiesService.getScriptProperties();
   if (!props.getProperty('TEACHER_PASSCODE')) props.setProperty('TEACHER_PASSCODE', 'ChangeMe-' + Math.floor(1000 + Math.random() * 9000));
+  createClassTabs();
   Logger.log('Setup complete. Teacher dashboard passcode: ' + props.getProperty('TEACHER_PASSCODE') + '  (change it in Project Settings > Script properties)');
   SpreadsheetApp.getActive().toast('SIGNAL setup complete. See View > Logs for your teacher passcode.');
 }
+
+/** Creates one empty results tab per active class in the Config tab. Run from the SIGNAL menu or after editing Config. */
+function createClassTabs() {
+  var sh = sheet_(TABS.config), rows = sh.getLastRow() > 1 ? sh.getRange(2, 1, sh.getLastRow() - 1, 4).getValues() : [], made = [];
+  rows.forEach(function (r) {
+    var active = r[2]; if (!r[0] || active === false || ['FALSE', 'NO'].indexOf(String(active).toUpperCase()) >= 0) return;
+    var cls = { demo: false, label: String(r[1] || ''), period: String(r[3] || '') };
+    made.push(classTab_(cls, r[0]).getName());
+  });
+  try { SpreadsheetApp.getActive().toast('Class tabs ready: ' + made.join(', ')); } catch (e) { /* no UI */ }
+  return made;
+}
 function onOpen() {
-  try { SpreadsheetApp.getUi().createMenu('SIGNAL').addItem('Rebuild analytics', 'rebuildAnalytics').addItem('Run setup', 'setup').addToUi(); } catch (e) { /* not bound to a sheet */ }
+  try { SpreadsheetApp.getUi().createMenu('SIGNAL').addItem('Create class tabs', 'createClassTabs').addItem('Rebuild analytics', 'rebuildAnalytics').addItem('Run setup', 'setup').addToUi(); } catch (e) { /* not bound to a sheet */ }
 }
 function ensureSheet_(ss, name, headers) {
   var sh = ss.getSheetByName(name) || ss.insertSheet(name);
@@ -137,6 +150,16 @@ function latestFor_(name, code) {
   for (var i = 0; i < rows.length; i++) if (rows[i][2] === nk && codeKey_(rows[i][4]) === ck && rows[i][5] !== 'DEMO') best = { row: i + 2, vals: rows[i] };
   return best;
 }
+
+
+/** One tab per class: named after the Config tab's Label (or Period, or the code). DEMO runs go to a "DEMO" tab. */
+function classTabName_(cls, code) {
+  var raw = cls.demo ? 'DEMO' : String(cls.label || cls.period || code);
+  var name = raw.replace(/[\[\]*?:\/\\]/g, '-').trim().slice(0, 90) || codeKey_(code);
+  for (var k in TABS) if (TABS[k].toLowerCase() === name.toLowerCase()) name = name + ' (class)';
+  return name;
+}
+function classTab_(cls, code) { return ensureSheet_(ss_(), classTabName_(cls, code), SUMMARY_HEADERS); }
 
 // ============================================================================================ actions
 /** Public list for the sign-in drop-down: class labels and periods only. Codes are never returned. */
@@ -238,6 +261,8 @@ function submit_(b) {
   sheet_(TABS.summary).appendRow([now, displayName, codeKey_(s.code), String(cls.period || s.period), b.contentVersion || CONTENT_VERSION, b.versionId || '', started, done,
     Math.round((Number(b.activeMs) || (done - started)) / 600) / 100, t.earned, t.possible, pct, t.first, t.second, t.third, t.missed,
     cls.demo ? 'DEMO: completed' : 'Completed', mode, integrity, sid, conf].concat(doms));
+  var summaryRow = sheet_(TABS.summary).getRange(sheet_(TABS.summary).getLastRow(), 1, 1, SUMMARY_HEADERS.length).getValues()[0];
+  try { classTab_(cls, s.code).appendRow(summaryRow); } catch (e) { /* the master Summary row is already saved */ }
   var qrows = sc.rows.map(function (r) {
     var cell = function (i) { return r.results[i] ? (r.results[i].ok ? 'Correct' : 'Incorrect') : ''; };
     var last = r.results.length ? new Date(r.results[r.results.length - 1].t || now) : '';
@@ -290,7 +315,8 @@ function reset_(b) {
   if (!se) return { ok: false, error: 'not-found' };
   se.sh.getRange(se.row, 11).setValue('reset'); se.sh.getRange(se.row, 10).setValue(new Date());
   var sum = sheet_(TABS.summary);
-  if (sum.getLastRow() > 1) { var f = sum.getRange(2, 20, sum.getLastRow() - 1, 1).createTextFinder(String(se.vals[0])).matchEntireCell(true).findNext(); if (f) sum.getRange(f.getRow(), 17).setValue('Reset by teacher (superseded)'); }
+  var tabs = [sum]; try { tabs.push(classTab_(classLookup_(se.vals[4]), se.vals[4])); } catch (e) { /* class tab optional */ }
+  tabs.forEach(function (t) { if (t.getLastRow() > 1) { var f = t.getRange(2, 20, t.getLastRow() - 1, 1).createTextFinder(String(se.vals[0])).matchEntireCell(true).findNext(); if (f) t.getRange(f.getRow(), 17).setValue('Reset by teacher (superseded)'); } });
   return { ok: true };
 }
 
