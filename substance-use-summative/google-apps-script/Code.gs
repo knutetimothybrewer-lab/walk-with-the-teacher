@@ -83,11 +83,24 @@ function setup() {
   }
   var props = PropertiesService.getScriptProperties();
   if (!props.getProperty('TEACHER_PASSCODE')) props.setProperty('TEACHER_PASSCODE', 'ChangeMe-' + Math.floor(1000 + Math.random() * 9000));
+  createClassTabs();
   Logger.log('Setup complete. Teacher dashboard passcode: ' + props.getProperty('TEACHER_PASSCODE') + '  (change it in Project Settings > Script properties)');
   SpreadsheetApp.getActive().toast('SIGNAL setup complete. See View > Logs for your teacher passcode.');
 }
+
+/** Creates one empty results tab per active class in the Config tab. Run from the SIGNAL menu or after editing Config. */
+function createClassTabs() {
+  var sh = sheet_(TABS.config), rows = sh.getLastRow() > 1 ? sh.getRange(2, 1, sh.getLastRow() - 1, 4).getValues() : [], made = [];
+  rows.forEach(function (r) {
+    var active = r[2]; if (!r[0] || active === false || ['FALSE', 'NO'].indexOf(String(active).toUpperCase()) >= 0) return;
+    var cls = { demo: false, label: String(r[1] || ''), period: String(r[3] || '') };
+    made.push(classTab_(cls, r[0]).getName());
+  });
+  try { SpreadsheetApp.getActive().toast('Class tabs ready: ' + made.join(', ')); } catch (e) { /* no UI */ }
+  return made;
+}
 function onOpen() {
-  try { SpreadsheetApp.getUi().createMenu('SIGNAL').addItem('Rebuild analytics', 'rebuildAnalytics').addItem('Run setup', 'setup').addToUi(); } catch (e) { /* not bound to a sheet */ }
+  try { SpreadsheetApp.getUi().createMenu('SIGNAL').addItem('Create class tabs', 'createClassTabs').addItem('Rebuild analytics', 'rebuildAnalytics').addItem('Run setup', 'setup').addToUi(); } catch (e) { /* not bound to a sheet */ }
 }
 function ensureSheet_(ss, name, headers) {
   var sh = ss.getSheetByName(name) || ss.insertSheet(name);

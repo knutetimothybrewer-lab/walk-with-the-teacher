@@ -160,3 +160,12 @@ test('each class gets its own tab (named from the Config label); DEMO runs go to
   env.call({ action: 't_reset', pass: 'pw', sid: 'S-A' });
   assert.match(env.book.get('Ms. Lee- Period 2')[1][16], /Reset by teacher/);
 });
+
+test('createClassTabs() makes a tab for every active Config row, none for inactive ones, and is repeatable', () => {
+  const env = makeEnv(root); env.run('setup()');
+  const cfg = env.book.get('Config'); cfg.length = 1;
+  cfg.push(['Block 1/2', 'Period 1/2', true, ''], ['Block 3/4', 'Period 3/4', true, ''], ['OLD', 'Retired', false, '']);
+  env.run('createClassTabs()'); env.run('createClassTabs()');
+  assert.ok(env.book.has('Period 1-2') && env.book.has('Period 3-4') && !env.book.has('Retired'));
+  assert.equal(env.book.get('Period 1-2')[0][1], 'Student Name');
+});
