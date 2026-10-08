@@ -144,3 +144,19 @@ test('Config tab drives the sign-in: classes list shows labels/periods (never co
   env.call({ action: 'submit', sid: 'S-P', student: st, stageIds: s.stageIds, attempts: s.attempts });
   assert.equal(env.book.get('Summary')[1][3], 'A', 'Summary uses the Sheet period, not the student dropdown');
 });
+
+test('each class gets its own tab (named from the Config label); DEMO runs go to a DEMO tab; reset marks the class tab', () => {
+  const env = makeEnv(root); env.run('setup()');
+  env.book.get('Config').push(['BIO-A', 'Ms. Lee: Period 2', true, '2']);
+  const s = session('t1'), a = student('Ann One', 'BIO-A'), d = student('Demo Dee', 'DEMO2026');
+  env.call({ action: 'start', sid: 'S-A', student: a, stageIds: s.stageIds });
+  env.call({ action: 'submit', sid: 'S-A', student: a, stageIds: s.stageIds, attempts: s.attempts });
+  env.call({ action: 'start', sid: 'S-D', student: d, stageIds: s.stageIds });
+  env.call({ action: 'submit', sid: 'S-D', student: d, stageIds: s.stageIds, attempts: s.attempts });
+  const tab = env.book.get('Ms. Lee- Period 2'); assert.ok(tab, 'class tab exists'); assert.equal(tab.length, 2); assert.equal(tab[1][1], 'Ann One'); assert.equal(tab[1][9], 100);
+  assert.equal(env.book.get('DEMO').length, 2);
+  assert.equal(env.book.get('Summary').length, 3, 'master Summary keeps every row');
+  env.run("PropertiesService.getScriptProperties().setProperty('TEACHER_PASSCODE','pw')");
+  env.call({ action: 't_reset', pass: 'pw', sid: 'S-A' });
+  assert.match(env.book.get('Ms. Lee- Period 2')[1][16], /Reset by teacher/);
+});

@@ -138,6 +138,16 @@ function latestFor_(name, code) {
   return best;
 }
 
+
+/** One tab per class: named after the Config tab's Label (or Period, or the code). DEMO runs go to a "DEMO" tab. */
+function classTabName_(cls, code) {
+  var raw = cls.demo ? 'DEMO' : String(cls.label || cls.period || code);
+  var name = raw.replace(/[\[\]*?:\/\\]/g, '-').trim().slice(0, 90) || codeKey_(code);
+  for (var k in TABS) if (TABS[k].toLowerCase() === name.toLowerCase()) name = name + ' (class)';
+  return name;
+}
+function classTab_(cls, code) { return ensureSheet_(ss_(), classTabName_(cls, code), SUMMARY_HEADERS); }
+
 // ============================================================================================ actions
 /** Public list for the sign-in drop-down: class labels and periods only. Codes are never returned. */
 function classes_() {
@@ -238,6 +248,8 @@ function submit_(b) {
   sheet_(TABS.summary).appendRow([now, displayName, codeKey_(s.code), String(cls.period || s.period), b.contentVersion || CONTENT_VERSION, b.versionId || '', started, done,
     Math.round((Number(b.activeMs) || (done - started)) / 600) / 100, t.earned, t.possible, pct, t.first, t.second, t.third, t.missed,
     cls.demo ? 'DEMO: completed' : 'Completed', mode, integrity, sid, conf].concat(doms));
+  var summaryRow = sheet_(TABS.summary).getRange(sheet_(TABS.summary).getLastRow(), 1, 1, SUMMARY_HEADERS.length).getValues()[0];
+  try { classTab_(cls, s.code).appendRow(summaryRow); } catch (e) { /* the master Summary row is already saved */ }
   var qrows = sc.rows.map(function (r) {
     var cell = function (i) { return r.results[i] ? (r.results[i].ok ? 'Correct' : 'Incorrect') : ''; };
     var last = r.results.length ? new Date(r.results[r.results.length - 1].t || now) : '';
@@ -290,7 +302,8 @@ function reset_(b) {
   if (!se) return { ok: false, error: 'not-found' };
   se.sh.getRange(se.row, 11).setValue('reset'); se.sh.getRange(se.row, 10).setValue(new Date());
   var sum = sheet_(TABS.summary);
-  if (sum.getLastRow() > 1) { var f = sum.getRange(2, 20, sum.getLastRow() - 1, 1).createTextFinder(String(se.vals[0])).matchEntireCell(true).findNext(); if (f) sum.getRange(f.getRow(), 17).setValue('Reset by teacher (superseded)'); }
+  var tabs = [sum]; try { tabs.push(classTab_(classLookup_(se.vals[4]), se.vals[4])); } catch (e) { /* class tab optional */ }
+  tabs.forEach(function (t) { if (t.getLastRow() > 1) { var f = t.getRange(2, 20, t.getLastRow() - 1, 1).createTextFinder(String(se.vals[0])).matchEntireCell(true).findNext(); if (f) t.getRange(f.getRow(), 17).setValue('Reset by teacher (superseded)'); } });
   return { ok: true };
 }
 

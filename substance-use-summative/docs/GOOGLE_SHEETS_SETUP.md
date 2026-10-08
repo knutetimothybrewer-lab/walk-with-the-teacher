@@ -20,6 +20,7 @@ You need a Google account. Nothing here costs money.
 
 ## What lands in the Sheet
 * **Summary**: one row per completed assessment (timestamp, name, class code, period, version, start/completion time, total minutes, raw score, points possible, percentage, number correct on 1st/2nd/3rd attempt, missed, status, mode LIVE/DEMO, integrity note, session and confirmation IDs, and seven domain percentages).
+* **One tab per class**: created automatically on a class's first submission, named from the Config tab's Label (for example `Ms. Lee: Period 2`). It has the same columns as Summary, one row per student, so each class stays separate. Test runs with `DEMO2026` go to a `DEMO` tab. The master **Summary** tab still has every row.
 * **Questions**: one row per question per student (question ID, concept, domain, type, Attempt 1/2/3 results, final result, points, last attempt time, and the recorded responses).
 * **Analytics**: rebuilt after each real submission (class summary, domain averages, question difficulty from hardest, most-missed concepts). Menu **SIGNAL > Rebuild analytics** does it on demand.
 * **Config**: your class codes. **Sessions**: working records (do not edit; Reset uses it).
