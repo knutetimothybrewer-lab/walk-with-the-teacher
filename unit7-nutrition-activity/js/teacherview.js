@@ -17,7 +17,7 @@ export async function mountTeacher({ main, dlg, toast, onExit, onPreview }) {
   let gone = false;
   const stop = () => { gone = true; clearInterval(timer); };
   const exit = () => { stop(); try { sessionStorage.removeItem('u7.tpass'); } catch { /* ignore */ } if (onExit) onExit(); };
-  const state = { data: null, pass: sessionStorage.getItem('u7.tpass') || '', view: A.ALL, showDemo: null, sort: { key: 'last', dir: 'asc' }, itemSort: { key: 'firstPct', dir: 'asc' }, open: null, sandbox: !hasBackend(), sandboxOn: true };
+  const state = { data: null, pass: sessionStorage.getItem('u7.tpass') || '', view: A.ALL, tab: 'overview', auto: true, showDemo: null, sort: { key: 'last', dir: 'asc' }, itemSort: { key: 'firstPct', dir: 'asc' }, open: null, sandbox: !hasBackend(), sandboxOn: true };
   const BLOCK_COLORS = ['#6ea8ff', '#7ad7a0', '#f2c14e', '#c79bff', '#ff9d7a'];
   const pub = {}; (function walk(stages) { for (const s of stages) { if (s.kind === 'pool') s.groups.forEach((g) => walk(g.items)); else if (s.kind === 'q') pub[s.q.id] = s.q; else if (s.kind === 'scene') s.qs.forEach((q) => { pub[q.id] = q; }); } })(content.missions.flatMap((m) => m.stages));
   const NAMES = ['Jordan', 'Riley', 'Sam'];
@@ -62,18 +62,40 @@ export async function mountTeacher({ main, dlg, toast, onExit, onPreview }) {
   function chartDef(title, groups, o = {}) { return { title, unit: o.unit ?? '%', yMax: o.yMax ?? 100, decimals: 1, desc: title + '. ' + groups.map((g) => g.label + ': ' + g.bars.map((b) => `${b.label} ${b.value ?? 'no data'}`).join(', ')).join('; '), groups, yLabel: o.yLabel || 'Percent', src: [], note: o.note || '' }; }
 
   // ------------------------------------------------------------------------------------------------ render
+  const TABS = [['overview', 'Overview'], ['students', 'Students and resets'], ['analytics', 'Analytics'], ['export', 'Export']];
+  const tmTile = (label, val, note) => h('div.tm-tile', h('div.tm-label', label), h('div.tm-big', String(val)), note ? h('div.tm-note', note) : '');
+  const isLive = (x) => state.showDemo || x.type === 'LIVE';
+  function overviewTop() {
+    const d = state.data, sess = (d.sessions || []).filter((x) => isLive(x) && (state.view === A.ALL || x.block === state.view));
+    const subRows = d.students.filter((s) => isLive(s) && (state.view === A.ALL || s.block === state.view)), S = A.summary(rows(), opts());
+    const glance = d.blocks.map((b) => {
+      const sub = d.students.filter((s) => isLive(s) && s.block === b).length, wk = (d.sessions || []).filter((x) => isLive(x) && x.block === b).length, all = sub + wk;
+      return h('div.tm-block', h('b', b), h('div.tm-track', all ? [h('i.tm-done', { style: { width: sub / all * 100 + '%' } }), h('i.tm-work', { style: { width: wk / all * 100 + '%' } })] : h('span', 'No students yet')), h('span.tm-count', all + ' registered' + (all ? ' · ' + sub + ' submitted' : '')));
+    });
+    const mins = (x) => { const t = new Date(x.started).getTime(); return isNaN(t) ? null : Math.max(0, Math.round((Date.now() - t) / 60000)); };
+    const limit = CONFIG.timeLimitMinutes || 0;
+    return [h('div.tm-tiles', tmTile('Registered', subRows.length + sess.length), tmTile('In progress', sess.length), tmTile('Submitted', subRows.length), tmTile('Class average', fmt(S.avg, '%'), S.n ? '' : 'no one has finished yet')),
+      h('h2.tm-h2', 'Blocks at a glance'), h('div.tm-glance', glance),
+      sess.length ? h('div.panel.flat', { style: { marginTop: '1rem', overflowX: 'auto' } }, h('h3', 'Working right now'), h('table.data', h('thead', h('tr', ['Student', 'Block', 'Time in'].map((x) => h('th', x)))),
+        h('tbody', sess.map((x) => { const m = mins(x); return h('tr', h('td', `${x.first} ${x.last}`.trim()), h('td', x.block), h('td', m == null ? '—' : m + ' min' + (limit ? ' of ' + limit : '') + (limit && m >= limit - 15 ? ' (near the limit)' : ''))); })))) : ''];
+  }
   function render() {
     const d = state.data, R = rows(), S = A.summary(R, opts()), live = d.students.filter((s) => s.type === 'LIVE').length, demo = d.students.filter((s) => s.type === 'DEMO DATA').length;
-    const viewSel = h('select.input', { 'aria-label': 'View', onchange: (e) => { state.view = e.target.value; state.open = null; render(); } }, [A.ALL, ...d.blocks].map((b) => h('option', { value: b, selected: b === state.view }, b)));
-    const demoTog = h('label.row.small', h('input', { type: 'checkbox', checked: state.showDemo, onchange: (e) => { state.showDemo = e.target.checked; render(); } }), 'Include DEMO DATA in these numbers');
+    const viewSel = h('select.input', { 'aria-label': 'Block', onchange: (e) => { state.view = e.target.value; state.open = null; render(); } }, [A.ALL, ...d.blocks].map((b) => h('option', { value: b, selected: b === state.view }, b === A.ALL ? 'All blocks' : b)));
+    const demoTog = h('label.tm-check', h('input', { type: 'checkbox', checked: state.showDemo, onchange: (e) => { state.showDemo = e.target.checked; render(); } }), 'Include DEMO DATA');
     const stats = A.itemStats(d, R.map((s) => s.sid));
-    const nav = h('nav.tnav', { 'aria-label': 'Dashboard sections' }, [['sum', 'Overview'], ['dom', 'Domain mastery'], ['items', 'Question analysis'], ['reteach', 'What should I reteach?'], ['cmp', 'Compare blocks'], ['stu', 'Students'], ['flags', 'Flags'], ['exp', 'Export'], ['demo', 'Demo data']].map(([id, t]) => h('a', { href: '#' + id }, t)));
-    main.replaceChildren(h('section.screen.dash',
-      h('div.row.spread', h('div', h('div.kicker', 'Unit 7 • Teacher analytics'), h('h1', { style: { fontSize: '2rem' } }, 'Class results')), h('div.row', h('label.row', h('strong', 'View:'), viewSel), demoTog, onPreview ? h('button.btn.small', { type: 'button', onclick: onPreview }, 'Preview the assessment') : '', onExit ? h('button.btn.small', { type: 'button', onclick: exit }, 'Sign out') : '', h('button.btn.small', { type: 'button', onclick: () => load(true) }, 'Refresh'))),
-      state.sandbox ? h('div.banner.demo', h('b', 'OFFLINE SANDBOX. '), 'No Google Sheet is connected, so everything here is generated DEMO DATA for exploring the dashboard. Connect your sheet (see README) to see real results.') : '',
+    const bar = h('div.tm-bar', h('div', h('b', 'Teacher Mode'), ' · ' + CONFIG.assessmentTitle + ' · signed in'),
+      h('div.row', onPreview ? h('button.btn.small', { type: 'button', onclick: onPreview }, 'Open student preview') : '', onExit ? h('button.btn.small', { type: 'button', onclick: exit }, 'Sign out') : ''));
+    const tabs = h('nav.tm-tabs', { 'aria-label': 'Teacher sections' }, TABS.map(([id, label]) => h('button.tm-tab', { type: 'button', 'aria-current': id === state.tab ? 'page' : null, onclick: () => { state.tab = id; state.open = null; render(); } }, label)));
+    const controls = h('div.tm-controls', h('label.tm-field', 'Block', viewSel), demoTog, h('button.btn.small.primary', { type: 'button', onclick: () => load(true) }, 'Refresh now'),
+      state.sandbox ? '' : h('button.btn.small', { type: 'button', 'aria-pressed': String(state.auto), onclick: () => { state.auto = !state.auto; render(); } }, 'Auto-refresh ' + (state.auto ? 'on' : 'off')),
+      h('span.tm-updated', 'Updated ' + new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', second: '2-digit' })));
+    const banners = [state.sandbox ? h('div.banner.demo', h('b', 'OFFLINE SANDBOX. '), 'No Google Sheet is connected, so everything here is generated DEMO DATA for exploring the dashboard. Connect your sheet (see README) to see real results.') : '',
       state.showDemo && demo ? h('div.banner.demo', h('b', 'DEMO DATA INCLUDED. '), `${demo} fictional records are mixed into these numbers. Uncheck "Include DEMO DATA" to see real students only.`) : '',
-      live === 0 && !state.showDemo ? h('div.banner', 'No real submissions yet. Turn on "Include DEMO DATA" or use the Demo data section to preview the dashboard.') : '',
-      nav, sectionSummary(S, R), sectionDomains(R), sectionItems(stats), sectionReteach(stats), sectionCompare(), sectionStudents(R), sectionFlags(), sectionExport(R), sectionDemo(demo)));
+      live === 0 && !state.showDemo ? h('div.banner', 'No real submissions yet. Turn on "Include DEMO DATA" or open the Export tab to preview the dashboard with demo data.') : ''];
+    const body = state.tab === 'students' ? [sectionStudents(R), sectionFlags()] : state.tab === 'analytics' ? [sectionDomains(R), sectionItems(stats), sectionReteach(stats), sectionCompare()]
+      : state.tab === 'export' ? [sectionExport(R), sectionDemo(demo)] : [h('h1.tm-h1', 'Class overview'), ...overviewTop(), sectionSummary(S, R)];
+    main.replaceChildren(h('section.screen.dash.tm', bar, tabs, controls, ...banners, ...body));
   }
   const sec = (id, title, ...kids) => h('section.dsec', { id }, h('h2', title), ...kids);
 
@@ -195,7 +217,7 @@ export async function mountTeacher({ main, dlg, toast, onExit, onPreview }) {
       } }, 'Delete demo data'), h('span.pill.demo', `${demo} demo records present`)));
   }
 
-  const timer = setInterval(() => { if (gone || document.hidden || dlg.open || state.sandbox || !state.data) return; load(true, true); }, 30000);
+  const timer = setInterval(() => { if (gone || !state.auto || document.hidden || dlg.open || state.sandbox || !state.data) return; load(true, true); }, 30000);
   if (state.pass) load(); else login();
   return { stop };
 }

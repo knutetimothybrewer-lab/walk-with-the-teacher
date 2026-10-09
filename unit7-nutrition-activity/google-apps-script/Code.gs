@@ -572,9 +572,13 @@ function dashboardData_() {
   var is = sheet_(TAB.items), m = Math.max(0, is.getLastRow() - 1);
   var irows = m ? is.getRange(2, 1, m, ITEM_HEADERS.length).getValues() : [];
   var items = irows.map(function (r) { return [r[IC.sid - 1], r[IC.qid - 1], r[IC.used - 1], r[IC.earned - 1], r[IC.poss - 1], r[IC.result - 1], r[IC.a1 - 1], r[IC.a2 - 1], r[IC.a3 - 1]]; });
+  var ses = sheet_(TAB.sessions), sn = Math.max(0, ses.getLastRow() - 1), srows = sn ? ses.getRange(2, 1, sn, 15).getValues() : [];
+  var sessions = srows.filter(function (r) { var st = r[SC.status - 1]; return st !== 'completed' && st !== 'reset'; }).map(function (r) {
+    return { sid: r[SC.sid - 1], first: r[SC.first - 1], last: r[SC.last - 1], block: r[SC.block - 1], type: r[SC.type - 1], started: r[SC.started - 1], seen: r[SC.seen - 1], status: r[SC.status - 1] };
+  });
   var meta = {};
   Object.keys(KEY).forEach(function (q) { var k = KEY[q]; meta[q] = { sl: k.sl, d: k.d, c: k.c, cn: CONCEPT_NAMES[k.c] || k.c, k: k.k, df: k.df, y: k.y, qt: k.qt, p: k.p, mj: k.mj, x: k.x, a: k.a }; });
-  return { ok: true, students: students, items: items, meta: meta, domainNames: DOMAIN_NAMES, domainOrder: DOMAIN_ORDER, blocks: getBlocks_().map(function (b) { return b.name; }),
+  return { ok: true, students: students, sessions: sessions, items: items, meta: meta, domainNames: DOMAIN_NAMES, domainOrder: DOMAIN_ORDER, blocks: getBlocks_().map(function (b) { return b.name; }),
     options: { strongAt: Number(getOption_(SET.strong, 85)), developingAt: Number(getOption_(SET.dev, 70)), includeDemo: includeDemo }, serverTime: new Date() };
 }
 
