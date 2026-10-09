@@ -1,24 +1,32 @@
-// Teacher view: every submission, grade and question analysis, inside the app (no need to open the Google Sheet).
-// Opened by typing the teacher code in the class-code box; the dashboard itself is protected by the server's
-// TEACHER_PASSCODE script property (Apps Script > Project Settings > Script properties).
+// Teacher Mode inside the app: who is signed in, who is working, every submission and grade, what to reteach, resets and
+// exports, so you never have to open the Google Sheet. Opened by typing the teacher code in the class-code box; the data is
+// protected by the server's TEACHER_PASSCODE script property (Apps Script > Project Settings > Script properties).
 // Also used by the hidden teacher/index.html page.
+import { CONFIG } from './config.js';
 import { send, hasBackend } from './transport.js';
 import { h } from './util.js';
 
+const TABS = [['overview', 'Overview'], ['students', 'Students and resets'], ['analytics', 'Analytics'], ['export', 'Export']];
+const fmtT = (v) => { try { const d = new Date(v); return isNaN(d) ? '' : d.toLocaleString([], { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }); } catch { return ''; } };
+const cell = (v) => { const t = String(v ?? ''); return /^[=+\-@]/.test(t) ? "'" + t : t; };
+
 export function mountTeacher({ main, toast, onExit, onPreview }) {
-  let pass = '', data = null, filter = 'ALL', showDemo = false, timer = null, gone = false;
+  let pass = '', data = null, tab = 'overview', block = 'ALL', find = '', order = 'name', auto = true, showDemo = false, timer = null, gone = false, pulled = null;
   try { pass = sessionStorage.getItem('sig.tpass') || ''; } catch (_) { /* no session storage */ }
   const say = toast || (() => {});
   const stop = () => { gone = true; clearInterval(timer); };
-  const exit = () => { stop(); try { sessionStorage.removeItem('sig.tpass'); } catch (_) { /* ignore */ } if (onExit) onExit(); };
+  const exit = () => { stop(); try { sessionStorage.removeItem('sig.tpass'); } catch (_) { /* ignore */ } if (onExit) onExit(); else location.reload(); };
+
+  const bar = () => h('div.tm-bar', h('div', h('b', 'Teacher Mode'), ' · ' + CONFIG.appName + ' · signed in'),
+    h('div.row', onPreview ? h('button.btn.small', { type: 'button', onclick: onPreview }, 'Open student preview') : '', h('button.btn.small', { type: 'button', onclick: exit }, 'Sign out')));
 
   function login(msg) {
     clearInterval(timer);
     const inp = h('input.input', { type: 'password', autocomplete: 'current-password', 'aria-label': 'Teacher passcode', placeholder: 'Teacher passcode' });
-    const f = h('form.panel', { onsubmit: async (e) => { e.preventDefault(); pass = inp.value; await load(); } }, h('h2', 'Teacher view'),
+    const f = h('form.panel', { onsubmit: async (e) => { e.preventDefault(); pass = inp.value; await load(); } }, h('h2', 'Teacher Mode'),
       hasBackend() ? h('p.muted', 'Enter your teacher passcode (the TEACHER_PASSCODE you set in Apps Script).') : h('p.err', 'No backend is configured in js/config.js, so there is no data to show.'),
       h('div.field', inp), h('div.err', { role: 'alert' }, msg || ''),
-      h('div.row', h('button.btn.primary', { type: 'submit' }, 'Open teacher view'), onPreview ? h('button.btn', { type: 'button', onclick: onPreview }, 'Preview the assessment') : '', onExit ? h('button.btn', { type: 'button', onclick: exit }, 'Back') : ''));
+      h('div.row', h('button.btn.primary', { type: 'submit' }, 'Open Teacher Mode'), onPreview ? h('button.btn', { type: 'button', onclick: onPreview }, 'Preview the assessment') : '', onExit ? h('button.btn', { type: 'button', onclick: exit }, 'Back') : ''));
     main.replaceChildren(h('section.screen.narrow', f)); inp.focus();
   }
 
@@ -28,44 +36,93 @@ export function mountTeacher({ main, toast, onExit, onPreview }) {
     const r = await send('t_dashboard', { pass });
     if (gone) return;
     if (!r || !r.ok) {
-      if (quiet && r && !r.ok && r.error !== 'bad-passcode') return; // keep the current screen on a hiccup
+      if (quiet && r && r.error !== 'bad-passcode') return; // keep the current screen on a hiccup
       try { sessionStorage.removeItem('sig.tpass'); } catch (_) { /* ignore */ }
       return login(r && r.error === 'bad-passcode' ? 'That passcode is not correct.' : r && r.error === 'locked-out' ? 'Too many wrong tries. Wait ten minutes.' : 'Could not load data (' + (r && r.error || 'network') + ').');
     }
     try { sessionStorage.setItem('sig.tpass', pass); } catch (_) { /* ignore */ }
-    data = r; render();
-    clearInterval(timer); timer = setInterval(() => { if (document.hidden || gone) return; load(true); }, 30000);
+    data = r; pulled = new Date(); render(); schedule();
+  }
+  function schedule() { clearInterval(timer); if (auto) timer = setInterval(() => { if (!document.hidden && !gone) load(true); }, 30000); }
+
+  // ------------------------------------------------------------------ data helpers
+  const live = () => data.students.filter((s) => s.status !== 'reset' && (showDemo || s.mode !== 'DEMO'));
+  const inBlock = (s) => block === 'ALL' || String(s.period) === block;
+  const matches = (s) => !find || String(s.name).toLowerCase().includes(find.toLowerCase());
+  const done = (s) => s.status === 'completed';
+  const sorters = {
+    name: (a, b) => String(a.name).localeCompare(String(b.name)),
+    high: (a, b) => (Number(b.pct) || -1) - (Number(a.pct) || -1), low: (a, b) => (Number(a.pct) ?? 999) - (Number(b.pct) ?? 999) || String(a.name).localeCompare(String(b.name)),
+    newest: (a, b) => new Date(b.started) - new Date(a.started),
+  };
+  const avgOf = (rows) => { const v = rows.filter(done).map((s) => Number(s.pct)).filter((x) => !isNaN(x)); return v.length ? Math.round(v.reduce((a, b) => a + b, 0) / v.length * 10) / 10 : null; };
+  const blocks = () => { const set = new Set(CONFIG.periods || []); data.students.forEach((s) => s.period && set.add(String(s.period))); return [...set]; };
+  const limit = CONFIG.timeLimitMinutes || 0;
+  const elapsed = (s) => { const t = new Date(s.started).getTime(); return isNaN(t) ? null : Math.max(0, Math.round((Date.now() - t) / 60000)); };
+  const statusChip = (s) => done(s) ? h('span.pill', 'Submitted') : (() => { const m = elapsed(s); const late = limit && m != null && m >= limit - 15; return h('span.pill' + (late ? '.demo' : ''), 'Working' + (m != null ? ' · ' + m + ' min' + (limit ? ' of ' + limit : '') : '')); })();
+
+  // ------------------------------------------------------------------ screens
+  const tile = (label, val, note) => h('div.tm-tile', h('div.tm-label', label), h('div.tm-big', String(val)), note ? h('div.tm-note', note) : '');
+
+  function controls() {
+    return h('div.tm-controls',
+      h('label.tm-field', 'Block', h('select.input', { onchange: (e) => { block = e.target.value; render(); } }, h('option', { value: 'ALL' }, 'All blocks'), blocks().map((b) => h('option', { value: b, selected: b === block }, b)))),
+      h('label.tm-field.grow', 'Find', h('input.input#tm-find', { type: 'search', placeholder: 'Search name', value: find, oninput: (e) => { find = e.target.value; renderBody(); } })),
+      h('label.tm-field', 'Order', h('select.input', { onchange: (e) => { order = e.target.value; render(); } }, [['name', 'Sort: name'], ['high', 'Sort: score, high first'], ['low', 'Sort: score, low first'], ['newest', 'Sort: newest first']].map(([v, t]) => h('option', { value: v, selected: v === order }, t)))),
+      h('button.btn.small.primary', { type: 'button', onclick: () => load() }, 'Refresh now'),
+      h('button.btn.small', { type: 'button', 'aria-pressed': String(auto), onclick: () => { auto = !auto; schedule(); render(); } }, 'Auto-refresh ' + (auto ? 'on' : 'off')),
+      h('label.tm-check', h('input', { type: 'checkbox', checked: showDemo, onchange: (e) => { showDemo = e.target.checked; render(); } }), 'Show DEMO'),
+      h('span.tm-updated', 'Updated ' + pulled.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', second: '2-digit' })));
   }
 
-  const stamp = () => new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', second: '2-digit' });
+  function overview() {
+    const all = live(), rows = all.filter(inBlock), shown = rows.filter(matches).sort(sorters[order]);
+    const sub = rows.filter(done), working = rows.filter((s) => !done(s)), avg = avgOf(rows);
+    const glance = blocks().map((b) => {
+      const r = all.filter((s) => String(s.period) === b), d = r.filter(done).length, w = r.length - d;
+      return h('div.tm-block', h('b', b), h('div.tm-track', r.length ? [h('i.tm-done', { style: { width: d / r.length * 100 + '%' } }), h('i.tm-work', { style: { width: w / r.length * 100 + '%' } })] : h('span', 'No students yet')),
+        h('span.tm-count', r.length + ' registered' + (r.length ? ' · ' + d + ' submitted' : '')));
+    });
+    return [h('h1', 'Class overview'), h('div.tm-tiles', tile('Registered', rows.length), tile('In progress', working.length), tile('Submitted', sub.length), tile('Class average', avg != null ? avg + '%' : '—', sub.length ? '' : 'no one has finished yet')),
+      h('h2.tm-h2', 'Blocks at a glance'), h('div.tm-glance', glance),
+      h('div.panel', { style: { marginTop: '1rem', overflowX: 'auto' } }, h('table.data', h('caption', `${shown.length} of ${rows.length} students`),
+        h('thead', h('tr', ['Student', 'Block', 'Status', 'Score'].map((x) => h('th', x)))),
+        h('tbody', shown.length ? shown.map((s) => h('tr', h('td', s.name, s.mode === 'DEMO' ? h('span.pill.demo', 'DEMO') : ''), h('td', s.period), h('td', statusChip(s)), h('td', done(s) ? `${s.score}/${s.possible} (${s.pct}%)` : '—'))) : [h('tr', h('td', { colspan: 4 }, 'No students yet.'))])))];
+  }
 
-  function render() {
-    const rows = data.students.filter((s) => (showDemo || s.mode !== 'DEMO') && (filter === 'ALL' || s.code === filter));
-    const codes = [...new Set(data.students.map((s) => s.code))].sort();
-    const done = rows.filter((s) => s.status === 'completed');
-    const avg = done.length ? Math.round(done.reduce((a, s) => a + (+s.pct || 0), 0) / done.length * 10) / 10 : null;
-    const working = rows.filter((s) => s.status !== 'completed' && s.status !== 'reset').length;
-    const tile = (label, val, note) => h('div.panel', { style: { padding: '.8rem 1rem' } }, h('div.small.muted', label), h('div', { style: { fontSize: '1.9rem', fontWeight: 800 } }, String(val)), note ? h('div.small.muted', note) : '');
-    const sel = h('select.input', { 'aria-label': 'Filter by class code', style: { maxWidth: '220px' }, onchange: (e) => { filter = e.target.value; render(); } }, h('option', { value: 'ALL' }, 'All classes'), codes.map((c) => h('option', { value: c, selected: c === filter }, c)));
-    const tog = h('label.row', h('input', { type: 'checkbox', checked: showDemo, onchange: (e) => { showDemo = e.target.checked; render(); } }), 'Show DEMO rows');
-    const stu = h('table.data', h('caption', `${rows.length} sessions • ${done.length} completed${avg != null ? ' • average ' + avg + '%' : ''}`),
-      h('thead', h('tr', ['Student', 'Class', 'Period', 'Status', 'Score', '%', 'Minutes', 'Attempts used', 'Version', 'Integrity', ''].map((x) => h('th', x)))),
-      h('tbody', rows.length ? rows.map((s) => h('tr', h('td', s.name, s.mode === 'DEMO' ? h('span.pill.demo', 'DEMO') : ''), h('td', s.code), h('td', s.period),
-        h('td', s.status), h('td', s.score != null ? `${s.score}/${s.possible}` : '—'), h('td', s.pct != null ? s.pct + '%' : '—'), h('td', s.minutes ?? '—'), h('td', s.attemptsServer || '—'), h('td', s.versionId), h('td', s.integrity || ''),
-        h('td', s.status !== 'reset' ? h('button.btn.small.warn', { type: 'button', onclick: () => resetStudent(s) }, 'Reset') : h('span.small.muted', 'reset')))) : [h('tr', h('td', { colspan: 11 }, 'No students yet.'))]));
-    const dom = data.domainOrder.map((d, i) => { const vals = done.map((s) => s.domains && s.domains[i]).filter((v) => v !== '' && v != null).map(Number); const a = vals.length ? Math.round(vals.reduce((x, y) => x + y, 0) / vals.length) : 0; return h('div.brow', h('span', data.domainNames[d]), h('div.btrack', h('div.bfill', { style: { width: a + '%' } })), h('span.bpct', vals.length ? a + '%' : '—')); });
+  function students() {
+    const rows = live().filter(inBlock).filter(matches).sort(sorters[order]);
+    return [h('h1', 'Students and resets'), h('div.panel', { style: { overflowX: 'auto' } }, h('table.data', h('caption', `${rows.length} students · Reset lets a student start over (the old row is kept and marked as superseded).`),
+      h('thead', h('tr', ['Student', 'Block', 'Class code', 'Status', 'Score', '%', 'Minutes', 'Attempts used', 'Version', 'Integrity', ''].map((x) => h('th', x)))),
+      h('tbody', rows.length ? rows.map((s) => h('tr', h('td', s.name, s.mode === 'DEMO' ? h('span.pill.demo', 'DEMO') : ''), h('td', s.period), h('td', s.code), h('td', statusChip(s)),
+        h('td', s.score != null ? `${s.score}/${s.possible}` : '—'), h('td', s.pct != null ? s.pct + '%' : '—'), h('td', s.minutes ?? '—'), h('td', s.attemptsServer || '—'), h('td', s.versionId), h('td', s.integrity || ''),
+        h('td', h('button.btn.small.warn', { type: 'button', onclick: () => resetStudent(s) }, 'Reset')))) : [h('tr', h('td', { colspan: 11 }, 'No students yet.'))])))];
+  }
+
+  function analytics() {
+    const rows = live().filter(inBlock).filter(done);
+    const dom = data.domainOrder.map((d, i) => { const vals = rows.map((s) => s.domains && s.domains[i]).filter((v) => v !== '' && v != null).map(Number); const a = vals.length ? Math.round(vals.reduce((x, y) => x + y, 0) / vals.length) : 0; return h('div.brow', h('span', data.domainNames[d]), h('div.btrack', h('div.bfill', { style: { width: a + '%' } })), h('span.bpct', vals.length ? a + '%' : '—')); });
     const qs = data.questions.slice().sort((a, b) => a.firstPct - b.firstPct).slice(0, 20);
-    const qt = h('table.data', h('caption', 'Most-missed questions (hardest first; LIVE submissions only)'), h('thead', h('tr', ['Question', 'Concept', 'Students', '% first try', '% eventually correct', '% missed', 'Avg attempts'].map((x) => h('th', x)))),
-      h('tbody', qs.map((q) => h('tr', h('td', q.qid), h('td', q.topic), h('td', q.n), h('td', q.firstPct + '%'), h('td', q.correctPct + '%'), h('td', q.missedPct + '%'), h('td', q.avgAttempts)))));
-    const cls = h('table.data', h('caption', 'Class averages (LIVE)'), h('thead', h('tr', h('th', 'Class'), h('th', 'Students'), h('th', 'Average %'))), h('tbody', data.classes.map((c) => h('tr', h('td', c.code), h('td', c.n), h('td', c.avg + '%')))));
-    main.replaceChildren(h('section.screen', h('div.row.spread', h('div', h('h1', { style: { fontSize: '2rem' } }, 'Teacher view'), h('div.small.muted', `Updated ${stamp()} • refreshes about every 30 seconds`)),
-      h('div.row', sel, tog, h('button.btn.small', { type: 'button', onclick: () => load() }, 'Refresh now'), h('button.btn.small', { type: 'button', onclick: csv }, 'Download CSV'),
-        h('button.btn.small', { type: 'button', onclick: async () => { const r = await send('t_analytics', { pass }); say(r && r.ok ? 'Analytics tab rebuilt.' : 'Could not rebuild.'); } }, 'Rebuild Analytics tab'),
-        onPreview ? h('button.btn.small', { type: 'button', onclick: onPreview }, 'Preview the assessment') : '', onExit ? h('button.btn.small', { type: 'button', onclick: exit }, 'Sign out') : '')),
-      h('div.grid2', { style: { margin: '1rem 0' } }, tile('Sessions', rows.length), tile('Completed', done.length), tile('Still working', working), tile('Class average', avg != null ? avg + '%' : '—', done.length ? 'completed only' : 'no one has finished yet')),
-      h('div.panel', { style: { overflowX: 'auto' } }, stu), h('div.grid2', { style: { marginTop: '1rem' } }, h('div.panel', h('h3', 'Average by content domain'), h('div.bars', dom)), h('div.panel', { style: { overflowX: 'auto' } }, cls)),
-      h('div.panel', { style: { marginTop: '1rem', overflowX: 'auto' } }, qt),
-      h('p.small.muted', 'Reset lets a student start over (the old row is kept and marked as superseded).')));
+    return [h('h1', 'Analytics'), h('div.grid2', h('div.panel', h('h3', 'Average by content domain'), h('div.bars', dom)),
+      h('div.panel', { style: { overflowX: 'auto' } }, h('table.data', h('caption', 'Class averages (LIVE)'), h('thead', h('tr', h('th', 'Class'), h('th', 'Students'), h('th', 'Average %'))), h('tbody', data.classes.map((c) => h('tr', h('td', c.code), h('td', c.n), h('td', c.avg + '%'))))))),
+      h('div.panel', { style: { marginTop: '1rem', overflowX: 'auto' } }, h('table.data', h('caption', 'What to reteach: most-missed questions (hardest first; LIVE submissions only)'), h('thead', h('tr', ['Question', 'Concept', 'Students', '% first try', '% eventually correct', '% missed', 'Avg attempts'].map((x) => h('th', x)))),
+        h('tbody', qs.map((q) => h('tr', h('td', q.qid), h('td', q.topic), h('td', q.n), h('td', q.firstPct + '%'), h('td', q.correctPct + '%'), h('td', q.missedPct + '%'), h('td', q.avgAttempts))))))];
+  }
+
+  function exportTab() {
+    return [h('h1', 'Export'), h('div.panel', h('p', 'Download every student shown for the chosen block as a spreadsheet file, or rebuild the Analytics tab in your Google Sheet.'),
+      h('div.row', h('button.btn.primary', { type: 'button', onclick: csv }, 'Download CSV'),
+        h('button.btn', { type: 'button', onclick: async () => { const r = await send('t_analytics', { pass }); say(r && r.ok ? 'Analytics tab rebuilt.' : 'Could not rebuild.'); } }, 'Rebuild Analytics tab in the Sheet')))];
+  }
+
+  const views = { overview, students, analytics, export: exportTab };
+  function renderBody() { const host = document.getElementById('tm-body'); if (host) host.replaceChildren(...views[tab]()); }
+  function render() {
+    const keepFind = document.activeElement && document.activeElement.id === 'tm-find';
+    main.replaceChildren(h('section.screen.tm', bar(),
+      h('nav.tm-tabs', { 'aria-label': 'Teacher sections' }, TABS.map(([id, label]) => h('button.tm-tab', { type: 'button', 'aria-current': id === tab ? 'page' : null, onclick: () => { tab = id; render(); } }, label))),
+      controls(), h('div#tm-body', ...views[tab]())));
+    if (keepFind) { const f = document.getElementById('tm-find'); if (f) { f.focus(); f.setSelectionRange(f.value.length, f.value.length); } }
   }
 
   async function resetStudent(s) {
@@ -74,8 +131,9 @@ export function mountTeacher({ main, toast, onExit, onPreview }) {
   }
 
   function csv() {
-    const rows = [['Student', 'Class', 'Period', 'Status', 'Score', 'Possible', 'Percent', 'Minutes', 'Version', 'Mode', 'Integrity'], ...data.students.map((s) => [s.name, s.code, s.period, s.status, s.score, s.possible, s.pct, s.minutes, s.versionId, s.mode, s.integrity])];
-    const text = rows.map((r) => r.map((c) => '"' + String(c ?? '').replace(/"/g, '""') + '"').join(',')).join('\n');
+    const list = live().filter(inBlock).sort(sorters.name);
+    const rows = [['Student', 'Block', 'Class code', 'Status', 'Score', 'Possible', 'Percent', 'Minutes', 'Version', 'Mode', 'Integrity'], ...list.map((s) => [s.name, s.period, s.code, s.status, s.score, s.possible, s.pct, s.minutes, s.versionId, s.mode, s.integrity])];
+    const text = rows.map((r) => r.map((c) => '"' + cell(c).replace(/"/g, '""') + '"').join(',')).join('\n');
     const a = h('a', { href: URL.createObjectURL(new Blob([text], { type: 'text/csv' })), download: 'signal-results.csv' }); document.body.append(a); a.click(); a.remove();
   }
 
