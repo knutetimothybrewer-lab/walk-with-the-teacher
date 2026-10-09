@@ -18,7 +18,7 @@ WWQ.applyConfig({
   // letterGrades: { enabled: true },      // uses the bands in config.js; edit bands here if you like
   // identifierLabel: 'Student alias or teacher-approved ID',
   // Results go to the teacher's Google Sheet (docs/TEACHER_SETUP.md, section 8). Remove this line to turn it off.
-  backend: { url: 'https://script.google.com/a/macros/nccvt.k12.de.us/s/AKfycbzERsUKDpHI_ziyr7eD1pDX-I0VR92Y5nqJlFxwhpNrkWHSF02VkZpS3BUDWu1-K6cD/exec' },
+  backend: { url: 'https://script.google.com/macros/s/AKfycbzERsUKDpHI_ziyr7eD1pDX-I0VR92Y5nqJlFxwhpNrkWHSF02VkZpS3BUDWu1-K6cD/exec' },
 
   // Teacher reset passcode (salted, iterated SHA-256 verifier; the passcode itself is not stored here):
   teacher: { configured: true, salt: 'c6b312096c7de60ddf23e94804e3e944', iterations: 30000, verifier: 'c946ad45af22bde2850297a1acc02442f3c61da6d1cf28a1a869c04496bae525', freeTries: 3, cooldownSeconds: 30 }
