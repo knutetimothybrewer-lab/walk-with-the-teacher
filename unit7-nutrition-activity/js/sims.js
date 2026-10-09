@@ -132,14 +132,28 @@ function ik(A, B, l1, l2, dir) {
   return [A[0] + l1 * Math.cos(base + dir * a), A[1] + l1 * Math.sin(base + dir * a)];
 }
 function runner(profile) {
-  const svg = S('svg', { viewBox: '0 0 260 200', class: 'runner', role: 'img', 'aria-label': `Animated figure doing: ${profile.name}` });
+  const svg = S('svg', { viewBox: '0 0 260 200', class: 'runner', role: 'img', 'aria-label': `Animated, hilariously muscular cartoon figure doing: ${profile.name}` });
   const ground = S('g', {}, svg); S('line', { x1: 0, y1: GROUND + 2, x2: 260, y2: GROUND + 2, stroke: 'var(--line-strong)', 'stroke-width': 2 }, ground);
   const dashes = []; for (let i = 0; i < 9; i++) dashes.push(S('line', { y1: GROUND + 11, y2: GROUND + 11, stroke: 'var(--line)', 'stroke-width': 2, 'stroke-linecap': 'round' }, ground));
-  const bikeG = S('g', {}, svg), far = S('g', { opacity: 0.5 }, svg), body = S('g', {}, svg);
-  const line = (parent, w, color) => S('polyline', { fill: 'none', stroke: color || 'var(--accent)', 'stroke-width': w, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }, parent);
-  const farLeg = line(far, 8), farArm = line(far, 6.5), torso = line(body, 10), nearLeg = line(body, 8), nearArm = line(body, 6.5), head = S('circle', { r: 12, fill: 'var(--accent-2)' }, body);
+  const bikeG = S('g', {}, svg), far = S('g', { opacity: 0.55 }, svg), body = S('g', {}, svg);
+  const COL = 'var(--accent)', SHADE = 'rgba(0,0,0,.28)';
+  // ---- the build: thick tapered limbs made of several segments plus bulges (biceps, calves, fists, delts) ----
+  const seg = (parent, w) => S('line', { stroke: COL, 'stroke-width': w, 'stroke-linecap': 'round' }, parent);
+  const blob = (parent, r) => S('circle', { r, fill: COL }, parent);
+  const EDGE = 'filter: drop-shadow(0 0 1px #0b1020) drop-shadow(0 0 1px #0b1020)'; // dark rim keeps overlapping muscles readable
+  const limb = (parent) => S('g', { style: EDGE }, parent);
+  const mkLeg = (parent) => { const g = limb(parent); return { thigh: seg(g, 21), shin: seg(g, 13), foot: seg(g, 8), calf: blob(g, 10), quad: blob(g, 13) }; };
+  const mkArm = (parent) => { const g = limb(parent); return { up: seg(g, 17), fore: seg(g, 13), bicep: blob(g, 13), fist: blob(g, 8.5), delt: blob(g, 14) }; };
+  const setSeg = (l, p, q) => { l.setAttribute('x1', p[0]); l.setAttribute('y1', p[1]); l.setAttribute('x2', q[0]); l.setAttribute('y2', q[1]); };
+  const at = (p, q, f, off = 0) => { const dx = q[0] - p[0], dy = q[1] - p[1], L = Math.hypot(dx, dy) || 1; return [p[0] + dx * f - dy / L * off, p[1] + dy * f + dx / L * off]; };
+  const setC = (c, p) => { c.setAttribute('cx', p[0]); c.setAttribute('cy', p[1]); };
+  const setLeg = (L, hip, knee, ank, ft) => { setSeg(L.thigh, hip, knee); setSeg(L.shin, knee, ank); setSeg(L.foot, ank, ft); setC(L.quad, at(hip, knee, 0.45, -3)); setC(L.calf, at(knee, ank, 0.3, 4)); };
+  const setArm = (A, sh, el, wr) => { setSeg(A.up, sh, el); setSeg(A.fore, el, wr); setC(A.delt, sh); setC(A.bicep, at(sh, el, 0.55, -2)); setC(A.fist, wr); };
+  const farLeg = mkLeg(far), farArm = mkArm(far);
+  const torsoG = S('g', { style: EDGE }, body), torso = S('polygon', { fill: COL, stroke: COL, 'stroke-width': 6, 'stroke-linejoin': 'round' }, torsoG), pecs = S('path', { fill: 'none', stroke: SHADE, 'stroke-width': 2.5, 'stroke-linecap': 'round' }, body), abs = S('path', { fill: 'none', stroke: SHADE, 'stroke-width': 2, 'stroke-linecap': 'round' }, body);
+  const nearLeg = mkLeg(body), nearArm = mkArm(body);
+  const neck = seg(body, 14), head = S('circle', { r: 9, fill: 'var(--accent-2)' }, body), band = S('line', { stroke: '#ff4d4d', 'stroke-width': 4, 'stroke-linecap': 'round' }, body), shades = S('line', { stroke: '#10131c', 'stroke-width': 4, 'stroke-linecap': 'round' }, body);
   const isBike = profile.gait === 'bike';
-  // bicycle (drawn once; wheels and crank are redrawn each frame)
   const R = [60, GROUND - 36], F = [188, GROUND - 36], BB = [112, GROUND - 32], SEAT = [100, GROUND - 76], HT = [170, GROUND - 70], GRIP = [182, GROUND - 82], CR = 17, WR = 36;
   let wheels = [], crank = null, pedals = [];
   if (isBike) {
@@ -152,35 +166,49 @@ function runner(profile) {
     crank = S('line', { stroke: 'var(--ink)', 'stroke-width': 4, 'stroke-linecap': 'round' }, bikeG);
     pedals = [S('line', { stroke: 'var(--ink)', 'stroke-width': 5, 'stroke-linecap': 'round' }, bikeG), S('line', { stroke: 'var(--ink)', 'stroke-width': 5, 'stroke-linecap': 'round' }, bikeG)];
   }
-  const foot = (ank, ang, dir = 1) => [ank[0] + dir * 11 * Math.cos(ang), ank[1] + 11 * Math.sin(ang)];
+  const foot = (ank, ang) => [ank[0] + 12 * Math.cos(ang), ank[1] + 12 * Math.sin(ang)];
+  /** V-taper torso: tiny waist, enormous chest and shoulders, wide lats. hip = bottom of the spine, sh = top. */
+  function drawTorso(hip, sh) {
+    const dx = sh[0] - hip[0], dy = sh[1] - hip[1], L = Math.hypot(dx, dy), u = [dx / L, dy / L], n = [-u[1], u[0]];
+    const P = (f, o) => [hip[0] + dx * f + n[0] * o, hip[1] + dy * f + n[1] * o];
+    const poly = [P(0, -10), P(0.35, -14), P(0.72, -19), P(1.0, -13), P(1.1, -3), P(1.1, 5), P(1.0, 14), P(0.8, 24), P(0.55, 17), P(0.2, 8), P(0, 9)];
+    torso.setAttribute('points', poly.map((q) => pt(...q)).join(' '));
+    const c0 = P(0.74, 3), c1 = P(0.62, 19), c2 = P(0.58, 6); pecs.setAttribute('d', `M${pt(...c0)} Q${pt(...c1)} ${pt(...c2)}`);
+    const a0 = P(0.18, 7), a1 = P(0.34, 9), b0 = P(0.26, 3), b1 = P(0.4, 4); abs.setAttribute('d', `M${pt(...a0)} L${pt(...a1)} M${pt(...b0)} L${pt(...b1)}`);
+    const neckTop = P(1.12, 6); setSeg(neck, P(1.0, 3), neckTop);
+    return { neckTop, n, u };
+  }
+  function drawHead(neckTop, u, n) {
+    const c = [neckTop[0] + u[0] * 9 + n[0] * 2, neckTop[1] + u[1] * 9 + n[1] * 2]; setC(head, c);
+    setSeg(band, [c[0] - 9, c[1] - 4], [c[0] + 9, c[1] - 4]); setSeg(shades, [c[0] + 1, c[1] - 0.5], [c[0] + 10, c[1] - 0.5]);
+  }
 
   function pose(t) {
     const phi = 2 * Math.PI * profile.f * t;
     if (isBike) {
-      const HIP = [SEAT[0] - 6, SEAT[1] - 8], SH = [HIP[0] + 56 * Math.sin(40 * RAD), HIP[1] - 56 * Math.cos(40 * RAD) + 2];
+      const HIP = [SEAT[0] - 6, SEAT[1] - 8], SH = [HIP[0] + 54 * Math.sin(40 * RAD), HIP[1] - 54 * Math.cos(40 * RAD) + 2];
       const al = phi, P = [[BB[0] + CR * Math.cos(al), BB[1] + CR * Math.sin(al)], [BB[0] - CR * Math.cos(al), BB[1] - CR * Math.sin(al)]];
-      crank.setAttribute('x1', P[0][0]); crank.setAttribute('y1', P[0][1]); crank.setAttribute('x2', P[1][0]); crank.setAttribute('y2', P[1][1]);
-      P.forEach((q, i) => { pedals[i].setAttribute('x1', q[0] - 7); pedals[i].setAttribute('x2', q[0] + 7); pedals[i].setAttribute('y1', q[1]); pedals[i].setAttribute('y2', q[1]); });
-      const ang = phi * 2.3; // wheels turn faster than the crank (gearing)
+      setSeg(crank, P[0], P[1]); P.forEach((q, i) => setSeg(pedals[i], [q[0] - 8, q[1]], [q[0] + 8, q[1]]));
+      const ang = phi * 2.3;
       wheels.forEach((w) => w.sp.forEach((l, i) => { const a = ang + i * Math.PI / 3; l.setAttribute('x1', w.c[0] - WR * 0.93 * Math.cos(a)); l.setAttribute('y1', w.c[1] - WR * 0.93 * Math.sin(a)); l.setAttribute('x2', w.c[0] + WR * 0.93 * Math.cos(a)); l.setAttribute('y2', w.c[1] + WR * 0.93 * Math.sin(a)); }));
-      const legPts = (pd) => { const ank = [pd[0] - 1, pd[1] - 3], knee = ik(HIP, ank, BL, BL, -1); return `${pt(...HIP)} ${pt(...knee)} ${pt(...ank)} ${pt(ank[0] + 11, ank[1] + 2)}`; };
-      farLeg.setAttribute('points', legPts(P[1])); nearLeg.setAttribute('points', legPts(P[0]));
-      const el = ik(SH, GRIP, 31, 31, 1), elbowFar = ik([SH[0] - 2, SH[1]], [GRIP[0] - 3, GRIP[1] + 1], 31, 31, 1);
-      nearArm.setAttribute('points', `${pt(...SH)} ${pt(...el)} ${pt(...GRIP)}`); farArm.setAttribute('points', `${pt(SH[0] - 2, SH[1])} ${pt(...elbowFar)} ${pt(GRIP[0] - 3, GRIP[1] + 1)}`);
-      torso.setAttribute('points', `${pt(...HIP)} ${pt(...SH)}`); head.setAttribute('cx', SH[0] + 8); head.setAttribute('cy', SH[1] - 14 + Math.sin(phi * 2) * 0.6);
-      const v = 2 * Math.PI * profile.f * 2.3 * WR * 0.9, spacing = 36; const off = (t * v) % spacing; dashes.forEach((d, i) => { const x = 260 - ((i * spacing + off) % (9 * spacing)); d.setAttribute('x1', x); d.setAttribute('x2', x + 18); });
+      const legPts = (pd) => { const ank = [pd[0] - 1, pd[1] - 3], knee = ik(HIP, ank, BL, BL, -1); return [HIP, knee, ank, [ank[0] + 12, ank[1] + 2]]; };
+      setLeg(farLeg, ...legPts(P[1])); setLeg(nearLeg, ...legPts(P[0]));
+      const el = ik(SH, GRIP, 31, 31, 1), g2 = [GRIP[0] - 3, GRIP[1] + 1], sh2 = [SH[0] - 2, SH[1]], el2 = ik(sh2, g2, 31, 31, 1);
+      setArm(nearArm, SH, el, GRIP); setArm(farArm, sh2, el2, g2);
+      const tt = drawTorso(HIP, SH); drawHead(tt.neckTop, tt.u, tt.n);
+      const v = 2 * Math.PI * profile.f * 2.3 * WR * 0.9, spacing = 36, off = (t * v) % spacing; dashes.forEach((d, i) => { const x = 260 - ((i * spacing + off) % (9 * spacing)); d.setAttribute('x1', x); d.setAttribute('x2', x + 18); });
       return;
     }
     const { A, K, arm, elbow, lean } = profile, Ar = A * RAD, Kmin = 5 * RAD, Kamp = (K - 5) * RAD;
     const leg = (ph) => { const th = Ar * Math.sin(ph), kn = Kmin + Kamp * Math.pow(0.5 + 0.5 * Math.cos(ph - 0.35), 2); return { th, kn, ankY: L1 * Math.cos(th) + L2 * Math.cos(th - kn) }; };
     const a = leg(phi), b = leg(phi + Math.PI);
-    const hipY = GROUND - 4 - Math.max(a.ankY, b.ankY), hip = [130, hipY];
-    const drawLeg = (l, el) => { const knee = [hip[0] + L1 * Math.sin(l.th), hip[1] + L1 * Math.cos(l.th)], ank = [knee[0] + L2 * Math.sin(l.th - l.kn), knee[1] + L2 * Math.cos(l.th - l.kn)], ft = foot(ank, -0.3 * (l.th - l.kn)); el.setAttribute('points', `${pt(...hip)} ${pt(...knee)} ${pt(...ank)} ${pt(...ft)}`); };
+    const hipY = GROUND - 5 - Math.max(a.ankY, b.ankY), hip = [128, hipY];
+    const drawLeg = (l, L) => { const knee = [hip[0] + L1 * Math.sin(l.th), hip[1] + L1 * Math.cos(l.th)], ank = [knee[0] + L2 * Math.sin(l.th - l.kn), knee[1] + L2 * Math.cos(l.th - l.kn)]; setLeg(L, hip, knee, ank, foot(ank, -0.3 * (l.th - l.kn))); };
     drawLeg(a, nearLeg); drawLeg(b, farLeg);
-    const lr = lean * RAD, TL = 48, SH = [hip[0] + TL * Math.sin(lr), hip[1] - TL * Math.cos(lr)];
-    const drawArm = (ph, el) => { const th = -(arm * RAD) * Math.sin(ph), fl = elbow * RAD + (th > 0 ? th * 0.3 : 0), e = [SH[0] + U1 * Math.sin(th), SH[1] + U1 * Math.cos(th)], w = [e[0] + U2 * Math.sin(th + fl), e[1] + U2 * Math.cos(th + fl)]; el.setAttribute('points', `${pt(...SH)} ${pt(...e)} ${pt(...w)}`); };
+    const lr = lean * RAD, TL = 46, SH = [hip[0] + TL * Math.sin(lr), hip[1] - TL * Math.cos(lr)];
+    const drawArm = (ph, A2) => { const th = -(arm * RAD) * Math.sin(ph), fl = elbow * RAD + (th > 0 ? th * 0.3 : 0), e = [SH[0] + U1 * Math.sin(th), SH[1] + U1 * Math.cos(th)], w = [e[0] + U2 * Math.sin(th + fl), e[1] + U2 * Math.cos(th + fl)]; setArm(A2, SH, e, w); };
     drawArm(phi + Math.PI, nearArm); drawArm(phi, farArm);
-    torso.setAttribute('points', `${pt(...hip)} ${pt(...SH)}`); head.setAttribute('cx', SH[0] + 11 * Math.sin(lr + 0.25)); head.setAttribute('cy', SH[1] - 14 * Math.cos(lr) - 2);
+    const tt = drawTorso(hip, SH); drawHead(tt.neckTop, tt.u, tt.n);
     const v = 2 * Math.PI * profile.f * (L1 + L2) * Ar * 0.95, spacing = 34, off = (t * v) % spacing; dashes.forEach((d, i) => { const x = 260 - ((i * spacing + off) % (9 * spacing)); d.setAttribute('x1', x); d.setAttribute('x2', x + 16); });
   }
   let raf = 0, t0 = 0, frames = 0, alive = true;
@@ -195,6 +223,7 @@ function runner(profile) {
   svg._stop = () => { alive = false; cancelAnimationFrame(raf); };
   return svg;
 }
+
 export function intensity(host, ctx) {
   const sim = ctx.sim; sim.tried = sim.tried || [];
   let cur = PROFILES[0];
