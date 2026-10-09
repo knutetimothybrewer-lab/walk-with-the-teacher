@@ -46,6 +46,7 @@
     var tc = s && CHM.timeChipEl && CHM.timeChipEl(); if (tc) right.appendChild(tc);
     if (s) { right.appendChild(h('span.who', s.student.name + (s.preview ? '' : ''))); right.appendChild(h('span#savestat.savestat ' + saveStatus, { role: 'status' }, saveStatus === 'saved' ? '✓ Progress saved' : saveStatus === 'offline' ? '⚠ Offline: not saved yet' : '… Saving')); }
     right.appendChild(h('button.btn.sm.ghost', { type: 'button', 'aria-pressed': String(!motion), onclick: function () { CHM.setMotion(!CHM.motionOn()); CHM.rerender(); } }, motion ? 'Motion: on' : 'Motion: off'));
+    if (s && !s.preview) right.appendChild(h('button.btn.sm.ghost', { type: 'button', id: 'btn-settings', onclick: function () { CHM.openSettings(); } }, '⚙ Settings'));
     if (s && !opts.noNav) right.appendChild(h('button.btn.sm.ghost', { type: 'button', onclick: function () { CHM.go('map'); } }, '🗺 Map'));
     return h('header.topbar', left, right);
   }
@@ -61,7 +62,21 @@
     var tokenRow = h('label.fl', 'Access token (only if your teacher gave you one)', h('input', { name: 'tok', autocomplete: 'off', oninput: function (e) { f.studentToken = e.target.value; } }));
     var go = h('button.btn.primary', { type: 'submit' }, 'Start the mission');
     var form = h('form.card.loginform', { onsubmit: function (e) {
-      e.preventDefault(); go.disabled = true; err.textContent = '';
+      e.preventDefault(); err.textContent = '';
+      // Teacher code in the Class code box: the SERVER checks it as the teacher passcode, then opens the private preview.
+      if (String(f.classCode).trim().toUpperCase() === 'WALK-TEACHER') {
+        go.disabled = true;
+        CHM.transport.call('teacherLogin', { passcode: 'WALK-TEACHER', useAccount: false }, { retries: 2 }).then(function (t) {
+          if (!t.ok) { go.disabled = false; err.textContent = t.message; return null; }
+          CHM.teacherToken = t.teacherToken; try { sessionStorage.setItem('chm.tt', t.teacherToken); } catch (x) { /* ignore */ }
+          return CHM.transport.call('previewStart', { teacherToken: t.teacherToken, revealMode: 'final' }, { retries: 2 }).then(function (r) {
+            go.disabled = false; if (!r.ok) { err.textContent = r.message; return; } CHM.session = null; CHM.afterJoin(r);
+          });
+        }, function () { go.disabled = false; err.textContent = 'We could not reach the server. Check your connection and try again.'; });
+        return;
+      }
+      if (!String(f.rosterId).trim() || !String(f.name).trim()) { err.textContent = 'Enter your roster ID and display name.'; return; }
+      go.disabled = true;
       CHM.transport.call('join', f, { retries: 3 }).then(function (r) {
         go.disabled = false;
         if (!r.ok) { err.textContent = r.message; return; }
@@ -70,8 +85,8 @@
     } },
       h('h2', 'Join your class'),
       h('label.fl', 'Class code', h('input', { name: 'code', required: true, autocomplete: 'off', autocapitalize: 'characters', oninput: function (e) { f.classCode = e.target.value; } })),
-      h('label.fl', 'Roster ID (from your teacher)', h('input', { name: 'roster', required: true, autocomplete: 'off', oninput: function (e) { f.rosterId = e.target.value; } })),
-      h('label.fl', 'Display name', h('input', { name: 'name', required: true, autocomplete: 'off', oninput: function (e) { f.name = e.target.value; } })),
+      h('label.fl', 'Roster ID (from your teacher)', h('input', { name: 'roster', autocomplete: 'off', oninput: function (e) { f.rosterId = e.target.value; } })),
+      h('label.fl', 'Display name', h('input', { name: 'name', autocomplete: 'off', oninput: function (e) { f.name = e.target.value; } })),
       h('label.fl', 'Class block', h('select', { name: 'period', onchange: function (e) { f.period = e.target.value; } }, [''].concat(['Block 1/2', 'Block 3/4', 'Block 6/7', 'Block 8/9']).map(function (b) { return h('option', { value: b }, b || 'Choose your block\u2026'); }))), tokenRow, err, go,
       h('p.small', 'Privacy: use only the roster ID and name your teacher asked for. Do not type health information about yourself or anyone else. Every scenario in this assessment is fictional.'));
     var intro = h('section.hero', h('div.hero-art', CHM.guideSvg(84)), h('h1', 'Community Health Mission'),

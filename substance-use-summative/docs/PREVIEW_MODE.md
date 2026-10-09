@@ -1,9 +1,9 @@
 # Preview Mode (teacher / developer tools)
 
-Preview Mode is deliberately **not** reachable from any student screen.
+Preview Mode is not advertised on any student screen. The teacher passcode typed in the sign-in **Class code** box opens it.
 
 ## How to open it
-Add `?preview=1` to the address: `https://.../index.html?preview=1`. Enter the passcode when asked (default `WALK-TEACHER`). **Change the default**:
+Type the passcode (default `WALK-TEACHER`) into the **Class code** box on the sign-in screen and press **Begin**; no name is needed. Or add `?preview=1` to the address: `https://.../index.html?preview=1`. Enter the passcode when asked (default `WALK-TEACHER`). **Change the default**:
 
 ```bash
 node tools/hash.js --preview "your new passcode"     # paste the output into previewPasscodeHash in js/config.js

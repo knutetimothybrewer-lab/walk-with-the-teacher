@@ -37,6 +37,13 @@ export async function checkClassCode(cfg, student) {
   }
 }
 
+/** Best-effort: ask the Sheet to archive this student's finished record so a retake is allowed. Succeeds only if the
+    Sheet's TEACHER_PASSCODE equals the typed code; any failure is ignored (the device is wiped regardless). */
+export async function serverReset(cfg, student, passcode) {
+  if (!hasBackend(cfg)) return false;
+  try { const r = await post(cfg, { action: 'teacher', op: 'reset', passcode, student }, 8000); return !!(r && r.ok); } catch { return false; }
+}
+
 export function queueFinal(cfg, payload) {
   const q = storage.get(qKey(cfg), []);
   if (!q.find(p => p.completion === payload.completion)) q.push(payload);

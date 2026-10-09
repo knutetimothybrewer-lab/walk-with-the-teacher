@@ -10,6 +10,18 @@ Every summative (`health-summative/`, `substance-use-summative/`, `unit7-nutriti
 
 An auto-graded, interactive, about-an-hour Grade 10 Health summative on Family Life & Sexuality: six chapters, 40 questions worth 100 points, three attempts per question (100/85/75/0), a server-enforced 90-minute limit with per-student accommodations, a Google Sheets back end with a Master Dashboard and one tab per block (Block 1/2, 3/4, 6/7, 8/9), and a teacher mode opened by typing `WALK-TEACHER` in the class-code box. Answer keys stay on the server and are not in this repository. **Provisional:** the unit's slides were not available and the Google back end has not been run on Google; start with `unit8-family-life/README.md`, `docs/TEACHER_REVIEW.md` and `docs/SETUP.md`.
 
+## Gambling: Behind the Odds, Unit 5 summative (`unit5-gambling/`)
+
+A digital summative for the Grade 10 Gambling unit: six case files, six simulations whose results feed graded questions (probability lab, house edge, sports/parlay desk, neuroscience lab, ad investigation, healthy decisions), 32 scored questions / 100 points, three attempts per question (100/85/75%), hints and explanations, and a server-enforced 90-minute limit with automatic submission. Grading, the clock and the gradebook live in a Google Apps Script + Google Sheet that you own; the website is static (GitHub Pages) and runs on Chromebooks.
+
+Teacher Mode (type `WALK-TEACHER` in the class-code box, then your private password) gives a full preview with the answer key, a live class monitor, analytics, student resets (archived and audited), access-code management, a Sources and Research panel, and CSV/Excel export.
+
+**The answer key is not in this repository.** The question bank is kept encrypted (`unit5-gambling/vault/`) and delivered to you as a private `KeyData.gs` to paste into your Apps Script project.
+
+Start with `unit5-gambling/README.md` (step-by-step setup), then `docs/SECURITY.md`, `docs/TESTING.md` (what was and was not tested), `docs/SOURCES.md` and `docs/DISCREPANCIES.md`.
+
+Student link once GitHub Pages is on and the backend URL is set in `unit5-gambling/js/config.js`: `https://YOUR-USER.github.io/walk-with-the-teacher/unit5-gambling/`
+
 ## The Wildcat Wellness Trail: Mental Health Unit assessment (`health-summative/`)
 
 An animated, ~45-minute, self-grading summative assessment for the Mental Health unit (64 questions, 10 stations, a capstone, a final score page, and an optional Google Sheet backend with a "Reteach" tab). Static site, no build step, no trackers.
@@ -126,16 +138,21 @@ payouts, questions and timing, and the tests (`node house-edge/tests/engine.test
 
 ## Teacher mode in every summative
 
-Each summative has a private way for the teacher to click through the whole assessment without answering, which never records a student score:
+Each summative has a private way for the teacher to click through the whole assessment without answering, which never records a student score. In all five, **type the teacher code in the Class code box on the main sign-in screen** (no `?preview` in the address, no name needed) and press the start button:
 
-| Summative | How to open it |
+| Summative | What happens |
 |---|---|
-| `health-summative/` (Wildcat Wellness Trail) | Type the teacher code (default `WALK-TEACHER`) in the **Class code** box. See its README, section 10b, to change it. |
-| `wildcats-wellness-quest/` | Footer **Teacher reset** -> teacher passcode -> **Open teacher mode**. |
-| `substance-use-summative/` (SIGNAL) | Add `?preview=1` to the address and enter the preview passcode (default `WALK-TEACHER`). **Continue** is never locked in Preview Mode. |
-| `community-health-mission/` | **Teacher sign-in** on the sign-in screen, then **Start preview** (server-checked passcode). |
+| `health-summative/` (Wildcat Wellness Trail) | `WALK-TEACHER` (not case-sensitive) opens the click-through. See its README, section 10b, to change it. |
+| `unit7-nutrition-activity/` | `WALK-TEACHER` opens the click-through. |
+| `substance-use-summative/` (SIGNAL) | `WALK-TEACHER` opens Preview Mode directly (no second passcode prompt). `?preview=1` still works. |
+| `wildcats-wellness-quest/` | `WALK-TEACHER` opens teacher mode (checked against the saved teacher verifier; the footer **Teacher reset** route still works). |
+| `community-health-mission/` | `WALK-TEACHER` signs in as teacher and starts the private preview. The server checks it, so the spreadsheet teacher passcode must be set to `WALK-TEACHER`; if it is different, use **Teacher sign-in**. Redeploy the Apps Script after updating. |
 
-The shared teacher code is **`WALK-TEACHER`** (type it in capitals) for the first three. Community Health Mission checks its passcode on the server, so set it to the same value in the spreadsheet's teacher menu. Each app stores only a hash or verifier of it, so changing it later means regenerating each one (see each app's README).
+Each app stores only a hash or verifier of the code (Community Health Mission keeps it on the server), so changing it later means regenerating each one (see each app's README). Community Health Mission's sign-in box recognises only the literal `WALK-TEACHER`; with any other passcode use its **Teacher sign-in** link.
+
+## Reset an attempt from Settings (all five summatives)
+
+Open **Settings** in any summative while an attempt is in progress (or finished), type the teacher code in the **Teacher reset** box and press **Reset this attempt**. The current attempt on that device is wiped and the page returns to the start/sign-in screen. It uses the same codes as teacher mode (`WALK-TEACHER` by default; Community Health Mission checks it on the server, so it needs the spreadsheet teacher passcode, and every reset is written to its audit log). Trail, SIGNAL and Unit 7 also ask the Google Sheet to mark the earlier submission as reset, but only if the Sheet's own teacher/reset passcode is the same code; otherwise ask the Sheet owner to reset that student there. A wrong code changes nothing.
 
 ## Wildcats Wellness Quest (`wildcats-wellness-quest/`)
 
