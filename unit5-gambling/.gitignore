@@ -1,0 +1,7 @@
+# PRIVATE: answer keys, question bank, printable key, generated server code that embeds the key
+private/
+authoring/
+node_modules/
+.devdata/
+*.local.json
+.vault-pass
