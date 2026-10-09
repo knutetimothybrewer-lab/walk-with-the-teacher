@@ -111,28 +111,88 @@ export function grocery(host, ctx) {
 
 // ================================================================================== Exercise Intensity Simulator
 const PROFILES = [
-  { k: 'stroll', name: 'Easy stroll', rpe: 2, per: 2.0, amp: 14, lean: 0, breath: 4.4, talk: '"I could sing this whole song!"', body: 'Breathing barely changes. Heart rate is only a little above resting.' },
-  { k: 'brisk', name: 'Brisk walk uphill', rpe: 5, per: 1.1, amp: 24, lean: 3, breath: 3.0, talk: '"I can talk in sentences, but I couldn\'t sing."', body: 'Breathing is deeper and faster. You feel warm.' },
-  { k: 'cycle', name: 'Steady cycling', rpe: 6, per: 0.9, amp: 18, lean: 8, breath: 2.5, talk: '"I can talk, but I pause for breath often."', body: 'Breathing is quick and noticeable. Legs feel the work.', bike: true },
-  { k: 'jog', name: 'Fast jog', rpe: 7, per: 0.62, amp: 38, lean: 7, breath: 1.7, talk: '"I can say... only a few words... at a time."', body: 'Breathing is fast and deep. Sweating starts.' },
-  { k: 'sprint', name: 'Sprint intervals', rpe: 9, per: 0.42, amp: 52, lean: 14, breath: 1.1, talk: '"I... can\'t... talk."', body: 'Breathing is very fast and hard. This level can only be kept up for a short time.' }
+  { k: 'stroll', name: 'Easy stroll', rpe: 2, gait: 'walk', f: 0.75, A: 15, K: 26, arm: 12, elbow: 12, lean: 1, breath: 4.4, talk: '"I could sing this whole song!"', body: 'Breathing barely changes. Heart rate is only a little above resting.' },
+  { k: 'brisk', name: 'Brisk walk', rpe: 5, gait: 'walk', f: 1.05, A: 25, K: 40, arm: 24, elbow: 28, lean: 5, breath: 3.0, talk: '"I can talk in sentences, but I couldn\'t sing."', body: 'Breathing is deeper and faster. You feel warm.' },
+  { k: 'cycle', name: 'Steady cycling', rpe: 6, gait: 'bike', f: 1.15, breath: 2.5, talk: '"I can talk, but I pause for breath often."', body: 'Breathing is quick and noticeable. Legs feel the work.' },
+  { k: 'jog', name: 'Fast jog', rpe: 7, gait: 'run', f: 1.45, A: 36, K: 88, arm: 40, elbow: 82, lean: 9, breath: 1.7, talk: '"I can say... only a few words... at a time."', body: 'Breathing is fast and deep. Sweating starts.' },
+  { k: 'sprint', name: 'Sprint intervals', rpe: 9, gait: 'run', f: 2.0, A: 52, K: 108, arm: 58, elbow: 92, lean: 18, breath: 1.1, talk: '"I... can\'t... talk."', body: 'Breathing is very fast and hard. This level can only be kept up for a short time.' }
 ];
 const BANDS = [[0, 4, 'Light 1–4', '#7ad7a0'], [5, 6, 'Moderate 5–6', '#f2c14e'], [7, 10, 'Vigorous 7–10', '#ff6b5b']];
+
+// ---- animated figure --------------------------------------------------------------------------------------------
+// A real skeleton (hip, knee, ankle, shoulder, elbow, wrist) driven by a gait phase and redrawn every display frame with
+// requestAnimationFrame, so motion is smooth at any refresh rate. Walking and running use a simple gait model; cycling uses
+// two-bone inverse kinematics so the feet really follow the pedals around the crank.
+const RAD = Math.PI / 180, GROUND = 172, L1 = 40, L2 = 40, U1 = 24, U2 = 22, BL = 44;
+const pt = (x, y) => `${x.toFixed(1)},${y.toFixed(1)}`;
+/** Two-bone inverse kinematics: joint position between origin A and target B. dir = -1 bends toward +x/up, +1 toward -x/down. */
+function ik(A, B, l1, l2, dir) {
+  const dx = B[0] - A[0], dy = B[1] - A[1], d = Math.min(Math.hypot(dx, dy), l1 + l2 - 0.01), base = Math.atan2(dy, dx);
+  const a = Math.acos(Math.max(-1, Math.min(1, (l1 * l1 + d * d - l2 * l2) / (2 * l1 * d))));
+  return [A[0] + l1 * Math.cos(base + dir * a), A[1] + l1 * Math.sin(base + dir * a)];
+}
 function runner(profile) {
   const svg = S('svg', { viewBox: '0 0 260 200', class: 'runner', role: 'img', 'aria-label': `Animated figure doing: ${profile.name}` });
-  const ground = S('g', {}, svg); S('line', { x1: 0, y1: 176, x2: 260, y2: 176, stroke: 'var(--line-strong)', 'stroke-width': 2 }, ground);
-  for (let i = 0; i < 8; i++) S('line', { x1: 14 + i * 34, y1: 184, x2: 34 + i * 34, y2: 184, stroke: 'var(--line)', 'stroke-width': 2, class: 'dash', style: `animation-duration:${profile.per * 1.6}s` }, ground);
-  const g = S('g', { transform: `translate(120 40) rotate(${profile.lean})`, style: `--amp:${profile.amp}deg;--per:${profile.per}s` }, svg);
-  const limb = (cls, x, y, len, len2, delay) => { const outer = S('g', { transform: `translate(${x} ${y})` }, g), a = S('g', { class: cls, style: `animation-delay:${delay}s` }, outer); S('line', { x1: 0, y1: 0, x2: 0, y2: len, stroke: 'var(--accent)', 'stroke-width': 7, 'stroke-linecap': 'round' }, a); S('line', { x1: 0, y1: len, x2: 6, y2: len + len2, stroke: 'var(--accent)', 'stroke-width': 6, 'stroke-linecap': 'round' }, a); return a; };
-  S('circle', { cx: 0, cy: -8, r: 14, fill: 'var(--accent-2)' }, g);
-  S('line', { x1: 0, y1: 8, x2: 0, y2: 66, stroke: 'var(--accent)', 'stroke-width': 9, 'stroke-linecap': 'round' }, g);
-  if (profile.bike) {
-    const w = S('g', { transform: 'translate(0 100)' }, svg); const bk = S('g', { transform: 'translate(120 40)' }, svg);
-    [-52, 52].forEach((x) => { const wh = S('g', { transform: `translate(${x} 74)` }, bk); const spin = S('g', { class: 'spin', style: `animation-duration:${profile.per}s` }, wh); S('circle', { r: 30, fill: 'none', stroke: 'var(--ink-dim)', 'stroke-width': 4 }, spin); S('line', { x1: -30, x2: 30, y1: 0, y2: 0, stroke: 'var(--ink-dim)', 'stroke-width': 2 }, spin); S('line', { x1: 0, x2: 0, y1: -30, y2: 30, stroke: 'var(--ink-dim)', 'stroke-width': 2 }, spin); });
-    S('path', { d: 'M-52 74 L-8 66 L52 74 M-8 66 L-14 40 L-34 44 M-8 66 L20 36 L30 36', stroke: 'var(--ink)', 'stroke-width': 4, fill: 'none', 'stroke-linejoin': 'round' }, bk);
+  const ground = S('g', {}, svg); S('line', { x1: 0, y1: GROUND + 2, x2: 260, y2: GROUND + 2, stroke: 'var(--line-strong)', 'stroke-width': 2 }, ground);
+  const dashes = []; for (let i = 0; i < 9; i++) dashes.push(S('line', { y1: GROUND + 11, y2: GROUND + 11, stroke: 'var(--line)', 'stroke-width': 2, 'stroke-linecap': 'round' }, ground));
+  const bikeG = S('g', {}, svg), far = S('g', { opacity: 0.5 }, svg), body = S('g', {}, svg);
+  const line = (parent, w, color) => S('polyline', { fill: 'none', stroke: color || 'var(--accent)', 'stroke-width': w, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }, parent);
+  const farLeg = line(far, 8), farArm = line(far, 6.5), torso = line(body, 10), nearLeg = line(body, 8), nearArm = line(body, 6.5), head = S('circle', { r: 12, fill: 'var(--accent-2)' }, body);
+  const isBike = profile.gait === 'bike';
+  // bicycle (drawn once; wheels and crank are redrawn each frame)
+  const R = [60, GROUND - 36], F = [188, GROUND - 36], BB = [112, GROUND - 32], SEAT = [100, GROUND - 76], HT = [170, GROUND - 70], GRIP = [182, GROUND - 82], CR = 17, WR = 36;
+  let wheels = [], crank = null, pedals = [];
+  if (isBike) {
+    const ink = 'var(--ink-dim)';
+    const frame = S('g', { fill: 'none', stroke: 'var(--ink)', 'stroke-width': 4, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }, bikeG);
+    S('polyline', { points: [R, BB, HT, SEAT, BB].map((q) => pt(...q)).join(' ') }, frame); S('polyline', { points: [R, SEAT].map((q) => pt(...q)).join(' ') }, frame);
+    S('polyline', { points: [HT, F].map((q) => pt(...q)).join(' ') }, frame); S('polyline', { points: [HT, [HT[0] + 5, HT[1] - 14], GRIP].map((q) => pt(...q)).join(' ') }, frame);
+    S('line', { x1: SEAT[0] - 9, y1: SEAT[1] - 3, x2: SEAT[0] + 9, y2: SEAT[1] - 3, stroke: 'var(--ink)', 'stroke-width': 6, 'stroke-linecap': 'round' }, bikeG);
+    wheels = [R, F].map((c) => { const g = S('g', {}, bikeG); S('circle', { cx: c[0], cy: c[1], r: WR, fill: 'none', stroke: ink, 'stroke-width': 4 }, g); const sp = []; for (let i = 0; i < 6; i++) sp.push(S('line', { stroke: ink, 'stroke-width': 1.6 }, g)); S('circle', { cx: c[0], cy: c[1], r: 4, fill: ink }, g); return { c, sp }; });
+    crank = S('line', { stroke: 'var(--ink)', 'stroke-width': 4, 'stroke-linecap': 'round' }, bikeG);
+    pedals = [S('line', { stroke: 'var(--ink)', 'stroke-width': 5, 'stroke-linecap': 'round' }, bikeG), S('line', { stroke: 'var(--ink)', 'stroke-width': 5, 'stroke-linecap': 'round' }, bikeG)];
   }
-  limb('arm a1', 0, 14, 28, 22, 0); limb('arm a2', 0, 14, 28, 22, profile.per / -2);
-  limb('leg l1', 0, 64, 40, 30, 0); limb('leg l2', 0, 64, 40, 30, profile.per / -2);
+  const foot = (ank, ang, dir = 1) => [ank[0] + dir * 11 * Math.cos(ang), ank[1] + 11 * Math.sin(ang)];
+
+  function pose(t) {
+    const phi = 2 * Math.PI * profile.f * t;
+    if (isBike) {
+      const HIP = [SEAT[0] - 6, SEAT[1] - 8], SH = [HIP[0] + 56 * Math.sin(40 * RAD), HIP[1] - 56 * Math.cos(40 * RAD) + 2];
+      const al = phi, P = [[BB[0] + CR * Math.cos(al), BB[1] + CR * Math.sin(al)], [BB[0] - CR * Math.cos(al), BB[1] - CR * Math.sin(al)]];
+      crank.setAttribute('x1', P[0][0]); crank.setAttribute('y1', P[0][1]); crank.setAttribute('x2', P[1][0]); crank.setAttribute('y2', P[1][1]);
+      P.forEach((q, i) => { pedals[i].setAttribute('x1', q[0] - 7); pedals[i].setAttribute('x2', q[0] + 7); pedals[i].setAttribute('y1', q[1]); pedals[i].setAttribute('y2', q[1]); });
+      const ang = phi * 2.3; // wheels turn faster than the crank (gearing)
+      wheels.forEach((w) => w.sp.forEach((l, i) => { const a = ang + i * Math.PI / 3; l.setAttribute('x1', w.c[0] - WR * 0.93 * Math.cos(a)); l.setAttribute('y1', w.c[1] - WR * 0.93 * Math.sin(a)); l.setAttribute('x2', w.c[0] + WR * 0.93 * Math.cos(a)); l.setAttribute('y2', w.c[1] + WR * 0.93 * Math.sin(a)); }));
+      const legPts = (pd) => { const ank = [pd[0] - 1, pd[1] - 3], knee = ik(HIP, ank, BL, BL, -1); return `${pt(...HIP)} ${pt(...knee)} ${pt(...ank)} ${pt(ank[0] + 11, ank[1] + 2)}`; };
+      farLeg.setAttribute('points', legPts(P[1])); nearLeg.setAttribute('points', legPts(P[0]));
+      const el = ik(SH, GRIP, 31, 31, 1), elbowFar = ik([SH[0] - 2, SH[1]], [GRIP[0] - 3, GRIP[1] + 1], 31, 31, 1);
+      nearArm.setAttribute('points', `${pt(...SH)} ${pt(...el)} ${pt(...GRIP)}`); farArm.setAttribute('points', `${pt(SH[0] - 2, SH[1])} ${pt(...elbowFar)} ${pt(GRIP[0] - 3, GRIP[1] + 1)}`);
+      torso.setAttribute('points', `${pt(...HIP)} ${pt(...SH)}`); head.setAttribute('cx', SH[0] + 8); head.setAttribute('cy', SH[1] - 14 + Math.sin(phi * 2) * 0.6);
+      const v = 2 * Math.PI * profile.f * 2.3 * WR * 0.9, spacing = 36; const off = (t * v) % spacing; dashes.forEach((d, i) => { const x = 260 - ((i * spacing + off) % (9 * spacing)); d.setAttribute('x1', x); d.setAttribute('x2', x + 18); });
+      return;
+    }
+    const { A, K, arm, elbow, lean } = profile, Ar = A * RAD, Kmin = 5 * RAD, Kamp = (K - 5) * RAD;
+    const leg = (ph) => { const th = Ar * Math.sin(ph), kn = Kmin + Kamp * Math.pow(0.5 + 0.5 * Math.cos(ph - 0.35), 2); return { th, kn, ankY: L1 * Math.cos(th) + L2 * Math.cos(th - kn) }; };
+    const a = leg(phi), b = leg(phi + Math.PI);
+    const hipY = GROUND - 4 - Math.max(a.ankY, b.ankY), hip = [130, hipY];
+    const drawLeg = (l, el) => { const knee = [hip[0] + L1 * Math.sin(l.th), hip[1] + L1 * Math.cos(l.th)], ank = [knee[0] + L2 * Math.sin(l.th - l.kn), knee[1] + L2 * Math.cos(l.th - l.kn)], ft = foot(ank, -0.3 * (l.th - l.kn)); el.setAttribute('points', `${pt(...hip)} ${pt(...knee)} ${pt(...ank)} ${pt(...ft)}`); };
+    drawLeg(a, nearLeg); drawLeg(b, farLeg);
+    const lr = lean * RAD, TL = 48, SH = [hip[0] + TL * Math.sin(lr), hip[1] - TL * Math.cos(lr)];
+    const drawArm = (ph, el) => { const th = -(arm * RAD) * Math.sin(ph), fl = elbow * RAD + (th > 0 ? th * 0.3 : 0), e = [SH[0] + U1 * Math.sin(th), SH[1] + U1 * Math.cos(th)], w = [e[0] + U2 * Math.sin(th + fl), e[1] + U2 * Math.cos(th + fl)]; el.setAttribute('points', `${pt(...SH)} ${pt(...e)} ${pt(...w)}`); };
+    drawArm(phi + Math.PI, nearArm); drawArm(phi, farArm);
+    torso.setAttribute('points', `${pt(...hip)} ${pt(...SH)}`); head.setAttribute('cx', SH[0] + 11 * Math.sin(lr + 0.25)); head.setAttribute('cy', SH[1] - 14 * Math.cos(lr) - 2);
+    const v = 2 * Math.PI * profile.f * (L1 + L2) * Ar * 0.95, spacing = 34, off = (t * v) % spacing; dashes.forEach((d, i) => { const x = 260 - ((i * spacing + off) % (9 * spacing)); d.setAttribute('x1', x); d.setAttribute('x2', x + 16); });
+  }
+  let raf = 0, t0 = 0, frames = 0, alive = true;
+  const calm = reducedMotion();
+  const tick = (now) => {
+    if (!alive) return; frames++;
+    if (frames > 3 && !svg.isConnected) { alive = false; return; }
+    if (!t0) t0 = now; pose((now - t0) / 1000); raf = requestAnimationFrame(tick);
+  };
+  pose(0.18); // a sensible still pose first (also used when motion is reduced)
+  if (!calm) raf = requestAnimationFrame(tick);
+  svg._stop = () => { alive = false; cancelAnimationFrame(raf); };
   return svg;
 }
 export function intensity(host, ctx) {
@@ -147,6 +207,7 @@ export function intensity(host, ctx) {
   const chips = h('div');
   function show(p) {
     cur = p; if (!sim.tried.includes(p.k)) sim.tried.push(p.k);
+    if (figBox.firstChild && figBox.firstChild._stop) figBox.firstChild._stop();
     figBox.replaceChildren(runner(p)); name.textContent = p.name; talk.replaceChildren(h('b', 'Talk test'), h('div.bubble.big', p.talk)); body.textContent = p.body;
     lungSvg.style.animationDuration = p.breath + 's'; heart.style.animationDuration = Math.max(.35, p.breath / 3.2) + 's';
     meter.querySelector('.needle').style.left = (p.rpe / 10) * 100 + '%'; meter.querySelector('.rpeval').textContent = `Effort: ${p.rpe} / 10`;
@@ -159,7 +220,7 @@ export function intensity(host, ctx) {
   host.append(h('div.sim.intensity', h('div.legend2', h('b', 'Effort scale (0 to 10):'), ' 0 = sitting, 10 = maximum effort. Light about 1 to 4, moderate about 5 to 6, vigorous about 7 to 8 and above.'), tabs,
     h('div.simgrid', h('div.panel.flat.figpanel', name, figBox, h('div.vitals', lung, h('div.heartbox', heart, h('small', 'Heart'))), body), h('div.panel.flat', talk, meter, chips))));
   show(PROFILES[0]);
-  return { destroy() {} };
+  return { destroy() { if (figBox.firstChild && figBox.firstChild._stop) figBox.firstChild._stop(); } };
 }
 
 // ================================================================================== Marketing Investigation (explore)
