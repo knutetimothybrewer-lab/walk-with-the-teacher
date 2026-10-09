@@ -94,7 +94,8 @@ Without this, students download a JSON file and hand it in. With it, each studen
 4. On the **ClassCodes** tab replace the sample codes (`QUEST1`, `QUEST2`) with your own, one per row. Codes are not case-sensitive. Write them on the board; do not post them ahead of time.
 5. In the Apps Script editor choose **Deploy -> New deployment -> Web app**. Set **Execute as: Me** and **Who has access: Anyone**. Deploy and copy the **Web app URL** (ends in `/exec`). If your school's Google domain blocks "Anyone," deploy from a personal Google account. Students never sign in to anything.
 6. Open `js/teacher-config.js`, uncomment or add `backend: { url: 'PASTE-THE-URL-HERE' },` inside `WWQ.applyConfig({ ... })`, commit and publish.
-7. **Test:** open the student link, enter one of your codes and a fake ID, finish (or use a test copy), submit, and check that a row appears on **Summary**. Then clear your test rows with **Wildcats Quest -> Wipe ALL results**.
+7. **See every submission inside the app (no need to open the Sheet).** Choose **Wildcats Quest -> Set teacher view passcode** and pick a passcode (8+ characters; not the teacher reset passcode). Then **Deploy -> Manage deployments -> pencil -> Version: New version -> Deploy** so the newest `Code.gs` is live. On the student page type the teacher code (`WALK-TEACHER`) in the **Class code** box and your passcode when asked: you get every submission with scores, a block and class filter, resubmissions you can accept with one click, what to reteach, and a CSV download. **Preview the assessment** opens the click-through teacher mode. Six wrong passcodes lock the view for ten minutes.
+8. **Test:** open the student link, enter one of your codes and a fake ID, finish (or use a test copy), submit, and check that a row appears on **Summary**. Then clear your test rows with **Wildcats Quest -> Wipe ALL results**.
 
 **What you get**
 

@@ -6,7 +6,7 @@ let fails = 0, passes = 0;
 const ok = (c, m) => { if (c) passes++; else { fails++; console.log('  FAIL:', m); } };
 
 function makeBackend() {
-  const sheets = new Map(), props = {};
+  const sheets = new Map(), props = {}, cache = new Map();
   class Range {
     constructor(sh, r, c, nr = 1, nc = 1) { Object.assign(this, { sh, r, c, nr, nc }); }
     getValues() { const o = []; for (let i = 0; i < this.nr; i++) { const row = []; for (let j = 0; j < this.nc; j++) { const v = (this.sh.cells[this.r - 1 + i] || [])[this.c - 1 + j]; row.push(v === undefined ? '' : v); } o.push(row); } return o; }
@@ -23,9 +23,10 @@ function makeBackend() {
     clear() { this.cells = []; } clearContents() { this.cells = []; } setFrozenRows() {}
   }
   const book = { getSheetByName: n => sheets.get(n) || null, insertSheet: n => { const s = new Sheet(n); sheets.set(n, s); return s; } };
-  const ctx = { SpreadsheetApp: { getActiveSpreadsheet: () => book }, ContentService: { createTextOutput: t => ({ t, setMimeType() { return this; } }), MimeType: { JSON: 'json' } },
+  const ctx = { SpreadsheetApp: { getActiveSpreadsheet: () => book, getUi: () => ({ alert: () => 'YES', ButtonSet: { YES_NO: 1 }, Button: { YES: 'YES' } }) }, ContentService: { createTextOutput: t => ({ t, setMimeType() { return this; } }), MimeType: { JSON: 'json' } },
     LockService: { getScriptLock: () => ({ waitLock() {}, releaseLock() {} }) },
-    PropertiesService: { getScriptProperties: () => ({ getProperty: k => props[k], setProperty: (k, v) => { props[k] = v; }, deleteAllProperties() { for (const k in props) delete props[k]; } }) }, console };
+    PropertiesService: { getScriptProperties: () => ({ getProperty: k => props[k], setProperty: (k, v) => { props[k] = v; }, deleteAllProperties() { for (const k in props) delete props[k]; }, getProperties: () => ({ ...props }), deleteProperty: k => { delete props[k]; } }) },
+    CacheService: { getScriptCache: () => ({ get: k => (cache.has(k) ? cache.get(k) : null), put: (k, v) => { cache.set(k, String(v)); }, remove: k => { cache.delete(k); } }) }, console };
   vm.createContext(ctx);
   vm.runInContext(fs.readFileSync(path.join(__dirname, '..', 'apps-script', 'Code.gs'), 'utf8'), ctx);
   vm.runInContext('ensureSheets_()', ctx);
@@ -105,5 +106,32 @@ function makeBackend() {
   console.log('== results screen wiring');
   const src = fs.readFileSync(path.join(__dirname, '..', 'js', 'shell.js'), 'utf8') + fs.readFileSync(path.join(__dirname, '..', 'js', 'views.js'), 'utf8');
   ok(/Sync\.queue/.test(src) && /syncCard/.test(src) && /classcode/.test(src), 'submit queues a send; results show a status card; setup has a class code field');
+
+  console.log('== teacher view (server side)');
+  const tcall = (over) => be.call(Object.assign({ action: 'teacher', op: 'dashboard' }, over));
+  const props = be.ctx.PropertiesService.getScriptProperties();
+  ok(tcall({ passcode: 'anything' }).reason === 'not-set', 'no passcode set yet: the teacher view refuses everyone');
+  props.setProperty('TEACHER_PASSCODE', 'correct-horse-9');
+  ok(tcall({ passcode: 'nope' }).reason === 'passcode' && tcall({}).reason === 'passcode', 'a wrong or missing passcode is refused');
+  const dash = tcall({ passcode: 'correct-horse-9' });
+  ok(dash.ok && dash.students.length === sum.getLastRow() - 1, 'the right passcode returns every Summary row (' + (dash.students && dash.students.length) + ')');
+  const s1 = dash.students.find(x => x.alias === 'Stu-01');
+  ok(s1 && typeof s1.percent === 'number' && s1.max > 0 && s1.missions.length === 7, 'a student row carries the score, points and 7 mission scores');
+  ok(dash.topics.length > 0 && dash.topics[0].pct <= dash.topics[dash.topics.length - 1].pct, 'topics are listed weakest first');
+  ok(dash.items.length > 0 && dash.items.length <= 15 && dash.resubs.length === 1, 'hardest items and the resubmission list are included');
+  ok(be.call({ action: 'start', student: { alias: 'walker-01', period: 'Block 6/7', code: 'quest1' } }).status === 'new', 'a new student can start');
+  be.call({ action: 'start', student: { alias: 'walker-01', period: 'Block 6/7', code: 'quest1' } });
+  const dash2 = tcall({ passcode: 'correct-horse-9' });
+  ok(dash2.sessions.length === 1 && dash2.sessions[0].alias === 'walker-01' && dash2.sessions[0].period === 'Block 6/7', 'a student who started but has not submitted is listed once as in progress');
+  ok(!dash2.sessions.some(x => x.alias === 'Stu-01' || x.alias === 'stu-01'), 'students who already submitted are not listed as in progress');
+  ok(tcall({ passcode: 'correct-horse-9', op: 'nonsense' }).reason === 'unknown-op', 'an unknown teacher operation is refused');
+  for (let i = 0; i < 6; i++) tcall({ passcode: 'bad' + i });
+  ok(tcall({ passcode: 'correct-horse-9' }).reason === 'locked-out', 'six wrong tries lock the teacher view, even for the right passcode');
+  be.ctx.CacheService.getScriptCache().remove('tfail');
+  const before = sum.getRange(2, 5, 1, 1).getValue(), rs = tcall({ passcode: 'correct-horse-9', op: 'resub', alias: 'stu-01' });
+  ok(rs.ok && sum.getRange(2, 5, 1, 1).getValue() !== before, 'using a resubmission from the teacher view swaps it onto Summary');
+  ok(tcall({ passcode: 'correct-horse-9', op: 'resub', alias: 'nobody' }).reason === 'not-found', 'a resubmission for an unknown student is reported, not applied');
+  be.ctx.wipeAll();
+  ok(props.getProperty('TEACHER_PASSCODE') === 'correct-horse-9' && sum.getLastRow() <= 1, 'wiping results keeps the teacher passcode');
   console.log(`\n${passes} passed, ${fails} failed`); process.exit(fails ? 1 : 0);
 })().catch(e => { console.log('  FAIL: threw', e && e.stack || e); console.log('0 passed, 1 failed'); process.exit(1); });

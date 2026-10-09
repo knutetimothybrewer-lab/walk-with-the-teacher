@@ -195,3 +195,35 @@ dialog.crisis h2 { color: #7a2f06; }
 .teacher-bar button, .teacher-bar select { min-height: 38px; }
 .teacher-bar select { border-radius: 99px; padding: 0 10px; }
 body:has(.teacher-bar) #foot { padding-bottom: 80px; }
+
+/* ---- Teacher Mode (in-app teacher view); uses the Trail's own colours ---- */
+.tm { max-width: 1100px; margin: 0 auto; padding: 8px 0 40px; }
+.tm-bar { display: flex; flex-wrap: wrap; gap: 12px; justify-content: space-between; align-items: center; background: var(--teal); color: #fff; border-radius: 16px; padding: 12px 20px; margin-bottom: 14px; box-shadow: var(--shadow); }
+.tm-tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+.tm-tab { font: inherit; font-weight: 800; cursor: pointer; min-height: 44px; padding: 8px 20px; border-radius: 999px; border: 2px solid transparent; background: var(--card); color: var(--navy); }
+.tm-tab:hover { border-color: var(--teal); }
+.tm-tab[aria-current="page"] { background: var(--teal); color: #fff; }
+.tm-controls { display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end; padding-top: 14px; padding-bottom: 14px; }
+.tm-field { display: flex; flex-direction: column; gap: 4px; font-size: .78rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-soft); }
+.tm-field.grow { flex: 1 1 180px; }
+.tm-field select, .tm-field input { font: inherit; font-weight: 600; text-transform: none; letter-spacing: 0; color: var(--ink); border: 2px solid var(--line); border-radius: 12px; padding: 8px 12px; min-height: 44px; background: #fff; }
+.tm-updated { margin-left: auto; color: var(--ink-soft); font-size: .88rem; }
+.tm-h1 { color: #fff; font-size: 2rem; margin: 6px 0 10px; }
+.tm-tiles { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); margin-bottom: 16px; }
+.tm-tile { background: var(--card); border-radius: 16px; padding: 12px 18px; box-shadow: var(--shadow); }
+.tm-label { font-size: .76rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-soft); }
+.tm-big { font-family: var(--font-head); font-size: 2.1rem; font-weight: 800; }
+.tm-note { font-size: .86rem; color: var(--ink-soft); }
+.tm-glance { display: grid; gap: 10px; }
+.tm-block { display: grid; grid-template-columns: 100px 1fr auto; gap: 12px; align-items: center; }
+.tm-track { display: flex; height: 30px; border-radius: 8px; background: #e3e6f3; overflow: hidden; align-items: center; color: var(--ink-soft); font-size: .9rem; }
+.tm-track > span { padding-left: 12px; }
+.tm-track i { display: block; height: 100%; }
+.tm-done { background: var(--good); } .tm-work { background: var(--teal); opacity: .6; }
+.tm-count { color: var(--ink-soft); font-size: .9rem; white-space: nowrap; }
+.tm-scroll { overflow-x: auto; margin-top: 8px; }
+.tm-table { border-collapse: collapse; width: 100%; background: #fff; }
+.tm-table th, .tm-table td { padding: 7px 8px; text-align: left; border-bottom: 1px solid var(--line); vertical-align: top; font-size: .94rem; }
+.tm-table th { background: #e8ebf7; white-space: nowrap; }
+.btn-primary.small, .btn-quiet.small { min-height: 34px; padding: 4px 14px; font-size: .9rem; }
+@media (max-width: 700px) { .tm .grid2 { grid-template-columns: 1fr; } .tm-block { grid-template-columns: 1fr; } .tm-updated { margin-left: 0; } }

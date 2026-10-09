@@ -17,7 +17,7 @@
 var VERSION = '1.0';
 var SHEETS = {
   summary: 'Summary', detail: 'Detail', items: 'Items', reteach: 'Reteach',
-  klass: 'Class', gradebook: 'Gradebook', archive: 'Archive', codes: 'ClassCodes', log: 'Log',
+  klass: 'Class', gradebook: 'Gradebook', archive: 'Archive', codes: 'ClassCodes', log: 'Log', started: 'Started',
 };
 // Keep these two lists in sync with the content files (content/index.js).
 var STATIONS = ['s1', 's2', 's3', 's4', 's5', 's6', 's7', 's8', 's9', 'capstone'];
@@ -33,6 +33,7 @@ var SUMMARY_FIXED = ['Timestamp', 'Last', 'First', 'Period', 'Class code', 'Perc
   'Total seconds', 'Active seconds', 'Skips', 'Help opens', 'Completion code', 'Code verified', 'Retake #'];
 var DETAIL_HEAD = ['Timestamp', 'Student key', 'Last', 'First', 'Period', 'Item', 'Station', 'Topic', 'Question (start)', 'Points',
   'Earned', 'Attempts', 'First attempt correct (1/0)', 'Skipped', 'First wrong answer'];
+var STARTED_HEAD = ['Started at', 'Student key', 'Last', 'First', 'Period', 'Class code'];
 var FLAG_BELOW = 0.4;   // flag items answered correctly on attempt 1 by fewer than 40%
 var FLAG_MIN_N = 3;     // ...once at least this many students have answered
 
@@ -103,7 +104,30 @@ function handleStart_(st) {
   if (!st || !st.first || !st.last || !st.period || !st.code) return { ok: false, reason: 'incomplete' };
   if (!codeOk_(st.code)) return { ok: false, reason: 'code' };
   var exists = findSummaryRow_(keyOf_(st)) > 0;
+  if (!exists) recordStart_(st);
   return { ok: true, status: exists ? 'duplicate' : 'new' };
+}
+
+/** Remember that a student began (for the in-app teacher view's registered / in-progress counts). Never blocks a student. */
+function recordStart_(st) {
+  try {
+    var lock = LockService.getScriptLock();
+    lock.waitLock(10000);
+    try {
+      var s = ss_().getSheetByName(SHEETS.started);
+      if (!s) { s = ss_().insertSheet(SHEETS.started); s.getRange(1, 1, 1, STARTED_HEAD.length).setValues([STARTED_HEAD]).setFontWeight('bold'); s.setFrozenRows(1); }
+      var key = keyOf_(st);
+      if (s.getLastRow() > 1) { var keys = s.getRange(2, 2, s.getLastRow() - 1, 1).getValues(); for (var i = 0; i < keys.length; i++) if (keys[i][0] === key) return; }
+      s.appendRow([new Date(), key, String(st.last).slice(0, 40), String(st.first).slice(0, 40), String(st.period).slice(0, 20), String(st.code).toUpperCase().slice(0, 40)]);
+    } finally { lock.releaseLock(); }
+  } catch (e) { log_('start', String(e)); }
+}
+
+function clearStart_(key) {
+  var s = ss_().getSheetByName(SHEETS.started);
+  if (!s || s.getLastRow() < 2) return;
+  var keys = s.getRange(2, 2, s.getLastRow() - 1, 1).getValues();
+  for (var i = keys.length - 1; i >= 0; i--) if (keys[i][0] === key) s.deleteRow(i + 2);
 }
 
 function handleSubmit_(p) {
@@ -152,8 +176,40 @@ function handleTeacher_(b) {
     }
     return { ok: true, students: out, codes: validCodes_().length };
   }
+  if (b.op === 'dashboard') { return dashboardData_(); }
   if (b.op === 'reset') { return { ok: resetStudent_(b.student), reason: '' }; }
   return { ok: false, reason: 'unknown-op' };
+}
+
+/** Everything the in-app teacher view shows: every finished student plus topic, station and question analysis. */
+function dashboardData_() {
+  var s = ss_().getSheetByName(SHEETS.summary), students = [];
+  if (s && s.getLastRow() > 1) {
+    var vals = s.getRange(2, 1, s.getLastRow() - 1, SUMMARY_FIXED.length).getValues();
+    vals.forEach(function (r) {
+      students.push({ when: r[0], last: r[1], first: r[2], period: r[3], code: r[4], percent: r[5], earned: r[6], possible: r[7],
+        totalSec: r[8], activeSec: r[9], skips: r[10], helpOpens: r[11], verified: r[13], retake: r[14] });
+    });
+  }
+  var done = {}, ssum = ss_().getSheetByName(SHEETS.summary);
+  if (ssum && ssum.getLastRow() > 1) ssum.getRange(2, summaryHeader_().length, ssum.getLastRow() - 1, 1).getValues().forEach(function (r) { done[r[0]] = 1; });
+  var sst = ss_().getSheetByName(SHEETS.started), sessions = [];
+  if (sst && sst.getLastRow() > 1) sst.getRange(2, 1, sst.getLastRow() - 1, STARTED_HEAD.length).getValues().forEach(function (r) {
+    if (!done[r[1]]) sessions.push({ started: r[0], last: r[2], first: r[3], period: r[4], code: r[5] });
+  });
+  var agg = aggregateDetail_();
+  var rate = function (o) { return o.n ? o.miss / o.n : 0; };
+  return {
+    ok: true, version: VERSION, students: students, sessions: sessions, codes: validCodes_().length,
+    topics: Object.keys(agg.topics).map(function (k) { return { name: TOPICS[k] || k, n: agg.topics[k].n, miss: agg.topics[k].miss, rate: rate(agg.topics[k]) }; })
+      .sort(function (a, b) { return b.rate - a.rate; }),
+    stations: Object.keys(agg.stations).map(function (k) { return { name: k, n: agg.stations[k].n, miss: agg.stations[k].miss, rate: rate(agg.stations[k]) }; })
+      .sort(function (a, b) { return b.rate - a.rate; }),
+    items: agg.list.filter(function (it) { return it.n > 0; })
+      .sort(function (a, b) { return a.firstPct - b.firstPct || b.n - a.n; }).slice(0, 15)
+      .map(function (it) { return { id: it.id, station: it.station, label: it.label, n: it.n, firstPct: it.firstPct, top: it.top, topCount: it.topCount,
+        flag: it.n >= FLAG_MIN_N && it.firstPct < FLAG_BELOW }; })
+  };
 }
 
 /**
@@ -175,6 +231,7 @@ function resetStudent_(st) {
       var keys = det.getRange(2, 2, det.getLastRow() - 1, 1).getValues();
       for (var i = keys.length - 1; i >= 0; i--) if (keys[i][0] === key) det.deleteRow(i + 2);
     }
+    clearStart_(key);
     log_('reset', key);
     rebuildReports_();
     return true;
@@ -198,6 +255,7 @@ function ensureSheets_() {
   make(SHEETS.detail, DETAIL_HEAD);
   make(SHEETS.archive, ['Reset at'].concat(summaryHeader_()));
   make(SHEETS.log, ['When', 'Kind', 'Message']);
+  make(SHEETS.started, STARTED_HEAD);
   var codes = make(SHEETS.codes, ['Class code (any capitalization)', 'Note (period, teacher...)']);
   if (codes.getLastRow() < 2) codes.getRange(2, 1, 4, 2).setValues([['TRAIL1', 'Period 1'], ['TRAIL2', 'Period 2'], ['TRAIL3', 'Period 3'], ['TRAIL4', 'Period 4']]);
   make(SHEETS.items, null); make(SHEETS.reteach, null); make(SHEETS.klass, null); make(SHEETS.gradebook, null);
@@ -241,7 +299,8 @@ function buildClassTab_() {
 
 /* -------------------------------------------------------- reports (rebuilt) */
 
-function rebuildReports_() {
+/** Question-level aggregates from the Detail tab (shared by the Items/Reteach tabs and the in-app teacher view). */
+function aggregateDetail_() {
   var det = ss_().getSheetByName(SHEETS.detail);
   var items = {};          // id -> aggregate
   var topics = {}, stations = {};
@@ -268,6 +327,11 @@ function rebuildReports_() {
     it.top = Object.keys(it.wrongs).sort(function (a, b) { return it.wrongs[b] - it.wrongs[a]; })[0] || '';
     it.topCount = it.top ? it.wrongs[it.top] : 0;
   });
+  return { list: list, topics: topics, stations: stations };
+}
+
+function rebuildReports_() {
+  var agg = aggregateDetail_(), list = agg.list, topics = agg.topics, stations = agg.stations;
 
   // ---- Items tab (item difficulty; the % columns are live formulas on Detail)
   var s = ss_().getSheetByName(SHEETS.items);
@@ -405,7 +469,7 @@ function menuWipe() {
   var ui = SpreadsheetApp.getUi();
   var r = ui.alert('Wipe ALL results?', 'This deletes every row on Summary, Detail, Items, Reteach and Archive. Class codes stay. This cannot be undone. Use it to clear pilot data.', ui.ButtonSet.YES_NO);
   if (r !== ui.Button.YES) return;
-  [SHEETS.summary, SHEETS.detail, SHEETS.archive].forEach(function (n) {
+  [SHEETS.summary, SHEETS.detail, SHEETS.archive, SHEETS.started].forEach(function (n) {
     var s = ss_().getSheetByName(n);
     if (s && s.getLastRow() > 1) s.deleteRows(2, s.getLastRow() - 1);
   });

@@ -119,6 +119,17 @@ test('teacher dashboard data requires the passcode and locks out after repeated 
   assert.equal(env.call({ action: 't_data', pass: env.props.TEACHER_PASSCODE }).error, 'locked-out');
 });
 
+test('teacher dashboard lists students who started but have not submitted (in progress)', () => {
+  const env = fresh();
+  assert.equal(env.call({ action: 'start', sid: 'W1', student: student('Wes', 'Working', 'Block 6/7'), stageIds: planOf(0).stageIds }).ok, true);
+  env.call(submission('T2', student('Ed', 'Done')));
+  const d = env.call({ action: 't_data', pass: env.props.TEACHER_PASSCODE });
+  assert.equal(d.ok, true);
+  const w = d.sessions.filter((x) => x.sid === 'W1');
+  assert.equal(w.length, 1); assert.equal(w[0].first, 'Wes'); assert.equal(w[0].block, 'Block 6/7');
+  assert.ok(!d.sessions.some((x) => x.sid === 'T2'), 'a submitted student is not listed as in progress');
+});
+
 test('DEMO DATA: 28 labelled records across all four blocks; delete removes only demo rows', () => {
   const env = fresh();
   env.call(submission('REAL1', student('Real', 'Student', 'Block 8/9')));

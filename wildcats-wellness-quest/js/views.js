@@ -91,7 +91,7 @@
     var begin = function () { st.student.alias = st.student.alias.trim(); st.student.code = (st.student.code || '').trim(); st.progress.started = true; if (!st.timing.startedAt) st.timing.startedAt = U.nowISO(); if (!st.timing.beganAt) st.timing.beganAt = U.nowISO(); env.save(true); W.App.go({ m: 0, s: '0.2' }); };
     var startBtn = UI.btn(started ? 'Continue to How it works' : 'Start my quest', { cls: 'primary big pulse', id: 'btn-start', icon: 'right', disabled: (aliasShort() || needsCode()) && !maybeTeacher(),
       onclick: function () {
-        if (maybeTeacher() && isTeacherCode(st.student.code)) { st.student.code = ''; W.Teacher.enter(); return; }
+        if (maybeTeacher() && isTeacherCode(st.student.code)) { st.student.code = ''; if (W.Sync.enabled() && W.TeacherView) W.TeacherView.open({ onPreview: W.Teacher.enter }); else W.Teacher.enter(); return; }
         if (aliasShort()) { codeMsg.textContent = 'Enter your alias or ID first.'; UI.announce(codeMsg.textContent); return; }
         if (!useCode || started) { begin(); return; }
         st.student.alias = st.student.alias.trim(); st.student.code = st.student.code.trim(); startBtn.disabled = true; codeMsg.textContent = 'Checking your class code\u2026';

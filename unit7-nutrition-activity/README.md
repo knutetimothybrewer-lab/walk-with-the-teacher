@@ -190,7 +190,7 @@ See [`docs/SECURITY.md`](docs/SECURITY.md) for details.
 ---
 
 ## Teacher analytics dashboard
-Open `.../unit7-nutrition-activity/teacher/` and enter the dashboard passcode. Students are never linked there, and the server returns data only for the correct passcode.
+Type the teacher code in the sign-in **Class code** box, then the dashboard passcode, to open it inside the app (or open `.../unit7-nutrition-activity/teacher/` directly). Students are never linked there, and the server returns data only for the correct passcode.
 
 * **View:** All Classes, Block 1/2, Block 3/4, Block 6/7, Block 8/9 (every number and chart updates).
 * **Overview cards:** students submitted, class average, median, highest, lowest, average completion time, number and percent demonstrating mastery, number and percent needing support.

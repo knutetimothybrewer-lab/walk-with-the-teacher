@@ -167,9 +167,16 @@ function screenEntry(message, kind = 'err') {
     e.preventDefault();
     const f = normName(first.value), l = normName(last.value), cd = code.value.trim(), bl = block.value;
     msg.style.color = '';
-    if (cd && hashOf('preview', cd) === CONFIG.previewPasscodeHash) { // teacher code: open the click-through walk-through
-      try { sessionStorage.setItem('u7.previewOK', '1'); } catch { /* ignore */ }
-      location.href = location.pathname + '?preview'; return;
+    if (cd && hashOf('preview', cd.toUpperCase()) === CONFIG.previewPasscodeHash) { // teacher code (any capitalisation): open the in-app teacher view
+      const openPreview = () => {
+        try { sessionStorage.setItem('u7.previewOK', '1'); } catch { /* ignore */ }
+        location.href = location.pathname + '?preview';
+      };
+      if (!document.querySelector('link[href$="css/teacher.css"]')) document.head.append(h('link', { rel: 'stylesheet', href: 'css/teacher.css' }));
+      const m = await import('./teacherview.js');
+      document.body.dataset.theme = 'results';
+      m.mountTeacher({ main: $main, dlg: document.getElementById('dlg'), toast, onPreview: openPreview, onExit: () => { document.body.dataset.theme = 'entry'; screenEntry(); } });
+      return;
     }
     if (!f) { msg.textContent = 'Please enter your first name.'; first.focus(); return; }
     if (!l) { msg.textContent = 'Please enter your last name.'; last.focus(); return; }

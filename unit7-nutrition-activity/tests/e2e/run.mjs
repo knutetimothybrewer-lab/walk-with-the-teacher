@@ -142,7 +142,7 @@ try {
     const bad = await newPage(); await bad.goto(BASE + '/index.html?preview'); await bad.fill('#pv-pass', 'wrong'); await bad.click('#pv-go'); ok('wrong preview passcode never opens Preview Mode', (await bad.locator('.pv-banner').count()) === 0 && (await bad.locator('#pv').count()) === 0); await bad.context().close(); }
 
   // ---- 5b. teacher code in the class-code box opens a click-through walk-through (no answering, nothing sent to the Sheet)
-  { const p = await newPage({ backend: true }); await p.goto(BASE + '/index.html'); await p.fill('#f-code', 'WALK-TEACHER'); await p.click('button[type=submit]'); await p.waitForSelector('.pv-banner');
+  { const p = await newPage({ backend: true }); await p.goto(BASE + '/index.html'); await p.fill('#f-code', 'WALK-TEACHER'); await p.click('button[type=submit]'); await p.click('text=Preview the assessment'); await p.waitForSelector('.pv-banner');
     let steps = 0; while (steps++ < 80) { const w = p.locator('.wipe'); if (await w.count()) await w.click().catch(() => {}); if (await p.locator('#final-btn').count()) break;
       const nxt = p.locator('button.btn.primary', { hasText: /Start Mission 1|Continue|Complete mission|Finish and review/ }); await nxt.first().waitFor({ timeout: 8000 }); await nxt.first().click(); await p.waitForTimeout(80); }
     ok('WALK-TEACHER in the class-code box lets the teacher click through every step without answering', steps > 40 && (await p.locator('#final-btn').count()) === 1, String(steps));
