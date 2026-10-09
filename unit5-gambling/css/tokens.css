@@ -1,0 +1,53 @@
+/* Design tokens. Each chapter has its own visual identity; the page background morphs between them. */
+@font-face { font-family: 'Fraunces'; src: url('../assets/fonts/fraunces-latin-600-normal.woff2') format('woff2'); font-weight: 600; font-display: swap; }
+@font-face { font-family: 'Fraunces'; src: url('../assets/fonts/fraunces-latin-800-normal.woff2') format('woff2'); font-weight: 800; font-display: swap; }
+@font-face { font-family: 'Atkinson Hyperlegible'; src: url('../assets/fonts/atkinson-hyperlegible-latin-400-normal.woff2') format('woff2'); font-weight: 400; font-display: swap; }
+@font-face { font-family: 'Atkinson Hyperlegible'; src: url('../assets/fonts/atkinson-hyperlegible-latin-700-normal.woff2') format('woff2'); font-weight: 700; font-display: swap; }
+@font-face { font-family: 'OpenDyslexic'; src: url('../assets/fonts/opendyslexic-latin-400-normal.woff2') format('woff2'); font-weight: 400; font-display: swap; }
+@font-face { font-family: 'OpenDyslexic'; src: url('../assets/fonts/opendyslexic-latin-700-normal.woff2') format('woff2'); font-weight: 700; font-display: swap; }
+
+/* Registered colour properties let the whole theme interpolate smoothly when the chapter changes. */
+@property --bg0 { syntax: '<color>'; inherits: true; initial-value: #0a1228; }
+@property --bg1 { syntax: '<color>'; inherits: true; initial-value: #172a55; }
+@property --accent { syntax: '<color>'; inherits: true; initial-value: #e7c25a; }
+@property --accent2 { syntax: '<color>'; inherits: true; initial-value: #7fa6ff; }
+@property --ink { syntax: '<color>'; inherits: true; initial-value: #f4f1e6; }
+@property --ink2 { syntax: '<color>'; inherits: true; initial-value: #c9cfdf; }
+@property --panel { syntax: '<color>'; inherits: true; initial-value: rgba(255,255,255,.07); }
+@property --panel2 { syntax: '<color>'; inherits: true; initial-value: rgba(255,255,255,.11); }
+@property --line { syntax: '<color>'; inherits: true; initial-value: rgba(255,255,255,.2); }
+
+:root {
+  --font-ui: 'Atkinson Hyperlegible', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-display: 'Fraunces', Georgia, 'Times New Roman', serif;
+  --fs: 17px;
+  --on-accent: #10131f;
+  --good: #5fe39b; --bad: #ff8d7d; --warn: #ffc857; --info: #8ec5ff;
+  --good-bg: rgba(95,227,155,.14); --bad-bg: rgba(255,141,125,.14); --warn-bg: rgba(255,200,87,.14);
+  --radius: 14px; --radius-sm: 9px;
+  --shadow: 0 10px 34px rgba(0,0,0,.28);
+  --focus: #ffe27a;
+  --ease: cubic-bezier(.2,.8,.2,1);
+  --bar-h: 60px;
+  color-scheme: dark;
+}
+/* ---- chapter identities ---- */
+body[data-ch="0"], body[data-ch="1"] { --bg0:#0a1228; --bg1:#172a55; --accent:#e7c25a; --accent2:#7fa6ff; --ink:#f4f1e6; --ink2:#c9cfdf; --on-accent:#171204; } /* navy and gold investigation */
+body[data-ch="2"] { --bg0:#04222a; --bg1:#0a4a5a; --accent:#35d6c4; --accent2:#5ab4ff; --ink:#eafcff; --ink2:#bde0e8; --on-accent:#022622; }          /* teal and blue laboratory */
+body[data-ch="3"] { --bg0:#140a2e; --bg1:#2f1768; --accent:#b79bff; --accent2:#6ee7ff; --ink:#f4efff; --ink2:#d0c4ee; --on-accent:#150a33; }          /* purple neuroscience */
+body[data-ch="4"] { --bg0:#0e1311; --bg1:#1c2a24; --accent:#3ddc84; --accent2:#9ae6b4; --ink:#ecf5ef; --ink2:#bdd0c4; --on-accent:#04180d; }          /* green and charcoal analytics */
+body[data-ch="5"] { --bg0:#fff4e6; --bg1:#ffd9ec; --accent:#c4125f; --accent2:#0b73c9; --ink:#241638; --ink2:#4b3a66; --on-accent:#ffffff;
+                    --panel: rgba(255,255,255,.78); --panel2: rgba(255,255,255,.95); --line: rgba(36,22,56,.2);
+                    --good:#0d7a3c; --bad:#b3261e; --warn:#8a5a00; --info:#0b5cab; --good-bg: rgba(13,122,60,.12); --bad-bg: rgba(179,38,30,.1); --warn-bg: rgba(138,90,0,.12);
+                    --focus:#0b3d91; --shadow: 0 10px 30px rgba(36,22,56,.14); color-scheme: light; }                                                  /* bright marketing studio */
+body[data-ch="6"] { --bg0:#06242b; --bg1:#0e4a50; --accent:#7fd8be; --accent2:#9bd1ff; --ink:#eaf7f5; --ink2:#bcd9d6; --on-accent:#04201a; }          /* calm decision studio */
+body[data-ch="7"] { --bg0:#0a1228; --bg1:#1d2f5e; --accent:#e7c25a; --accent2:#7fd8be; --ink:#f4f1e6; --ink2:#c9cfdf; --on-accent:#171204; }          /* results */
+body[data-ch="t"] { --bg0:#eef2f8; --bg1:#e1e9f5; --accent:#0b6e99; --accent2:#7a3e9d; --ink:#14213d; --ink2:#44526b; --on-accent:#ffffff;
+                    --panel: #ffffff; --panel2: #f6f8fc; --line: rgba(20,33,61,.18);
+                    --good:#0d7a3c; --bad:#b3261e; --warn:#8a5a00; --info:#0b5cab; --good-bg: rgba(13,122,60,.1); --bad-bg: rgba(179,38,30,.08); --warn-bg: rgba(138,90,0,.1);
+                    --focus:#0b3d91; --shadow: 0 6px 20px rgba(20,33,61,.1); color-scheme: light; }                                                  /* teacher mode */
+
+html[data-size="large"] { --fs: 19.5px; }
+html[data-font="dyslexic"] { --font-ui: 'OpenDyslexic', 'Atkinson Hyperlegible', sans-serif; }
+html[data-contrast="high"] body { --line: currentColor; --panel: rgba(0,0,0,.35); }
+html[data-contrast="high"] body[data-ch="5"], html[data-contrast="high"] body[data-ch="t"] { --panel: #ffffff; }
