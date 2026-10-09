@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="en" data-motion="auto" data-size="normal" data-font="default" data-contrast="normal">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Lab harness (development only)</title>
+<link rel="stylesheet" href="../../css/tokens.css"><link rel="stylesheet" href="../../css/base.css"><link rel="stylesheet" href="../../css/items.css"><link rel="stylesheet" href="../../css/sims.css"></head>
+<body data-ch="2"><div id="app" style="max-width:1000px;margin:1rem auto;padding:0 1rem"></div>
+<div id="live" class="sr-only" aria-live="polite"></div><div id="alert" class="sr-only" role="alert"></div>
+<script src="../../shared/core.js"></script><script src="../../shared/seeds.js"></script><script src="../../shared/data.js"></script>
+<script type="module">
+// Mounts one lab with a stand-in context so every lab can be exercised on its own (no server).  Development only.
+import { mountSim } from '../../js/sims/index.js';
+const id = new URLSearchParams(location.search).get('sim');
+window.__reports = {};
+document.body.dataset.ch = new URLSearchParams(location.search).get('ch') || '2';
+const labs = { coin: 1234567, house: 7654321, sports: 4242 };
+await mountSim(id, document.getElementById('app'), { labs, progress: {}, reduced: false, report(k, v) { window.__reports[k] = Math.max(window.__reports[k] || 0, v); } });
+window.__ready = true;
+</script></body></html>

@@ -333,7 +333,7 @@
 
   var api = {
     amProfit: amProfit, amDecimal: amDecimal, amImplied: amImplied, decToAmerican: decToAmerican, fmtAm: fmtAm, evPer1: evPer1, parlay: parlay,
-    TEAMS: TEAMS, HOME_EDGE: HOME_EDGE, MARGIN: MARGIN, modelP: modelP, SLATE: SLATE, teamName: function (id) { return byId[id].city + ' ' + byId[id].nick; }, team: function (id) { return byId[id]; },
+    TEAMS: TEAMS, HOME_EDGE: HOME_EDGE, MARGIN: MARGIN, modelP: modelP, price: priceSide, SLATE: SLATE, teamName: function (id) { return byId[id].city + ' ' + byId[id].nick; }, team: function (id) { return byId[id]; },
     STATION1: STATION1, STATION4: STATION4, stationEV: stationEV, ADS: ADS, SLOGANS: SLOGANS, POSTS: POSTS
   };
   if (typeof module === 'object' && module && module.exports) module.exports = api;
@@ -768,7 +768,7 @@
         startedAt: iso(s.startedAt), deadline: iso(deadlineOf(s)), timeLimitMin: LIMIT_MIN,
         position: s.position, unlockedThrough: unlockedThrough(s), items: items,
         progress: { done: tot.itemsDone, total: tot.itemsTotal, earned: tot.earned, possible: tot.possible },
-        labs: labSeeds(s), settings: settings(), final: s.status === 'final' ? finalPublic(s) : null,
+        labs: labSeeds(s), sims: s.sims || {}, settings: settings(), final: s.status === 'final' ? finalPublic(s) : null,
         resetCount: s.resetCount
       };
       return out;
@@ -1207,12 +1207,13 @@
     // ------------------------------------------------------------------------------------ teacher: content / key
     function answerKey(p) {
       var e = needTeacher(p); if (e) return e;
+      var ses = (p.preview && store.getPreview(PREVIEW_ID)) || { seed: p.seed || 'teacher-view' };      // preview: the SAME per-student numbers the preview session sees
       var chapters = bank.chapters.map(function (c) {
         return {
           id: c.id, title: c.title, subtitle: c.subtitle, minutes: c.minutes, points: chapPts[c.id],
           steps: c.steps.map(function (st) {
             if (st.kind !== 'item') return { kind: st.kind, id: st.id, title: st.title };
-            var it = G.instantiate(idx.items[st.id], { seed: p.seed || 'teacher-view' });
+            var it = G.instantiate(idx.items[st.id], ses);
             var pub = G.publicItem(it, 'teacher-view');
             var multi = it.parts.map(function (pp) { return { id: pp.id, lvl: pp.lvl, w: pp.w != null ? pp.w : 1 }; });
             return { kind: 'item', id: st.id, item: pub, key: G.formatKey(it), hints: it.hints || [], explain: it.explain || '', lo: it.lo || [], parts: multi, pts: it.pts, min: it.min, levels: it.parts.map(function (pp) { return pp.lvl; }), variant: typeof idx.items[st.id].def === 'function' };
@@ -1322,7 +1323,7 @@
       var e = needTeacher(p); if (e) return e;
       var t = reportTables(p.source === 'demo' ? 'demo' : 'real');
       var b = p.block && p.block !== 'all' ? t.blocks[p.block] : null;
-      return { ok: true, master: t.master, block: b, blocks: Object.keys(t.blocks), summary: t.summary, items: t.itemHeads };
+      return { ok: true, master: t.master, block: b, blocks: Object.keys(t.blocks), summary: t.summary, items: t.itemHeads, responses: p.responses ? t.responses : undefined };
     }
     function teacherPing(p) { var e = needTeacher(p); if (e) return e; return { ok: true, serverTime: iso(now()), timeLimitMin: LIMIT_MIN, blocks: U5.BLOCKS, outline: outline(), totalPts: totalPts, settings: settings(), items: idx.order.length }; }
 
@@ -1339,8 +1340,8 @@
       flushReports: flushReports, exportData: exportData
     };
     function handle(action, payload) {
-      var fn = ACTIONS[action];
-      if (!fn) return fail('BAD_ACTION', 'Unknown request.');
+      var fn = Object.prototype.hasOwnProperty.call(ACTIONS, action) ? ACTIONS[action] : null;     // own actions only (never '__proto__' or 'constructor')
+      if (typeof fn !== 'function') return fail('BAD_ACTION', 'Unknown request.');
       try { return fn(payload || {}); }
       catch (err) {
         var msg = String(err && err.message || err);

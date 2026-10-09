@@ -1,0 +1,77 @@
+/* ---------- Teacher Mode (light, calm, information-dense) ---------- */
+.t-banner { position: sticky; top: 0; z-index: 40; background: var(--accent); color: var(--on-accent); padding: .55rem 1.2rem; display: flex; align-items: center; }
+.t-banner .btn { background: #fff; color: #0b3b52; border-color: transparent; }
+.t-banner .btn-primary { background: #14213d; color: #fff; }
+.t-page { padding-top: 1rem; padding-bottom: 4rem; }
+.t-page h2 { font-family: var(--font-display); margin: .6rem 0 .4rem; }
+.t-page h3 { margin: .2rem 0 .5rem; font-size: 1.05rem; }
+.t-page h4 { margin: 1rem 0 .3rem; font-size: .95rem; }
+.t-page .panel, .t-host .panel { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: .9rem 1.1rem; box-shadow: var(--shadow); }
+.t-tabs { margin-bottom: 1rem; position: sticky; top: 46px; z-index: 30; background: var(--bg0); padding: .5rem 0; }
+.t-host:focus { outline: none; }
+.t-controls { display: flex; flex-wrap: wrap; gap: .6rem; align-items: flex-end; margin: .5rem 0 1rem; }
+.pv-f { display: flex; flex-direction: column; gap: .15rem; font-size: .78rem; font-weight: 700; color: var(--ink2); }
+.pv-f > span { text-transform: uppercase; letter-spacing: .05em; }
+.pv-f .input, .pv-f select { min-height: 38px; padding: .3rem .6rem; font-weight: 400; font-size: .92rem; color: var(--ink); }
+.pv-f.grow { flex: 1; min-width: 180px; }
+.check-line { display: inline-flex; align-items: center; gap: .4rem; font-size: .92rem; cursor: pointer; }
+.check-line input { width: 20px; height: 20px; accent-color: var(--accent); }
+.btn-danger-solid { background: var(--alarm); color: #fff; border-color: var(--alarm); }
+.t-page .stat-grid { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
+
+/* tables */
+.t-scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--radius-sm); background: var(--panel); }
+.t-table { border-collapse: collapse; width: 100%; font-size: .93rem; }
+.t-table th, .t-table td { padding: .5rem .7rem; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+.t-table thead th { background: var(--panel2); font-size: .78rem; text-transform: uppercase; letter-spacing: .05em; color: var(--ink2); position: sticky; top: 0; }
+.t-table tbody th { font-weight: 700; }
+.t-table td.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.t-table tr.near { background: var(--warn-bg); }
+.t-table tr.sel { background: color-mix(in srgb, var(--accent) 12%, transparent); }
+.t-table.small { font-size: .86rem; }
+.badge { display: inline-block; border-radius: 999px; padding: .1rem .6rem; font-size: .78rem; font-weight: 700; border: 1px solid var(--line); background: var(--panel2); }
+.badge.st-work { background: var(--good-bg); border-color: var(--good); color: var(--good); }
+.badge.st-done { background: color-mix(in srgb, var(--accent) 14%, transparent); border-color: var(--accent); color: var(--accent); }
+.badge.st-wait { color: var(--ink2); }
+.miniprog { display: inline-block; width: 70px; height: 8px; border-radius: 4px; background: var(--line); margin-right: .45rem; vertical-align: middle; overflow: hidden; }
+.miniprog > span { display: block; height: 100%; background: var(--accent); }
+
+/* block status bars */
+.blockrow { display: grid; grid-template-columns: 110px 1fr 100px; gap: .7rem; align-items: center; margin-bottom: .4rem; }
+.bname { font-weight: 700; }
+.segbar { display: flex; height: 26px; border-radius: 8px; overflow: hidden; background: var(--line); }
+.seg { display: grid; place-items: center; font-size: .78rem; font-weight: 700; color: #fff; min-width: 0; }
+.seg-done, .swatch.seg-done { background: #0b6e99; } .seg-auto, .swatch.seg-auto { background: #7a3e9d; } .seg-work, .swatch.seg-work { background: #0d7a3c; } .seg-wait, .swatch.seg-wait { background: #6b7a90; }
+.swatch { display: inline-block; width: 12px; height: 12px; border-radius: 3px; margin-right: .35rem; vertical-align: -1px; }
+
+/* preview toolbar (above the real student interface) */
+.pvbar { background: #14213d; color: #fff; padding: .55rem 1rem .7rem; border-bottom: 3px solid #ffc857; font-family: var(--font-ui); }
+.pvbar .pv-title { margin-bottom: .35rem; }
+.pvbar .pv-title strong { color: #ffc857; letter-spacing: .08em; }
+.pvbar .pv-row { display: flex; flex-wrap: wrap; gap: .5rem .8rem; align-items: flex-end; }
+.pvbar .pv-f { color: #cfd8ea; }
+.pvbar .input, .pvbar select { background: #fff; color: #14213d; border-color: #fff; min-height: 34px; padding: .2rem .5rem; font-size: .85rem; max-width: 230px; }
+.pvbar .btn { background: #fff; color: #14213d; border-color: #fff; }
+.pvbar .btn-primary { background: #ffc857; color: #14213d; border-color: #ffc857; }
+.pvbar .btn-danger { background: transparent; color: #ffb4aa; border-color: #ffb4aa; }
+.pvbar .check-line { color: #fff; }
+.pvbar .check-line input { accent-color: #ffc857; }
+#pvbar { position: sticky; top: var(--bar-h); z-index: 38; }
+
+/* answer-key panel under each question while previewing */
+.keypanel-wrap { margin-top: 1rem; }
+.hide-key .keypanel-wrap { display: none; }
+.keypanel, .keyitem { border: 2px dashed #ffc857; border-radius: var(--radius-sm); background: rgba(255, 200, 87, .1); padding: .5rem .9rem; margin: .5rem 0; }
+.keypanel > summary, .keyitem > summary { cursor: pointer; font-weight: 700; display: flex; gap: .6rem; align-items: center; justify-content: space-between; min-height: 40px; }
+.tag { font-size: .75rem; font-weight: 700; background: var(--panel2); border: 1px solid var(--line); border-radius: 999px; padding: .05rem .6rem; white-space: nowrap; }
+.kp-body h4 { margin: .7rem 0 .2rem; color: var(--accent); }
+.kp-key { margin: .2rem 0; padding: .35rem .6rem; background: var(--good-bg); border-left: 4px solid var(--good); border-radius: 4px; font-weight: 700; }
+.kp-lo { font-size: .88rem; }
+
+/* sources panel */
+.src { padding: .6rem 0 .8rem; border-bottom: 1px solid var(--line); } .src:last-child { border-bottom: 0; }
+.src-cite { font-weight: 700; margin: 0 0 .15rem; }
+.t-host a { color: var(--accent); word-break: break-word; }
+.t-page .notice { margin: .6rem 0; }
+@media (max-width: 760px) { .blockrow { grid-template-columns: 1fr; } .t-tabs { top: 0; position: static; } }
+@media (max-width: 700px) { .t-table { display: block; overflow-x: auto; max-width: 100%; } .t-banner { flex-wrap: wrap; } .pvbar .input, .pvbar select { max-width: 100%; } }

@@ -45,7 +45,7 @@ const { engine, store } = boot();
 setInterval(() => { try { engine.sweepExpired(); } catch (e) { /* ignore */ } }, 5000).unref();
 
 const MIME = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.mjs': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8', '.json': 'application/json', '.svg': 'image/svg+xml', '.woff2': 'font/woff2', '.png': 'image/png', '.ico': 'image/x-icon', '.md': 'text/plain; charset=utf-8' };
-const BLOCKED = /^\/(authoring|private|\.devdata|server|tools|tests|node_modules|\.git)(\/|$)/;
+const BLOCKED = /^\/(authoring|private|\.devdata|server|tools|tests(?!\/e2e\/sim-harness\.html)|node_modules|\.git)(\/|$)/;
 
 const server = http.createServer((req, res) => {
   const url = new URL(req.url, 'http://x');
@@ -59,6 +59,11 @@ const server = http.createServer((req, res) => {
         if (url.pathname === '/api') out = engine.handle(String(j.action || ''), j.payload || {});
         else if (url.pathname === '/dev/advance') { offset.ms += (Number(j.minutes) || 0) * 60000; store.onChange(); out = { ok: true, serverTime: new Date(now()).toISOString() }; }
         else if (url.pathname === '/dev/reset') { try { fs.rmSync(path.dirname(DATA), { recursive: true, force: true }); } catch (e) { /* ignore */ } out = { ok: true, note: 'restart the server to reload fresh state' }; }
+        else if (url.pathname === '/dev/solve') {      // tests only: the correct (or a wrong) response for one question in one student's session
+          const G = require('../server/grading.js'), sess = store.getSession(j.sessionId) || store.getPreview(j.sessionId), entry = sess && engine.index.items[j.itemId];
+          if (!entry) out = { ok: false, code: 'NOT_FOUND' };
+          else { const it = G.instantiate(entry, sess); out = { ok: true, response: j.mode === 'wrong' ? G.makeWrong(it, j.k || 1) : G.makeCorrect(it), pts: it.pts }; }
+        }
         else out = { ok: false, code: 'NOT_FOUND' };
       } catch (e) { out = { ok: false, code: 'BAD_REQUEST', message: String(e.message || e) }; }
       res.writeHead(200, { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' });

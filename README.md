@@ -6,6 +6,18 @@ Teacher walk through AI literacy (`index.html`).
 
 Every summative (`health-summative/`, `substance-use-summative/`, `unit7-nutrition-activity/`, `community-health-mission/`, `wildcats-wellness-quest/`) has a hard 90-minute limit counted from the moment the student starts. A countdown shows in the top bar (amber under 15 minutes, red under 5, with warnings at 15, 5 and 1), refreshing or reopening the page does not add time, and at zero the work so far is submitted and locked automatically; anything unanswered earns 0. Change or turn it off with `timeLimitMinutes` (`0` = off) in each app's `config.js` (`community-health-mission/server/grading.js` has `TIME_LIMIT_MIN`, enforced by the server; rebuild and redeploy `Code.gs` after changing it).
 
+## Gambling: Behind the Odds, Unit 5 summative (`unit5-gambling/`)
+
+A digital summative for the Grade 10 Gambling unit: six case files, six simulations whose results feed graded questions (probability lab, house edge, sports/parlay desk, neuroscience lab, ad investigation, healthy decisions), 32 scored questions / 100 points, three attempts per question (100/85/75%), hints and explanations, and a server-enforced 90-minute limit with automatic submission. Grading, the clock and the gradebook live in a Google Apps Script + Google Sheet that you own; the website is static (GitHub Pages) and runs on Chromebooks.
+
+Teacher Mode (type `WALK-TEACHER` in the class-code box, then your private password) gives a full preview with the answer key, a live class monitor, analytics, student resets (archived and audited), access-code management, a Sources and Research panel, and CSV/Excel export.
+
+**The answer key is not in this repository.** The question bank is kept encrypted (`unit5-gambling/vault/`) and delivered to you as a private `KeyData.gs` to paste into your Apps Script project.
+
+Start with `unit5-gambling/README.md` (step-by-step setup), then `docs/SECURITY.md`, `docs/TESTING.md` (what was and was not tested), `docs/SOURCES.md` and `docs/DISCREPANCIES.md`.
+
+Student link once GitHub Pages is on and the backend URL is set in `unit5-gambling/js/config.js`: `https://YOUR-USER.github.io/walk-with-the-teacher/unit5-gambling/`
+
 ## The Wildcat Wellness Trail: Mental Health Unit assessment (`health-summative/`)
 
 An animated, ~45-minute, self-grading summative assessment for the Mental Health unit (64 questions, 10 stations, a capstone, a final score page, and an optional Google Sheet backend with a "Reteach" tab). Static site, no build step, no trackers.

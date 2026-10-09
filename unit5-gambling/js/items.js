@@ -107,9 +107,9 @@ function mapDragWidget(part) {
     const sel = h('select', { class: 'input mini', 'aria-label': 'Place: ' + r.text.slice(0, 80) }, h('option', { value: '' }, 'Move to…'), part.options.map((o) => h('option', { value: o.id }, o.text)));
     sels[r.id] = sel;
     sel.addEventListener('change', () => { move(r.id, sel.value); });
-    const card = h('div', { class: 'dcard', tabindex: '0', role: 'button', 'aria-pressed': 'false', dataset: { row: r.id } }, h('div', { class: 'dtext' }, md(r.text)), sel);
+    // The card is a plain group (the <select> inside it is the keyboard and screen-reader control); mouse and touch can also tap-to-pick or drag.
+    const card = h('div', { class: 'dcard', role: 'group', dataset: { row: r.id } }, h('div', { class: 'dtext' }, md(r.text)), sel);
     card.addEventListener('click', (e) => { if (e.target === sel) return; picked = picked === r.id ? null : r.id; render(); });
-    card.addEventListener('keydown', (e) => { if ((e.key === 'Enter' || e.key === ' ') && e.target === card) { e.preventDefault(); picked = picked === r.id ? null : r.id; render(); } });
     card.addEventListener('pointerdown', (e) => startDrag(e, r.id, card));
     cards[r.id] = card;
   });
@@ -118,7 +118,7 @@ function mapDragWidget(part) {
     clear(tray); Object.values(buckets).forEach(clear);
     part.rows.forEach((r) => {
       const card = cards[r.id]; sels[r.id].value = place[r.id] || '';
-      card.setAttribute('aria-pressed', picked === r.id ? 'true' : 'false'); card.classList.toggle('picked', picked === r.id);
+      card.classList.toggle('picked', picked === r.id);
       (place[r.id] ? buckets[place[r.id]] : tray).append(card);
     });
     tray.classList.toggle('empty', !tray.childNodes.length);
@@ -142,12 +142,12 @@ function mapDragWidget(part) {
   }
   render();
   const el = h('fieldset', { class: 'part' }, h('legend', null, md(part.prompt || 'Sort each card.')),
-    h('p', { class: 'muted small' }, 'Drag a card into a category, or select a card and then a category. Every card also has a “Move to…” menu for keyboard use.'), tray, board);
+    h('p', { class: 'muted small' }, 'Drag a card into a category, or tap a card and then a category. Every card also has a “Move to…” menu, which is the way to answer with a keyboard.'), tray, board);
   return {
     el, kind: 'map',
     get: () => (part.rows.every((r) => place[r.id]) ? { m: Object.assign({}, place) } : null),
     set: (r) => { if (r && r.m) { Object.assign(place, r.m); render(); } },
-    disable: (b) => { el.classList.toggle('locked', b); Object.values(sels).forEach((s) => { s.disabled = b; }); Object.values(cards).forEach((c) => { c.tabIndex = b ? -1 : 0; }); },
+    disable: (b) => { el.classList.toggle('locked', b); Object.values(sels).forEach((s) => { s.disabled = b; }); },
     onChange: (cb) => listeners.push(cb)
   };
 }
@@ -227,7 +227,8 @@ export function renderItem(root, item, hooks) {
     renderBlocks(item.stim),
     item.prompt ? h('div', { class: 'prompt' }, md(item.prompt)) : null);
   const right = h('div', { class: 'item-right' }, widgets.map((x) => x.w.el), feedback, bar, hooks.extra ? hooks.extra(item) : null);
-  root.append(h('section', { class: 'item enter', 'aria-labelledby': 'step-title' }, h('div', { class: 'item-grid' }, left, right)));
+  const wide = item.parts.some((p) => p.type === 'map' && p.ui === 'drag');
+  root.append(h('section', { class: 'item enter', 'aria-labelledby': 'step-title', 'data-item': item.id }, h('div', { class: 'item-grid' + (wide ? ' wide' : '') }, left, right)));
 
   function setBusy(b) { btn.disabled = b || !complete(); btn.classList.toggle('busy', b); }
   function complete() { return widgets.every((x) => x.w.get()); }

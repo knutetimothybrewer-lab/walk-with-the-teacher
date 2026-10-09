@@ -110,7 +110,7 @@
 
   var api = {
     amProfit: amProfit, amDecimal: amDecimal, amImplied: amImplied, decToAmerican: decToAmerican, fmtAm: fmtAm, evPer1: evPer1, parlay: parlay,
-    TEAMS: TEAMS, HOME_EDGE: HOME_EDGE, MARGIN: MARGIN, modelP: modelP, SLATE: SLATE, teamName: function (id) { return byId[id].city + ' ' + byId[id].nick; }, team: function (id) { return byId[id]; },
+    TEAMS: TEAMS, HOME_EDGE: HOME_EDGE, MARGIN: MARGIN, modelP: modelP, price: priceSide, SLATE: SLATE, teamName: function (id) { return byId[id].city + ' ' + byId[id].nick; }, team: function (id) { return byId[id]; },
     STATION1: STATION1, STATION4: STATION4, stationEV: stationEV, ADS: ADS, SLOGANS: SLOGANS, POSTS: POSTS
   };
   if (typeof module === 'object' && module && module.exports) module.exports = api;

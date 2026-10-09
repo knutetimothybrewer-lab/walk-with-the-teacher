@@ -428,6 +428,40 @@ test('Preview Mode never touches real records and "Reset My Preview Progress" re
   assert.equal(t.store.d.dirty, false);
 });
 
+test('answer key: teacher-only, and in the preview it shows the preview session\'s own numbers', () => {
+  const t = setup(bank); const tok = t.teacher();
+  assert.equal(t.call('answerKey', {}).code, 'FORBIDDEN');
+  assert.equal(t.call('answerKey', { teacherToken: 'x'.repeat(40) }).code, 'FORBIDDEN');
+  const pv = t.call('previewStart', { teacherToken: tok });
+  const seed = t.store.getPreview('PV-MAIN').seed;
+  const mine = G.instantiate(t.engine.index.items['c2-num'], { seed });
+  const generic = t.call('answerKey', { teacherToken: tok });
+  const prev = t.call('answerKey', { teacherToken: tok, preview: true });
+  assert.ok(generic.ok && prev.ok);
+  const find = (r) => r.chapters.flatMap((c) => c.steps).find((x) => x.id === 'c2-num');
+  const wantText = G.formatKey(mine).map((x) => x.text).join('|');
+  assert.equal(find(prev).key.map((x) => x.text).join('|'), wantText, 'preview key matches the preview session numbers');
+  // the key payload names every part with its level and weight, and carries hints and an explanation
+  assert.ok(Array.isArray(find(prev).hints) && typeof find(prev).explain === 'string' && find(prev).parts.length >= 1 && find(prev).parts.every((p) => p.id && p.lvl !== undefined));
+  // the key is not part of what a student receives
+  const st = student(t); t.call('begin', { sessionId: st.sid, token: st.token });
+  const served = JSON.stringify(t.call('content', { sessionId: st.sid, token: st.token, chapter: 1 }));
+  assert.ok(!/"key"|"explain"|"hints"/.test(served), 'no key, hints or explanation in student content');
+  assert.equal(pv.ok, true);
+});
+
+test('exportData returns the Master and per-block tables, and the response log only when asked', () => {
+  const t = setup(bank); const tok = t.teacher();
+  assert.equal(t.call('exportData', {}).code, 'FORBIDDEN');
+  const st = student(t, { block: 'Block 3/4', code: CODES['Block 3/4'] }); t.call('begin', { sessionId: st.sid, token: st.token });
+  submit(t, st, 'c1-mc', correct(t, st, 'c1-mc'));
+  const a = t.call('exportData', { teacherToken: tok, block: 'Block 3/4' });
+  assert.ok(a.ok && a.master.rows.length === 1 && a.block.rows.length === 1 && a.responses === undefined);
+  const b = t.call('exportData', { teacherToken: tok, block: 'Block 3/4', responses: true });
+  assert.ok(b.responses.rows.length >= 1 && b.responses.head.includes('Fraction Correct'));
+  assert.equal(t.call('exportData', { teacherToken: tok, block: 'Block 1/2' }).block.rows.length, 0, 'other block tab holds only its own students');
+});
+
 test('fictional demo submissions are kept out of the real gradebook', () => {
   const t = setup(bank); const tok = t.teacher();
   const real = begun(t); submit(t, real, 'c1-mc', correct(t, real, 'c1-mc'));
@@ -497,4 +531,52 @@ test('students who are closed out mid-test (block closed) cannot start; those al
   const cfg = t.store.getConfig(); cfg.codes['Block 6/7'].open = false; t.store.saveConfig(cfg);
   assert.equal(t.call('begin', { sessionId: late.sid, token: late.token }).code, 'CLOSED');
   assert.ok(submit(t, early, 'c1-mc', correct(t, early, 'c1-mc')).ok);
+});
+
+// ---------------------------------------------------------------------------------------------------- hostile input
+test('malformed and hostile requests never crash the engine, never leak, and never change the gradebook', () => {
+  const t = setup(bank); const tok = t.teacher();
+  const st = student(t); t.call('begin', { sessionId: st.sid, token: st.token });
+  const before = JSON.stringify(t.store.getSession(st.sid));
+  const junk = [null, undefined, 0, -1, 1e308, NaN, '', ' ', 'a'.repeat(100000), [], [[]], {}, { __proto__: { admin: true } }, true, '\u0000', '<script>alert(1)</script>', '=HYPERLINK("http://x")', { constructor: 'x' }, ['x'], { a: { b: { c: {} } } }];
+  const actions = ['config', 'login', 'begin', 'submit', 'heartbeat', 'finalize', 'state', 'content', 'teacherLogin', 'teacherOverview', 'teacherAnalytics', 'teacherStudent', 'findStudent', 'resetStudent', 'moveBlock', 'finalizeNow', 'getConfig', 'saveConfig', 'generateCodes', 'testCode', 'answerKey', 'previewStart', 'previewReset', 'previewSetClock', 'previewScenario', 'generateDemo', 'testSheets', 'flushReports', 'exportData', 'nonsense', '__proto__', 'constructor'];
+  const fields = ['sessionId', 'token', 'teacherToken', 'itemId', 'response', 'requestId', 'studentId', 'block', 'code', 'firstName', 'lastName', 'password', 'chapter', 'query', 'codes', 'settings', 'seconds', 'mode', 'count', 'expectedAttempt', 'pos', 'sims', 'confirm'];
+  let n = 0;
+  for (const a of actions) {
+    for (const j of junk) {
+      let r;
+      assert.doesNotThrow(() => { r = t.call(a, j); }, `${a}(${typeof j}) threw`);
+      assert.ok(r && typeof r === 'object' && typeof r.ok === 'boolean', `${a} returned a non-object`);
+      n++;
+    }
+    for (const f of fields) for (const j of junk.slice(0, 12)) {
+      const payload = { [f]: j }; if (a !== 'config' && a !== 'login' && a !== 'teacherLogin') { payload.sessionId = payload.sessionId === undefined ? st.sid : payload.sessionId; }
+      let r; assert.doesNotThrow(() => { r = t.call(a, payload); }, `${a}.${f} threw`);
+      assert.ok(r && typeof r.ok === 'boolean');
+      if (r.ok && /teacher|answerKey|resetStudent|moveBlock|finalizeNow|getConfig|saveConfig|generateCodes|testCode|previewStart|previewReset|previewSetClock|previewScenario|generateDemo|testSheets|findStudent|exportData/.test(a) && a !== 'teacherLogin') assert.fail(`${a} succeeded for a caller with no valid teacher token (${f})`);
+      n++;
+    }
+  }
+  assert.ok(n > 1000);
+  // nothing above could award credit or finish the student
+  const after = t.store.getSession(st.sid);
+  assert.equal(after.status, 'active'); assert.equal(Object.keys(after.items).length, JSON.parse(before).items ? Object.keys(JSON.parse(before).items).length : 0);
+  // and the teacher token is still the only way in
+  assert.equal(t.call('answerKey', {}).code, 'FORBIDDEN');
+  assert.ok(t.call('answerKey', { teacherToken: tok }).ok);
+});
+
+test('answers cannot be sent for another student’s session, for a locked chapter, or with extra/prototype fields', () => {
+  const t = setup(bank);
+  const a = begun(t, { studentId: '111111', firstName: 'Ann', lastName: 'A' }), b = begun(t, { studentId: '222222', firstName: 'Bo', lastName: 'B' });
+  const resp = correct(t, a, 'c1-mc');
+  const wrongToken = t.call('submit', { sessionId: a.sid, token: b.token, itemId: 'c1-mc', response: resp, requestId: 'x-req-000000001', expectedAttempt: 1 });
+  assert.equal(wrongToken.ok, false);
+  const locked = t.call('submit', { sessionId: a.sid, token: a.token, itemId: 'c2-num', response: correct(t, a, 'c2-num'), requestId: 'x-req-000000002', expectedAttempt: 1 });
+  assert.equal(locked.code, 'LOCKED_CHAPTER');
+  const proto = JSON.parse('{"parts":{"p1":{"c":"x","__proto__":{"c":"y"}}},"__proto__":{"admin":true}}');
+  const r = t.call('submit', { sessionId: a.sid, token: a.token, itemId: 'c1-mc', response: proto, requestId: 'x-req-000000003', expectedAttempt: 1 });
+  assert.ok(r.ok === false || r.correct === false, 'prototype-pollution style payload gets no credit');
+  assert.equal({}.admin, undefined, 'Object.prototype was not polluted');
+  assert.equal(t.store.getSession(b.sid).items['c1-mc'], undefined, 'the other student’s record is untouched');
 });
