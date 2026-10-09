@@ -1,0 +1,642 @@
+{
+  "schema": 1,
+  "meta": {
+    "title": "Practice Run",
+    "subtitle": "Try the interface. Nothing here is recorded.",
+    "contentSet": "demo",
+    "version": "demo-1"
+  },
+  "objectives": {
+    "DEMO": {
+      "text": "Practice the interface.",
+      "basis": "standard"
+    }
+  },
+  "decisionModel": {
+    "name": "STOP",
+    "steps": [
+      {
+        "letter": "S",
+        "name": "State",
+        "text": "State the decision or problem."
+      },
+      {
+        "letter": "T",
+        "name": "Think",
+        "text": "Think of options."
+      },
+      {
+        "letter": "O",
+        "name": "Observe",
+        "text": "Observe the possible consequences."
+      },
+      {
+        "letter": "P",
+        "name": "Pick",
+        "text": "Pick a responsible choice and explain why."
+      }
+    ],
+    "note": "Practice only."
+  },
+  "figures": {
+    "demo-house": {
+      "src": "assets/fig-demo-house.svg",
+      "w": 420,
+      "h": 380,
+      "alt": "A simple house diagram with three numbered markers.",
+      "desc": "A house with a triangular roof, a door in the middle and a square window on the right. Marker 1 is at the upper left beside the roof. Marker 2 is at the lower left beside the door. Marker 3 is at the right beside the window.",
+      "markers": [
+        {
+          "id": "m1",
+          "n": 1,
+          "x": 60,
+          "y": 60
+        },
+        {
+          "id": "m2",
+          "n": 2,
+          "x": 60,
+          "y": 300
+        },
+        {
+          "id": "m3",
+          "n": 3,
+          "x": 360,
+          "y": 200
+        }
+      ]
+    }
+  },
+  "chapters": [
+    {
+      "id": "d1",
+      "n": 1,
+      "title": "Practice: label, sort, order",
+      "theme": "lab",
+      "intro": "Try the label, sort, and ordering tools. Everything here is practice.",
+      "targetMinutes": 5,
+      "units": [
+        {
+          "id": "d1-u1",
+          "title": "Label the house",
+          "intro": null,
+          "stimulus": [
+            {
+              "t": "p",
+              "text": "Match each label to a marker."
+            }
+          ],
+          "gate": null,
+          "readSecs": 0,
+          "items": [
+            {
+              "id": "D1-01",
+              "type": "assign",
+              "topic": "Practice labeling",
+              "prompt": "Match each label to the numbered marker. One label is not used.",
+              "points": 2,
+              "cog": "remember",
+              "obj": [
+                "DEMO"
+              ],
+              "secs": 60,
+              "unlockAfter": null,
+              "assign": {
+                "mode": "label",
+                "fill": "targets",
+                "figure": "demo-house",
+                "layout": null,
+                "pick": null,
+                "cards": [
+                  {
+                    "id": "c62429",
+                    "text": "Door"
+                  },
+                  {
+                    "id": "c6731f",
+                    "text": "Roof"
+                  },
+                  {
+                    "id": "c168f2",
+                    "text": "Window"
+                  },
+                  {
+                    "id": "c9e149",
+                    "text": "Chimney"
+                  }
+                ],
+                "targets": [
+                  {
+                    "id": "m1",
+                    "label": "Marker 1"
+                  },
+                  {
+                    "id": "m2",
+                    "label": "Marker 2"
+                  },
+                  {
+                    "id": "m3",
+                    "label": "Marker 3"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "d1-u2",
+          "title": "Sort the animals",
+          "intro": null,
+          "stimulus": [],
+          "gate": null,
+          "readSecs": 0,
+          "items": [
+            {
+              "id": "D1-02",
+              "type": "assign",
+              "topic": "Practice sorting",
+              "prompt": "Sort each animal into the right group.",
+              "points": 2,
+              "cog": "understand",
+              "obj": [
+                "DEMO"
+              ],
+              "secs": 60,
+              "unlockAfter": null,
+              "assign": {
+                "mode": "classify",
+                "fill": "cards",
+                "figure": null,
+                "layout": null,
+                "pick": null,
+                "cards": [
+                  {
+                    "id": "c85d06",
+                    "text": "Cat"
+                  },
+                  {
+                    "id": "ce1c2a",
+                    "text": "Penguin"
+                  },
+                  {
+                    "id": "c52525",
+                    "text": "Owl"
+                  },
+                  {
+                    "id": "cd8f43",
+                    "text": "Whale"
+                  },
+                  {
+                    "id": "c8f7e9",
+                    "text": "Eagle"
+                  },
+                  {
+                    "id": "c4eaa8",
+                    "text": "Dog"
+                  }
+                ],
+                "targets": [
+                  {
+                    "id": "g0bd22",
+                    "label": "Mammal"
+                  },
+                  {
+                    "id": "g3d1b2",
+                    "label": "Bird"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "d1-u3",
+          "title": "Put the steps in order",
+          "intro": null,
+          "stimulus": [],
+          "gate": null,
+          "readSecs": 0,
+          "items": [
+            {
+              "id": "D1-03",
+              "type": "order",
+              "topic": "Practice ordering",
+              "prompt": "Put the steps of washing hands in order.",
+              "points": 2,
+              "cog": "understand",
+              "obj": [
+                "DEMO"
+              ],
+              "secs": 50,
+              "unlockAfter": null,
+              "steps": [
+                {
+                  "id": "se6ba8",
+                  "text": "Wet your hands with clean water."
+                },
+                {
+                  "id": "sdb640",
+                  "text": "Dry with a clean towel."
+                },
+                {
+                  "id": "s3b5dd",
+                  "text": "Rinse your hands well."
+                },
+                {
+                  "id": "sc603c",
+                  "text": "Add soap and lather."
+                },
+                {
+                  "id": "s3303e",
+                  "text": "Scrub for at least 20 seconds."
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "d2",
+      "n": 2,
+      "title": "Practice: choices and numbers",
+      "theme": "studio",
+      "intro": "Try a story with scenes, a select-all question, and a chart question.",
+      "targetMinutes": 5,
+      "units": [
+        {
+          "id": "d2-u1",
+          "title": "A short story",
+          "intro": null,
+          "stimulus": [
+            {
+              "t": "note",
+              "tone": "fiction",
+              "text": "Fictional practice story."
+            }
+          ],
+          "gate": null,
+          "readSecs": 0,
+          "items": [
+            {
+              "id": "D2-01",
+              "type": "single",
+              "topic": "Practice single choice",
+              "prompt": "What is the best first step for Lee?",
+              "points": 2,
+              "cog": "apply",
+              "obj": [
+                "DEMO"
+              ],
+              "secs": 40,
+              "unlockAfter": null,
+              "scene": [
+                "Lee has a science test tomorrow. A friend texts, \"Come play a game tonight!\""
+              ],
+              "sceneTitle": "Scene 1",
+              "options": [
+                {
+                  "id": "o5ed94",
+                  "text": "Ignore the text and also ignore the test, then scroll for a while."
+                },
+                {
+                  "id": "oa431b",
+                  "text": "Pretend the phone is broken so there is no need to answer."
+                },
+                {
+                  "id": "o6f6ce",
+                  "text": "Decide how much study time Lee needs, then reply to the friend honestly."
+                },
+                {
+                  "id": "o30dd0",
+                  "text": "Say yes without thinking, then deal with the test later on."
+                },
+                {
+                  "id": "o09468",
+                  "text": "Wait until the morning to decide anything about the night."
+                }
+              ]
+            },
+            {
+              "id": "D2-02",
+              "type": "single",
+              "topic": "Practice a gated stage",
+              "prompt": "What should Lee do now?",
+              "points": 2,
+              "cog": "apply",
+              "obj": [
+                "DEMO"
+              ],
+              "secs": 40,
+              "unlockAfter": "D2-01",
+              "scene": [
+                "After studying, Lee feels ready and checks the phone again."
+              ],
+              "sceneTitle": "Scene 2",
+              "options": [
+                {
+                  "id": "o027ef",
+                  "text": "Study for three more hours, even though Lee feels ready."
+                },
+                {
+                  "id": "o8bbf8",
+                  "text": "Reply to the friend, then go to sleep on time."
+                },
+                {
+                  "id": "obffd5",
+                  "text": "Stay up all night gaming with the friend online."
+                },
+                {
+                  "id": "ob81af",
+                  "text": "Delete the chat so there is nothing left to answer."
+                },
+                {
+                  "id": "ocd326",
+                  "text": "Skip dinner, then keep working on the review sheet."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "d2-u2",
+          "title": "Select all that apply",
+          "intro": null,
+          "stimulus": [],
+          "gate": null,
+          "readSecs": 0,
+          "items": [
+            {
+              "id": "D2-03",
+              "type": "multi",
+              "topic": "Practice multi-select",
+              "prompt": "Select all the prime numbers.",
+              "points": 2,
+              "cog": "analyze",
+              "obj": [
+                "DEMO"
+              ],
+              "secs": 40,
+              "unlockAfter": null,
+              "options": [
+                {
+                  "id": "oebdd7",
+                  "text": "2"
+                },
+                {
+                  "id": "oa2188",
+                  "text": "3"
+                },
+                {
+                  "id": "o2f0e9",
+                  "text": "4"
+                },
+                {
+                  "id": "ob8af3",
+                  "text": "6"
+                },
+                {
+                  "id": "o08c39",
+                  "text": "9"
+                },
+                {
+                  "id": "o8a420",
+                  "text": "5"
+                },
+                {
+                  "id": "oc51e9",
+                  "text": "7"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "d2-u3",
+          "title": "Read a chart",
+          "intro": null,
+          "stimulus": [
+            {
+              "t": "note",
+              "tone": "fiction",
+              "text": "Fictional data for this activity."
+            },
+            {
+              "t": "chart",
+              "kind": "groupedBar",
+              "id": "demo-chart",
+              "title": "Steps per day (thousands)",
+              "note": "Fictional data for this activity",
+              "yLabel": "Thousands of steps",
+              "max": 12,
+              "categories": [
+                "Mon",
+                "Tue",
+                "Wed",
+                "Thu",
+                "Fri"
+              ],
+              "series": [
+                {
+                  "name": "Week 1",
+                  "values": [
+                    4,
+                    6,
+                    5,
+                    7,
+                    8
+                  ]
+                },
+                {
+                  "name": "Week 2",
+                  "values": [
+                    6,
+                    7,
+                    8,
+                    9,
+                    10
+                  ]
+                }
+              ],
+              "alt": "Grouped bars for Monday to Friday. Week 1: 4, 6, 5, 7, 8. Week 2: 6, 7, 8, 9, 10."
+            }
+          ],
+          "gate": null,
+          "readSecs": 0,
+          "items": [
+            {
+              "id": "D2-04",
+              "type": "numeric",
+              "topic": "Practice numeric answer",
+              "prompt": "How many more thousand steps were taken on Friday of Week 2 than on Monday of Week 1?",
+              "points": 2,
+              "cog": "analyze",
+              "obj": [
+                "DEMO"
+              ],
+              "secs": 50,
+              "unlockAfter": null,
+              "numeric": {
+                "unit": "thousand steps",
+                "range": [
+                  0,
+                  20
+                ],
+                "decimals": 0,
+                "label": "Difference"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "d3",
+      "n": 3,
+      "title": "Practice: evidence case",
+      "theme": "case",
+      "intro": "Open every document before the questions unlock.",
+      "targetMinutes": 4,
+      "units": [
+        {
+          "id": "d3-u1",
+          "title": "The notices",
+          "intro": null,
+          "stimulus": [
+            {
+              "t": "evidence",
+              "docs": [
+                {
+                  "id": "e1",
+                  "title": "Notice A",
+                  "kind": "sheet",
+                  "tag": "Practice document",
+                  "blocks": [
+                    {
+                      "t": "list",
+                      "items": [
+                        "Library hours: 9 to 5.",
+                        "Closed on holidays."
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "id": "e2",
+                  "title": "Notice B",
+                  "kind": "sheet",
+                  "tag": "Practice document",
+                  "blocks": [
+                    {
+                      "t": "list",
+                      "items": [
+                        "Gym hours: 3 to 6.",
+                        "Open every day."
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "gate": [
+            "e1",
+            "e2"
+          ],
+          "readSecs": 20,
+          "items": [
+            {
+              "id": "D3-01",
+              "type": "assign",
+              "topic": "Practice evidence sort",
+              "prompt": "Decide which statements the notices support.",
+              "points": 2,
+              "cog": "analyze",
+              "obj": [
+                "DEMO"
+              ],
+              "secs": 50,
+              "unlockAfter": null,
+              "assign": {
+                "mode": "classify",
+                "fill": "cards",
+                "figure": null,
+                "layout": null,
+                "pick": null,
+                "cards": [
+                  {
+                    "id": "ce6f20",
+                    "text": "The gym opens at 3."
+                  },
+                  {
+                    "id": "ce06be",
+                    "text": "The library is open on holidays."
+                  },
+                  {
+                    "id": "cc427a",
+                    "text": "The library opens at 9."
+                  },
+                  {
+                    "id": "c023dd",
+                    "text": "The gym closes at 6."
+                  },
+                  {
+                    "id": "c38e37",
+                    "text": "The gym is closed on weekends."
+                  }
+                ],
+                "targets": [
+                  {
+                    "id": "g9487e",
+                    "label": "Supported by the notices"
+                  },
+                  {
+                    "id": "g349c1",
+                    "label": "Not supported"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "D3-02",
+              "type": "single",
+              "topic": "Practice stage two",
+              "prompt": "Which hours are both places open at the same time on a regular weekday?",
+              "points": 2,
+              "cog": "evaluate",
+              "obj": [
+                "DEMO"
+              ],
+              "secs": 40,
+              "unlockAfter": "D3-01",
+              "options": [
+                {
+                  "id": "od7763",
+                  "text": "3 to 5"
+                },
+                {
+                  "id": "o65f90",
+                  "text": "6 to 9"
+                },
+                {
+                  "id": "oe2e8e",
+                  "text": "9 to 5"
+                },
+                {
+                  "id": "o182f1",
+                  "text": "9 to 3"
+                },
+                {
+                  "id": "ofa441",
+                  "text": "5 to 6"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "structureHash": "eb3f993bc740136db833833707b31f107fc095164039cd9581aa7ced3b81771d",
+  "points": 18
+}

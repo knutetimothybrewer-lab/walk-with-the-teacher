@@ -1,0 +1,3200 @@
+{
+  "schema": 1,
+  "meta": {
+    "title": "Life Decisions: The Health & Relationships Investigation",
+    "subtitle": "Unit 8 · Family Life & Sexuality",
+    "contentSet": "live",
+    "version": "2026-10-08.1"
+  },
+  "objectives": {
+    "FL1.1": {
+      "text": "Identify the major structures of the male and female reproductive systems.",
+      "basis": "district"
+    },
+    "FL1.2": {
+      "text": "Explain the functions of key reproductive organs (ovaries, testes, uterus, fallopian tubes), including ovulation.",
+      "basis": "district"
+    },
+    "FL1.3": {
+      "text": "Differentiate between methods of contraception: barrier, hormonal, and sterilization.",
+      "basis": "district"
+    },
+    "FL1.4": {
+      "text": "Describe the basic stages of pregnancy from conception to birth.",
+      "basis": "district"
+    },
+    "FL2.1": {
+      "text": "Define key terms related to family life and sexuality.",
+      "basis": "district"
+    },
+    "FL2.2": {
+      "text": "Identify factors that contribute to healthy family dynamics.",
+      "basis": "district"
+    },
+    "FL2.3": {
+      "text": "Analyze the impact of communication on family relationships.",
+      "basis": "district"
+    },
+    "FL2.4": {
+      "text": "Evaluate the importance of consent and healthy boundaries in relationships.",
+      "basis": "district"
+    },
+    "FL3.1": {
+      "text": "Identify and explain effective HIV prevention strategies.",
+      "basis": "district"
+    },
+    "FL3.2": {
+      "text": "Describe the advantages of practicing abstinence as a method of HIV prevention.",
+      "basis": "district"
+    },
+    "FL3.3": {
+      "text": "Evaluate the effectiveness of abstinence compared to other prevention strategies.",
+      "basis": "district"
+    },
+    "FL3.4": {
+      "text": "Apply knowledge of prevention strategies to real-life scenarios involving HIV risk.",
+      "basis": "district"
+    },
+    "STD3": {
+      "text": "Standard 3: access information, products, and services to enhance health.",
+      "basis": "standard"
+    },
+    "STD4": {
+      "text": "Standard 4: use interpersonal communication skills (including refusal and boundary-setting) to enhance health and avoid or reduce health risks.",
+      "basis": "standard"
+    },
+    "STD5": {
+      "text": "Standard 5: use decision-making skills to enhance health.",
+      "basis": "standard"
+    },
+    "STD8": {
+      "text": "Standard 8: advocate for personal, family, and community health.",
+      "basis": "standard"
+    },
+    "BP1": {
+      "text": "Describe the range of typical variation in the timing of puberty, and tell evidence-based statements from myths and values.",
+      "basis": "blueprint"
+    },
+    "BP2": {
+      "text": "Distinguish healthy, unhealthy, and controlling behaviors in relationships (text-thread analysis).",
+      "basis": "blueprint"
+    },
+    "BP3": {
+      "text": "Classify common STIs by cause and treatment, and explain why symptoms alone cannot show whether someone has an STI.",
+      "basis": "blueprint"
+    },
+    "BP4": {
+      "text": "Interpret data shown in a chart.",
+      "basis": "blueprint"
+    },
+    "BP5": {
+      "text": "Evaluate whether a health information source is credible.",
+      "basis": "blueprint"
+    },
+    "BP6": {
+      "text": "Integrate misinformation analysis, relationship dynamics, consent, the decision model, and resources in one case.",
+      "basis": "blueprint"
+    }
+  },
+  "decisionModel": {
+    "name": "STOP",
+    "steps": [
+      {
+        "letter": "S",
+        "name": "State",
+        "text": "State the decision or problem."
+      },
+      {
+        "letter": "T",
+        "name": "Think",
+        "text": "Think of options."
+      },
+      {
+        "letter": "O",
+        "name": "Observe",
+        "text": "Observe the possible consequences, right away and later."
+      },
+      {
+        "letter": "P",
+        "name": "Pick",
+        "text": "Pick a responsible, health-enhancing choice and explain why."
+      }
+    ],
+    "note": "These questions check how well the decision process is used. They never ask what you would do yourself."
+  },
+  "figures": {
+    "female-repro": {
+      "src": "assets/fig-female-repro.svg",
+      "w": 420,
+      "h": 380,
+      "alt": "Simplified front-view diagram of the female reproductive system with five numbered markers.",
+      "desc": "A simplified front view. In the center is a pear-shaped, muscular organ with a narrow neck at its lower end. A curved tube leaves each upper corner of that organ and reaches toward a small, almond-shaped organ on each side. Below the narrow neck, a tube leads downward. Marker 1 is above the pear-shaped organ. Marker 2 is beside the almond-shaped organ on the right side of the picture. Marker 3 is beside the tube that leads downward. Marker 4 is at the upper left, near one of the curved tubes. Marker 5 is beside the narrow neck.",
+      "markers": [
+        {
+          "id": "m1",
+          "n": 1,
+          "x": 210,
+          "y": 52
+        },
+        {
+          "id": "m2",
+          "n": 2,
+          "x": 375,
+          "y": 212
+        },
+        {
+          "id": "m3",
+          "n": 3,
+          "x": 268,
+          "y": 300
+        },
+        {
+          "id": "m4",
+          "n": 4,
+          "x": 44,
+          "y": 84
+        },
+        {
+          "id": "m5",
+          "n": 5,
+          "x": 268,
+          "y": 242
+        }
+      ]
+    },
+    "male-repro": {
+      "src": "assets/fig-male-repro.svg",
+      "w": 420,
+      "h": 380,
+      "alt": "Simplified side-view cross-section of the male reproductive system with five numbered markers.",
+      "desc": "A simplified side-view cross-section. A rounded sac sits at the top. Below it is a small, round gland. A narrow tube runs from the sac through the round gland and along the length of the long outer organ to its tip. In the pouch below, a large oval organ has a coiled tube resting along its back. A second narrow tube rises from the coiled tube, loops up behind the sac, and joins the first tube at the round gland. A small gland behind the sac is not marked. Marker 1 is at the lower left, beside the large oval organ. Marker 2 is at the lower right, beside the coiled tube. Marker 3 is at the right, beside the narrow tube that rises from the coiled tube. Marker 4 is at the upper left, beside the small round gland. Marker 5 is at the far left, beside the tube inside the long outer organ.",
+      "markers": [
+        {
+          "id": "m1",
+          "n": 1,
+          "x": 150,
+          "y": 300
+        },
+        {
+          "id": "m2",
+          "n": 2,
+          "x": 380,
+          "y": 304
+        },
+        {
+          "id": "m3",
+          "n": 3,
+          "x": 380,
+          "y": 190
+        },
+        {
+          "id": "m4",
+          "n": 4,
+          "x": 150,
+          "y": 112
+        },
+        {
+          "id": "m5",
+          "n": 5,
+          "x": 62,
+          "y": 168
+        }
+      ]
+    }
+  },
+  "chapters": [
+    {
+      "id": "c1",
+      "n": 1,
+      "title": "Puberty & Reproductive Health",
+      "theme": "lab",
+      "intro": "You will label diagrams, match structures to what they do, and sort statements into evidence, myth, and opinion. Everything here is about the body in general. No question asks about you.",
+      "targetMinutes": 8,
+      "units": [
+        {
+          "id": "c1-u1",
+          "title": "Structures of the female reproductive system",
+          "intro": null,
+          "stimulus": [
+            {
+              "t": "p",
+              "text": "Study the diagram. Each numbered marker points to one structure."
+            }
+          ],
+          "gate": null,
+          "readSecs": 0,
+          "items": [
+            {
+              "id": "C1-01",
+              "type": "assign",
+              "topic": "Label structures of the female reproductive system",
+              "prompt": "Match each label to the numbered marker on the diagram. Some labels are not used.",
+              "points": 2,
+              "cog": "remember",
+              "obj": [
+                "FL1.1"
+              ],
+              "secs": 70,
+              "unlockAfter": null,
+              "assign": {
+                "mode": "label",
+                "fill": "targets",
+                "figure": "female-repro",
+                "layout": null,
+                "pick": null,
+                "cards": [
+                  {
+                    "id": "c805d7",
+                    "text": "Fallopian tube"
+                  },
+                  {
+                    "id": "c0a121",
+                    "text": "Vagina"
+                  },
+                  {
+                    "id": "ce524e",
+                    "text": "Bladder"
+                  },
+                  {
+                    "id": "c06149",
+                    "text": "Ovary"
+                  },
+                  {
+                    "id": "cc8f1b",
+                    "text": "Cervix"
+                  },
+                  {
+                    "id": "c844e7",
+                    "text": "Uterus"
+                  },
+                  {
+                    "id": "c7faed",
+                    "text": "Prostate gland"
+                  }
+                ],
+                "targets": [
+                  {
+                    "id": "m1",
+                    "label": "Marker 1"
+                  },
+                  {
+                    "id": "m2",
+                    "label": "Marker 2"
+                  },
+                  {
+                    "id": "m3",
+                    "label": "Marker 3"
+                  },
+                  {
+                    "id": "m4",
+                    "label": "Marker 4"
+                  },
+                  {
+                    "id": "m5",
+                    "label": "Marker 5"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "c1-u2",
+          "title": "Structures of the male reproductive system",
+          "intro": null,
+          "stimulus": [
+            {
+              "t": "p",
+              "text": "This is a side-view cross-section, simplified. Each numbered marker points to one structure."
+            }
+          ],
+          "gate": null,
+          "readSecs": 0,
+          "items": [
+            {
+              "id": "C1-02",
+              "type": "assign",
+              "topic": "Label structures of the male reproductive system",
+              "prompt": "Match each label to the numbered marker on the diagram. Some labels are not used.",
+              "points": 2,
+              "cog": "remember",
+              "obj": [
+                "FL1.1"
+              ],
+              "secs": 70,
+              "unlockAfter": null,
+              "assign": {
+                "mode": "label",
+                "fill": "targets",
+                "figure": "male-repro",
+                "layout": null,
+                "pick": null,
+                "cards": [
+                  {
+                    "id": "ca6a05",
+                    "text": "Seminal vesicle"
+                  },
+                  {
+                    "id": "cd9b2b",
+                    "text": "Urethra"
+                  },
+                  {
+                    "id": "c0f713",
+                    "text": "Prostate gland"
+                  },
+                  {
+                    "id": "c4798a",
+                    "text": "Epididymis"
+                  },
+                  {
+                    "id": "c807e6",
+                    "text": "Testis"
+                  },
+                  {
+                    "id": "c6e4fd",
+                    "text": "Scrotum"
+                  },
+                  {
+                    "id": "cf4b01",
+                    "text": "Vas deferens"
+                  }
+                ],
+                "targets": [
+                  {
+                    "id": "m1",
+                    "label": "Marker 1"
+                  },
+                  {
+                    "id": "m2",
+                    "label": "Marker 2"
+                  },
+                  {
+                    "id": "m3",
+                    "label": "Marker 3"
+                  },
+                  {
+                    "id": "m4",
+                    "label": "Marker 4"
+                  },
+                  {
+                    "id": "m5",
+                    "label": "Marker 5"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "c1-u3",
+          "title": "Structure and function",
+          "intro": null,
+          "stimulus": [
+            {
+              "t": "p",
+              "text": "Each box describes what one structure does. Move a structure name into the box that describes its job. One name is not used."
+            }
+          ],
+          "gate": null,
+          "readSecs": 0,
+          "items": [
+            {
+              "id": "C1-03",
+              "type": "assign",
+              "topic": "Match reproductive organs to their functions",
+              "prompt": "Place each structure in the box that describes its function.",
+              "points": 2,
+              "cog": "understand",
+              "obj": [
+                "FL1.2"
+              ],
+              "secs": 80,
+              "unlockAfter": null,
+              "assign": {
+                "mode": "match",
+                "fill": "targets",
+                "figure": null,
+                "layout": null,
+                "pick": null,
+                "cards": [
+                  {
+                    "id": "c5d52a",
+                    "text": "Bladder"
+                  },
+                  {
+                    "id": "cf6d40",
+                    "text": "Fallopian tube"
+                  },
+                  {
+                    "id": "cab6d0",
+                    "text": "Vas deferens"
+                  },
+                  {
+                    "id": "c3d7f3",
+                    "text": "Uterus"
+                  },
+                  {
+                    "id": "cd7d50",
+                    "text": "Testis"
+                  },
+                  {
+                    "id": "c1e9cd",
+                    "text": "Prostate gland"
+                  },
+                  {
+                    "id": "c46d61",
+                    "text": "Ovary"
+                  }
+                ],
+                "targets": [
+                  {
+                    "id": "g933fc",
+                    "label": "Carries an egg toward the uterus; fertilization usually happens here"
+                  },
+                  {
+                    "id": "gfb035",
+                    "label": "Produces eggs and the hormones estrogen and progesterone"
+                  },
+                  {
+                    "id": "ge1d35",
+                    "label": "Where a fertilized egg attaches and a fetus develops"
+                  },
+                  {
+                    "id": "g76d74",
+                    "label": "Adds fluid to semen"
+                  },
+                  {
+                    "id": "g89ac5",
+                    "label": "Carries sperm from the epididymis toward the urethra"
+                  },
+                  {
+                    "id": "g40704",
+                    "label": "Produces sperm and the hormone testosterone"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "c1-u4",
+          "title": "From egg to birth",
+          "intro": null,
+          "stimulus": [
+            {
+              "t": "p",
+              "text": "These are the basic stages from the release of an egg to birth."
+            }
+          ],
+          "gate": null,
+          "readSecs": 0,
+          "items": [
+            {
+              "id": "C1-04",
+              "type": "order",
+              "topic": "Order the stages from ovulation to birth",
+              "prompt": "Put these stages in order, from first to last.",
+              "points": 2,
+              "cog": "understand",
+              "obj": [
+                "FL1.4",
+                "FL1.2"
+              ],
+              "secs": 70,
+              "unlockAfter": null,
+              "steps": [
+                {
+                  "id": "s3ee53",
+                  "text": "The fertilized egg divides as it travels toward the uterus."
+                },
+                {
+                  "id": "sd7ae4",
+                  "text": "An egg is released from an ovary (ovulation)."
+                },
+                {
+                  "id": "s255b8",
+                  "text": "The embryo develops into a fetus over the months of pregnancy."
+                },
+                {
+                  "id": "s8fff6",
+                  "text": "A sperm cell joins the egg in a fallopian tube (fertilization, also called conception)."
+                },
+                {
+                  "id": "s524d7",
+                  "text": "Birth."
+                },
+                {
+                  "id": "s6870f",
+                  "text": "The embryo attaches to the lining of the uterus (implantation)."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "c1-u5",
+          "title": "Evidence, myth, or value?",
+          "intro": null,
+          "stimulus": [
+            {
+              "t": "legend",
+              "title": "How to sort",
+              "rows": [
+                {
+                  "term": "Supported by evidence",
+                  "def": "Researchers or doctors can check it, and the evidence backs it up."
+                },
+                {
+                  "term": "Myth",
+                  "def": "A belief that sounds convincing, but the evidence does not support it."
+                },
+                {
+                  "term": "Value or opinion",
+                  "def": "Depends on what a person or family believes, so it cannot be proven true or false."
+                }
+              ]
+            }
+          ],
+          "gate": null,
+          "readSecs": 0,
+          "items": [
+            {
+              "id": "C1-05",
+              "type": "assign",
+              "topic": "Sort puberty statements: evidence, myth, or value",
+              "prompt": "Sort each statement into the group that fits it best.",
+              "points": 3,
+              "cog": "analyze",
+              "obj": [
+                "BP1"
+              ],
+              "secs": 110,
+              "unlockAfter": null,
+              "assign": {
+                "mode": "classify",
+                "fill": "cards",
+                "figure": null,
+                "layout": null,
+                "pick": null,
+                "cards": [
+                  {
+                    "id": "c3b870",
+                    "text": "A teen whose body changes later than their friends' must have something wrong."
+                  },
+                  {
+                    "id": "c46a6a",
+                    "text": "Hormones start the changes of puberty."
+                  },
+                  {
+                    "id": "c0b049",
+                    "text": "Acne happens only because someone does not wash their face enough."
+                  },
+                  {
+                    "id": "c253ae",
+                    "text": "Changing hormone levels can affect mood during puberty."
+                  },
+                  {
+                    "id": "c29d3b",
+                    "text": "Teens should wait until they are 16 to start dating."
+                  },
+                  {
+                    "id": "cab848",
+                    "text": "Shaving makes hair grow back thicker and darker."
+                  }
+                ],
+                "targets": [
+                  {
+                    "id": "g98baf",
+                    "label": "Supported by evidence"
+                  },
+                  {
+                    "id": "ga1cae",
+                    "label": "Myth"
+                  },
+                  {
+                    "id": "g08c40",
+                    "label": "Value or opinion"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "c1-u6",
+          "title": "Differences in the timing of puberty",
+          "intro": null,
+          "stimulus": [
+            {
+              "t": "note",
+              "tone": "fiction",
+              "text": "Fictional scenario. Maya, Dev, Kai, and Sam are four friends who are all 14."
+            },
+            {
+              "t": "p",
+              "text": "Maya started her period two years ago. Dev's voice has only just begun to change. Kai has grown several inches this year. Sam has not noticed many changes yet and feels worried about it."
+            }
+          ],
+          "gate": null,
+          "readSecs": 0,
+          "items": [
+            {
+              "id": "C1-06",
+              "type": "multi",
+              "topic": "Apply what is typical about the timing of puberty",
+              "prompt": "Which statements about the four friends are accurate? Select all that apply.",
+              "points": 2,
+              "cog": "apply",
+              "obj": [
+                "BP1"
+              ],
+              "secs": 80,
+              "unlockAfter": null,
+              "options": [
+                {
+                  "id": "ob5c6f",
+                  "text": "Sam's body is behind the others and is unlikely to catch up, so Sam may not finish going through puberty."
+                },
+                {
+                  "id": "od2b4f",
+                  "text": "The friend who started first will probably end up the tallest, since starting early usually means a taller adult."
+                },
+                {
+                  "id": "of5a27",
+                  "text": "Maya is more emotionally mature than her friends, because her body changed first and she is clearly ahead."
+                },
+                {
+                  "id": "oa5cbc",
+                  "text": "A wide range of timing is typical, so starting earlier or later than friends is usually not a problem."
+                },
+                {
+                  "id": "o446d1",
+                  "text": "Genes, overall health, and nutrition can all influence when puberty changes begin."
+                },
+                {
+                  "id": "o5c513",
+                  "text": "If Sam is worried, a parent or guardian, school nurse, or doctor can explain what is typical and check for any concern."
+                },
+                {
+                  "id": "ocf51b",
+                  "text": "Body changes should move at about the same speed for most people, so a slower pace is usually a sign of a problem."
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "c2",
+      "n": 2,
+      "title": "Healthy Relationships & Consent",
+      "theme": "studio",
+      "intro": "You will read fictional text threads, follow a story where people make choices about consent, and judge what a clear boundary sounds like. Every person in these scenes is fictional.",
+      "targetMinutes": 12,
+      "units": [
+        {
+          "id": "c2-u1",
+          "title": "Reading a text thread",
+          "intro": null,
+          "stimulus": [
+            {
+              "t": "note",
+              "tone": "fiction",
+              "text": "Fictional characters. Priya and Marcus have been dating for three months."
+            },
+            {
+              "t": "legend",
+              "title": "Use these meanings",
+              "rows": [
+                {
+                  "term": "Healthy",
+                  "def": "Respectful and honest. Each person can share feelings and make their own choices."
+                },
+                {
+                  "term": "Unhealthy",
+                  "def": "Disrespectful or hurtful: put-downs, broken trust, or ignoring someone's feelings."
+                },
+                {
+                  "term": "Controlling",
+                  "def": "Tries to control what the other person does, who they see, where they are, or what they share. Ultimatums and demanding to check in are examples."
+                }
+              ]
+            }
+          ],
+          "gate": null,
+          "readSecs": 0,
+          "items": [
+            {
+              "id": "C2-01",
+              "type": "assign",
+              "topic": "Tag each message in a dating thread: healthy, unhealthy, or controlling",
+              "prompt": "Tag each message that has a menu. Messages without a menu are there to give you the context.",
+              "points": 3,
+              "cog": "analyze",
+              "obj": [
+                "BP2",
+                "FL2.4"
+              ],
+              "secs": 110,
+              "unlockAfter": null,
+              "assign": {
+                "mode": "classify",
+                "fill": "cards",
+                "figure": null,
+                "layout": "thread",
+                "pick": null,
+                "cards": [
+                  {
+                    "id": "c76651",
+                    "text": "Good luck on your bio test tomorrow! Text me after if you want to talk about it.",
+                    "who": "m"
+                  },
+                  {
+                    "id": "ccbb35",
+                    "text": "Why are you always with Dana? Send me a pic right now so I know where you are.",
+                    "who": "m"
+                  },
+                  {
+                    "id": "cdfb19",
+                    "text": "Wow, you're so annoying when you do this.",
+                    "who": "m"
+                  },
+                  {
+                    "id": "c44559",
+                    "text": "I felt hurt when plans changed last week and you didn't tell me. Can we talk about it tomorrow?",
+                    "who": "p"
+                  },
+                  {
+                    "id": "c1491c",
+                    "text": "Whatever. I already told my friends what you said about your mom. It was funny, relax.",
+                    "who": "m"
+                  },
+                  {
+                    "id": "c933be",
+                    "text": "And if you hang out with Dana again, we're done.",
+                    "who": "m"
+                  }
+                ],
+                "targets": [
+                  {
+                    "id": "g7a449",
+                    "label": "Healthy"
+                  },
+                  {
+                    "id": "g5888e",
+                    "label": "Unhealthy"
+                  },
+                  {
+                    "id": "ge6a26",
+                    "label": "Controlling"
+                  }
+                ],
+                "people": [
+                  {
+                    "id": "m",
+                    "name": "Marcus",
+                    "side": "left"
+                  },
+                  {
+                    "id": "p",
+                    "name": "Priya",
+                    "side": "right"
+                  }
+                ],
+                "thread": [
+                  {
+                    "who": "m",
+                    "text": "Good luck on your bio test tomorrow! Text me after if you want to talk about it.",
+                    "id": "c76651"
+                  },
+                  {
+                    "who": "p",
+                    "text": "Thanks! I'm studying at Dana's tonight and I'll be home by 8."
+                  },
+                  {
+                    "who": "m",
+                    "text": "Why are you always with Dana? Send me a pic right now so I know where you are.",
+                    "id": "ccbb35"
+                  },
+                  {
+                    "who": "p",
+                    "text": "I'd rather not send a pic. I'll text you when I'm home."
+                  },
+                  {
+                    "who": "m",
+                    "text": "Wow, you're so annoying when you do this.",
+                    "id": "cdfb19"
+                  },
+                  {
+                    "who": "p",
+                    "text": "I felt hurt when plans changed last week and you didn't tell me. Can we talk about it tomorrow?",
+                    "id": "c44559"
+                  },
+                  {
+                    "who": "m",
+                    "text": "Whatever. I already told my friends what you said about your mom. It was funny, relax.",
+                    "id": "c1491c"
+                  },
+                  {
+                    "who": "m",
+                    "text": "And if you hang out with Dana again, we're done.",
+                    "id": "c933be"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "C2-02",
+              "type": "single",
+              "topic": "Choose the clearest, most respectful boundary reply",
+              "prompt": "Priya wants to answer Marcus's message: \"Why are you always with Dana? Send me a pic right now so I know where you are.\" Which reply sets the clearest boundary while staying respectful?",
+              "points": 2,
+              "cog": "evaluate",
+              "obj": [
+                "STD4",
+                "FL2.4"
+              ],
+              "secs": 70,
+              "unlockAfter": null,
+              "options": [
+                {
+                  "id": "oe0f0f",
+                  "text": "\"Sorry, I should have answered faster. Next time I'll text you the second I get anywhere, so you never have to ask again.\""
+                },
+                {
+                  "id": "o9a89f",
+                  "text": "\"I'm not comfortable sending photos of where I am. I'll text when I'm home, and I'm happy to talk about what's worrying you.\""
+                },
+                {
+                  "id": "o355e3",
+                  "text": "\"Fine, I'll send it this one time, but only because I'm busy. After tonight please don't ask me to do that again.\""
+                },
+                {
+                  "id": "o3c871",
+                  "text": "\"You're being a jerk and I'm tired of this. I'm done talking to you, and you can figure out where I am on your own.\""
+                },
+                {
+                  "id": "of73c2",
+                  "text": "\"Maybe? I don't know, I guess it's okay sometimes. Let me think about it and I'll tell you later, if you really need to know.\""
+                },
+                {
+                  "id": "oc39f5",
+                  "text": "\"Whatever, do what you want. I'm not going to argue about it, and I'm not going to answer any more questions tonight.\""
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "c2-u2",
+          "title": "A conversation at home",
+          "intro": null,
+          "stimulus": [
+            {
+              "t": "note",
+              "tone": "fiction",
+              "text": "Fictional characters. Mateo is 15. He and his mom are talking about plans for Saturday."
+            },
+            {
+              "t": "legend",
+              "title": "Use these meanings",
+              "rows": [
+                {
+                  "term": "Builds trust",
+                  "def": "Listens, shares feelings calmly, and invites more conversation."
+                },
+                {
+                  "term": "Shuts the conversation down",
+                  "def": "Ends or avoids the conversation without working anything out."
+                },
+                {
+                  "term": "Escalates the conflict",
+                  "def": "Attacks, exaggerates (\"always,\" \"never\"), or makes threats."
+                }
+              ]
+            }
+          ],
+          "gate": null,
+          "readSecs": 0,
+          "items": [
+            {
+              "id": "C2-03",
+              "type": "assign",
+              "topic": "Tag family messages by their effect on trust and communication",
+              "prompt": "Tag every message by the effect it is likely to have on the conversation.",
+              "points": 3,
+              "cog": "analyze",
+              "obj": [
+                "FL2.3",
+                "FL2.2"
+              ],
+              "secs": 110,
+              "unlockAfter": null,
+              "assign": {
+                "mode": "classify",
+                "fill": "cards",
+                "figure": null,
+                "layout": "thread",
+                "pick": null,
+                "cards": [
+                  {
+                    "id": "c8cca4",
+                    "text": "You're staying home Saturday. End of discussion.",
+                    "who": "mom"
+                  },
+                  {
+                    "id": "cec98e",
+                    "text": "You never let me do anything! You're the worst parent ever.",
+                    "who": "mat"
+                  },
+                  {
+                    "id": "c71576",
+                    "text": "You're grounded for a month for talking to me like that!",
+                    "who": "mom"
+                  },
+                  {
+                    "id": "cc0f38",
+                    "text": "Fine. Whatever. I'm not telling you anything anymore.",
+                    "who": "mat"
+                  },
+                  {
+                    "id": "c83ece",
+                    "text": "I'm sorry I snapped. I can tell you're upset. Tell me what's going on and I'll listen first.",
+                    "who": "mom"
+                  },
+                  {
+                    "id": "c31296",
+                    "text": "I felt left out when plans changed without asking me. Can we talk about Saturday tonight?",
+                    "who": "mat"
+                  }
+                ],
+                "targets": [
+                  {
+                    "id": "g09433",
+                    "label": "Builds trust"
+                  },
+                  {
+                    "id": "g13b58",
+                    "label": "Shuts the conversation down"
+                  },
+                  {
+                    "id": "g3699d",
+                    "label": "Escalates the conflict"
+                  }
+                ],
+                "people": [
+                  {
+                    "id": "mom",
+                    "name": "Mom",
+                    "side": "left"
+                  },
+                  {
+                    "id": "mat",
+                    "name": "Mateo",
+                    "side": "right"
+                  }
+                ],
+                "thread": [
+                  {
+                    "who": "mom",
+                    "text": "You're staying home Saturday. End of discussion.",
+                    "id": "c8cca4"
+                  },
+                  {
+                    "who": "mat",
+                    "text": "You never let me do anything! You're the worst parent ever.",
+                    "id": "cec98e"
+                  },
+                  {
+                    "who": "mom",
+                    "text": "You're grounded for a month for talking to me like that!",
+                    "id": "c71576"
+                  },
+                  {
+                    "who": "mat",
+                    "text": "Fine. Whatever. I'm not telling you anything anymore.",
+                    "id": "cc0f38"
+                  },
+                  {
+                    "who": "mom",
+                    "text": "I'm sorry I snapped. I can tell you're upset. Tell me what's going on and I'll listen first.",
+                    "id": "c83ece"
+                  },
+                  {
+                    "who": "mat",
+                    "text": "I felt left out when plans changed without asking me. Can we talk about Saturday tonight?",
+                    "id": "c31296"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "c2-u3",
+          "title": "A moment of choice",
+          "intro": null,
+          "stimulus": [
+            {
+              "t": "note",
+              "tone": "fiction",
+              "text": "Fictional story with three scenes. Riley and Sam have been dating for a month. Answer each scene. The next scene opens when you finish the one before."
+            }
+          ],
+          "gate": null,
+          "readSecs": 0,
+          "items": [
+            {
+              "id": "C2-04",
+              "type": "single",
+              "topic": "Interpret an unsure answer to a request",
+              "prompt": "What should Sam understand from Riley's answer?",
+              "points": 2,
+              "cog": "apply",
+              "obj": [
+                "FL2.4"
+              ],
+              "secs": 70,
+              "unlockAfter": null,
+              "scene": [
+                "After a movie on Saturday night, Riley and Sam stop outside Riley's front door.",
+                "Sam asks, \"Can I kiss you?\"",
+                "Riley looks away for a moment and says, \"Um... I don't know. Maybe not tonight.\""
+              ],
+              "sceneTitle": "Scene 1",
+              "options": [
+                {
+                  "id": "o7c122",
+                  "text": "Riley is playing hard to get, so Sam should joke around and keep trying until Riley relaxes."
+                },
+                {
+                  "id": "oe9b90",
+                  "text": "How Riley feels matters less than how Sam feels, so Sam should say how disappointed Sam is."
+                },
+                {
+                  "id": "o30d94",
+                  "text": "Riley has not said yes, so Sam should not kiss. Sam can say, \"Okay, thanks for telling me.\""
+                },
+                {
+                  "id": "oc196f",
+                  "text": "Riley did not say no, so Sam can go ahead, and Riley can always say stop if it is a problem."
+                },
+                {
+                  "id": "o254cb",
+                  "text": "Riley is probably just shy, so Sam should explain all the reasons a kiss would be a good idea."
+                },
+                {
+                  "id": "o5e559",
+                  "text": "\"Maybe\" means yes if Sam asks again in a sweeter way, so Sam should try once more with a smile."
+                }
+              ]
+            },
+            {
+              "id": "C2-05",
+              "type": "single",
+              "topic": "Analyze pressure: guilt, \"everyone does it,\" and a past yes",
+              "prompt": "Which statement best analyzes what Sam just did?",
+              "points": 3,
+              "cog": "analyze",
+              "obj": [
+                "FL2.4"
+              ],
+              "secs": 80,
+              "unlockAfter": "C2-04",
+              "scene": [
+                "Sam says, \"Okay.\" A minute later Sam adds:",
+                "\"Come on. You kissed me last week. Everyone does by now. Don't be weird about it.\""
+              ],
+              "sceneTitle": "Scene 2",
+              "options": [
+                {
+                  "id": "o02c9a",
+                  "text": "Sam is only joking around, so Riley should not take the comments seriously or let them change the evening."
+                },
+                {
+                  "id": "o41c09",
+                  "text": "Riley said yes last week, so Riley owes Sam another yes tonight, and saying no now would be very unfair to Sam."
+                },
+                {
+                  "id": "o5a360",
+                  "text": "Sam is being persistent in a romantic way, and that kind of effort shows how much Sam really cares about Riley right now."
+                },
+                {
+                  "id": "oc318d",
+                  "text": "Riley should say yes now to avoid an argument, since an argument would be worse for both of them than a kiss."
+                },
+                {
+                  "id": "o27b6d",
+                  "text": "Sam is using pressure (\"everyone does it,\" guilt, a past yes). None of it changes that Riley has not said yes now."
+                },
+                {
+                  "id": "oeb6bf",
+                  "text": "Pressure only counts when someone makes a threat to hurt you, and nobody has threatened Riley here at all."
+                }
+              ]
+            },
+            {
+              "id": "C2-06",
+              "type": "single",
+              "topic": "Respond when consent is withdrawn",
+              "prompt": "What should Sam do?",
+              "points": 3,
+              "cog": "apply",
+              "obj": [
+                "FL2.4"
+              ],
+              "secs": 80,
+              "unlockAfter": "C2-05",
+              "scene": [
+                "Two weeks later, Sam asks again about a kiss. This time Riley says, \"Yes, I'd like that.\"",
+                "A few seconds later, Riley pulls back and says, \"Wait. Stop.\""
+              ],
+              "sceneTitle": "Scene 3",
+              "options": [
+                {
+                  "id": "o65213",
+                  "text": "Say, \"You're ruining the moment,\" so that Riley knows how disappointed Sam is about stopping."
+                },
+                {
+                  "id": "od57c8",
+                  "text": "Slow down but keep going, since Riley said yes and slower should be enough to make Riley comfortable."
+                },
+                {
+                  "id": "o8e344",
+                  "text": "Finish the kiss, since Riley already said yes and it would be strange to stop partway through."
+                },
+                {
+                  "id": "o53af5",
+                  "text": "Wait a few seconds to see if Riley changes their mind back, then continue if Riley says nothing."
+                },
+                {
+                  "id": "o26d32",
+                  "text": "Stop right away, step back, and ask calmly how Riley is feeling and what Riley would like next."
+                },
+                {
+                  "id": "oe4ff3",
+                  "text": "Say, \"Why? You just said yes!\" and ask Riley to explain what changed so Sam can understand."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "c2-u4",
+          "title": "Key terms",
+          "intro": null,
+          "stimulus": [
+            {
+              "t": "p",
+              "text": "Place each term in the box that defines it. One term is not used."
+            }
+          ],
+          "gate": null,
+          "readSecs": 0,
+          "items": [
+            {
+              "id": "C2-07",
+              "type": "assign",
+              "topic": "Match key terms to their definitions",
+              "prompt": "Place each term in the box that defines it.",
+              "points": 2,
+              "cog": "understand",
+              "obj": [
+                "FL2.1"
+              ],
+              "secs": 90,
+              "unlockAfter": null,
+              "assign": {
+                "mode": "match",
+                "fill": "targets",
+                "figure": null,
+                "layout": null,
+                "pick": null,
+                "cards": [
+                  {
+                    "id": "c11784",
+                    "text": "Pressure"
+                  },
+                  {
+                    "id": "c30aec",
+                    "text": "Assertive communication"
+                  },
+                  {
+                    "id": "c3e6c5",
+                    "text": "Consent"
+                  },
+                  {
+                    "id": "c7003d",
+                    "text": "Personal boundary"
+                  },
+                  {
+                    "id": "c9fdb9",
+                    "text": "Passive communication"
+                  },
+                  {
+                    "id": "c39204",
+                    "text": "Trust"
+                  }
+                ],
+                "targets": [
+                  {
+                    "id": "g97d01",
+                    "label": "A clear, freely given yes that is informed, specific to the activity, and can be withdrawn at any time"
+                  },
+                  {
+                    "id": "g658ea",
+                    "label": "Confidence that someone will be honest and treat you with care, built over time through their actions"
+                  },
+                  {
+                    "id": "g57ecb",
+                    "label": "Using guilt, repeated asking, threats, or \"everyone does it\" to push someone to go along"
+                  },
+                  {
+                    "id": "gb15d6",
+                    "label": "Stating your needs and limits clearly and respectfully, without attacking or giving in"
+                  },
+                  {
+                    "id": "gec454",
+                    "label": "A limit a person sets about what they are and are not comfortable with"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "c2-u5",
+          "title": "Does this count as consent?",
+          "intro": null,
+          "stimulus": [
+            {
+              "t": "note",
+              "tone": "fiction",
+              "text": "Fictional situations. Decide whether each one counts as consent."
+            }
+          ],
+          "gate": null,
+          "readSecs": 0,
+          "items": [
+            {
+              "id": "C2-08",
+              "type": "assign",
+              "topic": "Decide which situations count as consent",
+              "prompt": "Sort each situation into the group that fits.",
+              "points": 2,
+              "cog": "apply",
+              "obj": [
+                "FL2.4"
+              ],
+              "secs": 110,
+              "unlockAfter": null,
+              "assign": {
+                "mode": "classify",
+                "fill": "cards",
+                "figure": null,
+                "layout": null,
+                "pick": null,
+                "cards": [
+                  {
+                    "id": "cff117",
+                    "text": "Riley says yes only after Sam says, \"If you really cared about me, you would.\""
+                  },
+                  {
+                    "id": "c3c21d",
+                    "text": "Sam asks about a kiss. Riley freely and clearly says, \"Yes, I'd like that.\""
+                  },
+                  {
+                    "id": "c8b46d",
+                    "text": "Riley has had so much alcohol that Riley can barely stand or speak clearly, and says, \"Sure.\""
+                  },
+                  {
+                    "id": "c06b82",
+                    "text": "Marcus asks, \"Want to hold hands?\" and Priya says, \"Yes.\""
+                  },
+                  {
+                    "id": "cf5f11",
+                    "text": "Kofi asks, \"Can I give you a hug?\" Amara smiles and says, \"Sure!\""
+                  },
+                  {
+                    "id": "cb7dca",
+                    "text": "Riley said yes last month, so Sam assumes the answer is still yes."
+                  },
+                  {
+                    "id": "c32d56",
+                    "text": "Riley is asleep and does not answer."
+                  },
+                  {
+                    "id": "ce13c2",
+                    "text": "Riley says no. Sam keeps asking until Riley finally says, \"Fine, okay.\""
+                  }
+                ],
+                "targets": [
+                  {
+                    "id": "g602b2",
+                    "label": "Counts as consent"
+                  },
+                  {
+                    "id": "gc5043",
+                    "label": "Does not count as consent"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "c3",
+      "n": 3,
+      "title": "STIs, HIV & Prevention",
+      "theme": "medlab",
+      "intro": "You will sort infections, separate HIV facts from myths, and compare ways of lowering risk. Careful wording matters here: \"eliminates\" and \"reduces\" mean different things.",
+      "targetMinutes": 12,
+      "units": [
+        {
+          "id": "c3-u1",
+          "title": "What causes common STIs?",
+          "intro": null,
+          "stimulus": [
+            {
+              "t": "p",
+              "text": "STI stands for sexually transmitted infection. STIs are caused by germs: some by bacteria and some by viruses."
+            }
+          ],
+          "gate": null,
+          "readSecs": 0,
+          "items": [
+            {
+              "id": "C3-01",
+              "type": "assign",
+              "topic": "Sort common STIs by cause: bacteria or virus",
+              "prompt": "Sort each infection by the type of germ that causes it.",
+              "points": 2,
+              "cog": "understand",
+              "obj": [
+                "BP3"
+              ],
+              "secs": 70,
+              "unlockAfter": null,
+              "assign": {
+                "mode": "classify",
+                "fill": "cards",
+                "figure": null,
+                "layout": null,
+                "pick": null,
+                "cards": [
+                  {
+                    "id": "c5734e",
+                    "text": "Hepatitis B"
+                  },
+                  {
+                    "id": "cab53d",
+                    "text": "Chlamydia"
+                  },
+                  {
+                    "id": "c69ce4",
+                    "text": "Syphilis"
+                  },
+                  {
+                    "id": "cacdaf",
+                    "text": "Genital herpes"
+                  },
+                  {
+                    "id": "c0253b",
+                    "text": "HIV"
+                  },
+                  {
+                    "id": "ccdafc",
+                    "text": "Gonorrhea"
+                  },
+                  {
+                    "id": "cc801e",
+                    "text": "HPV (human papillomavirus)"
+                  }
+                ],
+                "targets": [
+                  {
+                    "id": "g8989e",
+                    "label": "Caused by bacteria"
+                  },
+                  {
+                    "id": "g28896",
+                    "label": "Caused by a virus"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "c3-u2",
+          "title": "After a diagnosis",
+          "intro": null,
+          "stimulus": [
+            {
+              "t": "p",
+              "text": "Treatment depends on the type of germ."
+            }
+          ],
+          "gate": null,
+          "readSecs": 0,
+          "items": [
+            {
+              "id": "C3-02",
+              "type": "multi",
+              "topic": "Evaluate statements about STI treatment, cures, and HPV",
+              "prompt": "Which statements about STI treatment are accurate? Select all that apply.",
+              "points": 3,
+              "cog": "analyze",
+              "obj": [
+                "BP3",
+                "FL3.1"
+              ],
+              "secs": 110,
+              "unlockAfter": null,
+              "options": [
+                {
+                  "id": "o2544d",
+                  "text": "Over-the-counter medicine from a drugstore can cure most STIs, as long as the package says it treats infections."
+                },
+                {
+                  "id": "o8d234",
+                  "text": "Many HPV infections clear up on their own, and the HPV vaccine helps prevent infection with the types that cause most HPV cancers."
+                },
+                {
+                  "id": "o12ec6",
+                  "text": "If the symptoms go away, the STI is gone and no treatment is needed, since symptoms are how an infection shows itself."
+                },
+                {
+                  "id": "oa12b5",
+                  "text": "Antibiotics cure viral STIs such as HIV and herpes, as long as the whole course of pills is finished on time."
+                },
+                {
+                  "id": "oab4d8",
+                  "text": "HIV can be treated with daily medicine that keeps the amount of virus in the body very low, but HIV is not cured."
+                },
+                {
+                  "id": "o63de8",
+                  "text": "Bacterial STIs such as chlamydia, gonorrhea, and syphilis can generally be cured with antibiotics prescribed by a health professional."
+                },
+                {
+                  "id": "o4b7ca",
+                  "text": "Once a person has been treated for an STI, they are protected from getting it again, because the body becomes immune after treatment."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "c3-u3",
+          "title": "Symptoms and testing",
+          "intro": null,
+          "stimulus": [
+            {
+              "t": "note",
+              "tone": "fiction",
+              "text": "Fictional scenario. Jordan feels completely fine. A recent partner tells Jordan that they tested positive for an STI."
+            }
+          ],
+          "gate": null,
+          "readSecs": 0,
+          "items": [
+            {
+              "id": "C3-03",
+              "type": "single",
+              "topic": "Choose the best next step and reasoning about STI testing",
+              "prompt": "What is the best next step for Jordan, and why?",
+              "points": 3,
+              "cog": "apply",
+              "obj": [
+                "BP3",
+                "FL3.4"
+              ],
+              "secs": 70,
+              "unlockAfter": null,
+              "options": [
+                {
+                  "id": "o7b679",
+                  "text": "Look for sores or discharge. If there are no visible signs, then there is no infection and so no reason to see a doctor or a clinic."
+                },
+                {
+                  "id": "o288c3",
+                  "text": "Take leftover antibiotics from a family member, just in case, so that any infection is already being treated if Jordan has one."
+                },
+                {
+                  "id": "o38e5b",
+                  "text": "Skip testing because a condom was used, which means the chance of having caught anything was too small to matter."
+                },
+                {
+                  "id": "od4a76",
+                  "text": "Contact a health professional or clinic about testing, since many STIs have no symptoms and only a test shows if someone has one."
+                },
+                {
+                  "id": "o4a1c8",
+                  "text": "Wait to see whether symptoms show up. If nothing appears over the next few weeks, there is nothing left to worry about."
+                },
+                {
+                  "id": "od5382",
+                  "text": "Assume the partner got it wrong, since Jordan feels very healthy and has not noticed anything unusual about their body at all."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "c3-u4",
+          "title": "How HIV does and does not spread",
+          "intro": null,
+          "stimulus": [
+            {
+              "t": "p",
+              "text": "HIV is a virus. Decide for each situation whether it can spread HIV. People living with HIV can be safe to hug, share food with, and sit beside."
+            }
+          ],
+          "gate": null,
+          "readSecs": 0,
+          "items": [
+            {
+              "id": "C3-04",
+              "type": "assign",
+              "topic": "Sort HIV transmission routes from everyday contact",
+              "prompt": "Sort each situation: can it spread HIV, or does it not spread HIV?",
+              "points": 3,
+              "cog": "apply",
+              "obj": [
+                "FL3.1",
+                "FL3.4"
+              ],
+              "secs": 100,
+              "unlockAfter": null,
+              "assign": {
+                "mode": "classify",
+                "fill": "cards",
+                "figure": null,
+                "layout": null,
+                "pick": null,
+                "cards": [
+                  {
+                    "id": "c2b39b",
+                    "text": "Sharing needles or syringes"
+                  },
+                  {
+                    "id": "c6f2fb",
+                    "text": "Contact with saliva (spit)"
+                  },
+                  {
+                    "id": "ca074a",
+                    "text": "Sharing a drinking glass or utensils"
+                  },
+                  {
+                    "id": "ce1d96",
+                    "text": "Contact with sweat"
+                  },
+                  {
+                    "id": "ca22f8",
+                    "text": "Hugging or shaking hands"
+                  },
+                  {
+                    "id": "c8b53e",
+                    "text": "From a parent living with HIV to a baby during pregnancy, birth, or breastfeeding, without treatment"
+                  },
+                  {
+                    "id": "c3c826",
+                    "text": "Using a toilet seat"
+                  },
+                  {
+                    "id": "c3e6f6",
+                    "text": "Mosquito or other insect bites"
+                  },
+                  {
+                    "id": "c3dbd3",
+                    "text": "Sex without a condom with a person living with HIV whose viral load is not undetectable"
+                  }
+                ],
+                "targets": [
+                  {
+                    "id": "g13473",
+                    "label": "Can spread HIV"
+                  },
+                  {
+                    "id": "ge6a04",
+                    "label": "Does not spread HIV"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "c3-u5",
+          "title": "Eliminate, reduce, or neither?",
+          "intro": null,
+          "stimulus": [
+            {
+              "t": "p",
+              "text": "Some choices remove a risk completely. Others only lower it. Some do not protect against a risk at all."
+            },
+            {
+              "t": "note",
+              "tone": "info",
+              "text": "Think about two risks: sexually transmitted infections (STIs) and pregnancy."
+            }
+          ],
+          "gate": null,
+          "readSecs": 0,
+          "items": [
+            {
+              "id": "C3-05",
+              "type": "assign",
+              "topic": "Compare abstinence, condoms, and other methods: eliminate vs. reduce",
+              "prompt": "Sort each method by how well it protects.",
+              "points": 3,
+              "cog": "analyze",
+              "obj": [
+                "FL3.3",
+                "FL3.1",
+                "FL1.3"
+              ],
+              "secs": 110,
+              "unlockAfter": null,
+              "assign": {
+                "mode": "classify",
+                "fill": "cards",
+                "figure": null,
+                "layout": null,
+                "pick": null,
+                "cards": [
+                  {
+                    "id": "c63aaf",
+                    "text": "Using an internal (female) condom correctly every time"
+                  },
+                  {
+                    "id": "c36767",
+                    "text": "Judging by how healthy a partner looks"
+                  },
+                  {
+                    "id": "c05e07",
+                    "text": "Vasectomy"
+                  },
+                  {
+                    "id": "c9948e",
+                    "text": "Birth control pills"
+                  },
+                  {
+                    "id": "c3e64c",
+                    "text": "Using an external (male) condom correctly every time"
+                  },
+                  {
+                    "id": "ccf398",
+                    "text": "Abstinence from sexual activity"
+                  }
+                ],
+                "targets": [
+                  {
+                    "id": "gebe9c",
+                    "label": "Eliminates the risk of an STI or pregnancy from sex when practiced every time"
+                  },
+                  {
+                    "id": "g4872f",
+                    "label": "Greatly reduces the risk of both STIs and pregnancy when used correctly every time, but does not eliminate it"
+                  },
+                  {
+                    "id": "gd5d9d",
+                    "label": "Helps prevent pregnancy but does not protect against STIs"
+                  },
+                  {
+                    "id": "gcb2fd",
+                    "label": "Does not reliably protect against STIs or pregnancy"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "c3-u6",
+          "title": "Methods of contraception",
+          "intro": null,
+          "stimulus": [
+            {
+              "t": "p",
+              "text": "Contraception means methods used to prevent pregnancy. They fall into groups based on how they work."
+            }
+          ],
+          "gate": null,
+          "readSecs": 0,
+          "items": [
+            {
+              "id": "C3-06",
+              "type": "assign",
+              "topic": "Sort contraception methods: barrier, hormonal, sterilization",
+              "prompt": "Sort each method into the group that describes how it works.",
+              "points": 2,
+              "cog": "understand",
+              "obj": [
+                "FL1.3"
+              ],
+              "secs": 80,
+              "unlockAfter": null,
+              "assign": {
+                "mode": "classify",
+                "fill": "cards",
+                "figure": null,
+                "layout": null,
+                "pick": null,
+                "cards": [
+                  {
+                    "id": "cfd574",
+                    "text": "Internal (female) condom"
+                  },
+                  {
+                    "id": "cd5ea1",
+                    "text": "Skin patch"
+                  },
+                  {
+                    "id": "ce8d98",
+                    "text": "External (male) condom"
+                  },
+                  {
+                    "id": "c6eb88",
+                    "text": "Vasectomy"
+                  },
+                  {
+                    "id": "c70e45",
+                    "text": "Hormone shot (injection)"
+                  },
+                  {
+                    "id": "c12099",
+                    "text": "Tubal ligation (\"tubes tied\")"
+                  },
+                  {
+                    "id": "c647c6",
+                    "text": "Birth control pill"
+                  }
+                ],
+                "targets": [
+                  {
+                    "id": "g3f59e",
+                    "label": "Barrier method"
+                  },
+                  {
+                    "id": "g1a02d",
+                    "label": "Hormonal method"
+                  },
+                  {
+                    "id": "g535d8",
+                    "label": "Sterilization"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "c3-u7",
+          "title": "Reading a chart",
+          "intro": null,
+          "stimulus": [
+            {
+              "t": "note",
+              "tone": "fiction",
+              "text": "Fictional data for this activity. 200 students answered five true-or-false questions before and after a health unit."
+            },
+            {
+              "t": "chart",
+              "kind": "groupedBar",
+              "id": "myth-chart",
+              "title": "Percent of students who correctly said each statement is FALSE",
+              "note": "Fictional data for this activity",
+              "yLabel": "Percent correct",
+              "max": 100,
+              "categories": [
+                "HIV spreads by sharing a drinking glass",
+                "You can get HIV from a toilet seat",
+                "Mosquito bites spread HIV",
+                "Hugging a person with HIV spreads it",
+                "A person who looks healthy cannot have an STI"
+              ],
+              "series": [
+                {
+                  "name": "Before the unit",
+                  "values": [
+                    62,
+                    55,
+                    48,
+                    71,
+                    40
+                  ]
+                },
+                {
+                  "name": "After the unit",
+                  "values": [
+                    88,
+                    84,
+                    81,
+                    93,
+                    77
+                  ]
+                }
+              ],
+              "alt": "Grouped bar chart with five pairs of bars. Before the unit, the percent correct was 62, 55, 48, 71, and 40. After the unit, it was 88, 84, 81, 93, and 77, in the same order as the statements."
+            }
+          ],
+          "gate": null,
+          "readSecs": 0,
+          "items": [
+            {
+              "id": "C3-07",
+              "type": "numeric",
+              "topic": "Interpret a before-and-after bar chart (percentage-point change)",
+              "prompt": "Find the statement with the lowest \"After the unit\" percent. By how many percentage points did the percent correct rise for that statement?",
+              "points": 2,
+              "cog": "analyze",
+              "obj": [
+                "BP4"
+              ],
+              "secs": 90,
+              "unlockAfter": null,
+              "numeric": {
+                "unit": "percentage points",
+                "range": [
+                  0,
+                  100
+                ],
+                "decimals": 0,
+                "label": "Rise (percentage points)"
+              }
+            }
+          ]
+        },
+        {
+          "id": "c3-u8",
+          "title": "Preventing HIV: evaluate the claims",
+          "intro": null,
+          "stimulus": [
+            {
+              "t": "p",
+              "text": "Read each claim about preventing HIV and decide whether it is accurate."
+            }
+          ],
+          "gate": null,
+          "readSecs": 0,
+          "items": [
+            {
+              "id": "C3-08",
+              "type": "multi",
+              "topic": "Evaluate claims about HIV prevention and treatment (U=U)",
+              "prompt": "Which statements about HIV prevention are accurate? Select all that apply.",
+              "points": 2,
+              "cog": "evaluate",
+              "obj": [
+                "FL3.1",
+                "FL3.3"
+              ],
+              "secs": 90,
+              "unlockAfter": null,
+              "options": [
+                {
+                  "id": "o90553",
+                  "text": "A person who feels healthy does not need to think about testing, since symptoms usually appear first."
+                },
+                {
+                  "id": "o846ff",
+                  "text": "A person living with HIV who takes medicine as prescribed and keeps an undetectable viral load does not pass HIV to a partner through sex."
+                },
+                {
+                  "id": "oecdb6",
+                  "text": "Not sharing needles or syringes prevents HIV from spreading by that route."
+                },
+                {
+                  "id": "oc29f4",
+                  "text": "Staying away from people living with HIV is necessary to prevent HIV from spreading, even through everyday contact."
+                },
+                {
+                  "id": "o310d5",
+                  "text": "Abstaining from sexual activity eliminates the chance of getting HIV through sex."
+                },
+                {
+                  "id": "o5142d",
+                  "text": "Abstaining from sex also protects against the ways HIV spreads outside of sex, such as sharing needles and syringes."
+                },
+                {
+                  "id": "oc7db2",
+                  "text": "Using a condom correctly every time greatly reduces, but does not eliminate, the chance of HIV spreading through sex."
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "c4",
+      "n": 4,
+      "title": "Abstinence & Decision-Making",
+      "theme": "paths",
+      "intro": "You will walk a fictional character through the STOP decision model, judge what a clear refusal sounds like, and check which advantages of abstinence are accurate. These questions look at how the process is used. They never ask what you would choose.",
+      "targetMinutes": 10,
+      "units": [
+        {
+          "id": "c4-u1",
+          "title": "Jordan's decision",
+          "intro": null,
+          "stimulus": [
+            {
+              "t": "note",
+              "tone": "fiction",
+              "text": "Fictional characters. Jordan and Taylor have been dating for two months."
+            },
+            {
+              "t": "p",
+              "text": "Taylor says they feel ready to have sex and asks Jordan to decide by the weekend. Jordan isn't sure."
+            },
+            {
+              "t": "steps",
+              "model": "STOP"
+            }
+          ],
+          "gate": null,
+          "readSecs": 0,
+          "items": [
+            {
+              "id": "C4-01",
+              "type": "single",
+              "topic": "STOP step S: state the decision without blame or a built-in answer",
+              "prompt": "Step S is to State the decision. Which statement states Jordan's decision clearly, without blaming anyone or jumping to an answer?",
+              "points": 2,
+              "cog": "apply",
+              "obj": [
+                "STD5",
+                "FL3.4"
+              ],
+              "secs": 70,
+              "unlockAfter": null,
+              "stage": "S",
+              "options": [
+                {
+                  "id": "o498ef",
+                  "text": "Jordan should just say no to Taylor, because saying no is the safest and simplest way to end the problem."
+                },
+                {
+                  "id": "o3dda3",
+                  "text": "Jordan has to keep Taylor happy, so the real decision is how to do that without upsetting Taylor."
+                },
+                {
+                  "id": "o718f0",
+                  "text": "Everyone else Jordan's age has already made this decision, so Jordan is the one who is behind everybody."
+                },
+                {
+                  "id": "od1a7a",
+                  "text": "Taylor is pressuring Jordan and is being a bad partner, so Jordan has to decide what to do about Taylor."
+                },
+                {
+                  "id": "o995e1",
+                  "text": "Taylor has asked Jordan to decide by the weekend whether to start having sex, and Jordan isn't sure."
+                },
+                {
+                  "id": "o6b485",
+                  "text": "Jordan and Taylor have been dating for two months, and their relationship has some things to figure out."
+                }
+              ]
+            },
+            {
+              "id": "C4-02",
+              "type": "multi",
+              "topic": "STOP step T: choose reasonable options",
+              "prompt": "Step T is to Think of options. Select all the options that are reasonable for Jordan to consider: realistic, honest, and protective of Jordan's health.",
+              "points": 2,
+              "cog": "apply",
+              "obj": [
+                "STD5"
+              ],
+              "secs": 90,
+              "unlockAfter": "C4-01",
+              "stage": "T",
+              "options": [
+                {
+                  "id": "o3b37d",
+                  "text": "Agree now and hope nothing bad happens, since worrying about it ahead of time would only spoil the mood."
+                },
+                {
+                  "id": "o99d36",
+                  "text": "Tell Taylor that Jordan wants to wait for now, and explain why in Jordan's own words."
+                },
+                {
+                  "id": "o3c461",
+                  "text": "Ask Taylor for more time, and talk with a parent, guardian, or other trusted adult."
+                },
+                {
+                  "id": "o67c99",
+                  "text": "Say yes just so Taylor won't be upset, because avoiding a fight now matters more than what Jordan thinks."
+                },
+                {
+                  "id": "obc355",
+                  "text": "Say Jordan already has plans for the next month, to avoid the question without ever saying anything true."
+                },
+                {
+                  "id": "o7cf8e",
+                  "text": "Talk with Taylor about feelings, limits, and information about protection and testing before deciding anything."
+                },
+                {
+                  "id": "o716af",
+                  "text": "Take a break from dating for a while, so Jordan can sort out how Jordan really feels."
+                }
+              ]
+            },
+            {
+              "id": "C4-03",
+              "type": "assign",
+              "topic": "STOP step O: map consequences to options",
+              "prompt": "Step O is to Observe the possible consequences. Match each consequence to the option it describes best. Every consequence belongs to exactly one option.",
+              "points": 3,
+              "cog": "analyze",
+              "obj": [
+                "STD5",
+                "FL3.3",
+                "FL3.2"
+              ],
+              "secs": 110,
+              "unlockAfter": "C4-02",
+              "stage": "O",
+              "assign": {
+                "mode": "classify",
+                "fill": "cards",
+                "figure": null,
+                "layout": null,
+                "pick": null,
+                "cards": [
+                  {
+                    "id": "c4744e",
+                    "text": "Highest chance of an unplanned pregnancy or an STI, including HIV."
+                  },
+                  {
+                    "id": "c34ea1",
+                    "text": "Greatly lowers, but does not remove, the chance of pregnancy and many STIs."
+                  },
+                  {
+                    "id": "c1da08",
+                    "text": "Eliminates the chance of pregnancy or an STI from sex."
+                  },
+                  {
+                    "id": "cfec16",
+                    "text": "Jordan may need to handle Taylor's disappointment or disagreement respectfully."
+                  },
+                  {
+                    "id": "c09f00",
+                    "text": "Works only if the condom is used correctly every single time."
+                  },
+                  {
+                    "id": "c08b36",
+                    "text": "Jordan may later face a pregnancy or an STI diagnosis that needs medical care."
+                  }
+                ],
+                "targets": [
+                  {
+                    "id": "g99652",
+                    "label": "Option A: Wait (abstain from sex for now)"
+                  },
+                  {
+                    "id": "g335c4",
+                    "label": "Option B: Have sex and use a condom correctly every time"
+                  },
+                  {
+                    "id": "gbf4a0",
+                    "label": "Option C: Have sex without any protection"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "C4-04",
+              "type": "single",
+              "topic": "STOP step P: judge an explanation for a pick",
+              "prompt": "Step P is to Pick a responsible, health-enhancing choice and explain why. Whichever option Jordan picks, which explanation best uses the STOP model?",
+              "points": 2,
+              "cog": "evaluate",
+              "obj": [
+                "STD5"
+              ],
+              "secs": 70,
+              "unlockAfter": "C4-03",
+              "stage": "P",
+              "options": [
+                {
+                  "id": "odde9c",
+                  "text": "Jordan picks whatever Taylor wants, because keeping Taylor happy matters more than any of the consequences from step O."
+                },
+                {
+                  "id": "odb270",
+                  "text": "Jordan flips a coin, because thinking through all the options and consequences only makes the decision more stressful for everyone."
+                },
+                {
+                  "id": "o57ee0",
+                  "text": "Jordan picks the fastest option to make the stress stop, because feeling better right now is what matters most to Jordan today."
+                },
+                {
+                  "id": "o959c8",
+                  "text": "Jordan picks the first idea that comes to mind, because the first idea is usually right and listing options wastes time."
+                },
+                {
+                  "id": "o121f3",
+                  "text": "Jordan picks what most friends say people their age do, because the group probably knows what is normal and safe."
+                },
+                {
+                  "id": "o067a0",
+                  "text": "Jordan weighs the consequences from step O, including health risks, and picks what protects Jordan's health and fits Jordan's limits."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "c4-u2",
+          "title": "Which step was skipped?",
+          "intro": null,
+          "stimulus": [
+            {
+              "t": "note",
+              "tone": "fiction",
+              "text": "Fictional scenario. A friend asks Kofi to come over after school when no adults will be home."
+            },
+            {
+              "t": "p",
+              "text": "Kofi thinks: \"The question is whether to go over after school. I'll just go. No need to think about what could happen.\""
+            },
+            {
+              "t": "steps",
+              "model": "STOP"
+            }
+          ],
+          "gate": null,
+          "readSecs": 0,
+          "items": [
+            {
+              "id": "C4-05",
+              "type": "single",
+              "topic": "Identify which STOP steps a character is skipping",
+              "prompt": "Which STOP steps is Kofi skipping?",
+              "points": 2,
+              "cog": "analyze",
+              "obj": [
+                "STD5"
+              ],
+              "secs": 70,
+              "unlockAfter": null,
+              "options": [
+                {
+                  "id": "oe21c6",
+                  "text": "Observe consequences (O) only, because Kofi already thought of several options before deciding."
+                },
+                {
+                  "id": "o7f273",
+                  "text": "Think of options (T) and Observe consequences (O), because Kofi names one idea and never looks ahead."
+                },
+                {
+                  "id": "of0e31",
+                  "text": "State (S) and Pick (P), because Kofi skipped describing the problem and never made a final choice."
+                },
+                {
+                  "id": "o732ee",
+                  "text": "State the decision (S) only, because Kofi never said what the question is and just started talking."
+                },
+                {
+                  "id": "ob69f0",
+                  "text": "Pick (P) only, because Kofi never actually chose anything and is still thinking about what to do."
+                },
+                {
+                  "id": "ob599c",
+                  "text": "None of them. Kofi completed all four steps, because he made a decision and stayed calm while doing it."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "c4-u3",
+          "title": "Saying no clearly",
+          "intro": null,
+          "stimulus": [
+            {
+              "t": "note",
+              "tone": "fiction",
+              "text": "Fictional scenario. Taylor keeps pushing Jordan to decide. Here are six things Jordan could say."
+            },
+            {
+              "t": "legend",
+              "title": "Use these meanings",
+              "rows": [
+                {
+                  "term": "Strong",
+                  "def": "Clear about the limit, respectful, and firm."
+                },
+                {
+                  "term": "Weak",
+                  "def": "Unclear, leaves the door open, or gives in."
+                },
+                {
+                  "term": "Aggressive",
+                  "def": "Attacks or blames the other person."
+                }
+              ]
+            }
+          ],
+          "gate": null,
+          "readSecs": 0,
+          "items": [
+            {
+              "id": "C4-06",
+              "type": "assign",
+              "topic": "Evaluate refusal statements: strong, weak, or aggressive",
+              "prompt": "Sort each reply by how well it works as a refusal.",
+              "points": 3,
+              "cog": "evaluate",
+              "obj": [
+                "STD4",
+                "FL2.4"
+              ],
+              "secs": 100,
+              "unlockAfter": null,
+              "assign": {
+                "mode": "classify",
+                "fill": "cards",
+                "figure": null,
+                "layout": null,
+                "pick": null,
+                "cards": [
+                  {
+                    "id": "c2bd56",
+                    "text": "\"Only a loser would push someone like this.\""
+                  },
+                  {
+                    "id": "ccf17d",
+                    "text": "\"No. I'm not ready, and I'm not going to change my mind tonight.\""
+                  },
+                  {
+                    "id": "c48166",
+                    "text": "\"I like you, but I've decided to wait. If you can't respect that, we shouldn't be dating.\""
+                  },
+                  {
+                    "id": "c0be7b",
+                    "text": "\"You're disgusting for even asking.\""
+                  },
+                  {
+                    "id": "c1598d",
+                    "text": "\"I don't know... maybe later, I guess.\""
+                  },
+                  {
+                    "id": "c3a4eb",
+                    "text": "\"Ugh, fine. But only this once.\""
+                  }
+                ],
+                "targets": [
+                  {
+                    "id": "g87adc",
+                    "label": "Strong: clear, respectful, firm"
+                  },
+                  {
+                    "id": "g75473",
+                    "label": "Weak: unclear or gives in"
+                  },
+                  {
+                    "id": "g0699e",
+                    "label": "Aggressive: attacks or blames"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "c4-u4",
+          "title": "Advantages of abstinence",
+          "intro": null,
+          "stimulus": [
+            {
+              "t": "p",
+              "text": "Abstinence from sexual activity means choosing not to have sex. Decide which advantages listed below are accurate."
+            }
+          ],
+          "gate": null,
+          "readSecs": 0,
+          "items": [
+            {
+              "id": "C4-07",
+              "type": "multi",
+              "topic": "Identify accurate advantages of abstinence as HIV and pregnancy prevention",
+              "prompt": "Which statements correctly describe advantages of abstinence from sexual activity? Select all that apply.",
+              "points": 3,
+              "cog": "apply",
+              "obj": [
+                "FL3.2",
+                "FL3.3"
+              ],
+              "secs": 90,
+              "unlockAfter": null,
+              "options": [
+                {
+                  "id": "oe20b1",
+                  "text": "It also protects against the ways HIV spreads outside of sex, such as shared needles."
+                },
+                {
+                  "id": "o8afca",
+                  "text": "It does not depend on buying, carrying, or correctly using a product."
+                },
+                {
+                  "id": "o302f1",
+                  "text": "It completely removes the chance of getting HIV or another STI through sex."
+                },
+                {
+                  "id": "oc6af1",
+                  "text": "It has no physical or medical side effects for the person who chooses it."
+                },
+                {
+                  "id": "o28adc",
+                  "text": "It lowers risk a little, but a condom is usually more effective."
+                },
+                {
+                  "id": "o56875",
+                  "text": "It completely removes the chance of pregnancy from sexual activity."
+                },
+                {
+                  "id": "ocac91",
+                  "text": "A person who chooses it no longer needs accurate information about STIs."
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "c5",
+      "n": 5,
+      "title": "Resources & Advocacy",
+      "theme": "resource",
+      "intro": "You will judge sources of health information, match situations to helpful resources, and choose a supportive message for a friend. Everything shown is fictional.",
+      "targetMinutes": 8,
+      "units": [
+        {
+          "id": "c5-u1",
+          "title": "Which sources can you trust?",
+          "intro": null,
+          "stimulus": [
+            {
+              "t": "note",
+              "tone": "fiction",
+              "text": "Fictional sources. None of these sites or posts is real."
+            }
+          ],
+          "gate": null,
+          "readSecs": 0,
+          "items": [
+            {
+              "id": "C5-01",
+              "type": "assign",
+              "topic": "Classify fictional sources: credible, needs checking, or not credible",
+              "prompt": "Sort each source by how far you can trust it for health information.",
+              "points": 3,
+              "cog": "evaluate",
+              "obj": [
+                "BP5",
+                "STD3"
+              ],
+              "secs": 120,
+              "unlockAfter": null,
+              "assign": {
+                "mode": "classify",
+                "fill": "cards",
+                "figure": null,
+                "layout": null,
+                "pick": null,
+                "cards": [
+                  {
+                    "id": "cfce81",
+                    "text": "FitLife Forever Blog: \"5 secrets doctors won't tell you about teen health\"",
+                    "sub": "fitlifeforever.example",
+                    "meta": [
+                      "No author named",
+                      "Sells a supplement",
+                      "No sources listed",
+                      "Sensational title"
+                    ]
+                  },
+                  {
+                    "id": "c018d7",
+                    "text": "Student project site: \"Teen Health Facts\"",
+                    "sub": "Made for a class",
+                    "meta": [
+                      "No author listed",
+                      "Cites \"a study\" with no link",
+                      "Last updated six years ago"
+                    ]
+                  },
+                  {
+                    "id": "c2f506",
+                    "text": "Anytown County Health Department: Teen Health Basics",
+                    "sub": "health.anytowncounty.example",
+                    "meta": [
+                      "Authors and reviewers named",
+                      "Updated this year",
+                      "Cites national health agencies",
+                      "No ads"
+                    ]
+                  },
+                  {
+                    "id": "ca79a7",
+                    "text": "University Medical Center: Adolescent Health Library",
+                    "sub": "medcenter.anyuniversity.example",
+                    "meta": [
+                      "Written by physicians, credentials listed",
+                      "Sources linked",
+                      "Updated this year"
+                    ]
+                  },
+                  {
+                    "id": "c4d4c2",
+                    "text": "@HealthHacksTeen: \"Everyone knows you can't get sick if you feel fine. 100%.\"",
+                    "sub": "Social media post",
+                    "meta": [
+                      "12,000 likes",
+                      "No expert named",
+                      "Popularity, not evidence"
+                    ]
+                  }
+                ],
+                "targets": [
+                  {
+                    "id": "g1d5da",
+                    "label": "Credible: reasonable to use"
+                  },
+                  {
+                    "id": "gfafe6",
+                    "label": "Needs checking first"
+                  },
+                  {
+                    "id": "gefd32",
+                    "label": "Not credible: skip it"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "c5-u2",
+          "title": "Why one source is stronger",
+          "intro": null,
+          "stimulus": [
+            {
+              "t": "p",
+              "text": "Compare these two fictional sources."
+            },
+            {
+              "t": "sources",
+              "cards": [
+                {
+                  "id": "county",
+                  "name": "Anytown County Health Department: Teen Health Basics",
+                  "url": "health.anytowncounty.example",
+                  "byline": "Reviewed by public health nurses",
+                  "chips": [
+                    "Authors and reviewers named",
+                    "Updated this year",
+                    "Cites national health agencies",
+                    "No ads"
+                  ]
+                },
+                {
+                  "id": "infl",
+                  "name": "@HealthHacksTeen: \"Everyone knows you can't get sick if you feel fine. 100%.\"",
+                  "url": "Social media post",
+                  "byline": "12,000 likes",
+                  "chips": [
+                    "No expert named",
+                    "Popularity, not evidence",
+                    "Slogans and a confident tone"
+                  ]
+                }
+              ]
+            }
+          ],
+          "gate": null,
+          "readSecs": 0,
+          "items": [
+            {
+              "id": "C5-02",
+              "type": "multi",
+              "topic": "Pick the features that make a source more trustworthy",
+              "prompt": "Which features make the County Health Department page more trustworthy than the social media post? Select all that apply.",
+              "points": 3,
+              "cog": "analyze",
+              "obj": [
+                "BP5",
+                "STD3"
+              ],
+              "secs": 80,
+              "unlockAfter": null,
+              "options": [
+                {
+                  "id": "o3307d",
+                  "text": "It sounds very confident and speaks directly to its readers."
+                },
+                {
+                  "id": "ofa12e",
+                  "text": "It uses a short, catchy slogan that is easy to remember."
+                },
+                {
+                  "id": "oc55d2",
+                  "text": "It was updated this year, so the information is current."
+                },
+                {
+                  "id": "o9f783",
+                  "text": "It cites national health agencies, so claims can be checked."
+                },
+                {
+                  "id": "o8c82a",
+                  "text": "It has far more likes and shares than the other source does."
+                },
+                {
+                  "id": "o18088",
+                  "text": "It showed up first in the list of search results."
+                },
+                {
+                  "id": "oc7ebd",
+                  "text": "It names who reviewed it and what their qualifications are."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "c5-u3",
+          "title": "The right resource for the situation",
+          "intro": null,
+          "stimulus": [
+            {
+              "t": "note",
+              "tone": "fiction",
+              "text": "Fictional situations. Place each resource in the box where it fits best. Two resources are not used."
+            },
+            {
+              "t": "note",
+              "tone": "info",
+              "text": "Privacy rules for people under 18 vary by state and by service. Before sharing something, it is fine to ask how privacy works."
+            }
+          ],
+          "gate": null,
+          "readSecs": 0,
+          "items": [
+            {
+              "id": "C5-03",
+              "type": "assign",
+              "topic": "Match situations to the most helpful resource",
+              "prompt": "Place each resource in the box where it would help most.",
+              "points": 3,
+              "cog": "apply",
+              "obj": [
+                "STD3",
+                "STD8"
+              ],
+              "secs": 100,
+              "unlockAfter": null,
+              "assign": {
+                "mode": "match",
+                "fill": "targets",
+                "figure": null,
+                "layout": null,
+                "pick": null,
+                "cards": [
+                  {
+                    "id": "c76525",
+                    "text": "Crisis or support helpline (call or text)"
+                  },
+                  {
+                    "id": "cf7b33",
+                    "text": "School counselor or school nurse"
+                  },
+                  {
+                    "id": "c3b9c3",
+                    "text": "A viral video from a popular creator"
+                  },
+                  {
+                    "id": "c6cd7a",
+                    "text": "Doctor, nurse practitioner, or health clinic"
+                  },
+                  {
+                    "id": "c6e546",
+                    "text": "National health agency website (a .gov page)"
+                  },
+                  {
+                    "id": "c83f95",
+                    "text": "Posts from classmates in a group chat"
+                  }
+                ],
+                "targets": [
+                  {
+                    "id": "ge240a",
+                    "label": "Mia notices something unusual and wants to be tested for an STI."
+                  },
+                  {
+                    "id": "g00d58",
+                    "label": "Ana feels unsafe in her relationship and wants to talk with someone trained to help, right now."
+                  },
+                  {
+                    "id": "gbbd88",
+                    "label": "Kofi wants to talk privately at school about pressure from a partner and learn what support is available."
+                  },
+                  {
+                    "id": "ge9a86",
+                    "label": "Leo wants to double-check a claim about HIV that he saw in a group chat."
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "c5-u4",
+          "title": "A supportive message",
+          "intro": null,
+          "stimulus": [
+            {
+              "t": "note",
+              "tone": "fiction",
+              "text": "Fictional scenario. Amara texts her friend Dev: \"My partner keeps pressuring me and checking my phone. I feel stuck.\""
+            }
+          ],
+          "gate": null,
+          "readSecs": 0,
+          "items": [
+            {
+              "id": "C5-04",
+              "type": "single",
+              "topic": "Choose the best supportive message for a friend",
+              "prompt": "Which reply from Dev is the most supportive and helpful?",
+              "points": 2,
+              "cog": "evaluate",
+              "obj": [
+                "STD4",
+                "STD8"
+              ],
+              "secs": 70,
+              "unlockAfter": null,
+              "options": [
+                {
+                  "id": "o71212",
+                  "text": "\"Just break up with them. It's really not that hard, and you'll feel so much better once you stop letting them do this to you for good.\""
+                },
+                {
+                  "id": "o62840",
+                  "text": "\"Don't make a big deal out of it. Every couple fights and checks each other's phones sometimes, so it's probably just totally normal stuff.\""
+                },
+                {
+                  "id": "of7d3c",
+                  "text": "\"That sounds stressful, and I'm glad you told me. You deserve to feel safe. Want help finding a counselor or another adult to talk to?\""
+                },
+                {
+                  "id": "o8b19e",
+                  "text": "\"I'll confront them tomorrow and tell everyone at school what's going on, so they all know how they've been treating you.\""
+                },
+                {
+                  "id": "od7f0d",
+                  "text": "\"You must have done something to make them act like that. Think about what you did, and then try to go fix it with them.\""
+                },
+                {
+                  "id": "o28c89",
+                  "text": "\"I promise I'll never tell anyone, no matter what happens. This stays between us, and I'll never bring it up again, ever.\""
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "c5-u5",
+          "title": "From idea to action",
+          "intro": null,
+          "stimulus": [
+            {
+              "t": "p",
+              "text": "Advocacy means speaking up and taking action to improve the health of others, such as classmates or a community."
+            }
+          ],
+          "gate": null,
+          "readSecs": 0,
+          "items": [
+            {
+              "id": "C5-05",
+              "type": "order",
+              "topic": "Order the steps of a health advocacy effort",
+              "prompt": "A student group wants to advocate for accurate health information at school. Put their steps in the best order.",
+              "points": 2,
+              "cog": "apply",
+              "obj": [
+                "STD8"
+              ],
+              "secs": 70,
+              "unlockAfter": null,
+              "steps": [
+                {
+                  "id": "sd4b76",
+                  "text": "Gather facts from credible sources."
+                },
+                {
+                  "id": "s633d6",
+                  "text": "Check whether it helped and improve it."
+                },
+                {
+                  "id": "sa4b99",
+                  "text": "Share the message, for example with a poster, announcement, or short presentation."
+                },
+                {
+                  "id": "sa144f",
+                  "text": "Choose a health issue that matters to the school or community."
+                },
+                {
+                  "id": "s7726f",
+                  "text": "Decide who the audience is and the one clear message to share."
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "c6",
+      "n": 6,
+      "title": "Integrated Case",
+      "theme": "case",
+      "intro": "One fictional case brings together misinformation, relationship dynamics, consent, the STOP model, and resources. Open and read all four documents first. The questions open one at a time.",
+      "targetMinutes": 10,
+      "units": [
+        {
+          "id": "c6-u1",
+          "title": "The group chat",
+          "intro": null,
+          "stimulus": [
+            {
+              "t": "note",
+              "tone": "fiction",
+              "text": "Fictional case. Imani is in 10th grade. She is dating Kai. Her friend Theo is in a group chat with her when this post appears. Everyone in this case is fictional."
+            },
+            {
+              "t": "evidence",
+              "docs": [
+                {
+                  "id": "e1",
+                  "title": "Post by @RealTalkTeen",
+                  "kind": "post",
+                  "tag": "Social media post",
+                  "blocks": [
+                    {
+                      "t": "p",
+                      "text": "REAL TALK about sex and health. Here is what you need to know:"
+                    },
+                    {
+                      "t": "list",
+                      "ordered": true,
+                      "items": [
+                        "Many STIs have no symptoms, so testing is the only way to know.",
+                        "If you feel fine, you can't have an STI.",
+                        "Condoms reduce risk, so there is no need to think about it at all.",
+                        "HIV spreads through hugging.",
+                        "Abstinence from sex eliminates the risk of getting pregnant or getting an STI through sex.",
+                        "Birth control pills protect you from everything."
+                      ]
+                    },
+                    {
+                      "t": "p",
+                      "text": "Share if you agree! 4,200 shares."
+                    }
+                  ]
+                },
+                {
+                  "id": "e2",
+                  "title": "Texts between Kai and Imani",
+                  "kind": "thread",
+                  "tag": "Text thread",
+                  "blocks": [
+                    {
+                      "t": "thread",
+                      "title": "Kai and Imani",
+                      "people": [
+                        {
+                          "id": "k",
+                          "name": "Kai",
+                          "side": "left"
+                        },
+                        {
+                          "id": "i",
+                          "name": "Imani",
+                          "side": "right"
+                        }
+                      ],
+                      "messages": [
+                        {
+                          "who": "k",
+                          "text": "I had a great time at the game with you today."
+                        },
+                        {
+                          "who": "k",
+                          "text": "Who are you with right now?? Send me a pic."
+                        },
+                        {
+                          "who": "i",
+                          "text": "I'm at the library with Theo. I'm not sending a pic."
+                        },
+                        {
+                          "who": "k",
+                          "text": "If you loved me you'd come over tonight. Everyone does by now."
+                        },
+                        {
+                          "who": "i",
+                          "text": "I'm not ready. Please stop asking."
+                        },
+                        {
+                          "who": "k",
+                          "text": "You said yes last time. Don't be difficult."
+                        },
+                        {
+                          "who": "k",
+                          "text": "Whatever. I'll tell people you're a tease."
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "id": "e3",
+                  "title": "Teen Health Clinic info sheet",
+                  "kind": "sheet",
+                  "tag": "Fictional clinic page",
+                  "blocks": [
+                    {
+                      "t": "p",
+                      "text": "Reviewed by clinic nurses and physicians. Updated this year."
+                    },
+                    {
+                      "t": "list",
+                      "items": [
+                        "Many STIs have no symptoms. Testing is the only way to know.",
+                        "Condoms used correctly every time greatly reduce, but do not eliminate, the risk of STIs and pregnancy.",
+                        "Abstinence from sex eliminates the sexual risk of STIs and pregnancy.",
+                        "Consent must be freely given, can be withdrawn at any time, and cannot be given under pressure.",
+                        "Ask any clinic how privacy works for people under 18. Rules differ by state and by service."
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "id": "e4",
+                  "title": "Imani's notes",
+                  "kind": "notes",
+                  "tag": "Notes app",
+                  "blocks": [
+                    {
+                      "t": "list",
+                      "items": [
+                        "S (State): Kai wants me to come over tonight and says everyone does.",
+                        "T (Think of options): (A) go over, (B) say \"not tonight\" and explain, (C) talk with Theo or a counselor first.",
+                        "O (Observe): not done yet.",
+                        "P (Pick): not done yet."
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "gate": [
+            "e1",
+            "e2",
+            "e3",
+            "e4"
+          ],
+          "readSecs": 130,
+          "items": [
+            {
+              "id": "C6-01",
+              "type": "assign",
+              "topic": "Sort claims from a viral post: accurate, misleading, or inaccurate",
+              "prompt": "Document E1 lists six claims. Sort each claim by how accurate it is.",
+              "points": 3,
+              "cog": "analyze",
+              "obj": [
+                "BP6",
+                "BP3",
+                "FL3.3"
+              ],
+              "secs": 100,
+              "unlockAfter": null,
+              "assign": {
+                "mode": "classify",
+                "fill": "cards",
+                "figure": null,
+                "layout": null,
+                "pick": null,
+                "cards": [
+                  {
+                    "id": "c1f517",
+                    "text": "Condoms reduce risk, so there is no need to think about it at all."
+                  },
+                  {
+                    "id": "cc0253",
+                    "text": "Birth control pills protect you from everything."
+                  },
+                  {
+                    "id": "c1e8eb",
+                    "text": "Abstinence from sex eliminates the risk of getting pregnant or getting an STI through sex."
+                  },
+                  {
+                    "id": "c72d2a",
+                    "text": "HIV spreads through hugging."
+                  },
+                  {
+                    "id": "ccc3ba",
+                    "text": "Many STIs have no symptoms, so testing is the only way to know."
+                  },
+                  {
+                    "id": "c97948",
+                    "text": "If you feel fine, you can't have an STI."
+                  }
+                ],
+                "targets": [
+                  {
+                    "id": "gff871",
+                    "label": "Accurate"
+                  },
+                  {
+                    "id": "g5be93",
+                    "label": "Misleading (partly true, but it leaves out something important)"
+                  },
+                  {
+                    "id": "gef55b",
+                    "label": "Inaccurate"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "C6-02",
+              "type": "multi",
+              "topic": "Identify pressure and controlling messages in the case thread",
+              "prompt": "In document E2, which messages show pressure or controlling behavior? Select all that apply.",
+              "points": 3,
+              "cog": "analyze",
+              "obj": [
+                "BP6",
+                "BP2",
+                "FL2.4"
+              ],
+              "secs": 80,
+              "unlockAfter": "C6-01",
+              "options": [
+                {
+                  "id": "o4bd72",
+                  "text": "Kai: \"You said yes last time. Don't be difficult.\""
+                },
+                {
+                  "id": "ode1cc",
+                  "text": "Kai: \"If you loved me you'd come over tonight. Everyone does by now.\""
+                },
+                {
+                  "id": "o7220f",
+                  "text": "Kai: \"Who are you with right now?? Send me a pic.\""
+                },
+                {
+                  "id": "o7252e",
+                  "text": "Kai: \"Whatever. I'll tell people you're a tease.\""
+                },
+                {
+                  "id": "oe72f6",
+                  "text": "Imani: \"I'm at the library with Theo. I'm not sending a pic.\""
+                },
+                {
+                  "id": "ob34da",
+                  "text": "Imani: \"I'm not ready. Please stop asking.\""
+                },
+                {
+                  "id": "o90c9a",
+                  "text": "Kai: \"I had a great time at the game with you today.\""
+                }
+              ]
+            },
+            {
+              "id": "C6-03",
+              "type": "single",
+              "topic": "Draw a conclusion about consent supported by two documents",
+              "prompt": "Using the texts (E2) and the clinic sheet (E3), which conclusion is best supported by the evidence?",
+              "points": 3,
+              "cog": "analyze",
+              "obj": [
+                "BP6",
+                "FL2.4"
+              ],
+              "secs": 60,
+              "unlockAfter": "C6-02",
+              "options": [
+                {
+                  "id": "o53b66",
+                  "text": "Imani is being difficult because she did not answer Kai's first question, so Kai has a right to be annoyed with her."
+                },
+                {
+                  "id": "o27595",
+                  "text": "Imani said yes last time, so she has to go along tonight, and she should not have said yes if she planned to change her mind."
+                },
+                {
+                  "id": "of5df0",
+                  "text": "Imani has to explain her reasons before her no counts, because Kai cannot respect a limit he does not understand."
+                },
+                {
+                  "id": "oa5949",
+                  "text": "A no only counts if Imani says it out loud, not in a text, because words on a screen can easily be misunderstood."
+                },
+                {
+                  "id": "o38954",
+                  "text": "Kai's messages are fine because he never actually threatened anyone, and being pushy is not the same as being controlling."
+                },
+                {
+                  "id": "oecf7b",
+                  "text": "A past yes does not mean yes now. Imani's \"I'm not ready. Please stop asking.\" is a clear no that Kai should respect."
+                }
+              ]
+            },
+            {
+              "id": "C6-04",
+              "type": "single",
+              "topic": "Judge what the Observe step of STOP should look like",
+              "prompt": "Imani's notes (E4) show that steps S and T are done. What should Imani do next to complete the O step well?",
+              "points": 3,
+              "cog": "evaluate",
+              "obj": [
+                "BP6",
+                "STD5"
+              ],
+              "secs": 70,
+              "unlockAfter": "C6-03",
+              "options": [
+                {
+                  "id": "oc51a7",
+                  "text": "Pick the option that will make Kai happiest and explain it later, since pleasing Kai is the safest way to avoid conflict."
+                },
+                {
+                  "id": "o20037",
+                  "text": "Wait and see what everyone else in the group chat does, then do the same so she is not the only one different."
+                },
+                {
+                  "id": "oaf8b4",
+                  "text": "Compare what could happen right away and later with each option, including feelings, health risks, and Kai's reaction."
+                },
+                {
+                  "id": "o2e030",
+                  "text": "Skip ahead to P, because Imani already knows what she wants and looking at consequences would only make her doubt it."
+                },
+                {
+                  "id": "o60cde",
+                  "text": "Add more options until one of them feels easy, because the right choice should never be difficult or uncomfortable."
+                },
+                {
+                  "id": "ofeb1b",
+                  "text": "Ask Kai which option Imani should choose, since Kai knows more about the situation than anyone else involved."
+                }
+              ]
+            },
+            {
+              "id": "C6-05",
+              "type": "multi",
+              "topic": "Choose resources that fit the case",
+              "prompt": "Which resources fit Imani's situation? Select all that apply.",
+              "points": 3,
+              "cog": "apply",
+              "obj": [
+                "BP6",
+                "STD3",
+                "STD8"
+              ],
+              "secs": 70,
+              "unlockAfter": "C6-04",
+              "options": [
+                {
+                  "id": "o8ec83",
+                  "text": "The Teen Health Clinic info sheet (E3), because it was reviewed by clinic nurses and physicians and is up to date."
+                },
+                {
+                  "id": "o300f8",
+                  "text": "Kai, because Kai knows the situation best and can explain what is and is not true about all of this."
+                },
+                {
+                  "id": "oba0e6",
+                  "text": "The @RealTalkTeen post, because it has thousands of shares and so many people must agree with it."
+                },
+                {
+                  "id": "ob9706",
+                  "text": "A doctor, nurse practitioner, or clinic, for questions about testing and protection."
+                },
+                {
+                  "id": "ofee8f",
+                  "text": "Keeping quiet and hoping the pressure stops, because talking about it might make things worse for everyone."
+                },
+                {
+                  "id": "o87bc2",
+                  "text": "A crisis or support helpline, for someone who feels pressured in a relationship."
+                },
+                {
+                  "id": "of72bb",
+                  "text": "A school counselor or another trusted adult who can listen and help Imani sort out what to do."
+                }
+              ]
+            },
+            {
+              "id": "C6-06",
+              "type": "single",
+              "topic": "Choose the best overall advice using all four documents",
+              "prompt": "Theo wants to help Imani. Which message best uses evidence from all four documents?",
+              "points": 2,
+              "cog": "evaluate",
+              "obj": [
+                "BP6",
+                "FL2.4",
+                "STD5",
+                "STD3"
+              ],
+              "secs": 70,
+              "unlockAfter": "C6-05",
+              "options": [
+                {
+                  "id": "o1c7c0",
+                  "text": "\"Block Kai, delete the chat, and never talk about it again. The texts do not matter once they are gone, and none of those documents can really help you decide anything about what to do next anyway.\""
+                },
+                {
+                  "id": "o7153c",
+                  "text": "\"Since you said yes last time, it is fair for Kai to expect a yes again. Use STOP to decide how to say it, and trust the post, because thousands of people shared it and that has to mean something.\""
+                },
+                {
+                  "id": "od28f3",
+                  "text": "\"Kai's messages are only jokes, so you can ignore them completely. The post and the clinic sheet basically say the same thing, so you do not need either one, and STOP is only for really big decisions.\""
+                },
+                {
+                  "id": "of7929",
+                  "text": "\"Your 'no' is clear, and Kai should respect it. Pressure and threats are warning signs. The post has mistakes, but the clinic sheet is reliable. Use STOP to think through your options, and talk with a counselor or trusted adult.\""
+                },
+                {
+                  "id": "o71025",
+                  "text": "\"Your 'no' is clear and Kai should respect it, and the clinic sheet is reliable. But keep this just between you and me, because telling a counselor or any other adult will only make things worse for you.\""
+                },
+                {
+                  "id": "oc7eb3",
+                  "text": "\"Kai is probably just stressed, so go over tonight and see how it goes. The post says condoms and the pill cover everything, so you will be safe whatever happens, and you do not need to tell anyone at all about this.\""
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "structureHash": "68d2e1e46e27a098e378086acfcf95bf5627ca3163376586819b4721f52707aa",
+  "points": 100
+}

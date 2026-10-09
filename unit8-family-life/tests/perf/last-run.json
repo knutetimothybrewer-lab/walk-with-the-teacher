@@ -1,0 +1,141 @@
+{
+  "when": "2026-10-09T10:07:43.061Z",
+  "contentSet": "live (40 items)",
+  "node": "v22.22.0",
+  "results": [
+    {
+      "profile": "baseline (no throttling)",
+      "loadToSignInFormMs": 511,
+      "firstContentfulPaintMs": 336,
+      "transferKB": 55,
+      "requests": 16,
+      "signInToReadyMs": 170,
+      "beginToFirstQuestionMs": 1119,
+      "answerFiveLabelsAndCheckMs": 904,
+      "longTasks": 3,
+      "totalBlockingMs": 30,
+      "worstLongTaskMs": 66
+    },
+    {
+      "profile": "4x CPU slowdown only",
+      "loadToSignInFormMs": 415,
+      "firstContentfulPaintMs": 188,
+      "transferKB": 49,
+      "requests": 15,
+      "signInToReadyMs": 393,
+      "beginToFirstQuestionMs": 859,
+      "answerFiveLabelsAndCheckMs": 1517,
+      "longTasks": 4,
+      "totalBlockingMs": 93,
+      "worstLongTaskMs": 92
+    },
+    {
+      "profile": "4x CPU + Slow 3G (400 ms RTT, 400 kbps down/up)",
+      "loadToSignInFormMs": 2790,
+      "firstContentfulPaintMs": 1824,
+      "transferKB": 49,
+      "requests": 15,
+      "signInToReadyMs": 1096,
+      "beginToFirstQuestionMs": 1258,
+      "answerFiveLabelsAndCheckMs": 1977,
+      "longTasks": 2,
+      "totalBlockingMs": 76,
+      "worstLongTaskMs": 101
+    },
+    {
+      "profile": "4x CPU + Fast 3G (150 ms RTT, 1.6 Mbps)",
+      "loadToSignInFormMs": 1083,
+      "firstContentfulPaintMs": 684,
+      "transferKB": 49,
+      "requests": 15,
+      "signInToReadyMs": 539,
+      "beginToFirstQuestionMs": 980,
+      "answerFiveLabelsAndCheckMs": 1699,
+      "longTasks": 5,
+      "totalBlockingMs": 101,
+      "worstLongTaskMs": 94
+    }
+  ],
+  "files": {
+    "index.html": {
+      "raw": 1959,
+      "gzip": 827
+    },
+    "css/tokens.css": {
+      "raw": 3228,
+      "gzip": 1228
+    },
+    "css/base.css": {
+      "raw": 6820,
+      "gzip": 2092
+    },
+    "css/components.css": {
+      "raw": 29275,
+      "gzip": 5609
+    },
+    "css/screens.css": {
+      "raw": 3931,
+      "gzip": 1361
+    },
+    "css/teacher.css": {
+      "raw": 3325,
+      "gzip": 959
+    },
+    "js/app.js": {
+      "raw": 8819,
+      "gzip": 2772
+    },
+    "js/api.js": {
+      "raw": 3667,
+      "gzip": 1639
+    },
+    "js/util.js": {
+      "raw": 7481,
+      "gzip": 2985
+    },
+    "js/timer.js": {
+      "raw": 2562,
+      "gzip": 1140
+    },
+    "js/screens.js": {
+      "raw": 11356,
+      "gzip": 4185
+    },
+    "js/assess.js": {
+      "raw": 18690,
+      "gzip": 6243
+    },
+    "js/item.js": {
+      "raw": 8094,
+      "gzip": 3023
+    },
+    "js/widgets.js": {
+      "raw": 15424,
+      "gzip": 4718
+    },
+    "js/blocks.js": {
+      "raw": 9723,
+      "gzip": 3687
+    },
+    "js/teacher.js": {
+      "raw": 29617,
+      "gzip": 9319
+    },
+    "js/mock-api.js": {
+      "raw": 2145,
+      "gzip": 1071
+    },
+    "content/items.json": {
+      "raw": 117886,
+      "gzip": 21898
+    },
+    "assets/fig-female-repro.svg": {
+      "raw": 2502,
+      "gzip": 1078
+    },
+    "assets/fig-male-repro.svg": {
+      "raw": 2825,
+      "gzip": 1011
+    }
+  }
+}

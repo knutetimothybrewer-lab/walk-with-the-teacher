@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 380" role="img" aria-labelledby="t d">
+  <title id="t">Simple house diagram for practice</title>
+  <desc id="d">A simple house with a triangular roof on top, a door in the middle, and a square window on the right.</desc>
+  <rect width="420" height="380" fill="#f7fbfc"/>
+  <g stroke="#3d6b78" stroke-width="1.6" fill="none"><path d="M60 60 L180 100"/><path d="M60 300 L180 280"/><path d="M360 200 L300 200"/></g>
+  <path d="M110 150 L210 70 L310 150 Z" fill="#8fc3d0" stroke="#2f6877" stroke-width="2"/>
+  <rect x="120" y="150" width="180" height="150" fill="#d8eef2" stroke="#2f6877" stroke-width="2"/>
+  <rect x="170" y="210" width="50" height="90" fill="#6aa9b8" stroke="#2f6877" stroke-width="2"/>
+  <rect x="245" y="180" width="40" height="40" fill="#f4fafb" stroke="#2f6877" stroke-width="2"/>
+  <text x="14" y="366" font-family="system-ui, sans-serif" font-size="12" fill="#3d6b78">Practice diagram (not part of the assessment)</text>
+</svg>

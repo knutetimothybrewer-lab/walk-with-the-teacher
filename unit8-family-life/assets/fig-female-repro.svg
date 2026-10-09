@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 380" role="img" aria-labelledby="t d">
+  <title id="t">Female reproductive system, front view (simplified schematic)</title>
+  <desc id="d">A simplified front-view diagram. A pear-shaped, muscular organ sits in the center with a narrow neck at its lower end. A curved tube leaves each upper corner and reaches toward a small, almond-shaped organ on each side. A tube leads downward below the narrow neck.</desc>
+  <defs>
+    <linearGradient id="u" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d8eef2"/><stop offset="1" stop-color="#bfe0e8"/></linearGradient>
+  </defs>
+  <rect width="420" height="380" fill="#f7fbfc"/>
+  <g stroke="#3d6b78" stroke-width="1.6" fill="none">
+    <path d="M210 52 L210 90"/>
+    <path d="M375 212 L360 190"/>
+    <path d="M268 300 L222 300"/>
+    <path d="M44 84 L82 108"/>
+    <path d="M268 242 L224 240"/>
+  </g>
+  <g fill="none" stroke="#6aa9b8" stroke-width="11" stroke-linecap="round">
+    <path d="M168 112 C132 92 98 92 74 110 C60 121 58 140 68 152"/>
+    <path d="M252 112 C288 92 322 92 346 110 C360 121 362 140 352 152"/>
+  </g>
+  <g fill="none" stroke="#6aa9b8" stroke-width="3" stroke-linecap="round">
+    <path d="M62 150 L50 158 M68 154 L60 168 M74 154 L72 170"/>
+    <path d="M358 150 L370 158 M352 154 L360 168 M346 154 L348 170"/>
+  </g>
+  <g fill="#8fc3d0" stroke="#2f6877" stroke-width="2">
+    <ellipse cx="72" cy="182" rx="25" ry="18" transform="rotate(-24 72 182)"/>
+    <ellipse cx="348" cy="182" rx="25" ry="18" transform="rotate(24 348 182)"/>
+  </g>
+  <g fill="#e9f6f9" stroke="#2f6877" stroke-width="1">
+    <circle cx="66" cy="180" r="4"/><circle cx="80" cy="186" r="3"/>
+    <circle cx="354" cy="180" r="4"/><circle cx="340" cy="186" r="3"/>
+  </g>
+  <path d="M194 252 L190 326 Q210 342 230 326 L226 252 Z" fill="#a9d3de" stroke="#2f6877" stroke-width="2"/>
+  <path d="M192 225 L228 225 L226 254 Q210 262 194 254 Z" fill="#8fc3d0" stroke="#2f6877" stroke-width="2"/>
+  <path d="M165 120 C165 95 190 82 210 82 C230 82 255 95 255 120 C255 160 238 195 228 225 L192 225 C182 195 165 160 165 120 Z" fill="url(#u)" stroke="#2f6877" stroke-width="2.2"/>
+  <path d="M187 124 C187 108 198 101 210 101 C222 101 233 108 233 124 C233 148 224 172 218 200 L202 200 C196 172 187 148 187 124 Z" fill="#f4fafb" stroke="#6aa9b8" stroke-width="1.4"/>
+  <text x="14" y="366" font-family="system-ui, sans-serif" font-size="12" fill="#3d6b78">Front view, simplified (not to scale)</text>
+</svg>

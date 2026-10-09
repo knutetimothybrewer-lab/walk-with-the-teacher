@@ -1,0 +1,682 @@
+{
+  "objectives": {
+    "FL1.1": {
+      "text": "Identify the major structures of the male and female reproductive systems.",
+      "basis": "district"
+    },
+    "FL1.2": {
+      "text": "Explain the functions of key reproductive organs (ovaries, testes, uterus, fallopian tubes), including ovulation.",
+      "basis": "district"
+    },
+    "FL1.3": {
+      "text": "Differentiate between methods of contraception: barrier, hormonal, and sterilization.",
+      "basis": "district"
+    },
+    "FL1.4": {
+      "text": "Describe the basic stages of pregnancy from conception to birth.",
+      "basis": "district"
+    },
+    "FL2.1": {
+      "text": "Define key terms related to family life and sexuality.",
+      "basis": "district"
+    },
+    "FL2.2": {
+      "text": "Identify factors that contribute to healthy family dynamics.",
+      "basis": "district"
+    },
+    "FL2.3": {
+      "text": "Analyze the impact of communication on family relationships.",
+      "basis": "district"
+    },
+    "FL2.4": {
+      "text": "Evaluate the importance of consent and healthy boundaries in relationships.",
+      "basis": "district"
+    },
+    "FL3.1": {
+      "text": "Identify and explain effective HIV prevention strategies.",
+      "basis": "district"
+    },
+    "FL3.2": {
+      "text": "Describe the advantages of practicing abstinence as a method of HIV prevention.",
+      "basis": "district"
+    },
+    "FL3.3": {
+      "text": "Evaluate the effectiveness of abstinence compared to other prevention strategies.",
+      "basis": "district"
+    },
+    "FL3.4": {
+      "text": "Apply knowledge of prevention strategies to real-life scenarios involving HIV risk.",
+      "basis": "district"
+    },
+    "STD3": {
+      "text": "Standard 3: access information, products, and services to enhance health.",
+      "basis": "standard"
+    },
+    "STD4": {
+      "text": "Standard 4: use interpersonal communication skills (including refusal and boundary-setting) to enhance health and avoid or reduce health risks.",
+      "basis": "standard"
+    },
+    "STD5": {
+      "text": "Standard 5: use decision-making skills to enhance health.",
+      "basis": "standard"
+    },
+    "STD8": {
+      "text": "Standard 8: advocate for personal, family, and community health.",
+      "basis": "standard"
+    },
+    "BP1": {
+      "text": "Describe the range of typical variation in the timing of puberty, and tell evidence-based statements from myths and values.",
+      "basis": "blueprint"
+    },
+    "BP2": {
+      "text": "Distinguish healthy, unhealthy, and controlling behaviors in relationships (text-thread analysis).",
+      "basis": "blueprint"
+    },
+    "BP3": {
+      "text": "Classify common STIs by cause and treatment, and explain why symptoms alone cannot show whether someone has an STI.",
+      "basis": "blueprint"
+    },
+    "BP4": {
+      "text": "Interpret data shown in a chart.",
+      "basis": "blueprint"
+    },
+    "BP5": {
+      "text": "Evaluate whether a health information source is credible.",
+      "basis": "blueprint"
+    },
+    "BP6": {
+      "text": "Integrate misinformation analysis, relationship dynamics, consent, the decision model, and resources in one case.",
+      "basis": "blueprint"
+    }
+  },
+  "items": [
+    {
+      "id": "C1-01",
+      "chapter": "c1",
+      "topic": "Label structures of the female reproductive system",
+      "type": "assign/label",
+      "points": 2,
+      "cog": "remember",
+      "obj": [
+        "FL1.1"
+      ],
+      "secs": 70,
+      "basis": "district"
+    },
+    {
+      "id": "C1-02",
+      "chapter": "c1",
+      "topic": "Label structures of the male reproductive system",
+      "type": "assign/label",
+      "points": 2,
+      "cog": "remember",
+      "obj": [
+        "FL1.1"
+      ],
+      "secs": 70,
+      "basis": "district"
+    },
+    {
+      "id": "C1-03",
+      "chapter": "c1",
+      "topic": "Match reproductive organs to their functions",
+      "type": "assign/match",
+      "points": 2,
+      "cog": "understand",
+      "obj": [
+        "FL1.2"
+      ],
+      "secs": 80,
+      "basis": "district"
+    },
+    {
+      "id": "C1-04",
+      "chapter": "c1",
+      "topic": "Order the stages from ovulation to birth",
+      "type": "order",
+      "points": 2,
+      "cog": "understand",
+      "obj": [
+        "FL1.4",
+        "FL1.2"
+      ],
+      "secs": 70,
+      "basis": "district"
+    },
+    {
+      "id": "C1-05",
+      "chapter": "c1",
+      "topic": "Sort puberty statements: evidence, myth, or value",
+      "type": "assign/classify",
+      "points": 3,
+      "cog": "analyze",
+      "obj": [
+        "BP1"
+      ],
+      "secs": 110,
+      "basis": "blueprint"
+    },
+    {
+      "id": "C1-06",
+      "chapter": "c1",
+      "topic": "Apply what is typical about the timing of puberty",
+      "type": "multi",
+      "points": 2,
+      "cog": "apply",
+      "obj": [
+        "BP1"
+      ],
+      "secs": 80,
+      "basis": "blueprint"
+    },
+    {
+      "id": "C2-01",
+      "chapter": "c2",
+      "topic": "Tag each message in a dating thread: healthy, unhealthy, or controlling",
+      "type": "assign/classify",
+      "points": 3,
+      "cog": "analyze",
+      "obj": [
+        "BP2",
+        "FL2.4"
+      ],
+      "secs": 110,
+      "basis": "district"
+    },
+    {
+      "id": "C2-02",
+      "chapter": "c2",
+      "topic": "Choose the clearest, most respectful boundary reply",
+      "type": "single",
+      "points": 2,
+      "cog": "evaluate",
+      "obj": [
+        "STD4",
+        "FL2.4"
+      ],
+      "secs": 70,
+      "basis": "district"
+    },
+    {
+      "id": "C2-03",
+      "chapter": "c2",
+      "topic": "Tag family messages by their effect on trust and communication",
+      "type": "assign/classify",
+      "points": 3,
+      "cog": "analyze",
+      "obj": [
+        "FL2.3",
+        "FL2.2"
+      ],
+      "secs": 110,
+      "basis": "district"
+    },
+    {
+      "id": "C2-04",
+      "chapter": "c2",
+      "topic": "Interpret an unsure answer to a request",
+      "type": "single",
+      "points": 2,
+      "cog": "apply",
+      "obj": [
+        "FL2.4"
+      ],
+      "secs": 70,
+      "basis": "district"
+    },
+    {
+      "id": "C2-05",
+      "chapter": "c2",
+      "topic": "Analyze pressure: guilt, \"everyone does it,\" and a past yes",
+      "type": "single",
+      "points": 3,
+      "cog": "analyze",
+      "obj": [
+        "FL2.4"
+      ],
+      "secs": 80,
+      "basis": "district"
+    },
+    {
+      "id": "C2-06",
+      "chapter": "c2",
+      "topic": "Respond when consent is withdrawn",
+      "type": "single",
+      "points": 3,
+      "cog": "apply",
+      "obj": [
+        "FL2.4"
+      ],
+      "secs": 80,
+      "basis": "district"
+    },
+    {
+      "id": "C2-07",
+      "chapter": "c2",
+      "topic": "Match key terms to their definitions",
+      "type": "assign/match",
+      "points": 2,
+      "cog": "understand",
+      "obj": [
+        "FL2.1"
+      ],
+      "secs": 90,
+      "basis": "district"
+    },
+    {
+      "id": "C2-08",
+      "chapter": "c2",
+      "topic": "Decide which situations count as consent",
+      "type": "assign/classify",
+      "points": 2,
+      "cog": "apply",
+      "obj": [
+        "FL2.4"
+      ],
+      "secs": 110,
+      "basis": "district"
+    },
+    {
+      "id": "C3-01",
+      "chapter": "c3",
+      "topic": "Sort common STIs by cause: bacteria or virus",
+      "type": "assign/classify",
+      "points": 2,
+      "cog": "understand",
+      "obj": [
+        "BP3"
+      ],
+      "secs": 70,
+      "basis": "blueprint"
+    },
+    {
+      "id": "C3-02",
+      "chapter": "c3",
+      "topic": "Evaluate statements about STI treatment, cures, and HPV",
+      "type": "multi",
+      "points": 3,
+      "cog": "analyze",
+      "obj": [
+        "BP3",
+        "FL3.1"
+      ],
+      "secs": 110,
+      "basis": "district"
+    },
+    {
+      "id": "C3-03",
+      "chapter": "c3",
+      "topic": "Choose the best next step and reasoning about STI testing",
+      "type": "single",
+      "points": 3,
+      "cog": "apply",
+      "obj": [
+        "BP3",
+        "FL3.4"
+      ],
+      "secs": 70,
+      "basis": "district"
+    },
+    {
+      "id": "C3-04",
+      "chapter": "c3",
+      "topic": "Sort HIV transmission routes from everyday contact",
+      "type": "assign/classify",
+      "points": 3,
+      "cog": "apply",
+      "obj": [
+        "FL3.1",
+        "FL3.4"
+      ],
+      "secs": 100,
+      "basis": "district"
+    },
+    {
+      "id": "C3-05",
+      "chapter": "c3",
+      "topic": "Compare abstinence, condoms, and other methods: eliminate vs. reduce",
+      "type": "assign/classify",
+      "points": 3,
+      "cog": "analyze",
+      "obj": [
+        "FL3.3",
+        "FL3.1",
+        "FL1.3"
+      ],
+      "secs": 110,
+      "basis": "district"
+    },
+    {
+      "id": "C3-06",
+      "chapter": "c3",
+      "topic": "Sort contraception methods: barrier, hormonal, sterilization",
+      "type": "assign/classify",
+      "points": 2,
+      "cog": "understand",
+      "obj": [
+        "FL1.3"
+      ],
+      "secs": 80,
+      "basis": "district"
+    },
+    {
+      "id": "C3-07",
+      "chapter": "c3",
+      "topic": "Interpret a before-and-after bar chart (percentage-point change)",
+      "type": "numeric",
+      "points": 2,
+      "cog": "analyze",
+      "obj": [
+        "BP4"
+      ],
+      "secs": 90,
+      "basis": "blueprint"
+    },
+    {
+      "id": "C3-08",
+      "chapter": "c3",
+      "topic": "Evaluate claims about HIV prevention and treatment (U=U)",
+      "type": "multi",
+      "points": 2,
+      "cog": "evaluate",
+      "obj": [
+        "FL3.1",
+        "FL3.3"
+      ],
+      "secs": 90,
+      "basis": "district"
+    },
+    {
+      "id": "C4-01",
+      "chapter": "c4",
+      "topic": "STOP step S: state the decision without blame or a built-in answer",
+      "type": "single",
+      "points": 2,
+      "cog": "apply",
+      "obj": [
+        "STD5",
+        "FL3.4"
+      ],
+      "secs": 70,
+      "basis": "district"
+    },
+    {
+      "id": "C4-02",
+      "chapter": "c4",
+      "topic": "STOP step T: choose reasonable options",
+      "type": "multi",
+      "points": 2,
+      "cog": "apply",
+      "obj": [
+        "STD5"
+      ],
+      "secs": 90,
+      "basis": "standard"
+    },
+    {
+      "id": "C4-03",
+      "chapter": "c4",
+      "topic": "STOP step O: map consequences to options",
+      "type": "assign/classify",
+      "points": 3,
+      "cog": "analyze",
+      "obj": [
+        "STD5",
+        "FL3.3",
+        "FL3.2"
+      ],
+      "secs": 110,
+      "basis": "district"
+    },
+    {
+      "id": "C4-04",
+      "chapter": "c4",
+      "topic": "STOP step P: judge an explanation for a pick",
+      "type": "single",
+      "points": 2,
+      "cog": "evaluate",
+      "obj": [
+        "STD5"
+      ],
+      "secs": 70,
+      "basis": "standard"
+    },
+    {
+      "id": "C4-05",
+      "chapter": "c4",
+      "topic": "Identify which STOP steps a character is skipping",
+      "type": "single",
+      "points": 2,
+      "cog": "analyze",
+      "obj": [
+        "STD5"
+      ],
+      "secs": 70,
+      "basis": "standard"
+    },
+    {
+      "id": "C4-06",
+      "chapter": "c4",
+      "topic": "Evaluate refusal statements: strong, weak, or aggressive",
+      "type": "assign/classify",
+      "points": 3,
+      "cog": "evaluate",
+      "obj": [
+        "STD4",
+        "FL2.4"
+      ],
+      "secs": 100,
+      "basis": "district"
+    },
+    {
+      "id": "C4-07",
+      "chapter": "c4",
+      "topic": "Identify accurate advantages of abstinence as HIV and pregnancy prevention",
+      "type": "multi",
+      "points": 3,
+      "cog": "apply",
+      "obj": [
+        "FL3.2",
+        "FL3.3"
+      ],
+      "secs": 90,
+      "basis": "district"
+    },
+    {
+      "id": "C5-01",
+      "chapter": "c5",
+      "topic": "Classify fictional sources: credible, needs checking, or not credible",
+      "type": "assign/classify",
+      "points": 3,
+      "cog": "evaluate",
+      "obj": [
+        "BP5",
+        "STD3"
+      ],
+      "secs": 120,
+      "basis": "standard"
+    },
+    {
+      "id": "C5-02",
+      "chapter": "c5",
+      "topic": "Pick the features that make a source more trustworthy",
+      "type": "multi",
+      "points": 3,
+      "cog": "analyze",
+      "obj": [
+        "BP5",
+        "STD3"
+      ],
+      "secs": 80,
+      "basis": "standard"
+    },
+    {
+      "id": "C5-03",
+      "chapter": "c5",
+      "topic": "Match situations to the most helpful resource",
+      "type": "assign/match",
+      "points": 3,
+      "cog": "apply",
+      "obj": [
+        "STD3",
+        "STD8"
+      ],
+      "secs": 100,
+      "basis": "standard"
+    },
+    {
+      "id": "C5-04",
+      "chapter": "c5",
+      "topic": "Choose the best supportive message for a friend",
+      "type": "single",
+      "points": 2,
+      "cog": "evaluate",
+      "obj": [
+        "STD4",
+        "STD8"
+      ],
+      "secs": 70,
+      "basis": "standard"
+    },
+    {
+      "id": "C5-05",
+      "chapter": "c5",
+      "topic": "Order the steps of a health advocacy effort",
+      "type": "order",
+      "points": 2,
+      "cog": "apply",
+      "obj": [
+        "STD8"
+      ],
+      "secs": 70,
+      "basis": "standard"
+    },
+    {
+      "id": "C6-01",
+      "chapter": "c6",
+      "topic": "Sort claims from a viral post: accurate, misleading, or inaccurate",
+      "type": "assign/classify",
+      "points": 3,
+      "cog": "analyze",
+      "obj": [
+        "BP6",
+        "BP3",
+        "FL3.3"
+      ],
+      "secs": 100,
+      "basis": "district"
+    },
+    {
+      "id": "C6-02",
+      "chapter": "c6",
+      "topic": "Identify pressure and controlling messages in the case thread",
+      "type": "multi",
+      "points": 3,
+      "cog": "analyze",
+      "obj": [
+        "BP6",
+        "BP2",
+        "FL2.4"
+      ],
+      "secs": 80,
+      "basis": "district"
+    },
+    {
+      "id": "C6-03",
+      "chapter": "c6",
+      "topic": "Draw a conclusion about consent supported by two documents",
+      "type": "single",
+      "points": 3,
+      "cog": "analyze",
+      "obj": [
+        "BP6",
+        "FL2.4"
+      ],
+      "secs": 60,
+      "basis": "district"
+    },
+    {
+      "id": "C6-04",
+      "chapter": "c6",
+      "topic": "Judge what the Observe step of STOP should look like",
+      "type": "single",
+      "points": 3,
+      "cog": "evaluate",
+      "obj": [
+        "BP6",
+        "STD5"
+      ],
+      "secs": 70,
+      "basis": "standard"
+    },
+    {
+      "id": "C6-05",
+      "chapter": "c6",
+      "topic": "Choose resources that fit the case",
+      "type": "multi",
+      "points": 3,
+      "cog": "apply",
+      "obj": [
+        "BP6",
+        "STD3",
+        "STD8"
+      ],
+      "secs": 70,
+      "basis": "standard"
+    },
+    {
+      "id": "C6-06",
+      "chapter": "c6",
+      "topic": "Choose the best overall advice using all four documents",
+      "type": "single",
+      "points": 2,
+      "cog": "evaluate",
+      "obj": [
+        "BP6",
+        "FL2.4",
+        "STD5",
+        "STD3"
+      ],
+      "secs": 70,
+      "basis": "district"
+    }
+  ],
+  "chapters": [
+    {
+      "id": "c1",
+      "n": 1,
+      "title": "Puberty & Reproductive Health",
+      "targetMinutes": 8
+    },
+    {
+      "id": "c2",
+      "n": 2,
+      "title": "Healthy Relationships & Consent",
+      "targetMinutes": 12
+    },
+    {
+      "id": "c3",
+      "n": 3,
+      "title": "STIs, HIV & Prevention",
+      "targetMinutes": 12
+    },
+    {
+      "id": "c4",
+      "n": 4,
+      "title": "Abstinence & Decision-Making",
+      "targetMinutes": 10
+    },
+    {
+      "id": "c5",
+      "n": 5,
+      "title": "Resources & Advocacy",
+      "targetMinutes": 8
+    },
+    {
+      "id": "c6",
+      "n": 6,
+      "title": "Integrated Case",
+      "targetMinutes": 10
+    }
+  ]
+}

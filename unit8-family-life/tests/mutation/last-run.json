@@ -1,0 +1,181 @@
+{
+  "when": "2026-10-09T01:13:31.495Z",
+  "node": "v22.22.0",
+  "total": 32,
+  "killed": 30,
+  "survived": [
+    {
+      "id": "order-length",
+      "what": "ordering ignores a wrong-length answer",
+      "note": "EQUIVALENT: validateResponse already rejects a wrong-length order before grading, so this second check is defence in depth."
+    },
+    {
+      "id": "teacher-token-ttl",
+      "what": "teacher tokens are cached 6 hours instead of 2",
+      "note": "EQUIVALENT while core.js also checks the expiry time itself."
+    }
+  ],
+  "invalid": 0,
+  "results": [
+    {
+      "id": "credit-2nd",
+      "what": "second try is worth 90% instead of 85%",
+      "status": "killed"
+    },
+    {
+      "id": "credit-3rd",
+      "what": "third try is worth 80% instead of 75%",
+      "status": "killed"
+    },
+    {
+      "id": "attempts-4",
+      "what": "four attempts instead of three",
+      "status": "killed"
+    },
+    {
+      "id": "locked-credit",
+      "what": "a locked item still earns 25%",
+      "status": "killed"
+    },
+    {
+      "id": "multi-superset",
+      "what": "select-all accepts extra wrong choices",
+      "status": "killed"
+    },
+    {
+      "id": "order-length",
+      "what": "ordering ignores a wrong-length answer",
+      "status": "SURVIVED"
+    },
+    {
+      "id": "hint-off-by-one",
+      "what": "hint 2 is shown after the first miss",
+      "status": "killed"
+    },
+    {
+      "id": "percent-denominator",
+      "what": "percent ignores turned-off items",
+      "status": "killed"
+    },
+    {
+      "id": "disabled-ignored",
+      "what": "turned-off questions are still asked",
+      "status": "killed"
+    },
+    {
+      "id": "stage-lock-off",
+      "what": "a staged step can be answered before the earlier one",
+      "status": "killed"
+    },
+    {
+      "id": "dup-reqid-off",
+      "what": "a retried request counts as a new attempt",
+      "status": "killed"
+    },
+    {
+      "id": "submit-grace",
+      "what": "a late answer is accepted for 10 extra minutes",
+      "status": "killed"
+    },
+    {
+      "id": "sweep-late",
+      "what": "the timer waits an hour past the deadline",
+      "status": "killed"
+    },
+    {
+      "id": "expire-on-read-off",
+      "what": "expired sessions are not finalized when touched",
+      "status": "killed"
+    },
+    {
+      "id": "class-code-off",
+      "what": "any class code is accepted",
+      "status": "killed"
+    },
+    {
+      "id": "last-name-check-off",
+      "what": "a different last name can use an existing ID",
+      "status": "killed"
+    },
+    {
+      "id": "block-lock-off",
+      "what": "block can change after Begin",
+      "status": "killed"
+    },
+    {
+      "id": "student-token-expiry-off",
+      "what": "student tokens never expire",
+      "status": "killed"
+    },
+    {
+      "id": "teacher-expiry-off",
+      "what": "teacher tokens never expire",
+      "status": "killed"
+    },
+    {
+      "id": "teacher-throttle-off",
+      "what": "repeated wrong teacher passwords are not slowed",
+      "status": "killed"
+    },
+    {
+      "id": "password-length",
+      "what": "a 1-character teacher password is accepted",
+      "status": "killed"
+    },
+    {
+      "id": "reset-name-check-off",
+      "what": "reset does not need the typed last name",
+      "status": "killed"
+    },
+    {
+      "id": "closed-ignored",
+      "what": "Begin works while the assessment is closed",
+      "status": "killed"
+    },
+    {
+      "id": "busy-mapping",
+      "what": "a busy lock crashes instead of a retryable BUSY",
+      "status": "killed"
+    },
+    {
+      "id": "lock-not-released",
+      "what": "the script lock is never released",
+      "status": "killed"
+    },
+    {
+      "id": "preview-logged",
+      "what": "preview answers are written to the student log",
+      "status": "killed"
+    },
+    {
+      "id": "cache-writethrough-off",
+      "what": "saved sessions are not written through to the cache",
+      "status": "killed"
+    },
+    {
+      "id": "wrong-row-update",
+      "what": "an existing student row update writes the next row",
+      "status": "killed"
+    },
+    {
+      "id": "teacher-token-ttl",
+      "what": "teacher tokens are cached 6 hours instead of 2",
+      "status": "SURVIVED"
+    },
+    {
+      "id": "hide-data-tabs-off",
+      "what": "the data tabs are not hidden",
+      "status": "killed"
+    },
+    {
+      "id": "class-code-fixed",
+      "what": "every class code is AAAAAA",
+      "status": "killed"
+    },
+    {
+      "id": "timer-interval",
+      "what": "the auto-submit timer runs every 30 minutes",
+      "status": "killed"
+    }
+  ]
+}
