@@ -64,7 +64,7 @@ export async function mountTeacher({ main, dlg, toast, onExit, onPreview }) {
   // ------------------------------------------------------------------------------------------------ render
   const TABS = [['overview', 'Overview'], ['students', 'Students and resets'], ['analytics', 'Analytics'], ['export', 'Export']];
   const tmTile = (label, val, note) => h('div.tm-tile', h('div.tm-label', label), h('div.tm-big', String(val)), note ? h('div.tm-note', note) : '');
-  const isLive = (x) => state.showDemo || x.type === 'LIVE';
+  const isLive = (x) => (state.showDemo || x.type === 'LIVE') && !/^RESET/i.test(String(x.review || ''));   // reset test runs are kept in the Sheet but are not counted
   function overviewTop() {
     const d = state.data, sess = (d.sessions || []).filter((x) => isLive(x) && (state.view === A.ALL || x.block === state.view));
     const subRows = d.students.filter((s) => isLive(s) && (state.view === A.ALL || s.block === state.view)), S = A.summary(rows(), opts());
