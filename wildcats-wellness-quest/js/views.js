@@ -81,12 +81,18 @@
     var period = h('select.txt#period', { 'data-fk': 'period', disabled: ro || null, onchange: function (e) { st.student.period = e.target.value.slice(0, 20); env.save(); } }, h('option', { value: '' }, 'Choose your block\u2026'), BLOCKS.map(function (b) { return h('option', { value: b, selected: st.student.period === b ? true : null }, b); }));
     var useCode = W.Sync.enabled(), codeMsg = h('p.hint-line#code-msg', { role: 'status' }, 'Your teacher will give you the class code.');
     var code = h('input.txt#classcode', { type: 'text', maxlength: '40', autocomplete: 'off', autocapitalize: 'characters', 'data-fk': 'code', value: st.student.code || '', disabled: ro || started || null, 'aria-describedby': 'code-msg', oninput: function (e) { st.student.code = e.target.value.slice(0, 40); env.save(); env.refresh(); } });
+    /* Teacher code typed in the Class code box opens teacher mode (no alias needed). Checked without counting toward the reset cooldown. */
+    var isTeacherCode = function (v) { var t = C.teacher; v = String(v || '').trim(); if (v.length < 6 || started || !St.passcodeConfigured()) return false; return [v, v.toUpperCase()].some(function (x) { return U.constEq(U.deriveVerifier(x, t.salt, t.iterations), t.verifier); }); };
+    var maybeTeacher = function () { return !started && (st.student.code || '').trim().length >= 6; };
+    var aliasShort = function () { return C.requireIdentifier && st.student.alias.trim().length < 2; };
     var needsCode = function () { return useCode && !started && (st.student.code || '').trim().length < 2; };
     var avs = h('div.avatars', { role: 'radiogroup', 'aria-label': 'Choose your avatar' });
     W.AVATARS.forEach(function (a) { avs.appendChild(h('label.opt', h('input', { type: 'radio', name: 'avatar', value: a.id, checked: st.student.avatar === a.id, disabled: ro || null, 'data-fk': 'av-' + a.id, onchange: function () { st.student.avatar = a.id; env.save(); env.rerender(); } }), h('span.mark', A.iconEl('check')), U.svg(A.avatar(a)), h('span.small', { style: { fontWeight: '700' } }, a.name))); });
     var begin = function () { st.student.alias = st.student.alias.trim(); st.student.code = (st.student.code || '').trim(); st.progress.started = true; if (!st.timing.startedAt) st.timing.startedAt = U.nowISO(); if (!st.timing.beganAt) st.timing.beganAt = U.nowISO(); env.save(true); W.App.go({ m: 0, s: '0.2' }); };
-    var startBtn = UI.btn(started ? 'Continue to How it works' : 'Start my quest', { cls: 'primary big pulse', id: 'btn-start', icon: 'right', disabled: (C.requireIdentifier && st.student.alias.trim().length < 2) || needsCode(),
+    var startBtn = UI.btn(started ? 'Continue to How it works' : 'Start my quest', { cls: 'primary big pulse', id: 'btn-start', icon: 'right', disabled: (aliasShort() || needsCode()) && !maybeTeacher(),
       onclick: function () {
+        if (maybeTeacher() && isTeacherCode(st.student.code)) { st.student.code = ''; W.Teacher.enter(); return; }
+        if (aliasShort()) { codeMsg.textContent = 'Enter your alias or ID first.'; UI.announce(codeMsg.textContent); return; }
         if (!useCode || started) { begin(); return; }
         st.student.alias = st.student.alias.trim(); st.student.code = st.student.code.trim(); startBtn.disabled = true; codeMsg.textContent = 'Checking your class code\u2026';
         W.Sync.checkCode(st.student).then(function (r) {
@@ -95,7 +101,7 @@
           try { code.focus(); } catch (e) { /* ignore */ }
         });
       } });
-    env.refreshStart = function () { startBtn.disabled = (C.requireIdentifier && alias.value.trim().length < 2) || needsCode(); };
+    env.refreshStart = function () { startBtn.disabled = (aliasShort() || needsCode()) && !maybeTeacher(); };
     var left = h('div.stack', h('div.display', 'Wildcats Wellness Quest', h('br'), h('span', { style: { color: 'var(--brand)' } }, 'Small Choices, Whole Health')),
       h('p.lead', 'Walk the Wildcat High campus with Pounce and Jordan, a fictional classmate. Investigate situations, play a simulation, and show what you understand about wellness.'),
       h('div.callout.info', A.iconEl('clock'), h('div', h('b', 'Designed for about ' + C.timeGuidance.rangeMinutes[0] + '\u2013' + C.timeGuidance.rangeMinutes[1] + ' minutes. '), 'You have a ' + (C.timeLimitMinutes > 0 ? C.timeLimitMinutes + '-minute limit, counted from when you press Start; a countdown shows at the top and your work is submitted automatically at zero. ' : 'No timer. ') + 'No speed points. Progress saves as you go.')));
