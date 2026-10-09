@@ -5,7 +5,7 @@
 export const CONFIG = {
   // Paste the "Web app" URL (ends in /exec) from your Google Apps Script deployment.  See README.md, step 5.
   // Leave '' until you have deployed; students will then see a friendly "not connected" screen.
-  backendUrl: '',
+  backendUrl: 'https://script.google.com/macros/s/AKfycbxjVrWWhaD9YgZqfjvRpkbWxurayKK7RRlej0QPX71ZN1F0DyRFa4Erw6q5Y5UnbDRq/exec',
 
   // Typing this into the Class Code box opens Teacher Mode.  It is a shortcut, NOT a password:
   // the real teacher password is set in the Google Sheet and checked by the server.
