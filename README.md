@@ -136,23 +136,21 @@ Static (no build, no server), progress saved only in the student's browser. One 
 `https://<user>.github.io/<repo>/house-edge/`. See `house-edge/README.md` for teacher instructions, how to edit probabilities,
 payouts, questions and timing, and the tests (`node house-edge/tests/engine.test.js`).
 
-## Teacher mode in every summative
+## Teacher view in every summative
 
-Each summative has a private way for the teacher to click through the whole assessment without answering, which never records a student score. In all five, **type the teacher code in the Class code box on the main sign-in screen** (no `?preview` in the address, no name needed) and press the start button:
+On every summative, type the teacher code **`WALK-TEACHER`** in the sign-in **Class code** box (any capitalisation), then your teacher passcode, to see every submission and grade inside the app, with no trip to the Google Sheet. It shows scores and averages, filters by block and class code, what to reteach, resets or resubmissions, and a CSV download, and it refreshes about every 30 seconds. A **Preview the assessment** button opens the click-through preview, which never records a student score.
 
-| Summative | What happens |
-|---|---|
-| `health-summative/` (Wildcat Wellness Trail) | `WALK-TEACHER` (not case-sensitive) opens the click-through. See its README, section 10b, to change it. |
-| `unit7-nutrition-activity/` | `WALK-TEACHER` opens the click-through. |
-| `substance-use-summative/` (SIGNAL) | `WALK-TEACHER` opens Preview Mode directly (no second passcode prompt). `?preview=1` still works. |
-| `wildcats-wellness-quest/` | `WALK-TEACHER` opens teacher mode (checked against the saved teacher verifier; the footer **Teacher reset** route still works). |
-| `community-health-mission/` | `WALK-TEACHER` signs in as teacher and starts the private preview. The server checks it, so the spreadsheet teacher passcode must be set to `WALK-TEACHER`; if it is different, use **Teacher sign-in**. Redeploy the Apps Script after updating. |
+| Summative | Teacher passcode (checked by your Apps Script, not the page) | Notes |
+|---|---|---|
+| `unit5-gambling/` | The password you set in the Sheet menu (**Gambling Assessment > 2. Set teacher password**) | Reference design for the others |
+| `unit8-family-life/` | The password you set (**Unit 8 > 2. Set teacher password**) | Needs its Sheet connected first |
+| `health-summative/` (Wildcat Wellness Trail) | The passcode you set from the Sheet's **Wildcat Trail** menu | Shows time, skips and reteach after you paste the newest `Code.gs` and deploy a new version; until then it shows the basic student list |
+| `substance-use-summative/` (SIGNAL) | `TEACHER_PASSCODE` in Apps Script (Project Settings > Script properties) | Same dashboard as `teacher/` |
+| `unit7-nutrition-activity/` | The teacher dashboard passcode from **Unit 7 Gradebook** in the Sheet | Same dashboard as `teacher/`; with no Sheet connected it shows the offline demo-data sandbox |
+| `wildcats-wellness-quest/` | The passcode you set from the Sheet menu **Wildcats Quest > Set teacher view passcode** | Paste the newest `Code.gs` and deploy a new version first. Without a Sheet backend the teacher code opens the preview as before |
+| `community-health-mission/` | The teacher passcode you set in the Sheet (server-checked) | Teacher panel; **Teacher sign-in** link also works |
 
-Each app stores only a hash or verifier of the code (Community Health Mission keeps it on the server), so changing it later means regenerating each one (see each app's README). Community Health Mission's sign-in box recognises only the literal `WALK-TEACHER`; with any other passcode use its **Teacher sign-in** link.
-
-## Reset an attempt from Settings (all five summatives)
-
-Open **Settings** in any summative while an attempt is in progress (or finished), type the teacher code in the **Teacher reset** box and press **Reset this attempt**. The current attempt on that device is wiped and the page returns to the start/sign-in screen. It uses the same codes as teacher mode (`WALK-TEACHER` by default; Community Health Mission checks it on the server, so it needs the spreadsheet teacher passcode, and every reset is written to its audit log). Trail, SIGNAL and Unit 7 also ask the Google Sheet to mark the earlier submission as reset, but only if the Sheet's own teacher/reset passcode is the same code; otherwise ask the Sheet owner to reset that student there. A wrong code changes nothing.
+`WALK-TEACHER` only reveals the passcode box. The passcode is what protects the data, and it is checked by your Google Apps Script, so changing it never needs a page update. Each app's click-through preview code is unchanged.
 
 ## Wildcats Wellness Quest (`wildcats-wellness-quest/`)
 

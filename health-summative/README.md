@@ -51,7 +51,7 @@ content/              all questions, hints, readings (see content/README.md)
   sources.js          the in-app Sources screen
 js/                   the app (you should not need to touch this)
 css/  assets/fonts/   styling and self-hosted fonts (no Google Fonts call)
-teacher.html          optional passcode page: list finished students, reset one
+teacher.html          optional hidden passcode page (the same view also opens inside the app: type the teacher code in the Class code box)
 apps-script/Code.gs   the Google Sheet backend
 tests/  tools/        automated tests; generators for TIMING.md and CONTENT-MAP.md
 ```

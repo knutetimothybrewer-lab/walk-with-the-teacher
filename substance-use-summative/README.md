@@ -40,7 +40,7 @@ js/                   app, engine, scoring, items, simulations, charts, visuals,
 content/public.js     GENERATED: questions without answers (hashed keys) for the browser
 authoring/            SOURCE OF TRUTH: every question WITH its answer and explanation (keep private)
 google-apps-script/   Code.gs (backend) and KeyData.gs (GENERATED scoring key for the server)
-teacher/              teacher dashboard page (not linked from the student screens)
+teacher/              teacher dashboard page (not linked from the student screens). The same dashboard opens inside the app: type the teacher code in the Class code box, then the TEACHER_PASSCODE
 teacher-private/      GENERATED: BLUEPRINT.md, QUESTION_BANK.md (contain the answer key)
 tools/                build, release, hash, serve
 tests/                unit tests, Apps Script mock tests, browser tests

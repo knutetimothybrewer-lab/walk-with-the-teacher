@@ -342,6 +342,7 @@ test('teacher mode: the teacher code clicks through everything without answering
   assert.equal(await page.locator('#teacherBar').count(), 0, 'no teacher controls for students');
   await page.fill('#f-code', 'walk-teacher');          // names and period left blank
   await page.click('button[type=submit]');
+  await page.click('text=Preview the assessment');     // the teacher code opens the teacher view first
   await page.waitForSelector('.station-intro');
   assert.equal(await page.locator('#teacherBar').count(), 1);
   // Next → walks intro → questions → station end → next station without answering
@@ -360,7 +361,7 @@ test('teacher mode: the teacher code clicks through everything without answering
   await page.waitForSelector('#f-code');
   assert.equal(await page.locator('#teacherBar').count(), 0);
   // a wrong code is still just a wrong class code
-  await page.fill('#f-first', 'A'); await page.fill('#f-last', 'B'); await page.selectOption('#f-period', '1'); await page.fill('#f-code', 'nope');
+  await page.fill('#f-first', 'A'); await page.fill('#f-last', 'B'); await page.selectOption('#f-period', 'Block 1/2'); await page.fill('#f-code', 'nope');
   await page.click('button[type=submit]');
   await page.waitForSelector('.form-err:not([hidden])');
   assert.deepEqual(errors, []);
@@ -372,6 +373,7 @@ test('teacher mode: skip station, jump and skip-to-results shortcuts', { timeout
   await page.goto(BASE);
   await page.fill('#f-code', 'WALK-TEACHER');
   await page.click('button[type=submit]');
+  await page.click('text=Preview the assessment');
   await page.waitForSelector('.station-intro');
   await page.click('#tm-station');
   await page.waitForSelector('.station-end');
