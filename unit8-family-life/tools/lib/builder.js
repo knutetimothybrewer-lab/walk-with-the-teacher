@@ -171,7 +171,7 @@ function buildItem(it, ch, u, order, src, E, Wn) {
     const targets = (it.targets || []).map((t) => ({ ...t, tid: mode === 'label' ? t.k : opaque('g', id, t.k, tUsed) }));
     const cards = (it.cards || []).map((c) => ({ ...c, cid: opaque('c', id, c.t, used) }));
     const tMap = {}; targets.forEach((t) => { tMap[t.k] = t.tid; });
-    const pTargets = (mode === 'classify' ? targets : shuffled(targets, id + ':targets'));
+    const pTargets = (mode === 'classify' || mode === 'label' ? targets : shuffled(targets, id + ':targets')); // marker numbers are arbitrary, so label rows follow them
     const isThread = it.layout === 'thread';
     pubItem.assign = {
       mode, fill, figure: it.figure || null, layout: it.layout || null, pick: it.pick || null,

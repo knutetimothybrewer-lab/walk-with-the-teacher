@@ -274,10 +274,6 @@
                 ],
                 "targets": [
                   {
-                    "id": "m4",
-                    "label": "Marker 4"
-                  },
-                  {
                     "id": "m1",
                     "label": "Marker 1"
                   },
@@ -288,6 +284,10 @@
                   {
                     "id": "m3",
                     "label": "Marker 3"
+                  },
+                  {
+                    "id": "m4",
+                    "label": "Marker 4"
                   },
                   {
                     "id": "m5",
@@ -365,20 +365,20 @@
                     "label": "Marker 1"
                   },
                   {
-                    "id": "m4",
-                    "label": "Marker 4"
+                    "id": "m2",
+                    "label": "Marker 2"
                   },
                   {
                     "id": "m3",
                     "label": "Marker 3"
                   },
                   {
-                    "id": "m5",
-                    "label": "Marker 5"
+                    "id": "m4",
+                    "label": "Marker 4"
                   },
                   {
-                    "id": "m2",
-                    "label": "Marker 2"
+                    "id": "m5",
+                    "label": "Marker 5"
                   }
                 ]
               }

@@ -369,7 +369,8 @@ var W8Core = (function () {
     var actions = {};
 
     actions.ping = function () {
-      var cfg = getConfig(), bank = store.getBank();
+      var cfg = getConfig(), bank = null;
+      try { bank = store.getBank(); } catch (e) { bank = null; } // not seeded yet: the teacher must still be able to sign in and run Test Connection
       return { version: VERSION, open: cfg.open, blocks: BLOCKS, bank: bank ? bank.meta : null };
     };
 

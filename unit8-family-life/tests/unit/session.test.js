@@ -432,10 +432,22 @@ test('Test Connection reports password, class codes, and item bank', () => {
 
 test('internal errors never leak stack traces unless debug is on', () => {
   const S = setup(); S.env.debug = false;
+  const token = S.student();
   S.store.getBank = () => { throw new Error('secret path /srv/x'); };
-  const r = S.api('ping');
+  const r = S.api('begin', { token });
   assert.equal(r.ok, false); assert.equal(r.error.code, 'INTERNAL'); assert.equal(r.error.detail, undefined);
   assert.equal(JSON.stringify(r).includes('/srv/x'), false);
+});
+
+test('ping still answers when the item bank has not been seeded, so the teacher can reach Test Connection', () => {
+  const S = setup();
+  S.store.getBank = () => { throw new Error('No item bank loaded'); };
+  const p = S.api('ping');
+  assert.equal(p.ok, true); assert.equal(p.bank, null);
+  const tt = S.teacher();
+  const t = S.api('tTest', { tt });
+  assert.equal(t.ok, true);
+  assert.equal(t.checks.find((c) => c.name === 'Item bank loaded').ok, false);
 });
 
 test('unknown actions and prototype tricks are rejected', () => {

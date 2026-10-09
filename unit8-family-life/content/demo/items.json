@@ -127,12 +127,12 @@
                 ],
                 "targets": [
                   {
-                    "id": "m2",
-                    "label": "Marker 2"
-                  },
-                  {
                     "id": "m1",
                     "label": "Marker 1"
+                  },
+                  {
+                    "id": "m2",
+                    "label": "Marker 2"
                   },
                   {
                     "id": "m3",

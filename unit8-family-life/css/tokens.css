@@ -1,0 +1,49 @@
+/* Design tokens. tests/unit/contrast.test.js parses this file and checks WCAG AA for the pairs that matter,
+   so keep each token on one line in the form  --name: #rrggbb;  */
+
+:root {
+  /* type scale (rem; root is 17px for comfortable reading on small Chromebook screens) */
+  --fs-xs: 0.8rem; --fs-sm: 0.9rem; --fs-md: 1rem; --fs-lg: 1.15rem; --fs-xl: 1.4rem; --fs-2xl: 1.8rem; --fs-3xl: 2.3rem;
+  --font: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  /* spacing (4px base) */
+  --s1: 4px; --s2: 8px; --s3: 12px; --s4: 16px; --s5: 24px; --s6: 32px; --s7: 48px; --s8: 64px;
+  --radius-sm: 8px; --radius: 14px; --radius-lg: 20px;
+  --shadow-1: 0 1px 2px rgba(16, 32, 43, 0.06), 0 1px 3px rgba(16, 32, 43, 0.08);
+  --shadow-2: 0 4px 14px rgba(16, 32, 43, 0.1);
+  --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+
+  /* neutrals */
+  --bg: #f4f7f9;
+  --surface: #ffffff;
+  --surface-2: #f8fafb;
+  --ink: #12202b;
+  --ink-2: #33444f;
+  --muted: #526370;
+  --line: #d3dce3;
+  --line-strong: #9fb0bc;
+  --focus: #0b57d0;
+
+  /* status */
+  --ok-ink: #0a5c33; --ok-bg: #e3f4ea; --ok-line: #8fd0aa;
+  --warn-ink: #7a4b00; --warn-bg: #fff3d1; --warn-line: #e6c36b;
+  --bad-ink: #9b1c2c; --bad-bg: #fde8ea; --bad-line: #e7a0a8;
+  --info-ink: #0b4f8a; --info-bg: #e6f1fb; --info-line: #9cc4e8;
+
+  /* timer states */
+  --timer-amber-ink: #7a4b00; --timer-amber-bg: #fff3d1;
+  --timer-red-ink: #ffffff; --timer-red-bg: #b3261e;
+
+  /* default theme = lab */
+  --accent: #0a6674; --accent-ink: #ffffff; --accent-text: #0a6674; --accent-soft: #e3f3f5; --accent-line: #8cc9d1;
+  --hero-a: #0a6674; --hero-b: #1b5e9b; --hero-ink: #ffffff; --accent-warm: #b4510d;
+}
+
+/* Chapter palettes. Each chapter has its own identity: (1) teal/blue lab (2) warm purple/blue studio (3) deep-blue medical lab
+   (4) indigo decision paths (5) green/teal resource center (6) navy and gold case file. */
+[data-theme="lab"] { --accent: #0a6674; --accent-ink: #ffffff; --accent-text: #0a6674; --accent-soft: #e3f3f5; --accent-line: #8cc9d1; --hero-a: #0a6674; --hero-b: #1b5e9b; --hero-ink: #ffffff; }
+[data-theme="studio"] { --accent: #5a3cb0; --accent-ink: #ffffff; --accent-text: #5a3cb0; --accent-soft: #eee9fa; --accent-line: #c2b4ec; --hero-a: #5a3cb0; --hero-b: #2f5bb7; --hero-ink: #ffffff; --accent-warm: #b4510d; }
+[data-theme="medlab"] { --accent: #1b4a9a; --accent-ink: #ffffff; --accent-text: #1b4a9a; --accent-soft: #e8eefa; --accent-line: #a3bce6; --hero-a: #123a7a; --hero-b: #1d6fb8; --hero-ink: #ffffff; }
+[data-theme="paths"] { --accent: #4338ca; --accent-ink: #ffffff; --accent-text: #4338ca; --accent-soft: #ecebfc; --accent-line: #b6b1f0; --hero-a: #312e81; --hero-b: #4f46e5; --hero-ink: #ffffff; }
+[data-theme="resource"] { --accent: #0a7458; --accent-ink: #ffffff; --accent-text: #0a7458; --accent-soft: #e2f4ed; --accent-line: #94d2bd; --hero-a: #0a5f4b; --hero-b: #0a7a6c; --hero-ink: #ffffff; }
+[data-theme="case"] { --accent: #10284a; --accent-ink: #ffffff; --accent-text: #10284a; --accent-soft: #f6f0de; --accent-line: #d6c286; --hero-a: #0b1d38; --hero-b: #1a3a66; --hero-ink: #ffffff; --accent-gold: #e8b84a; --accent-warm: #b07a0a; }
