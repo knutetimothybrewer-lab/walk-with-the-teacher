@@ -152,8 +152,34 @@ function handleTeacher_(b) {
     }
     return { ok: true, students: out, codes: validCodes_().length };
   }
+  if (b.op === 'dashboard') { return dashboardData_(); }
   if (b.op === 'reset') { return { ok: resetStudent_(b.student), reason: '' }; }
   return { ok: false, reason: 'unknown-op' };
+}
+
+/** Everything the in-app teacher view shows: every finished student plus topic, station and question analysis. */
+function dashboardData_() {
+  var s = ss_().getSheetByName(SHEETS.summary), students = [];
+  if (s && s.getLastRow() > 1) {
+    var vals = s.getRange(2, 1, s.getLastRow() - 1, SUMMARY_FIXED.length).getValues();
+    vals.forEach(function (r) {
+      students.push({ when: r[0], last: r[1], first: r[2], period: r[3], code: r[4], percent: r[5], earned: r[6], possible: r[7],
+        totalSec: r[8], activeSec: r[9], skips: r[10], helpOpens: r[11], verified: r[13], retake: r[14] });
+    });
+  }
+  var agg = aggregateDetail_();
+  var rate = function (o) { return o.n ? o.miss / o.n : 0; };
+  return {
+    ok: true, version: VERSION, students: students, codes: validCodes_().length,
+    topics: Object.keys(agg.topics).map(function (k) { return { name: TOPICS[k] || k, n: agg.topics[k].n, miss: agg.topics[k].miss, rate: rate(agg.topics[k]) }; })
+      .sort(function (a, b) { return b.rate - a.rate; }),
+    stations: Object.keys(agg.stations).map(function (k) { return { name: k, n: agg.stations[k].n, miss: agg.stations[k].miss, rate: rate(agg.stations[k]) }; })
+      .sort(function (a, b) { return b.rate - a.rate; }),
+    items: agg.list.filter(function (it) { return it.n > 0; })
+      .sort(function (a, b) { return a.firstPct - b.firstPct || b.n - a.n; }).slice(0, 15)
+      .map(function (it) { return { id: it.id, station: it.station, label: it.label, n: it.n, firstPct: it.firstPct, top: it.top, topCount: it.topCount,
+        flag: it.n >= FLAG_MIN_N && it.firstPct < FLAG_BELOW }; })
+  };
 }
 
 /**
@@ -241,7 +267,8 @@ function buildClassTab_() {
 
 /* -------------------------------------------------------- reports (rebuilt) */
 
-function rebuildReports_() {
+/** Question-level aggregates from the Detail tab (shared by the Items/Reteach tabs and the in-app teacher view). */
+function aggregateDetail_() {
   var det = ss_().getSheetByName(SHEETS.detail);
   var items = {};          // id -> aggregate
   var topics = {}, stations = {};
@@ -268,6 +295,11 @@ function rebuildReports_() {
     it.top = Object.keys(it.wrongs).sort(function (a, b) { return it.wrongs[b] - it.wrongs[a]; })[0] || '';
     it.topCount = it.top ? it.wrongs[it.top] : 0;
   });
+  return { list: list, topics: topics, stations: stations };
+}
+
+function rebuildReports_() {
+  var agg = aggregateDetail_(), list = agg.list, topics = agg.topics, stations = agg.stations;
 
   // ---- Items tab (item difficulty; the % columns are live formulas on Detail)
   var s = ss_().getSheetByName(SHEETS.items);

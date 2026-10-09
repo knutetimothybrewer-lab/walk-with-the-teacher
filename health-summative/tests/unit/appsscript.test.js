@@ -119,6 +119,21 @@ test('teacher: passcode required; list; reset allows a retake', () => {
   assert.equal(call({ action: 'submit', payload: payload({ completion: 'WWT-NEW1' }) }).ok, true);
 });
 
+test('teacher: dashboard needs the passcode and returns students, topics, stations and hardest questions', () => {
+  const { call } = makeEnv();
+  call({ action: 'submit', payload: payload() });
+  assert.equal(call({ action: 'teacher', op: 'dashboard', passcode: 'wrong' }).reason, 'passcode');
+  const d = call({ action: 'teacher', op: 'dashboard', passcode: 'secret' });
+  assert.equal(d.ok, true);
+  assert.equal(d.students.length, 1);
+  const s = d.students[0];
+  assert.deepEqual([s.first, s.last, s.period, s.code, s.percent, s.activeSec, s.skips, s.helpOpens, s.verified], ['Alex', 'Rivera', '3', 'TRAIL1', 80, 2000, 1, 2, 'server']);
+  assert.ok(d.topics.length > 0 && d.stations.length > 0);
+  assert.equal(d.topics[0].name.length > 0, true);
+  assert.equal(d.items[0].id, 'q2');            // hardest first
+  assert.equal(d.items.every((it) => it.id !== 'q3'), true); // skipped items are not analysed
+});
+
 test('unknown action and bad json are handled', () => {
   const { ctx, call } = makeEnv();
   assert.equal(call({ action: 'nope' }).reason, 'unknown-action');

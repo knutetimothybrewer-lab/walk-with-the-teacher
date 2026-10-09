@@ -195,3 +195,20 @@ dialog.crisis h2 { color: #7a2f06; }
 .teacher-bar button, .teacher-bar select { min-height: 38px; }
 .teacher-bar select { border-radius: 99px; padding: 0 10px; }
 body:has(.teacher-bar) #foot { padding-bottom: 80px; }
+
+/* ---- Teacher view (in-app) ---- */
+.tv { max-width: 1100px; margin: 0 auto; padding: 8px 0 40px; }
+.tv-head { justify-content: space-between; margin-bottom: 14px; padding: 16px 22px; }
+.tv-tiles { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); margin-bottom: 18px; }
+.tv-tile { background: var(--card); border-radius: var(--radius-s); padding: 12px 16px; box-shadow: var(--shadow); }
+.tv-big { font-size: 1.9rem; font-weight: 800; }
+.tv-sel { display: inline-flex; flex-direction: column; font-weight: 800; gap: 4px; margin-right: 14px; }
+.tv-sel select { border: 2px solid var(--line); border-radius: 12px; padding: 8px 12px; min-height: 44px; background: #fff; }
+.tv-scroll { overflow-x: auto; margin-top: 12px; }
+.tv-table { border-collapse: collapse; width: 100%; background: #fff; }
+.tv-table caption { text-align: left; font-weight: 800; padding: 6px 0; }
+.tv-table th, .tv-table td { padding: 7px 8px; font-size: .94rem; text-align: left; border-bottom: 1px solid var(--line); vertical-align: top; }
+.tv-table th { background: #e8ebf7; }
+.tv-score { font-weight: 800; }
+.btn-quiet.small { min-height: 34px; padding: 4px 12px; font-size: .88rem; }
+@media (max-width: 700px) { .tv .grid2 { grid-template-columns: 1fr; } }

@@ -4,6 +4,7 @@ import { settings } from './settings.js';
 import { renderReviewCard } from './runner.js';
 import { queueLength } from '../engine/sync.js';
 import { estimateSeconds, INTRO_SECONDS } from '../engine/timing.js';
+import { isTeacherCode } from '../engine/teacher.js';
 
 const root = () => document.getElementById('app');
 const pctText = (m) => `${Math.round(m * 100)}%`;
@@ -71,7 +72,12 @@ function welcome(app, existing) {
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     err.hidden = true;
-    if (await app.startTeacher(code.value)) return app.render();
+    if (await isTeacherCode(cfg, code.value)) {   // teacher code: open the in-app teacher view (preview is one click away)
+      const raw = code.value;
+      const { mountTeacher } = await import('./teacherview.js');
+      mountTeacher({ root: root(), cfg, onPreview: async () => { if (await app.startTeacher(raw)) app.render(); }, onExit: () => app.render() });
+      return;
+    }
     const student = { first: first.value.trim(), last: last.value.trim(), period: period.value, code: code.value.trim() };
     if (!student.first || !student.last || !student.period || !student.code) {
       return showErr(err, 'Please fill in all four boxes.');
