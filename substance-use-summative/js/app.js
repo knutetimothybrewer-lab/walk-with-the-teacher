@@ -131,6 +131,10 @@ function screenEntry(message, kind = 'err') {
   form.onsubmit = async (e) => {
     e.preventDefault();
     const nm = name.value.trim().replace(/\s+/g, ' '), cd = code.value.trim(), pd = period.value;
+    if (cd && sha256(CONFIG.previewSalt + '|' + cd.toUpperCase()) === CONFIG.previewPasscodeHash) { // teacher code in the class-code box: open Preview Mode
+      try { sessionStorage.setItem('sig-pv-ok', cd.toUpperCase()); } catch (_) { /* falls back to the passcode prompt */ }
+      location.href = location.pathname + '?preview=1'; return;
+    }
     msg.style.color = ''; if (nm.length < 3 || !/\s|\./.test(nm) && nm.length < 4) { msg.textContent = 'Please enter your first and last name.'; name.focus(); return; }
     if (!pd) { msg.textContent = 'Choose your class period.'; period.focus(); return; }
     if (!cd) { msg.textContent = 'Enter the class code your teacher gave you.'; code.focus(); return; }
@@ -337,7 +341,8 @@ function screenResults() {
 async function boot() {
   const pv = params.has('preview');
   if (pv) {
-    const code = window.prompt('Preview Mode passcode');
+    let pre = ''; try { pre = sessionStorage.getItem('sig-pv-ok') || ''; sessionStorage.removeItem('sig-pv-ok'); } catch (_) { /* ignore */ }
+    const code = pre || window.prompt('Preview Mode passcode');
     if (!code || sha256(CONFIG.previewSalt + '|' + code) !== CONFIG.previewPasscodeHash) { location.replace(location.pathname); return; }
     PREVIEW = true; store = makeStore('sigp');
   }

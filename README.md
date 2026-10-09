@@ -122,16 +122,17 @@ payouts, questions and timing, and the tests (`node house-edge/tests/engine.test
 
 ## Teacher mode in every summative
 
-Each summative has a private way for the teacher to click through the whole assessment without answering, which never records a student score:
+Each summative has a private way for the teacher to click through the whole assessment without answering, which never records a student score. In all five, **type the teacher code in the Class code box on the main sign-in screen** (no `?preview` in the address, no name needed) and press the start button:
 
-| Summative | How to open it |
+| Summative | What happens |
 |---|---|
-| `health-summative/` (Wildcat Wellness Trail) | Type the teacher code (default `WALK-TEACHER`) in the **Class code** box. See its README, section 10b, to change it. |
-| `wildcats-wellness-quest/` | Footer **Teacher reset** -> teacher passcode -> **Open teacher mode**. |
-| `substance-use-summative/` (SIGNAL) | Add `?preview=1` to the address and enter the preview passcode (default `WALK-TEACHER`). **Continue** is never locked in Preview Mode. |
-| `community-health-mission/` | **Teacher sign-in** on the sign-in screen, then **Start preview** (server-checked passcode). |
+| `health-summative/` (Wildcat Wellness Trail) | `WALK-TEACHER` (not case-sensitive) opens the click-through. See its README, section 10b, to change it. |
+| `unit7-nutrition-activity/` | `WALK-TEACHER` opens the click-through. |
+| `substance-use-summative/` (SIGNAL) | `WALK-TEACHER` opens Preview Mode directly (no second passcode prompt). `?preview=1` still works. |
+| `wildcats-wellness-quest/` | `WALK-TEACHER` opens teacher mode (checked against the saved teacher verifier; the footer **Teacher reset** route still works). |
+| `community-health-mission/` | `WALK-TEACHER` signs in as teacher and starts the private preview. The server checks it, so the spreadsheet teacher passcode must be set to `WALK-TEACHER`; if it is different, use **Teacher sign-in**. Redeploy the Apps Script after updating. |
 
-The shared teacher code is **`WALK-TEACHER`** (type it in capitals) for the first three. Community Health Mission checks its passcode on the server, so set it to the same value in the spreadsheet's teacher menu. Each app stores only a hash or verifier of it, so changing it later means regenerating each one (see each app's README).
+Each app stores only a hash or verifier of the code (Community Health Mission keeps it on the server), so changing it later means regenerating each one (see each app's README). Community Health Mission's sign-in box recognises only the literal `WALK-TEACHER`; with any other passcode use its **Teacher sign-in** link.
 
 ## Wildcats Wellness Quest (`wildcats-wellness-quest/`)
 
