@@ -1,7 +1,7 @@
 # Private teacher preview — plain-language guide
 
 ## Open it
-1. Open the deployed link. At the sign-in screen choose **Teacher sign-in**.
+1. Open the deployed link. At the sign-in screen type `WALK-TEACHER` in the **Class code** box (or choose **Teacher sign-in**). That only shows the passcode screen; your passcode is checked by the server. Teacher Mode has tabs for Overview, Students and resets, Analytics, Class codes, Preview and testing, Answer key, Coverage checklist and Export.
 2. Enter your teacher passcode (set from the spreadsheet menu). The *server* checks it. A class code, a hidden button or a URL parameter does nothing.
 3. On **Preview**, choose when explanations appear and press **Start preview**.
 

@@ -37,7 +37,7 @@ You need: a Google account allowed by your school to use Apps Script, and the pr
    - **3. Add or update a class code** (for example `HEALTH3A`).
 5. **Deploy.** *Deploy → New deployment → type: Web app.* Execute as: **Me**. Who has access: choose what your school policy allows (*Anyone with a Google account* or *Anyone in your organization* are typical on Chromebooks; an anonymous “Anyone” option may be blocked by your district). Authorize, then **copy the web app URL** (ends in `/exec`).
 6. **Test before students (important).**
-   - Open the URL → **Teacher sign-in** → enter your passcode → *Delivery test* → *Run delivery test*. This confirms browser → Apps Script → your Sheet through the *real* deployed path. It writes an isolated row to a `DeliveryTest` tab.
+   - Open the URL, type `WALK-TEACHER` in the **Class code** box (or use **Teacher sign-in**), enter your passcode → **Preview and testing** → *Run delivery test*. This confirms browser → Apps Script → your Sheet through the *real* deployed path. It writes an isolated row to a `DeliveryTest` tab.
    - Open the preview (see `docs/TEACHER_PREVIEW.md`) and walk it. Preview never writes grades.
    - Then do one **real test-student run** with a test class code (e.g. `TESTRUN1`) and a roster ID like `test01` from a student-like account if possible. Confirm a row appears in `Sessions` with *Gradebook = recorded* and rows in `Responses`. Reset it afterward (below) or ignore that class in reports.
 7. **Share** the URL and class code. Give each student a roster ID (student number or the ID you choose). Students open the link, enter code + roster ID + name + period.

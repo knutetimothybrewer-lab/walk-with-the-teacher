@@ -150,7 +150,7 @@ On every summative, type the teacher code **`WALK-TEACHER`** in the sign-in **Cl
 | `substance-use-summative/` (SIGNAL) | `TEACHER_PASSCODE` in Apps Script (Project Settings > Script properties) | Same dashboard as `teacher/` |
 | `unit7-nutrition-activity/` | The teacher dashboard passcode from **Unit 7 Gradebook** in the Sheet | Same dashboard as `teacher/`; with no Sheet connected it shows the offline demo-data sandbox |
 | `wildcats-wellness-quest/` | The passcode you set from the Sheet menu **Wildcats Quest > Set teacher view passcode** | Paste the newest `Code.gs` and deploy a new version first. Without a Sheet backend the teacher code opens the preview as before |
-| `community-health-mission/` | The teacher passcode you set in the Sheet (server-checked) | Teacher panel; **Teacher sign-in** link also works |
+| `community-health-mission/` | The teacher passcode you set in the Sheet (server-checked) | The page is the web app link itself. The **Teacher sign-in** link also works |
 
 `WALK-TEACHER` only reveals the passcode box. The passcode is what protects the data, and it is checked by your Google Apps Script, so changing it never needs a page update. Each app's click-through preview code is unchanged.
 

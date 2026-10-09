@@ -39,7 +39,7 @@ function main() {
   if (code) write('dist/apps-script/Code.gs', code);
   write('dist/apps-script/Index.html', page({ transport: 'appsScript' }, pub, '<script>\n' + grading + '\n</script>'));
   write('dist/apps-script/appsscript.json', JSON.stringify({ timeZone: 'America/New_York', exceptionLogging: 'STACKDRIVER', runtimeVersion: 'V8',
-    oauthScopes: ['https://www.googleapis.com/auth/spreadsheets', 'https://www.googleapis.com/auth/script.container.ui', 'https://www.googleapis.com/auth/userinfo.email'],
+    oauthScopes: ['https://www.googleapis.com/auth/spreadsheets', 'https://www.googleapis.com/auth/script.container.ui', 'https://www.googleapis.com/auth/script.scriptapp', 'https://www.googleapis.com/auth/userinfo.email'],
     webapp: { executeAs: 'USER_DEPLOYING', access: 'ANYONE' } }, null, 2));
 
   // 3) Demo (separate fictional demo content; the graded answer key is NOT included)
