@@ -134,6 +134,10 @@ Each summative has a private way for the teacher to click through the whole asse
 
 Each app stores only a hash or verifier of the code (Community Health Mission keeps it on the server), so changing it later means regenerating each one (see each app's README). Community Health Mission's sign-in box recognises only the literal `WALK-TEACHER`; with any other passcode use its **Teacher sign-in** link.
 
+## Reset an attempt from Settings (all five summatives)
+
+Open **Settings** in any summative while an attempt is in progress (or finished), type the teacher code in the **Teacher reset** box and press **Reset this attempt**. The current attempt on that device is wiped and the page returns to the start/sign-in screen. It uses the same codes as teacher mode (`WALK-TEACHER` by default; Community Health Mission checks it on the server, so it needs the spreadsheet teacher passcode, and every reset is written to its audit log). Trail, SIGNAL and Unit 7 also ask the Google Sheet to mark the earlier submission as reset, but only if the Sheet's own teacher/reset passcode is the same code; otherwise ask the Sheet owner to reset that student there. A wrong code changes nothing.
+
 ## Wildcats Wellness Quest (`wildcats-wellness-quest/`)
 
 Animated summative assessment for a high school health unit (five dimensions of wellness, health metrics, habits and SMART goals, media literacy, STOP decisions, and the Health by a Thousand Choices simulation). Static site with automatic scoring (100 points), strict 2-3 attempt policy with equivalent retry variants, a locked final report with JSON/print export, and a passcode-protected teacher reset. Optionally sends each student's result (with a class code) to your own Google Sheet via `apps-script/Code.gs`. See `wildcats-wellness-quest/README.md` for setup, GitHub Pages deployment, limits and teacher materials.

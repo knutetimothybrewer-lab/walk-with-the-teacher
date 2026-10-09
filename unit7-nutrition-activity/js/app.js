@@ -38,8 +38,28 @@ function openSettings() {
     h('div.toggle', h('label', h('strong', 'Animation'), h('div.small.muted', 'Motion never carries information that is not also in text.')), motion),
     tog('sound', 'Sound effects', 'Short tones after you check an answer. Off by default.'), tog('timer', 'Show timer', 'Shows time on task in the top bar. Off by default.'),
     storageWorks() ? '' : h('p.err', 'This browser is blocking saved progress. Do not close this tab.'),
+    session ? teacherResetBlock(d) : '',
     h('div.dlg-actions', h('button.btn.primary', { type: 'button', onclick: () => d.close() }, 'Done')));
   d.showModal();
+}
+// Settings > Teacher reset: the teacher code wipes the current attempt (and, best effort, the Sheet record) and returns to sign-in.
+function teacherResetBlock(d) {
+  const pass = h('input.input', { type: 'password', autocomplete: 'off', 'aria-label': 'Teacher reset code', placeholder: 'Teacher code', id: 'st-reset-code' });
+  const msg = h('div.small.err', { role: 'status' });
+  const go = h('button.btn.small.warn', { type: 'button', id: 'st-reset-go' }, 'Reset this attempt');
+  const run = async () => {
+    const code = pass.value;
+    if (!code.trim() || hashOf('reset', code) !== CONFIG.resetCodeHash) { msg.textContent = 'That teacher code is not correct.'; return; }
+    go.disabled = true; msg.textContent = 'Resetting…';
+    const st = session && session.state, stu = st && st.student;
+    if (stu && !PREVIEW && hasBackend()) { try { await send('reset_student', { resetCode: code, first: stu.first, last: stu.last, block: stu.block, assessmentId: CONFIG.assessmentId }); } catch (_) { /* best effort */ } }
+    clearTimeout(submitTimer); clearInterval(clockIv); session = null; /* so pagehide cannot re-save it */
+    if (stu) { for (const c of CONFIG.classCodes) store.clearLock(...studentKey({ ...stu, code: c.toUpperCase() })); store.clearLock(...studentKey(stu)); }
+    store.clearSession();
+    location.reload();
+  };
+  go.onclick = run; pass.onkeydown = (e) => { if (e.key === 'Enter') { e.preventDefault(); run(); } };
+  return h('div.toggle', h('div', h('strong', 'Teacher reset'), h('div.small.muted', 'Teacher only: enter the teacher code to wipe the current attempt and return to the start screen.'), pass, msg), go);
 }
 function openSources() {
   const d = document.getElementById('dlg');

@@ -46,6 +46,7 @@
     var tc = s && CHM.timeChipEl && CHM.timeChipEl(); if (tc) right.appendChild(tc);
     if (s) { right.appendChild(h('span.who', s.student.name + (s.preview ? '' : ''))); right.appendChild(h('span#savestat.savestat ' + saveStatus, { role: 'status' }, saveStatus === 'saved' ? '✓ Progress saved' : saveStatus === 'offline' ? '⚠ Offline: not saved yet' : '… Saving')); }
     right.appendChild(h('button.btn.sm.ghost', { type: 'button', 'aria-pressed': String(!motion), onclick: function () { CHM.setMotion(!CHM.motionOn()); CHM.rerender(); } }, motion ? 'Motion: on' : 'Motion: off'));
+    if (s && !s.preview) right.appendChild(h('button.btn.sm.ghost', { type: 'button', id: 'btn-settings', onclick: function () { CHM.openSettings(); } }, '⚙ Settings'));
     if (s && !opts.noNav) right.appendChild(h('button.btn.sm.ghost', { type: 'button', onclick: function () { CHM.go('map'); } }, '🗺 Map'));
     return h('header.topbar', left, right);
   }

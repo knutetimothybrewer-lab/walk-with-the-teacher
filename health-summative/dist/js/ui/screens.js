@@ -275,6 +275,20 @@ function settingsDlg(app) {
       return b;
     })));
   body.append(size);
+  if (app.session) {
+    const pass = h('input', { type: 'password', id: 'set-reset-code', autocomplete: 'off', 'aria-label': 'Teacher reset code', placeholder: 'Teacher code' });
+    const msg = h('p', { class: 'small', id: 'set-reset-msg', role: 'status' });
+    const go = h('button', { type: 'button', class: 'btn-quiet', id: 'set-reset-go' }, 'Reset this attempt');
+    const run = async () => {
+      go.disabled = true; msg.textContent = 'Checking…';
+      const ok = await app.teacherReset(pass.value);
+      if (!ok) { go.disabled = false; msg.textContent = 'That teacher code is not correct.'; pass.focus(); }
+    };
+    go.addEventListener('click', run);
+    pass.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); run(); } });
+    body.append(h('div', { class: 'setrow col' }, h('span', { class: 'lbl' }, 'Teacher reset'),
+      h('small', {}, 'Teacher only: enter the teacher code to wipe the current attempt and return to the start screen.'), pass, go, msg));
+  }
 }
 
 /* ======================= TRAIL DIALOG + REVIEW ======================= */

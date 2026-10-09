@@ -111,6 +111,19 @@
     body.appendChild(mot); body.appendChild(txt); body.appendChild(pace);
     body.appendChild(h('div.card.flat', h('h3', 'Recovery file'), h('p.small', 'A recovery file lets you restore your work if this browser’s saved data is cleared. It is for recovery only. It can never start you over or lower your attempt counts.'),
       h('div.row', UI.btn('Download recovery file', { icon: 'download', onclick: function () { Sh.downloadRecord(); } }), UI.btn('Load a recovery file', { icon: 'upload', onclick: function () { file.click(); } }), file)));
+    if (St.passcodeConfigured() && !W.Teacher.active) {
+      var rpw = h('input.txt', { type: 'password', id: 'set-reset-code', autocomplete: 'off', 'aria-label': 'Teacher reset code', placeholder: 'Teacher code', 'data-fk': 'set-reset-code' });
+      var rmsg = h('p.small', { id: 'set-reset-msg', role: 'status' }, 'Teacher only: enter the teacher code to wipe the current attempt and return to the start screen.');
+      var rgo = UI.btn('Reset this attempt', { cls: 'danger', icon: 'undo', id: 'set-reset-go', onclick: function () {
+        var r = St.attemptPasscode(rpw.value); rpw.value = '';
+        if (r.locked) { rmsg.textContent = 'Too many wrong entries. Try again in ' + r.wait + ' seconds.'; UI.announce(rmsg.textContent); return; }
+        if (!r.ok) { rmsg.textContent = 'That teacher code is not correct.'; UI.announce(rmsg.textContent); return; }
+        var ns = St.teacherReset(App().state); App().state = ns; Views.sel = null; W.Vis.openTab = {}; W.Vis.seenTabs = {}; IU.reconsider = {}; Sh.pdraft = {}; Sh.pchecked = {};
+        modal.close(); UI.applyMotion(); UI.applyText(); App().go({ m: 0, s: '0.1' }); UI.toast('Attempt reset. Back to the start.', 'ok', 6000);
+      } });
+      rpw.addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); rgo.click(); } });
+      body.appendChild(h('div.card.flat', h('h3', 'Teacher reset'), rmsg, h('div.row', rpw, rgo)));
+    }
     body.appendChild(h('p.small.muted', St.storageOK ? 'Saving: working. Your progress is stored in this browser on this device only.' : 'Saving: NOT available in this browser. The one-session lock cannot be protected on this device. Please download a recovery file often.'));
     var modal = UI.modal({ title: 'Settings', body: [body], actions: [UI.btn('Done', { cls: 'primary', onclick: function () { modal.close(); } })] });
   };

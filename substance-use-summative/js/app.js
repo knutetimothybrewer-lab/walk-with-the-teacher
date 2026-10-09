@@ -40,9 +40,28 @@ function openSettings() {
     storageWorks() ? '' : h('p.err', 'This browser is blocking saved progress. Do not close this tab.'),
     // Demo sessions only (DEMO2026): lets a teacher test again without clearing browser data. Real sessions can never be restarted by the student.
     session && session.state.demo ? h('div.toggle', h('div', h('strong', 'Start over (demo only)'), h('div.small.muted', 'Erases this DEMO session and returns to sign-in.')), h('button.btn.small.warn', { type: 'button', onclick: () => { const st = session.state; clearInterval(clockIv); session = null; /* so pagehide cannot re-save it */ store.clearSession(); store.clearLock(st.student.name, st.student.code); location.reload(); } }, 'Start over')) : '',
+    session ? teacherResetBlock(d) : '',
     h('p.small.muted', { style: { marginTop: '.6rem' } }, `Page version: ${BUILD}`),
     h('div.dlg-actions', h('button.btn.primary', { type: 'button', onclick: () => d.close() }, 'Done')));
   d.showModal();
+}
+// Settings > Teacher reset: the teacher code wipes the current attempt (and, best effort, the Sheet record) and returns to sign-in.
+function teacherResetBlock(d) {
+  const pass = h('input.input', { type: 'password', autocomplete: 'off', 'aria-label': 'Teacher reset code', placeholder: 'Teacher code', id: 'st-reset-code' });
+  const msg = h('div.small.err', { role: 'status' });
+  const go = h('button.btn.small.warn', { type: 'button', id: 'st-reset-go' }, 'Reset this attempt');
+  const run = async () => {
+    const code = pass.value.trim().toUpperCase();
+    if (!code || sha256(CONFIG.previewSalt + '|' + code) !== CONFIG.previewPasscodeHash) { msg.textContent = 'That teacher code is not correct.'; return; }
+    go.disabled = true; msg.textContent = 'Resetting…';
+    const st = session && session.state;
+    if (st && !st.demo && hasBackend() && CONFIG.backendKind === 'apps-script') { try { await send('t_reset', { pass: code, sid: st.sid, name: st.student.name, code: st.student.code }); } catch (_) { /* best effort */ } }
+    clearInterval(clockIv); session = null; /* so pagehide cannot re-save it */
+    if (st) { store.clearSession(); store.clearLock(st.student.name, st.student.code); } else store.clearSession();
+    location.reload();
+  };
+  go.onclick = run; pass.onkeydown = (e) => { if (e.key === 'Enter') { e.preventDefault(); run(); } };
+  return h('div.toggle', h('div', h('strong', 'Teacher reset'), h('div.small.muted', 'Teacher only: enter the teacher code to wipe the current attempt and return to the start screen.'), pass, msg), go);
 }
 document.getElementById('btn-settings').onclick = openSettings;
 
