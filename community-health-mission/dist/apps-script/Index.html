@@ -1221,6 +1221,7 @@ CHM.explorers.plain = function (data) { return h('div.callout', data.note || '')
     var tc = s && CHM.timeChipEl && CHM.timeChipEl(); if (tc) right.appendChild(tc);
     if (s) { right.appendChild(h('span.who', s.student.name + (s.preview ? '' : ''))); right.appendChild(h('span#savestat.savestat ' + saveStatus, { role: 'status' }, saveStatus === 'saved' ? '✓ Progress saved' : saveStatus === 'offline' ? '⚠ Offline: not saved yet' : '… Saving')); }
     right.appendChild(h('button.btn.sm.ghost', { type: 'button', 'aria-pressed': String(!motion), onclick: function () { CHM.setMotion(!CHM.motionOn()); CHM.rerender(); } }, motion ? 'Motion: on' : 'Motion: off'));
+    if (s && !s.preview) right.appendChild(h('button.btn.sm.ghost', { type: 'button', id: 'btn-settings', onclick: function () { CHM.openSettings(); } }, '⚙ Settings'));
     if (s && !opts.noNav) right.appendChild(h('button.btn.sm.ghost', { type: 'button', onclick: function () { CHM.go('map'); } }, '🗺 Map'));
     return h('header.topbar', left, right);
   }
@@ -1682,6 +1683,31 @@ CHM.explorers.plain = function (data) { return h('div.callout', data.note || '')
         h('button.btn.ghost', { type: 'button', onclick: function () { CHM.signOutPreview(); } }, 'Return to normal student sign-in'))));
   }
 
+  // Settings > Teacher reset. The SERVER checks the passcode (teacherLogin) and records the reset (teacherReset); then the device is wiped
+  // and the student is returned to the sign-in screen.
+  CHM.openSettings = function () {
+    var s = CHM.session; if (!s || s.preview) return;
+    var old = document.getElementById('settings-dlg'); if (old) old.remove();
+    var pass = h('input', { type: 'password', id: 'reset-code', autocomplete: 'off', 'aria-label': 'Teacher reset code', placeholder: 'Teacher code' });
+    var msg = h('p.small', { id: 'reset-msg', role: 'status' }, 'Teacher only: enter the teacher code to wipe the current attempt and return to the sign-in screen.');
+    var go = h('button.btn.sm', { type: 'button', id: 'reset-go' }, 'Reset this attempt');
+    var dlg = h('div.card', { id: 'settings-dlg', role: 'dialog', 'aria-modal': 'true', 'aria-label': 'Settings', style: { position: 'fixed', top: '70px', right: '12px', zIndex: '50', maxWidth: '340px', boxShadow: '0 8px 30px rgba(0,0,0,.25)' } },
+      h('h2', 'Settings'), h('label.fl', 'Teacher reset', pass), msg,
+      h('div.row', go, h('button.btn.sm.ghost', { type: 'button', onclick: function () { dlg.remove(); } }, 'Close')));
+    function run() {
+      if (!pass.value.trim()) { msg.textContent = 'Enter the teacher code.'; return; }
+      go.disabled = true; msg.textContent = 'Checking…';
+      CHM.transport.call('teacherLogin', { passcode: pass.value.trim(), useAccount: false }, { retries: 2 }).then(function (t) {
+        if (!t.ok) { go.disabled = false; msg.textContent = t.message || 'That teacher code is not correct.'; return null; }
+        return CHM.transport.call('teacherReset', { teacherToken: t.teacherToken, sessionId: s.sessionId, reason: 'Reset from the student Settings page with the teacher code' }, { retries: 2 }).then(function (r) {
+          if (!r.ok) { go.disabled = false; msg.textContent = r.message || 'Could not reset.'; return; }
+          CHM.outbox.clear(); CHM.drafts = {}; CHM.shared = {}; CHM.state = null; dlg.remove(); CHM.signOut();
+        });
+      }, function () { go.disabled = false; msg.textContent = 'We could not reach the server. Check your connection and try again.'; });
+    }
+    go.onclick = run; pass.onkeydown = function (e) { if (e.key === 'Enter') { e.preventDefault(); run(); } };
+    document.body.appendChild(dlg); pass.focus();
+  };
   CHM.signOutPreview = function () { CHM.session = null; CHM.state = null; CHM.go('login'); };
   CHM.previewInit = function () { viewMode = 'student'; CHM.viewMode = 'student'; };
 

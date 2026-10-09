@@ -8,7 +8,7 @@ import { settings } from './ui/settings.js';
 import { h, $, clear, announce, openDialog } from './ui/dom.js';
 import { renderItem, renderExplore } from './ui/runner.js';
 import { screens } from './ui/screens.js';
-import { checkClassCode, queueFinal, startRetryLoop } from './engine/sync.js';
+import { checkClassCode, queueFinal, startRetryLoop, serverReset } from './engine/sync.js';
 import { completionCode } from './engine/code.js';
 import { plain } from './ui/dom.js';
 import { initSky, setSky } from './ui/sky.js';
@@ -126,6 +126,19 @@ export const app = {
     const s = this.session; if (s) Session.remove(cfg, s.sk);
     document.getElementById('teacherBar') && document.getElementById('teacherBar').remove();
     this.switchStudent();
+  },
+
+  /** Settings > Teacher reset: wipe this device's attempt and return to the welcome (dashboard) screen. */
+  async teacherReset(rawCode) {
+    if (!(await isTeacherCode(cfg, rawCode))) return false;
+    const s = this.session;
+    if (s && !s.teacher && s.student) await serverReset(cfg, s.student, String(rawCode).trim());
+    if (s) Session.remove(cfg, s.sk);
+    document.querySelectorAll('dialog[open]').forEach(d => d.close());
+    document.getElementById('teacherBar') && document.getElementById('teacherBar').remove();
+    this.switchStudent();
+    announce('Attempt reset. Back to the start.');
+    return true;
   },
 
   begin(student, check, retakeNo, override) {
