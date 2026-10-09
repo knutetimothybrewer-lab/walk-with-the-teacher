@@ -119,6 +119,11 @@ function makeBackend() {
   ok(s1 && typeof s1.percent === 'number' && s1.max > 0 && s1.missions.length === 7, 'a student row carries the score, points and 7 mission scores');
   ok(dash.topics.length > 0 && dash.topics[0].pct <= dash.topics[dash.topics.length - 1].pct, 'topics are listed weakest first');
   ok(dash.items.length > 0 && dash.items.length <= 15 && dash.resubs.length === 1, 'hardest items and the resubmission list are included');
+  ok(be.call({ action: 'start', student: { alias: 'walker-01', period: 'Block 6/7', code: 'quest1' } }).status === 'new', 'a new student can start');
+  be.call({ action: 'start', student: { alias: 'walker-01', period: 'Block 6/7', code: 'quest1' } });
+  const dash2 = tcall({ passcode: 'correct-horse-9' });
+  ok(dash2.sessions.length === 1 && dash2.sessions[0].alias === 'walker-01' && dash2.sessions[0].period === 'Block 6/7', 'a student who started but has not submitted is listed once as in progress');
+  ok(!dash2.sessions.some(x => x.alias === 'Stu-01' || x.alias === 'stu-01'), 'students who already submitted are not listed as in progress');
   ok(tcall({ passcode: 'correct-horse-9', op: 'nonsense' }).reason === 'unknown-op', 'an unknown teacher operation is refused');
   for (let i = 0; i < 6; i++) tcall({ passcode: 'bad' + i });
   ok(tcall({ passcode: 'correct-horse-9' }).reason === 'locked-out', 'six wrong tries lock the teacher view, even for the right passcode');

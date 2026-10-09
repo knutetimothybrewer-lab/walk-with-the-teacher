@@ -15,7 +15,8 @@
  */
 
 var VERSION = '1.0';
-var SHEETS = { summary: 'Summary', detail: 'Detail', reteach: 'Reteach', resub: 'Resubmissions', codes: 'ClassCodes', log: 'Log' };
+var SHEETS = { summary: 'Summary', detail: 'Detail', reteach: 'Reteach', resub: 'Resubmissions', codes: 'ClassCodes', log: 'Log', started: 'Started' };
+var STARTED_HEAD = ['Started at', 'Key', 'Alias / ID', 'Period', 'Class code'];
 var MISSIONS = [1, 2, 3, 4, 5, 6, 7];
 var SUMMARY_FIXED = ['Submitted', 'Alias / ID', 'Period', 'Class code', 'Percent', 'Points', 'Out of', 'Letter', 'Completion %',
   'First-attempt points', 'Attempts used', 'Attempts allowed', 'Minutes', 'Teacher resets (local)', 'Session ID'];
@@ -76,6 +77,7 @@ function ensureSheets_() {
   sheet_(SHEETS.reteach);
   var c = sheet_(SHEETS.codes); if (c.getLastRow() === 0) { c.appendRow(['Class code (one per row; not case-sensitive)']); c.appendRow(['QUEST1']); c.appendRow(['QUEST2']); }
   sheet_(SHEETS.log);
+  var st = sheet_(SHEETS.started); if (st.getLastRow() === 0) { st.appendRow(STARTED_HEAD); st.setFrozenRows(1); }
 }
 
 /* --------------------------------------------------------------- handlers */
@@ -83,7 +85,23 @@ function ensureSheets_() {
 function handleStart_(st) {
   if (!st || !norm_(st.alias) || !norm_(st.code)) return { ok: false, reason: 'incomplete' };
   if (!codeOk_(st.code)) return { ok: false, reason: 'code' };
-  return { ok: true, status: findRow_(SHEETS.summary, summaryHeader_().length, keyOf_(st)) > 0 ? 'duplicate' : 'new' };
+  var exists = findRow_(SHEETS.summary, summaryHeader_().length, keyOf_(st)) > 0;
+  if (!exists) recordStart_(st);
+  return { ok: true, status: exists ? 'duplicate' : 'new' };
+}
+
+/** Remember that a student began (for the in-app teacher view's registered / in-progress counts). Never blocks a student. */
+function recordStart_(st) {
+  try {
+    var lock = LockService.getScriptLock();
+    lock.waitLock(10000);
+    try {
+      var s = sheet_(SHEETS.started); if (s.getLastRow() === 0) { s.appendRow(STARTED_HEAD); s.setFrozenRows(1); }
+      var key = keyOf_(st);
+      if (s.getLastRow() > 1) { var keys = s.getRange(2, 2, s.getLastRow() - 1, 1).getValues(); for (var i = 0; i < keys.length; i++) if (keys[i][0] === key) return; }
+      s.appendRow([new Date(), key, safe_(st.alias, 60), safe_(st.period, 20), safe_(String(st.code).toUpperCase(), 40)]);
+    } finally { lock.releaseLock(); }
+  } catch (e) { log_('start', String(e)); }
 }
 
 function findRow_(sheetName, keyCol, key) {
@@ -241,6 +259,11 @@ function dashboardData_() {
       attemptsUsed: r[10], attemptsAllowed: r[11], minutes: r[12], resets: r[13], missions: r.slice(SUMMARY_FIXED.length, SUMMARY_FIXED.length + MISSIONS.length) });
   });
   rowsOf(ss_().getSheetByName(SHEETS.resub)).forEach(function (r) { resubs.push({ when: r[0], alias: r[1], period: r[2], code: r[3], percent: r[4] }); });
+  var done = {}; students.forEach(function (x) { done[norm_(x.alias) + '|' + norm_(x.code)] = 1; });
+  var sst = ss_().getSheetByName(SHEETS.started), sessions = [];
+  if (sst && sst.getLastRow() > 1) sst.getRange(2, 1, sst.getLastRow() - 1, STARTED_HEAD.length).getValues().forEach(function (r) {
+    if (!done[r[1]]) sessions.push({ started: r[0], alias: r[2], period: r[3], code: r[4] });
+  });
   var agg = aggregateDetail_();
   var topics = Object.keys(agg.top).map(function (k) { var t = agg.top[k]; return { name: k, pct: t.m ? t.e / t.m : 0, firstPct: t.m ? t.f / t.m : 0, possible: t.m }; })
     .sort(function (a, b) { return a.pct - b.pct; });
@@ -248,7 +271,7 @@ function dashboardData_() {
     .filter(function (i) { return i.m > 0; })
     .sort(function (a, b) { return (a.e / a.m) - (b.e / b.m); }).slice(0, 15)
     .map(function (i) { return { id: i.id, topic: i.topic, n: i.n, pct: i.e / i.m, firstPct: i.f / i.m, avgAttempts: i.n ? i.att / i.n : 0, flag: i.n >= FLAG_MIN_N && i.e / i.m < FLAG_BELOW }; });
-  return { ok: true, version: VERSION, students: students, resubs: resubs, topics: topics, items: items, codes: validCodes_().length };
+  return { ok: true, version: VERSION, students: students, sessions: sessions, resubs: resubs, topics: topics, items: items, codes: validCodes_().length };
 }
 
 /* ------------------------------------------------------------ teacher menu */
@@ -315,7 +338,7 @@ function applyResubmission_(aliasRaw) {
 function wipeAll() {
   var ui = SpreadsheetApp.getUi();
   if (ui.alert('Delete all results?', 'This clears Summary, Detail, Reteach, Resubmissions and Log. Class codes stay.', ui.ButtonSet.YES_NO) !== ui.Button.YES) return;
-  [SHEETS.summary, SHEETS.detail, SHEETS.resub, SHEETS.reteach, SHEETS.log].forEach(function (n) { var s = ss_().getSheetByName(n); if (s) s.clear(); });
+  [SHEETS.summary, SHEETS.detail, SHEETS.resub, SHEETS.reteach, SHEETS.log, SHEETS.started].forEach(function (n) { var s = ss_().getSheetByName(n); if (s) s.clear(); });
   var props = PropertiesService.getScriptProperties(), all = props.getProperties();
   Object.keys(all).forEach(function (k) { if (k.indexOf('resub:') === 0) props.deleteProperty(k); });   // keep TEACHER_PASSCODE
   ensureSheets_();

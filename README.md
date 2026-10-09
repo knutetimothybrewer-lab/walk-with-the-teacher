@@ -138,7 +138,9 @@ payouts, questions and timing, and the tests (`node house-edge/tests/engine.test
 
 ## Teacher view in every summative
 
-On every summative, type the teacher code **`WALK-TEACHER`** in the sign-in **Class code** box (any capitalisation), then your teacher passcode, to see every submission and grade inside the app, with no trip to the Google Sheet. It shows scores and averages, filters by block and class code, what to reteach, resets or resubmissions, and a CSV download, and it refreshes about every 30 seconds. A **Preview the assessment** button opens the click-through preview, which never records a student score.
+On every summative, type the teacher code **`WALK-TEACHER`** in the sign-in **Class code** box (any capitalisation), then your teacher passcode, to open **Teacher Mode** inside the app, with no trip to the Google Sheet. It has the same layout everywhere, in each summative's own colours: a Teacher Mode bar with **Open student preview** and **Sign out**, tabs for **Overview** (registered, in progress, submitted and class average, **Blocks at a glance**, who is working right now), **Students and resets**, **Analytics** (what to reteach) and **Export** (CSV), and Find, Sort and Auto-refresh controls (about every 30 seconds). Preview opens the click-through preview, which never records a student score.
+
+"In progress" and "Registered" come from students who have started. **Trail, Unit 7 and Wildcats Wellness Quest need the newest `Code.gs` deployed as a new version to show them**; until then those two tiles only count finished students.
 
 | Summative | Teacher passcode (checked by your Apps Script, not the page) | Notes |
 |---|---|---|
