@@ -8,7 +8,7 @@
     "build:gas": "node tools/build-apps-script.js",
     "docs": "node tools/gen-docs.js",
     "serve": "node tools/dev-server.js",
-    "test": "node --test tests/unit/*.test.js",
+    "test": "node --test tests/unit/*.test.js tests/gas/*.test.js",
     "test:e2e": "node tests/e2e/run.js",
     "vault:lock": "node tools/vault.js lock",
     "vault:unlock": "node tools/vault.js unlock",

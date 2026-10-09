@@ -232,7 +232,7 @@ test('teacher password: failure, success, no password set, token required on eve
   assert.equal(S.api('teacherLogin', { password: 'wrong' }).error.code, 'TEACHER_PASSWORD');
   assert.equal(S.api('teacherLogin', { password: '' }).error.code, 'TEACHER_PASSWORD');
   const tt = S.teacher();
-  const teacherActions = ['tRoster', 'tStudent', 'tReset', 'tSetTime', 'tGetSettings', 'tSetSettings', 'tSetPassword', 'tPreviewStart', 'tPreviewReset', 'tKeys', 'tAnalytics', 'tExport', 'tTest', 'tForceSubmit'];
+  const teacherActions = ['tRoster', 'tStudent', 'tReset', 'tSetTime', 'tGetSettings', 'tSetSettings', 'tSetPassword', 'tPreviewStart', 'tPreviewReset', 'tKeys', 'tAnalytics', 'tExport', 'tTest', 'tForceSubmit', 'tSyncSheet'];
   teacherActions.forEach((a) => {
     assert.equal(S.api(a, {}).error.code, 'TEACHER_AUTH', a + ' ran without a token');
     assert.equal(S.api(a, { tt: 'forged' }).error.code, 'TEACHER_AUTH', a + ' accepted a forged token');

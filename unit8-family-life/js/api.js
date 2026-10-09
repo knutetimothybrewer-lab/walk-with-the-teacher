@@ -64,6 +64,7 @@ export async function submitAnswer(payload, onStatus) {
     setSave(n ? 'offline' : 'saving');
     try {
       const r = await call('submit', body);
+      if (r && r.ok === false && r.error && r.error.code === 'BUSY') { n++; setSave('offline', { retry: n }); if (onStatus) onStatus({ offline: true, retry: n }); await waitOnlineOrDelay(delay); delay = Math.min(delay * 2, 20000); continue; }
       return r;
     } catch (e) {
       if (!e.network) throw e;

@@ -162,6 +162,10 @@ test('a retried request (same reqId) returns the same result and does not use an
   const a = S.api('submit', { token, itemId: id, response: wrongResponse(bi), reqId: 'dup-1' });
   const b = S.api('submit', { token, itemId: id, response: wrongResponse(bi), reqId: 'dup-1' });
   assert.equal(b.duplicate, true); assert.equal(b.attempt, a.attempt); assert.equal(b.hint, a.hint);
+  assert.equal(b.state.a, 1, 'a retried reply carries the item state so the client can update even if the first reply was lost');
+  assert.deepEqual(b.state.hints, [bi.hints[0]]);
+  // ...and the stored copy is compact: no explanation or hint text is duplicated inside the session
+  assert.equal(JSON.stringify(S.store.listSessions()[0]).includes(bi.hints[0]), false);
   assert.equal(S.api('state', { token }).items[id].a, 1);
 });
 
