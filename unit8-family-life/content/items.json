@@ -128,7 +128,7 @@
       "w": 420,
       "h": 380,
       "alt": "Simplified front-view diagram of the female reproductive system with five numbered markers.",
-      "desc": "A pear-shaped uterus sits in the center. A fallopian tube curves out from each upper corner of the uterus toward an almond-shaped ovary on each side. The narrow lower end of the uterus is the cervix, which opens into the vagina, a tube leading downward. Marker 1 is above the uterus. Marker 2 is beside the ovary on the right side of the picture. Marker 3 is beside the vagina. Marker 4 is at the upper left near a fallopian tube. Marker 5 is beside the cervix.",
+      "desc": "A simplified front view. In the center is a pear-shaped, muscular organ with a narrow neck at its lower end. A curved tube leaves each upper corner of that organ and reaches toward a small, almond-shaped organ on each side. Below the narrow neck, a tube leads downward. Marker 1 is above the pear-shaped organ. Marker 2 is beside the almond-shaped organ on the right side of the picture. Marker 3 is beside the tube that leads downward. Marker 4 is at the upper left, near one of the curved tubes. Marker 5 is beside the narrow neck.",
       "markers": [
         {
           "id": "m1",
@@ -167,7 +167,7 @@
       "w": 420,
       "h": 380,
       "alt": "Simplified side-view cross-section of the male reproductive system with five numbered markers.",
-      "desc": "The bladder is at the top. Below it is the small round prostate gland. The urethra, a narrow tube, runs from the bladder through the prostate and along the length of the penis to its tip. In the sac below, an oval testis has a curved epididymis along its back. The vas deferens, a narrow tube, rises from the epididymis, loops up behind the bladder and joins the urethra at the prostate. A small seminal vesicle sits behind the bladder and is not marked. Marker 1 is at the lower left beside the testis. Marker 2 is at the lower right beside the epididymis. Marker 3 is at the right beside the vas deferens. Marker 4 is at the upper left beside the prostate gland. Marker 5 is at the far left beside the urethra inside the penis.",
+      "desc": "A simplified side-view cross-section. A rounded sac sits at the top. Below it is a small, round gland. A narrow tube runs from the sac through the round gland and along the length of the long outer organ to its tip. In the pouch below, a large oval organ has a coiled tube resting along its back. A second narrow tube rises from the coiled tube, loops up behind the sac, and joins the first tube at the round gland. A small gland behind the sac is not marked. Marker 1 is at the lower left, beside the large oval organ. Marker 2 is at the lower right, beside the coiled tube. Marker 3 is at the right, beside the narrow tube that rises from the coiled tube. Marker 4 is at the upper left, beside the small round gland. Marker 5 is at the far left, beside the tube inside the long outer organ.",
       "markers": [
         {
           "id": "m1",
@@ -652,16 +652,16 @@
               "unlockAfter": null,
               "options": [
                 {
-                  "id": "odc757",
-                  "text": "Sam's body will never catch up, so Sam will not go through puberty."
+                  "id": "ob5c6f",
+                  "text": "Sam's body is behind the others and is unlikely to catch up, so Sam may not finish going through puberty."
                 },
                 {
-                  "id": "o640e7",
-                  "text": "The friend who started first will end up the tallest."
+                  "id": "od2b4f",
+                  "text": "The friend who started first will probably end up the tallest, since starting early usually means a taller adult."
                 },
                 {
-                  "id": "obf9ae",
-                  "text": "Maya is more emotionally mature than her friends because her body changed first."
+                  "id": "of5a27",
+                  "text": "Maya is more emotionally mature than her friends, because her body changed first and she is clearly ahead."
                 },
                 {
                   "id": "oa5cbc",
@@ -676,8 +676,8 @@
                   "text": "If Sam is worried, a parent or guardian, school nurse, or doctor can explain what is typical and check for any concern."
                 },
                 {
-                  "id": "od9608",
-                  "text": "Everyone's body changes happen at exactly the same speed once puberty starts."
+                  "id": "ocf51b",
+                  "text": "Body changes should move at about the same speed for most people, so a slower pace is usually a sign of a problem."
                 }
               ]
             }
@@ -859,28 +859,28 @@
               "unlockAfter": null,
               "options": [
                 {
-                  "id": "o4f079",
-                  "text": "\"Sorry, I'll answer faster next time.\""
+                  "id": "oe0f0f",
+                  "text": "\"Sorry, I should have answered faster. Next time I'll text you the second I get anywhere, so you never have to ask again.\""
                 },
                 {
-                  "id": "o19335",
-                  "text": "\"I'm not comfortable sending photos of where I am. I'll text you when I get home, and I'm happy to talk about what's worrying you.\""
+                  "id": "o9a89f",
+                  "text": "\"I'm not comfortable sending photos of where I am. I'll text when I'm home, and I'm happy to talk about what's worrying you.\""
                 },
                 {
-                  "id": "o08ee0",
-                  "text": "\"Fine, I'll send it this time, but just once.\""
+                  "id": "o355e3",
+                  "text": "\"Fine, I'll send it this one time, but only because I'm busy. After tonight please don't ask me to do that again.\""
                 },
                 {
-                  "id": "o117b8",
-                  "text": "\"You're a jerk, and I'm done talking to you.\""
+                  "id": "o3c871",
+                  "text": "\"You're being a jerk and I'm tired of this. I'm done talking to you, and you can figure out where I am on your own.\""
                 },
                 {
-                  "id": "oae79a",
-                  "text": "\"Maybe? I don't know, I guess it's okay sometimes.\""
+                  "id": "of73c2",
+                  "text": "\"Maybe? I don't know, I guess it's okay sometimes. Let me think about it and I'll tell you later, if you really need to know.\""
                 },
                 {
-                  "id": "o166f9",
-                  "text": "\"Whatever, do what you want.\""
+                  "id": "oc39f5",
+                  "text": "\"Whatever, do what you want. I'm not going to argue about it, and I'm not going to answer any more questions tonight.\""
                 }
               ]
             }
@@ -1065,28 +1065,28 @@
               "sceneTitle": "Scene 1",
               "options": [
                 {
-                  "id": "o13dcb",
-                  "text": "Riley is playing hard to get."
+                  "id": "o7c122",
+                  "text": "Riley is playing hard to get, so Sam should joke around and keep trying until Riley relaxes."
                 },
                 {
-                  "id": "o519ce",
-                  "text": "Riley's answer matters less than how Sam feels."
+                  "id": "oe9b90",
+                  "text": "How Riley feels matters less than how Sam feels, so Sam should say how disappointed Sam is."
                 },
                 {
-                  "id": "o9e699",
-                  "text": "Riley has not said yes, so Sam should not kiss Riley. Sam can say, \"Okay, thanks for telling me.\""
+                  "id": "o30d94",
+                  "text": "Riley has not said yes, so Sam should not kiss. Sam can say, \"Okay, thanks for telling me.\""
                 },
                 {
-                  "id": "o57a37",
-                  "text": "Riley did not say no, so Sam can go ahead."
+                  "id": "oc196f",
+                  "text": "Riley did not say no, so Sam can go ahead, and Riley can always say stop if it is a problem."
                 },
                 {
-                  "id": "o59cf6",
-                  "text": "Riley is probably just shy, so Sam should try to convince Riley with good reasons."
+                  "id": "o254cb",
+                  "text": "Riley is probably just shy, so Sam should explain all the reasons a kiss would be a good idea."
                 },
                 {
-                  "id": "o60fb3",
-                  "text": "\"Maybe\" means yes if Sam asks again in a sweeter way."
+                  "id": "o5e559",
+                  "text": "\"Maybe\" means yes if Sam asks again in a sweeter way, so Sam should try once more with a smile."
                 }
               ]
             },
@@ -1109,28 +1109,28 @@
               "sceneTitle": "Scene 2",
               "options": [
                 {
-                  "id": "of8f73",
-                  "text": "Sam is only joking, so Riley should not take it seriously."
+                  "id": "o02c9a",
+                  "text": "Sam is only joking around, so Riley should not take the comments seriously or let them change the evening."
                 },
                 {
-                  "id": "o44c79",
-                  "text": "Riley said yes last week, so Riley owes Sam a yes tonight."
+                  "id": "o41c09",
+                  "text": "Riley said yes last week, so Riley owes Sam another yes tonight, and saying no now would be very unfair to Sam."
                 },
                 {
-                  "id": "o82a2a",
-                  "text": "Sam is being persistent in a romantic way, which shows Sam cares."
+                  "id": "o5a360",
+                  "text": "Sam is being persistent in a romantic way, and that kind of effort shows how much Sam really cares about Riley right now."
                 },
                 {
-                  "id": "o4ece3",
-                  "text": "Riley should say yes to avoid an argument."
+                  "id": "oc318d",
+                  "text": "Riley should say yes now to avoid an argument, since an argument would be worse for both of them than a kiss."
                 },
                 {
-                  "id": "of4908",
-                  "text": "Sam is using pressure (\"everyone does it,\" guilt, and a past yes), and none of that changes the fact that Riley has not said yes now."
+                  "id": "o27b6d",
+                  "text": "Sam is using pressure (\"everyone does it,\" guilt, a past yes). None of it changes that Riley has not said yes now."
                 },
                 {
-                  "id": "oc982a",
-                  "text": "Pressure only counts when someone threatens to hurt you."
+                  "id": "oeb6bf",
+                  "text": "Pressure only counts when someone makes a threat to hurt you, and nobody has threatened Riley here at all."
                 }
               ]
             },
@@ -1153,28 +1153,28 @@
               "sceneTitle": "Scene 3",
               "options": [
                 {
-                  "id": "o6757c",
-                  "text": "Say, \"You're ruining the moment.\""
+                  "id": "o65213",
+                  "text": "Say, \"You're ruining the moment,\" so that Riley knows how disappointed Sam is about stopping."
                 },
                 {
-                  "id": "o92e70",
-                  "text": "Slow down but keep going, since Riley said yes."
+                  "id": "od57c8",
+                  "text": "Slow down but keep going, since Riley said yes and slower should be enough to make Riley comfortable."
                 },
                 {
-                  "id": "oaadd2",
-                  "text": "Finish the kiss, since Riley already said yes."
+                  "id": "o8e344",
+                  "text": "Finish the kiss, since Riley already said yes and it would be strange to stop partway through."
                 },
                 {
-                  "id": "o8bbf2",
-                  "text": "Wait a few seconds to see if Riley changes their mind back."
+                  "id": "o53af5",
+                  "text": "Wait a few seconds to see if Riley changes their mind back, then continue if Riley says nothing."
                 },
                 {
-                  "id": "oaf206",
-                  "text": "Stop right away, step back, and ask calmly how Riley is feeling and what Riley wants."
+                  "id": "o26d32",
+                  "text": "Stop right away, step back, and ask calmly how Riley is feeling and what Riley would like next."
                 },
                 {
-                  "id": "ob538f",
-                  "text": "Say, \"Why? You just said yes!\""
+                  "id": "oe4ff3",
+                  "text": "Say, \"Why? You just said yes!\" and ask Riley to explain what changed so Sam can understand."
                 }
               ]
             }
@@ -1456,20 +1456,20 @@
               "unlockAfter": null,
               "options": [
                 {
-                  "id": "od123f",
-                  "text": "Medicine bought without a prescription at any store can cure any STI."
+                  "id": "o2544d",
+                  "text": "Over-the-counter medicine from a drugstore can cure most STIs, as long as the package says it treats infections."
                 },
                 {
                   "id": "o8d234",
                   "text": "Many HPV infections clear up on their own, and the HPV vaccine helps prevent infection with the types that cause most HPV cancers."
                 },
                 {
-                  "id": "o023a0",
-                  "text": "If the symptoms go away, the STI is gone and no treatment is needed."
+                  "id": "o12ec6",
+                  "text": "If the symptoms go away, the STI is gone and no treatment is needed, since symptoms are how an infection shows itself."
                 },
                 {
-                  "id": "od0480",
-                  "text": "Antibiotics cure viral STIs such as HIV and herpes."
+                  "id": "oa12b5",
+                  "text": "Antibiotics cure viral STIs such as HIV and herpes, as long as the whole course of pills is finished on time."
                 },
                 {
                   "id": "oab4d8",
@@ -1480,8 +1480,8 @@
                   "text": "Bacterial STIs such as chlamydia, gonorrhea, and syphilis can generally be cured with antibiotics prescribed by a health professional."
                 },
                 {
-                  "id": "o9fa7a",
-                  "text": "Once a person has been treated for an STI, they cannot get it again."
+                  "id": "o4b7ca",
+                  "text": "Once a person has been treated for an STI, they are protected from getting it again, because the body becomes immune after treatment."
                 }
               ]
             }
@@ -1516,28 +1516,28 @@
               "unlockAfter": null,
               "options": [
                 {
-                  "id": "o08b3c",
-                  "text": "Check for sores or discharge. No signs means no infection."
+                  "id": "o7b679",
+                  "text": "Look for sores or discharge. If there are no visible signs, then there is no infection and so no reason to see a doctor or a clinic."
                 },
                 {
-                  "id": "o93ce7",
-                  "text": "Take leftover antibiotics from a family member, just in case."
+                  "id": "o288c3",
+                  "text": "Take leftover antibiotics from a family member, just in case, so that any infection is already being treated if Jordan has one."
                 },
                 {
-                  "id": "o3889f",
-                  "text": "Skip testing because a condom was used, so the risk was zero."
+                  "id": "o38e5b",
+                  "text": "Skip testing because a condom was used, which means the chance of having caught anything was too small to matter."
                 },
                 {
-                  "id": "o2d271",
-                  "text": "Contact a health professional or clinic about getting tested, because many STIs cause no symptoms and testing is the only way to know."
+                  "id": "od4a76",
+                  "text": "Contact a health professional or clinic about testing, since many STIs have no symptoms and only a test shows if someone has one."
                 },
                 {
-                  "id": "o8f082",
-                  "text": "Wait and see whether symptoms appear. If there are none, there is nothing to worry about."
+                  "id": "o4a1c8",
+                  "text": "Wait to see whether symptoms show up. If nothing appears over the next few weeks, there is nothing left to worry about."
                 },
                 {
-                  "id": "o41479",
-                  "text": "Assume the partner is wrong, since Jordan feels healthy."
+                  "id": "od5382",
+                  "text": "Assume the partner got it wrong, since Jordan feels very healthy and has not noticed anything unusual about their body at all."
                 }
               ]
             }
@@ -1897,8 +1897,8 @@
               "unlockAfter": null,
               "options": [
                 {
-                  "id": "ob1d93",
-                  "text": "A person who has never had symptoms does not need to think about testing."
+                  "id": "o90553",
+                  "text": "A person who feels healthy does not need to think about testing, since symptoms usually appear first."
                 },
                 {
                   "id": "o846ff",
@@ -1909,16 +1909,16 @@
                   "text": "Not sharing needles or syringes prevents HIV from spreading by that route."
                 },
                 {
-                  "id": "of3bf7",
-                  "text": "Staying away from people living with HIV is necessary to prevent HIV from spreading."
+                  "id": "oc29f4",
+                  "text": "Staying away from people living with HIV is necessary to prevent HIV from spreading, even through everyday contact."
                 },
                 {
                   "id": "o310d5",
                   "text": "Abstaining from sexual activity eliminates the chance of getting HIV through sex."
                 },
                 {
-                  "id": "o55627",
-                  "text": "Abstaining from sex protects against every way HIV can spread."
+                  "id": "o5142d",
+                  "text": "Abstaining from sex also protects against the ways HIV spreads outside of sex, such as sharing needles and syringes."
                 },
                 {
                   "id": "oc7db2",
@@ -1976,28 +1976,28 @@
               "stage": "S",
               "options": [
                 {
-                  "id": "o25756",
-                  "text": "Jordan should just say no."
+                  "id": "o498ef",
+                  "text": "Jordan should just say no to Taylor, because saying no is the safest and simplest way to end the problem."
                 },
                 {
-                  "id": "o20f4f",
-                  "text": "Jordan has to keep Taylor happy."
+                  "id": "o3dda3",
+                  "text": "Jordan has to keep Taylor happy, so the real decision is how to do that without upsetting Taylor."
                 },
                 {
-                  "id": "o5c1ae",
-                  "text": "Everyone else has already made this decision."
+                  "id": "o718f0",
+                  "text": "Everyone else Jordan's age has already made this decision, so Jordan is the one who is behind everybody."
                 },
                 {
-                  "id": "o542aa",
-                  "text": "Taylor is pressuring Jordan and is a bad partner."
+                  "id": "od1a7a",
+                  "text": "Taylor is pressuring Jordan and is being a bad partner, so Jordan has to decide what to do about Taylor."
                 },
                 {
                   "id": "o995e1",
                   "text": "Taylor has asked Jordan to decide by the weekend whether to start having sex, and Jordan isn't sure."
                 },
                 {
-                  "id": "o49f38",
-                  "text": "Jordan and Taylor's relationship."
+                  "id": "o6b485",
+                  "text": "Jordan and Taylor have been dating for two months, and their relationship has some things to figure out."
                 }
               ]
             },
@@ -2016,32 +2016,32 @@
               "stage": "T",
               "options": [
                 {
-                  "id": "o5bc92",
-                  "text": "Agree now and hope nothing bad happens."
+                  "id": "o3b37d",
+                  "text": "Agree now and hope nothing bad happens, since worrying about it ahead of time would only spoil the mood."
                 },
                 {
-                  "id": "of3d41",
-                  "text": "Tell Taylor that Jordan wants to wait, and explain why."
+                  "id": "o99d36",
+                  "text": "Tell Taylor that Jordan wants to wait for now, and explain why in Jordan's own words."
                 },
                 {
                   "id": "o3c461",
                   "text": "Ask Taylor for more time, and talk with a parent, guardian, or other trusted adult."
                 },
                 {
-                  "id": "o82f95",
-                  "text": "Say yes just so Taylor won't be upset."
+                  "id": "o67c99",
+                  "text": "Say yes just so Taylor won't be upset, because avoiding a fight now matters more than what Jordan thinks."
                 },
                 {
-                  "id": "of9750",
-                  "text": "Say Jordan already has plans for the next month, to avoid the question."
+                  "id": "obc355",
+                  "text": "Say Jordan already has plans for the next month, to avoid the question without ever saying anything true."
                 },
                 {
                   "id": "o7cf8e",
                   "text": "Talk with Taylor about feelings, limits, and information about protection and testing before deciding anything."
                 },
                 {
-                  "id": "o6c437",
-                  "text": "Take a break from dating while Jordan sorts out how Jordan feels."
+                  "id": "o716af",
+                  "text": "Take a break from dating for a while, so Jordan can sort out how Jordan really feels."
                 }
               ]
             },
@@ -2123,28 +2123,28 @@
               "stage": "P",
               "options": [
                 {
-                  "id": "o8fc62",
-                  "text": "Jordan picks whatever Taylor wants so that Taylor won't be upset."
+                  "id": "odde9c",
+                  "text": "Jordan picks whatever Taylor wants, because keeping Taylor happy matters more than any of the consequences from step O."
                 },
                 {
-                  "id": "ofaa12",
-                  "text": "Jordan flips a coin so Jordan doesn't have to think about it."
+                  "id": "odb270",
+                  "text": "Jordan flips a coin, because thinking through all the options and consequences only makes the decision more stressful for everyone."
                 },
                 {
-                  "id": "oeea68",
-                  "text": "Jordan picks the fastest option to make the stress stop."
+                  "id": "o57ee0",
+                  "text": "Jordan picks the fastest option to make the stress stop, because feeling better right now is what matters most to Jordan today."
                 },
                 {
-                  "id": "oa7a63",
-                  "text": "Jordan picks without listing options, because the first idea is always right."
+                  "id": "o959c8",
+                  "text": "Jordan picks the first idea that comes to mind, because the first idea is usually right and listing options wastes time."
                 },
                 {
-                  "id": "oeb468",
-                  "text": "Jordan picks what friends say most people do."
+                  "id": "o121f3",
+                  "text": "Jordan picks what most friends say people their age do, because the group probably knows what is normal and safe."
                 },
                 {
-                  "id": "obcd2e",
-                  "text": "Jordan weighs the consequences from step O, including the health risks, and picks the choice that best protects Jordan's health and fits Jordan's own limits."
+                  "id": "o067a0",
+                  "text": "Jordan weighs the consequences from step O, including health risks, and picks what protects Jordan's health and fits Jordan's limits."
                 }
               ]
             }
@@ -2186,28 +2186,28 @@
               "unlockAfter": null,
               "options": [
                 {
-                  "id": "o3c711",
-                  "text": "Observe consequences (O) only, because Kofi already thought of options."
+                  "id": "oe21c6",
+                  "text": "Observe consequences (O) only, because Kofi already thought of several options before deciding."
                 },
                 {
-                  "id": "ocb767",
-                  "text": "Think of options (T) and Observe consequences (O)."
+                  "id": "o7f273",
+                  "text": "Think of options (T) and Observe consequences (O), because Kofi names one idea and never looks ahead."
                 },
                 {
-                  "id": "o11bfc",
-                  "text": "State (S) and Pick (P)."
+                  "id": "of0e31",
+                  "text": "State (S) and Pick (P), because Kofi skipped describing the problem and never made a final choice."
                 },
                 {
-                  "id": "o98ed9",
-                  "text": "State the decision (S) only."
+                  "id": "o732ee",
+                  "text": "State the decision (S) only, because Kofi never said what the question is and just started talking."
                 },
                 {
-                  "id": "o060fb",
-                  "text": "Pick (P) only."
+                  "id": "ob69f0",
+                  "text": "Pick (P) only, because Kofi never actually chose anything and is still thinking about what to do."
                 },
                 {
-                  "id": "od190f",
-                  "text": "None. Kofi completed all four steps."
+                  "id": "ob599c",
+                  "text": "None of them. Kofi completed all four steps, because he made a decision and stayed calm while doing it."
                 }
               ]
             }
@@ -2336,8 +2336,8 @@
               "unlockAfter": null,
               "options": [
                 {
-                  "id": "o895c5",
-                  "text": "It protects against every way HIV can spread, including shared needles."
+                  "id": "oe20b1",
+                  "text": "It also protects against the ways HIV spreads outside of sex, such as shared needles."
                 },
                 {
                   "id": "o8afca",
@@ -2348,16 +2348,16 @@
                   "text": "It completely removes the chance of getting HIV or another STI through sex."
                 },
                 {
-                  "id": "o4d43f",
-                  "text": "It has no medical side effects."
+                  "id": "oc6af1",
+                  "text": "It has no physical or medical side effects for the person who chooses it."
                 },
                 {
-                  "id": "ob05ea",
-                  "text": "It lowers risk a little, but a condom is always more effective."
+                  "id": "o28adc",
+                  "text": "It lowers risk a little, but a condom is usually more effective."
                 },
                 {
-                  "id": "oe51a3",
-                  "text": "It completely removes the chance of pregnancy."
+                  "id": "o56875",
+                  "text": "It completely removes the chance of pregnancy from sexual activity."
                 },
                 {
                   "id": "ocac91",
@@ -2538,32 +2538,32 @@
               "unlockAfter": null,
               "options": [
                 {
-                  "id": "o34d89",
-                  "text": "It sounds very confident."
+                  "id": "o3307d",
+                  "text": "It sounds very confident and speaks directly to its readers."
                 },
                 {
-                  "id": "of5dbe",
-                  "text": "It uses a short, catchy slogan."
+                  "id": "ofa12e",
+                  "text": "It uses a short, catchy slogan that is easy to remember."
                 },
                 {
-                  "id": "o87d42",
-                  "text": "It was updated this year."
+                  "id": "oc55d2",
+                  "text": "It was updated this year, so the information is current."
                 },
                 {
                   "id": "o9f783",
                   "text": "It cites national health agencies, so claims can be checked."
                 },
                 {
-                  "id": "o796a1",
-                  "text": "It has more likes and shares."
+                  "id": "o8c82a",
+                  "text": "It has far more likes and shares than the other source does."
                 },
                 {
-                  "id": "o28cf7",
-                  "text": "It showed up first in a search."
+                  "id": "o18088",
+                  "text": "It showed up first in the list of search results."
                 },
                 {
-                  "id": "o268b5",
-                  "text": "It names who reviewed it and their qualifications."
+                  "id": "oc7ebd",
+                  "text": "It names who reviewed it and what their qualifications are."
                 }
               ]
             }
@@ -2684,28 +2684,28 @@
               "unlockAfter": null,
               "options": [
                 {
-                  "id": "oa7426",
-                  "text": "\"Just break up with them. It's easy.\""
+                  "id": "o71212",
+                  "text": "\"Just break up with them. It's really not that hard, and you'll feel so much better once you stop letting them do this to you for good.\""
                 },
                 {
-                  "id": "o40ae3",
-                  "text": "\"Don't make a big deal out of it. All couples do that.\""
+                  "id": "o62840",
+                  "text": "\"Don't make a big deal out of it. Every couple fights and checks each other's phones sometimes, so it's probably just totally normal stuff.\""
                 },
                 {
-                  "id": "ob7a21",
-                  "text": "\"That sounds really stressful, and I'm glad you told me. You deserve to feel safe. Would you like help finding someone, like a counselor, to talk to?\""
+                  "id": "of7d3c",
+                  "text": "\"That sounds stressful, and I'm glad you told me. You deserve to feel safe. Want help finding a counselor or another adult to talk to?\""
                 },
                 {
-                  "id": "o41b20",
-                  "text": "\"I'll confront them tomorrow and tell everyone what's going on.\""
+                  "id": "o8b19e",
+                  "text": "\"I'll confront them tomorrow and tell everyone at school what's going on, so they all know how they've been treating you.\""
                 },
                 {
-                  "id": "od5c59",
-                  "text": "\"You must have done something to make them act like that.\""
+                  "id": "od7f0d",
+                  "text": "\"You must have done something to make them act like that. Think about what you did, and then try to go fix it with them.\""
                 },
                 {
-                  "id": "of26bf",
-                  "text": "\"I promise I'll never tell anyone, no matter what.\""
+                  "id": "o28c89",
+                  "text": "\"I promise I'll never tell anyone, no matter what happens. This stays between us, and I'll never bring it up again, ever.\""
                 }
               ]
             }
@@ -3038,24 +3038,24 @@
               "unlockAfter": "C6-02",
               "options": [
                 {
-                  "id": "o74c96",
-                  "text": "Imani is being difficult because she did not answer Kai's first question."
+                  "id": "o53b66",
+                  "text": "Imani is being difficult because she did not answer Kai's first question, so Kai has a right to be annoyed with her."
                 },
                 {
-                  "id": "o0bd97",
-                  "text": "Imani said yes last time, so she has to go along tonight."
+                  "id": "o27595",
+                  "text": "Imani said yes last time, so she has to go along tonight, and she should not have said yes if she planned to change her mind."
                 },
                 {
-                  "id": "o10095",
-                  "text": "Imani has to explain her reasons before her no counts."
+                  "id": "of5df0",
+                  "text": "Imani has to explain her reasons before her no counts, because Kai cannot respect a limit he does not understand."
                 },
                 {
-                  "id": "of8100",
-                  "text": "A no only counts if Imani says it out loud, not in a text."
+                  "id": "oa5949",
+                  "text": "A no only counts if Imani says it out loud, not in a text, because words on a screen can easily be misunderstood."
                 },
                 {
-                  "id": "oef076",
-                  "text": "Kai's messages are fine because he never actually threatened anyone."
+                  "id": "o38954",
+                  "text": "Kai's messages are fine because he never actually threatened anyone, and being pushy is not the same as being controlling."
                 },
                 {
                   "id": "oecf7b",
@@ -3078,28 +3078,28 @@
               "unlockAfter": "C6-03",
               "options": [
                 {
-                  "id": "o47f83",
-                  "text": "Pick the option that will make Kai happiest and explain it later."
+                  "id": "oc51a7",
+                  "text": "Pick the option that will make Kai happiest and explain it later, since pleasing Kai is the safest way to avoid conflict."
                 },
                 {
-                  "id": "o373f6",
-                  "text": "Wait and see what everyone else does."
+                  "id": "o20037",
+                  "text": "Wait and see what everyone else in the group chat does, then do the same so she is not the only one different."
                 },
                 {
-                  "id": "o98497",
-                  "text": "Compare what could happen right away and later for each option, including feelings, health risks, and how Kai might react."
+                  "id": "oaf8b4",
+                  "text": "Compare what could happen right away and later with each option, including feelings, health risks, and Kai's reaction."
                 },
                 {
-                  "id": "o22a1e",
-                  "text": "Skip to P, because Imani already knows what she wants."
+                  "id": "o2e030",
+                  "text": "Skip ahead to P, because Imani already knows what she wants and looking at consequences would only make her doubt it."
                 },
                 {
-                  "id": "o0680e",
-                  "text": "Add more options until one of them feels easy."
+                  "id": "o60cde",
+                  "text": "Add more options until one of them feels easy, because the right choice should never be difficult or uncomfortable."
                 },
                 {
-                  "id": "o79be7",
-                  "text": "Ask Kai which option Imani should choose."
+                  "id": "ofeb1b",
+                  "text": "Ask Kai which option Imani should choose, since Kai knows more about the situation than anyone else involved."
                 }
               ]
             },
@@ -3123,28 +3123,28 @@
                   "text": "The Teen Health Clinic info sheet (E3), because it was reviewed by clinic nurses and physicians and is up to date."
                 },
                 {
-                  "id": "o7e029",
-                  "text": "Kai, because he can explain what is and is not true."
+                  "id": "o300f8",
+                  "text": "Kai, because Kai knows the situation best and can explain what is and is not true about all of this."
                 },
                 {
-                  "id": "o90d8e",
-                  "text": "The @RealTalkTeen post, because it has thousands of shares."
+                  "id": "oba0e6",
+                  "text": "The @RealTalkTeen post, because it has thousands of shares and so many people must agree with it."
                 },
                 {
                   "id": "ob9706",
                   "text": "A doctor, nurse practitioner, or clinic, for questions about testing and protection."
                 },
                 {
-                  "id": "oe2e10",
-                  "text": "Keeping quiet and hoping the pressure stops."
+                  "id": "ofee8f",
+                  "text": "Keeping quiet and hoping the pressure stops, because talking about it might make things worse for everyone."
                 },
                 {
                   "id": "o87bc2",
                   "text": "A crisis or support helpline, for someone who feels pressured in a relationship."
                 },
                 {
-                  "id": "oc3843",
-                  "text": "A school counselor or another trusted adult."
+                  "id": "of72bb",
+                  "text": "A school counselor or another trusted adult who can listen and help Imani sort out what to do."
                 }
               ]
             },
@@ -3165,28 +3165,28 @@
               "unlockAfter": "C6-05",
               "options": [
                 {
-                  "id": "oee728",
-                  "text": "\"Don't tell anyone, because it will only make things worse.\""
+                  "id": "o1c7c0",
+                  "text": "\"Block Kai, delete the chat, and never talk about it again. The texts do not matter once they are gone, and none of those documents can really help you decide anything about what to do next anyway.\""
                 },
                 {
-                  "id": "od1302",
-                  "text": "\"Since you said yes last time, it's only fair to say yes again.\""
+                  "id": "o7153c",
+                  "text": "\"Since you said yes last time, it is fair for Kai to expect a yes again. Use STOP to decide how to say it, and trust the post, because thousands of people shared it and that has to mean something.\""
                 },
                 {
-                  "id": "obadfa",
-                  "text": "\"Block Kai, delete the chat, and never talk about it again.\""
+                  "id": "od28f3",
+                  "text": "\"Kai's messages are only jokes, so you can ignore them completely. The post and the clinic sheet basically say the same thing, so you do not need either one, and STOP is only for really big decisions.\""
                 },
                 {
-                  "id": "ofc930",
-                  "text": "\"Your 'no' is clear, and Kai should respect it. Pressure, ultimatums, and threats are warning signs. That post has mistakes, but the clinic sheet is reliable. You could use STOP to think through each option, and talk with a counselor or another trusted adult.\""
+                  "id": "of7929",
+                  "text": "\"Your 'no' is clear, and Kai should respect it. Pressure and threats are warning signs. The post has mistakes, but the clinic sheet is reliable. Use STOP to think through your options, and talk with a counselor or trusted adult.\""
                 },
                 {
-                  "id": "o55fbf",
-                  "text": "\"The post says condoms and the pill cover everything, so you're safe whatever you decide.\""
+                  "id": "o71025",
+                  "text": "\"Your 'no' is clear and Kai should respect it, and the clinic sheet is reliable. But keep this just between you and me, because telling a counselor or any other adult will only make things worse for you.\""
                 },
                 {
-                  "id": "o76191",
-                  "text": "\"Kai is probably just stressed. Go over tonight and see how it goes.\""
+                  "id": "oc7eb3",
+                  "text": "\"Kai is probably just stressed, so go over tonight and see how it goes. The post says condoms and the pill cover everything, so you will be safe whatever happens, and you do not need to tell anyone at all about this.\""
                 }
               ]
             }
@@ -3195,6 +3195,6 @@
       ]
     }
   ],
-  "structureHash": "c11e67bd568690c20dff6ce82d07581934d6aae50a5a48931d0369bd25c0f8c6",
+  "structureHash": "68d2e1e46e27a098e378086acfcf95bf5627ca3163376586819b4721f52707aa",
   "points": 100
 }

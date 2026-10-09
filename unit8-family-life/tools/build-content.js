@@ -5,7 +5,7 @@
  *
  *   authoring/            (gitignored: content + answer keys)   -> content/items.json   (public, no keys)
  *                                                               -> content/alignment.json (public: objectives -> items)
- *                                                               -> private/itembank.json, private/ItemBankSeed.gs, private/ANSWER_KEY.md  (gitignored)
+ *                                                               -> private/itembank.json, private/ItemBankSeed.gs, private/ANSWER_KEY.md, private/REVIEW_DETAIL.md  (gitignored)
  *   content/demo/authoring.js (public demo / test fixture)      -> content/demo/items.json, content/demo/bank.json
  *
  * If authoring/ is missing (fresh clone) the live build is skipped and the demo build still runs. Restore the real
@@ -75,7 +75,9 @@ if (!fs.existsSync(authoringIndex)) {
       '// Paste into a second script file in the Apps Script editor, run seedItemBank(), then DELETE this file from the editor.\n' +
       'var ITEM_BANK_SEED = ' + JSON.stringify(live.bank) + ';\n');
     write('private/ANSWER_KEY.md', answerkey.render(src));
-    if (!checkOnly) console.log('\nwrote content/items.json, content/alignment.json, private/itembank.json, private/ItemBankSeed.gs, private/ANSWER_KEY.md');
+    const detailPath = path.join(root, 'authoring/review-detail.js');
+    if (fs.existsSync(detailPath)) write('private/REVIEW_DETAIL.md', require('./lib/reviewdetail.js').render(src, require(detailPath)));
+    if (!checkOnly) console.log('\nwrote content/items.json, content/alignment.json, private/itembank.json, private/ItemBankSeed.gs, private/ANSWER_KEY.md, private/REVIEW_DETAIL.md');
   }
 }
 

@@ -1,101 +1,106 @@
 {
-  "when": "2026-10-09T00:34:59.675Z",
+  "when": "2026-10-09T10:14:03.720Z",
   "node": "v22.22.0",
   "results": [
     {
       "name": "sign-in: wrong code, wrong block, empty fields, then success",
       "ok": true,
-      "ms": 736
+      "ms": 854
     },
     {
       "name": "sign-in: duplicate ID resumes; a second sign-in signs the first tab out; block and name are checked",
       "ok": true,
-      "ms": 2410
+      "ms": 3239
     },
     {
       "name": "refresh mid-item: page, attempts, hints and the running clock all come back",
       "ok": true,
-      "ms": 3282
+      "ms": 3710
     },
     {
       "name": "offline then online: the answer waits, no attempt is used, then it is graded once",
       "ok": true,
-      "ms": 2271
+      "ms": 2659
     },
     {
       "name": "server hiccups (dropped and 503 responses) are retried with the same request id",
       "ok": true,
-      "ms": 3494
+      "ms": 3868
     },
     {
       "name": "expiry during an item: the late answer is rejected and the work is auto-submitted",
       "ok": true,
-      "ms": 33116
+      "ms": 3457
     },
     {
       "name": "timer: normal, amber at 30, red at 10, banner at 5, aria-live announcements, 00:00 submits",
       "ok": true,
-      "ms": 3719
+      "ms": 3797
     },
     {
       "name": "hints, attempts and locking: hint after miss 1 and 2, lock + explanation after 3, credit labels",
       "ok": true,
-      "ms": 4778
+      "ms": 5879
     },
     {
       "name": "stage gating: the next scene opens only when the earlier one is correct or locked; evidence must be read first",
       "ok": true,
-      "ms": 3139
+      "ms": 3555
     },
     {
       "name": "every widget type works by CLICK ONLY (no drag): label, classify, order, single, multi, numeric",
       "ok": true,
-      "ms": 5384
+      "ms": 6068
     },
     {
       "name": "keyboard only: pick a card with Enter, place it with Enter, Escape cancels, order buttons work",
       "ok": true,
-      "ms": 1676
+      "ms": 1847
     },
     {
       "name": "drag and drop works with the mouse (classify)",
       "ok": true,
-      "ms": 1965
+      "ms": 2108
     },
     {
       "name": "final submit: review lists unanswered items, confirm dialog, completion with score, locked afterwards",
       "ok": true,
-      "ms": 5229
+      "ms": 5439
     },
     {
       "name": "teacher: password failure, WALK-TEACHER opens at once, monitor, reset (typed last name), student gets a fresh start",
       "ok": true,
-      "ms": 6906
+      "ms": 7854
     },
     {
       "name": "teacher: preview never touches student data; answer-key overlay; free navigation; reset my preview",
       "ok": true,
-      "ms": 2992
+      "ms": 3535
     },
     {
       "name": "teacher: settings, test connection, analytics, reference, CSV export",
       "ok": true,
-      "ms": 969
+      "ms": 1118
     },
     {
       "name": "responsive and accessible basics: no horizontal scroll at 360px, every control named, reduced motion toggle",
       "ok": true,
-      "ms": 2104
+      "ms": 2612
     },
     {
       "name": "security: the page never receives answer keys; the public question file has none",
       "ok": true,
-      "ms": 2186
+      "ms": 2555
+    },
+    {
+      "name": "demo mode (empty API_URL): the in-browser server runs a clearly-labeled practice set with no backend",
+      "ok": true,
+      "ms": 3280
     },
     {
       "name": "live bank: all 40 items solved through the UI, final score 100/100",
       "ok": true,
-      "ms": 65496
+      "ms": 67430
     }
   ]
 }

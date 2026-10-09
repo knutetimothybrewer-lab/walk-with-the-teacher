@@ -14,6 +14,7 @@
  * Never deploy this. It is for local testing only.
  */
 const http = require('http');
+const zlib = require('zlib');
 const fs = require('fs');
 const path = require('path');
 const W8 = require('../server/core.js');
@@ -70,7 +71,7 @@ function start(opts) {
       if (p === '/__test/reset') { store.setConfig({ classCodes: { 'Block 1/2': 'CODE12', 'Block 3/4': 'CODE34', 'Block 6/7': 'CODE67', 'Block 8/9': 'CODE89' }, defaultMinutes: 90, showScore: true, open: true, disabledItems: [] }); store.setTeacherHash({ salt, hash: W8.hashPassword('teacher-pass-1', salt) }); Object.keys(store._state.sessions).forEach((k) => delete store._state.sessions[k]); store._state.preview = null; store._state.teacherTokens = {}; store._state.history.length = 0; store._state.responses.length = 0; ctl.skew = 0; ctl.fail = { count: 0, mode: 'drop' }; ctl.delayMs = 0; ctl.calls = 0; return res.end('{}'); }
       res.statusCode = 404; return res.end('{}');
     }
-    if (p === '/js/config.js') {
+    if (p === '/js/config.js' && !opts.demoMode) {
       res.writeHead(200, { 'content-type': MIME['.js'], 'cache-control': 'no-store' });
       return res.end('window.W8_CONFIG = { API_URL: "/api", APP_VERSION: "dev" };');
     }
@@ -80,7 +81,13 @@ function start(opts) {
     if (!f.startsWith(root)) { res.statusCode = 403; return res.end('no'); }
     fs.readFile(f, (err, data) => {
       if (err) { res.statusCode = 404; return res.end('not found'); }
-      res.writeHead(200, { 'content-type': MIME[path.extname(f)] || 'application/octet-stream', 'cache-control': 'no-store' });
+      const type = MIME[path.extname(f)] || 'application/octet-stream';
+      // GitHub Pages gzips text assets; do the same so performance numbers are realistic
+      if (/text|javascript|json|svg/.test(type) && /gzip/.test(req.headers['accept-encoding'] || '')) {
+        res.writeHead(200, { 'content-type': type, 'content-encoding': 'gzip', 'cache-control': 'no-store' });
+        return res.end(zlib.gzipSync(data));
+      }
+      res.writeHead(200, { 'content-type': type, 'cache-control': 'no-store' });
       res.end(data);
     });
   });

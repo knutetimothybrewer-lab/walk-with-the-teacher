@@ -79,6 +79,34 @@ test('closing the assessment stops new sign-ins but lets in-progress students co
   assert.equal(S.api('submit', { token: S.store.listSessions()[0].token, itemId: id, response: correctResponse(S.bank.items[id]), reqId: 'c1' }).ok, true);
 });
 
+test('a student who signed in before the teacher closed the assessment cannot press Begin afterwards', () => {
+  const S = setup(); const token = S.student();
+  const tt = S.teacher();
+  assert.equal(S.api('tSetSettings', { tt, settings: { open: false } }).ok, true);
+  const r = S.api('begin', { token });
+  assert.equal(r.ok, false);
+  assert.equal(r.error.code, 'CLOSED');
+  assert.equal(S.store.findSessionById('S1001').status, 'registered', 'no clock was started');
+  assert.equal(S.api('tSetSettings', { tt, settings: { open: true } }).ok, true);
+  assert.equal(S.api('begin', { token }).ok, true, 'works again once reopened');
+});
+
+test('student tokens expire: 12 hours if never started, 3 hours after the deadline if started', () => {
+  const S = setup();
+  const idle = S.student({ studentId: 'IDLE-1', lastName: 'Idle' });
+  S.clock.advance(11 * 60 * MIN);
+  assert.equal(S.api('state', { token: idle }).ok, true, 'still valid after 11 hours');
+  S.clock.advance(2 * 60 * MIN);
+  assert.equal(S.api('state', { token: idle }).error.code, 'NO_SESSION', 'rejected after 13 hours');
+  const { token } = S.begin({ studentId: 'LIVE-1', lastName: 'Live' });
+  S.clock.advance((90 + 170) * MIN); // 2 h 50 min past the deadline, untouched in between
+  assert.equal(S.api('state', { token }).ok, true, 'still valid inside the 3 hour window');
+  const lateToken = S.begin({ studentId: 'LIVE-2', lastName: 'Later' }).token;
+  S.clock.advance((90 + 190) * MIN); // more than 3 h past this student\'s deadline, untouched in between
+  assert.equal(S.api('state', { token: lateToken }).error.code, 'NO_SESSION');
+  assert.equal(S.login({ studentId: 'LIVE-1', lastName: 'Live' }).ok, true, 'signing in again still shows the finished result');
+});
+
 test('Begin is idempotent and does not reset anything', () => {
   const S = setup(); const { token, begin } = S.begin();
   S.clock.advance(5 * MIN);

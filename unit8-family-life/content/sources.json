@@ -1,20 +1,112 @@
 {
   "status": "NO WEB PAGES WERE OPENED. The environment this assessment was built in blocked every approved health domain (CDC, NIH/MedlinePlus, WHO, AAP, ACOG, HIV.gov, FDA, HHS and state health departments all returned HTTP 403 from the network proxy). Nothing below is therefore cited as 'accessed'. Each claim is listed as NEEDS VERIFICATION with the kind of page that should confirm it. No statistic, study or URL has been invented: the only numbers in the assessment are in charts labeled 'Fictional data for this activity'.",
+  "note": "Claims here are deliberately stated at topic level. This file is public, so it does not say which statements are true or false in any individual question. The detailed claims, with the questions that rely on them, are in private/REVIEW_DETAIL.md (delivered to the teacher, not in git).",
   "checkedAgainstDistrictMaterials": "The NCCVT Health Curriculum Overview (Family Life and Sexuality, lessons 1 to 3) and the K-12 Health Education Concepts document (Reg. 551) were read. They set the framing: HIV prevention that stresses the benefits of abstinence; barrier, hormonal, and sterilization methods of contraception; consent and respecting personal boundaries. They contain no medical statistics.",
   "sources": [],
   "claims": [
-    { "id": "S1", "claim": "Choosing no sexual activity removes the risk of sexual STI transmission and of pregnancy. A few infections (for example HIV and hepatitis B) can also spread in non-sexual ways, such as through shared needles.", "basis": "Build brief section 2 (prompt-supplied) and district overview, lesson 3.", "status": "NEEDS VERIFICATION", "check": "CDC STI prevention page; HIV.gov how HIV spreads", "items": ["C3-05", "C3-08", "C4-03", "C4-07", "C6-01"] },
-    { "id": "S2", "claim": "Condoms used correctly and consistently greatly reduce, but do not eliminate, the risk of STIs (including HIV) and pregnancy.", "basis": "Build brief section 2.", "status": "NEEDS VERIFICATION", "check": "CDC condom effectiveness page; ACOG patient education on contraception", "items": ["C3-03", "C3-05", "C3-08", "C4-03", "C6-01"] },
-    { "id": "S3", "claim": "Many STIs have no symptoms, and testing is the only way to know whether a person has one.", "basis": "Build brief section 2.", "status": "NEEDS VERIFICATION", "check": "CDC STI basic information; MedlinePlus STIs", "items": ["C3-03", "C6-01"] },
-    { "id": "S4", "claim": "Bacterial STIs (chlamydia, gonorrhea, syphilis) are generally curable with antibiotics; viral STIs (HIV, herpes) are generally treatable or manageable, not curable; many HPV infections clear on their own; the HPV vaccine prevents infection with the types that cause most HPV cancers.", "basis": "Build brief section 2.", "status": "NEEDS VERIFICATION", "check": "CDC STI treatment guidelines; CDC HPV vaccination page", "items": ["C3-01", "C3-02"] },
-    { "id": "S5", "claim": "HIV is not spread by hugging, sharing utensils, toilet seats, saliva, sweat, or insect bites. It spreads through blood, semen, pre-seminal fluid, rectal and vaginal fluids, and breast milk, via sex without protection, sharing needles or syringes, and from parent to baby during pregnancy, birth, or breastfeeding.", "basis": "Build brief section 2.", "status": "NEEDS VERIFICATION", "check": "CDC HIV transmission page; HIV.gov", "items": ["C3-04", "C3-08", "C6-01"] },
-    { "id": "S6", "claim": "A person living with HIV who takes treatment as prescribed and keeps an undetectable viral load does not sexually transmit HIV (undetectable = untransmittable).", "basis": "Build brief section 2.", "status": "NEEDS VERIFICATION", "check": "CDC HIV treatment as prevention page; HIV.gov U=U", "items": ["C3-04", "C3-08"] },
-    { "id": "S7", "claim": "Consent is freely given, informed, specific, ongoing, and can be withdrawn at any time; it cannot be given under pressure, threat, or incapacitation.", "basis": "Build brief section 2 and Reg. 551 (consent and respecting personal boundaries).", "status": "NEEDS VERIFICATION", "check": "State or local health department sexual-violence-prevention page; CDC sexual violence prevention", "items": ["C2-04", "C2-05", "C2-06", "C2-07", "C2-08", "C6-03"] },
-    { "id": "S8", "claim": "Confidentiality rules for minors vary by state and by service; no service should be described as guaranteed confidential.", "basis": "Build brief section 2.", "status": "NEEDS VERIFICATION", "check": "Delaware Division of Public Health / state minor-consent guidance; AAP policy statement on adolescent confidentiality", "items": ["C5-03", "C6-01"] },
-    { "id": "S9", "claim": "Puberty timing varies widely among healthy people; hormones start puberty; acne is linked to hormones and oil production rather than to poor washing; shaving does not make hair grow back thicker or darker.", "basis": "General health-education knowledge; not in the district overview.", "status": "NEEDS VERIFICATION", "check": "MedlinePlus puberty and acne pages; AAP HealthyChildren.org", "items": ["C1-05", "C1-06"] },
-    { "id": "S10", "claim": "Reproductive structures and their functions (ovary, fallopian tube, uterus, cervix, vagina, testis, epididymis, vas deferens, prostate gland, urethra); ovulation, fertilization in the fallopian tube, implantation, embryo, fetus, birth.", "basis": "District overview, lesson 1 (structures, functions, ovulation, stages of pregnancy).", "status": "NEEDS VERIFICATION", "check": "MedlinePlus anatomy pages; ACOG pregnancy development page", "items": ["C1-01", "C1-02", "C1-03", "C1-04"] },
-    { "id": "S11", "claim": "Contraception falls into barrier, hormonal, and sterilization groups; hormonal methods and sterilization do not protect against STIs; condoms also reduce STI risk.", "basis": "District overview, lesson 1 (barrier, hormonal, sterilization).", "status": "NEEDS VERIFICATION", "check": "CDC contraception page; ACOG contraception FAQs", "items": ["C3-05", "C3-06"] },
-    { "id": "S12", "claim": "Source credibility cues: named qualified authors, linked sources, recent date, no sales pitch, health agency or medical center publisher.", "basis": "General media-literacy practice; course standard 3 (access information).", "status": "NEEDS VERIFICATION", "check": "School media specialist or a health-literacy guide from a public health agency", "items": ["C5-01", "C5-02"] },
-    { "id": "S13", "claim": "The STOP decision model: State the decision, Think of options, Observe consequences, Pick a responsible health-enhancing choice and explain why.", "basis": "The teacher's earlier unit materials in this repository (wildcats-wellness-quest). Not confirmed for Unit 8.", "status": "NEEDS VERIFICATION", "check": "Your Unit 8 slides", "items": ["C4-01", "C4-02", "C4-03", "C4-04", "C4-05", "C6-04"] }
+    {
+      "id": "S1",
+      "topic": "Abstinence compared with other prevention methods",
+      "claim": "How abstinence compares with other methods for preventing sexual transmission of STIs (including HIV) and pregnancy, and the fact that some infections also have non-sexual routes.",
+      "basis": "Build brief section 2 (prompt-supplied) and district overview, lesson 3.",
+      "status": "NEEDS VERIFICATION",
+      "check": "CDC STI prevention page; HIV.gov how HIV spreads"
+    },
+    {
+      "id": "S2",
+      "topic": "Condom effectiveness",
+      "claim": "How much condoms reduce the risk of STIs and pregnancy, and the limits of that protection. The assessment uses the wording \"greatly reduce but do not eliminate\" and no percentages.",
+      "basis": "Build brief section 2.",
+      "status": "NEEDS VERIFICATION",
+      "check": "CDC condom effectiveness page; ACOG patient education on contraception"
+    },
+    {
+      "id": "S3",
+      "topic": "Symptoms and testing",
+      "claim": "Whether symptoms can show that someone has an STI, and the role of testing.",
+      "basis": "Build brief section 2.",
+      "status": "NEEDS VERIFICATION",
+      "check": "CDC STI basic information; MedlinePlus STIs"
+    },
+    {
+      "id": "S4",
+      "topic": "STI causes and treatability",
+      "claim": "How the cause of an STI (bacterial or viral) relates to whether it can be cured or only managed, what is known about HPV, and what the HPV vaccine does.",
+      "basis": "Build brief section 2.",
+      "status": "NEEDS VERIFICATION",
+      "check": "CDC STI treatment guidelines; CDC HPV vaccination page"
+    },
+    {
+      "id": "S5",
+      "topic": "How HIV is and is not transmitted",
+      "claim": "The body fluids and routes through which HIV spreads, and everyday contact through which it does not.",
+      "basis": "Build brief section 2.",
+      "status": "NEEDS VERIFICATION",
+      "check": "CDC HIV transmission page; HIV.gov"
+    },
+    {
+      "id": "S6",
+      "topic": "HIV treatment and sexual transmission",
+      "claim": "The current agency position on HIV treatment and sexual transmission.",
+      "basis": "Build brief section 2.",
+      "status": "NEEDS VERIFICATION",
+      "check": "CDC HIV treatment as prevention page; HIV.gov U=U"
+    },
+    {
+      "id": "S7",
+      "topic": "Consent",
+      "claim": "A working definition of consent, and the conditions under which it cannot be given.",
+      "basis": "Build brief section 2 and Reg. 551 (consent and respecting personal boundaries).",
+      "status": "NEEDS VERIFICATION",
+      "check": "State or local health department sexual-violence-prevention page; CDC sexual violence prevention"
+    },
+    {
+      "id": "S8",
+      "topic": "Confidentiality and minors",
+      "claim": "How confidentiality rules for minors vary by state and by service, and why no service should be described as guaranteed confidential.",
+      "basis": "Build brief section 2.",
+      "status": "NEEDS VERIFICATION",
+      "check": "Delaware Division of Public Health / state minor-consent guidance; AAP policy statement on adolescent confidentiality"
+    },
+    {
+      "id": "S9",
+      "topic": "Puberty",
+      "claim": "The normal range of timing in puberty, and common beliefs about puberty that the evidence does not support.",
+      "basis": "General health-education knowledge; not in the district overview.",
+      "status": "NEEDS VERIFICATION",
+      "check": "MedlinePlus puberty pages; AAP HealthyChildren.org"
+    },
+    {
+      "id": "S10",
+      "topic": "Reproductive anatomy and pregnancy",
+      "claim": "The structures of the male and female reproductive systems, what they do, and the sequence from ovulation to birth.",
+      "basis": "District overview, lesson 1 (structures, functions, ovulation, stages of pregnancy).",
+      "status": "NEEDS VERIFICATION",
+      "check": "MedlinePlus anatomy pages; ACOG pregnancy development page"
+    },
+    {
+      "id": "S11",
+      "topic": "Categories of contraception",
+      "claim": "The barrier, hormonal and sterilization categories of contraception, and which methods also reduce STI risk.",
+      "basis": "District overview, lesson 1 (barrier, hormonal, sterilization).",
+      "status": "NEEDS VERIFICATION",
+      "check": "CDC contraception page; ACOG contraception FAQs"
+    },
+    {
+      "id": "S12",
+      "topic": "Judging health information",
+      "claim": "Features that make a health information source more or less credible.",
+      "basis": "General media-literacy practice; course standard 3 (access information).",
+      "status": "NEEDS VERIFICATION",
+      "check": "School media specialist or a health-literacy guide from a public health agency"
+    },
+    {
+      "id": "S13",
+      "topic": "The STOP decision model",
+      "claim": "The decision-making steps used in the Chapter 4 and Chapter 6 items. Taken from the teacher's Unit 1 materials in this repository and not confirmed for Unit 8.",
+      "basis": "The teacher's earlier unit materials in this repository (wildcats-wellness-quest). Not confirmed for Unit 8.",
+      "status": "NEEDS VERIFICATION",
+      "check": "Your Unit 8 slides"
+    }
   ]
 }

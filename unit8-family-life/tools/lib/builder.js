@@ -198,7 +198,17 @@ function buildItem(it, ch, u, order, src, E, Wn) {
       if (cards.every((c) => c.to)) Wn(id, 'match/label item has no decoy card (process of elimination gets easy)');
       if (mode === 'label') {
         const fig = (src.figures || {})[it.figure];
-        if (!fig) E(id, 'label item needs a known figure'); else targets.forEach((t) => { if (!fig.markers.some((m) => m.id === t.k)) E(id, 'figure ' + it.figure + ' has no marker ' + t.k); });
+        if (!fig) E(id, 'label item needs a known figure'); else {
+          targets.forEach((t) => { if (!fig.markers.some((m) => m.id === t.k)) E(id, 'figure ' + it.figure + ' has no marker ' + t.k); });
+          // The figure's text alternative is public. It may describe shapes and positions, but it must never name a structure
+          // that is one of this item's labels (that would hand a screen-reader user, or anyone who opens the description, the answer).
+          const publicText = [fig.alt || '', fig.desc || ''];
+          try { publicText.push(require('fs').readFileSync(require('path').join(__dirname, '../..', fig.src), 'utf8')); } catch (e) { E(id, 'figure file ' + fig.src + ' is missing'); }
+          if (!(src.meta && src.meta.contentSet === 'demo')) (it.cards || []).forEach((c) => { // the practice set is public on purpose
+            const name = String(c.t || '').trim().toLowerCase();
+            if (name.length > 2 && publicText.some((txt) => txt.toLowerCase().indexOf(name) >= 0)) E(id, 'the figure ' + it.figure + ' (alt text, description or SVG source) contains the label "' + c.t + '", which gives the answer away');
+          });
+        }
       }
     }
     bankItem.key = { map };
@@ -267,6 +277,20 @@ function lint(src, flat, totalPoints, opts, E, Wn) {
     const fk = fkGrade(itemTextForReading(it));
     rep.reading.push({ id, fk });
     if (fk > 11.5) Wn(id, 'reading level looks high (FK ' + fk + ')');
+  });
+  // Test-wiseness: if the right answer is systematically the longest (or shortest), guessing is not pointless.
+  const singles = flat.filter((f) => f.it.type === 'single'), mean = (a) => a.reduce((x, y) => x + y, 0) / a.length;
+  let longest = 0, shortest = 0;
+  singles.forEach(({ it }) => {
+    const c = it.options.find((o) => o.ok).t.length, others = it.options.filter((o) => !o.ok).map((o) => o.t.length), r = c / mean(others);
+    if (r > 1.2 || r < 0.8) E(it.id, 'correct option length is ' + Math.round(r * 100) + '% of the distractors (keep it within 80-120%) so length does not give the answer away');
+    if (c > Math.max(...others)) longest++; if (c < Math.min(...others)) shortest++;
+  });
+  rep.lengthBias = { singleItems: singles.length, correctIsLongest: longest, correctIsShortest: shortest };
+  if (singles.length >= 5 && (longest / singles.length > 0.4 || shortest / singles.length > 0.4)) E('LENGTH', 'the correct option is the longest in ' + longest + ' and the shortest in ' + shortest + ' of ' + singles.length + ' single-answer items');
+  flat.filter((f) => f.it.type === 'multi').forEach(({ it }) => {
+    const ok = it.options.filter((o) => o.ok).map((o) => o.t.length), bad = it.options.filter((o) => !o.ok).map((o) => o.t.length), r = mean(ok) / mean(bad);
+    if (r > 1.3 || r < 0.75) E(it.id, 'correct statements average ' + Math.round(r * 100) + '% of the wrong ones in length (keep within 75-130%)');
   });
   // unit read time counts toward chapter time
   src.chapters.forEach((ch) => {

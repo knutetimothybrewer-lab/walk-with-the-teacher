@@ -387,6 +387,28 @@ async function main() {
     await context.close();
   });
 
+  /* ---------------------------------------------------------------------------------------- demo mode: what GitHub Pages shows before API_URL is set */
+  await scenario('demo mode (empty API_URL): the in-browser server runs a clearly-labeled practice set with no backend', async () => {
+    const d = await start({ bank: 'demo', demoMode: true });
+    const { context, page } = await newPage();
+    const calls = []; page.on('request', (r) => { if (/\/api$/.test(r.url())) calls.push(r.url()); });
+    await page.goto(d.url); await page.waitForSelector('#first');
+    assert.match(await page.locator('.demo-ribbon').innerText(), /DEMO MODE/);
+    assert.match(await page.locator('.panel .side').innerText(), /Demo mode/);
+    await L.signIn(page, { code: 'WRONG' }); await page.waitForSelector('.form-error');
+    await L.signIn(page, { code: 'DEMO12' }); await page.waitForSelector('#begin-btn'); await page.click('#begin-btn');
+    await page.waitForSelector('.hero'); await L.startChapter(page);
+    await L.goToUnit(page, 'Sort the animals'); await L.answer(page, pubDemo['D1-02'], bankDemo['D1-02'], true);
+    assert.match(await L.feedback(page, 'D1-02'), /Correct/);
+    await page.reload(); await page.waitForSelector('#item-D1-02'); // the demo remembers its practice state in this browser
+    assert.match(await L.feedback(page, 'D1-02'), /Correct/);
+    assert.equal(calls.length, 0, 'demo mode makes no network calls to any API');
+    await page.click('button.menu-btn'); await page.click('text=Sign out'); await page.waitForSelector('#first');
+    await page.fill('#code', 'WALK-TEACHER'); await page.fill('#tpw', 'demo-teacher'); await page.click('[role=dialog] button[type=submit]'); await page.waitForSelector('.tdash');
+    await page.click('button[data-tab=monitor]'); await page.waitForSelector('.ttable tbody tr'); assert.match(await page.locator('.ttable tbody tr').first().innerText(), /Lovelace/);
+    await context.close(); await d.close();
+  });
+
   /* ---------------------------------------------------------------------------------------- live bank (needs the unlocked private bank) */
   const livePath = path.join(__dirname, '..', '..', 'private', 'itembank.json');
   if (fs.existsSync(livePath) && (!filter || 'live'.includes(filter.toLowerCase()) || filter.toLowerCase().includes('live'))) {

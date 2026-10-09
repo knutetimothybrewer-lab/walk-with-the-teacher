@@ -6,6 +6,10 @@ Teacher walk through AI literacy (`index.html`).
 
 Every summative (`health-summative/`, `substance-use-summative/`, `unit7-nutrition-activity/`, `community-health-mission/`, `wildcats-wellness-quest/`) has a hard 90-minute limit counted from the moment the student starts. A countdown shows in the top bar (amber under 15 minutes, red under 5, with warnings at 15, 5 and 1), refreshing or reopening the page does not add time, and at zero the work so far is submitted and locked automatically; anything unanswered earns 0. Change or turn it off with `timeLimitMinutes` (`0` = off) in each app's `config.js` (`community-health-mission/server/grading.js` has `TIME_LIMIT_MIN`, enforced by the server; rebuild and redeploy `Code.gs` after changing it).
 
+## Life Decisions: Unit 8 Family Life & Sexuality (`unit8-family-life/`)
+
+An auto-graded, interactive, about-an-hour Grade 10 Health summative on Family Life & Sexuality: six chapters, 40 questions worth 100 points, three attempts per question (100/85/75/0), a server-enforced 90-minute limit with per-student accommodations, a Google Sheets back end with a Master Dashboard and one tab per block (Block 1/2, 3/4, 6/7, 8/9), and a teacher mode opened by typing `WALK-TEACHER` in the class-code box. Answer keys stay on the server and are not in this repository. **Provisional:** the unit's slides were not available and the Google back end has not been run on Google; start with `unit8-family-life/README.md`, `docs/TEACHER_REVIEW.md` and `docs/SETUP.md`.
+
 ## The Wildcat Wellness Trail: Mental Health Unit assessment (`health-summative/`)
 
 An animated, ~45-minute, self-grading summative assessment for the Mental Health unit (64 questions, 10 stations, a capstone, a final score page, and an optional Google Sheet backend with a "Reteach" tab). Static site, no build step, no trackers.

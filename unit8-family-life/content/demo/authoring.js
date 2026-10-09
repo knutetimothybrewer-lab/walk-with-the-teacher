@@ -63,11 +63,11 @@ module.exports = {
           topic: 'Practice single choice', prompt: 'What is the best first step for Lee?',
           points: 2, cog: 'apply', obj: ['DEMO'], secs: 40,
           options: [
-            { t: 'Decide how much study time Lee needs, then reply honestly.', ok: true, fb: 'Lee plans an hour of studying and texts back, "Maybe after 8!"' },
-            { t: 'Ignore the text and the test.', fb: 'Lee scrolls for an hour and feels stressed.' },
-            { t: 'Say yes without thinking.', fb: 'Lee plays until late and feels behind.' },
-            { t: 'Pretend the phone is broken.', fb: 'The friend finds out and feels confused.' },
-            { t: 'Wait until the morning to decide.', fb: 'The morning arrives and there is no time left.' }
+            { t: 'Decide how much study time Lee needs, then reply to the friend honestly.', ok: true, fb: 'Lee plans an hour of studying and texts back, "Maybe after 8!"' },
+            { t: 'Ignore the text and also ignore the test, then scroll for a while.', fb: 'Lee scrolls for an hour and feels stressed.' },
+            { t: 'Say yes without thinking, then deal with the test later on.', fb: 'Lee plays until late and feels behind.' },
+            { t: 'Pretend the phone is broken so there is no need to answer.', fb: 'The friend finds out and feels confused.' },
+            { t: 'Wait until the morning to decide anything about the night.', fb: 'The morning arrives and there is no time left.' }
           ],
           hints: ['Think about what Lee needs to know before replying.', 'The best step uses a plan and honest words.'],
           explanation: 'A plan for study time plus an honest reply protects both the test and the friendship. Story continues: Lee studies.'
@@ -76,8 +76,8 @@ module.exports = {
           topic: 'Practice a gated stage', prompt: 'What should Lee do now?',
           points: 2, cog: 'apply', obj: ['DEMO'], secs: 40,
           options: [
-            { t: 'Reply to the friend and sleep on time.', ok: true },
-            { t: 'Study for three more hours.' }, { t: 'Skip dinner.' }, { t: 'Stay up all night gaming.' }, { t: 'Delete the chat.' }
+            { t: 'Reply to the friend, then go to sleep on time.', ok: true },
+            { t: 'Study for three more hours, even though Lee feels ready.' }, { t: 'Skip dinner, then keep working on the review sheet.' }, { t: 'Stay up all night gaming with the friend online.' }, { t: 'Delete the chat so there is nothing left to answer.' }
           ],
           hints: ['Rest helps memory, so think about sleep.', 'One option keeps both the friendship and the sleep.'],
           explanation: 'Replying and sleeping on time balances the friendship and the test.'

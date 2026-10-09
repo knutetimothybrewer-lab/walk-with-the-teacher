@@ -2,8 +2,9 @@
 import * as api from './api.js';
 import { h, mount, session, prefs, announce, sleep } from './util.js';
 import { loginScreen, readyScreen, doneScreen, timeUpScreen, loadingScreen, errorScreen } from './screens.js';
-import { startAssessment } from './assess.js';
-import { openTeacherLogin, teacherDashboard } from './teacher.js';
+// assess.js (and its widgets) and teacher.js are only needed after sign-in, so they load on demand (and are warmed while the sign-in form is idle).
+const lazyAssess = () => import('./assess.js');
+const lazyTeacher = () => import('./teacher.js');
 
 const root = document.getElementById('app');
 const app = {
@@ -23,8 +24,10 @@ function showLogin(notice) {
     isDemo: app.isDemo, demoCodes: app.demoCodes, demoTeacherPassword: app.demoTeacherPassword,
     notice: notice || (app.notReady ? { kind: 'warn', text: 'This assessment is not set up yet. Tell your teacher.' } : app.mismatch ? { kind: 'warn', text: 'This page and the assessment server are out of sync. Tell your teacher.' } : null),
     closed: app.ping && app.ping.open === false,
-    onLogin, openTeacher: (onClose) => openTeacherLogin(app, onClose)
+    onLogin, openTeacher: async (onClose) => { const t = await lazyTeacher(); t.openTeacherLogin(app, onClose); }
   });
+  // warm the code the next screens need, without delaying the sign-in form
+  (window.requestIdleCallback || ((f) => setTimeout(f, 800)))(() => { lazyAssess(); });
 }
 
 async function onLogin(vals) {
@@ -46,7 +49,8 @@ function route(view, resumed) {
   readyScreen(root, app, view.bank ? view : Object.assign({ bank: app.ping.bank }, view));
 }
 
-function openAssessment(view, resumed) {
+async function openAssessment(view, resumed) {
+  const { startAssessment } = await lazyAssess();
   const state = { session: view.session, items: view.items, itemIds: view.itemIds, pos: view.pos, ui: view.ui || {} };
   app.assessment = startAssessment(root, {
     content: app.content, token: app.token, preview: false, state, resumed,
@@ -98,9 +102,10 @@ function signOut(msg) {
 
 /* ------------------------------------------------------------------ teacher + preview */
 app.onBegin = onBegin; app.signOut = (m) => signOut(m);
-app.showTeacher = (tt) => { destroyAssessment(); document.body.dataset.theme = 'lab'; teacherDashboard(root, app, tt); };
-app.startPreview = (tt, view) => {
+app.showTeacher = async (tt) => { destroyAssessment(); document.body.dataset.theme = 'lab'; const t = await lazyTeacher(); t.teacherDashboard(root, app, tt); };
+app.startPreview = async (tt, view) => {
   destroyAssessment();
+  const { startAssessment } = await lazyAssess();
   const state = { session: view.session, items: view.items, itemIds: view.itemIds, pos: view.pos, ui: view.ui || {} };
   const ctx = {
     content: app.content, token: view.token, preview: true, teacherToken: tt, state,
@@ -120,6 +125,7 @@ async function boot() {
     app.demoCodes = m.DEMO.codes; app.demoTeacherPassword = m.DEMO.teacherPassword;
     document.body.appendChild(h('div.demo-ribbon', { role: 'note' }, 'DEMO MODE: a practice run with sample questions. Nothing is recorded. ', h('button.btn.ghost.small', { type: 'button', style: { display: 'inline-flex' }, onclick: () => m.resetDemo() }, 'Reset demo')));
   }
+  const contentGuess = app.isDemo ? null : fetch('content/items.json', { cache: 'no-cache' }).then((r) => r.json()).catch(() => null); // live mode: fetch in parallel with ping, saving a round trip
   let ping;
   try { ping = await api.call('ping'); } catch (e) {
     errorScreen(root, 'No connection', 'The page could not reach the assessment server. Check your Wi-Fi, then try again.', [h('button.btn', { onclick: () => location.reload() }, 'Try again')]); return;
@@ -129,7 +135,7 @@ async function boot() {
   if (!ping.bank) app.notReady = true;
   else {
     const url = ping.bank.contentSet === 'demo' ? 'content/demo/items.json' : 'content/items.json';
-    try { app.content = await (await fetch(url, { cache: 'no-cache' })).json(); } catch (e) { errorScreen(root, 'Could not load the questions', 'The question file did not load. Reload the page.', [h('button.btn', { onclick: () => location.reload() }, 'Reload')]); return; }
+    try { app.content = (contentGuess && ping.bank.contentSet !== 'demo' && await contentGuess) || await (await fetch(url, { cache: 'no-cache' })).json(); } catch (e) { errorScreen(root, 'Could not load the questions', 'The question file did not load. Reload the page.', [h('button.btn', { onclick: () => location.reload() }, 'Reload')]); return; }
     if (app.content.structureHash !== ping.bank.structureHash) app.mismatch = true;
   }
   // teacher already signed in this tab?

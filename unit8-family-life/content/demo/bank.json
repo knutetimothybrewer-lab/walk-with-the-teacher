@@ -1,7 +1,7 @@
 {
   "meta": {
     "contentSet": "demo",
-    "structureHash": "ecfbaa3f874f9fe66398568004da1fc239fa55cdc307243fbfa2923a6ab1f605",
+    "structureHash": "eb3f993bc740136db833833707b31f107fc095164039cd9581aa7ced3b81771d",
     "itemCount": 9,
     "points": 18,
     "version": "demo-1"
@@ -122,15 +122,15 @@
       "unlockAfter": null,
       "struct": {
         "optionIds": [
-          "o08c22",
-          "o4a21f",
-          "o58d67",
-          "o70743",
-          "oaa3bc"
+          "o09468",
+          "o30dd0",
+          "o5ed94",
+          "o6f6ce",
+          "oa431b"
         ]
       },
       "key": {
-        "correct": "o4a21f"
+        "correct": "o6f6ce"
       },
       "hints": [
         "Think about what Lee needs to know before replying.",
@@ -138,11 +138,11 @@
       ],
       "explanation": "A plan for study time plus an honest reply protects both the test and the friendship. Story continues: Lee studies.",
       "feedback": {
-        "o4a21f": "Lee plans an hour of studying and texts back, \"Maybe after 8!\"",
-        "oaa3bc": "Lee scrolls for an hour and feels stressed.",
-        "o08c22": "Lee plays until late and feels behind.",
-        "o58d67": "The friend finds out and feels confused.",
-        "o70743": "The morning arrives and there is no time left."
+        "o6f6ce": "Lee plans an hour of studying and texts back, \"Maybe after 8!\"",
+        "o5ed94": "Lee scrolls for an hour and feels stressed.",
+        "o30dd0": "Lee plays until late and feels behind.",
+        "oa431b": "The friend finds out and feels confused.",
+        "o09468": "The morning arrives and there is no time left."
       }
     },
     "D2-02": {
@@ -154,15 +154,15 @@
       "unlockAfter": "D2-01",
       "struct": {
         "optionIds": [
-          "o10b93",
-          "o50411",
-          "o8fee1",
-          "oa8f7c",
-          "oc1b7c"
+          "o027ef",
+          "o8bbf8",
+          "ob81af",
+          "obffd5",
+          "ocd326"
         ]
       },
       "key": {
-        "correct": "o8fee1"
+        "correct": "o8bbf8"
       },
       "hints": [
         "Rest helps memory, so think about sleep.",

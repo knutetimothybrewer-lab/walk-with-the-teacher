@@ -296,24 +296,24 @@
               "sceneTitle": "Scene 1",
               "options": [
                 {
-                  "id": "oaa3bc",
-                  "text": "Ignore the text and the test."
+                  "id": "o5ed94",
+                  "text": "Ignore the text and also ignore the test, then scroll for a while."
                 },
                 {
-                  "id": "o58d67",
-                  "text": "Pretend the phone is broken."
+                  "id": "oa431b",
+                  "text": "Pretend the phone is broken so there is no need to answer."
                 },
                 {
-                  "id": "o4a21f",
-                  "text": "Decide how much study time Lee needs, then reply honestly."
+                  "id": "o6f6ce",
+                  "text": "Decide how much study time Lee needs, then reply to the friend honestly."
                 },
                 {
-                  "id": "o08c22",
-                  "text": "Say yes without thinking."
+                  "id": "o30dd0",
+                  "text": "Say yes without thinking, then deal with the test later on."
                 },
                 {
-                  "id": "o70743",
-                  "text": "Wait until the morning to decide."
+                  "id": "o09468",
+                  "text": "Wait until the morning to decide anything about the night."
                 }
               ]
             },
@@ -335,24 +335,24 @@
               "sceneTitle": "Scene 2",
               "options": [
                 {
-                  "id": "o10b93",
-                  "text": "Study for three more hours."
+                  "id": "o027ef",
+                  "text": "Study for three more hours, even though Lee feels ready."
                 },
                 {
-                  "id": "o8fee1",
-                  "text": "Reply to the friend and sleep on time."
+                  "id": "o8bbf8",
+                  "text": "Reply to the friend, then go to sleep on time."
                 },
                 {
-                  "id": "oc1b7c",
-                  "text": "Stay up all night gaming."
+                  "id": "obffd5",
+                  "text": "Stay up all night gaming with the friend online."
                 },
                 {
-                  "id": "oa8f7c",
-                  "text": "Delete the chat."
+                  "id": "ob81af",
+                  "text": "Delete the chat so there is nothing left to answer."
                 },
                 {
-                  "id": "o50411",
-                  "text": "Skip dinner."
+                  "id": "ocd326",
+                  "text": "Skip dinner, then keep working on the review sheet."
                 }
               ]
             }
@@ -637,6 +637,6 @@
       ]
     }
   ],
-  "structureHash": "ecfbaa3f874f9fe66398568004da1fc239fa55cdc307243fbfa2923a6ab1f605",
+  "structureHash": "eb3f993bc740136db833833707b31f107fc095164039cd9581aa7ced3b81771d",
   "points": 18
 }
