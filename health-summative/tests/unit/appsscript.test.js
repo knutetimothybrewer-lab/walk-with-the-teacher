@@ -134,6 +134,20 @@ test('teacher: dashboard needs the passcode and returns students, topics, statio
   assert.equal(d.items.every((it) => it.id !== 'q3'), true); // skipped items are not analysed
 });
 
+test('teacher: dashboard lists students who started but have not finished, and clears them on submit', () => {
+  const { call } = makeEnv();
+  const bob = { first: 'Bob', last: 'Builder', period: '3', code: 'trail1' };
+  assert.equal(call({ action: 'start', student: bob }).status, 'new');
+  call({ action: 'start', student: bob });                       // a refresh must not add a second row
+  let d = call({ action: 'teacher', op: 'dashboard', passcode: 'secret' });
+  assert.equal(d.sessions.length, 1); assert.equal(d.sessions[0].first, 'Bob'); assert.equal(d.students.length, 0);
+  assert.equal(call({ action: 'submit', payload: payload({ student: bob, completion: 'WWT-BOB1' }) }).ok, true);
+  d = call({ action: 'teacher', op: 'dashboard', passcode: 'secret' });
+  assert.equal(d.sessions.length, 0); assert.equal(d.students.length, 1);
+  assert.equal(call({ action: 'teacher', op: 'reset', passcode: 'secret', student: bob }).ok, true);
+  assert.equal(call({ action: 'teacher', op: 'dashboard', passcode: 'secret' }).sessions.length, 0);
+});
+
 test('unknown action and bad json are handled', () => {
   const { ctx, call } = makeEnv();
   assert.equal(call({ action: 'nope' }).reason, 'unknown-action');
