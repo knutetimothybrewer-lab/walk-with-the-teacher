@@ -63,18 +63,8 @@
     var go = h('button.btn.primary', { type: 'submit' }, 'Start the mission');
     var form = h('form.card.loginform', { onsubmit: function (e) {
       e.preventDefault(); err.textContent = '';
-      // Teacher code in the Class code box: the SERVER checks it as the teacher passcode, then opens the private preview.
-      if (String(f.classCode).trim().toUpperCase() === 'WALK-TEACHER') {
-        go.disabled = true;
-        CHM.transport.call('teacherLogin', { passcode: 'WALK-TEACHER', useAccount: false }, { retries: 2 }).then(function (t) {
-          if (!t.ok) { go.disabled = false; err.textContent = t.message; return null; }
-          CHM.teacherToken = t.teacherToken; try { sessionStorage.setItem('chm.tt', t.teacherToken); } catch (x) { /* ignore */ }
-          return CHM.transport.call('previewStart', { teacherToken: t.teacherToken, revealMode: 'final' }, { retries: 2 }).then(function (r) {
-            go.disabled = false; if (!r.ok) { err.textContent = r.message; return; } CHM.session = null; CHM.afterJoin(r);
-          });
-        }, function () { go.disabled = false; err.textContent = 'We could not reach the server. Check your connection and try again.'; });
-        return;
-      }
+      // Teacher code in the Class code box: open Teacher Mode. The code only reveals the passcode screen; the SERVER checks the passcode.
+      if (String(f.classCode).trim().toUpperCase() === 'WALK-TEACHER') { CHM.go('teacher'); return; }
       if (!String(f.rosterId).trim() || !String(f.name).trim()) { err.textContent = 'Enter your roster ID and display name.'; return; }
       go.disabled = true;
       CHM.transport.call('join', f, { retries: 3 }).then(function (r) {

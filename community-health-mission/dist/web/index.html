@@ -179,6 +179,38 @@ dl.plan{display:grid;grid-template-columns:150px 1fr;gap:4px 12px}dl.plan dt{fon
 .timebanner{position:fixed;left:50%;top:64px;transform:translateX(-50%);z-index:200;max-width:min(560px,92vw);background:#b3261e;color:#fff;padding:10px 16px;border-radius:10px;font-weight:700;box-shadow:0 6px 24px rgba(0,0,0,.3)}
 .timebanner[hidden]{display:none}
 
+/* ---- Teacher Mode (same layout as the other summatives; colours from this app's theme) ---- */
+.tm{max-width:1180px;margin:0 auto}
+.tm-bar{display:flex;flex-wrap:wrap;gap:10px;justify-content:space-between;align-items:center;background:var(--brand);color:var(--brand-ink);border-radius:var(--r);padding:10px 16px;margin:8px 0 12px;box-shadow:var(--shadow)}
+.tm-bar .btn{background:var(--surface);color:var(--ink);border-color:var(--surface)}
+.tm-btns{display:flex;gap:8px;flex-wrap:wrap}
+.tm-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.tm-tab{font:700 .95rem var(--font);cursor:pointer;min-height:42px;padding:0 16px;border-radius:99px;border:2px solid var(--line);background:var(--surface);color:var(--ink)}
+.tm-tab:hover{border-color:var(--brand)}
+.tm-tab[aria-current="page"]{background:var(--brand);border-color:var(--brand);color:var(--brand-ink)}
+.tm-controls{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end}
+.tm-field{display:flex;flex-direction:column;gap:4px;font-size:.78rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink2)}
+.tm-field.grow{flex:1 1 180px}
+.tm-field select,.tm-field input{font:600 .95rem var(--font);text-transform:none;letter-spacing:0;min-height:40px;padding:0 10px;border:2px solid var(--line);border-radius:var(--r-s);background:var(--surface);color:var(--ink)}
+.tm-updated{margin-left:auto;color:var(--ink2);font-size:.88rem}
+.tm-h1{font-size:2rem;margin:8px 0 10px}
+.tm-tiles{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));margin-bottom:14px}
+.tm-tile{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:12px 16px;box-shadow:var(--shadow)}
+.tm-label{font-size:.76rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink2)}
+.tm-big{font-size:2.1rem;font-weight:800;line-height:1.2}
+.tm-note{font-size:.86rem;color:var(--ink2)}
+.tm-glance{display:grid;gap:8px}
+.tm-block{display:grid;grid-template-columns:110px 1fr auto;gap:12px;align-items:center}
+.tm-track{display:flex;height:30px;border-radius:8px;background:var(--surface2);border:1px solid var(--line);overflow:hidden;align-items:center;color:var(--ink2);font-size:.9rem}
+.tm-track>span{padding-left:12px}.tm-track i{display:block;height:100%}
+.tm-done{background:var(--ok)}.tm-work{background:var(--brand);opacity:.6}
+.tm-count{color:var(--ink2);font-size:.9rem;white-space:nowrap}
+.tm-scroll{overflow-x:auto;margin-top:8px}
+.tm-table{border-collapse:collapse;width:100%;background:var(--surface)}
+.tm-table th,.tm-table td{padding:7px 9px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top;font-size:.93rem}
+.tm-table th{background:var(--surface2);white-space:nowrap}
+@media (max-width:700px){.tm-block{grid-template-columns:1fr}.tm-updated{margin-left:0}}
+
 
 </style>
 </head>
@@ -1238,18 +1270,8 @@ CHM.explorers.plain = function (data) { return h('div.callout', data.note || '')
     var go = h('button.btn.primary', { type: 'submit' }, 'Start the mission');
     var form = h('form.card.loginform', { onsubmit: function (e) {
       e.preventDefault(); err.textContent = '';
-      // Teacher code in the Class code box: the SERVER checks it as the teacher passcode, then opens the private preview.
-      if (String(f.classCode).trim().toUpperCase() === 'WALK-TEACHER') {
-        go.disabled = true;
-        CHM.transport.call('teacherLogin', { passcode: 'WALK-TEACHER', useAccount: false }, { retries: 2 }).then(function (t) {
-          if (!t.ok) { go.disabled = false; err.textContent = t.message; return null; }
-          CHM.teacherToken = t.teacherToken; try { sessionStorage.setItem('chm.tt', t.teacherToken); } catch (x) { /* ignore */ }
-          return CHM.transport.call('previewStart', { teacherToken: t.teacherToken, revealMode: 'final' }, { retries: 2 }).then(function (r) {
-            go.disabled = false; if (!r.ok) { err.textContent = r.message; return; } CHM.session = null; CHM.afterJoin(r);
-          });
-        }, function () { go.disabled = false; err.textContent = 'We could not reach the server. Check your connection and try again.'; });
-        return;
-      }
+      // Teacher code in the Class code box: open Teacher Mode. The code only reveals the passcode screen; the SERVER checks the passcode.
+      if (String(f.classCode).trim().toUpperCase() === 'WALK-TEACHER') { CHM.go('teacher'); return; }
       if (!String(f.rosterId).trim() || !String(f.name).trim()) { err.textContent = 'Enter your roster ID and display name.'; return; }
       go.disabled = true;
       CHM.transport.call('join', f, { retries: 3 }).then(function (r) {
@@ -1645,19 +1667,137 @@ CHM.explorers.plain = function (data) { return h('div.callout', data.note || '')
 'use strict';
 // Teacher panel + private preview. Everything here requires a server-issued teacher token; hiding UI is NOT the control.
 (function () {
-  var answerView = null, viewMode = 'student', tab = 'preview';
+  var answerView = null, viewMode = 'student', tab = 'overview';
   try { CHM.teacherToken = sessionStorage.getItem('chm.tt') || null; } catch (e) { CHM.teacherToken = null; }
 
   function tapi(action, payload, opts) { return CHM.transport.call(action, Object.assign({ teacherToken: CHM.teacherToken }, payload || {}), opts); }
   function loginErr(res) { if (res && res.code === 'FORBIDDEN') { CHM.teacherToken = null; try { sessionStorage.removeItem('chm.tt'); } catch (e) { /* ignore */ } } }
 
+  // ---- Teacher Mode (same layout as the other summatives): bar, tabs, overview, students and resets, analytics, export.
+  // Data comes from the existing server actions (teacherSessions, teacherSummary, teacherClasses); nothing is kept in the browser.
+  var BLOCKS = ['Block 1/2', 'Block 3/4', 'Block 6/7', 'Block 8/9'], UNITS = 29;
+  var T = { sessions: [], summary: null, classes: [], pulled: null, block: 'ALL', find: '', order: 'name', auto: true, timer: null };
+  var TABS = [['overview', 'Overview'], ['students', 'Students and resets'], ['analytics', 'Analytics'], ['codes', 'Class codes'], ['preview', 'Preview and testing'], ['answers', 'Answer key'], ['coverage', 'Coverage checklist'], ['export', 'Export']];
+  function stopTimer() { if (T.timer) { clearInterval(T.timer); T.timer = null; } }
+  function signOutTeacher() { stopTimer(); CHM.teacherToken = null; try { sessionStorage.removeItem('chm.tt'); } catch (e) { /* */ } CHM.session = null; CHM.go('login'); }
+  function startPreview() {
+    tapi('previewStart', { revealMode: 'final' }).then(function (r) { if (!r.ok) { loginErr(r); return CHM.go('teacher'); } viewMode = 'student'; CHM.session = null; CHM.afterJoin(r); });
+  }
+  function loadData() {
+    return Promise.all([tapi('teacherSessions', {}), tapi('teacherSummary', {}), tapi('teacherClasses', {})]).then(function (a) {
+      var bad = a.filter(function (x) { return !x.ok; })[0];
+      if (bad) { loginErr(bad); throw bad; }
+      T.sessions = a[0].sessions.filter(function (x) { return x.status !== 'reset'; }); T.summary = a[1].summary; T.classes = a[2].classes; T.pulled = new Date();
+    });
+  }
+  function num(v, d) { var k = Math.pow(10, d == null ? 1 : d); return v == null || v === '' || isNaN(Number(v)) ? null : Math.round(Number(v) * k) / k; }
+  function blockList() { var l = BLOCKS.slice(); T.sessions.forEach(function (x) { if (x.period && l.indexOf(x.period) < 0) l.push(x.period); }); return l; }
+  function inBlock(x) { return T.block === 'ALL' || x.period === T.block; }
+  function matches(x) { return !T.find || String(x.name).toLowerCase().indexOf(T.find.toLowerCase()) >= 0; }
+  var sorters = {
+    name: function (a, b) { return String(a.name).toLowerCase() < String(b.name).toLowerCase() ? -1 : 1; },
+    high: function (a, b) { return (b.pct || 0) - (a.pct || 0); }, low: function (a, b) { return (a.pct || 0) - (b.pct || 0); },
+    newest: function (a, b) { return new Date(b.startedAt) - new Date(a.startedAt); }
+  };
+  function minutesIn(x) { var t = new Date(x.startedAt).getTime(); return isNaN(t) ? null : Math.max(0, Math.round((Date.now() - t) / 60000)); }
+  function tile(label, val, note) { return h('div.tm-tile', h('div.tm-label', label), h('div.tm-big', String(val)), note ? h('div.tm-note', note) : null); }
+  function tbl(heads, rows, empty) {
+    return h('div.tm-scroll', h('table.tm-table', h('thead', h('tr', heads.map(function (x) { return h('th', { scope: 'col' }, x); }))),
+      h('tbody', rows.length ? rows.map(function (cells) { return h('tr', cells.map(function (c) { return h('td', c); })); }) : [h('tr', h('td', { colspan: heads.length }, empty))])));
+  }
+  function avgOf(list) { var v = list.filter(function (x) { return x.status === 'finalized'; }).map(function (x) { return x.pct; }); return v.length ? Math.round(v.reduce(function (a, b) { return a + b; }, 0) / v.length * 10) / 10 : null; }
+
+  // A data tab: loads (and every 30 seconds quietly reloads) the sessions, then draws controls and the body.
+  function dataTab(host, body) {
+    function paint() {
+      CHM.clear(host);
+      var blockSel = h('select', { 'aria-label': 'Block', onchange: function (e) { T.block = e.target.value; paint(); } }, h('option', { value: 'ALL' }, 'All blocks'), blockList().map(function (b) { return h('option', { value: b, selected: b === T.block }, b); }));
+      var orderSel = h('select', { 'aria-label': 'Order', onchange: function (e) { T.order = e.target.value; paint(); } }, [['name', 'Sort: name'], ['high', 'Sort: score, high first'], ['low', 'Sort: score, low first'], ['newest', 'Sort: newest first']].map(function (o) { return h('option', { value: o[0], selected: o[0] === T.order }, o[1]); }));
+      host.appendChild(h('div.card.tm-controls', h('label.tm-field', 'Block', blockSel),
+        h('label.tm-field.grow', 'Find', h('input', { id: 'tm-find', type: 'search', placeholder: 'Search name', value: T.find, oninput: function (e) { T.find = e.target.value; var b = document.getElementById('tm-data'); if (b) { CHM.clear(b); body(b); } } })),
+        h('label.tm-field', 'Order', orderSel),
+        h('button.btn.primary.sm', { type: 'button', onclick: function () { refresh(); } }, 'Refresh now'),
+        h('button.btn.sm', { type: 'button', 'aria-pressed': String(T.auto), onclick: function () { T.auto = !T.auto; schedule(); paint(); } }, 'Auto-refresh ' + (T.auto ? 'on' : 'off')),
+        h('span.tm-updated', 'Updated ' + T.pulled.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', second: '2-digit' }))));
+      var data = h('div', { id: 'tm-data' }); host.appendChild(data); body(data);
+    }
+    function refresh(quiet) {
+      if (!quiet) { CHM.clear(host); host.appendChild(h('p', 'Loading from your Google Sheet…')); }
+      loadData().then(function () { if (CHM.view && CHM.view.name === 'teacher') paint(); }, function (e) { if (!quiet) { CHM.clear(host); host.appendChild(h('p.error', (e && e.message) || 'Could not load.')); if (e && e.code === 'FORBIDDEN') CHM.go('teacher'); } });
+    }
+    function schedule() {
+      stopTimer(); if (!T.auto) return; var mine = tab;
+      T.timer = setInterval(function () { if (document.hidden || tab !== mine || !CHM.view || CHM.view.name !== 'teacher') return; var f = document.activeElement; if (f && f.id === 'tm-find') return; refresh(true); }, 30000);
+    }
+    refresh(); schedule();
+  }
+
+  function tOverview(host) {
+    dataTab(host, function (box) {
+      var all = T.sessions, rows = all.filter(inBlock), shown = rows.filter(matches).sort(sorters[T.order]);
+      var fin = rows.filter(function (x) { return x.status === 'finalized'; }), wk = rows.filter(function (x) { return x.status !== 'finalized'; }), avg = avgOf(rows);
+      var glance = blockList().map(function (b) {
+        var r = all.filter(function (x) { return x.period === b; }), d = r.filter(function (x) { return x.status === 'finalized'; }).length, w = r.length - d;
+        return h('div.tm-block', h('b', b), h('div.tm-track', r.length ? [h('i.tm-done', { style: { width: d / r.length * 100 + '%' } }), h('i.tm-work', { style: { width: w / r.length * 100 + '%' } })] : h('span', 'No students yet')),
+          h('span.tm-count', r.length + ' registered' + (r.length ? ' · ' + d + ' submitted' : '')));
+      });
+      box.appendChild(h('h1.tm-h1', 'Class overview'));
+      box.appendChild(h('div.tm-tiles', tile('Registered', rows.length), tile('In progress', wk.length), tile('Submitted', fin.length), tile('Class average', avg != null ? avg + '%' : '—', fin.length ? '' : 'no one has finished yet')));
+      box.appendChild(h('section.card', h('h2', 'Blocks at a glance'), h('div.tm-glance', glance)));
+      var working = shown.filter(function (x) { return x.status !== 'finalized'; }), done = shown.filter(function (x) { return x.status === 'finalized'; });
+      if (wk.length) box.appendChild(h('section.card', h('h2', 'Working right now'), tbl(['Name', 'Block', 'Class code', 'Units done', 'Time in'], working.map(function (x) { var m = minutesIn(x); return [x.name, x.period || '—', x.classCode, x.completed + '/' + UNITS, m == null ? '—' : m + ' min']; }), 'Nobody matches.')));
+      box.appendChild(h('section.card', h('h2', 'Submitted'), tbl(['Name', 'Block', 'Score', 'Points', 'Submitted'], done.map(function (x) { return [x.name, x.period || '—', h('b', num(x.pct) + '%'), num(x.earned, 2) + '/' + num(x.possible, 0), x.completedAt ? new Date(x.completedAt).toLocaleString([], { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }) : '']; }), 'No submissions yet.')));
+    });
+  }
+
+  function tStudents(host) {
+    dataTab(host, function (box) {
+      var rows = T.sessions.filter(inBlock).filter(matches).sort(sorters[T.order]);
+      box.appendChild(h('h1.tm-h1', 'Students and resets'));
+      box.appendChild(h('section.card', h('p.small', rows.length + ' students. A reset keeps the old rows in the Sheet, marks the session reset, writes an audit row, and lets the student start fresh.'),
+        tbl(['Name', 'Roster ID', 'Block', 'Class code', 'Status', 'Units', 'Points', '%', 'Gradebook', 'Receipt', 'Reset'], rows.map(function (x) {
+          var reason = h('input', { placeholder: 'Reason for reset', 'aria-label': 'Reason for resetting ' + x.name, size: 16 }), msg = h('span.small', { role: 'status' });
+          return [x.name, x.rosterId, x.period || '—', x.classCode, h('span.chip2' + (x.status === 'finalized' ? '.ok' : ''), x.status), x.completed + '/' + UNITS, num(x.earned, 2), num(x.pct), x.gradebook || '—', h('span.mono', x.receiptId || '—'),
+            h('div', reason, h('button.btn.sm', { type: 'button', onclick: function () { tapi('teacherReset', { sessionId: x.sessionId, reason: reason.value }).then(function (r) { if (r.ok) { CHM.go('teacher'); } else msg.textContent = r.message || 'Could not reset.'; }); } }, 'Reset'), msg)];
+        }), 'No students yet.')));
+    });
+  }
+
+  function tAnalytics(host) {
+    dataTab(host, function (box) {
+      var sm = T.summary, rows = T.sessions.filter(inBlock), fin = rows.filter(function (x) { return x.status === 'finalized'; });
+      box.appendChild(h('h1.tm-h1', 'Analytics'));
+      box.appendChild(h('p.small', 'Module averages and missed concepts cover all classes (' + sm.finalized + ' submitted). Averages by block are on the Overview tab.'));
+      box.appendChild(h('section.card', h('h2', 'Average by location'), h('div.tm-glance', sm.modules.map(function (m) {
+        return h('div.tm-block', h('b', 'M' + m.id), h('div.tm-track', m.avgPct == null ? h('span', 'No data yet') : h('i.tm-done', { style: { width: Math.max(2, m.avgPct) + '%' } })), h('span.tm-count', m.title + (m.avgPct == null ? '' : ' · ' + Math.round(m.avgPct) + '%')));
+      }))));
+      var items = sm.items.filter(function (i) { return i.answered > 0; }).sort(function (a, b) { return (a.firstTryAcc - b.firstTryAcc) || (b.exhausted - a.exhausted); }).slice(0, 15);
+      box.appendChild(h('section.card', h('h2', 'What to reteach: lowest first-try accuracy'), tbl(['Unit', 'Concept', 'Students', 'First try', 'Retries', 'Ran out of attempts'], items.map(function (i) {
+        return [i.id + ' ' + i.title, i.concept, i.answered, Math.round(i.firstTryAcc * 100) + '%', i.retries, i.exhausted];
+      }), 'No answers yet.')));
+      box.appendChild(h('section.card', h('h2', 'Average by block'), tbl(['Block', 'Submitted', 'Average %'], blockList().map(function (b) { var r = T.sessions.filter(function (x) { return x.period === b; }); var a = avgOf(r); return [b, r.filter(function (x) { return x.status === 'finalized'; }).length, a == null ? '—' : a + '%']; }), '')));
+      void fin;
+    });
+  }
+
+  function tExport(host) {
+    CHM.clear(host); host.appendChild(h('h1.tm-h1', 'Export'));
+    var msg = h('p.small', { role: 'status' }), box = h('section.card', h('p', 'Download the results as a spreadsheet file (it includes each student’s block). The full gradebook is also in your Google Sheet, with a tab for each block.'), msg);
+    function dl(code) { msg.textContent = 'Preparing…'; tapi('teacherExport', code ? { classCode: code } : {}).then(function (r) { if (r.ok) { CHM.download(r.filename, r.csv, 'text/csv;charset=utf-8'); msg.textContent = 'Downloaded ' + r.filename; } else { loginErr(r); msg.textContent = r.message; } }); }
+    var row = h('div.row', h('button.btn.primary', { type: 'button', onclick: function () { dl(''); } }, '⬇ Download all results (CSV)'));
+    box.insertBefore(row, msg); host.appendChild(box);
+    tapi('teacherClasses', {}).then(function (r) { if (r.ok && r.classes.length) r.classes.forEach(function (c) { row.appendChild(h('button.btn', { type: 'button', onclick: function () { dl(c.code); } }, '⬇ ' + c.code)); }); });
+  }
+
   CHM.renderTeacher = function () {
     if (!CHM.teacherToken) return login();
+    stopTimer();
     var content = h('div.tcontent');
-    var tabs = [['preview', 'Preview'], ['answers', 'Answers and scoring'], ['coverage', 'Coverage checklist'], ['results', 'Classes and results'], ['delivery', 'Delivery test']];
-    var bar = h('div.tablist', { role: 'tablist' }, tabs.map(function (t) { return h('button.tab', { type: 'button', role: 'tab', 'aria-selected': String(tab === t[0]), onclick: function () { tab = t[0]; CHM.go('teacher'); } }, t[1]); }));
-    var views = { preview: tPreview, answers: tAnswers, coverage: tCoverage, results: tResults, delivery: tDelivery };
-    CHM.mountShell(h('div.teacher', h('h1', 'Teacher panel'), h('div.row', h('span.chip2.warn', 'Teacher mode · not a student session'), h('button.btn.sm.ghost', { type: 'button', onclick: function () { CHM.teacherToken = null; try { sessionStorage.removeItem('chm.tt'); } catch (e) { /* */ } CHM.session = null; CHM.go('login'); } }, 'Sign out of teacher mode')), bar, content), 'Teacher panel', { noNav: !CHM.session });
+    var bar = h('div.tm-bar', h('div', h('b', 'Teacher Mode'), ' · Community Health Mission · signed in'),
+      h('div.tm-btns', h('button.btn.sm', { type: 'button', onclick: startPreview }, 'Open student preview'), h('button.btn.sm', { type: 'button', onclick: signOutTeacher }, 'Sign out')));
+    var nav = h('nav.tm-tabs', { 'aria-label': 'Teacher sections' }, TABS.map(function (t) { return h('button.tm-tab', { type: 'button', 'aria-current': tab === t[0] ? 'page' : null, onclick: function () { tab = t[0]; CHM.go('teacher'); } }, t[1]); }));
+    var views = { overview: tOverview, students: tStudents, analytics: tAnalytics, codes: tResults, preview: function (c) { tPreview(c); tDelivery(c); }, answers: tAnswers, coverage: tCoverage, export: tExport };
+    CHM.mountShell(h('div.tm', bar, nav, content), 'Teacher Mode', { noNav: !CHM.session });
     views[tab](content);
   };
 
@@ -1669,7 +1809,7 @@ CHM.explorers.plain = function (data) { return h('div.callout', data.note || '')
         if (!r.ok) { err.textContent = r.message; return; }
         CHM.teacherToken = r.teacherToken; try { sessionStorage.setItem('chm.tt', r.teacherToken); } catch (x) { /* */ } CHM.go('teacher');
       }, function () { err.textContent = 'Could not reach the server.'; });
-    } }, h('h2', 'Teacher sign-in'), h('p.small', 'Enter the teacher passcode you set up in the spreadsheet menu. The server checks it. Students cannot open the answer key or preview with a class code.'), h('label.fl', 'Passcode', pass), err, h('button.btn.primary', { type: 'submit' }, 'Sign in'), h('button.linkbtn', { type: 'button', onclick: function () { CHM.go('login'); } }, '← Back to student sign-in'));
+    } }, h('h2', 'Teacher Mode'), h('p.small', 'Enter the teacher passcode you set up in the spreadsheet menu. The server checks it. Students cannot open the answer key or preview with a class code.'), h('label.fl', 'Passcode', pass), err, h('button.btn.primary', { type: 'submit' }, 'Sign in'), h('button.linkbtn', { type: 'button', onclick: function () { CHM.go('login'); } }, '← Back to student sign-in'));
     CHM.mountShell(h('div.login', form), 'Teacher sign-in', { noNav: true });
   }
 
