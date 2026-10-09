@@ -33,6 +33,13 @@
       function () { return cfg().allowOfflineStart ? { ok: true, via: 'offline' } : { ok: false, via: 'offline', reason: 'network' }; });
   };
 
+  /* Teacher view (js/teacherview.js): a passcode-protected request to the same Apps Script. Only sent when a teacher opens that view. */
+  Y.teacher = function (op, passcode, extra) {
+    var body = { action: 'teacher', op: op, passcode: passcode };
+    Object.keys(extra || {}).forEach(function (k) { body[k] = extra[k]; });
+    return post(body, 20000);
+  };
+
   /* Compact payload from the final report (no free-text, no raw responses). */
   Y.payload = function (state, rep) {
     var s = rep.session, started = state.timing && state.timing.startedAt, ended = s.submittedAt;

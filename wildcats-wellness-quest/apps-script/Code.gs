@@ -33,6 +33,7 @@ function doPost(e) {
   try {
     if (body.action === 'start') return json_(handleStart_(body.student));
     if (body.action === 'submit') return json_(handleSubmit_(body.payload));
+    if (body.action === 'teacher') return json_(handleTeacher_(body));
     return json_({ ok: false, reason: 'unknown-action' });
   } catch (err) {
     log_('error', String(err && err.stack || err));
@@ -143,16 +144,24 @@ function stash_(p) { PropertiesService.getScriptProperties().setProperty('resub:
 
 /* ----------------------------------------------------------------- reteach */
 
-function rebuildReteach_() {
-  var d = sheet_(SHEETS.detail), r = sheet_(SHEETS.reteach);
-  r.clear();
-  if (d.getLastRow() < 2) return;
-  var rows = d.getRange(2, 1, d.getLastRow() - 1, DETAIL_HEAD.length).getValues(), top = {}, items = {}, students = {}, sumPct = 0;
+/** Per-topic and per-item totals from the Detail tab (shared by the Reteach tab and the in-app teacher view). */
+function aggregateDetail_() {
+  var d = sheet_(SHEETS.detail), top = {}, items = {}, students = {};
+  if (d.getLastRow() < 2) return { top: top, items: items, students: students };
+  var rows = d.getRange(2, 1, d.getLastRow() - 1, DETAIL_HEAD.length).getValues();
   rows.forEach(function (x) {
     students[norm_(x[1]) + '|' + norm_(x[2])] = 1;
     var t = top[x[5]] || (top[x[5]] = { e: 0, f: 0, m: 0 }); t.e += num_(x[7]); t.f += num_(x[8]); t.m += num_(x[6]);
     var it = items[x[3]] || (items[x[3]] = { id: x[3], topic: x[5], e: 0, f: 0, m: 0, n: 0, att: 0 }); it.e += num_(x[7]); it.f += num_(x[8]); it.m += num_(x[6]); it.n++; it.att += num_(x[9]);
   });
+  return { top: top, items: items, students: students };
+}
+
+function rebuildReteach_() {
+  var d = sheet_(SHEETS.detail), r = sheet_(SHEETS.reteach);
+  r.clear();
+  if (d.getLastRow() < 2) return;
+  var agg = aggregateDetail_(), top = agg.top, items = agg.items, students = agg.students;
   var out = [['RETEACH: start at the top. Lower % = the class missed more of these points.', '', '', ''], ['Students counted', Object.keys(students).length, '', ''], ['', '', '', ''],
     ['Topic', 'Class % (final points)', 'Class % (first attempt)', 'Points possible (all students)']];
   Object.keys(top).map(function (k) { return { k: k, p: top[k].m ? top[k].e / top[k].m : 0, f: top[k].m ? top[k].f / top[k].m : 0, m: top[k].m }; })
@@ -205,52 +214,110 @@ function rebuildClassTabs_(onlyCode) {
 }
 
 
+/* ------------------------------------------------- teacher view (in the app) */
+/* The student page opens the teacher view when the teacher code is typed in the Class code box; this is the server-checked
+   passcode behind it (menu: Set teacher view passcode). Six wrong tries lock it for ten minutes. */
+var TEACHER_TRIES = 6, TEACHER_LOCK_SECONDS = 600;
+
+function handleTeacher_(b) {
+  var pass = PropertiesService.getScriptProperties().getProperty('TEACHER_PASSCODE');
+  if (!pass) return { ok: false, reason: 'not-set' };
+  var cache = typeof CacheService !== 'undefined' ? CacheService.getScriptCache() : null;
+  var fails = cache ? Number(cache.get('tfail') || 0) : 0;
+  if (fails >= TEACHER_TRIES) return { ok: false, reason: 'locked-out' };
+  if (String(b.passcode || '') !== pass) { if (cache) cache.put('tfail', String(fails + 1), TEACHER_LOCK_SECONDS); return { ok: false, reason: 'passcode' }; }
+  if (cache && fails) cache.remove('tfail');
+  if (b.op === 'dashboard') return dashboardData_();
+  if (b.op === 'resub') { var r = applyResubmission_(b.alias); return { ok: r.ok, reason: r.reason || '', message: r.message }; }
+  return { ok: false, reason: 'unknown-op' };
+}
+
+/** Every submission plus topic and item analysis, for the in-app teacher view. */
+function dashboardData_() {
+  var hlen = summaryHeader_().length, sum = ss_().getSheetByName(SHEETS.summary), students = [], resubs = [];
+  var rowsOf = function (sh) { return sh && sh.getLastRow() > 1 ? sh.getRange(2, 1, sh.getLastRow() - 1, hlen).getValues() : []; };
+  rowsOf(sum).forEach(function (r) {
+    students.push({ when: r[0], alias: r[1], period: r[2], code: r[3], percent: r[4], points: r[5], max: r[6], letter: r[7], completion: r[8], firstAttempt: r[9],
+      attemptsUsed: r[10], attemptsAllowed: r[11], minutes: r[12], resets: r[13], missions: r.slice(SUMMARY_FIXED.length, SUMMARY_FIXED.length + MISSIONS.length) });
+  });
+  rowsOf(ss_().getSheetByName(SHEETS.resub)).forEach(function (r) { resubs.push({ when: r[0], alias: r[1], period: r[2], code: r[3], percent: r[4] }); });
+  var agg = aggregateDetail_();
+  var topics = Object.keys(agg.top).map(function (k) { var t = agg.top[k]; return { name: k, pct: t.m ? t.e / t.m : 0, firstPct: t.m ? t.f / t.m : 0, possible: t.m }; })
+    .sort(function (a, b) { return a.pct - b.pct; });
+  var items = Object.keys(agg.items).map(function (k) { return agg.items[k]; })
+    .filter(function (i) { return i.m > 0; })
+    .sort(function (a, b) { return (a.e / a.m) - (b.e / b.m); }).slice(0, 15)
+    .map(function (i) { return { id: i.id, topic: i.topic, n: i.n, pct: i.e / i.m, firstPct: i.f / i.m, avgAttempts: i.n ? i.att / i.n : 0, flag: i.n >= FLAG_MIN_N && i.e / i.m < FLAG_BELOW }; });
+  return { ok: true, version: VERSION, students: students, resubs: resubs, topics: topics, items: items, codes: validCodes_().length };
+}
+
 /* ------------------------------------------------------------ teacher menu */
 
 function onOpen() {
   SpreadsheetApp.getUi().createMenu('Wildcats Quest')
     .addItem('1. Set up tabs (first time)', 'setupTabs')
     .addItem('Use a resubmission for one student', 'useResubmission')
+    .addItem('Set teacher view passcode', 'setTeacherPasscode')
     .addItem('Rebuild class tabs', 'menuRebuildClassTabs')
     .addItem('Wipe ALL results (keeps class codes)', 'wipeAll')
     .addToUi();
 }
 function setupTabs() { ensureSheets_(); SpreadsheetApp.getUi().alert('Done. Edit the ClassCodes tab, then Deploy -> New deployment -> Web app (Execute as: Me, Who has access: Anyone) and paste the URL into js/teacher-config.js.'); }
 
+function setTeacherPasscode() {
+  var ui = SpreadsheetApp.getUi(), r = ui.prompt('Teacher view passcode', 'Choose a passcode of 8 or more characters. In the app you type the teacher code in the Class code box, then this passcode, to see every submission. Do not reuse a password from elsewhere.', ui.ButtonSet.OK_CANCEL);
+  if (r.getSelectedButton() !== ui.Button.OK) return;
+  var p = String(r.getResponseText()).trim();
+  if (p.length < 8) { ui.alert('Please use at least 8 characters.'); return; }
+  PropertiesService.getScriptProperties().setProperty('TEACHER_PASSCODE', p);
+  try { CacheService.getScriptCache().remove('tfail'); } catch (e) { /* ignore */ }
+  ui.alert('Saved. The teacher view is ready.');
+}
+
 function menuRebuildClassTabs() { ensureSheets_(); rebuildClassTabs_(); SpreadsheetApp.getUi().alert('Class tabs rebuilt.'); }
 
 function useResubmission() {
   var ui = SpreadsheetApp.getUi(), r = ui.prompt('Use a resubmission', 'Type the student alias/ID exactly as shown on the Resubmissions tab:', ui.ButtonSet.OK_CANCEL);
   if (r.getSelectedButton() !== ui.Button.OK) return;
-  var alias = norm_(r.getResponseText()), rs = sheet_(SHEETS.resub), sum = sheet_(SHEETS.summary);
-  var hlen = summaryHeader_().length, n = rs.getLastRow() - 1, found = 0;
-  if (n < 1) { ui.alert('The Resubmissions tab is empty.'); return; }
-  var data = rs.getRange(2, 1, n, hlen).getValues();
-  for (var i = data.length - 1; i >= 0; i--) if (norm_(data[i][1]) === alias) { found = i + 2; break; }
-  if (!found) { ui.alert('No resubmission found for "' + r.getResponseText() + '".'); return; }
-  var newRow = data[found - 2], key = newRow[hlen - 1], cur = findRow_(SHEETS.summary, hlen, key);
-  if (cur < 1) { ui.alert('That student has no row on Summary.'); return; }
-  var oldRow = sum.getRange(cur, 1, 1, hlen).getValues()[0];
-  sum.getRange(cur, 1, 1, hlen).setValues([newRow]);
-  rs.getRange(found, 1, 1, hlen).setValues([oldRow]);          // swap, so the earlier result is kept on Resubmissions
-  var props = PropertiesService.getScriptProperties().getProperty('resub:' + newRow[14]);
-  var saved = {}; try { saved = props ? JSON.parse(props) : {}; } catch (err) { saved = {}; }
-  if (saved.items && saved.items.length) {
-    var st = saved.student || {}, d = sheet_(SHEETS.detail), all = d.getLastRow() > 1 ? d.getRange(2, 1, d.getLastRow() - 1, DETAIL_HEAD.length).getValues() : [];
-    var keep = all.filter(function (x) { return norm_(x[1]) !== alias; });
-    var add = (saved.items || []).map(function (i) { return [new Date(saved.when), safe_(st.alias, 60), safe_(st.period, 20), safe_(i.id, 24), num_(i.m), safe_(i.topic, 80), num_(i.pts), num_(i.best), num_(i.first), num_(i.n), num_(i.limit)]; });
-    d.clearContents(); d.appendRow(DETAIL_HEAD); var rows = keep.concat(add); if (rows.length) d.getRange(2, 1, rows.length, DETAIL_HEAD.length).setValues(rows);
-  }
-  rebuildReteach_();
-  rebuildClassTabs_();
-  ui.alert('Done. The resubmission is now on Summary; the earlier result moved to Resubmissions.');
+  ui.alert(applyResubmission_(r.getResponseText()).message);
+}
+
+/** Make a student's latest resubmission their result on Summary (the earlier result moves to Resubmissions). */
+function applyResubmission_(aliasRaw) {
+  var lock = LockService.getScriptLock();
+  lock.waitLock(25000);
+  try {
+    var alias = norm_(aliasRaw), rs = sheet_(SHEETS.resub), sum = sheet_(SHEETS.summary);
+    var hlen = summaryHeader_().length, n = rs.getLastRow() - 1, found = 0;
+    if (n < 1) return { ok: false, reason: 'empty', message: 'The Resubmissions tab is empty.' };
+    var data = rs.getRange(2, 1, n, hlen).getValues();
+    for (var i = data.length - 1; i >= 0; i--) if (norm_(data[i][1]) === alias) { found = i + 2; break; }
+    if (!found) return { ok: false, reason: 'not-found', message: 'No resubmission found for "' + aliasRaw + '".' };
+    var newRow = data[found - 2], key = newRow[hlen - 1], cur = findRow_(SHEETS.summary, hlen, key);
+    if (cur < 1) return { ok: false, reason: 'no-summary', message: 'That student has no row on Summary.' };
+    var oldRow = sum.getRange(cur, 1, 1, hlen).getValues()[0];
+    sum.getRange(cur, 1, 1, hlen).setValues([newRow]);
+    rs.getRange(found, 1, 1, hlen).setValues([oldRow]);          // swap, so the earlier result is kept on Resubmissions
+    var props = PropertiesService.getScriptProperties().getProperty('resub:' + newRow[14]);
+    var saved = {}; try { saved = props ? JSON.parse(props) : {}; } catch (err) { saved = {}; }
+    if (saved.items && saved.items.length) {
+      var st = saved.student || {}, d = sheet_(SHEETS.detail), all = d.getLastRow() > 1 ? d.getRange(2, 1, d.getLastRow() - 1, DETAIL_HEAD.length).getValues() : [];
+      var keep = all.filter(function (x) { return norm_(x[1]) !== alias; });
+      var add = (saved.items || []).map(function (i) { return [new Date(saved.when), safe_(st.alias, 60), safe_(st.period, 20), safe_(i.id, 24), num_(i.m), safe_(i.topic, 80), num_(i.pts), num_(i.best), num_(i.first), num_(i.n), num_(i.limit)]; });
+      d.clearContents(); d.appendRow(DETAIL_HEAD); var rows = keep.concat(add); if (rows.length) d.getRange(2, 1, rows.length, DETAIL_HEAD.length).setValues(rows);
+    }
+    rebuildReteach_();
+    rebuildClassTabs_();
+    return { ok: true, message: 'Done. The resubmission is now on Summary; the earlier result moved to Resubmissions.' };
+  } finally { lock.releaseLock(); }
 }
 
 function wipeAll() {
   var ui = SpreadsheetApp.getUi();
   if (ui.alert('Delete all results?', 'This clears Summary, Detail, Reteach, Resubmissions and Log. Class codes stay.', ui.ButtonSet.YES_NO) !== ui.Button.YES) return;
   [SHEETS.summary, SHEETS.detail, SHEETS.resub, SHEETS.reteach, SHEETS.log].forEach(function (n) { var s = ss_().getSheetByName(n); if (s) s.clear(); });
-  PropertiesService.getScriptProperties().deleteAllProperties();
+  var props = PropertiesService.getScriptProperties(), all = props.getProperties();
+  Object.keys(all).forEach(function (k) { if (k.indexOf('resub:') === 0) props.deleteProperty(k); });   // keep TEACHER_PASSCODE
   ensureSheets_();
   rebuildClassTabs_();
 }
