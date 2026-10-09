@@ -150,9 +150,15 @@ function screenEntry(message, kind = 'err') {
   form.onsubmit = async (e) => {
     e.preventDefault();
     const nm = name.value.trim().replace(/\s+/g, ' '), cd = code.value.trim(), pd = period.value;
-    if (cd && sha256(CONFIG.previewSalt + '|' + cd.toUpperCase()) === CONFIG.previewPasscodeHash) { // teacher code in the class-code box: open Preview Mode
-      try { sessionStorage.setItem('sig-pv-ok', cd.toUpperCase()); } catch (_) { /* falls back to the passcode prompt */ }
-      location.href = location.pathname + '?preview=1'; return;
+    if (cd && sha256(CONFIG.previewSalt + '|' + cd.toUpperCase()) === CONFIG.previewPasscodeHash) { // teacher code in the class-code box: open the teacher view
+      const openPreview = () => {
+        try { sessionStorage.setItem('sig-pv-ok', cd.toUpperCase()); } catch (_) { /* falls back to the passcode prompt */ }
+        location.href = location.pathname + '?preview=1';
+      };
+      const m = await import('./teacherview.js');
+      document.body.dataset.theme = 'results';
+      m.mountTeacher({ main: $main, toast, onPreview: openPreview, onExit: () => { document.body.dataset.theme = 'entry'; screenEntry(); } });
+      return;
     }
     msg.style.color = ''; if (nm.length < 3 || !/\s|\./.test(nm) && nm.length < 4) { msg.textContent = 'Please enter your first and last name.'; name.focus(); return; }
     if (!pd) { msg.textContent = 'Choose your class period.'; period.focus(); return; }
