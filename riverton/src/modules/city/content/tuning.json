@@ -1,0 +1,1125 @@
+{
+ "version": 1,
+ "milesToUnits": 200,
+ "ownHoodFloor": 0.75,
+ "diminishing": [
+  1,
+  0.4,
+  0.15,
+  0.05
+ ],
+ "headroom": {
+  "floor": 0.05
+ },
+ "noise": {
+  "effectRealization": 0.12
+ },
+ "budget": {
+  "defaultStartingCash": 40,
+  "defaultAnnualBudget": 14,
+  "reducedAfterMonths": 2,
+  "closedAfterMonths": 6,
+  "reducedMult": 0.5
+ },
+ "behaviorFromDeterminant": {
+  "diet": {
+   "food": 0.22,
+   "economic": 0.06,
+   "education": 0.05
+  },
+  "activity": {
+   "walkability": 0.18,
+   "safety": 0.1,
+   "cohesion": 0.03
+  },
+  "preventiveCare": {
+   "healthcare": 0.3,
+   "economic": 0.04,
+   "education": 0.06
+  },
+  "erAsPrimary": {
+   "healthcare": -0.35,
+   "economic": -0.05
+  },
+  "smoking": {
+   "education": -0.08,
+   "economic": -0.05,
+   "cohesion": -0.03
+  },
+  "stress": {
+   "economic": -0.18,
+   "cohesion": -0.12,
+   "safety": -0.12,
+   "housing": -0.08
+  },
+  "leadExposure": {
+   "housing": -0.15,
+   "water": -0.12
+  },
+  "pollutantExposure": {
+   "air": -0.5
+  }
+ },
+ "behaviorRate": {
+  "diet": 0.04,
+  "activity": 0.08,
+  "preventiveCare": 0.1,
+  "erAsPrimary": 0.1,
+  "smoking": 0.03,
+  "stress": 0.06,
+  "leadExposure": 0.08,
+  "pollutantExposure": 0.12
+ },
+ "outcomes": {
+  "lifeExpectancy": {
+   "unit": "years",
+   "better": 1,
+   "mode": "add",
+   "rate": 0.009,
+   "min": 55,
+   "max": 92,
+   "beh": {
+    "diet": 0.05,
+    "activity": 0.06,
+    "preventiveCare": 0.06,
+    "erAsPrimary": -0.03,
+    "smoking": -0.05,
+    "stress": -0.04,
+    "leadExposure": -0.018,
+    "pollutantExposure": -0.035
+   },
+   "det": {
+    "economic": 0.02,
+    "safety": 0.008,
+    "housing": 0.006
+   },
+   "acute": 0.6
+  },
+  "obesity": {
+   "unit": "%",
+   "better": -1,
+   "mode": "add",
+   "rate": 0.014,
+   "min": 8,
+   "max": 60,
+   "beh": {
+    "diet": -0.12,
+    "activity": -0.1,
+    "stress": 0.03
+   },
+   "det": {}
+  },
+  "diabetes": {
+   "unit": "%",
+   "better": -1,
+   "mode": "add",
+   "rate": 0.01,
+   "min": 2,
+   "max": 30,
+   "beh": {
+    "diet": -0.07,
+    "activity": -0.06,
+    "preventiveCare": -0.02
+   },
+   "det": {}
+  },
+  "hypertension": {
+   "unit": "%",
+   "better": -1,
+   "mode": "add",
+   "rate": 0.015,
+   "min": 12,
+   "max": 65,
+   "beh": {
+    "diet": -0.08,
+    "activity": -0.07,
+    "stress": 0.06,
+    "smoking": 0.05,
+    "preventiveCare": -0.06
+   },
+   "det": {}
+  },
+  "asthma": {
+   "unit": "%",
+   "better": -1,
+   "mode": "add",
+   "rate": 0.05,
+   "min": 3,
+   "max": 30,
+   "beh": {
+    "pollutantExposure": 0.14,
+    "smoking": 0.02,
+    "preventiveCare": -0.03
+   },
+   "det": {
+    "housing": -0.03
+   }
+  },
+  "waterborne": {
+   "unit": "cases/yr",
+   "better": -1,
+   "mode": "log",
+   "rate": 0.25,
+   "min": 0.5,
+   "max": 200,
+   "beh": {},
+   "det": {
+    "water": -0.045
+   }
+  },
+  "leadElevated": {
+   "unit": "%",
+   "better": -1,
+   "mode": "log",
+   "rate": 0.09,
+   "min": 0.2,
+   "max": 30,
+   "beh": {
+    "leadExposure": 0.045
+   },
+   "det": {}
+  },
+  "infantMortality": {
+   "unit": "per 1,000",
+   "better": -1,
+   "mode": "add",
+   "rate": 0.03,
+   "min": 2,
+   "max": 15,
+   "beh": {
+    "preventiveCare": -0.02,
+    "stress": 0.007,
+    "smoking": 0.012
+   },
+   "det": {
+    "healthcare": -0.012
+   },
+   "acute": -0.3
+  },
+  "preventableER": {
+   "unit": "per 1,000",
+   "better": -1,
+   "mode": "log",
+   "rate": 0.08,
+   "min": 15,
+   "max": 250,
+   "beh": {
+    "erAsPrimary": 0.012,
+    "preventiveCare": -0.009
+   },
+   "det": {}
+  },
+  "vaccination": {
+   "unit": "%",
+   "better": 1,
+   "mode": "add",
+   "rate": 0.12,
+   "min": 40,
+   "max": 99,
+   "beh": {
+    "preventiveCare": 0.35
+   },
+   "det": {
+    "education": 0.05
+   }
+  },
+  "uninsured": {
+   "unit": "%",
+   "better": -1,
+   "mode": "add",
+   "rate": 0.15,
+   "min": 1,
+   "max": 35,
+   "beh": {},
+   "det": {
+    "healthcare": -0.3,
+    "economic": -0.2
+   }
+  },
+  "mentalDays": {
+   "unit": "days/mo",
+   "better": -1,
+   "mode": "add",
+   "rate": 0.06,
+   "min": 1,
+   "max": 10,
+   "beh": {
+    "stress": 0.03
+   },
+   "det": {}
+  }
+ },
+ "rent": {
+  "gentrifiableIncome": 65000,
+  "decay": 0.8,
+  "gain": 1.6,
+  "threshold": 60,
+  "displaceRate": 0.15,
+  "maxDisplacedPct": 40,
+  "econArtifact": 0.35,
+  "housingPenalty": 0.3,
+  "maxEcon": 10
+ },
+ "events": {
+  "grantPerYear": 0.06,
+  "factoryClosurePerYear": 0.04,
+  "floodPerYear": 0.08,
+  "heatWavePerYear": 0.2,
+  "outbreakPerYear": 0.06
+ },
+ "modifiers": {
+  "affordability": {
+   "belowIncome": 55000,
+   "withoutSliding": 0.45
+  },
+  "safetyTransit": {
+   "base": 0.6,
+   "weight": 0.4
+  },
+  "safetyOnly": {
+   "base": 0.7,
+   "weight": 0.3
+  },
+  "insuranceOutreach": {
+   "partner": "insurance_drive",
+   "mult": 1.4
+  }
+ },
+ "interventions": {
+  "hospital": {
+   "id": "hospital",
+   "name": "Hospital (with ER)",
+   "category": "healthcare",
+   "upstream": "downstream",
+   "prevention": "tertiary",
+   "scope": "point",
+   "cost": 45,
+   "opCost": 12,
+   "radiusMiles": 3.0,
+   "constructionMonths": 18,
+   "effects": [
+    {
+     "target": "acute",
+     "key": "acute",
+     "amount": 1.0,
+     "lag": 1
+    },
+    {
+     "target": "det",
+     "key": "healthcare",
+     "amount": 8,
+     "lag": 6
+    },
+    {
+     "target": "beh",
+     "key": "erAsPrimary",
+     "amount": -4,
+     "lag": 6
+    }
+   ],
+   "mechanism": "A hospital treats emergencies and serious illness. It saves lives when something acute happens, such as a heart attack, a flood or a heat wave, but it does little to prevent chronic disease. It is expensive to build and run.",
+   "transitExtends": true,
+   "amenity": 0.2,
+   "jobs": true
+  },
+  "clinic": {
+   "id": "clinic",
+   "name": "Community health clinic (FQHC)",
+   "category": "healthcare",
+   "upstream": "midstream",
+   "prevention": "secondary",
+   "scope": "point",
+   "cost": 6,
+   "opCost": 2.4,
+   "radiusMiles": 1.0,
+   "constructionMonths": 9,
+   "effects": [
+    {
+     "target": "det",
+     "key": "healthcare",
+     "amount": 30,
+     "lag": 6
+    },
+    {
+     "target": "beh",
+     "key": "preventiveCare",
+     "amount": 8,
+     "lag": 9
+    },
+    {
+     "target": "beh",
+     "key": "erAsPrimary",
+     "amount": -10,
+     "lag": 9
+    },
+    {
+     "target": "acute",
+     "key": "acute",
+     "amount": 0.15,
+     "lag": 6
+    }
+   ],
+   "mechanism": "A community clinic provides primary care, screenings and vaccinations on a sliding fee scale. People use it for check-ups instead of the ER, which catches disease early and lowers preventable ER visits.",
+   "transitExtends": true,
+   "amenity": 0.3,
+   "modifiers": [
+    "insuranceOutreach"
+   ]
+  },
+  "mobile_van": {
+   "id": "mobile_van",
+   "name": "Mobile health van",
+   "category": "healthcare",
+   "upstream": "midstream",
+   "prevention": "secondary",
+   "scope": "point",
+   "cost": 0.8,
+   "opCost": 0.9,
+   "radiusMiles": 1.6,
+   "constructionMonths": 2,
+   "effects": [
+    {
+     "target": "det",
+     "key": "healthcare",
+     "amount": 9,
+     "lag": 3
+    },
+    {
+     "target": "beh",
+     "key": "preventiveCare",
+     "amount": 3,
+     "lag": 6
+    },
+    {
+     "target": "beh",
+     "key": "erAsPrimary",
+     "amount": -3,
+     "lag": 6
+    }
+   ],
+   "mechanism": "A van brings screenings and vaccines to neighborhoods with few clinics. It reaches a wider area than a clinic but offers fewer services and fewer hours.",
+   "transitExtends": false,
+   "amenity": 0.0
+  },
+  "supermarket": {
+   "id": "supermarket",
+   "name": "Full-service grocery store",
+   "category": "food",
+   "upstream": "upstream",
+   "prevention": "primary",
+   "scope": "point",
+   "cost": 9,
+   "opCost": 0.6,
+   "radiusMiles": 0.9,
+   "constructionMonths": 12,
+   "effects": [
+    {
+     "target": "det",
+     "key": "food",
+     "amount": 42,
+     "lag": 6
+    },
+    {
+     "target": "beh",
+     "key": "diet",
+     "amount": 3,
+     "lag": 18
+    },
+    {
+     "target": "det",
+     "key": "economic",
+     "amount": 1.5,
+     "lag": 12
+    }
+   ],
+   "mechanism": "A full-service grocery store brings fresh produce, dairy and affordable staples into a neighborhood. Distance matters: people shop where it is easy to get to. On its own it changes diets only modestly; it works best with nutrition education and economic support.",
+   "transitExtends": true,
+   "amenity": 1.0,
+   "synergies": [
+    {
+     "with": "nutrition_ed",
+     "mult": 2.4,
+     "applyTo": [
+      "beh.diet"
+     ]
+    },
+    {
+     "detAtLeast": {
+      "key": "economic",
+      "value": 38
+     },
+     "mult": 1.5,
+     "applyTo": [
+      "beh.diet"
+     ]
+    },
+    {
+     "with": "chw_outreach",
+     "mult": 1.3,
+     "applyTo": [
+      "beh.diet"
+     ]
+    }
+   ]
+  },
+  "farmers_market": {
+   "id": "farmers_market",
+   "name": "Farmers market",
+   "category": "food",
+   "upstream": "upstream",
+   "prevention": "primary",
+   "scope": "point",
+   "cost": 0.3,
+   "opCost": 0.15,
+   "radiusMiles": 0.8,
+   "constructionMonths": 2,
+   "effects": [
+    {
+     "target": "det",
+     "key": "food",
+     "amount": 9,
+     "lag": 3
+    },
+    {
+     "target": "beh",
+     "key": "diet",
+     "amount": 1.5,
+     "lag": 9
+    }
+   ],
+   "mechanism": "A weekly market sells fresh produce and can accept food-assistance benefits. It is cheap and fast to start, but it only runs a few days a week.",
+   "transitExtends": false,
+   "amenity": 0.3
+  },
+  "corner_store": {
+   "id": "corner_store",
+   "name": "Corner-store healthy-food conversion",
+   "category": "food",
+   "upstream": "upstream",
+   "prevention": "primary",
+   "scope": "point",
+   "cost": 0.5,
+   "opCost": 0.1,
+   "radiusMiles": 0.5,
+   "constructionMonths": 2,
+   "effects": [
+    {
+     "target": "det",
+     "key": "food",
+     "amount": 12,
+     "lag": 3
+    },
+    {
+     "target": "beh",
+     "key": "diet",
+     "amount": 1.5,
+     "lag": 9
+    }
+   ],
+   "mechanism": "Small stores get coolers and incentives to stock fruit, vegetables and low-fat items. It is a quick, low-cost way to improve food access where a supermarket is not possible.",
+   "transitExtends": false,
+   "amenity": 0.1
+  },
+  "water_upgrade": {
+   "id": "water_upgrade",
+   "name": "Water treatment upgrade",
+   "category": "environment",
+   "upstream": "upstream",
+   "prevention": "primary",
+   "scope": "city",
+   "cost": 25,
+   "opCost": 1.2,
+   "radiusMiles": 0,
+   "constructionMonths": 18,
+   "effects": [
+    {
+     "target": "det",
+     "key": "water",
+     "amount": 22,
+     "lag": 3
+    }
+   ],
+   "mechanism": "Better filtration and monitoring at the treatment plant make the drinking water safer for the whole city. Waterborne illness drops within months. Neighborhoods with older pipes still need pipe work.",
+   "amenity": 0.0
+  },
+  "lead_replacement": {
+   "id": "lead_replacement",
+   "name": "Lead service line replacement",
+   "category": "environment",
+   "upstream": "upstream",
+   "prevention": "primary",
+   "scope": "hood",
+   "cost": 10,
+   "opCost": 0.0,
+   "radiusMiles": 0,
+   "constructionMonths": 12,
+   "effects": [
+    {
+     "target": "beh",
+     "key": "leadExposure",
+     "amount": -38,
+     "lag": 18
+    },
+    {
+     "target": "det",
+     "key": "water",
+     "amount": 6,
+     "lag": 6
+    },
+    {
+     "target": "det",
+     "key": "housing",
+     "amount": 4,
+     "lag": 12
+    }
+   ],
+   "mechanism": "Old homes may have lead water pipes. Replacing them removes a source of lead in children's drinking water. Blood-lead levels fall gradually over 1 to 2 years because lead leaves the body slowly. Cost scales with the neighborhood's size.",
+   "costScale": "pop",
+   "amenity": 0.2
+  },
+  "ymca": {
+   "id": "ymca",
+   "name": "YMCA / recreation center",
+   "category": "built",
+   "upstream": "upstream",
+   "prevention": "primary",
+   "scope": "point",
+   "cost": 12,
+   "opCost": 2.2,
+   "radiusMiles": 1.0,
+   "constructionMonths": 14,
+   "effects": [
+    {
+     "target": "det",
+     "key": "walkability",
+     "amount": 6,
+     "lag": 6
+    },
+    {
+     "target": "det",
+     "key": "cohesion",
+     "amount": 6,
+     "lag": 9
+    },
+    {
+     "target": "det",
+     "key": "safety",
+     "amount": 3,
+     "lag": 9
+    },
+    {
+     "target": "beh",
+     "key": "activity",
+     "amount": 9,
+     "lag": 9
+    },
+    {
+     "target": "beh",
+     "key": "stress",
+     "amount": -3,
+     "lag": 9
+    }
+   ],
+   "mechanism": "A rec center gives people a safe, indoor place to be active, plus classes and youth programs. Its effect depends on affordability (a sliding-scale membership), safety and how easily people can get there.",
+   "transitExtends": true,
+   "amenity": 0.8,
+   "modifiers": [
+    "affordability",
+    "safetyTransit"
+   ],
+   "defaultOpts": {
+    "sliding": false
+   }
+  },
+  "park": {
+   "id": "park",
+   "name": "Park / green space",
+   "category": "built",
+   "upstream": "upstream",
+   "prevention": "primary",
+   "scope": "point",
+   "cost": 4,
+   "opCost": 0.3,
+   "radiusMiles": 0.7,
+   "constructionMonths": 8,
+   "effects": [
+    {
+     "target": "det",
+     "key": "walkability",
+     "amount": 12,
+     "lag": 6
+    },
+    {
+     "target": "det",
+     "key": "cohesion",
+     "amount": 4,
+     "lag": 9
+    },
+    {
+     "target": "det",
+     "key": "air",
+     "amount": 2,
+     "lag": 12
+    },
+    {
+     "target": "beh",
+     "key": "activity",
+     "amount": 4,
+     "lag": 9
+    },
+    {
+     "target": "beh",
+     "key": "stress",
+     "amount": -2,
+     "lag": 9
+    }
+   ],
+   "mechanism": "A well-kept park gives people a free place to walk, play and meet neighbors. Trees also cool the air and trap dust. Safety and lighting affect how much people use it.",
+   "transitExtends": false,
+   "amenity": 1.0,
+   "heatShield": 0.35,
+   "modifiers": [
+    "safetyOnly"
+   ]
+  },
+  "sidewalks": {
+   "id": "sidewalks",
+   "name": "Sidewalks & bike lanes",
+   "category": "built",
+   "upstream": "upstream",
+   "prevention": "primary",
+   "scope": "point",
+   "cost": 5,
+   "opCost": 0.2,
+   "radiusMiles": 0.8,
+   "constructionMonths": 10,
+   "effects": [
+    {
+     "target": "det",
+     "key": "walkability",
+     "amount": 22,
+     "lag": 6
+    },
+    {
+     "target": "det",
+     "key": "safety",
+     "amount": 4,
+     "lag": 9
+    },
+    {
+     "target": "beh",
+     "key": "activity",
+     "amount": 5,
+     "lag": 12
+    }
+   ],
+   "mechanism": "Safe, connected sidewalks and bike lanes make walking to school, work and stores practical. Daily movement adds up to better heart health over the years.",
+   "transitExtends": false,
+   "amenity": 0.5
+  },
+  "bus_route": {
+   "id": "bus_route",
+   "name": "New bus route",
+   "category": "built",
+   "upstream": "upstream",
+   "prevention": "primary",
+   "scope": "point",
+   "cost": 2,
+   "opCost": 1.6,
+   "radiusMiles": 1.4,
+   "constructionMonths": 3,
+   "effects": [
+    {
+     "target": "det",
+     "key": "walkability",
+     "amount": 6,
+     "lag": 3
+    },
+    {
+     "target": "det",
+     "key": "healthcare",
+     "amount": 5,
+     "lag": 3
+    },
+    {
+     "target": "det",
+     "key": "economic",
+     "amount": 3,
+     "lag": 6
+    },
+    {
+     "target": "det",
+     "key": "food",
+     "amount": 4,
+     "lag": 3
+    }
+   ],
+   "mechanism": "A bus route connects people to clinics, groceries and jobs. It does not treat anyone directly, but it extends how far every other service reaches (distance and access).",
+   "transitBoost": 0.8,
+   "amenity": 0.6
+  },
+  "chw_outreach": {
+   "id": "chw_outreach",
+   "name": "Community health workers (outreach)",
+   "category": "community",
+   "upstream": "midstream",
+   "prevention": "secondary",
+   "scope": "hood",
+   "cost": 0.3,
+   "opCost": 1.2,
+   "radiusMiles": 0,
+   "constructionMonths": 2,
+   "effects": [
+    {
+     "target": "det",
+     "key": "healthcare",
+     "amount": 8,
+     "lag": 3
+    },
+    {
+     "target": "det",
+     "key": "cohesion",
+     "amount": 5,
+     "lag": 6
+    },
+    {
+     "target": "beh",
+     "key": "preventiveCare",
+     "amount": 8,
+     "lag": 6
+    },
+    {
+     "target": "beh",
+     "key": "erAsPrimary",
+     "amount": -5,
+     "lag": 6
+    },
+    {
+     "target": "beh",
+     "key": "smoking",
+     "amount": -2,
+     "lag": 12
+    }
+   ],
+   "mechanism": "Trusted neighbors are trained as health workers. They help people enroll in insurance, find a clinic and manage conditions. It works because people trust people who share their language and community.",
+   "amenity": 0.0
+  },
+  "school_clinic": {
+   "id": "school_clinic",
+   "name": "School-based health center",
+   "category": "healthcare",
+   "upstream": "midstream",
+   "prevention": "primary",
+   "scope": "point",
+   "cost": 1.5,
+   "opCost": 0.9,
+   "radiusMiles": 0.8,
+   "constructionMonths": 6,
+   "effects": [
+    {
+     "target": "det",
+     "key": "healthcare",
+     "amount": 10,
+     "lag": 3
+    },
+    {
+     "target": "beh",
+     "key": "preventiveCare",
+     "amount": 6,
+     "lag": 6
+    },
+    {
+     "target": "det",
+     "key": "education",
+     "amount": 2,
+     "lag": 12
+    }
+   ],
+   "mechanism": "A clinic inside a school provides vaccines, asthma care, and mental health visits during the school day, so parents do not have to miss work.",
+   "transitExtends": false,
+   "amenity": 0.2
+  },
+  "nutrition_ed": {
+   "id": "nutrition_ed",
+   "name": "Nutrition education program",
+   "category": "community",
+   "upstream": "upstream",
+   "prevention": "primary",
+   "scope": "hood",
+   "cost": 0.1,
+   "opCost": 0.5,
+   "radiusMiles": 0,
+   "constructionMonths": 1,
+   "effects": [
+    {
+     "target": "beh",
+     "key": "diet",
+     "amount": 5,
+     "lag": 9
+    },
+    {
+     "target": "det",
+     "key": "education",
+     "amount": 2,
+     "lag": 12
+    }
+   ],
+   "mechanism": "Classes, cooking demos and school lessons help families choose, afford and prepare healthy food. It makes other food investments work better.",
+   "amenity": 0.0
+  },
+  "insurance_drive": {
+   "id": "insurance_drive",
+   "name": "Insurance enrollment drive",
+   "category": "healthcare",
+   "upstream": "upstream",
+   "prevention": "primary",
+   "scope": "hood",
+   "cost": 0.1,
+   "opCost": 0.4,
+   "radiusMiles": 0,
+   "constructionMonths": 1,
+   "effects": [
+    {
+     "target": "det",
+     "key": "healthcare",
+     "amount": 12,
+     "lag": 6
+    },
+    {
+     "target": "det",
+     "key": "economic",
+     "amount": 1.5,
+     "lag": 6
+    },
+    {
+     "target": "beh",
+     "key": "preventiveCare",
+     "amount": 3,
+     "lag": 6
+    }
+   ],
+   "mechanism": "Outreach staff help people sign up for coverage they already qualify for. People with insurance get regular care and avoid ER bills. It also boosts the use of clinics.",
+   "amenity": 0.0
+  },
+  "mental_health": {
+   "id": "mental_health",
+   "name": "Mental health services",
+   "category": "healthcare",
+   "upstream": "midstream",
+   "prevention": "secondary",
+   "scope": "point",
+   "cost": 1.0,
+   "opCost": 1.4,
+   "radiusMiles": 1.2,
+   "constructionMonths": 6,
+   "effects": [
+    {
+     "target": "det",
+     "key": "healthcare",
+     "amount": 5,
+     "lag": 3
+    },
+    {
+     "target": "beh",
+     "key": "stress",
+     "amount": -7,
+     "lag": 9
+    },
+    {
+     "target": "det",
+     "key": "cohesion",
+     "amount": 2,
+     "lag": 12
+    }
+   ],
+   "mechanism": "Counseling and support groups make it easier to get help early. Lower stress improves sleep, blood pressure and many other outcomes.",
+   "transitExtends": true,
+   "amenity": 0.1
+  },
+  "factory_controls": {
+   "id": "factory_controls",
+   "name": "Factory emission controls",
+   "category": "environment",
+   "upstream": "upstream",
+   "prevention": "primary",
+   "scope": "hood",
+   "cost": 8,
+   "opCost": 0.6,
+   "radiusMiles": 0,
+   "constructionMonths": 10,
+   "effects": [
+    {
+     "target": "det",
+     "key": "air",
+     "amount": 24,
+     "lag": 6
+    },
+    {
+     "target": "beh",
+     "key": "pollutantExposure",
+     "amount": 0,
+     "lag": 1
+    }
+   ],
+   "mechanism": "Scrubbers and filters cut the pollution that the factory releases. Cleaner air reduces children's asthma attacks and long-term lung disease. Costs fall on the owner and the city.",
+   "amenity": 0.2,
+   "targetHoods": [
+    "millworks"
+   ]
+  },
+  "tree_buffer": {
+   "id": "tree_buffer",
+   "name": "Highway tree buffer",
+   "category": "environment",
+   "upstream": "upstream",
+   "prevention": "primary",
+   "scope": "hood",
+   "cost": 2,
+   "opCost": 0.15,
+   "radiusMiles": 0,
+   "constructionMonths": 12,
+   "effects": [
+    {
+     "target": "det",
+     "key": "air",
+     "amount": 9,
+     "lag": 18
+    },
+    {
+     "target": "det",
+     "key": "walkability",
+     "amount": 2,
+     "lag": 18
+    }
+   ],
+   "mechanism": "Rows of trees and green barriers along the highway trap particles and reduce noise. Trees take years to grow, so the benefit builds slowly.",
+   "amenity": 0.4
+  },
+  "mixed_income_redevelopment": {
+   "id": "mixed_income_redevelopment",
+   "name": "Mixed-income redevelopment",
+   "category": "housing",
+   "upstream": "upstream",
+   "prevention": "primary",
+   "scope": "point",
+   "cost": 20,
+   "opCost": 0.3,
+   "radiusMiles": 0.7,
+   "constructionMonths": 24,
+   "effects": [
+    {
+     "target": "det",
+     "key": "housing",
+     "amount": 16,
+     "lag": 12
+    },
+    {
+     "target": "det",
+     "key": "economic",
+     "amount": 6,
+     "lag": 12
+    },
+    {
+     "target": "det",
+     "key": "safety",
+     "amount": 4,
+     "lag": 12
+    }
+   ],
+   "mechanism": "New housing and shops on a vacant lot. It can improve housing quality and bring jobs, but market-rate units raise nearby rents, so longtime residents may be pushed out unless protections are in place.",
+   "transitExtends": false,
+   "amenity": 4.0,
+   "redevelopment": true
+  }
+ },
+ "policies": {
+  "sugary_tax": {
+   "id": "sugary_tax",
+   "name": "Sugary-drink tax",
+   "cost": 0,
+   "opCost": -1.2,
+   "effects": [
+    {
+     "target": "beh",
+     "key": "diet",
+     "amount": 3,
+     "lag": 12
+    },
+    {
+     "target": "det",
+     "key": "economic",
+     "amount": -0.8,
+     "lag": 6
+    }
+   ],
+   "mechanism": "A per-ounce tax raises the price of sugary drinks, which lowers consumption. It also raises city revenue, but it falls hardest on lower-income households."
+  },
+  "smoke_free": {
+   "id": "smoke_free",
+   "name": "Smoke-free ordinance",
+   "cost": 0,
+   "opCost": 0.2,
+   "effects": [
+    {
+     "target": "beh",
+     "key": "smoking",
+     "amount": -5,
+     "lag": 12
+    },
+    {
+     "target": "beh",
+     "key": "pollutantExposure",
+     "amount": -2,
+     "lag": 6
+    }
+   ],
+   "mechanism": "Bans smoking in workplaces and public places. Fewer people breathe secondhand smoke, and some smokers cut back or quit."
+  },
+  "min_wage": {
+   "id": "min_wage",
+   "name": "Minimum wage increase",
+   "cost": 0,
+   "opCost": 0,
+   "effects": [
+    {
+     "target": "det",
+     "key": "economic",
+     "amount": 5,
+     "lag": 12
+    }
+   ],
+   "mechanism": "Higher pay raises household income, which improves food, housing and stress. Some studies find small job losses, so effects vary."
+  },
+  "housing_protection": {
+   "id": "housing_protection",
+   "name": "Affordable-housing protections",
+   "cost": 0,
+   "opCost": 0.8,
+   "effects": [
+    {
+     "target": "det",
+     "key": "housing",
+     "amount": 3,
+     "lag": 12
+    }
+   ],
+   "mechanism": "Rent stabilization and tenant protections slow the rising rents that follow new investment, so original residents can stay.",
+   "protectsRent": 0.7
+  }
+ },
+ "behaviorBetter": {
+  "diet": 1,
+  "activity": 1,
+  "preventiveCare": 1,
+  "erAsPrimary": -1,
+  "smoking": -1,
+  "stress": -1,
+  "leadExposure": -1,
+  "pollutantExposure": -1
+ },
+ "behaviorRoom": {
+  "scale": 50,
+  "min": 0.1,
+  "max": 1.3
+ }
+}
