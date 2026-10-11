@@ -12,7 +12,7 @@ import './home.css';
 
 const MODULES = [
   { id: 'city', name: 'City', blurb: 'Plan interventions and watch Riverton’s health and equity change.', icon: Compass, accent: ['--city-a', '--city-b'], phase: 'Coming in Phase 5' },
-  { id: 'crossroads', name: 'Crossroads', blurb: 'Branching community decisions: Town Hall and Rumor Mill.', icon: Landmark, accent: ['--cross-a', '--cross-b'], phase: 'Coming in Phase 4' },
+  { id: 'crossroads', name: 'Crossroads', blurb: 'Branching community decisions: Town Hall and Rumor Mill.', icon: Landmark, accent: ['--cross-a', '--cross-b'], phase: 'Open Crossroads', href: '/crossroads' },
   { id: 'lab', name: 'Sim Lab', blurb: 'Disease Detective: investigate an outbreak with real epidemiology tools.', icon: FlaskConical, accent: ['--lab-a', '--lab-b'], phase: 'Open Sim Lab', href: '/lab' },
 ] as const satisfies readonly { id: string; name: string; blurb: string; icon: unknown; accent: readonly string[]; phase: string; href?: string }[];
 const STORY = ['Orientation', 'City: Plan', 'Crossroads: Town Hall', 'Sim Lab: Outbreak', 'Crossroads: Rumor Mill', 'Wrap-up'];

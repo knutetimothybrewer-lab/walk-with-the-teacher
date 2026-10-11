@@ -16,6 +16,7 @@ export interface Profile {
   written: WrittenRec[];
   notebook: { summaryCards: string[]; terms: string[] };
   lessonsDone: string[];
+  crossroads?: Record<string, { ending: string; reasoning: unknown[]; rubric: { id: string; score: number; max: number }[]; at: number }>;
 }
 export interface Backup { app: 'riverton'; version: 1; exported: number; profile: Profile }
 

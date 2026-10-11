@@ -1,0 +1,1 @@
+import{a as e,i as t,r as n}from"./riverton-world-BXbnfFJB.js";var r=`riverton.crossroads`,i=e((e,i)=>({runs:n(r,{}),alt:{},set:(n,a)=>{let o={...i().runs,[n]:a};e({runs:o}),t(r,o)},setAlt:(t,n)=>{let r={...i().alt};n?r[t]=n:delete r[t],e({alt:r})},clear:n=>{let{[n]:a,...o}=i().runs;e({runs:o}),t(r,o),i().setAlt(n,null)}})),a=(e,t)=>`${e}:${t}`;export{i as n,a as t};

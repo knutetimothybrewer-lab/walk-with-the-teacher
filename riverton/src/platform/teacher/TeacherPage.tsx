@@ -3,6 +3,8 @@ import { hashPin, useTeacher } from './teacherStore';
 import { QUESTIONS } from '../content';
 import type { MCQuestion } from '../questions/types';
 import { viableTruth, simulate, trueCases, alertDay } from '../../modules/lab/labs/outbreak';
+import { SCENARIOS, ORDER } from '../../modules/crossroads/ui/scenarios';
+import type { ChoiceNode, EndNode } from '../../modules/crossroads/engine/types';
 
 export default function TeacherPage() {
   const t = useTeacher();
@@ -49,6 +51,14 @@ export default function TeacherPage() {
             <div className="panel"><h3>Answer key{t.lab.classSeed == null ? ' (example seed 1)' : ''}</h3>
               <p><b>{tr.source.label}</b>. {tr.source.detail}</p><p>Curve: {tr.source.curve}. True cases: {trueCases(sm)}. Alert on day {(alertDay(tr, sm) ?? 0) + 1}.</p>
               <p>Ideal path: confirm the outbreak, build a balanced case definition, interview cases, survey residents to compare attack rates, inspect or test the true source, check confounders, then order the targeted intervention early.</p></div>); })()}
+        </section>
+        <section className="panel"><h2>Crossroads: branches and rubric</h2>
+          <p>Choices are never scored right or wrong. The reasoning rubric has 7 criteria, each 0 to 2: uses data as evidence, considers multiple stakeholders, includes community voice, weighs equity, identifies trade-offs, generates alternatives, and separates decision quality from outcome. Free-text answers are exported for you to score against the same rubric.</p>
+          <label className="toggle">Timed choices on<input type="checkbox" checked={t.timedChoices} onChange={(e) => t.patch({ timedChoices: e.target.checked })} /></label>
+          {ORDER.map((id) => { const sc = SCENARIOS[id]; return (
+            <details key={id}><summary><b>{sc.title}</b>: {sc.nodes.filter((n) => n.type === 'end').length} endings, {sc.nodes.filter((n) => n.type === 'choice' && n.decision).length} decisions</summary>
+              {sc.nodes.filter((n): n is ChoiceNode => n.type === 'choice').map((n) => <div key={n.id}><b>{n.prompt}</b><ul>{n.choices.map((c) => <li key={c.id}>{c.label}{c.shallow ? ' (popular but shallow: prompts a push-back on reasoning)' : ''}</li>)}</ul></div>)}
+              <b>Endings</b><ul>{sc.nodes.filter((n): n is EndNode => n.type === 'end').map((n) => <li key={n.id}>{n.ending.title}: {n.ending.summary}</li>)}</ul></details>); })}
         </section>
         <section className="panel"><h2>Answer key</h2>
           <ul>{QUESTIONS.filter((q) => q.type === 'mc').map((q) => <li key={q.id}><b>{q.id}</b>: {(q as MCQuestion).options.find((o) => o.correct)?.text}</li>)}</ul>

@@ -26,7 +26,7 @@ export function rumorProject(vars: Vars): Vars {
   let c = c0 + (DELTA.share[String(vars.shareChoice)] ?? 0) + (DELTA.verify[String(vars.verifyChoice)] ?? 0) + (DELTA.neighbor[String(vars.neighborChoice)] ?? 0) + (DELTA.messenger[String(vars.messenger)] ?? 0);
   if (vars.languages === 'multi') c += 0.05 + (vars.messenger === 'bilingual' ? 0.02 : 0);
   if (vars.viral === 'viral') c -= 0.05;
-  const c1 = clamp01(c);
+  const c1 = Math.min(0.95, clamp01(c)); // even the best response does not reach everyone
   const weekly = (Array.isArray(vars.weekly) && (vars.weekly as number[]).length ? (vars.weekly as number[]) : DEFAULT_WEEKLY);
   const after = applyCompliance(weekly, 1, c0, c1);
   const sum = (a: number[]) => a.reduce((x, y) => x + y, 0);
