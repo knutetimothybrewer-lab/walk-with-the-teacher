@@ -1,0 +1,266 @@
+[
+ {
+  "id": "community-health",
+  "label": "What community and public health are",
+  "module": "shared",
+  "core": true
+ },
+ {
+  "id": "individual-vs-population",
+  "label": "Individual vs. population health",
+  "module": "shared",
+  "core": true
+ },
+ {
+  "id": "correlation-causation",
+  "label": "Correlation vs. causation",
+  "module": "shared",
+  "core": true
+ },
+ {
+  "id": "risk-protective",
+  "label": "Risk factor vs. protective factor",
+  "module": "shared",
+  "core": false
+ },
+ {
+  "id": "prevalence-incidence",
+  "label": "Prevalence vs. incidence",
+  "module": "shared",
+  "core": false
+ },
+ {
+  "id": "rates",
+  "label": "Rates per 1,000 / 100,000",
+  "module": "shared",
+  "core": false
+ },
+ {
+  "id": "reading-graphs",
+  "label": "Reading line and bar graphs",
+  "module": "shared",
+  "core": false
+ },
+ {
+  "id": "models-limits",
+  "label": "Models and their limitations",
+  "module": "shared",
+  "core": false
+ },
+ {
+  "id": "equity-equality",
+  "label": "Health equity vs. equality",
+  "module": "shared",
+  "core": true
+ },
+ {
+  "id": "sdoh",
+  "label": "Social determinants of health (5 domains)",
+  "module": "city",
+  "core": true
+ },
+ {
+  "id": "upstream-downstream",
+  "label": "Upstream vs. downstream",
+  "module": "city",
+  "core": true
+ },
+ {
+  "id": "prevention-levels",
+  "label": "Primary, secondary, tertiary prevention",
+  "module": "city",
+  "core": true
+ },
+ {
+  "id": "food-access",
+  "label": "Food deserts and food access",
+  "module": "city",
+  "core": false
+ },
+ {
+  "id": "environmental-health",
+  "label": "Environmental health: water, lead, air",
+  "module": "city",
+  "core": false
+ },
+ {
+  "id": "healthcare-access",
+  "label": "Healthcare access and insurance",
+  "module": "city",
+  "core": false
+ },
+ {
+  "id": "lag-time",
+  "label": "Lag time in health outcomes",
+  "module": "city",
+  "core": false
+ },
+ {
+  "id": "distance-access",
+  "label": "Distance and access",
+  "module": "city",
+  "core": false
+ },
+ {
+  "id": "diminishing-returns",
+  "label": "Diminishing returns",
+  "module": "city",
+  "core": false
+ },
+ {
+  "id": "unintended-consequences",
+  "label": "Unintended consequences and displacement",
+  "module": "city",
+  "core": false
+ },
+ {
+  "id": "cost-effectiveness",
+  "label": "Cost-effectiveness",
+  "module": "city",
+  "core": false
+ },
+ {
+  "id": "decision-model",
+  "label": "Community health decision model",
+  "module": "crossroads",
+  "core": true
+ },
+ {
+  "id": "stakeholders",
+  "label": "Stakeholders and stakeholder analysis",
+  "module": "crossroads",
+  "core": true
+ },
+ {
+  "id": "engagement-equity",
+  "label": "Community engagement and equity of participation",
+  "module": "crossroads",
+  "core": true
+ },
+ {
+  "id": "evidence-lived",
+  "label": "Evidence vs. lived experience as data",
+  "module": "crossroads",
+  "core": false
+ },
+ {
+  "id": "tradeoffs",
+  "label": "Trade-offs and opportunity cost",
+  "module": "crossroads",
+  "core": false
+ },
+ {
+  "id": "cultural-humility",
+  "label": "Cultural humility and trust",
+  "module": "crossroads",
+  "core": false
+ },
+ {
+  "id": "trusted-messengers",
+  "label": "Health communication and trusted messengers",
+  "module": "crossroads",
+  "core": true
+ },
+ {
+  "id": "misinformation",
+  "label": "Misinformation and lateral reading",
+  "module": "crossroads",
+  "core": true
+ },
+ {
+  "id": "decision-vs-outcome",
+  "label": "Decision quality vs. outcome",
+  "module": "crossroads",
+  "core": false
+ },
+ {
+  "id": "policy-tool",
+  "label": "Policy as a public health tool",
+  "module": "crossroads",
+  "core": false
+ },
+ {
+  "id": "chain-of-infection",
+  "label": "Chain of infection",
+  "module": "lab",
+  "core": true
+ },
+ {
+  "id": "surveillance",
+  "label": "Surveillance and underreporting",
+  "module": "lab",
+  "core": true
+ },
+ {
+  "id": "outbreak-baseline",
+  "label": "What makes an outbreak",
+  "module": "lab",
+  "core": false
+ },
+ {
+  "id": "case-definition",
+  "label": "Case definition (sensitivity vs. specificity)",
+  "module": "lab",
+  "core": true
+ },
+ {
+  "id": "line-lists",
+  "label": "Line lists",
+  "module": "lab",
+  "core": false
+ },
+ {
+  "id": "epi-curves",
+  "label": "Epi curves",
+  "module": "lab",
+  "core": true
+ },
+ {
+  "id": "attack-rate",
+  "label": "Attack rate",
+  "module": "lab",
+  "core": true
+ },
+ {
+  "id": "relative-risk",
+  "label": "Relative risk",
+  "module": "lab",
+  "core": true
+ },
+ {
+  "id": "study-designs",
+  "label": "Cohort vs. case-control",
+  "module": "lab",
+  "core": false
+ },
+ {
+  "id": "confounding",
+  "label": "Confounding",
+  "module": "lab",
+  "core": true
+ },
+ {
+  "id": "bias",
+  "label": "Recall and selection bias",
+  "module": "lab",
+  "core": false
+ },
+ {
+  "id": "sample-size",
+  "label": "Sample size and variability",
+  "module": "lab",
+  "core": false
+ },
+ {
+  "id": "interventions-counterfactual",
+  "label": "Interventions and counterfactuals",
+  "module": "lab",
+  "core": false
+ },
+ {
+  "id": "privacy-stigma",
+  "label": "Data privacy and stigma",
+  "module": "lab",
+  "core": false
+ }
+]

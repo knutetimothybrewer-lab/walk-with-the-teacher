@@ -1,0 +1,97 @@
+[
+ {
+  "id": "ch-individual-care",
+  "concept": "community-health",
+  "title": "Individual care vs. community health",
+  "body": [
+   "Individual care treats one person: an exam, a prescription, a shot.",
+   "Community health changes things everyone shares, like clean water, safe streets, or a clinic within walking distance.",
+   "A quick test: if the action helps many people who never walked into a doctor's office, it is community health."
+  ],
+  "steps": [
+   {
+    "caption": "One patient at a time",
+    "art": "A nurse helps each patient in turn: 1 person, 1 visit."
+   },
+   {
+    "caption": "Change the shared setting",
+    "art": "Fix the water and every household is protected, even people who never see a doctor."
+   }
+  ]
+ },
+ {
+  "id": "ch-products",
+  "concept": "community-health",
+  "title": "Products are not public health",
+  "body": [
+   "Selling something is not the same as organized work to protect a group's health.",
+   "Public health uses data, planning, and shared resources to reduce risks across a population."
+  ]
+ },
+ {
+  "id": "ch-blame-choices",
+  "concept": "community-health",
+  "title": "Choices live inside conditions",
+  "body": [
+   "People do make choices, but choices depend on what is available.",
+   "If the only store nearby sells chips and soda, or no safe park exists, healthy options are harder.",
+   "Community health asks: what could we change so the healthy choice is the easy choice?"
+  ],
+  "steps": [
+   {
+    "caption": "Same person, two places",
+    "art": "A neighborhood with a grocery store and park makes healthy habits easier."
+   },
+   {
+    "caption": "Same effort, harder path",
+    "art": "A neighborhood without them makes the same effort much harder."
+   }
+  ]
+ },
+ {
+  "id": "ch-genes-only",
+  "concept": "community-health",
+  "title": "Genes are only part of the story",
+  "body": [
+   "Genes affect health, but they cannot explain big differences between neighborhoods a few miles apart.",
+   "When families move to a place with different conditions, their health often changes over time."
+  ]
+ },
+ {
+  "id": "ch-random",
+  "concept": "community-health",
+  "title": "Patterns are not chance",
+  "body": [
+   "Chance can explain small, one-time differences.",
+   "When a gap is large and shows up year after year in the same places, something systematic is causing it."
+  ]
+ },
+ {
+  "id": "pop-one-person",
+  "concept": "individual-vs-population",
+  "title": "From one person to a group",
+  "body": [
+   "Clinical questions are about one patient: What is wrong? What treatment?",
+   "Population questions compare groups: Who is affected most? Why? What would help many people?"
+  ],
+  "steps": [
+   {
+    "caption": "Zoom in",
+    "art": "A clinician looks at one person's chart."
+   },
+   {
+    "caption": "Zoom out",
+    "art": "A health department looks at rates in every neighborhood."
+   }
+  ]
+ },
+ {
+  "id": "pop-counts-only",
+  "concept": "individual-vs-population",
+  "title": "Counting is not the same as comparing",
+  "body": [
+   "A single count does not tell us about a population's health.",
+   "Population health compares rates between groups and asks why they differ."
+  ]
+ }
+]

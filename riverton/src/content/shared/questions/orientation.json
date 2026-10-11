@@ -1,0 +1,242 @@
+[
+ {
+  "id": "q-ch-1",
+  "module": "shared",
+  "concept": "community-health",
+  "type": "mc",
+  "difficulty": 1,
+  "trigger": "lesson-check",
+  "prompt": "Which of these is an example of community (public) health work, rather than care for one patient?",
+  "options": [
+   {
+    "id": "a",
+    "text": "A doctor prescribes antibiotics to one patient with strep throat.",
+    "feedback": "That is individual medical care. It matters, but it treats one person at a time.",
+    "misconception": "ch-individual-care"
+   },
+   {
+    "id": "b",
+    "text": "The city tests drinking water and replaces lead pipes in one neighborhood.",
+    "feedback": "Right: it protects everyone in the community at once by changing the conditions they share.",
+    "correct": true
+   },
+   {
+    "id": "c",
+    "text": "A teenager gets a sports physical before the season.",
+    "feedback": "A check-up helps one person. Community health looks at what protects whole groups.",
+    "misconception": "ch-individual-care"
+   },
+   {
+    "id": "d",
+    "text": "A store sells vitamins on sale.",
+    "feedback": "Selling a product is not a coordinated effort to protect a population's health.",
+    "misconception": "ch-products"
+   }
+  ],
+  "explanation": "Community health works on the conditions and systems a whole group shares, such as water, air, food, and access to care, so many people are protected at once.",
+  "context": "lesson:orientation-community-health",
+  "seconds": 40,
+  "parallel": "q-ch-1p",
+  "hint": "Ask: does this action protect a whole group, or help one person?"
+ },
+ {
+  "id": "q-ch-1p",
+  "module": "shared",
+  "concept": "community-health",
+  "type": "mc",
+  "difficulty": 1,
+  "trigger": "lesson-check",
+  "prompt": "A county health department runs a free vaccination clinic at a school and tracks vaccination rates by zip code. Why is this community health?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Because a nurse gives each student a shot.",
+    "feedback": "The shots are individual care, but the tracking and outreach by zip code are what make it a population effort.",
+    "misconception": "ch-individual-care"
+   },
+   {
+    "id": "b",
+    "text": "Because it aims to raise protection across a whole population and uses data to find gaps.",
+    "feedback": "Yes: the goal is the group's health, and zip-code data shows where protection is lowest.",
+    "correct": true
+   },
+   {
+    "id": "c",
+    "text": "Because vaccines are sold in stores.",
+    "feedback": "Where a product is sold is not what makes work public health.",
+    "misconception": "ch-products"
+   },
+   {
+    "id": "d",
+    "text": "Because it is free.",
+    "feedback": "Cost matters for access, but the defining feature is working at the population level.",
+    "misconception": "ch-individual-care"
+   }
+  ],
+  "explanation": "Public health acts on groups and uses data to find who is left out, here zip codes with low vaccination coverage.",
+  "context": "lesson:orientation-community-health",
+  "seconds": 40,
+  "parallel": "q-ch-1",
+  "hint": "What is the goal: one patient's recovery or the whole population's protection?"
+ },
+ {
+  "id": "q-ch-2",
+  "module": "shared",
+  "concept": "community-health",
+  "type": "mc",
+  "difficulty": 1,
+  "trigger": "lesson-check",
+  "prompt": "Two Riverton neighborhoods 3 miles apart have a 12-year life expectancy gap. Which explanation best fits a community-health view?",
+  "options": [
+   {
+    "id": "a",
+    "text": "People in the poorer neighborhood simply make worse choices.",
+    "feedback": "Choices matter, but they are shaped by what is available: food, safe places to be active, income, and care. Blaming individuals hides the conditions.",
+    "misconception": "ch-blame-choices"
+   },
+   {
+    "id": "b",
+    "text": "Differences in conditions such as income, housing, food, air, and access to care shape health.",
+    "feedback": "Right: these social and environmental conditions, called determinants of health, explain much of such gaps.",
+    "correct": true
+   },
+   {
+    "id": "c",
+    "text": "The gap is caused by genes alone.",
+    "feedback": "Genes play a role, but they cannot explain large differences between nearby neighborhoods. Conditions do.",
+    "misconception": "ch-genes-only"
+   },
+   {
+    "id": "d",
+    "text": "The gap is random chance.",
+    "feedback": "Gaps this large and consistent across years are not random; they follow patterns in conditions.",
+    "misconception": "ch-random"
+   }
+  ],
+  "explanation": "Where people live, work, and play shapes health. Large gaps between nearby neighborhoods usually reflect differences in these conditions.",
+  "context": "lesson:orientation-community-health",
+  "seconds": 40,
+  "parallel": "q-ch-2p",
+  "hint": "Think about what is different between the two places, not about the people."
+ },
+ {
+  "id": "q-ch-2p",
+  "module": "shared",
+  "concept": "community-health",
+  "type": "mc",
+  "difficulty": 1,
+  "trigger": "lesson-check",
+  "prompt": "Asthma in children is three times as common in homes near a highway as in homes far from it. Which explanation best fits a community-health view?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Families near the highway do not care about their children's health.",
+    "feedback": "That blames people. Air pollution and housing conditions are far more likely causes.",
+    "misconception": "ch-blame-choices"
+   },
+   {
+    "id": "b",
+    "text": "Traffic pollution and older housing near the highway raise asthma risk.",
+    "feedback": "Yes: exposure to polluted air is a condition of the place, not a personal failing.",
+    "correct": true
+   },
+   {
+    "id": "c",
+    "text": "Asthma is inherited, so it only depends on family genes.",
+    "feedback": "Genes matter, but the three-fold difference by location points to the environment.",
+    "misconception": "ch-genes-only"
+   },
+   {
+    "id": "d",
+    "text": "It is a coincidence.",
+    "feedback": "A pattern this strong is unlikely to be coincidence; it should be investigated.",
+    "misconception": "ch-random"
+   }
+  ],
+  "explanation": "Place-based exposures such as air pollution can explain health gaps between groups.",
+  "context": "lesson:orientation-community-health",
+  "seconds": 40,
+  "parallel": "q-ch-2",
+  "hint": "What is different about where these children live?"
+ },
+ {
+  "id": "q-pop-1",
+  "module": "shared",
+  "concept": "individual-vs-population",
+  "type": "mc",
+  "difficulty": 1,
+  "trigger": "lesson-check",
+  "prompt": "Which question is a population-health question?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Why does this patient's blood pressure stay high?",
+    "feedback": "That asks about one person. A clinician would answer it with tests and treatment.",
+    "misconception": "pop-one-person"
+   },
+   {
+    "id": "b",
+    "text": "Why is high blood pressure more common in Eastside than in Hillcrest, and what could lower it for everyone there?",
+    "feedback": "Right: it compares groups and looks for changes that could help the whole population.",
+    "correct": true
+   },
+   {
+    "id": "c",
+    "text": "Should I take my medicine at night or in the morning?",
+    "feedback": "That is a personal decision, not a population question.",
+    "misconception": "pop-one-person"
+   },
+   {
+    "id": "d",
+    "text": "How many pills are in this bottle?",
+    "feedback": "This is a count, not a question about the health of a group.",
+    "misconception": "pop-counts-only"
+   }
+  ],
+  "explanation": "Population health asks how health is distributed across groups and what changes would improve it for many people.",
+  "context": "lesson:orientation-community-health",
+  "seconds": 40,
+  "parallel": "q-pop-1p",
+  "hint": "Look for the choice that compares groups or aims to change things for many people."
+ },
+ {
+  "id": "q-pop-1p",
+  "module": "shared",
+  "concept": "individual-vs-population",
+  "type": "mc",
+  "difficulty": 1,
+  "trigger": "lesson-check",
+  "prompt": "Which question is a population-health question?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Why did my grandmother's flu last two weeks?",
+    "feedback": "That is about one person's illness.",
+    "misconception": "pop-one-person"
+   },
+   {
+    "id": "b",
+    "text": "Which Riverton neighborhoods have the lowest flu-shot rates, and how could we reach them?",
+    "feedback": "Yes: it compares groups and plans action for the population.",
+    "correct": true
+   },
+   {
+    "id": "c",
+    "text": "Is my cough a cold or the flu?",
+    "feedback": "That is an individual diagnosis question.",
+    "misconception": "pop-one-person"
+   },
+   {
+    "id": "d",
+    "text": "What time does the clinic open?",
+    "feedback": "Useful information, but not a question about the health of a group.",
+    "misconception": "pop-counts-only"
+   }
+  ],
+  "explanation": "Population health compares groups and looks for ways to improve health for many people.",
+  "context": "lesson:orientation-community-health",
+  "seconds": 40,
+  "parallel": "q-pop-1",
+  "hint": "Which one is about a group, not a single person?"
+ }
+]

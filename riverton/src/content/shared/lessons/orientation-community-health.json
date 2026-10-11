@@ -1,0 +1,121 @@
+{
+ "id": "orientation-community-health",
+ "title": "What is community health?",
+ "module": "shared",
+ "concepts": [
+  "community-health",
+  "individual-vs-population"
+ ],
+ "minutes": 3,
+ "blocks": [
+  {
+   "type": "hook",
+   "text": "Two Riverton neighborhoods are about 3 miles apart. In one, people live to 82 on average. In the other, 70. What could possibly explain 12 years?",
+   "map": [
+    "hillcrest",
+    "eastside"
+   ]
+  },
+  {
+   "type": "explain",
+   "chunks": [
+    {
+     "text": "**Public health** protects and improves the health of whole groups of people, called **populations**. A doctor helps the patient in the room. A health department asks who is *not* in the room, and why.",
+     "terms": [
+      "public health",
+      "population"
+     ]
+    },
+    {
+     "text": "Community health works on the **conditions** people share: clean water, safe places to be active, nearby food, and access to care. These are called **determinants of health**.",
+     "terms": [
+      "determinants of health"
+     ]
+    }
+   ]
+  },
+  {
+   "type": "visual",
+   "title": "From conditions to health",
+   "steps": [
+    {
+     "caption": "People live in places with different conditions.",
+     "nodes": [
+      "Conditions (water, air, food, income, care)"
+     ],
+     "active": [
+      0
+     ]
+    },
+    {
+     "caption": "Conditions shape what is easy or hard to do each day.",
+     "nodes": [
+      "Conditions",
+      "Daily habits & exposures"
+     ],
+     "active": [
+      0,
+      1
+     ]
+    },
+    {
+     "caption": "Over years, habits and exposures add up to health outcomes.",
+     "nodes": [
+      "Conditions",
+      "Daily habits & exposures",
+      "Health outcomes"
+     ],
+     "active": [
+      0,
+      1,
+      2
+     ]
+    },
+    {
+     "caption": "Public health changes the first box, so the whole chain shifts for everyone.",
+     "nodes": [
+      "Conditions",
+      "Daily habits & exposures",
+      "Health outcomes"
+     ],
+     "active": [
+      0
+     ]
+    }
+   ]
+  },
+  {
+   "type": "worked",
+   "title": "Worked example: Is it individual care or community health?",
+   "steps": [
+    "Situation: A nurse treats a child's asthma attack in the ER.",
+    "Ask: Who is helped? One child.",
+    "Now compare: The city adds filters and a tree buffer between the highway and homes.",
+    "Ask: Who is helped? Every child who lives nearby, including ones who never go to the ER.",
+    "Conclusion: The first is individual care. The second changes a shared condition, so it is community health."
+   ]
+  },
+  {
+   "type": "guided",
+   "questionId": "q-ch-1p"
+  },
+  {
+   "type": "check",
+   "questionIds": [
+    "q-ch-1",
+    "q-ch-2",
+    "q-pop-1"
+   ]
+  },
+  {
+   "type": "summary",
+   "cardId": "card-orientation",
+   "bullets": [
+    "Public health protects whole populations, not just one patient at a time.",
+    "Health is shaped by conditions people share: water, air, food, income, and access to care.",
+    "Large gaps between nearby neighborhoods point to differences in conditions, not in character.",
+    "Population questions compare groups and ask what would help many people."
+   ]
+  }
+ ]
+}

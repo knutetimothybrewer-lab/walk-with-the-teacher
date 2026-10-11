@@ -1,0 +1,675 @@
+{
+ "city": {
+  "name": "Riverton",
+  "description": "A fictional mid-sized U.S. city of about 155,000 residents. Most numbers are invented for teaching but sit in plausible ranges."
+ },
+ "map": {
+  "viewBox": [
+   0,
+   0,
+   1000,
+   640
+  ],
+  "river": "M 560 230 Q 610 320 580 400 Q 560 470 600 520 Q 640 570 700 610",
+  "landmarks": [
+   {
+    "kind": "water",
+    "at": [
+     560,
+     70
+    ],
+    "label": "Water plant"
+   },
+   {
+    "kind": "factory",
+    "at": [
+     900,
+     150
+    ],
+    "label": "Factory"
+   },
+   {
+    "kind": "clinic",
+    "at": [
+     100,
+     410
+    ],
+    "label": "Westbrook clinic"
+   },
+   {
+    "kind": "grocery",
+    "at": [
+     100,
+     95
+    ],
+    "label": "Hillcrest grocery"
+   },
+   {
+    "kind": "park",
+    "at": [
+     400,
+     70
+    ],
+    "label": "Riverside Park"
+   },
+   {
+    "kind": "ymca",
+    "at": [
+     330,
+     300
+    ],
+    "label": "Old Town YMCA"
+   }
+  ]
+ },
+ "neighborhoods": [
+  {
+   "id": "hillcrest",
+   "name": "Hillcrest",
+   "color": "--n-hillcrest",
+   "archetype": "affluent",
+   "polygon": [
+    [
+     40,
+     40
+    ],
+    [
+     330,
+     30
+    ],
+    [
+     360,
+     200
+    ],
+    [
+     220,
+     260
+    ],
+    [
+     40,
+     230
+    ]
+   ],
+   "profile": {
+    "population": 18400,
+    "medianIncome": 118000,
+    "uninsuredPct": 3.1,
+    "housingPre1978Pct": 22,
+    "highwayProximity": 0.1,
+    "parkAccess": 0.9,
+    "transitAccess": 0.5,
+    "foodRetail": "supermarkets",
+    "carDependent": false
+   },
+   "determinants": {
+    "economic": 90,
+    "healthcare": 90,
+    "food": 88,
+    "water": 92,
+    "air": 86,
+    "walkability": 70,
+    "cohesion": 75,
+    "education": 88,
+    "housing": 90,
+    "safety": 88
+   },
+   "outcomes": {
+    "lifeExpectancy": 82.1,
+    "obesity": 21,
+    "diabetes": 6.2,
+    "hypertension": 27,
+    "asthma": 6.5,
+    "waterborne": 4,
+    "leadElevated": 0.8,
+    "infantMortality": 3.2,
+    "preventableER": 38,
+    "vaccination": 93
+   },
+   "label": [
+    198,
+    152
+   ]
+  },
+  {
+   "id": "westbrook",
+   "name": "Westbrook",
+   "color": "--n-westbrook",
+   "archetype": "middle-income",
+   "polygon": [
+    [
+     40,
+     230
+    ],
+    [
+     220,
+     260
+    ],
+    [
+     240,
+     430
+    ],
+    [
+     40,
+     450
+    ]
+   ],
+   "profile": {
+    "population": 15200,
+    "medianIncome": 74000,
+    "uninsuredPct": 7.5,
+    "housingPre1978Pct": 45,
+    "highwayProximity": 0.2,
+    "parkAccess": 0.7,
+    "transitAccess": 0.6,
+    "foodRetail": "supermarkets",
+    "carDependent": false
+   },
+   "determinants": {
+    "economic": 72,
+    "healthcare": 74,
+    "food": 76,
+    "water": 82,
+    "air": 78,
+    "walkability": 64,
+    "cohesion": 68,
+    "education": 74,
+    "housing": 72,
+    "safety": 76
+   },
+   "outcomes": {
+    "lifeExpectancy": 79.8,
+    "obesity": 29,
+    "diabetes": 9.8,
+    "hypertension": 33,
+    "asthma": 9.2,
+    "waterborne": 9,
+    "leadElevated": 2.4,
+    "infantMortality": 4.9,
+    "preventableER": 62,
+    "vaccination": 88
+   },
+   "label": [
+    135,
+    342
+   ]
+  },
+  {
+   "id": "pinewood",
+   "name": "Pinewood",
+   "color": "--n-pinewood",
+   "archetype": "suburban, car-dependent",
+   "polygon": [
+    [
+     40,
+     450
+    ],
+    [
+     240,
+     430
+    ],
+    [
+     330,
+     610
+    ],
+    [
+     40,
+     610
+    ]
+   ],
+   "profile": {
+    "population": 19600,
+    "medianIncome": 92000,
+    "uninsuredPct": 5.2,
+    "housingPre1978Pct": 18,
+    "highwayProximity": 0.3,
+    "parkAccess": 0.6,
+    "transitAccess": 0.15,
+    "foodRetail": "supermarkets (car needed)",
+    "carDependent": true
+   },
+   "determinants": {
+    "economic": 82,
+    "healthcare": 70,
+    "food": 70,
+    "water": 88,
+    "air": 74,
+    "walkability": 28,
+    "cohesion": 58,
+    "education": 82,
+    "housing": 84,
+    "safety": 84
+   },
+   "outcomes": {
+    "lifeExpectancy": 80.9,
+    "obesity": 31,
+    "diabetes": 9.1,
+    "hypertension": 32,
+    "asthma": 8.0,
+    "waterborne": 6,
+    "leadElevated": 1.1,
+    "infantMortality": 4.1,
+    "preventableER": 55,
+    "vaccination": 90
+   },
+   "label": [
+    162,
+    525
+   ]
+  },
+  {
+   "id": "riverside",
+   "name": "Riverside",
+   "color": "--n-riverside",
+   "archetype": "mixed, flood-prone",
+   "polygon": [
+    [
+     330,
+     30
+    ],
+    [
+     640,
+     20
+    ],
+    [
+     660,
+     190
+    ],
+    [
+     560,
+     230
+    ],
+    [
+     360,
+     200
+    ]
+   ],
+   "profile": {
+    "population": 17100,
+    "medianIncome": 61000,
+    "uninsuredPct": 9.4,
+    "housingPre1978Pct": 52,
+    "highwayProximity": 0.3,
+    "parkAccess": 0.8,
+    "transitAccess": 0.55,
+    "foodRetail": "mixed",
+    "carDependent": false
+   },
+   "determinants": {
+    "economic": 62,
+    "healthcare": 64,
+    "food": 62,
+    "water": 66,
+    "air": 70,
+    "walkability": 66,
+    "cohesion": 64,
+    "education": 66,
+    "housing": 62,
+    "safety": 66
+   },
+   "outcomes": {
+    "lifeExpectancy": 78.4,
+    "obesity": 32,
+    "diabetes": 11.2,
+    "hypertension": 35,
+    "asthma": 10.4,
+    "waterborne": 16,
+    "leadElevated": 3.6,
+    "infantMortality": 5.8,
+    "preventableER": 78,
+    "vaccination": 85
+   },
+   "label": [
+    510,
+    134
+   ]
+  },
+  {
+   "id": "oldtown",
+   "name": "Old Town",
+   "color": "--n-oldtown",
+   "archetype": "dense, older housing",
+   "polygon": [
+    [
+     220,
+     260
+    ],
+    [
+     360,
+     200
+    ],
+    [
+     560,
+     230
+    ],
+    [
+     580,
+     400
+    ],
+    [
+     420,
+     450
+    ],
+    [
+     240,
+     430
+    ]
+   ],
+   "profile": {
+    "population": 23900,
+    "medianIncome": 52000,
+    "uninsuredPct": 11.8,
+    "housingPre1978Pct": 71,
+    "highwayProximity": 0.4,
+    "parkAccess": 0.4,
+    "transitAccess": 0.85,
+    "foodRetail": "mixed",
+    "carDependent": false
+   },
+   "determinants": {
+    "economic": 54,
+    "healthcare": 62,
+    "food": 58,
+    "water": 58,
+    "air": 60,
+    "walkability": 82,
+    "cohesion": 60,
+    "education": 60,
+    "housing": 52,
+    "safety": 56
+   },
+   "outcomes": {
+    "lifeExpectancy": 76.9,
+    "obesity": 34,
+    "diabetes": 12.6,
+    "hypertension": 38,
+    "asthma": 12.2,
+    "waterborne": 22,
+    "leadElevated": 5.2,
+    "infantMortality": 6.7,
+    "preventableER": 96,
+    "vaccination": 82
+   },
+   "label": [
+    397,
+    328
+   ]
+  },
+  {
+   "id": "millworks",
+   "name": "Millworks",
+   "color": "--n-millworks",
+   "archetype": "industrial-adjacent",
+   "polygon": [
+    [
+     640,
+     20
+    ],
+    [
+     960,
+     30
+    ],
+    [
+     960,
+     210
+    ],
+    [
+     740,
+     230
+    ],
+    [
+     660,
+     190
+    ]
+   ],
+   "profile": {
+    "population": 16800,
+    "medianIncome": 44000,
+    "uninsuredPct": 13.9,
+    "housingPre1978Pct": 68,
+    "highwayProximity": 0.95,
+    "parkAccess": 0.3,
+    "transitAccess": 0.5,
+    "foodRetail": "corner stores",
+    "carDependent": false
+   },
+   "determinants": {
+    "economic": 46,
+    "healthcare": 52,
+    "food": 46,
+    "water": 60,
+    "air": 34,
+    "walkability": 44,
+    "cohesion": 52,
+    "education": 52,
+    "housing": 50,
+    "safety": 50
+   },
+   "outcomes": {
+    "lifeExpectancy": 73.6,
+    "obesity": 36,
+    "diabetes": 13.8,
+    "hypertension": 40,
+    "asthma": 15.6,
+    "waterborne": 24,
+    "leadElevated": 6.4,
+    "infantMortality": 7.6,
+    "preventableER": 112,
+    "vaccination": 79
+   },
+   "label": [
+    792,
+    136
+   ]
+  },
+  {
+   "id": "southfield",
+   "name": "Southfield",
+   "color": "--n-southfield",
+   "archetype": "working-class, spread out",
+   "polygon": [
+    [
+     240,
+     430
+    ],
+    [
+     420,
+     450
+    ],
+    [
+     580,
+     400
+    ],
+    [
+     600,
+     520
+    ],
+    [
+     700,
+     610
+    ],
+    [
+     330,
+     610
+    ]
+   ],
+   "profile": {
+    "population": 22300,
+    "medianIncome": 48000,
+    "uninsuredPct": 12.6,
+    "housingPre1978Pct": 58,
+    "highwayProximity": 0.5,
+    "parkAccess": 0.45,
+    "transitAccess": 0.4,
+    "foodRetail": "fast food and corner stores",
+    "carDependent": true
+   },
+   "determinants": {
+    "economic": 50,
+    "healthcare": 56,
+    "food": 48,
+    "water": 62,
+    "air": 56,
+    "walkability": 42,
+    "cohesion": 56,
+    "education": 56,
+    "housing": 56,
+    "safety": 54
+   },
+   "outcomes": {
+    "lifeExpectancy": 75.2,
+    "obesity": 35,
+    "diabetes": 13.1,
+    "hypertension": 39,
+    "asthma": 11.8,
+    "waterborne": 20,
+    "leadElevated": 4.8,
+    "infantMortality": 7.0,
+    "preventableER": 104,
+    "vaccination": 81
+   },
+   "label": [
+    478,
+    503
+   ]
+  },
+  {
+   "id": "eastside",
+   "name": "Eastside",
+   "color": "--n-eastside",
+   "archetype": "historically redlined, disinvested",
+   "polygon": [
+    [
+     560,
+     230
+    ],
+    [
+     660,
+     190
+    ],
+    [
+     740,
+     230
+    ],
+    [
+     960,
+     210
+    ],
+    [
+     960,
+     610
+    ],
+    [
+     700,
+     610
+    ],
+    [
+     600,
+     520
+    ],
+    [
+     580,
+     400
+    ]
+   ],
+   "profile": {
+    "population": 21800,
+    "medianIncome": 36500,
+    "uninsuredPct": 17.5,
+    "housingPre1978Pct": 84,
+    "highwayProximity": 0.8,
+    "parkAccess": 0.2,
+    "transitAccess": 0.35,
+    "foodRetail": "corner stores (no full-service grocery)",
+    "carDependent": false
+   },
+   "determinants": {
+    "economic": 25,
+    "healthcare": 30,
+    "food": 22,
+    "water": 48,
+    "air": 42,
+    "walkability": 38,
+    "cohesion": 55,
+    "education": 40,
+    "housing": 32,
+    "safety": 38
+   },
+   "outcomes": {
+    "lifeExpectancy": 69.7,
+    "obesity": 38,
+    "diabetes": 15.5,
+    "hypertension": 44,
+    "asthma": 17.8,
+    "waterborne": 38,
+    "leadElevated": 9.5,
+    "infantMortality": 9.4,
+    "preventableER": 142,
+    "vaccination": 71
+   },
+   "label": [
+    720,
+    375
+   ]
+  }
+ ],
+ "gapMetric": {
+  "label": "Health Equity Gap",
+  "definition": "Life expectancy in the best-off neighborhood minus life expectancy in the worst-off neighborhood.",
+  "best": "hillcrest",
+  "worst": "eastside"
+ },
+ "characters": [
+  {
+   "id": "okafor",
+   "home": null,
+   "story": "Health Director who appointed the student to the commission."
+  },
+  {
+   "id": "whitfield",
+   "home": "eastside",
+   "story": "Has lived in Eastside for 40 years and remembers when the grocery store closed."
+  },
+  {
+   "id": "alvarez",
+   "home": "eastside",
+   "story": "Works two jobs and cannot attend weekday evening meetings."
+  },
+  {
+   "id": "bell",
+   "home": "eastside",
+   "story": "Leads a congregation many Eastside families trust."
+  },
+  {
+   "id": "jordan",
+   "home": "eastside",
+   "story": "Teen activist organizing for a safe place to be active."
+  },
+  {
+   "id": "lin",
+   "home": "westbrook",
+   "story": "Runs the clinic across town and wants to expand."
+  },
+  {
+   "id": "hale",
+   "home": null,
+   "story": "Developer with a market-rate housing proposal."
+  },
+  {
+   "id": "park",
+   "home": "eastside",
+   "story": "Owns the corner store on Elm Street."
+  },
+  {
+   "id": "imani",
+   "home": "oldtown",
+   "story": "Fellow commissioner; speaks about access and mobility."
+  }
+ ],
+ "sharedStateDefaults": {
+  "trust": 50,
+  "interventions": [],
+  "outbreakCases": null,
+  "townHallChoice": null,
+  "rumorOutcome": null
+ }
+}

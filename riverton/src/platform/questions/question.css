@@ -1,0 +1,13 @@
+.qcard { display: grid; gap: .8rem; }
+.qprompt { font: 700 1.15rem var(--font-display); margin: 0; }
+.opts { display: grid; gap: .55rem; }
+.opt { text-align: left; font: 700 1rem var(--font-body); padding: .8rem 1rem; border-radius: 14px; border: 2px solid var(--line); background: var(--surface); color: var(--ink); cursor: pointer; transition: transform .15s cubic-bezier(.3,1.6,.5,1), border-color .15s; }
+.opt:hover:not(:disabled) { transform: translateX(4px); border-color: var(--city-a); }
+.opt.sel { border-color: var(--city-a); background: color-mix(in srgb, var(--city-a) 12%, var(--surface)); box-shadow: 0 0 0 3px color-mix(in srgb, var(--city-a) 25%, transparent); }
+.opt.ord { display: flex; justify-content: space-between; align-items: center; gap: .6rem; cursor: default; }
+.btn.sm { padding: .2em .6em; margin-left: .3rem; }
+.fb { padding: .8rem 1rem; border-radius: 14px; font-weight: 700; }
+.fb.ok { background: var(--better-soft); color: var(--ink); border: 2px solid var(--better); animation: pop .45s cubic-bezier(.3,1.6,.5,1); }
+.fb.try { background: color-mix(in srgb, var(--cross-b) 16%, var(--surface)); border: 2px solid var(--cross-b); }
+.hint { font-style: italic; color: var(--ink-2); }
+textarea { font: 600 1rem var(--font-body); padding: .7em; border-radius: 12px; border: 2px solid var(--line); background: var(--surface); color: var(--ink); width: 100%; }

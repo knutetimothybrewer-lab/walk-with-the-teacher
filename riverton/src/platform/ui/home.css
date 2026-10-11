@@ -1,0 +1,8 @@
+.welcome .wrow { display: flex; gap: 1.5rem; align-items: center; flex-wrap: wrap; } .welcome .wrow > div { flex: 1; min-width: 260px; }
+.hub-top { display: grid; grid-template-columns: 1.6fr 1fr; gap: 1rem; margin-bottom: 1rem; } @media (max-width: 800px) { .hub-top { grid-template-columns: 1fr; } }
+.story ol { padding-left: 1.2rem; font-weight: 700; } .story .btn { margin-top: .6rem; text-decoration: none; }
+.mods { grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+.mod { border-top: 8px solid var(--a); display: grid; gap: .4rem; align-content: start; }
+.mod-art { width: 60px; height: 60px; border-radius: 18px; display: grid; place-items: center; color: #fff; background: linear-gradient(135deg, var(--a), var(--b)); animation: bob 4s ease-in-out infinite; }
+.meter { height: 10px; border-radius: 8px; background: var(--surface-2); overflow: hidden; } .meter i { display: block; height: 100%; background: linear-gradient(90deg, var(--a), var(--b)); transition: width .6s; }
+.btn:disabled { opacity: .6; cursor: default; transform: none; }
