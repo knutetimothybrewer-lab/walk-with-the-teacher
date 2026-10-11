@@ -29,22 +29,24 @@ export default function Orientation() {
       <h1>Welcome to Riverton</h1>
       {phase === 'fly' ? (
         <section className="fly panel">
-          <motion.div className="fly-map" animate={{ scale: reduce ? 1 : 1.9, x: reduce ? 0 : (500 - h.label[0]) * 0.9, y: reduce ? 0 : (320 - h.label[1]) * 0.9 }} transition={{ duration: reduce ? 0 : 2.4, ease: 'easeInOut' }}>
-            <RivertonMap highlight={[cur.id]} showLandmarks />
-          </motion.div>
-          <motion.div key={cur.id} className="fly-card" initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }}>
-            <b>{h.name}</b><p>{cur.text}</p>
-            <p className="gapnum">{i === TOUR.length - 1 ? <>Life expectancy gap: <span className="stat">{gap.toFixed(1)}</span> years</> : <>Life expectancy: <b>{h.outcomes.lifeExpectancy}</b> years</>}</p>
-          </motion.div>
-          <p><button className="btn ghost" onClick={() => setI(Math.min(TOUR.length - 1, i + 1))}>{i < TOUR.length - 1 ? 'Next place' : ''}</button> <button className="btn" onClick={() => setPhase('appoint')}>Skip to the commission</button></p>
+          <div className="fly-stage">
+            <motion.div className="fly-map" style={{ transformOrigin: `${h.label[0] / 10}% ${h.label[1] / 6.4}%` }} animate={{ scale: reduce ? 1 : 1.7, x: reduce ? 0 : `${50 - h.label[0] / 10}%`, y: reduce ? 0 : `${50 - h.label[1] / 6.4}%` }} transition={{ duration: reduce ? 0 : 2.4, ease: 'easeInOut' }}>
+              <RivertonMap highlight={[cur.id]} showLandmarks height="100%" />
+            </motion.div>
+            <motion.div key={cur.id} className="fly-card" initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }}>
+              <b>{h.name}</b><p>{cur.text}</p>
+              <p className="gapnum">{i === TOUR.length - 1 ? <>Life expectancy gap: <span className="stat">{gap.toFixed(1)}</span> years</> : <>Life expectancy: <b>{h.outcomes.lifeExpectancy}</b> years</>}</p>
+            </motion.div>
+          </div>
+          <p className="fly-actions">{i < TOUR.length - 1 && <button className="btn ghost" onClick={() => setI(Math.min(TOUR.length - 1, i + 1))}>Next place</button>} <button className="btn" onClick={() => setPhase('appoint')}>{i < TOUR.length - 1 ? 'Skip to the commission' : 'Meet the commission'}</button></p>
         </section>
       ) : (
         <section className="panel appoint">
           <Character spec={okafor} expression="happy" pose="wave" size={230} bob />
-          <div><h2>You are appointed</h2><p>I’m Dr. Okafor, Riverton’s Health Director. Two neighborhoods three miles apart have a {gap.toFixed(1)}-year difference in life expectancy. As the Health Commission’s newest youth member, your job this year is to understand why, and help close the gap.</p>
+          <div><h2>You are appointed</h2><p>I’m Dr. Okafor, Riverton’s Health Director. Two neighborhoods three miles apart have a 12.4-year difference in life expectancy. As the Health Commission’s newest youth member, your job this year is to understand why, and help close the gap.</p>
             <p className="note">Your year: plan the city, decide the Elm Street lot, investigate an outbreak, fight a rumor, and write the commission’s report.</p>
             <div className="acard"><h3>{lessonDone ? 'Done: ' : ''}What is community health? <span className="chip">~3 min</span></h3><Link className="btn" to="/lesson/orientation-community-health" state={{ from: '/orientation' }}>{lessonDone ? 'Review lesson' : 'Start lesson'}</Link></div>
-            <p>{done ? <Link className="btn" to="/">Back to the storyline</Link> : <button className="btn" disabled={foundations && !lessonDone} onClick={finish}>{foundations && !lessonDone ? 'Finish the lesson to continue' : 'Accept the appointment'}</button>}</p></div>
+            <p>{done ? <Link className="btn" to="/">Back to the storyline</Link> : <button className="btn" disabled={foundations && !lessonDone} onClick={finish}>{foundations && !lessonDone ? 'Accept the appointment (after the lesson)' : 'Accept the appointment'}</button>}</p></div>
         </section>)}
     </main>
   );
