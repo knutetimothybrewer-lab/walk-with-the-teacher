@@ -1,0 +1,145 @@
+{
+ "population": 6000,
+ "days": 42,
+ "incubation": {
+  "medianHours": 36,
+  "sigma": 0.38,
+  "minHours": 12,
+  "maxHours": 72
+ },
+ "symptomaticShare": 0.72,
+ "symptomProbs": {
+  "diarrhea": 0.95,
+  "cramps": 0.85,
+  "nausea": 0.8,
+  "vomiting": 0.6,
+  "fever": 0.35,
+  "headache": 0.3
+ },
+ "durationDays": [
+  2,
+  4
+ ],
+ "pyramid": {
+  "seekCare": 0.25,
+  "tested": 0.5,
+  "reported": 0.85,
+  "er": 0.5,
+  "reportDelayDays": [
+   3,
+   6
+  ]
+ },
+ "baselineER": {
+  "mean": 5,
+  "alertSigma": 3
+ },
+ "background": {
+  "gi": 0.012,
+  "other": 0.03,
+  "symptomsGI": [
+   "diarrhea",
+   "vomiting",
+   "cramps"
+  ],
+  "symptomsOther": [
+   "fever",
+   "headache",
+   "cough"
+  ]
+ },
+ "festivalByHood": {
+  "eastside": 0.3,
+  "hillcrest": 0.4,
+  "millworks": 0.35,
+  "pinewood": 0.3,
+  "oldtown": 0.55,
+  "riverside": 0.5,
+  "westbrook": 0.35,
+  "southfield": 0.28
+ },
+ "exposure": {
+  "diner": 0.38,
+  "dinerGivenFestival": 0.5,
+  "tap": 0.85,
+  "poolChild": 0.35,
+  "poolAdult": 0.1,
+  "tacos": 0.4,
+  "wraps": 0.2,
+  "lemonade": 0.35
+ },
+ "hazard": {
+  "water": 0.05,
+  "vendor": 0.55,
+  "pool": 0.2,
+  "poolSwimDay": 0.4
+ },
+ "vendor": {
+  "events": [
+   [
+    0,
+    1.0
+   ],
+   [
+    1,
+    0.5
+   ],
+   [
+    7,
+    0.2
+   ],
+   [
+    14,
+    0.2
+   ]
+  ],
+  "laterEatShare": 0.8
+ },
+ "contact": {
+  "household": 0.03,
+  "school": 0.06,
+  "nursing": 0.07,
+  "community": 2e-06,
+  "asymptomaticWeight": 0.5,
+  "personSeedCases": 3,
+  "nursingStaff": 40,
+  "nursingCare": 0.6,
+  "schoolReported": 0.55,
+  "personMult": {
+   "household": 3.0,
+   "school": 9.0,
+   "nursing": 3.5
+  }
+ },
+ "interventions": {
+  "boilEffect": 0.85,
+  "hygieneEffect": 0.35,
+  "exclusionInst": 0.6,
+  "exclusionHh": 0.2,
+  "lagDays": {
+   "boil_water": 1,
+   "fix_main": 1,
+   "close_vendor": 0,
+   "close_pool": 1,
+   "hand_hygiene": 2,
+   "exclusion": 1
+  }
+ },
+ "recall": {
+  "forgetPerDay": 0.035,
+  "forgetMax": 0.45,
+  "falseYes": 0.03,
+  "caseFalseYes": 0.04
+ },
+ "water": {
+  "falseNegative": 0.15,
+  "falsePositive": 0.03
+ },
+ "pathogen": {
+  "name": "Riverton enteric agent (fictional)",
+  "note": "Behaves like a norovirus-type gastrointestinal pathogen."
+ },
+ "cluster": {
+  "reportedThreshold": 5
+ }
+}
