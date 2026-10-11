@@ -9,6 +9,8 @@ export interface SharedState {
   outbreakCases: number[] | null;      // weekly case counts from Sim Lab; Rumor Mill reads this
   townHallChoice: string | null;
   rumorOutcome: string | null;
+  cityResult?: { gapStart: number; gapEnd: number; reduced: number; won: boolean; stars: number; displacedPct: number } | null;
+  labResult?: { source: string; correct: boolean; prevented: number } | null;
 }
 const KEY = 'riverton.shared';
 const defaults = world.sharedStateDefaults as SharedState;

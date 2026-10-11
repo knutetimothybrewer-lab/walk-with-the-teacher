@@ -1,0 +1,33 @@
+[
+ {
+  "id": "q-wrap-cer",
+  "module": "shared",
+  "concept": "community-health",
+  "type": "cer",
+  "difficulty": 3,
+  "trigger": "wrapup",
+  "context": "sim:wrapup",
+  "required": true,
+  "prompt": "Write the executive summary of the Riverton Health Commission's annual report. Claim: what is Riverton's biggest health challenge, and what do you recommend? Evidence: use specific results from your City plan, the Town Hall, the outbreak investigation, and the Rumor Mill. Reasoning: connect determinants of health, equity, evidence together with community voice, and one limitation of what you did or what the models can show.",
+  "explanation": "A strong executive summary makes one clear recommendation, backs it with specific results from more than one chapter, ties them together with ideas like determinants, equity, and trust, and admits what is uncertain.",
+  "rubric": [
+   {
+    "id": "claim",
+    "criterion": "States the biggest challenge and a clear recommendation."
+   },
+   {
+    "id": "evidence",
+    "criterion": "Cites specific results from at least two chapters (City, Town Hall, Outbreak, Rumor Mill)."
+   },
+   {
+    "id": "connect",
+    "criterion": "Connects ideas across chapters, such as determinants, equity, community voice, or trust."
+   },
+   {
+    "id": "limits",
+    "criterion": "Names a limitation or uncertainty."
+   }
+  ],
+  "sampleAnswer": "Claim: Riverton's biggest challenge is the 12-year life expectancy gap between Hillcrest and Eastside, and I recommend investing upstream in Eastside's conditions (care access, food, housing protections) together with the residents who live there. Evidence: In City, a plan centered on a clinic, health workers, and food access narrowed the gap by about 4 years over ten years, but a plan with many new amenities displaced nearly 10% of longtime residents. At the Town Hall, the Saturday session let a parent and an elder be heard, and adding housing protections kept displacement near zero. In the outbreak, interviewing only cases pointed at the popular diner, but comparing exposed and unexposed people showed the water supply, and trust determined how many people boiled their water. Reasoning: Together these show that health follows conditions, that benefits reach people only if they stay and trust the system, and that evidence from data and from residents both matter. A limitation is that the models are simplified and use invented numbers, so real effects would differ."
+ }
+]

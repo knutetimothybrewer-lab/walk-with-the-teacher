@@ -146,10 +146,18 @@ const truth_hood = (c: { name: string }[]) => (c.length ? HOODS.find((h) => h.na
 export function DoneStep({ onRestart }: { onRestart: () => void }) {
   const { run, patch, truth, sim, compliance, pid } = useLabCtx();
   const upd = useProfiles((s) => s.update);
+  const shared = useShared();
   useEffect(() => {
-    if (!run.finished) { patch({ finished: true }); upd((p) => ({ ...p, progress: { ...p.progress, lab: { ...(p.progress.lab ?? { minutes: 0, completed: [] }), completed: [...new Set([...(p.progress.lab?.completed ?? []), 'outbreak'])] } } })); }
-  }, [run.finished, patch, upd]);
-  void pid; void sim; void compliance;
+    if (!run.finished) {
+      patch({ finished: true });
+      const cfx = counterfactual(truth, run.ivs, { compliance }); const ev0 = evalCaseDef(truth, sim, run.caseDef);
+      const count = (id: string) => run.actions.filter((a) => a.actionId === id).length;
+      upd((p) => ({ ...p, progress: { ...p.progress, lab: { ...(p.progress.lab ?? { minutes: 0, completed: [] }), completed: [...new Set([...(p.progress.lab?.completed ?? []), 'outbreak'])] } },
+        lab: { scenario: truth.scenario, seed: run.seed, source: truth.source.label, curve: truth.source.curve, hypothesis1: run.h1?.source ?? '', hypothesis2: run.h2?.source ?? '', hypothesisRight: run.h2?.source === truth.source.type, caseDefVerdict: ev0.verdict, surveys: run.surveys.length, interviews: run.caseInterviews.length, waterTests: count('water_sample'), inspections: count('inspect'), activeFinding: run.found.length > 0, interventions: run.ivs.map((i) => ({ kind: i.kind, day: i.day - run.alertDay + 1 })), targeted: run.ivs.some((i) => TARGETING[truth.scenario].includes(i.kind)), casesPrevented: cfx.prevented, daysUsed: run.daysUsed, budgetUsed: run.budgetTotal - run.budget, at: Date.now() } }));
+      shared.patch({ labResult: { source: truth.source.label, correct: run.h2?.source === truth.source.type, prevented: cfx.prevented } });
+    }
+  }, [run.finished]); // eslint-disable-line react-hooks/exhaustive-deps
+  void pid;
   const ev = evalCaseDef(truth, sim, run.caseDef);
   const hypoRight = run.h2?.source === truth.source.type;
   const cf = counterfactual(truth, run.ivs, { compliance });

@@ -8,6 +8,9 @@ import { QuestionCard } from '../questions/QuestionCard';
 import { RivertonMap } from '../map/RivertonMap';
 import { useProfiles } from '../profile/profileStore';
 import { useSettings } from '../settings';
+import { useTeacher } from '../teacher/teacherStore';
+import { usePreset } from '../preset';
+import { DEFAULT_ORDER, pace } from '../storyline';
 import type { Block, VisualStep } from './types';
 import './lesson.css';
 
@@ -75,21 +78,24 @@ export default function LessonPlayer() {
   const [i, setI] = useState(0);
   const [chk, setChk] = useState(0);
   const [ready, setReady] = useState(true);
-  const gate = useMemo(() => lesson?.blocks.map((b) => b.type === 'check' || b.type === 'guided') ?? [], [lesson]);
+  const me = useProfiles((s) => s.active()); const tt = useTeacher(); const order = usePreset((s) => s.preset?.order ?? DEFAULT_ORDER);
+  const quick = !!me && tt.pacing !== 'off' && pace(me, order, tt.timeTargetMin).behind && !me.lessonsDone.includes(id);
+  const blocks = useMemo(() => (lesson ? (quick ? lesson.blocks.filter((b) => b.type !== 'visual' && b.type !== 'worked') : lesson.blocks) : []), [lesson, quick]);
+  const gate = useMemo(() => blocks.map((b) => b.type === 'check' || b.type === 'guided'), [blocks]);
 
   useEffect(() => { lesson?.concepts.forEach(introduce); /* eslint-disable-next-line */ }, [id]);
   useEffect(() => { setReady(!gate[i]); setChk(0); }, [i, gate]);
-  useEffect(() => { if (readAloud && lesson) speak(blockText(lesson.blocks[i])); }, [i, readAloud, lesson]);
+  useEffect(() => { if (readAloud && lesson && blocks[i]) speak(blockText(blocks[i])); }, [i, readAloud, lesson, blocks]);
   if (!lesson) return <main className="page"><h1>Lesson not found</h1><Link to="/">Home</Link></main>;
 
-  const b = lesson.blocks[i];
-  const last = i === lesson.blocks.length - 1;
+  const b = blocks[i];
+  const last = i === blocks.length - 1;
   const finish = () => { completeLesson(lesson.id, b.type === 'summary' ? [b.cardId] : []); nav(from); };
 
   return (
     <main className="page lesson">
-      <div className="lhead"><h1>{lesson.title}</h1><span className="chip">~{lesson.minutes} min</span></div>
-      <div className="dots" aria-label={`Part ${i + 1} of ${lesson.blocks.length}`}>{lesson.blocks.map((_, k) => <i key={k} className={k <= i ? 'on' : ''} />)}</div>
+      <div className="lhead"><h1>{lesson.title}</h1><span className="chip">~{quick ? Math.max(1, Math.round(lesson.minutes * 0.6)) : lesson.minutes} min{quick ? ' · short version' : ''}</span></div>
+      <div className="dots" aria-label={`Part ${i + 1} of ${blocks.length}`}>{blocks.map((_, k) => <i key={k} className={k <= i ? 'on' : ''} />)}</div>
       <AnimatePresence mode="wait">
         <motion.section key={i} className="panel lbody" initial={{ opacity: 0, x: 24 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -24 }} transition={{ duration: 0.25 }}>
           {blockText(b) && <button className="btn ghost sm read" aria-label="Read this part aloud" onClick={() => speak(blockText(b))}><Volume2 size={16} /></button>}

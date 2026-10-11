@@ -37,6 +37,15 @@ for (const f of readdirSync(xrDir).filter((x) => x.endsWith('.json'))) {
 }
 r.warnings.forEach((w) => console.warn('warn  ', w));
 r.errors.forEach((e) => console.error('ERROR ', e));
+// dev-only "simulated student" estimate: foundations time from the content plus each chapter's simulation time
+const FOUND: Record<string, { lessons: string[]; budget: number; chapter: number }> = {
+  orientation: { lessons: ['orientation-community-health'], budget: 3, chapter: 5 }, city: { lessons: ['city-sdoh', 'city-upstream', 'city-equity'], budget: 10, chapter: 43 }, townhall: { lessons: ['xr-decision-stakeholders'], budget: 4, chapter: 22 },
+  outbreak: { lessons: ['lab-chain-surveillance', 'lab-casedef-epicurve', 'lab-attack-rr-confounding'], budget: 9, chapter: 35 }, rumor: { lessons: ['xr-misinfo'], budget: 2, chapter: 10 }, wrapup: { lessons: [], budget: 0, chapter: 5 },
+};
+let estimate = 0;
+for (const [id, f] of Object.entries(FOUND)) { const lessons = f.lessons.reduce((a, l) => a + (bundle.lessons.find((x) => x.id === l)?.minutes ?? 0), 0); const seg = lessons + (f.chapter - f.budget); estimate += seg; if (lessons > f.budget + 2) r.warnings.push(`${id}: foundations lessons take ~${lessons} min, over the ${f.budget}-minute budget`); }
+console.log(`core-path estimate: ~${Math.round(estimate)} minutes (budget 120)`);
+if (estimate > 125) r.warnings.push(`estimated core path ${Math.round(estimate)} min exceeds 125`);
 console.log(`\n${bundle.questions.length} questions, ${bundle.lessons.length} lessons, ${bundle.reteach.length} reteach cards, ~${r.estimatedMinutes} lesson min`);
 if (r.errors.length) { console.error(`${r.errors.length} error(s)`); process.exit(1); }
 console.log('content OK');

@@ -47,7 +47,10 @@ export function EndPanel() {
   const isCtg = mission.id === 'close-the-gap'; const cur = qs[step];
   const finish = () => {
     upd((p) => ({ ...p, progress: { ...p.progress, city: { ...(p.progress.city ?? { minutes: 0, completed: [] }), completed: [...new Set([...(p.progress.city?.completed ?? []), mission.id])] } } }));
-    shared.patch({ interventions: [...new Set(log.filter((a) => a.k === 'place').map((a) => (a as { type: string }).type))] }); exit();
+    const built = [...new Set(log.filter((a) => a.k === 'place').map((a) => (a as { type: string }).type))];
+    if (isCtg) { upd((p) => ({ ...p, city: { missions: { ...(p.city?.missions ?? {}), [mission.id]: { gapStart: startGap, gapEnd: status.gapNow, reduced: status.reduced, target: status.target, won: status.won, stars: stars(status), displacedPct: status.displacedPct, built, at: Date.now() } } } }));
+      shared.patch({ cityResult: { gapStart: startGap, gapEnd: status.gapNow, reduced: status.reduced, won: status.won, stars: stars(status), displacedPct: status.displacedPct } }); }
+    shared.patch({ interventions: built }); exit();
   };
   return (
     <Modal open onClose={() => { /* finish with the button */ }} title={isCtg ? (status.won ? 'Mission complete' : 'The ten years are up') : 'Tutorial complete'}>

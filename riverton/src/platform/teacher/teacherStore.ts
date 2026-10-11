@@ -8,10 +8,11 @@ export interface TeacherConfig {
   interruptCap: number;       // max unprompted checks per 10 minutes
   timeTargetMin: number;      // 60 / 90 / 120 / 150 / custom
   timedChoices: boolean;
+  pacing: 'off' | 'gentle' | 'strict';
   lab: { scenario: 'random' | 'water' | 'vendor' | 'pool' | 'person'; classSeed: number | null; budget: number; days: number; scaffolds: boolean };
 }
 const KEY = 'riverton.teacher';
-const defaults: TeacherConfig = { pinHash: null, foundationsRequired: true, reteachStrictness: 'standard', interruptCap: 3, timeTargetMin: 120, timedChoices: true, lab: { scenario: 'random', classSeed: null, budget: 100, days: 10, scaffolds: true } };
+const defaults: TeacherConfig = { pinHash: null, foundationsRequired: true, reteachStrictness: 'standard', interruptCap: 3, timeTargetMin: 120, timedChoices: true, pacing: 'gentle', lab: { scenario: 'random', classSeed: null, budget: 100, days: 10, scaffolds: true } };
 
 export async function hashPin(pin: string): Promise<string> {
   try {

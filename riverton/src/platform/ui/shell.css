@@ -7,3 +7,5 @@
 @keyframes drift { from { transform: translateX(-20%); } to { transform: translateX(120vw); } }
 @keyframes pop { 0% { transform: scale(.7); opacity: 0; } 70% { transform: scale(1.08); } 100% { transform: scale(1); opacity: 1; } }
 @keyframes pulse { 0%,100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--lab-b) 60%, transparent); } 50% { box-shadow: 0 0 0 14px transparent; } }
+.drop { border: 2px dashed var(--line); padding: 1rem; text-align: center; border-radius: 12px; margin: .5rem 0; color: var(--ink-2); }
+.panel.wide { margin-top: 1rem; }

@@ -3,6 +3,7 @@ import { hashPin, useTeacher } from './teacherStore';
 import { QUESTIONS } from '../content';
 import type { MCQuestion } from '../questions/types';
 import { viableTruth, simulate, trueCases, alertDay } from '../../modules/lab/labs/outbreak';
+import { PresetPanel, SyncPanel, PacingPanel, RollUpPanel } from './TeacherTools';
 import { SCENARIOS, ORDER } from '../../modules/crossroads/ui/scenarios';
 import type { ChoiceNode, EndNode } from '../../modules/crossroads/engine/types';
 
@@ -65,6 +66,7 @@ export default function TeacherPage() {
         </section>
         <section className="panel"><h2>Coming in later phases</h2><p>Module locks, assignment presets, class roll-up import, Sheets sync setup, discussion and Town Hall modes.</p></section>
       </div>
+      <div className="grid" style={{ gridTemplateColumns: 'repeat(auto-fit,minmax(340px,1fr))', marginTop: '1rem' }}><PresetPanel /><SyncPanel /><PacingPanel /></div><RollUpPanel />
       <p><button className="btn ghost" onClick={() => t.setUnlocked(false)}>Lock</button></p>
     </main>
   );

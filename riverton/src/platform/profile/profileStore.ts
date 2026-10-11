@@ -8,6 +8,12 @@ export interface ResponseRec {
   correct: boolean | null; attempts: number; hintUsed: boolean; chosen?: string; misconception?: string; prediction?: string;
 }
 export interface WrittenRec { id: string; t: number; kind: 'cer' | 'justification' | 'conclusion' | 'summary'; qid: string; module: ModuleId; text: string }
+export interface LabSummary {
+  scenario: string; seed: number; source: string; curve: string; hypothesis1: string; hypothesis2: string; hypothesisRight: boolean; caseDefVerdict: string;
+  surveys: number; interviews: number; waterTests: number; inspections: number; activeFinding: boolean; interventions: { kind: string; day: number }[]; targeted: boolean;
+  casesPrevented: number; daysUsed: number; budgetUsed: number; at: number;
+}
+export interface CitySummary { missions: Record<string, { gapStart: number; gapEnd: number; reduced: number; target: number; won: boolean; stars: number; displacedPct: number; built: string[]; at: number }> }
 export interface Profile {
   id: string; name: string; period: string; created: number; lastSeen: number;
   progress: Record<string, { completed: string[]; lastRoute?: string; minutes: number }>;
@@ -16,7 +22,8 @@ export interface Profile {
   written: WrittenRec[];
   notebook: { summaryCards: string[]; terms: string[] };
   lessonsDone: string[];
-  crossroads?: Record<string, { ending: string; reasoning: unknown[]; rubric: { id: string; score: number; max: number }[]; at: number }>;
+  crossroads?: Record<string, { ending: string; reasoning: unknown[]; rubric: { id: string; score: number; max: number }[]; at: number; summary?: Record<string, unknown> }>;
+  lab?: LabSummary; city?: CitySummary; report?: { summary: string; at: number };
 }
 export interface Backup { app: 'riverton'; version: 1; exported: number; profile: Profile }
 

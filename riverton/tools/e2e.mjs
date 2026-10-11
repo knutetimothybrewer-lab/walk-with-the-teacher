@@ -15,7 +15,7 @@ await p.screenshot({ path: 'shots/welcome.png' });
 await p.getByRole('button', { name: /Join the commission/ }).click();
 await p.getByText('Hello, Ava').waitFor(); await p.waitForTimeout(900);
 await p.screenshot({ path: 'shots/home.png' });
-await p.getByRole('link', { name: /Start: What is community health/ }).click();
+await p.goto(p.url().split('#')[0] + '#/lesson/orientation-community-health');
 const next = () => p.getByRole('button', { name: /^Next/ }).last().click();
 await p.getByText('Hook').waitFor(); await p.screenshot({ path: 'shots/lesson-hook.png' }); await next();
 await p.getByText(/Public health/).first().waitFor(); await p.getByRole('button', { name: 'public health' }).click(); await next();

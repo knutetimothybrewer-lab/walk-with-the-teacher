@@ -1,0 +1,7 @@
+.cmap .panel { margin-bottom: 1rem; } .cmap .terms p { margin: .35rem 0; }
+.cmap .cgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: .6rem; }
+.cmap .ccard { padding: .6rem .8rem; border-radius: 14px; background: var(--surface-2); display: grid; gap: .3rem; border-left: 6px solid var(--line); } .cmap .ccard.lvl-introduced { border-color: var(--cross-b); } .cmap .ccard.lvl-practiced { border-color: var(--city-a); } .cmap .ccard.lvl-mastered { border-color: var(--better); }
+.cmap .meter { height: 8px; border-radius: 6px; background: var(--surface); overflow: hidden; } .cmap .meter i { display: block; height: 100%; background: linear-gradient(90deg, var(--city-a), var(--city-b)); }
+.cmap .bridges { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: .5rem; } .cmap .bridge { display: flex; justify-content: space-between; gap: .5rem; padding: .4rem .7rem; border-radius: 12px; background: var(--surface-2); }
+.cmap .mb { font-style: normal; font-weight: 800; font-size: .72rem; padding: .15em .6em; border-radius: 999px; color: #fff; margin-left: .3rem; } .mb.city { background: var(--city-a); } .mb.xr { background: var(--cross-a); } .mb.lab { background: var(--lab-a); } .mb.sh { background: var(--ink-2); }
+.cmap .btn.xs { padding: .15em .6em; font-size: .75rem; justify-self: start; }

@@ -1,0 +1,5 @@
+.report .rpage { margin: 1rem 0; border-top: 6px solid var(--city-a); perspective: 800px; } .report .cover { text-align: center; padding: 2rem 0; } .report .cover h1 { font-size: 2.6rem; background: linear-gradient(90deg, var(--city-a), var(--cross-a)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.report blockquote { margin: .5rem 0; padding: .6rem 1rem; border-left: 6px solid var(--cross-b); background: var(--surface-2); border-radius: 10px; white-space: pre-wrap; }
+.report .tbl td { padding: .3rem .6rem; } .report .gauge { height: 10px; border-radius: 8px; background: var(--surface-2); overflow: hidden; } .report .gauge i { display: block; height: 100%; background: linear-gradient(90deg, var(--city-a), var(--city-b)); }
+.report .note { color: var(--ink-2); } .report .good { color: var(--better); font-weight: 800; }
+@media print { .topbar, .no-print, .btn { display: none !important; } body { background: #fff !important; } .report .rpage { box-shadow: none; break-inside: avoid; page-break-after: auto; border: 1px solid #ccc; } .report .cover { page-break-after: always; } }

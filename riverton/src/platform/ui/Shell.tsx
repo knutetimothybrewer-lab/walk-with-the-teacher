@@ -8,18 +8,21 @@ import { GlossarySearch } from './GlossarySearch';
 import { QuizMe } from './QuizMe';
 import { ProfileMenu } from '../profile/ProfileMenu';
 import './shell.css';
+import { useTimeTracker } from '../timeTracker';
+import { SyncBadge } from '../sync/SyncBadge';
 
 export function Shell() {
   const { theme, set } = useSettings();
   const me = useProfiles((s) => s.active());
   const [dlg, setDlg] = useState<null | 'settings' | 'glossary' | 'quiz' | 'profile'>(null);
-  const close = () => setDlg(null);
+  const close = () => setDlg(null); useTimeTracker();
   return (
     <>
       <header className="topbar">
         <Link to="/" className="btn ghost" aria-label="Home"><Home size={18} /></Link>
         <Link to="/" className="brand display">Riverton</Link>
         <button className="chip" onClick={() => setDlg('profile')}><Users size={14} /> {me ? me.name : 'Add a student'}</button>
+        <SyncBadge />
         <span className="grow" />
         <button className="btn ghost" aria-label="Glossary search" onClick={() => setDlg('glossary')}><Search size={18} /></button>
         <button className="btn ghost" onClick={() => setDlg('quiz')} disabled={!me}><Sparkles size={18} /> Quiz me</button>

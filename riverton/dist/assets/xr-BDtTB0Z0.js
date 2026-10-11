@@ -1,0 +1,1 @@
+import{c as e,l as t,o as n}from"./jsx-runtime-BZB-tpMt.js";var r=`riverton.crossroads`,i=t((t,i)=>({runs:n(r,{}),alt:{},set:(n,a)=>{let o={...i().runs,[n]:a};t({runs:o}),e(r,o)},setAlt:(e,n)=>{let r={...i().alt};n?r[e]=n:delete r[e],t({alt:r})},clear:n=>{let{[n]:a,...o}=i().runs;t({runs:o}),e(r,o),i().setAlt(n,null)}})),a=(e,t)=>`${e}:${t}`;export{i as n,a as t};

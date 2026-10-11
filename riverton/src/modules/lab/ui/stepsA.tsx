@@ -9,10 +9,11 @@ import { useProfiles } from '../../../platform/profile/profileStore';
 import { useTeacher } from '../../../platform/teacher/teacherStore';
 import { lessonById } from '../../../platform/content';
 import { HOODS } from '../../../platform/map/RivertonMap';
+const NONE: string[] = [];
 
 export function FoundationsStep() {
   const { go } = useLabCtx();
-  const done = useProfiles((s) => s.active()?.lessonsDone ?? []);
+  const done = useProfiles((s) => s.active()?.lessonsDone ?? NONE);
   const required = useTeacher((s) => s.foundationsRequired);
   const ids = outbreakLab.content.lessons;
   const all = ids.every((i) => done.includes(i));
