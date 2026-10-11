@@ -1,0 +1,114 @@
+{
+ "id": "xr-decision-stakeholders",
+ "title": "Making a community decision",
+ "module": "crossroads",
+ "concepts": [
+  "decision-model",
+  "stakeholders",
+  "engagement-equity"
+ ],
+ "minutes": 4,
+ "blocks": [
+  {
+   "type": "hook",
+   "text": "A city offers $2 million to fix a vacant lot in a neighborhood with a 12-year life expectancy gap. The room where it is decided is half empty. Who is missing, and does it matter?"
+  },
+  {
+   "type": "explain",
+   "chunks": [
+    {
+     "text": "Community health decisions follow a **decision model**: define the problem with data, identify who is affected, listen to the community, consider evidence-based options, weigh equity and trade-offs, decide, and evaluate.",
+     "terms": [
+      "decision model"
+     ]
+    },
+    {
+     "text": "A **stakeholder** is anyone affected by a decision or able to influence it. **Equity of participation** means removing barriers like work schedules, childcare, language, and transportation so the people most affected can take part. How and when you ask decides who answers.",
+     "terms": [
+      "stakeholder"
+     ]
+    }
+   ]
+  },
+  {
+   "type": "visual",
+   "title": "The decision model",
+   "steps": [
+    {
+     "caption": "Start with the problem, described with data.",
+     "nodes": [
+      "Define the problem"
+     ],
+     "active": [
+      0
+     ]
+    },
+    {
+     "caption": "Then find out who is affected and listen to them.",
+     "nodes": [
+      "Define the problem",
+      "Who is affected? Listen"
+     ],
+     "active": [
+      1
+     ]
+    },
+    {
+     "caption": "Weigh the options, with equity and trade-offs in view.",
+     "nodes": [
+      "Define the problem",
+      "Who is affected? Listen",
+      "Options, equity, trade-offs"
+     ],
+     "active": [
+      2
+     ]
+    },
+    {
+     "caption": "Decide, then evaluate and learn.",
+     "nodes": [
+      "Options, equity, trade-offs",
+      "Decide",
+      "Evaluate"
+     ],
+     "active": [
+      1,
+      2
+     ]
+    }
+   ]
+  },
+  {
+   "type": "worked",
+   "title": "Worked example: who is at the table?",
+   "steps": [
+    "Situation: A city holds one listening session at 6 p.m. on a Tuesday downtown.",
+    "Ask: who can come? People with flexible jobs, cars, and no need for childcare.",
+    "Ask: who cannot? Shift workers, parents with young children, people without cars.",
+    "Change the plan: hold it on a weekend in the neighborhood, with childcare and interpreters."
+   ]
+  },
+  {
+   "type": "guided",
+   "questionId": "q-xdm-1p"
+  },
+  {
+   "type": "check",
+   "questionIds": [
+    "q-xdm-1",
+    "q-stk-1",
+    "q-eng-1"
+   ]
+  },
+  {
+   "type": "summary",
+   "cardId": "card-xr-decision-stakeholders",
+   "bullets": [
+    "The decision model starts with the problem, defined with data.",
+    "Stakeholders are anyone affected or able to influence a decision.",
+    "Listening is only fair if the people most affected can take part.",
+    "How and when you ask decides who answers."
+   ]
+  }
+ ]
+}

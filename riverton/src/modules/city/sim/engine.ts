@@ -69,7 +69,7 @@ function capitalCost(def: typeof INTERVENTIONS[string], hood: string, state: Cit
 // ---------------------------------------------------------------- actions
 const clone = <T,>(s: T): T => structuredClone(s);
 
-export function placeIntervention(state: CityState, req: { type: string; at?: Pt; hood?: string; opts?: Record<string, boolean> }): Result<CityState> {
+export function placeIntervention(state: CityState, req: { type: string; at?: Pt; hood?: string; opts?: Record<string, boolean>; scale?: number }): Result<CityState> {
   const def = INTERVENTIONS[req.type];
   if (!def) return { ok: false, error: `Unknown intervention ${req.type}` };
   const at = req.at ?? null;
@@ -80,7 +80,8 @@ export function placeIntervention(state: CityState, req: { type: string; at?: Pt
   const placedHood = hood ?? 'city';
   if (def.scope === 'hood' && s.placed.some((p) => p.type === req.type && p.hood === placedHood)) return { ok: false, error: `${def.name} is already running in that neighborhood.` };
   if (def.scope === 'city' && s.placed.some((p) => p.type === req.type)) return { ok: false, error: `${def.name} is already built.` };
-  const cost = placedHood === 'city' ? def.cost : capitalCost(def, placedHood, s);
+  const scale = req.scale ?? 1;
+  const cost = +((placedHood === 'city' ? def.cost : capitalCost(def, placedHood, s)) * scale).toFixed(3);
   if (cost > s.cash) return { ok: false, error: `Not enough funds: needs $${cost}M, you have $${s.cash.toFixed(1)}M.` };
   s.cash -= cost;
   const cov: Record<string, number> = {};
@@ -88,7 +89,7 @@ export function placeIntervention(state: CityState, req: { type: string; at?: Pt
   const noise = 1 + nextRange(s, -TUNING.noise.effectRealization, TUNING.noise.effectRealization);
   const p: Placed = {
     uid: `${req.type}#${s.nextUid++}`, type: req.type, hood: placedHood, at, builtMonth: s.month,
-    openMonth: s.month + def.constructionMonths, status: def.constructionMonths > 0 ? 'building' : 'open', noise, cov,
+    openMonth: s.month + def.constructionMonths, status: def.constructionMonths > 0 ? 'building' : 'open', noise, scale, cov,
     opts: { ...(def.defaultOpts ?? {}), ...(req.opts ?? {}) }, capital: cost,
   };
   s.placed.push(p);
@@ -172,14 +173,14 @@ export function contributions(st: CityState): Contribs {
       if (cov <= 0 || statusMult(p) === 0) continue;
       for (const e of def.effects) {
         if (e.amount === 0) continue;
-        let a = e.amount * cov * rampOf(p, m, e.lag) * statusMult(p) * p.noise * modifierMult(p, id, st, e);
+        let a = e.amount * (p.scale ?? 1) * cov * rampOf(p, m, e.lag) * statusMult(p) * p.noise * modifierMult(p, id, st, e);
         if (e.target === 'acute') { out.acute[id] += a; continue; }
         a *= synergyMult(p, id, st, `${e.target}.${e.key}`);
         if (e.target === 'det' && a > 0) a *= Math.max(TUNING.headroom.floor, (100 - st.base[id].det[e.key as Det]) / 100);
         if (e.target === 'beh') a *= behRoom(st, id, e.key as Beh, a);
         if (a !== 0) push(e.target, e.key, p.type, { src: p.uid, label: def.name, amount: a });
       }
-      if (def.amenity) out.rentGain[id] += def.amenity * cov * statusMult(p);
+      if (def.amenity) out.rentGain[id] += def.amenity * (p.scale ?? 1) * cov * statusMult(p);
     }
     for (const [pid, start] of Object.entries(st.policies)) {
       const def = POLICIES[pid];
@@ -296,7 +297,7 @@ function stepMonth(st: CityState) {
   // budget
   const bd = TUNING.budget;
   st.cash += st.annualBudget / 12;
-  for (const p of st.placed) if (p.status !== 'building') st.cash -= (INTERVENTIONS[p.type].opCost / 12) * (p.status === 'reduced' ? bd.reducedMult : p.status === 'closed' ? 0 : 1);
+  for (const p of st.placed) if (p.status !== 'building') st.cash -= (INTERVENTIONS[p.type].opCost * (p.scale ?? 1) / 12) * (p.status === 'reduced' ? bd.reducedMult : p.status === 'closed' ? 0 : 1);
   for (const k of Object.keys(st.policies)) st.cash -= POLICIES[k].opCost / 12;
   if (st.cash < 0) st.deficitMonths += 1; else st.deficitMonths = 0;
   const target = st.deficitMonths >= bd.closedAfterMonths ? 'closed' : st.deficitMonths >= bd.reducedAfterMonths ? 'reduced' : 'open';

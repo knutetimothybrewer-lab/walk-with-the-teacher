@@ -1030,6 +1030,47 @@
    "transitExtends": false,
    "amenity": 4.0,
    "redevelopment": true
+  },
+  "affordable_housing": {
+   "id": "affordable_housing",
+   "name": "Affordable housing",
+   "category": "housing",
+   "upstream": "upstream",
+   "prevention": "primary",
+   "scope": "point",
+   "cost": 12,
+   "opCost": 0.3,
+   "radiusMiles": 0.6,
+   "constructionMonths": 18,
+   "effects": [
+    {
+     "target": "det",
+     "key": "housing",
+     "amount": 16,
+     "lag": 12
+    },
+    {
+     "target": "det",
+     "key": "economic",
+     "amount": 3,
+     "lag": 12
+    },
+    {
+     "target": "det",
+     "key": "safety",
+     "amount": 2,
+     "lag": 12
+    },
+    {
+     "target": "beh",
+     "key": "stress",
+     "amount": -3,
+     "lag": 12
+    }
+   ],
+   "mechanism": "New or preserved homes at prices families can afford. Stable, decent housing lowers stress and moves money back to food and care. Because the homes are priced for current residents, they add little pressure on nearby rents.",
+   "transitExtends": false,
+   "amenity": 0.15
   }
  },
  "policies": {

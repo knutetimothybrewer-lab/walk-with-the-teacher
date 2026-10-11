@@ -1,0 +1,496 @@
+{
+ "id": "rumor-mill",
+ "title": "Rumor Mill",
+ "tagline": "A rumor about the boil-water notice is spreading in the neighborhood chat while the outbreak continues.",
+ "minutes": 8,
+ "start": "rm_intro",
+ "minEndings": 3,
+ "vars": {
+  "trust": 50,
+  "trust0": 50,
+  "weekly": [],
+  "shareChoice": "",
+  "verifyChoice": "",
+  "neighborChoice": "",
+  "messenger": "",
+  "languages": "",
+  "viral": "",
+  "contained": 0,
+  "choices": []
+ },
+ "lessons": [
+  "xr-misinfo"
+ ],
+ "nodes": [
+  {
+   "id": "rm_intro",
+   "type": "scene",
+   "scene": "neighborhood",
+   "cast": [
+    {
+     "who": "okafor",
+     "expr": "worried",
+     "side": "left"
+    }
+   ],
+   "lines": [
+    {
+     "who": "narrator",
+     "text": "The stomach-illness outbreak is still going. Health officials issued a boil-water notice for the affected neighborhoods days ago."
+    },
+    {
+     "who": "okafor",
+     "text": "The notice only works if people follow it. And now there is a rumor spreading in the neighborhood group chats.",
+     "expr": "worried"
+    },
+    {
+     "who": "you",
+     "text": "I am in some of those chats. I should look.",
+     "expr": "thinking",
+     "thought": true
+    }
+   ],
+   "next": "rm_chat"
+  },
+  {
+   "id": "rm_chat",
+   "type": "chat",
+   "group": "Eastside Neighbors",
+   "messages": [
+    {
+     "from": "Marcela",
+     "text": "Did you see this?? The boil-water notice is a HOAX. The city just wants to cover up the pipes. Don't waste your gas boiling water."
+    },
+    {
+     "from": "Dre",
+     "text": "my cousin says the clinic is what's making people sick. everybody who goes there gets worse"
+    },
+    {
+     "from": "Mr. Whitfield",
+     "text": "Is this true? I never know what to believe on these things."
+    },
+    {
+     "from": "Marcela",
+     "text": "Share this before they delete it!!! \ud83d\udd01"
+    }
+   ],
+   "next": "rm_share"
+  },
+  {
+   "id": "rm_share",
+   "type": "choice",
+   "decision": true,
+   "scene": "neighborhood",
+   "prompt": "Marcela's post is going around. Your cousin just sent it to you. What do you do?",
+   "choices": [
+    {
+     "id": "share",
+     "label": "Share it with my contacts: better safe than sorry",
+     "shallow": true,
+     "effects": [
+      {
+       "set": "shareChoice",
+       "value": "share"
+      },
+      {
+       "add": "trust",
+       "delta": -4
+      }
+     ],
+     "next": "rm_r1"
+    },
+    {
+     "id": "pause",
+     "label": "Do not share it yet. Pause and check where it came from",
+     "effects": [
+      {
+       "set": "shareChoice",
+       "value": "pause"
+      }
+     ],
+     "next": "rm_r1"
+    },
+    {
+     "id": "ask",
+     "label": "Reply: \u201cWhere did you hear this?\u201d",
+     "effects": [
+      {
+       "set": "shareChoice",
+       "value": "ask"
+      }
+     ],
+     "next": "rm_r1"
+    }
+   ]
+  },
+  {
+   "id": "rm_r1",
+   "type": "reason",
+   "kind": "justify",
+   "prompt": "Why did you handle the post that way? Think about what could happen if it spread.",
+   "next": "rm_verify"
+  },
+  {
+   "id": "rm_verify",
+   "type": "choice",
+   "decision": true,
+   "scene": "neighborhood",
+   "prompt": "You want to know whether the post is true. How will you check?",
+   "choices": [
+    {
+     "id": "lateral",
+     "label": "Leave the post, open new tabs, and see what the health department and other trusted sources say",
+     "detail": "Lateral reading: check what others say about the claim and its source.",
+     "effects": [
+      {
+       "set": "verifyChoice",
+       "value": "lateral"
+      }
+     ],
+     "next": "rm_r2"
+    },
+    {
+     "id": "author",
+     "label": "Look at who posted it and how many people shared it",
+     "detail": "Popularity and profile pictures can look convincing.",
+     "shallow": true,
+     "effects": [
+      {
+       "set": "verifyChoice",
+       "value": "author"
+      }
+     ],
+     "next": "rm_r2"
+    },
+    {
+     "id": "ask",
+     "label": "Ask the group chat what they think",
+     "effects": [
+      {
+       "set": "verifyChoice",
+       "value": "ask"
+      }
+     ],
+     "next": "rm_r2"
+    }
+   ]
+  },
+  {
+   "id": "rm_r2",
+   "type": "reason",
+   "kind": "comms",
+   "prompt": "What did you find, or what would you look for, and why do you trust that source?",
+   "next": "rm_compare"
+  },
+  {
+   "id": "rm_compare",
+   "type": "compare",
+   "title": "What the post says, and what the sources show",
+   "prompt": "Look for what is true in the rumor, and what is not.",
+   "perceptions": [
+    {
+     "who": "The post",
+     "quote": "\u201cThe boil-water notice is a hoax.\u201d"
+    },
+    {
+     "who": "A neighbor",
+     "quote": "\u201cThe clinic is making people sick. Everyone who goes there gets worse.\u201d"
+    }
+   ],
+   "data": [
+    {
+     "label": "Water samples",
+     "value": "Lab tests found contamination in the affected supply. The notice is real."
+    },
+    {
+     "label": "The clinic claim",
+     "value": "Sick people go to the clinic, so the clinic sees many ill people. That is correlation, not cause."
+    },
+    {
+     "label": "Why the rumor feels true",
+     "value": "Past problems with city services are real, and trust in official notices is low in some neighborhoods."
+    }
+   ],
+   "next": "rm_neighbor"
+  },
+  {
+   "id": "rm_neighbor",
+   "type": "choice",
+   "decision": true,
+   "scene": "neighborhood",
+   "prompt": "Marcela writes back: \u201cWhy should I believe the city? They never fixed the pipes on my street.\u201d How do you respond?",
+   "choices": [
+    {
+     "id": "empathy",
+     "label": "\u201cI get why it feels that way: people here have been let down before. Here is what I checked, and here is the notice.\u201d",
+     "detail": "Acknowledge the feeling, then share what you found.",
+     "effects": [
+      {
+       "set": "neighborChoice",
+       "value": "empathy"
+      }
+     ],
+     "next": "rm_r3"
+    },
+    {
+     "id": "facts",
+     "label": "\u201cThe Health Department confirmed contamination. The notice is real. Boil your water.\u201d",
+     "detail": "Facts only.",
+     "effects": [
+      {
+       "set": "neighborChoice",
+       "value": "facts"
+      }
+     ],
+     "next": "rm_r3"
+    },
+    {
+     "id": "link",
+     "label": "Post the official link and move on",
+     "shallow": true,
+     "detail": "Just post the facts.",
+     "effects": [
+      {
+       "set": "neighborChoice",
+       "value": "link"
+      }
+     ],
+     "next": "rm_r3"
+    }
+   ]
+  },
+  {
+   "id": "rm_r3",
+   "type": "reason",
+   "kind": "comms",
+   "prompt": "Which communication approach did you choose, and why do you think it will (or will not) change Marcela's mind?",
+   "next": "rm_messenger"
+  },
+  {
+   "id": "rm_messenger",
+   "type": "choice",
+   "decision": true,
+   "scene": "neighborhood",
+   "prompt": "People trust some voices more than city announcements. Who could carry the message?",
+   "choices": [
+    {
+     "id": "pastor",
+     "label": "Ask Pastor Bell to share the guidance at services and in the church group chat",
+     "effects": [
+      {
+       "set": "messenger",
+       "value": "pastor"
+      }
+     ],
+     "next": "rm_r4"
+    },
+    {
+     "id": "elder",
+     "label": "Ask Mr. Whitfield, a respected elder, to explain it on the block",
+     "effects": [
+      {
+       "set": "messenger",
+       "value": "elder"
+      }
+     ],
+     "next": "rm_r4"
+    },
+    {
+     "id": "bilingual",
+     "label": "Ask Ms. Alvarez, a bilingual neighbor, to share it in Spanish and English",
+     "effects": [
+      {
+       "set": "messenger",
+       "value": "bilingual"
+      }
+     ],
+     "next": "rm_r4"
+    },
+    {
+     "id": "none",
+     "label": "Post it myself and hope people read it",
+     "shallow": true,
+     "effects": [
+      {
+       "set": "messenger",
+       "value": "none"
+      }
+     ],
+     "next": "rm_r4"
+    }
+   ]
+  },
+  {
+   "id": "rm_r4",
+   "type": "reason",
+   "kind": "comms",
+   "prompt": "Why is this messenger a good fit for this audience, and what might they worry about?",
+   "next": "rm_lang"
+  },
+  {
+   "id": "rm_lang",
+   "type": "choice",
+   "decision": false,
+   "scene": "neighborhood",
+   "prompt": "Many Eastside families speak Spanish, Hmong, or Somali at home. Do you post in more than one language?",
+   "choices": [
+    {
+     "id": "multi",
+     "label": "Yes: post in multiple languages",
+     "effects": [
+      {
+       "set": "languages",
+       "value": "multi"
+      }
+     ],
+     "next": "rm_chance"
+    },
+    {
+     "id": "one",
+     "label": "No: English only is faster",
+     "effects": [
+      {
+       "set": "languages",
+       "value": "one"
+      }
+     ],
+     "next": "rm_chance"
+    }
+   ]
+  },
+  {
+   "id": "rm_chance",
+   "type": "chance",
+   "key": "viral",
+   "outcomes": [
+    {
+     "id": "viral",
+     "label": "The rumor lands in the biggest group chat in the neighborhood.",
+     "p": 0.3
+    },
+    {
+     "id": "contained",
+     "label": "The rumor stays in a few chats.",
+     "p": 0.7
+    }
+   ],
+   "next": "rm_project"
+  },
+  {
+   "id": "rm_project",
+   "type": "project",
+   "next": "rm_outcome"
+  },
+  {
+   "id": "rm_outcome",
+   "type": "scene",
+   "scene": "outbreakCurve",
+   "lines": [
+    {
+     "who": "narrator",
+     "text": "A week later, the outbreak numbers come in. Here is how many people followed the guidance, and what that did to the epidemic curve."
+    }
+   ],
+   "next": "rm_reflect"
+  },
+  {
+   "id": "rm_reflect",
+   "type": "reflect",
+   "question": "q-xr-rm-cer",
+   "next": "rm_route"
+  },
+  {
+   "id": "rm_route",
+   "type": "route",
+   "routes": [
+    {
+     "if": {
+      "var": "contained",
+      "op": ">=",
+      "value": 2
+     },
+     "next": "rm_end_contained"
+    },
+    {
+     "if": {
+      "var": "contained",
+      "op": ">=",
+      "value": 1
+     },
+     "next": "rm_end_partial"
+    }
+   ],
+   "default": "rm_end_wins"
+  },
+  {
+   "id": "rm_end_contained",
+   "type": "end",
+   "ending": {
+    "id": "contained",
+    "title": "The rumor is contained",
+    "summary": "Most residents followed the guidance, the rumor lost steam, and fewer people got sick than if it had spread.",
+    "tone": "good"
+   },
+   "lines": [
+    {
+     "who": "whitfield",
+     "text": "I boiled my water because Pastor Bell and Ms. Alvarez told me, and because somebody finally listened.",
+     "expr": "happy"
+    },
+    {
+     "who": "okafor",
+     "text": "The best public health message is the one a neighbor believes.",
+     "expr": "happy"
+    }
+   ]
+  },
+  {
+   "id": "rm_end_partial",
+   "type": "end",
+   "ending": {
+    "id": "partial",
+    "title": "Partial reach",
+    "summary": "Many people followed the guidance, but some pockets did not hear or trust the message, and more people got sick than needed to.",
+    "tone": "mixed"
+   },
+   "lines": [
+    {
+     "who": "okafor",
+     "text": "We reached a lot of people. Not everyone. The ones we missed are the ones who most needed us.",
+     "expr": "neutral"
+    },
+    {
+     "who": "jordan",
+     "text": "Next time ask us first. We know which chats matter.",
+     "expr": "neutral"
+    }
+   ]
+  },
+  {
+   "id": "rm_end_wins",
+   "type": "end",
+   "ending": {
+    "id": "wins",
+    "title": "The rumor wins",
+    "summary": "Trust was low and the rumor spread. Many residents did not follow the notice, and the outbreak lasted longer.",
+    "tone": "hard"
+   },
+   "lines": [
+    {
+     "who": "okafor",
+     "text": "A rumor does not need to be true to hurt people. It only needs to be believed.",
+     "expr": "sad"
+    },
+    {
+     "who": "whitfield",
+     "text": "I did not know who to believe. So I did nothing.",
+     "expr": "sad"
+    }
+   ]
+  }
+ ],
+ "debrief": {
+  "cer": "q-xr-rm-cer",
+  "rubricNote": "Your reasoning is scored, not whether you picked a particular message. Notice how your choices changed how many people followed the guidance."
+ }
+}

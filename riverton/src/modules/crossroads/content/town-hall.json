@@ -1,0 +1,1262 @@
+{
+ "id": "town-hall",
+ "title": "The Lot on Elm Street",
+ "tagline": "A $2M grant and a vacant lot in Eastside. Who decides what gets built?",
+ "minutes": 12,
+ "start": "th_intro",
+ "minEndings": 4,
+ "vars": {
+  "trust": 50,
+  "session": "",
+  "heard": [],
+  "choices": [],
+  "proposal": null,
+  "voteMove": "",
+  "protections": false,
+  "changedMind": false,
+  "deadline": "",
+  "luck": "typical",
+  "majorityFlag": 0,
+  "displaced": 0,
+  "gapImproved": 0,
+  "devDeal": 0,
+  "feat_equity": 0,
+  "feat_health": 0,
+  "feat_food": 0,
+  "feat_open": 0,
+  "feat_housing": 0
+ },
+ "lessons": [
+  "xr-decision-stakeholders"
+ ],
+ "nodes": [
+  {
+   "id": "th_intro",
+   "type": "scene",
+   "scene": "cityHall",
+   "cast": [
+    {
+     "who": "okafor",
+     "expr": "happy",
+     "side": "left"
+    },
+    {
+     "who": "imani",
+     "expr": "neutral",
+     "side": "right"
+    }
+   ],
+   "lines": [
+    {
+     "who": "narrator",
+     "text": "Riverton City Hall. A grant check for $2 million sits on the table, and a vacant lot on Elm Street in Eastside sits empty a few miles away."
+    },
+    {
+     "who": "okafor",
+     "text": "Welcome to your first big decision as a youth commissioner. The lot has been vacant for eleven years. This grant is a chance to do something with it.",
+     "expr": "happy"
+    },
+    {
+     "who": "imani",
+     "text": "Eastside has the shortest life expectancy in the city. Whatever we build, we have to build it with the people who live there, not for them.",
+     "expr": "neutral"
+    },
+    {
+     "who": "you",
+     "text": "I should start with the facts before I decide whom to ask.",
+     "expr": "thinking",
+     "thought": true
+    }
+   ],
+   "next": "th_data"
+  },
+  {
+   "id": "th_data",
+   "type": "data",
+   "title": "Eastside by the numbers",
+   "intro": "Here is how Eastside compares with the rest of Riverton. Look at the gaps before you decide who to listen to.",
+   "items": [
+    {
+     "label": "Life expectancy",
+     "metric": "out.lifeExpectancy",
+     "unit": "years",
+     "compare": true
+    },
+    {
+     "label": "Childhood asthma",
+     "metric": "out.asthma",
+     "unit": "%",
+     "compare": true
+    },
+    {
+     "label": "Preventable ER visits",
+     "metric": "out.preventableER",
+     "unit": "per 1,000",
+     "compare": true
+    },
+    {
+     "label": "Uninsured",
+     "metric": "profile.uninsuredPct",
+     "unit": "%",
+     "compare": true
+    },
+    {
+     "label": "Food access index",
+     "metric": "det.food",
+     "unit": "/100",
+     "compare": true
+    }
+   ],
+   "question": "q-xr-data",
+   "next": "th_engage"
+  },
+  {
+   "id": "th_engage",
+   "type": "choice",
+   "decision": true,
+   "scene": "cityHall",
+   "prompt": "You will hold a listening session before the commission votes. How and when will you hold it?",
+   "choices": [
+    {
+     "id": "evening",
+     "label": "A weekday evening at City Hall",
+     "detail": "6 p.m. Tuesday. Easy for staff to run. Parking downtown.",
+     "effects": [
+      {
+       "set": "session",
+       "value": "evening"
+      },
+      {
+       "add": "trust",
+       "delta": -3
+      }
+     ],
+     "next": "th_r_engage"
+    },
+    {
+     "id": "saturday",
+     "label": "A Saturday at the Eastside community center",
+     "detail": "With childcare, interpreters, and food. More work to organize.",
+     "effects": [
+      {
+       "set": "session",
+       "value": "saturday"
+      },
+      {
+       "add": "trust",
+       "delta": 10
+      }
+     ],
+     "next": "th_r_engage"
+    },
+    {
+     "id": "online",
+     "label": "Post an online survey and skip the meeting",
+     "detail": "Fast and cheap. Anyone with a phone and time can answer.",
+     "shallow": true,
+     "effects": [
+      {
+       "set": "session",
+       "value": "online"
+      },
+      {
+       "add": "trust",
+       "delta": -10
+      }
+     ],
+     "next": "th_r_engage"
+    }
+   ]
+  },
+  {
+   "id": "th_r_engage",
+   "type": "reason",
+   "kind": "impact",
+   "prompt": "Think about who can actually show up. For each person, who is likely to benefit from your choice, who is likely to bear a cost, and who is likely to be left out?",
+   "next": "th_route_session"
+  },
+  {
+   "id": "th_route_session",
+   "type": "route",
+   "routes": [
+    {
+     "if": {
+      "var": "session",
+      "op": "==",
+      "value": "saturday"
+     },
+     "next": "th_s_sat"
+    },
+    {
+     "if": {
+      "var": "session",
+      "op": "==",
+      "value": "online"
+     },
+     "next": "th_s_online"
+    }
+   ],
+   "default": "th_s_evening"
+  },
+  {
+   "id": "th_s_evening",
+   "type": "scene",
+   "scene": "cityHall",
+   "cast": [
+    {
+     "who": "okafor",
+     "expr": "worried",
+     "side": "left"
+    }
+   ],
+   "lines": [
+    {
+     "who": "narrator",
+     "text": "At 6 p.m. the hall is half empty. Most of the people in the seats are city staff, retirees, and the developer's team."
+    },
+    {
+     "who": "okafor",
+     "text": "We have good people here, but I do not see many families from Eastside.",
+     "expr": "worried"
+    },
+    {
+     "who": "you",
+     "text": "Of course. A Tuesday evening downtown is hard if you work two jobs or have no car.",
+     "expr": "thinking",
+     "thought": true
+    }
+   ],
+   "next": "th_listen"
+  },
+  {
+   "id": "th_s_sat",
+   "type": "scene",
+   "scene": "communityCenter",
+   "cast": [
+    {
+     "who": "alvarez",
+     "expr": "happy",
+     "side": "left"
+    },
+    {
+     "who": "whitfield",
+     "expr": "happy",
+     "side": "right"
+    }
+   ],
+   "lines": [
+    {
+     "who": "narrator",
+     "text": "Saturday at the Eastside community center. Kids color in one corner, interpreters wear bright vests, and the room smells like fresh tamales."
+    },
+    {
+     "who": "alvarez",
+     "text": "I came because there is childcare. I could not have made a weekday meeting.",
+     "expr": "happy"
+    },
+    {
+     "who": "whitfield",
+     "text": "First time anyone asked me anything about this street in forty years.",
+     "expr": "happy"
+    }
+   ],
+   "next": "th_listen"
+  },
+  {
+   "id": "th_s_online",
+   "type": "scene",
+   "scene": "cityHall",
+   "cast": [
+    {
+     "who": "okafor",
+     "expr": "worried",
+     "side": "left"
+    }
+   ],
+   "lines": [
+    {
+     "who": "narrator",
+     "text": "The online survey gets 212 responses in a week. A quick look at the zip codes shows most are from outside Eastside."
+    },
+    {
+     "who": "okafor",
+     "text": "Good response rate. But who did we hear from?",
+     "expr": "worried"
+    },
+    {
+     "who": "you",
+     "text": "People with fast internet and spare time. Eastside has the lowest home internet access in the city.",
+     "expr": "thinking",
+     "thought": true
+    }
+   ],
+   "next": "th_listen"
+  },
+  {
+   "id": "th_listen",
+   "type": "listen",
+   "prompt": "Time is short. Whom will you listen to?",
+   "stakeholders": [
+    {
+     "id": "elder",
+     "name": "Mr. Walter Whitfield",
+     "role": "Lived in Eastside 40 years",
+     "needs": "A grocery nearby and a safe place to walk.",
+     "lines": [
+      {
+       "who": "whitfield",
+       "text": "When I moved here there was a grocery on this corner. Now the closest real store is a bus ride away.",
+       "expr": "neutral"
+      },
+      {
+       "who": "whitfield",
+       "text": "My sugar runs high. The doctor says walk more. Where? The park is dark at night and the sidewalks are broken.",
+       "expr": "worried"
+      },
+      {
+       "who": "whitfield",
+       "text": "Build something for the people who are already here.",
+       "expr": "sad"
+      }
+     ],
+     "evidenceId": "voice:elder",
+     "fact": "Eastside diabetes is 15.5%, compared with 6.2% in Hillcrest."
+    },
+    {
+     "id": "parent",
+     "name": "Ms. Rosa Alvarez",
+     "role": "Parent working two jobs",
+     "needs": "A clinic open evenings and weekends, close to home.",
+     "lines": [
+      {
+       "who": "alvarez",
+       "text": "My son has asthma. When he has an attack at 9 p.m., the clinic is closed, so we go to the ER and wait four hours.",
+       "expr": "worried"
+      },
+      {
+       "who": "alvarez",
+       "text": "I took a Saturday because there is childcare. Please do not decide everything at a meeting I cannot attend.",
+       "expr": "neutral"
+      },
+      {
+       "who": "alvarez",
+       "text": "Something close that is open when I am off work would change our lives.",
+       "expr": "happy"
+      }
+     ],
+     "evidenceId": "voice:parent",
+     "fact": "Preventable ER visits are 142 per 1,000 in Eastside, compared with 38 in Hillcrest.",
+     "requires": {
+      "var": "session",
+      "op": "==",
+      "value": "saturday"
+     }
+    },
+    {
+     "id": "storeowner",
+     "name": "Mr. Daniel Park",
+     "role": "Corner-store owner",
+     "needs": "A plan that does not wipe out local businesses.",
+     "lines": [
+      {
+       "who": "park",
+       "text": "I have sold milk and bread on Elm Street for twenty years. A big co-op could take my customers.",
+       "expr": "worried"
+      },
+      {
+       "who": "park",
+       "text": "But if it hires neighbors and stocks my produce, I would partner. I want to be at the table, not on the menu.",
+       "expr": "neutral"
+      }
+     ],
+     "evidenceId": "voice:storeowner",
+     "fact": "Corner stores can convert to healthy-food stores with small grants."
+    },
+    {
+     "id": "pastor",
+     "name": "Pastor Grace Bell",
+     "role": "Faith leader",
+     "needs": "Protection from rising rents after improvements arrive.",
+     "lines": [
+      {
+       "who": "bell",
+       "text": "Every time something nice comes to a neighborhood like ours, rents go up and families leave. I have married couples who now live forty minutes away.",
+       "expr": "sad"
+      },
+      {
+       "who": "bell",
+       "text": "If you build, protect the people already here. Otherwise it is a gift for someone else.",
+       "expr": "angry"
+      }
+     ],
+     "evidenceId": "voice:pastor",
+     "fact": "Rent pressure often rises after new amenities open in lower-income areas."
+    },
+    {
+     "id": "teen",
+     "name": "Jordan Reyes",
+     "role": "Teen organizer",
+     "needs": "A safe, free place to be active, and a real vote for young people.",
+     "lines": [
+      {
+       "who": "jordan",
+       "text": "There is nowhere free and safe to hang out. My little brother stays inside with his inhaler.",
+       "expr": "sad"
+      },
+      {
+       "who": "jordan",
+       "text": "We do not want another survey. We want a seat in the room.",
+       "expr": "angry"
+      }
+     ],
+     "evidenceId": "voice:teen",
+     "fact": "Eastside has the lowest park access of any Riverton neighborhood."
+    },
+    {
+     "id": "clinic",
+     "name": "Dr. Mei Lin",
+     "role": "Clinic director, across town",
+     "needs": "Steady funding for a satellite clinic with evening hours.",
+     "lines": [
+      {
+       "who": "lin",
+       "text": "My clinic has six-week waits. A small Eastside site with evening hours would keep many families out of the ER.",
+       "expr": "neutral"
+      },
+      {
+       "who": "lin",
+       "text": "Equipment is a one-time cost. Staff are the long-term cost, and that needs a funding plan.",
+       "expr": "worried"
+      }
+     ],
+     "evidenceId": "voice:clinic",
+     "fact": "Primary-care access lowers preventable ER visits."
+    },
+    {
+     "id": "developer",
+     "name": "Marcus Hale",
+     "role": "Developer",
+     "needs": "Financing that makes a project work.",
+     "lines": [
+      {
+       "who": "hale",
+       "text": "I can add $2 million to your grant. In exchange, I need market-rate apartments on part of the lot to make the numbers work.",
+       "expr": "happy"
+      },
+      {
+       "who": "hale",
+       "text": "That money builds more clinic and park than the grant alone. I am not your enemy; I just have to pay my investors.",
+       "expr": "neutral"
+      }
+     ],
+     "evidenceId": "voice:developer",
+     "fact": "Market-rate housing near new amenities can raise nearby rents."
+    }
+   ],
+   "pickBase": 3,
+   "pickBonus": {
+    "if": {
+     "var": "session",
+     "op": "==",
+     "value": "saturday"
+    },
+    "extra": 1
+   },
+   "next": "th_compare"
+  },
+  {
+   "id": "th_compare",
+   "type": "compare",
+   "title": "What people say, and what the data shows",
+   "prompt": "Both count as evidence. Neither automatically wins. What does each tell you?",
+   "perceptions": [
+    {
+     "who": "A resident",
+     "quote": "\"What we really need is a big hospital.\""
+    },
+    {
+     "who": "A neighbor",
+     "quote": "\"Kids here just do not eat right. It is a personal choice problem.\""
+    },
+    {
+     "who": "A community member",
+     "quote": "\"Asthma is just something families here live with.\""
+    }
+   ],
+   "data": [
+    {
+     "label": "Preventable ER visits per 1,000",
+     "value": "Eastside 142 vs. Hillcrest 38: most are for care that a nearby clinic could provide."
+    },
+    {
+     "label": "Food access index (0 to 100)",
+     "value": "Eastside 22 vs. Hillcrest 88: no full-service grocery within walking distance."
+    },
+    {
+     "label": "Childhood asthma",
+     "value": "Eastside 17.8% vs. Hillcrest 6.5%, with homes near the highway and factory."
+    }
+   ],
+   "next": "th_r_evidence"
+  },
+  {
+   "id": "th_r_evidence",
+   "type": "reason",
+   "kind": "evidence",
+   "prompt": "Which evidence is shaping your thinking? Choose everything that matters to you.",
+   "next": "th_dev"
+  },
+  {
+   "id": "th_dev",
+   "type": "scene",
+   "scene": "cityHall",
+   "cast": [
+    {
+     "who": "hale",
+     "expr": "happy",
+     "side": "right"
+    },
+    {
+     "who": "okafor",
+     "expr": "neutral",
+     "side": "left"
+    }
+   ],
+   "lines": [
+    {
+     "who": "okafor",
+     "text": "Before you build a proposal: the developer has put an offer in writing. $2 million more, in exchange for market-rate housing on part of the lot.",
+     "expr": "neutral"
+    },
+    {
+     "who": "hale",
+     "text": "It doubles what you can build. It does change who lives next door to the new buildings.",
+     "expr": "neutral"
+    },
+    {
+     "who": "you",
+     "text": "More money is not automatically better. I need to ask who pays for it, and in what way.",
+     "expr": "thinking",
+     "thought": true
+    }
+   ],
+   "next": "th_proposal"
+  },
+  {
+   "id": "th_proposal",
+   "type": "proposal",
+   "prompt": "Build your proposal for the Elm Street lot. The grant is $2.0M. The developer's offer adds $2.0M but includes market-rate housing.",
+   "next": "th_r_tradeoffs"
+  },
+  {
+   "id": "th_r_tradeoffs",
+   "type": "reason",
+   "kind": "tradeoffs",
+   "prompt": "Every proposal gives something up. What are you giving up?",
+   "options": [
+    {
+     "id": "nodev",
+     "label": "The developer's extra $2M"
+    },
+    {
+     "id": "smaller",
+     "label": "Smaller buildings than residents asked for"
+    },
+    {
+     "id": "housing",
+     "label": "Faster housing"
+    },
+    {
+     "id": "clinic",
+     "label": "A full clinic"
+    },
+    {
+     "id": "food",
+     "label": "A full grocery co-op"
+    },
+    {
+     "id": "park",
+     "label": "Park and recreation space"
+    },
+    {
+     "id": "risk",
+     "label": "Accepting some risk of displacement"
+    },
+    {
+     "id": "voices",
+     "label": "Voices I did not have time to hear"
+    }
+   ],
+   "next": "th_r_alt"
+  },
+  {
+   "id": "th_r_alt",
+   "type": "reason",
+   "kind": "alternatives",
+   "prompt": "Name one alternative you considered and say why you set it aside.",
+   "next": "th_r_equity"
+  },
+  {
+   "id": "th_r_equity",
+   "type": "reason",
+   "kind": "equity",
+   "prompt": "Does your proposal narrow or widen the health gap between Eastside and the rest of Riverton, and for whom?",
+   "next": "th_vote_scene"
+  },
+  {
+   "id": "th_vote_scene",
+   "type": "scene",
+   "scene": "cityHall",
+   "cast": [
+    {
+     "who": "imani",
+     "expr": "neutral",
+     "side": "left"
+    },
+    {
+     "who": "hale",
+     "expr": "neutral",
+     "side": "right"
+    }
+   ],
+   "lines": [
+    {
+     "who": "narrator",
+     "text": "The commission meets at 8 p.m. The grant has a deadline, and three commissioners want to vote tonight."
+    },
+    {
+     "who": "imani",
+     "text": "I am inclined to support a plan that protects current residents. I want to know what happens to rents.",
+     "expr": "neutral"
+    },
+    {
+     "who": "okafor",
+     "text": "We can vote now, amend the proposal, or table it. The room is waiting.",
+     "expr": "worried"
+    }
+   ],
+   "next": "th_vote_move"
+  },
+  {
+   "id": "th_vote_move",
+   "type": "choice",
+   "decision": true,
+   "timed": 30,
+   "defaultChoice": "move",
+   "prompt": "The chair looks at you. The clock is running.",
+   "choices": [
+    {
+     "id": "move",
+     "label": "Move to a vote on the proposal as written",
+     "effects": [
+      {
+       "set": "voteMove",
+       "value": "move"
+      }
+     ],
+     "next": "th_r_justify"
+    },
+    {
+     "id": "amend",
+     "label": "Amend: add housing protections and a resident seat on the oversight board",
+     "effects": [
+      {
+       "set": "voteMove",
+       "value": "amend"
+      },
+      {
+       "set": "protections",
+       "value": true
+      },
+      {
+       "add": "trust",
+       "delta": 3
+      }
+     ],
+     "next": "th_r_justify"
+    },
+    {
+     "id": "table",
+     "label": "Table the vote for two weeks to hear more residents",
+     "effects": [
+      {
+       "set": "voteMove",
+       "value": "table"
+      },
+      {
+       "add": "trust",
+       "delta": 4
+      }
+     ],
+     "next": "th_r_justify"
+    },
+    {
+     "id": "majority",
+     "label": "Build whatever gets the most votes",
+     "detail": "Rework the proposal on the spot to win over the loudest voices.",
+     "shallow": true,
+     "effects": [
+      {
+       "set": "voteMove",
+       "value": "majority"
+      },
+      {
+       "set": "majorityFlag",
+       "value": 1
+      },
+      {
+       "add": "trust",
+       "delta": -5
+      }
+     ],
+     "next": "th_r_justify"
+    }
+   ]
+  },
+  {
+   "id": "th_r_justify",
+   "type": "reason",
+   "kind": "justify",
+   "prompt": "In one to three sentences, explain your choice to the room.",
+   "next": "th_pause"
+  },
+  {
+   "id": "th_pause",
+   "type": "choice",
+   "decision": false,
+   "prompt": "Pause and think. Without the clock, would you make the same move?",
+   "choices": [
+    {
+     "id": "keep",
+     "label": "Keep my choice",
+     "effects": [],
+     "next": "th_route_move"
+    },
+    {
+     "id": "sw_move",
+     "label": "Switch to: Move to a vote on the proposal as written",
+     "effects": [
+      {
+       "set": "voteMove",
+       "value": "move"
+      },
+      {
+       "set": "changedMind",
+       "value": true
+      }
+     ],
+     "next": "th_route_move"
+    },
+    {
+     "id": "sw_amend",
+     "label": "Switch to: Amend: add housing protections and a resident seat on the oversight board",
+     "effects": [
+      {
+       "set": "voteMove",
+       "value": "amend"
+      },
+      {
+       "set": "protections",
+       "value": true
+      },
+      {
+       "add": "trust",
+       "delta": 3
+      },
+      {
+       "set": "changedMind",
+       "value": true
+      }
+     ],
+     "next": "th_route_move"
+    },
+    {
+     "id": "sw_table",
+     "label": "Switch to: Table the vote for two weeks to hear more residents",
+     "effects": [
+      {
+       "set": "voteMove",
+       "value": "table"
+      },
+      {
+       "add": "trust",
+       "delta": 4
+      },
+      {
+       "set": "changedMind",
+       "value": true
+      }
+     ],
+     "next": "th_route_move"
+    },
+    {
+     "id": "sw_majority",
+     "label": "Switch to: Build whatever gets the most votes",
+     "detail": "Rework the proposal on the spot to win over the loudest voices.",
+     "shallow": true,
+     "effects": [
+      {
+       "set": "voteMove",
+       "value": "majority"
+      },
+      {
+       "set": "majorityFlag",
+       "value": 1
+      },
+      {
+       "add": "trust",
+       "delta": -5
+      },
+      {
+       "set": "changedMind",
+       "value": true
+      }
+     ],
+     "next": "th_route_move"
+    }
+   ]
+  },
+  {
+   "id": "th_route_move",
+   "type": "route",
+   "routes": [
+    {
+     "if": {
+      "var": "voteMove",
+      "op": "==",
+      "value": "table"
+     },
+     "next": "th_table_chance"
+    }
+   ],
+   "default": "th_vote"
+  },
+  {
+   "id": "th_table_chance",
+   "type": "chance",
+   "key": "deadline",
+   "outcomes": [
+    {
+     "id": "extended",
+     "label": "The deadline is extended.",
+     "p": 0.65
+    },
+    {
+     "id": "lapsed",
+     "label": "The grant deadline passes.",
+     "p": 0.35
+    }
+   ],
+   "next": "th_route_deadline"
+  },
+  {
+   "id": "th_route_deadline",
+   "type": "route",
+   "routes": [
+    {
+     "if": {
+      "var": "deadline",
+      "op": "==",
+      "value": "lapsed"
+     },
+     "next": "th_end_lapsed"
+    }
+   ],
+   "default": "th_vote"
+  },
+  {
+   "id": "th_vote",
+   "type": "vote",
+   "prompt": "The six commissioners vote.",
+   "need": 4,
+   "passNext": "th_chance",
+   "failNext": "th_end_stalled",
+   "voters": [
+    {
+     "id": "imani",
+     "name": "Cmr. Imani Brooks",
+     "base": -0.6,
+     "lean": [
+      {
+       "var": "feat_equity",
+       "w": 0.35
+      },
+      {
+       "var": "protections",
+       "w": 0.5
+      },
+      {
+       "var": "devDeal",
+       "w": -0.4
+      },
+      {
+       "var": "trust",
+       "w": 0.008
+      }
+     ]
+    },
+    {
+     "id": "ortiz",
+     "name": "Cmr. Lena Ortiz",
+     "base": -0.2,
+     "lean": [
+      {
+       "var": "devDeal",
+       "w": 0.5
+      },
+      {
+       "var": "feat_equity",
+       "w": 0.1
+      },
+      {
+       "var": "feat_health",
+       "w": 0.1
+      },
+      {
+       "var": "trust",
+       "w": 0.005
+      }
+     ]
+    },
+    {
+     "id": "nair",
+     "name": "Cmr. Priya Nair",
+     "base": -0.5,
+     "lean": [
+      {
+       "var": "feat_health",
+       "w": 0.6
+      },
+      {
+       "var": "feat_food",
+       "w": 0.3
+      },
+      {
+       "var": "trust",
+       "w": 0.006
+      }
+     ]
+    },
+    {
+     "id": "whitaker",
+     "name": "Cmr. Sam Whitaker",
+     "base": -0.4,
+     "lean": [
+      {
+       "var": "devDeal",
+       "w": 0.5
+      },
+      {
+       "var": "feat_food",
+       "w": 0.25
+      },
+      {
+       "var": "feat_equity",
+       "w": 0.1
+      }
+     ]
+    },
+    {
+     "id": "reyes",
+     "name": "Cmr. Tom Reyes",
+     "base": -0.6,
+     "lean": [
+      {
+       "var": "trust",
+       "w": 0.015
+      },
+      {
+       "var": "feat_equity",
+       "w": 0.25
+      },
+      {
+       "var": "protections",
+       "w": 0.4
+      },
+      {
+       "var": "majorityFlag",
+       "w": -0.5
+      }
+     ]
+    },
+    {
+     "id": "chen",
+     "name": "Cmr. Alex Chen",
+     "base": -0.3,
+     "lean": [
+      {
+       "var": "feat_equity",
+       "w": 0.2
+      },
+      {
+       "var": "trust",
+       "w": 0.01
+      },
+      {
+       "var": "majorityFlag",
+       "w": 0.4
+      },
+      {
+       "var": "feat_open",
+       "w": 0.15
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "th_chance",
+   "type": "chance",
+   "key": "luck",
+   "outcomes": [
+    {
+     "id": "lucky",
+     "label": "Things go better than expected.",
+     "p": 0.25
+    },
+    {
+     "id": "typical",
+     "label": "Things go about as expected.",
+     "p": 0.5
+    },
+    {
+     "id": "unlucky",
+     "label": "A few things go wrong.",
+     "p": 0.25
+    }
+   ],
+   "next": "th_project"
+  },
+  {
+   "id": "th_project",
+   "type": "project",
+   "next": "th_skip"
+  },
+  {
+   "id": "th_skip",
+   "type": "scene",
+   "scene": "timeskip",
+   "lines": [
+    {
+     "who": "narrator",
+     "text": "Five years pass. Cranes, then ribbon-cuttings, then ordinary Tuesdays. Here is what happened on Elm Street."
+    }
+   ],
+   "next": "th_r_dvo"
+  },
+  {
+   "id": "th_r_dvo",
+   "type": "reason",
+   "kind": "decisionVsOutcome",
+   "prompt": "Look at your projected results compared with what was typical. How should you judge how good your decision was?",
+   "next": "th_reflect"
+  },
+  {
+   "id": "th_reflect",
+   "type": "reflect",
+   "question": "q-xr-th-cer",
+   "next": "th_route_end"
+  },
+  {
+   "id": "th_route_end",
+   "type": "route",
+   "routes": [
+    {
+     "if": {
+      "var": "displaced",
+      "op": ">=",
+      "value": 1
+     },
+     "next": "th_end_displaced"
+    },
+    {
+     "if": {
+      "var": "trust",
+      "op": "<",
+      "value": 45
+     },
+     "next": "th_end_distrust"
+    },
+    {
+     "if": {
+      "all": [
+       {
+        "var": "gapImproved",
+        "op": ">=",
+        "value": 1
+       },
+       {
+        "var": "trust",
+        "op": ">=",
+        "value": 60
+       },
+       {
+        "var": "displaced",
+        "op": "<",
+        "value": 1
+       }
+      ]
+     },
+     "next": "th_end_shared"
+    }
+   ],
+   "default": "th_end_mixed"
+  },
+  {
+   "id": "th_end_shared",
+   "type": "end",
+   "ending": {
+    "id": "shared",
+    "title": "A shared table",
+    "summary": "The lot became a clinic, a market, and a park that residents helped design. The health gap narrowed and most longtime residents stayed.",
+    "tone": "good"
+   },
+   "lines": [
+    {
+     "who": "whitfield",
+     "text": "I walk to the market now. First time my legs and my sugar both thank me.",
+     "expr": "happy"
+    },
+    {
+     "who": "alvarez",
+     "text": "The clinic is open on Saturdays. My son has not been to the ER in a year.",
+     "expr": "happy"
+    },
+    {
+     "who": "jordan",
+     "text": "They gave us a seat on the board. We use it.",
+     "expr": "happy"
+    }
+   ]
+  },
+  {
+   "id": "th_end_displaced",
+   "type": "end",
+   "ending": {
+    "id": "displaced",
+    "title": "Progress, but whose neighborhood?",
+    "summary": "The buildings opened and conditions improved, but rents rose and many longtime residents moved away, so the people the project meant to help did not all benefit.",
+    "tone": "hard"
+   },
+   "lines": [
+    {
+     "who": "bell",
+     "text": "Half my congregation now commutes to services from forty minutes away.",
+     "expr": "sad"
+    },
+    {
+     "who": "whitfield",
+     "text": "The new market is nice. I do not know a single person in the building next door.",
+     "expr": "sad"
+    },
+    {
+     "who": "jordan",
+     "text": "Numbers say Eastside is healthier. It is partly because different people live here.",
+     "expr": "angry"
+    }
+   ]
+  },
+  {
+   "id": "th_end_distrust",
+   "type": "end",
+   "ending": {
+    "id": "distrust",
+    "title": "A good plan nobody trusted",
+    "summary": "The projects opened, but many residents felt the decision was made without them, so use was low and the community stayed wary of the next proposal.",
+    "tone": "mixed"
+   },
+   "lines": [
+    {
+     "who": "alvarez",
+     "text": "I never heard back after the first survey. I do not know who it is for.",
+     "expr": "sad"
+    },
+    {
+     "who": "park",
+     "text": "Nobody called me before they built next to my store.",
+     "expr": "angry"
+    },
+    {
+     "who": "okafor",
+     "text": "Next time we need to start with relationships, not announcements.",
+     "expr": "worried"
+    }
+   ]
+  },
+  {
+   "id": "th_end_mixed",
+   "type": "end",
+   "ending": {
+    "id": "mixed",
+    "title": "Mixed results",
+    "summary": "Some things improved and some did not. The health gap narrowed a little, trust held steady, and the community is cautiously hopeful.",
+    "tone": "mixed"
+   },
+   "lines": [
+    {
+     "who": "whitfield",
+     "text": "Better than nothing, and a lot better than eleven years of weeds.",
+     "expr": "neutral"
+    },
+    {
+     "who": "alvarez",
+     "text": "It helps. I wish it had been bigger.",
+     "expr": "neutral"
+    },
+    {
+     "who": "jordan",
+     "text": "We will keep pushing.",
+     "expr": "neutral"
+    }
+   ]
+  },
+  {
+   "id": "th_end_stalled",
+   "type": "end",
+   "ending": {
+    "id": "stalled",
+    "title": "The vote falls short",
+    "summary": "The proposal did not get enough votes. Without a plan the commission could agree on, the lot stays empty another year.",
+    "tone": "hard"
+   },
+   "lines": [
+    {
+     "who": "imani",
+     "text": "We could not agree, and Eastside pays for that every day the lot sits empty.",
+     "expr": "sad"
+    },
+    {
+     "who": "okafor",
+     "text": "A decision that cannot win support is not a decision. We will try again.",
+     "expr": "worried"
+    }
+   ]
+  },
+  {
+   "id": "th_end_lapsed",
+   "type": "end",
+   "ending": {
+    "id": "lapsed",
+    "title": "The grant slips away",
+    "summary": "Tabling the vote bought time to hear more residents, but the deadline passed. The $2 million was awarded to another city.",
+    "tone": "hard"
+   },
+   "lines": [
+    {
+     "who": "okafor",
+     "text": "Tabling was a reasonable call, and a risky one. Sometimes good judgment still meets bad luck.",
+     "expr": "worried"
+    },
+    {
+     "who": "whitfield",
+     "text": "So we wait again.",
+     "expr": "sad"
+    }
+   ]
+  }
+ ],
+ "debrief": {
+  "cer": "q-xr-th-cer",
+  "rubricNote": "Your reasoning is scored, never your choice. There is no single right answer to a real trade-off."
+ }
+}

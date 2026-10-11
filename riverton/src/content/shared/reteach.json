@@ -420,5 +420,183 @@
     "art": "The gap between them."
    }
   ]
+ },
+ {
+  "id": "dm-skip-ahead",
+  "concept": "decision-model",
+  "title": "Problem first, solution later",
+  "body": [
+   "Good community decisions follow steps: define the problem with data, identify who is affected, listen, consider options, weigh equity, decide, evaluate.",
+   "Jumping to a solution skips learning what the problem is and who it affects."
+  ],
+  "steps": [
+   {
+    "caption": "Define",
+    "art": "Use data to describe the problem."
+   },
+   {
+    "caption": "Listen",
+    "art": "Hear from the people affected."
+   },
+   {
+    "caption": "Decide",
+    "art": "Choose among evidence-based options."
+   }
+  ]
+ },
+ {
+  "id": "stk-only-decisionmakers",
+  "concept": "stakeholders",
+  "title": "More than the decision-makers",
+  "body": [
+   "Stakeholders include anyone affected by a decision or able to influence it.",
+   "Ask who benefits, who bears costs, and who is left out."
+  ]
+ },
+ {
+  "id": "stk-only-supporters",
+  "concept": "stakeholders",
+  "title": "Skeptics are stakeholders too",
+  "body": [
+   "People who disagree often see risks that supporters miss.",
+   "Including them builds a stronger, fairer decision."
+  ]
+ },
+ {
+  "id": "eng-everyone-can",
+  "concept": "engagement-equity",
+  "title": "Barriers decide who shows up",
+  "body": [
+   "Work schedules, childcare, language, transportation, and trust all affect who can take part.",
+   "If only the easiest people to reach are heard, the decision reflects only them."
+  ],
+  "steps": [
+   {
+    "caption": "Barrier",
+    "art": "A meeting at 6 p.m. downtown."
+   },
+   {
+    "caption": "Who is missing",
+    "art": "People working evenings or without a car."
+   },
+   {
+    "caption": "Fix",
+    "art": "Go to them: weekend, local place, childcare, interpreters."
+   }
+  ]
+ },
+ {
+  "id": "mis-vertical",
+  "concept": "misinformation",
+  "title": "Don't study the page, study the source",
+  "body": [
+   "Reading a post closely will not tell you whether to trust it.",
+   "Lateral reading: open new tabs and see what other reliable sources say."
+  ],
+  "steps": [
+   {
+    "caption": "Vertical",
+    "art": "Stay on the post."
+   },
+   {
+    "caption": "Lateral",
+    "art": "Leave the post, search the claim and the source."
+   }
+  ]
+ },
+ {
+  "id": "mis-popular",
+  "concept": "misinformation",
+  "title": "Popular is not true",
+  "body": [
+   "Likes and shares measure attention, not accuracy.",
+   "Check the source, the evidence, and what independent sources say."
+  ]
+ },
+ {
+  "id": "tm-expert-only",
+  "concept": "trusted-messengers",
+  "title": "Trust drives belief",
+  "body": [
+   "People act on information from people they trust.",
+   "Faith leaders, elders, coaches, and bilingual neighbors can make accurate facts believable."
+  ]
+ },
+ {
+  "id": "tm-agency-enough",
+  "concept": "trusted-messengers",
+  "title": "Facts need a believable voice",
+  "body": [
+   "Official facts matter, but they may not reach everyone.",
+   "Pair accurate information with someone the community already trusts and with the languages people use."
+  ]
+ },
+ {
+  "id": "xr-blame",
+  "concept": "evidence-lived",
+  "title": "Gaps point to conditions",
+  "body": [
+   "A large gap between places points to conditions such as air, housing, and access.",
+   "Blaming people hides what could change."
+  ]
+ },
+ {
+  "id": "xr-small-gap",
+  "concept": "evidence-lived",
+  "title": "Compare rates",
+  "body": [
+   "To judge a gap, divide one rate by the other.",
+   "17.8% against 6.5% is nearly three times as high."
+  ]
+ },
+ {
+  "id": "xr-data-only",
+  "concept": "evidence-lived",
+  "title": "Data and lived experience",
+  "body": [
+   "Data show patterns across many people. Residents know what daily life is like.",
+   "When they disagree, treat the disagreement as a clue."
+  ]
+ },
+ {
+  "id": "xr-voice-only",
+  "concept": "evidence-lived",
+  "title": "Voices need checking",
+  "body": [
+   "Residents' experience is real evidence, and so are data.",
+   "Use both, and ask why they differ."
+  ]
+ },
+ {
+  "id": "dvo-outcome-only",
+  "concept": "decision-vs-outcome",
+  "title": "Luck and judgment",
+  "body": [
+   "A good decision can have a bad outcome, and a bad decision can get lucky.",
+   "Judge the reasoning and information at the time, then learn from the result."
+  ],
+  "steps": [
+   {
+    "caption": "Good process",
+    "art": "Evidence, voices, trade-offs considered."
+   },
+   {
+    "caption": "Luck",
+    "art": "Things outside your control."
+   },
+   {
+    "caption": "Outcome",
+    "art": "Both combine."
+   }
+  ]
+ },
+ {
+  "id": "tr-no-cost",
+  "concept": "tradeoffs",
+  "title": "Opportunity cost",
+  "body": [
+   "Opportunity cost is what you give up by choosing one option over the next best.",
+   "Ask what you lose, and who bears it."
+  ]
  }
 ]

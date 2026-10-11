@@ -1,0 +1,616 @@
+[
+ {
+  "id": "q-xdm-1",
+  "module": "crossroads",
+  "concept": "decision-model",
+  "type": "mc",
+  "difficulty": 1,
+  "trigger": "lesson-check",
+  "prompt": "A commission has to decide what to do with a vacant lot. Which step of the community health decision model comes first?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Consider options: draw up buildings.",
+    "feedback": "Options come after you know the problem and have listened to the community.",
+    "misconception": "dm-skip-ahead"
+   },
+   {
+    "id": "b",
+    "text": "Define the problem with data: who is affected, and how large is the gap?",
+    "feedback": "Yes: start by understanding the problem with evidence before choosing a solution.",
+    "correct": true
+   },
+   {
+    "id": "c",
+    "text": "Decide: pick the proposal that sounds best.",
+    "feedback": "Deciding is step 6. Jumping there skips understanding the problem and the people affected.",
+    "misconception": "dm-skip-ahead"
+   },
+   {
+    "id": "d",
+    "text": "Evaluate: see how it worked.",
+    "feedback": "Evaluation is the last step, after a decision is made and carried out.",
+    "misconception": "dm-skip-ahead"
+   }
+  ],
+  "explanation": "The decision model runs: define the problem with data, identify who is affected, listen, consider evidence-based options, weigh equity and trade-offs, decide, and evaluate.",
+  "context": "lesson:xr-decision-stakeholders",
+  "seconds": 40,
+  "parallel": "q-xdm-1p",
+  "hint": "Think about what you need to know before you can choose."
+ },
+ {
+  "id": "q-xdm-1p",
+  "module": "crossroads",
+  "concept": "decision-model",
+  "type": "mc",
+  "difficulty": 1,
+  "trigger": "lesson-check",
+  "prompt": "A school board is worried about rising absences. What should it do first in the community health decision model?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Define the problem with data: how many absences, among whom, and why?",
+    "feedback": "Right: describe the problem and who is affected before picking solutions.",
+    "correct": true
+   },
+   {
+    "id": "b",
+    "text": "Buy a new attendance app.",
+    "feedback": "That jumps to a solution before the problem is understood.",
+    "misconception": "dm-skip-ahead"
+   },
+   {
+    "id": "c",
+    "text": "Vote on a new policy.",
+    "feedback": "Deciding comes after defining, listening, and weighing options.",
+    "misconception": "dm-skip-ahead"
+   },
+   {
+    "id": "d",
+    "text": "Evaluate last year's program.",
+    "feedback": "Evaluation follows a decision.",
+    "misconception": "dm-skip-ahead"
+   }
+  ],
+  "explanation": "Always start with the problem and the people affected, not the solution.",
+  "context": "lesson:xr-decision-stakeholders",
+  "seconds": 40,
+  "parallel": "q-xdm-1",
+  "hint": "Think about what you need to know before you can choose."
+ },
+ {
+  "id": "q-stk-1",
+  "module": "crossroads",
+  "concept": "stakeholders",
+  "type": "mc",
+  "difficulty": 1,
+  "trigger": "lesson-check",
+  "prompt": "In a decision about a new clinic, which people are stakeholders?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Only residents who live next door.",
+    "feedback": "People who use or pay for it, or who live farther away, can be stakeholders as well.",
+    "misconception": "stk-only-decisionmakers"
+   },
+   {
+    "id": "b",
+    "text": "Anyone affected by or able to influence the decision: patients, nearby residents, store owners, clinic staff, and funders.",
+    "feedback": "Yes: stakeholders include those who benefit, those who bear costs, and those with power or resources.",
+    "correct": true
+   },
+   {
+    "id": "c",
+    "text": "Only the people who will vote on it.",
+    "feedback": "Voters are stakeholders, but so are people who live with the results.",
+    "misconception": "stk-only-decisionmakers"
+   },
+   {
+    "id": "d",
+    "text": "Only the people who support it.",
+    "feedback": "Opponents and skeptics are stakeholders too, and often know the risks.",
+    "misconception": "stk-only-supporters"
+   }
+  ],
+  "explanation": "A stakeholder is anyone affected by a decision or able to influence it. Mapping them shows who benefits, who bears costs, and who is left out.",
+  "context": "lesson:xr-decision-stakeholders",
+  "seconds": 40,
+  "parallel": "q-stk-1p",
+  "hint": "Think beyond the people at the table."
+ },
+ {
+  "id": "q-stk-1p",
+  "module": "crossroads",
+  "concept": "stakeholders",
+  "type": "mc",
+  "difficulty": 1,
+  "trigger": "lesson-check",
+  "prompt": "A city plans to close a bus line. Who is a stakeholder?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Riders who depend on it, nearby businesses, drivers, and the transit agency.",
+    "feedback": "Right: those affected and those with a role are stakeholders.",
+    "correct": true
+   },
+   {
+    "id": "b",
+    "text": "Only the transit agency, since it makes the decision.",
+    "feedback": "Riders feel the effects directly and are stakeholders.",
+    "misconception": "stk-only-decisionmakers"
+   },
+   {
+    "id": "c",
+    "text": "Only riders who complain.",
+    "feedback": "People who are affected quietly count too.",
+    "misconception": "stk-only-supporters"
+   },
+   {
+    "id": "d",
+    "text": "Nobody outside city hall.",
+    "feedback": "Many groups outside city hall are affected.",
+    "misconception": "stk-only-decisionmakers"
+   }
+  ],
+  "explanation": "Stakeholder analysis asks who gains, who pays, and who is missing.",
+  "context": "lesson:xr-decision-stakeholders",
+  "seconds": 40,
+  "parallel": "q-stk-1",
+  "hint": "Think beyond the people at the table."
+ },
+ {
+  "id": "q-eng-1",
+  "module": "crossroads",
+  "concept": "engagement-equity",
+  "type": "mc",
+  "difficulty": 1,
+  "trigger": "lesson-check",
+  "prompt": "A health department holds its only listening session at 6 p.m. on a weekday downtown. Why might this miss the people most affected?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Because only experts can understand the issue.",
+    "feedback": "Residents hold important knowledge about their own lives.",
+    "misconception": "eng-everyone-can"
+   },
+   {
+    "id": "b",
+    "text": "People who work evenings, lack transportation, or need childcare may not be able to attend.",
+    "feedback": "Yes: the people most affected are often least able to attend, so the format shapes who is heard.",
+    "correct": true
+   },
+   {
+    "id": "c",
+    "text": "Because people who care will always find a way to come.",
+    "feedback": "Barriers like work, childcare, and transportation keep many people away even if they care.",
+    "misconception": "eng-everyone-can"
+   },
+   {
+    "id": "d",
+    "text": "Because meetings do not work as a way to hear from people.",
+    "feedback": "Meetings can work well when held where and when people can attend.",
+    "misconception": "eng-everyone-can"
+   }
+  ],
+  "explanation": "Equity of participation means removing barriers so the people most affected can take part: time, place, childcare, language, and transportation.",
+  "context": "lesson:xr-decision-stakeholders",
+  "seconds": 40,
+  "parallel": "q-eng-1p",
+  "hint": "Think about what keeps people from attending."
+ },
+ {
+  "id": "q-eng-1p",
+  "module": "crossroads",
+  "concept": "engagement-equity",
+  "type": "mc",
+  "difficulty": 1,
+  "trigger": "lesson-check",
+  "prompt": "A county wants feedback from older adults on a new bus route. Which plan best supports equity of participation?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Meet at senior centers during the day, offer rides, large-print materials, and a phone line.",
+    "feedback": "Right: remove barriers so the people most affected can take part.",
+    "correct": true
+   },
+   {
+    "id": "b",
+    "text": "Post a link to an online form.",
+    "feedback": "Many older adults have limited access to or comfort with online tools.",
+    "misconception": "eng-everyone-can"
+   },
+   {
+    "id": "c",
+    "text": "Hold one evening meeting at the county office.",
+    "feedback": "Evening hours and transportation can be barriers.",
+    "misconception": "eng-everyone-can"
+   },
+   {
+    "id": "d",
+    "text": "Ask only the people who already attend every meeting.",
+    "feedback": "The usual voices do not represent everyone.",
+    "misconception": "eng-everyone-can"
+   }
+  ],
+  "explanation": "How and when you ask decides who answers.",
+  "context": "lesson:xr-decision-stakeholders",
+  "seconds": 40,
+  "parallel": "q-eng-1",
+  "hint": "Think about what keeps people from attending."
+ },
+ {
+  "id": "q-mis-1",
+  "module": "crossroads",
+  "concept": "misinformation",
+  "type": "mc",
+  "difficulty": 1,
+  "trigger": "lesson-check",
+  "prompt": "You see a viral post claiming a public health notice is fake. What does 'lateral reading' mean?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Ask the person who posted it if it is true.",
+    "feedback": "The poster has an interest in saying yes. Check independent sources instead.",
+    "misconception": "mis-vertical"
+   },
+   {
+    "id": "b",
+    "text": "Leave the post and open other tabs to see what trusted sources say about the claim and its source.",
+    "feedback": "Yes: checking what others say about the source is faster and more reliable than studying the post itself.",
+    "correct": true
+   },
+   {
+    "id": "c",
+    "text": "Read the post closely from top to bottom.",
+    "feedback": "Reading the post more closely cannot tell you whether it is trustworthy.",
+    "misconception": "mis-vertical"
+   },
+   {
+    "id": "d",
+    "text": "Count how many likes and shares it has.",
+    "feedback": "Popularity does not show whether something is true.",
+    "misconception": "mis-popular"
+   }
+  ],
+  "explanation": "Lateral reading: leave the page and check what other reliable sources say about the claim and the source.",
+  "context": "lesson:xr-misinfo",
+  "seconds": 40,
+  "parallel": "q-mis-1p",
+  "hint": "Ask: who else says this?"
+ },
+ {
+  "id": "q-mis-1p",
+  "module": "crossroads",
+  "concept": "misinformation",
+  "type": "mc",
+  "difficulty": 1,
+  "trigger": "lesson-check",
+  "prompt": "A message says a local clinic is spreading illness. Which step is lateral reading?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Search the clinic's name and look at what health departments and independent news sites say.",
+    "feedback": "Right: step away from the message and check outside sources.",
+    "correct": true
+   },
+   {
+    "id": "b",
+    "text": "Look at how many people shared it.",
+    "feedback": "Shares measure spread, not accuracy.",
+    "misconception": "mis-popular"
+   },
+   {
+    "id": "c",
+    "text": "Read the message again looking for typos.",
+    "feedback": "Typos do not show whether the claim is true.",
+    "misconception": "mis-vertical"
+   },
+   {
+    "id": "d",
+    "text": "Trust it because it came from a friend.",
+    "feedback": "Friends can pass on mistakes in good faith.",
+    "misconception": "mis-popular"
+   }
+  ],
+  "explanation": "To judge a source, look at what others say about it, not only what it says about itself.",
+  "context": "lesson:xr-misinfo",
+  "seconds": 40,
+  "parallel": "q-mis-1",
+  "hint": "Ask: who else says this?"
+ },
+ {
+  "id": "q-tm-1",
+  "module": "crossroads",
+  "concept": "trusted-messengers",
+  "type": "mc",
+  "difficulty": 1,
+  "trigger": "lesson-check",
+  "prompt": "Why might a neighborhood pastor or respected elder be better than a city agency at getting people to follow a health notice?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Because the agency does not need to communicate.",
+    "feedback": "Agencies still provide the facts; messengers help people believe and act.",
+    "misconception": "tm-agency-enough"
+   },
+   {
+    "id": "b",
+    "text": "Because messages are always louder from one person.",
+    "feedback": "Reach matters, but trust is what changes behavior.",
+    "misconception": "tm-expert-only"
+   },
+   {
+    "id": "c",
+    "text": "People tend to trust messengers they know and who share their community and values.",
+    "feedback": "Yes: trusted messengers carry credibility that an official announcement may lack.",
+    "correct": true
+   },
+   {
+    "id": "d",
+    "text": "Because pastors know more about science.",
+    "feedback": "The advantage is trust and relationships, not expertise.",
+    "misconception": "tm-expert-only"
+   }
+  ],
+  "explanation": "Trusted messengers, such as faith leaders, elders, and bilingual neighbors, make health messages credible because people believe voices they know.",
+  "context": "lesson:xr-misinfo",
+  "seconds": 40,
+  "parallel": "q-tm-1p",
+  "hint": "Think about who people already believe."
+ },
+ {
+  "id": "q-tm-1p",
+  "module": "crossroads",
+  "concept": "trusted-messengers",
+  "type": "mc",
+  "difficulty": 1,
+  "trigger": "lesson-check",
+  "prompt": "A health department needs more families to get a flu shot. Which approach best uses a trusted messenger?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Have a stranger read the facts aloud.",
+    "feedback": "Without trust, facts do not change behavior.",
+    "misconception": "tm-expert-only"
+   },
+   {
+    "id": "b",
+    "text": "Ask a respected local coach to explain why they vaccinate their own family, with the department's facts.",
+    "feedback": "Right: a trusted voice combined with accurate information.",
+    "correct": true
+   },
+   {
+    "id": "c",
+    "text": "Mail a flyer to every address.",
+    "feedback": "Flyers alone often fail to build trust.",
+    "misconception": "tm-agency-enough"
+   },
+   {
+    "id": "d",
+    "text": "Post one announcement in English.",
+    "feedback": "One language and one channel miss many families.",
+    "misconception": "tm-agency-enough"
+   }
+  ],
+  "explanation": "Credibility comes from trust and shared experience as well as accuracy.",
+  "context": "lesson:xr-misinfo",
+  "seconds": 40,
+  "parallel": "q-tm-1",
+  "hint": "Think about who people already believe."
+ },
+ {
+  "id": "q-xr-data",
+  "module": "crossroads",
+  "concept": "evidence-lived",
+  "type": "mc",
+  "difficulty": 1,
+  "trigger": "sim-data",
+  "prompt": "Eastside's childhood asthma rate is 17.8% and Hillcrest's is 6.5%. What is the best way to read this gap?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Eastside families care less about their children's health.",
+    "feedback": "A gap in rates reflects conditions, not caring. Blaming people hides the causes.",
+    "misconception": "xr-blame"
+   },
+   {
+    "id": "b",
+    "text": "It is only a 11 point difference, which is small.",
+    "feedback": "11 percentage points is large when it is nearly triple the rate.",
+    "misconception": "xr-small-gap"
+   },
+   {
+    "id": "c",
+    "text": "The data cannot be trusted because it is a single number.",
+    "feedback": "A rate comparing two places is meaningful and can guide action.",
+    "misconception": "xr-small-gap"
+   },
+   {
+    "id": "d",
+    "text": "Eastside's rate is nearly three times as high, which points to conditions in Eastside (air, housing) worth investigating.",
+    "feedback": "Yes: comparing the rates shows a large gap, and a large gap calls for looking at conditions, not blaming people.",
+    "correct": true
+   }
+  ],
+  "explanation": "Comparing rates between places reveals gaps. Large gaps point to conditions that can change.",
+  "context": "sim:crossroads",
+  "seconds": 40,
+  "hint": "Divide one rate by the other."
+ },
+ {
+  "id": "q-xr-evidence",
+  "module": "crossroads",
+  "concept": "evidence-lived",
+  "type": "mc",
+  "difficulty": 1,
+  "trigger": "sim-evidence",
+  "prompt": "Residents tell you they need a hospital, but the data show that most Eastside ER visits are for care a nearby clinic could provide. How should you weigh these?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Ignore the residents because data is always right.",
+    "feedback": "Lived experience is evidence about needs, trust, and what people will use.",
+    "misconception": "xr-data-only"
+   },
+   {
+    "id": "b",
+    "text": "Ignore the data because residents know best.",
+    "feedback": "Data can show patterns that no one person sees.",
+    "misconception": "xr-voice-only"
+   },
+   {
+    "id": "c",
+    "text": "Build what the loudest person asks for.",
+    "feedback": "Volume is not evidence.",
+    "misconception": "xr-voice-only"
+   },
+   {
+    "id": "d",
+    "text": "Treat both as evidence: ask why residents want a hospital, and test whether easier access to primary care would solve what they describe.",
+    "feedback": "Yes: lived experience and data both count, and the conflict is a clue about what people actually need.",
+    "correct": true
+   }
+  ],
+  "explanation": "Lived experience and data are both evidence. When they disagree, treat the gap as something to explain.",
+  "context": "sim:crossroads",
+  "seconds": 40,
+  "hint": "Neither source automatically wins."
+ },
+ {
+  "id": "q-xr-dvo",
+  "module": "crossroads",
+  "concept": "decision-vs-outcome",
+  "type": "mc",
+  "difficulty": 1,
+  "trigger": "sim-dvo",
+  "prompt": "Your proposal was well researched, but bad luck made the projected results worse than typical. How should you judge the decision?",
+  "options": [
+   {
+    "id": "a",
+    "text": "The reasoning and process were sound even though the outcome was unlucky. Judge decisions by the information and reasoning at the time.",
+    "feedback": "Yes: good decisions can have bad outcomes, and bad decisions can get lucky.",
+    "correct": true
+   },
+   {
+    "id": "b",
+    "text": "The decision was bad because the outcome was bad.",
+    "feedback": "Outcomes include luck. A good process can still meet bad luck.",
+    "misconception": "dvo-outcome-only"
+   },
+   {
+    "id": "c",
+    "text": "Outcomes never matter.",
+    "feedback": "Outcomes matter for learning, but they are not the only measure of decision quality.",
+    "misconception": "dvo-outcome-only"
+   },
+   {
+    "id": "d",
+    "text": "There is no way to tell skill from luck.",
+    "feedback": "Comparing to what was typical helps separate them.",
+    "misconception": "dvo-outcome-only"
+   }
+  ],
+  "explanation": "Decision quality is about process and reasoning. Outcomes also depend on chance.",
+  "context": "sim:crossroads",
+  "seconds": 40,
+  "hint": "Think about what you knew when you decided."
+ },
+ {
+  "id": "q-xr-trade",
+  "module": "crossroads",
+  "concept": "tradeoffs",
+  "type": "mc",
+  "difficulty": 1,
+  "trigger": "sim-tradeoff",
+  "prompt": "Accepting the developer's extra $2 million would build more. What is the opportunity cost?",
+  "options": [
+   {
+    "id": "a",
+    "text": "The only cost is the price of the buildings.",
+    "feedback": "Costs include what you give up and who bears them.",
+    "misconception": "tr-no-cost"
+   },
+   {
+    "id": "b",
+    "text": "Opportunity cost means the cost of opportunities.",
+    "feedback": "It means what you give up by choosing one option over another.",
+    "misconception": "tr-no-cost"
+   },
+   {
+    "id": "c",
+    "text": "What you give up by choosing it: for example, less control over who lives nearby and a higher risk of displacement.",
+    "feedback": "Yes: opportunity cost is the value of the best option you did not choose.",
+    "correct": true
+   },
+   {
+    "id": "d",
+    "text": "There is no cost because the money is free.",
+    "feedback": "Money from a deal usually comes with conditions that have costs.",
+    "misconception": "tr-no-cost"
+   }
+  ],
+  "explanation": "Every choice has an opportunity cost: the next-best option you give up.",
+  "context": "sim:crossroads",
+  "seconds": 40,
+  "hint": "Ask: what do I lose by choosing this?"
+ },
+ {
+  "id": "q-xr-th-cer",
+  "module": "crossroads",
+  "concept": "decision-vs-outcome",
+  "type": "cer",
+  "difficulty": 3,
+  "trigger": "sim-reflect",
+  "context": "sim:crossroads",
+  "required": true,
+  "prompt": "Reflect on the Town Hall. Claim: how would you judge the quality of your decision, separate from how it turned out? Evidence: what data or voices shaped it? Reasoning: whose voice most changed your thinking, whose was missing, and did your decision advance health equity?",
+  "explanation": "A strong reflection separates reasoning from results, cites specific evidence, names missing voices, and uses the data to judge equity.",
+  "rubric": [
+   {
+    "id": "claim",
+    "criterion": "Judges decision quality separately from the outcome."
+   },
+   {
+    "id": "evidence",
+    "criterion": "Cites specific data or stakeholder input."
+   },
+   {
+    "id": "voice",
+    "criterion": "Names whose voice changed your thinking and whose was missing."
+   },
+   {
+    "id": "equity",
+    "criterion": "Uses the data to judge whether the decision narrowed or widened the health gap."
+   }
+  ],
+  "sampleAnswer": "Claim: I think my decision was good even though the outcome was only average, because my reasoning matched what I knew. I chose the Saturday session so families like Ms. Alvarez could attend, and I used the data showing Eastside's preventable ER visits are nearly four times Hillcrest's. Evidence: Pastor Bell's concern about rents changed my mind about the developer's offer, so I declined it and added protections. Reasoning: The projection shows the health gap narrowing a little, and few residents were displaced, which suggests it advanced equity. One voice I did not hear was the developer's full financial constraints, and I could have asked more residents about the housing option. The result was somewhat lower than typical because of bad luck, not because of a flaw in the process."
+ },
+ {
+  "id": "q-xr-rm-cer",
+  "module": "crossroads",
+  "concept": "trusted-messengers",
+  "type": "cer",
+  "difficulty": 3,
+  "trigger": "sim-reflect",
+  "context": "sim:crossroads",
+  "required": true,
+  "prompt": "Short reflection. Claim: which of your choices did the most to change how many people followed the guidance? Evidence: what changed on the epidemic curve? Reasoning: why does that approach work with this community?",
+  "explanation": "Strong answers connect a specific choice to a specific change and explain it with trust, language, or source credibility.",
+  "rubric": [
+   {
+    "id": "claim",
+    "criterion": "Names a specific choice."
+   },
+   {
+    "id": "evidence",
+    "criterion": "Uses the change in cases or compliance."
+   },
+   {
+    "id": "reasoning",
+    "criterion": "Explains with trust, a trusted messenger, language access, or verification."
+   }
+  ],
+  "sampleAnswer": "Claim: Asking Pastor Bell to share the notice did the most. Evidence: more residents followed the guidance, and the projected cases fell by about a third compared with doing nothing. Reasoning: People in this neighborhood trust Pastor Bell more than a city announcement, so her message carried credibility. Posting in two languages also reached families who might have missed it."
+ }
+]

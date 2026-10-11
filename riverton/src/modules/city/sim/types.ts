@@ -23,7 +23,7 @@ export interface PolicyDef { id: string; name: string; cost: number; opCost: num
 export type Status = 'building' | 'open' | 'reduced' | 'closed';
 export interface Placed {
   uid: string; type: string; hood: string; at: [number, number] | null;
-  builtMonth: number; openMonth: number; status: Status; noise: number;
+  builtMonth: number; openMonth: number; status: Status; noise: number; scale: number;
   cov: Record<string, number>; opts: Record<string, boolean>; capital: number;
 }
 export interface Shock { id: string; hood: string; det: Det; amount: number; start: number; rise: number; decay: number | null; label: string }

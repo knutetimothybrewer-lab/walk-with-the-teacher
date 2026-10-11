@@ -1,0 +1,99 @@
+{
+ "id": "xr-misinfo",
+ "title": "Rumors, sources, and trusted voices",
+ "module": "crossroads",
+ "concepts": [
+  "misinformation",
+  "trusted-messengers"
+ ],
+ "minutes": 2,
+ "blocks": [
+  {
+   "type": "hook",
+   "text": "A post says the boil-water notice is a hoax. It has 4,000 shares. Should you believe it?"
+  },
+  {
+   "type": "explain",
+   "chunks": [
+    {
+     "text": "**Misinformation** spreads fast, especially when people already distrust official sources. **Lateral reading** means leaving the post and checking what other reliable sources say about the claim and its source.",
+     "terms": [
+      "misinformation"
+     ]
+    },
+    {
+     "text": "Facts alone do not always change minds. **Trusted messengers**, such as faith leaders, elders, coaches, and bilingual neighbors, make accurate information believable.",
+     "terms": [
+      "trusted messenger"
+     ]
+    }
+   ]
+  },
+  {
+   "type": "visual",
+   "title": "Two ways to check",
+   "steps": [
+    {
+     "caption": "Vertical reading: you stay on the post and study it. It looks convincing.",
+     "nodes": [
+      "Read the post closely"
+     ],
+     "active": [
+      0
+     ]
+    },
+    {
+     "caption": "Lateral reading: you open new tabs and search the claim and the source.",
+     "nodes": [
+      "Read the post closely",
+      "Open new tabs and check others"
+     ],
+     "active": [
+      1
+     ]
+    },
+    {
+     "caption": "What reliable sources say tells you more than what the post says about itself.",
+     "nodes": [
+      "Open new tabs and check others",
+      "Compare with trusted sources"
+     ],
+     "active": [
+      1
+     ]
+    }
+   ]
+  },
+  {
+   "type": "worked",
+   "title": "Worked example: a rumor about a clinic",
+   "steps": [
+    "Situation: A message says the clinic is making people sick.",
+    "Lateral step: search the clinic's name and read what the health department says.",
+    "Finding: sick people go to clinics, so clinics see many ill people. That is a correlation, not proof of cause.",
+    "Reply: acknowledge worry, share the finding, and ask a trusted neighbor to pass it on."
+   ]
+  },
+  {
+   "type": "guided",
+   "questionId": "q-mis-1p"
+  },
+  {
+   "type": "check",
+   "questionIds": [
+    "q-mis-1",
+    "q-tm-1"
+   ]
+  },
+  {
+   "type": "summary",
+   "cardId": "card-xr-misinfo",
+   "bullets": [
+    "Do not judge a post by how popular it is.",
+    "Lateral reading: leave the page and check what others say.",
+    "Trusted messengers make accurate information believable.",
+    "Reach people in the languages they use."
+   ]
+  }
+ ]
+}

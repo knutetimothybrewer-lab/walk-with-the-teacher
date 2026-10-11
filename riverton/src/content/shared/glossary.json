@@ -66,5 +66,21 @@
  {
   "term": "specificity",
   "definition": "The share of non-cases that a definition or test correctly excludes."
+ },
+ {
+  "term": "decision model",
+  "definition": "A series of steps for community decisions: define the problem with data, identify who is affected, listen, consider evidence-based options, weigh equity and trade-offs, decide, evaluate."
+ },
+ {
+  "term": "stakeholder",
+  "definition": "Anyone affected by a decision or able to influence it."
+ },
+ {
+  "term": "misinformation",
+  "definition": "False or misleading information, often shared without bad intent."
+ },
+ {
+  "term": "trusted messenger",
+  "definition": "A person the community already trusts, who helps accurate health information be believed."
  }
 ]
