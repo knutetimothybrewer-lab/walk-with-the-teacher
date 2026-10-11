@@ -38,7 +38,7 @@ export function RivertonMap({ highlight, selected, onSelect, deltas, pins = [], 
         const pts = h.polygon.map((p) => p.join(',')).join(' ');
         const sel = selected === h.id;
         return (
-          <g key={h.id} opacity={dim ? 0.35 : 1} tabIndex={onSelect ? 0 : undefined} role={onSelect ? 'button' : undefined} aria-label={h.name} aria-pressed={onSelect ? sel : undefined}
+          <g key={h.id} opacity={dim ? 0.35 : 1} tabIndex={onSelect ? 0 : undefined} role={onSelect ? "button" : "img"} aria-label={h.name} aria-pressed={onSelect ? sel : undefined}
              onClick={() => onSelect?.(h.id)} onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && onSelect?.(h.id)} style={{ cursor: onSelect ? 'pointer' : 'default' }}>
             <polygon points={pts} fill={fill} stroke="var(--bg-2)" strokeWidth={sel ? 9 : 5} strokeLinejoin="round" />
             <polygon points={pts} fill={`url(#${patternId(i)})`} pointerEvents="none" />

@@ -29,8 +29,8 @@
 .accent.lab { background-image: linear-gradient(135deg, var(--lab-a), var(--lab-b)) !important; outline: 6px solid var(--lab-bg); outline-offset: -6px; }
 .data-row { display: flex; flex-wrap: wrap; gap: .7rem; }
 .delta { padding: .6rem 1rem; border-radius: 14px; font-weight: 800; }
-.delta.better { background: var(--better-soft); color: var(--better); border: 2px solid var(--better); }
-.delta.worse { background: var(--worse-soft); color: var(--worse); border: 2px dashed var(--worse); }
+.delta.better { background: var(--better-soft); color: var(--ink); border: 2px solid var(--better); }
+.delta.worse { background: var(--worse-soft); color: var(--ink); border: 2px dashed var(--worse); }
 .delta.neutral { background: var(--surface-2); border: 2px dotted var(--neutral); }
 .big { font-size: 2.2rem; color: var(--worse); }
 .row { display: flex; flex-wrap: wrap; gap: .7rem; align-items: center; margin-bottom: 1rem; }
@@ -42,7 +42,7 @@
 .cast figcaption { font-size: .82rem; color: var(--ink-2); margin-top: .3rem; }
 .cast.small { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); }
 .stag { padding-left: 1.1rem; margin: 0; }
-.pop-demo { display: inline-block; font-weight: 800; padding: .5rem 1rem; border-radius: 999px; background: var(--better-soft); color: var(--better); animation: pop .5s cubic-bezier(.3,1.6,.5,1); }
+.pop-demo { display: inline-block; font-weight: 800; padding: .5rem 1rem; border-radius: 999px; background: var(--better-soft); color: var(--ink); animation: pop .5s cubic-bezier(.3,1.6,.5,1); }
 .lab-panel { background: var(--lab-bg); color: #e6e9ff; border-color: var(--lab-a); box-shadow: 0 0 30px -8px var(--lab-a); }
 .alert-dot { width: 22px; height: 22px; border-radius: 50%; background: var(--lab-b); animation: pulse 1.6s infinite; margin: .5rem 0; }
 .epi { width: 100%; background: var(--lab-bg); border-radius: 10px; padding: 6px; }

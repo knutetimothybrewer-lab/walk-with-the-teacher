@@ -95,7 +95,7 @@ export default function LessonPlayer() {
   return (
     <main className="page lesson">
       <div className="lhead"><h1>{lesson.title}</h1><span className="chip">~{quick ? Math.max(1, Math.round(lesson.minutes * 0.6)) : lesson.minutes} min{quick ? ' · short version' : ''}</span></div>
-      <div className="dots" aria-label={`Part ${i + 1} of ${blocks.length}`}>{blocks.map((_, k) => <i key={k} className={k <= i ? 'on' : ''} />)}</div>
+      <div className="dots" role="img" aria-label={`Part ${i + 1} of ${blocks.length}`}>{blocks.map((_, k) => <i key={k} className={k <= i ? 'on' : ''} />)}</div>
       <AnimatePresence mode="wait">
         <motion.section key={i} className="panel lbody" initial={{ opacity: 0, x: 24 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -24 }} transition={{ duration: 0.25 }}>
           {blockText(b) && <button className="btn ghost sm read" aria-label="Read this part aloud" onClick={() => speak(blockText(b))}><Volume2 size={16} /></button>}

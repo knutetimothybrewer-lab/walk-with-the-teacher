@@ -28,7 +28,7 @@ export default function ConceptMap() {
         <section key={m} className="panel"><h2><i className={`mb ${MODCLS[m]}`}>{MOD[m]}</i> concepts</h2>
           <div className="cgrid">{info.filter((c) => c.module === m).map((c) => (
             <div key={c.id} className={`ccard lvl-${level(c.id)}`}><b>{c.label}</b>{c.core && <span className="chip">Core</span>}
-              <div className="meter" aria-label={LVL[level(c.id)]}><i style={{ width: { none: '0%', introduced: '33%', practiced: '66%', mastered: '100%' }[level(c.id)] }} /></div>
+              <div className="meter" role="img" aria-label={LVL[level(c.id)]}><i style={{ width: { none: '0%', introduced: '33%', practiced: '66%', mastered: '100%' }[level(c.id)] }} /></div>
               <small>{LVL[level(c.id)]} · {c.qn} question{c.qn === 1 ? '' : 's'}{c.mods.length ? ` · ${c.mods.map((x) => MOD[x]).join(', ')}` : ''}</small>
               {c.lesson ? <Link className="btn ghost xs" to={`/lesson/${c.lesson.id}`} state={{ from: '/glossary' }}>Lesson</Link> : <small className="note">Lesson coming as a bonus</small>}</div>))}</div></section>))}
     </main>

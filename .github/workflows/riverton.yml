@@ -1,0 +1,23 @@
+name: Riverton checks
+on:
+  push:
+    paths: ['riverton/**', '.github/workflows/riverton.yml']
+  pull_request:
+    paths: ['riverton/**', '.github/workflows/riverton.yml']
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    defaults: { run: { working-directory: riverton } }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm, cache-dependency-path: riverton/package-lock.json }
+      - run: npm ci
+      - run: npx tsc --noEmit
+      - run: npm test
+      - run: npm run validate-content
+      - run: npm run build
+      - run: npm run build:single
+      - name: dist/ is up to date
+        run: |
+          git diff --quiet -- dist || { echo "riverton/dist is stale: run 'npm run build' in riverton/ and commit the result."; git status --short dist | head; exit 1; }

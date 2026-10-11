@@ -20,7 +20,7 @@
   /* neighborhoods (Okabe-Ito based, distinguishable under common color vision deficiencies) */
   --n-eastside: #d55e00; --n-hillcrest: #0072b2; --n-millworks: #7a6a58; --n-pinewood: #009e73;
   --n-oldtown: #cc79a7; --n-riverside: #56b4e9; --n-westbrook: #e6b800; --n-southfield: #6f4fb8;
-  --focus: #1b5fd1;
+  --focus: #1b5fd1; --link: #1b5fd1;
   font-size: 16px;
 }
 :root[data-theme='dark'] {
@@ -28,7 +28,7 @@
   --ink: #f1ede4; --ink-2: #b9c4d0; --line: #34445a;
   --shadow: 0 2px 0 rgba(0,0,0,.25), 0 12px 28px -10px rgba(0,0,0,.6);
   --better: #6bb3f5; --better-soft: #1f3a57; --worse: #ff9a4d; --worse-soft: #4d2e14;
-  --focus: #8ab8ff;
+  --focus: #8ab8ff; --link: #8ab8ff;
 }
 :root[data-text='1'] { font-size: 18px; }
 :root[data-text='2'] { font-size: 20px; }
@@ -45,7 +45,7 @@ body {
 h1, h2, h3, .display { font-family: var(--font-display); font-weight: 700; letter-spacing: .1px; margin: 0 0 .4em; }
 h1 { font-size: 2.2rem; } h2 { font-size: 1.5rem; } h3 { font-size: 1.15rem; }
 :focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; border-radius: 6px; }
-a { color: var(--city-a); }
+a { color: var(--link); }
 
 .btn {
   font: 800 1rem var(--font-body); border: 0; cursor: pointer; padding: .65em 1.2em; border-radius: 999px;
@@ -57,7 +57,7 @@ a { color: var(--city-a); }
 .btn:active { transform: translateY(3px); box-shadow: 0 1px 0 color-mix(in srgb, var(--accent-a, var(--city-a)) 55%, #000); }
 .btn.ghost { background: var(--surface); color: var(--ink); box-shadow: inset 0 0 0 2px var(--line), 0 2px 0 var(--line); }
 .panel { background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow); padding: 1.1rem 1.3rem; border: 1px solid var(--line); }
-.chip { display: inline-flex; align-items: center; gap: .4em; padding: .2em .7em; border-radius: 999px; font-weight: 800; font-size: .85rem; background: var(--surface-2); }
+.chip { display: inline-flex; align-items: center; gap: .4em; padding: .2em .7em; border-radius: 999px; font-weight: 800; font-size: .85rem; background: var(--surface-2); color: var(--ink); }
 .page { max-width: 1180px; margin: 0 auto; padding: 1.2rem 16px 4rem; }
 .grid { display: grid; gap: 1rem; }
 
