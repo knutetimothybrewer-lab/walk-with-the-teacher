@@ -1,7 +1,7 @@
 import world from '../../content/shared/riverton-world.json';
 import { Building, type BuildingKind } from '../art/Buildings';
 import { useSettings } from '../settings';
-import { TerrainDefs, TerrainBase, HoodGround, Waterways, Roads, Sky } from './MapTerrain';
+import { terrainImageUrl, MapLife } from './MapTerrain';
 
 export type Hood = (typeof world.neighborhoods)[number];
 export const HOODS = world.neighborhoods;
@@ -24,13 +24,10 @@ export interface RivertonMapProps {
 export function RivertonMap({ highlight, selected, onSelect, deltas, pins = [], showLandmarks = true, height }: RivertonMapProps) {
   const reduce = useSettings((s) => s.reduceMotion); const animate = !reduce;
   return (
-    <svg viewBox={`0 0 ${W} ${H}`} style={{ width: '100%', height }} role="group" aria-label="Map of Riverton and its eight neighborhoods">
-      <TerrainDefs />
-      <rect width={W} height={H} rx="24" fill="#dde6c8" />
-      <TerrainBase />
-      {HOODS.map((h) => <HoodGround key={'g' + h.id} id={h.id} />)}
-      <Waterways animate={animate} />
-      <Roads animate={animate} />
+    <div className="rv-map" style={{ position: 'relative', width: '100%', height, borderRadius: 24, overflow: 'hidden', background: '#dde6c8' }}>
+    <img src={terrainImageUrl()} alt="" draggable={false} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'contain', pointerEvents: 'none', userSelect: 'none' }} />
+    {animate && <svg viewBox={`0 0 ${W} ${H}`} aria-hidden="true" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', pointerEvents: 'none' }}><MapLife /></svg>}
+    <svg viewBox={`0 0 ${W} ${H}`} style={{ position: 'relative', display: 'block', width: '100%', height: height ? '100%' : undefined }} role="group" aria-label="Map of Riverton and its eight neighborhoods">
       {HOODS.map((h) => {
         const dim = highlight && !highlight.includes(h.id);
         const d = deltas?.[h.id];
@@ -48,7 +45,6 @@ export function RivertonMap({ highlight, selected, onSelect, deltas, pins = [], 
           </g>
         );
       })}
-      <Sky animate={animate} />
       {showLandmarks && world.map.landmarks.map((l) => (
         <g key={l.label} transform={`translate(${l.at[0] - 30} ${l.at[1] - 30})`} pointerEvents="none">
           <ellipse cx="30" cy="54" rx="26" ry="8" fill="#1d2b3a" opacity=".25" />
@@ -67,5 +63,6 @@ export function RivertonMap({ highlight, selected, onSelect, deltas, pins = [], 
         </g>
       ))}
     </svg>
+    </div>
   );
 }

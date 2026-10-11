@@ -1,4 +1,5 @@
 import { memo } from 'react';
+import { renderToStaticMarkup } from 'react-dom/server';
 import world from '../../content/shared/riverton-world.json';
 
 /** Procedural, seeded "air photo meets illustrated atlas" detail for the Riverton map. Static: computed once. */
@@ -101,26 +102,22 @@ export const HoodGround = memo(function HoodGround({ id }: { id: string }) {
   );
 });
 
-export const Waterways = memo(function Waterways({ animate }: { animate: boolean }) {
+/** River body (static; baked into the terrain bitmap). */
+function WaterBase() {
   const d = world.map.river;
   return (
-    <g pointerEvents="none">
+    <g>
       {SHORE.map((t, i) => <g key={i}><circle cx={t.x + 1.5} cy={t.y + 2} r={t.r} fill="#1c2b1c" opacity=".22" /><circle cx={t.x} cy={t.y} r={t.r} fill={t.c} /><circle cx={t.x - t.r * 0.3} cy={t.y - t.r * 0.3} r={t.r * 0.45} fill="#a0d492" opacity=".5" /></g>)}
       <path d={d} fill="none" stroke="#d9cfa8" strokeWidth="36" strokeLinecap="round" strokeLinejoin="round" opacity=".9" />
       <path d={d} fill="none" stroke="#4a9fd6" strokeWidth="26" strokeLinecap="round" />
       <path d={d} fill="none" stroke="#6fbbe8" strokeWidth="19" strokeLinecap="round" />
-      <path d={d} fill="none" stroke="#d6eefb" strokeWidth="2.2" strokeLinecap="round" strokeDasharray="3 16" opacity=".85">{animate && <animate attributeName="stroke-dashoffset" from="38" to="0" dur="2.2s" repeatCount="indefinite" />}</path>
-      <path d={d} fill="none" stroke="#ffffff" strokeWidth="1.6" strokeLinecap="round" strokeDasharray="2 30" opacity=".7" transform="translate(4 -3)">{animate && <animate attributeName="stroke-dashoffset" from="64" to="0" dur="3.6s" repeatCount="indefinite" />}</path>
     </g>
   );
-});
+}
 
-export const Roads = memo(function Roads({ animate }: { animate: boolean }) {
-  const cars: { path: string; dur: number; begin: number; c: string }[] = [
-    { path: ARTERIAL, dur: 16, begin: 0, c: '#e1604a' }, { path: ARTERIAL, dur: 22, begin: 6, c: '#3b6fc4' }, { path: HIGHWAY, dur: 14, begin: 2, c: '#f2a93b' }, { path: HIGHWAY, dur: 17, begin: 9, c: '#6b7a86' }, { path: HIGHWAY, dur: 20, begin: 4, c: '#e9eef2' },
-  ];
+function RoadBase() {
   return (
-    <g pointerEvents="none">
+    <g>
       <path d={HIGHWAY} fill="none" stroke="#7b7568" strokeWidth="17" strokeLinecap="round" opacity=".85" />
       <path d={HIGHWAY} fill="none" stroke="#585a5e" strokeWidth="13" strokeLinecap="round" />
       <path d={HIGHWAY} fill="none" stroke="#f3dd8a" strokeWidth="1.6" strokeDasharray="9 8" />
@@ -128,20 +125,44 @@ export const Roads = memo(function Roads({ animate }: { animate: boolean }) {
       <path d={ARTERIAL} fill="none" stroke="#fffaf0" strokeWidth="8" strokeLinecap="round" />
       <rect x="580" y="324" width="36" height="24" rx="3" fill="#cfc6b0" stroke="#8d846f" strokeWidth="1.4" />
       <path d="M580 330H616M580 342H616" stroke="#fffaf0" strokeWidth="2" />
-      {animate && cars.map((c, i) => (<g key={i}><rect x="-5" y="-2.6" width="10" height="5.2" rx="2" fill={c.c} stroke="#00000040" strokeWidth=".6" /><animateMotion path={c.path} dur={`${c.dur}s`} begin={`${c.begin}s`} repeatCount="indefinite" rotate="auto" /></g>))}
     </g>
   );
-});
+}
 
-export const Sky = memo(function Sky({ animate }: { animate: boolean }) {
-  if (!animate) return null;
+/** Everything static, drawn once into a bitmap-like SVG image so scrolling only composites it. */
+function StaticTerrain() {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox={`0 0 ${W} ${H}`} width={W} height={H}>
+      <TerrainDefs /><rect width={W} height={H} fill="#dde6c8" /><TerrainBase />
+      {world.neighborhoods.map((h) => <HoodGround key={h.id} id={h.id} />)}
+      <WaterBase /><RoadBase />
+    </svg>
+  );
+}
+let terrainUrl = '';
+export function terrainImageUrl(): string {
+  if (!terrainUrl) { const svg = renderToStaticMarkup(<StaticTerrain />); try { terrainUrl = URL.createObjectURL(new Blob([svg], { type: 'image/svg+xml' })); } catch { terrainUrl = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg); } }
+  return terrainUrl;
+}
+
+/** The only moving parts: river sparkle, traffic, clouds. Sits above the static terrain in its own layer. */
+export const MapLife = memo(function MapLife() {
+  const d = world.map.river;
+  const cars: { path: string; dur: number; begin: number; c: string }[] = [
+    { path: ARTERIAL, dur: 16, begin: 0, c: '#e1604a' }, { path: ARTERIAL, dur: 22, begin: 6, c: '#3b6fc4' }, { path: HIGHWAY, dur: 14, begin: 2, c: '#f2a93b' }, { path: HIGHWAY, dur: 17, begin: 9, c: '#6b7a86' }, { path: HIGHWAY, dur: 20, begin: 4, c: '#e9eef2' },
+  ];
   const clouds = [{ y: 90, dur: 70, s: 1 }, { y: 330, dur: 95, s: 1.3 }, { y: 520, dur: 80, s: 0.9 }];
   return (
-    <g pointerEvents="none" className="rv-sky">
+    <g pointerEvents="none">
+      <path d={d} fill="none" stroke="#d6eefb" strokeWidth="2.2" strokeLinecap="round" strokeDasharray="3 16" opacity=".85"><animate attributeName="stroke-dashoffset" from="38" to="0" dur="2.2s" repeatCount="indefinite" /></path>
+      {cars.map((c, i) => (<g key={i}><rect x="-5" y="-2.6" width="10" height="5.2" rx="2" fill={c.c} stroke="#00000040" strokeWidth=".6" /><animateMotion path={c.path} dur={`${c.dur}s`} begin={`${c.begin}s`} repeatCount="indefinite" rotate="auto" /></g>))}
       {clouds.map((c, i) => (
-        <g key={i}>
-          <g opacity=".5" filter="url(#rv-soft)"><ellipse cx="0" cy="26" rx={70 * c.s} ry={20 * c.s} fill="#1d2b3a" opacity=".25" /><animateTransform attributeName="transform" type="translate" from={`-160 ${c.y}`} to={`1160 ${c.y}`} dur={`${c.dur}s`} begin={`${-i * 25}s`} repeatCount="indefinite" /></g>
-          <g opacity=".55" filter="url(#rv-soft)"><ellipse cx="0" cy="0" rx={70 * c.s} ry={20 * c.s} fill="#fff" /><ellipse cx={34 * c.s} cy={-10 * c.s} rx={44 * c.s} ry={18 * c.s} fill="#fff" /><animateTransform attributeName="transform" type="translate" from={`-160 ${c.y - 24}`} to={`1160 ${c.y - 24}`} dur={`${c.dur}s`} begin={`${-i * 25}s`} repeatCount="indefinite" /></g>
+        <g key={'c' + i}>
+          <ellipse cx="0" cy="0" rx={70 * c.s} ry={20 * c.s} fill="#1d2b3a" opacity=".12" /><animateTransform attributeName="transform" type="translate" from={`-160 ${c.y + 30}`} to={`1160 ${c.y + 30}`} dur={`${c.dur}s`} begin={`${-i * 25}s`} repeatCount="indefinite" />
+        </g>))}
+      {clouds.map((c, i) => (
+        <g key={'d' + i}>
+          <ellipse cx="0" cy="0" rx={66 * c.s} ry={18 * c.s} fill="#fff" opacity=".5" /><ellipse cx={30 * c.s} cy={-9 * c.s} rx={40 * c.s} ry={15 * c.s} fill="#fff" opacity=".5" /><animateTransform attributeName="transform" type="translate" from={`-160 ${c.y}`} to={`1160 ${c.y}`} dur={`${c.dur}s`} begin={`${-i * 25}s`} repeatCount="indefinite" />
         </g>))}
     </g>
   );
