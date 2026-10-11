@@ -1,0 +1,107 @@
+{
+ "id": "lab-casedef-epicurve",
+ "title": "Case definitions and epidemic curves",
+ "module": "lab",
+ "concepts": [
+  "case-definition",
+  "epi-curves"
+ ],
+ "minutes": 3,
+ "blocks": [
+  {
+   "type": "hook",
+   "text": "If you count everyone with a stomach ache as a case, your outbreak might be ten times bigger than it really is. How should investigators decide who counts?"
+  },
+  {
+   "type": "explain",
+   "chunks": [
+    {
+     "text": "A **case definition** is a set of rules for who counts as a case: **person**, **place**, **time**, and **symptoms**. A broad definition finds more people but includes non-cases (low **specificity**). A narrow one is cleaner but misses real cases (low **sensitivity**).",
+     "terms": [
+      "case definition"
+     ]
+    },
+    {
+     "text": "An **epidemic curve** is a histogram of when people got sick. Its shape hints at the source: **point source** (one narrow peak), **continuous source** (a long plateau), or **propagated** spread (waves).",
+     "terms": [
+      "epidemic curve"
+     ]
+    }
+   ]
+  },
+  {
+   "type": "visual",
+   "title": "Three curve shapes",
+   "steps": [
+    {
+     "caption": "Point source: everyone exposed once, such as one meal. A single sharp peak.",
+     "nodes": [
+      "Single exposure",
+      "One sharp peak"
+     ],
+     "active": [
+      0,
+      1
+     ]
+    },
+    {
+     "caption": "Continuous source: exposure goes on, such as contaminated water. A long plateau.",
+     "nodes": [
+      "Ongoing exposure",
+      "Long plateau"
+     ],
+     "active": [
+      0,
+      1
+     ]
+    },
+    {
+     "caption": "Propagated: sick people infect others. Waves roughly one incubation period apart.",
+     "nodes": [
+      "First cases",
+      "Second wave",
+      "Third wave"
+     ],
+     "active": [
+      0,
+      1,
+      2
+     ]
+    }
+   ]
+  },
+  {
+   "type": "worked",
+   "title": "Worked example: reading a curve",
+   "steps": [
+    "Situation: A curve rises over two days, peaks, and then nearly disappears within four days.",
+    "Ask: how many exposures could cause that? Probably one event.",
+    "Ask: does it show waves? No.",
+    "Conclusion: this looks like a point source. The investigator should ask what almost everyone shared at one time."
+   ]
+  },
+  {
+   "type": "guided",
+   "questionId": "q-cd-1p"
+  },
+  {
+   "type": "check",
+   "questionIds": [
+    "q-cd-1",
+    "q-cd-2",
+    "q-epi-1",
+    "q-epi-2"
+   ]
+  },
+  {
+   "type": "summary",
+   "cardId": "card-lab-casedef-epicurve",
+   "bullets": [
+    "A case definition uses person, place, time, and symptoms.",
+    "Too broad lowers specificity; too narrow lowers sensitivity.",
+    "Point source: one peak. Continuous source: plateau. Propagated: waves.",
+    "Curve shape helps narrow down the source."
+   ]
+  }
+ ]
+}

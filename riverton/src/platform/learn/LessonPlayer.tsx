@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ArrowLeft, ArrowRight, Volume2 } from 'lucide-react';
 import { lessonById, GLOSSARY, questionById } from '../content';
@@ -69,6 +69,7 @@ export default function LessonPlayer() {
   const { id = '' } = useParams();
   const lesson = lessonById(id);
   const nav = useNavigate();
+  const from = (useLocation().state as { from?: string } | null)?.from ?? '/';
   const { introduce, completeLesson } = useProfiles();
   const readAloud = useSettings((s) => s.readAloud);
   const [i, setI] = useState(0);
@@ -83,7 +84,7 @@ export default function LessonPlayer() {
 
   const b = lesson.blocks[i];
   const last = i === lesson.blocks.length - 1;
-  const finish = () => { completeLesson(lesson.id, b.type === 'summary' ? [b.cardId] : []); nav('/'); };
+  const finish = () => { completeLesson(lesson.id, b.type === 'summary' ? [b.cardId] : []); nav(from); };
 
   return (
     <main className="page lesson">

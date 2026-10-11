@@ -93,5 +93,332 @@
    "A single count does not tell us about a population's health.",
    "Population health compares rates between groups and asks why they differ."
   ]
+ },
+ {
+  "id": "coi-reservoir-vehicle",
+  "concept": "chain-of-infection",
+  "title": "Reservoir vs. vehicle",
+  "body": [
+   "The reservoir is where the germ lives and multiplies: a person, an animal, or sometimes water or soil.",
+   "The vehicle is the thing that carries the germ to a new person: food, water, hands, a surface.",
+   "Think of the reservoir as the bus depot and the vehicle as the bus."
+  ],
+  "steps": [
+   {
+    "caption": "Reservoir",
+    "art": "The sick worker."
+   },
+   {
+    "caption": "Vehicle",
+    "art": "The lettuce they handled."
+   },
+   {
+    "caption": "Host",
+    "art": "The customer who eats it."
+   }
+  ]
+ },
+ {
+  "id": "coi-host-confusion",
+  "concept": "chain-of-infection",
+  "title": "The host is the person",
+  "body": [
+   "The susceptible host is the person who could get sick.",
+   "Food, water, and surfaces are never the host; they carry the germ."
+  ]
+ },
+ {
+  "id": "coi-exit-confusion",
+  "concept": "chain-of-infection",
+  "title": "Exit, route, entry",
+  "body": [
+   "The germ has to leave the first person (portal of exit), travel (mode of transmission), and enter a new person (portal of entry).",
+   "Do not mix up leaving and entering: stool or vomit is how it leaves, swallowing is how it enters."
+  ]
+ },
+ {
+  "id": "surv-lab-error",
+  "concept": "surveillance",
+  "title": "Where cases go missing",
+  "body": [
+   "Most missing cases are not counting mistakes. They are people who never moved up the pyramid.",
+   "Illness, then seeking care, then a test, then a result, then a report. Each step loses people."
+  ],
+  "steps": [
+   {
+    "caption": "1,000 ill",
+    "art": "People who get sick."
+   },
+   {
+    "caption": "250 seek care",
+    "art": "Most stay home."
+   },
+   {
+    "caption": "125 tested",
+    "art": "Not everyone is tested."
+   },
+   {
+    "caption": "50 reported",
+    "art": "Only these show up in the data."
+   }
+  ]
+ },
+ {
+  "id": "surv-all-counted",
+  "concept": "surveillance",
+  "title": "Reports are the tip of the iceberg",
+  "body": [
+   "Reported cases are only the visible tip.",
+   "Surveillance is built to spot trends and outbreaks, not to count every illness."
+  ]
+ },
+ {
+  "id": "surv-delay-wrong",
+  "concept": "surveillance",
+  "title": "Why the latest days look low",
+  "body": [
+   "Illness starts first. Then care, testing, and reporting take days.",
+   "So the newest days on a chart are incomplete and fill in later."
+  ]
+ },
+ {
+  "id": "cd-narrow-broad",
+  "concept": "case-definition",
+  "title": "Too broad or too narrow?",
+  "body": [
+   "Too broad: includes many people who are not cases (false positives). Specificity is low.",
+   "Too narrow: leaves out real cases (false negatives). Sensitivity is low.",
+   "Start broad to find cases, then tighten to study the cause."
+  ],
+  "steps": [
+   {
+    "caption": "Broad",
+    "art": "Everyone with any symptom: catches nearly all cases but also many colds."
+   },
+   {
+    "caption": "Narrow",
+    "art": "Every symptom plus one place: few false cases but misses many real ones."
+   }
+  ]
+ },
+ {
+  "id": "cd-more-better",
+  "concept": "case-definition",
+  "title": "Balance beats extremes",
+  "body": [
+   "A good definition catches most real cases and leaves out most non-cases.",
+   "Adding criteria lowers sensitivity; removing them lowers specificity."
+  ]
+ },
+ {
+  "id": "epi-shape-confusion",
+  "concept": "epi-curves",
+  "title": "Reading the shape",
+  "body": [
+   "Point source: one narrow peak, because everyone was exposed at once.",
+   "Continuous source: a long plateau, because exposure keeps going.",
+   "Propagated: repeated waves, one incubation period apart, because each wave infects the next."
+  ],
+  "steps": [
+   {
+    "caption": "Point",
+    "art": "One tall bar group."
+   },
+   {
+    "caption": "Continuous",
+    "art": "A wide plateau."
+   },
+   {
+    "caption": "Propagated",
+    "art": "A series of rising waves."
+   }
+  ]
+ },
+ {
+  "id": "ar-count-percent",
+  "concept": "attack-rate",
+  "title": "Counts vs. rates",
+  "body": [
+   "A count says how many. A rate says what share of a group.",
+   "Attack rate = cases \u00f7 people at risk \u00d7 100."
+  ],
+  "steps": [
+   {
+    "caption": "Cases",
+    "art": "24 got sick."
+   },
+   {
+    "caption": "At risk",
+    "art": "60 ate the food."
+   },
+   {
+    "caption": "Attack rate",
+    "art": "24 \u00f7 60 = 40%."
+   }
+  ]
+ },
+ {
+  "id": "rr-difference",
+  "concept": "relative-risk",
+  "title": "Divide, do not subtract",
+  "body": [
+   "Relative risk compares two attack rates by dividing: exposed \u00f7 unexposed.",
+   "A subtraction gives a risk difference, which is a different measure."
+  ]
+ },
+ {
+  "id": "rr-inverted",
+  "concept": "relative-risk",
+  "title": "Which goes on top?",
+  "body": [
+   "Exposed attack rate goes on top, unexposed on the bottom.",
+   "RR above 1: the exposure goes with more illness. RR near 1: little difference. RR below 1: protective."
+  ]
+ },
+ {
+  "id": "conf-rr-proves",
+  "concept": "confounding",
+  "title": "Association is not proof",
+  "body": [
+   "A high relative risk shows association, not cause.",
+   "Always ask whether something else could explain both the exposure and the illness."
+  ]
+ },
+ {
+  "id": "conf-ignore-third",
+  "concept": "confounding",
+  "title": "The hidden third factor",
+  "body": [
+   "A confounder is connected to both the exposure and the outcome.",
+   "To check, compare within groups of the possible confounder."
+  ],
+  "steps": [
+   {
+    "caption": "Exposure",
+    "art": "Festival."
+   },
+   {
+    "caption": "Third factor",
+    "art": "Neighborhood."
+   },
+   {
+    "caption": "Outcome",
+    "art": "Illness."
+   }
+  ]
+ },
+ {
+  "id": "alert-ignore",
+  "concept": "outbreak-baseline",
+  "title": "Compare with the baseline",
+  "body": [
+   "An outbreak means more cases than expected for that place and time.",
+   "Every disease has a normal range. A jump far above it is a signal to look closer."
+  ]
+ },
+ {
+  "id": "alert-jump",
+  "concept": "outbreak-baseline",
+  "title": "Evidence before sources",
+  "body": [
+   "Names of suspects come after data.",
+   "First confirm the outbreak, define cases, and describe who, where, and when."
+  ]
+ },
+ {
+  "id": "sample-small-ok",
+  "concept": "sample-size",
+  "title": "Small samples wobble",
+  "body": [
+   "Different random samples can give different answers.",
+   "The smaller the sample, the larger the wobble.",
+   "A comparison group and more interviews narrow the guesswork."
+  ],
+  "steps": [
+   {
+    "caption": "Sample of 6",
+    "art": "Answers swing a lot."
+   },
+   {
+    "caption": "Sample of 60",
+    "art": "Answers settle down."
+   }
+  ]
+ },
+ {
+  "id": "bias-mix",
+  "concept": "bias",
+  "title": "Bias vs. other problems",
+  "body": [
+   "Recall bias is about memory: sick people may remember more carefully, and everyone forgets over time.",
+   "Confounding is a third factor. Delay is about timing of data. Keep them separate."
+  ]
+ },
+ {
+  "id": "limit-mix",
+  "concept": "models-limits",
+  "title": "Whose limitation is it?",
+  "body": [
+   "Investigation limits come from the real-world process: underreporting, small samples, memory.",
+   "Model limits are what the simulation leaves out or simplifies."
+  ]
+ },
+ {
+  "id": "limit-none",
+  "concept": "models-limits",
+  "title": "Every study has limits",
+  "body": [
+   "No dataset is perfect. Naming limits tells readers how much weight to give results."
+  ]
+ },
+ {
+  "id": "model-real",
+  "concept": "models-limits",
+  "title": "A model is not the world",
+  "body": [
+   "A model simplifies reality on purpose.",
+   "Naming what it leaves out is part of good science."
+  ]
+ },
+ {
+  "id": "privacy-publish-all",
+  "concept": "privacy-stigma",
+  "title": "Share enough, protect people",
+  "body": [
+   "People need information to protect themselves, but details about individuals can identify them, especially in small areas.",
+   "De-identify cases, use broader groupings, and share only what is needed."
+  ]
+ },
+ {
+  "id": "privacy-stigma",
+  "concept": "privacy-stigma",
+  "title": "Blame the source, not the people",
+  "body": [
+   "Outbreaks come from places, foods, or conditions, not from a community's character.",
+   "Language that points at a neighborhood or group can cause stigma and discourage people from seeking care."
+  ]
+ },
+ {
+  "id": "cf-no-compare",
+  "concept": "interventions-counterfactual",
+  "title": "The world you can't see",
+  "body": [
+   "You can only watch one version of events. The counterfactual is the one where you did nothing.",
+   "The difference between the two is the effect of your action."
+  ],
+  "steps": [
+   {
+    "caption": "Actual",
+    "art": "What happened with the intervention."
+   },
+   {
+    "caption": "Counterfactual",
+    "art": "What would have happened without it."
+   },
+   {
+    "caption": "Effect",
+    "art": "The gap between them."
+   }
+  ]
  }
 ]

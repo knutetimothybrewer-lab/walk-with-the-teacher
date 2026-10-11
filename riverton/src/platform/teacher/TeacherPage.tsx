@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { hashPin, useTeacher } from './teacherStore';
 import { QUESTIONS } from '../content';
 import type { MCQuestion } from '../questions/types';
+import { viableTruth, simulate, trueCases, alertDay } from '../../modules/lab/labs/outbreak';
 
 export default function TeacherPage() {
   const t = useTeacher();
@@ -36,6 +37,18 @@ export default function TeacherPage() {
             <input type="number" min={1} max={10} value={t.interruptCap} onChange={(e) => t.patch({ interruptCap: Number(e.target.value) })} /></label>
           <label className="field">Total time target (minutes)
             <select value={t.timeTargetMin} onChange={(e) => t.patch({ timeTargetMin: Number(e.target.value) })}>{[60, 90, 120, 150].map((m) => <option key={m}>{m}</option>)}</select></label>
+        </section>
+        <section className="panel"><h2>Sim Lab settings</h2>
+          <label className="field">Outbreak source
+            <select value={t.lab.scenario} onChange={(e) => t.patch({ lab: { ...t.lab, scenario: e.target.value as typeof t.lab.scenario } })}><option value="random">Random (by seed)</option><option value="water">Water main break</option><option value="vendor">Festival food vendor</option><option value="pool">Public pool</option><option value="person">Person-to-person</option></select></label>
+          <label className="field">Class seed (blank = a unique seed per student)
+            <input type="number" value={t.lab.classSeed ?? ''} onChange={(e) => t.patch({ lab: { ...t.lab, classSeed: e.target.value === '' ? null : Number(e.target.value) } })} /></label>
+          <label className="field">Budget points<input type="number" min={20} max={300} value={t.lab.budget} onChange={(e) => t.patch({ lab: { ...t.lab, budget: Number(e.target.value) } })} /></label>
+          <label className="field">Investigation days<input type="number" min={3} max={30} value={t.lab.days} onChange={(e) => t.patch({ lab: { ...t.lab, days: Number(e.target.value) } })} /></label>
+          {(() => { const tr = viableTruth(t.lab.classSeed ?? 1, t.lab.scenario); const sm = simulate(tr); return (
+            <div className="panel"><h3>Answer key{t.lab.classSeed == null ? ' (example seed 1)' : ''}</h3>
+              <p><b>{tr.source.label}</b>. {tr.source.detail}</p><p>Curve: {tr.source.curve}. True cases: {trueCases(sm)}. Alert on day {(alertDay(tr, sm) ?? 0) + 1}.</p>
+              <p>Ideal path: confirm the outbreak, build a balanced case definition, interview cases, survey residents to compare attack rates, inspect or test the true source, check confounders, then order the targeted intervention early.</p></div>); })()}
         </section>
         <section className="panel"><h2>Answer key</h2>
           <ul>{QUESTIONS.filter((q) => q.type === 'mc').map((q) => <li key={q.id}><b>{q.id}</b>: {(q as MCQuestion).options.find((o) => o.correct)?.text}</li>)}</ul>

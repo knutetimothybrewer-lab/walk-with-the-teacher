@@ -182,7 +182,7 @@ export const alertThreshold = () => P.baselineER.mean + P.baselineER.alertSigma 
 export const baselineMean = () => P.baselineER.mean;
 
 // ------------------------------------------------------------------ surveillance (what students can see)
-export interface LineRow { id: number; label: string; age: number; sex: 'F' | 'M'; hood: string; onsetDay: number; symptoms: Symptom[]; reportDay: number; er: boolean; found: boolean }
+export interface LineRow { id: number; label: string; age: number; sex: 'F' | 'M'; hood: string; onsetDay: number; onsetHr: number; symptoms: Symptom[]; reportDay: number; er: boolean; found: boolean }
 
 /** Reported cases visible on `day`. Active case finding adds the cases that were never going to be reported. */
 export function lineList(t: Truth, s: Sim, day: number, found: { hood: string; day: number }[] = []): LineRow[] {
@@ -191,8 +191,9 @@ export function lineList(t: Truth, s: Sim, day: number, found: { hood: string; d
     if (!i.sym) continue;
     const r = t.residents[i.id];
     const f = found.find((x) => (x.hood === 'all' || x.hood === r.hood) && i.onsetDay <= x.day && hash01(t.seed, i.id, 31) < 0.7);
-    if (i.reported && i.reportDay! <= day) rows.push({ id: i.id, label: `Case ${rows.length + 1}`, age: r.age, sex: r.sex, hood: r.hood, onsetDay: i.onsetDay, symptoms: i.symptoms, reportDay: i.reportDay!, er: i.er, found: false });
-    else if (f) rows.push({ id: i.id, label: `Case ${rows.length + 1}`, age: r.age, sex: r.sex, hood: r.hood, onsetDay: i.onsetDay, symptoms: i.symptoms, reportDay: f.day, er: i.er, found: true });
+    const labKnown = i.reported && i.reportDay! <= day; const erKnown = i.er && i.erDay! <= day;
+    if (labKnown || erKnown) rows.push({ id: i.id, label: `Case ${rows.length + 1}`, age: r.age, sex: r.sex, hood: r.hood, onsetDay: i.onsetDay, onsetHr: i.onsetHr, symptoms: i.symptoms, reportDay: labKnown ? i.reportDay! : i.erDay!, er: i.er, found: false });
+    else if (f) rows.push({ id: i.id, label: `Case ${rows.length + 1}`, age: r.age, sex: r.sex, hood: r.hood, onsetDay: i.onsetDay, onsetHr: i.onsetHr, symptoms: i.symptoms, reportDay: f.day, er: i.er, found: true });
   }
   rows.sort((a, b) => a.onsetDay - b.onsetDay || a.id - b.id);
   return rows.map((r, k) => ({ ...r, label: `Case ${k + 1}` }));

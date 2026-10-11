@@ -7,6 +7,8 @@ import StyleGuide from './platform/styleguide/StyleGuide';
 import LessonPlayer from './platform/learn/LessonPlayer';
 import Notebook from './platform/ui/Notebook';
 import TeacherPage from './platform/teacher/TeacherPage';
+import { lazy, Suspense } from 'react';
+const LabPage = lazy(() => import('./modules/lab/ui/LabPage'));
 
 export default function App() {
   const s = useSettings();
@@ -19,6 +21,7 @@ export default function App() {
           <Route path="/lesson/:id" element={<LessonPlayer />} />
           <Route path="/notebook" element={<Notebook />} />
           <Route path="/teacher" element={<TeacherPage />} />
+          <Route path="/lab" element={<Suspense fallback={<main className="page">Loading Sim Lab…</main>}><LabPage /></Suspense>} />
           <Route path="/styleguide" element={<StyleGuide />} />
         </Route>
       </Routes>

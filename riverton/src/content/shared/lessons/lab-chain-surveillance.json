@@ -1,0 +1,113 @@
+{
+ "id": "lab-chain-surveillance",
+ "title": "Chain of infection and surveillance",
+ "module": "lab",
+ "concepts": [
+  "chain-of-infection",
+  "surveillance"
+ ],
+ "minutes": 3,
+ "blocks": [
+  {
+   "type": "hook",
+   "text": "On Monday, 5 people in Riverton got sick. By Friday, the health department knew about only 2 of them. What happened to the others?"
+  },
+  {
+   "type": "explain",
+   "chunks": [
+    {
+     "text": "Germs that cause outbreaks travel in a **chain of infection**: a germ lives in a **reservoir**, leaves the body, travels through a **vehicle** such as food or water, enters a new person, and finds a **susceptible host**. Break any link and the chain stops.",
+     "terms": [
+      "chain of infection"
+     ]
+    },
+    {
+     "text": "Health departments watch for outbreaks using **surveillance**: ongoing collection of illness data. But surveillance sees only the **tip of the iceberg**. Many people stay home or are never tested, and reports arrive days late.",
+     "terms": [
+      "surveillance"
+     ]
+    }
+   ]
+  },
+  {
+   "type": "visual",
+   "title": "The surveillance pyramid",
+   "steps": [
+    {
+     "caption": "Imagine 1,000 people become ill from one outbreak.",
+     "nodes": [
+      "1,000 ill"
+     ],
+     "active": [
+      0
+     ]
+    },
+    {
+     "caption": "Only some seek medical care.",
+     "nodes": [
+      "1,000 ill",
+      "250 seek care"
+     ],
+     "active": [
+      1
+     ]
+    },
+    {
+     "caption": "Only some of those are tested at a lab.",
+     "nodes": [
+      "1,000 ill",
+      "250 seek care",
+      "125 tested"
+     ],
+     "active": [
+      2
+     ]
+    },
+    {
+     "caption": "Only some test results are reported, and days later. The department sees about 50 of 1,000.",
+     "nodes": [
+      "1,000 ill",
+      "250 seek care",
+      "125 tested",
+      "50 reported"
+     ],
+     "active": [
+      3
+     ]
+    }
+   ]
+  },
+  {
+   "type": "worked",
+   "title": "Worked example: where is the chain broken?",
+   "steps": [
+    "Situation: A pool is contaminated and 30 swimmers get sick.",
+    "Reservoir: a sick swimmer. Vehicle: the pool water. Host: other swimmers.",
+    "Where can we break the chain? Close the pool (stop the vehicle) or disinfect the water.",
+    "Notice that treating each sick swimmer does not stop new people from getting sick."
+   ]
+  },
+  {
+   "type": "guided",
+   "questionId": "q-coi-1p"
+  },
+  {
+   "type": "check",
+   "questionIds": [
+    "q-coi-1",
+    "q-surv-1",
+    "q-surv-2"
+   ]
+  },
+  {
+   "type": "summary",
+   "cardId": "card-lab-chain-surveillance",
+   "bullets": [
+    "The chain of infection has six links; break any one to stop spread.",
+    "The vehicle carries the germ from the reservoir to new hosts.",
+    "Surveillance sees only part of the illness: the tip of the pyramid.",
+    "Reports lag behind illness, so the newest days look low."
+   ]
+  }
+ ]
+}

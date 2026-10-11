@@ -30,5 +30,41 @@
  {
   "term": "rate",
   "definition": "How often something happens compared with the size of the group, such as cases per 1,000 people."
+ },
+ {
+  "term": "chain of infection",
+  "definition": "Six linked steps by which a germ spreads: germ, reservoir, portal of exit, mode of transmission, portal of entry, susceptible host."
+ },
+ {
+  "term": "surveillance",
+  "definition": "Ongoing, systematic collection and review of health data to spot problems and outbreaks."
+ },
+ {
+  "term": "case definition",
+  "definition": "Rules for who counts as a case of an outbreak: person, place, time, and clinical features."
+ },
+ {
+  "term": "epidemic curve",
+  "definition": "A histogram of the number of new cases by date or time of illness onset."
+ },
+ {
+  "term": "attack rate",
+  "definition": "The proportion of people at risk who become ill: cases divided by people exposed."
+ },
+ {
+  "term": "relative risk",
+  "definition": "The attack rate in exposed people divided by the attack rate in unexposed people."
+ },
+ {
+  "term": "confounding",
+  "definition": "When a third factor linked to both the exposure and the illness makes an exposure look related (or unrelated) to illness."
+ },
+ {
+  "term": "sensitivity",
+  "definition": "The share of true cases that a definition or test correctly catches."
+ },
+ {
+  "term": "specificity",
+  "definition": "The share of non-cases that a definition or test correctly excludes."
  }
 ]

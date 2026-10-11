@@ -1,0 +1,107 @@
+{
+ "id": "lab-attack-rr-confounding",
+ "title": "Attack rate, relative risk, and confounding",
+ "module": "lab",
+ "concepts": [
+  "attack-rate",
+  "relative-risk",
+  "confounding"
+ ],
+ "minutes": 3,
+ "blocks": [
+  {
+   "type": "hook",
+   "text": "Everyone who ate the potato salad got sick. But so did a lot of people who didn't. How do you decide which food is the real culprit?"
+  },
+  {
+   "type": "explain",
+   "chunks": [
+    {
+     "text": "The **attack rate** is the proportion of people at risk who became ill: cases \u00f7 people exposed. Compare the attack rate in people who had an exposure to the attack rate in people who did not.",
+     "terms": [
+      "attack rate"
+     ]
+    },
+    {
+     "text": "**Relative risk** (RR) = attack rate in the exposed \u00f7 attack rate in the unexposed. An RR far above 1 points to a likely culprit. But beware **confounding**: a third factor linked to both the exposure and the illness can create a fake link.",
+     "terms": [
+      "relative risk",
+      "confounding"
+     ]
+    }
+   ]
+  },
+  {
+   "type": "visual",
+   "title": "Compare exposed and unexposed",
+   "steps": [
+    {
+     "caption": "Count who ate the food and who got sick in a 2\u00d72 table.",
+     "nodes": [
+      "Ate it: 40 ill, 20 not ill",
+      "Did not eat it: 4 ill, 36 not ill"
+     ],
+     "active": [
+      0,
+      1
+     ]
+    },
+    {
+     "caption": "Attack rate in those who ate it: 40 \u00f7 60 = 67%. In those who did not: 4 \u00f7 40 = 10%.",
+     "nodes": [
+      "Exposed: 67%",
+      "Unexposed: 10%"
+     ],
+     "active": [
+      0,
+      1
+     ]
+    },
+    {
+     "caption": "Relative risk = 67% \u00f7 10% \u2248 6.7. The food is a strong suspect, but check for confounders.",
+     "nodes": [
+      "RR \u2248 6.7",
+      "Check confounders"
+     ],
+     "active": [
+      0,
+      1
+     ]
+    }
+   ]
+  },
+  {
+   "type": "worked",
+   "title": "Worked example: a confounder",
+   "steps": [
+    "Situation: festival-goers have an RR of 2 for illness.",
+    "But nearly all the sick people live in Old Town, and Old Town residents are more likely to attend.",
+    "Compare festival-goers and non-goers inside Old Town.",
+    "If the RR within Old Town is near 1, then neighborhood (not the festival) explains the link: confounding."
+   ]
+  },
+  {
+   "type": "guided",
+   "questionId": "q-ar-1p"
+  },
+  {
+   "type": "check",
+   "questionIds": [
+    "q-ar-1",
+    "q-rr-1",
+    "q-conf-1",
+    "q-conf-2"
+   ]
+  },
+  {
+   "type": "summary",
+   "cardId": "card-lab-attack-rr-confounding",
+   "bullets": [
+    "Attack rate = ill \u00f7 at risk.",
+    "Relative risk = exposed attack rate \u00f7 unexposed attack rate.",
+    "A high RR suggests a link; it does not prove cause.",
+    "A confounder is tied to both exposure and illness; compare within groups to check."
+   ]
+  }
+ ]
+}

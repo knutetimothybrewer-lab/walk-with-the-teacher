@@ -1,0 +1,301 @@
+[
+ {
+  "id": "q-lab-alert",
+  "module": "lab",
+  "concept": "outbreak-baseline",
+  "type": "mc",
+  "difficulty": 2,
+  "trigger": "sim-alert",
+  "prompt": "Riverton ERs usually see about 5 stomach-illness visits a day. Today there were 17. What is the best first step?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Compare against the baseline over several days and start an investigation: this is well above expected.",
+    "feedback": "Yes: an outbreak is more cases than expected for that place and time. 17 against 5 is far outside normal variation.",
+    "correct": true
+   },
+   {
+    "id": "b",
+    "text": "Ignore it. Some days are always busy.",
+    "feedback": "Some day-to-day variation is normal, but 17 vs. 5 is far beyond it.",
+    "misconception": "alert-ignore"
+   },
+   {
+    "id": "c",
+    "text": "Announce the source immediately.",
+    "feedback": "You cannot name a source before collecting evidence.",
+    "misconception": "alert-jump"
+   },
+   {
+    "id": "d",
+    "text": "Wait for the monthly report.",
+    "feedback": "Waiting lets an outbreak grow. Surveillance exists for early detection.",
+    "misconception": "alert-ignore"
+   }
+  ],
+  "explanation": "An outbreak is more cases than expected in a place and time. You decide by comparing with the normal baseline.",
+  "context": "sim:lab",
+  "seconds": 40,
+  "hint": "Compare today to what is normal."
+ },
+ {
+  "id": "q-lab-sample",
+  "module": "lab",
+  "concept": "sample-size",
+  "type": "mc",
+  "difficulty": 2,
+  "trigger": "sim-sample",
+  "prompt": "You interviewed 6 sick people and 5 ate at the diner. A teammate says the diner is definitely the source. What is the best response?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Six interviews is a small sample; results can change a lot with different people, so get more data and a comparison group.",
+    "feedback": "Right: small samples vary widely. Resampling shows how much the answer can move.",
+    "correct": true
+   },
+   {
+    "id": "b",
+    "text": "Agree: 5 of 6 is nearly all of them.",
+    "feedback": "Without a comparison group, you do not know how many healthy people also ate there.",
+    "misconception": "sample-small-ok"
+   },
+   {
+    "id": "c",
+    "text": "Stop investigating: the source is found.",
+    "feedback": "Stopping early on thin evidence risks the wrong source.",
+    "misconception": "sample-small-ok"
+   },
+   {
+    "id": "d",
+    "text": "Interview only people who ate at the diner.",
+    "feedback": "That biases the sample toward your guess.",
+    "misconception": "sample-small-ok"
+   }
+  ],
+  "explanation": "Small samples bounce around by chance. A comparison group and a larger sample make results more trustworthy.",
+  "context": "sim:lab",
+  "seconds": 40,
+  "hint": "Ask how much the numbers would change with different people."
+ },
+ {
+  "id": "q-lab-bias",
+  "module": "lab",
+  "concept": "bias",
+  "type": "mc",
+  "difficulty": 2,
+  "trigger": "sim-bias",
+  "prompt": "People who got sick may remember and report foods more carefully than healthy people, and may forget details after many days. Which problem does this describe?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Recall bias: memory differs between groups and fades with time.",
+    "feedback": "Yes: recall bias can make exposures look more or less linked to illness.",
+    "correct": true
+   },
+   {
+    "id": "b",
+    "text": "Confounding by neighborhood.",
+    "feedback": "Confounding is a third factor linked to both exposure and illness, not memory.",
+    "misconception": "bias-mix"
+   },
+   {
+    "id": "c",
+    "text": "A larger attack rate.",
+    "feedback": "Attack rate is a calculation, not a source of error in answers.",
+    "misconception": "bias-mix"
+   },
+   {
+    "id": "d",
+    "text": "Reporting delay.",
+    "feedback": "Delay is when data arrives, not how well people remember.",
+    "misconception": "bias-mix"
+   }
+  ],
+  "explanation": "Recall bias comes from imperfect or different memory. It grows with time since the exposure.",
+  "context": "sim:lab",
+  "seconds": 40
+ },
+ {
+  "id": "q-lab-limit-inv",
+  "module": "lab",
+  "concept": "bias",
+  "type": "mc",
+  "difficulty": 2,
+  "trigger": "sim-limits",
+  "prompt": "Which of these is a limitation of the investigation (not the simulation model)?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Many sick people were never tested, so the line list undercounts cases.",
+    "feedback": "Right: underreporting limits how much you can say about the true outbreak.",
+    "correct": true
+   },
+   {
+    "id": "b",
+    "text": "The germ in this lab is fictional.",
+    "feedback": "That is a limitation of the simulation, not of the investigation.",
+    "misconception": "limit-mix"
+   },
+   {
+    "id": "c",
+    "text": "The model leaves out genetic testing.",
+    "feedback": "That is a model limitation.",
+    "misconception": "limit-mix"
+   },
+   {
+    "id": "d",
+    "text": "There are no limitations; the data is perfect.",
+    "feedback": "All investigations have limits: undercounting, memory error, small numbers, confounding.",
+    "misconception": "limit-none"
+   }
+  ],
+  "explanation": "Investigation limits include underreporting, recall bias, small samples, confounding, and the choice of comparison group.",
+  "context": "sim:lab",
+  "seconds": 40
+ },
+ {
+  "id": "q-lab-limit-model",
+  "module": "lab",
+  "concept": "models-limits",
+  "type": "mc",
+  "difficulty": 2,
+  "trigger": "sim-limits",
+  "prompt": "Which of these is a limitation of this simulation model (not of a real investigation)?",
+  "options": [
+   {
+    "id": "a",
+    "text": "The pathogen is fictional and the model leaves out genetic testing of cases.",
+    "feedback": "Right: a model simplifies. Knowing what it omits tells you how far to trust it.",
+    "correct": true
+   },
+   {
+    "id": "b",
+    "text": "Sick people forget what they ate.",
+    "feedback": "That is a limit of real interviews, which the model represents on purpose.",
+    "misconception": "limit-mix"
+   },
+   {
+    "id": "c",
+    "text": "The model is a perfect copy of a real city.",
+    "feedback": "Models are simplified. This one uses invented numbers.",
+    "misconception": "model-real"
+   },
+   {
+    "id": "d",
+    "text": "Models never have limitations.",
+    "feedback": "Every model leaves things out.",
+    "misconception": "model-real"
+   }
+  ],
+  "explanation": "A model is a simplified version of reality. Good scientists name what a model leaves out.",
+  "context": "sim:lab",
+  "seconds": 40
+ },
+ {
+  "id": "q-lab-privacy",
+  "module": "lab",
+  "concept": "privacy-stigma",
+  "type": "mc",
+  "difficulty": 2,
+  "trigger": "sim-ethics",
+  "prompt": "The health department wants to tell the public about the outbreak. Which approach best protects privacy and avoids stigma?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Share counts by broad area and describe the source and advice, without names, addresses, or blaming a group.",
+    "feedback": "Yes: share what people need to protect themselves while de-identifying cases and avoiding stigma.",
+    "correct": true
+   },
+   {
+    "id": "b",
+    "text": "Publish a map with each case's street address.",
+    "feedback": "With few cases in a small neighborhood, addresses can identify individuals.",
+    "misconception": "privacy-publish-all"
+   },
+   {
+    "id": "c",
+    "text": "Say that the outbreak is a problem with one neighborhood's residents.",
+    "feedback": "That stigmatizes a community. The source is a place or product, not the people.",
+    "misconception": "privacy-stigma"
+   },
+   {
+    "id": "d",
+    "text": "Share nothing at all.",
+    "feedback": "People need information to protect themselves.",
+    "misconception": "privacy-publish-all"
+   }
+  ],
+  "explanation": "Public health balances the public's need to know with privacy. Small numbers in small areas can identify people.",
+  "context": "sim:lab",
+  "seconds": 40
+ },
+ {
+  "id": "q-lab-cf",
+  "module": "lab",
+  "concept": "interventions-counterfactual",
+  "type": "mc",
+  "difficulty": 2,
+  "trigger": "sim-counterfactual",
+  "prompt": "Your intervention started on day 9 and the outbreak shrank. How can you tell how many cases it really prevented?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Compare with what would have happened without the intervention (a counterfactual).",
+    "feedback": "Yes: you cannot see the world where you did nothing, so the model compares the two.",
+    "correct": true
+   },
+   {
+    "id": "b",
+    "text": "Count how many cases there were after the intervention.",
+    "feedback": "That ignores what would have happened anyway.",
+    "misconception": "cf-no-compare"
+   },
+   {
+    "id": "c",
+    "text": "Assume the intervention caused every drop.",
+    "feedback": "Outbreaks rise and fall on their own too.",
+    "misconception": "cf-no-compare"
+   },
+   {
+    "id": "d",
+    "text": "It cannot be estimated.",
+    "feedback": "A counterfactual comparison makes an estimate possible.",
+    "misconception": "cf-no-compare"
+   }
+  ],
+  "explanation": "A counterfactual is what would have happened without the action. Comparing it with the actual result estimates the effect.",
+  "context": "sim:lab",
+  "seconds": 40
+ },
+ {
+  "id": "q-lab-cer",
+  "module": "lab",
+  "concept": "confounding",
+  "type": "cer",
+  "difficulty": 3,
+  "trigger": "sim-conclusion",
+  "prompt": "Write your conclusion. Claim: what was the source and how did it spread? Evidence: which data support it (epi curve, map, attack rates, relative risk, lab or inspection results)? Reasoning: why does the evidence point to this source and not the other suspects (including the popular restaurant or the festival)?",
+  "explanation": "A strong conclusion names a source, cites specific numbers, and explains why alternatives (red herrings and confounders) were ruled out.",
+  "context": "sim:lab",
+  "rubric": [
+   {
+    "id": "claim",
+    "criterion": "States a clear source and mode of transmission."
+   },
+   {
+    "id": "evidence",
+    "criterion": "Cites specific data such as attack rates, RR, curve shape, map, or lab/inspection results."
+   },
+   {
+    "id": "reasoning",
+    "criterion": "Explains why the evidence supports the source and rules out alternatives, including confounding."
+   },
+   {
+    "id": "limits",
+    "criterion": "Acknowledges at least one limitation (underreporting, recall bias, small numbers)."
+   }
+  ],
+  "sampleAnswer": "Claim: The outbreak came from the contaminated water supply after the main break in Old Town, and it spread through drinking tap water. Evidence: Reported cases cluster in Old Town on the spot map, and the epi curve shows a long plateau, which fits a continuing source. Among residents I surveyed, those who drank tap water had an attack rate of 48% compared with 6% for those who did not (RR about 8). Water samples from Old Town came back positive. Reasoning: The festival looked linked (RR about 2), but festival-goers are more common in Old Town, so neighborhood is a confounder. Within Old Town the festival RR was near 1. The diner had an RR near 1, so it was a red herring. Limitations: only a small share of cases were reported and my sample was small, so the numbers could change with different people.",
+  "required": true
+ }
+]

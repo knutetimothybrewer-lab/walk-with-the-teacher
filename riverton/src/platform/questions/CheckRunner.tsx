@@ -6,8 +6,8 @@ import { useProfiles } from '../profile/profileStore';
 import type { Answer, EvalResult, Question, ReteachCard } from './types';
 
 /** Runs one check: retry once, then hint + reteach card + the parallel question. */
-export function CheckRunner({ questionId, onDone }: { questionId: string; onDone: (correct: boolean) => void }) {
-  const first = questionById(questionId) as Question;
+export function CheckRunner({ questionId, question, onDone }: { questionId?: string; question?: Question; onDone: (correct: boolean) => void }) {
+  const first = (question ?? questionById(questionId!)) as Question;
   const [q, setQ] = useState<Question>(first);
   const [misses, setMisses] = useState(0);
   const [hintUsed, setHintUsed] = useState(false);

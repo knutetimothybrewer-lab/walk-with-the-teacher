@@ -13,8 +13,8 @@ import './home.css';
 const MODULES = [
   { id: 'city', name: 'City', blurb: 'Plan interventions and watch Riverton’s health and equity change.', icon: Compass, accent: ['--city-a', '--city-b'], phase: 'Coming in Phase 5' },
   { id: 'crossroads', name: 'Crossroads', blurb: 'Branching community decisions: Town Hall and Rumor Mill.', icon: Landmark, accent: ['--cross-a', '--cross-b'], phase: 'Coming in Phase 4' },
-  { id: 'lab', name: 'Sim Lab', blurb: 'Disease Detective: investigate an outbreak with real epidemiology tools.', icon: FlaskConical, accent: ['--lab-a', '--lab-b'], phase: 'Coming in Phase 3' },
-] as const;
+  { id: 'lab', name: 'Sim Lab', blurb: 'Disease Detective: investigate an outbreak with real epidemiology tools.', icon: FlaskConical, accent: ['--lab-a', '--lab-b'], phase: 'Open Sim Lab', href: '/lab' },
+] as const satisfies readonly { id: string; name: string; blurb: string; icon: unknown; accent: readonly string[]; phase: string; href?: string }[];
 const STORY = ['Orientation', 'City: Plan', 'Crossroads: Town Hall', 'Sim Lab: Outbreak', 'Crossroads: Rumor Mill', 'Wrap-up'];
 
 function Welcome() {
@@ -65,7 +65,7 @@ export default function Home() {
             <h2>{m.name}</h2><p>{m.blurb}</p>
             <div className="meter" role="img" aria-label={`Mastery ${pct(m.id)}%`}><i style={{ width: `${pct(m.id)}%` }} /></div>
             <small>Mastery {pct(m.id)}%</small>
-            <button className="btn" disabled style={{ ['--accent-a' as string]: `var(${m.accent[0]})` }}>{m.phase}</button>
+            {'href' in m ? <Link className="btn" to={m.href} style={{ ['--accent-a' as string]: `var(${m.accent[0]})`, textDecoration: 'none' }}>{m.phase}</Link> : <button className="btn" disabled style={{ ['--accent-a' as string]: `var(${m.accent[0]})` }}>{m.phase}</button>}
           </motion.div>
         ))}
       </div>

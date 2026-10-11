@@ -30,3 +30,16 @@ Interventions → determinants → behaviors/exposures → outcomes, one tick pe
 - Sugary-drink taxes reduce purchases (Philadelphia, Berkeley evaluations); minimum wage evidence on health is mixed, so its effect is set small.
 
 Teachers: tuning values are all in `src/modules/city/content/tuning.json` and can be edited without code changes.
+
+## Sim Lab: Outbreak in Riverton
+
+The pathogen, places and people are fictional. Parameters live in `src/modules/lab/labs/outbreak/params.json` and are shown to students in the "Under the hood" panel.
+
+- **Investigation steps** follow the CDC's 10 steps of an outbreak investigation (CDC Field Epidemiology Manual; CDC "Steps of an Outbreak Investigation"): verify the diagnosis and confirm the outbreak, define and find cases, describe by time/place/person, develop and test hypotheses, implement control measures, communicate. The scaffolded core path covers detection, case definition, hypothesis, data collection, analysis, intervention, and communication.
+- **Pathogen behavior** is modeled on norovirus-type gastroenteritis as described in CDC clinical overviews: incubation about 12–72 hours (right-skewed, median 36 h), illness lasting 1–4 days, about a quarter of infections without symptoms, and person-to-person spread mainly in households and institutions (schools, nursing homes).
+- **Surveillance pyramid**: illness → seeks care → specimen → lab confirmation → report, with reporting delay of 3–6 days (the concept used in CDC FoodNet burden-of-illness work). The simulated rates (25% seek care, 50% tested, 85% reported) are teaching values chosen so that reported cases are well under a tenth of true cases; real rates vary by pathogen and place.
+- **Source scenarios** (water main break, festival vendor, public pool, person-to-person) are textbook examples of continuous, point, continuous, and propagated epidemic curves. Each seed's curve shape is checked by unit tests.
+- **Recall bias**: forgetting grows with days since exposure; cases over-report exposures slightly more than non-cases.
+- **Counterfactuals** use common random numbers: every resident keeps the same random draws, so the "no action" and "acted earlier" runs differ only because of the intervention.
+- **Compliance** with boil-water, exclusion, and hygiene measures is a function of community trust (`complianceFromTrust` in `src/platform/sharedState.ts`), which Crossroads will update.
+- **Limits** (shown to students): no genetic testing of the germ, simplified reporting systems, no behavior change beyond following or ignoring a notice, a single true source per outbreak.

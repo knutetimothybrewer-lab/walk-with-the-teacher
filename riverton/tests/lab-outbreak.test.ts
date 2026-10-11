@@ -168,3 +168,12 @@ describe('lab engine interface and purity', () => {
     }
   });
 });
+
+describe('shared state link: community trust drives compliance', () => {
+  it('higher trust means more compliance, which means fewer cases after a boil-water notice', async () => {
+    const { complianceFromTrust } = await import('../src/platform/sharedState');
+    expect(complianceFromTrust(80)).toBeGreaterThan(complianceFromTrust(20));
+    const t = viableTruth(2, 'water'); const iv: M.Iv[] = [{ kind: 'boil_water', day: 6 }];
+    expect(cases(t, iv, complianceFromTrust(90))).toBeLessThan(cases(t, iv, complianceFromTrust(10)));
+  });
+});
