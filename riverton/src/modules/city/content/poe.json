@@ -1,0 +1,196 @@
+{
+ "hospital": {
+  "concept": "upstream-downstream",
+  "expect": {
+   "lifeExpectancy": 1,
+   "infantMortality": -1,
+   "preventableER": -1
+  },
+  "lag": "A hospital mainly adds emergency capacity, so chronic outcomes move very little. Its value shows up in emergencies such as a heat wave."
+ },
+ "clinic": {
+  "concept": "prevention-levels",
+  "expect": {
+   "preventableER": -1,
+   "vaccination": 1,
+   "uninsured": -1
+  },
+  "lag": "Primary care catches problems early, so visits for care that could have been handled at a clinic fall within a year or two."
+ },
+ "mobile_van": {
+  "concept": "distance-access",
+  "expect": {
+   "vaccination": 1,
+   "preventableER": -1
+  },
+  "lag": "A van brings care to people far from a clinic, but with fewer services, so effects are smaller."
+ },
+ "supermarket": {
+  "concept": "food-access",
+  "expect": {
+   "obesity": -1,
+   "diabetes": -1
+  },
+  "lag": "Diet changes slowly, and chronic disease slower still, so effects appear over years and are modest unless paired with education and economic support."
+ },
+ "farmers_market": {
+  "concept": "food-access",
+  "expect": {
+   "obesity": -1,
+   "diabetes": -1
+  },
+  "lag": "A weekly market is cheap and quick to start but reaches fewer people, so changes are small."
+ },
+ "corner_store": {
+  "concept": "food-access",
+  "expect": {
+   "obesity": -1,
+   "diabetes": -1
+  },
+  "lag": "Healthier items in existing stores improve access fast and cheaply, with small long-run effects."
+ },
+ "water_upgrade": {
+  "concept": "environmental-health",
+  "expect": {
+   "waterborne": -1,
+   "leadElevated": -1
+  },
+  "lag": "Safer water cuts waterborne illness within months. Lead exposure also depends on pipes, so it changes less."
+ },
+ "lead_replacement": {
+  "concept": "environmental-health",
+  "expect": {
+   "leadElevated": -1
+  },
+  "lag": "Removing lead pipes lowers children's blood lead slowly, over one to two years, because lead leaves the body slowly."
+ },
+ "ymca": {
+  "concept": "sdoh",
+  "expect": {
+   "obesity": -1,
+   "hypertension": -1,
+   "mentalDays": -1
+  },
+  "lag": "More activity and connection lower blood pressure and stress over years, if people can afford and reach the center."
+ },
+ "park": {
+  "concept": "sdoh",
+  "expect": {
+   "obesity": -1,
+   "mentalDays": -1,
+   "asthma": -1
+  },
+  "lag": "Green space invites activity and cuts stress, and trees clean the air a little. Trees take years to grow."
+ },
+ "sidewalks": {
+  "concept": "sdoh",
+  "expect": {
+   "obesity": -1,
+   "hypertension": -1
+  },
+  "lag": "Safe sidewalks make walking a daily habit, which builds up slowly into better heart health."
+ },
+ "bus_route": {
+  "concept": "distance-access",
+  "expect": {
+   "preventableER": -1,
+   "uninsured": -1
+  },
+  "lag": "A bus line does not treat anyone, but it brings clinics, jobs, and groceries within reach."
+ },
+ "chw_outreach": {
+  "concept": "prevention-levels",
+  "expect": {
+   "preventableER": -1,
+   "vaccination": 1
+  },
+  "lag": "Trusted health workers help people use the care that exists, so use of preventive care rises within months."
+ },
+ "school_clinic": {
+  "concept": "prevention-levels",
+  "expect": {
+   "asthma": -1,
+   "vaccination": 1
+  },
+  "lag": "Care at school reaches children without parents missing work, so vaccination and asthma control improve."
+ },
+ "nutrition_ed": {
+  "concept": "upstream-downstream",
+  "expect": {
+   "obesity": -1,
+   "diabetes": -1
+  },
+  "lag": "Education shifts habits slowly, and works best alongside better food access."
+ },
+ "insurance_drive": {
+  "concept": "healthcare-access",
+  "expect": {
+   "uninsured": -1,
+   "preventableER": -1
+  },
+  "lag": "Enrollment help raises coverage within months, and people with coverage use clinics instead of the ER."
+ },
+ "mental_health": {
+  "concept": "prevention-levels",
+  "expect": {
+   "mentalDays": -1
+  },
+  "lag": "Counseling lowers stress and poor mental health days within the first year."
+ },
+ "factory_controls": {
+  "concept": "environmental-health",
+  "expect": {
+   "asthma": -1
+  },
+  "lag": "Cleaner air lowers children's asthma attacks within a year or two."
+ },
+ "tree_buffer": {
+  "concept": "environmental-health",
+  "expect": {
+   "asthma": -1
+  },
+  "lag": "Trees take years to grow, so air benefits arrive slowly."
+ },
+ "mixed_income_redevelopment": {
+  "concept": "unintended-consequences",
+  "expect": {
+   "displacement": 1
+  },
+  "lag": "New market-rate homes raise nearby rents. Over a few years some longtime residents may be priced out."
+ },
+ "affordable_housing": {
+  "concept": "sdoh",
+  "expect": {
+   "mentalDays": -1
+  },
+  "lag": "Stable, decent housing lowers stress, and homes priced for current residents add little rent pressure."
+ },
+ "sugary_tax": {
+  "concept": "upstream-downstream",
+  "expect": {
+   "obesity": -1
+  },
+  "lag": "A price signal shifts what people buy within a year, and weight changes slowly."
+ },
+ "smoke_free": {
+  "concept": "upstream-downstream",
+  "expect": {
+   "asthma": -1
+  },
+  "lag": "Less secondhand smoke lowers children's asthma attacks gradually."
+ },
+ "min_wage": {
+  "concept": "sdoh",
+  "expect": {
+   "mentalDays": -1
+  },
+  "lag": "Higher income reduces money stress, and effects on health build slowly."
+ },
+ "housing_protection": {
+  "concept": "unintended-consequences",
+  "expect": {
+   "displacement": -1
+  },
+  "lag": "Tenant protections slow rising rents so fewer residents are pushed out."
+ }
+}

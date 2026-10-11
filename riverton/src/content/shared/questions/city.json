@@ -1,0 +1,677 @@
+[
+ {
+  "id": "q-sdoh-1",
+  "module": "city",
+  "concept": "sdoh",
+  "type": "mc",
+  "difficulty": 1,
+  "trigger": "lesson-check",
+  "prompt": "Which of these is a social determinant of health?",
+  "options": [
+   {
+    "id": "a",
+    "text": "The quality and affordability of housing in a neighborhood.",
+    "feedback": "Yes: where and how people live shapes health far beyond what happens in a doctor's office.",
+    "correct": true
+   },
+   {
+    "id": "b",
+    "text": "A person's genes.",
+    "feedback": "Genes matter, but they are a biological factor, not a social condition of where people live.",
+    "misconception": "sdoh-individual-only"
+   },
+   {
+    "id": "c",
+    "text": "One lab test result.",
+    "feedback": "A test result is a measurement of health, not a condition that shapes it.",
+    "misconception": "sdoh-individual-only"
+   },
+   {
+    "id": "d",
+    "text": "The brand of someone's shoes.",
+    "feedback": "That is not a condition that systematically shapes health.",
+    "misconception": "sdoh-individual-only"
+   }
+  ],
+  "explanation": "Social determinants of health are the conditions where people are born, live, learn, work, and play. They shape health more than medical care alone.",
+  "context": "lesson:city-sdoh",
+  "seconds": 40,
+  "parallel": "q-sdoh-1p",
+  "hint": "Think about conditions of daily life, not individual measurements."
+ },
+ {
+  "id": "q-sdoh-1p",
+  "module": "city",
+  "concept": "sdoh",
+  "type": "mc",
+  "difficulty": 1,
+  "trigger": "lesson-check",
+  "prompt": "Which of these is a social determinant of health?",
+  "options": [
+   {
+    "id": "a",
+    "text": "A single blood pressure reading.",
+    "feedback": "A reading measures health; it is not a condition of the community.",
+    "misconception": "sdoh-individual-only"
+   },
+   {
+    "id": "b",
+    "text": "A person's favorite food.",
+    "feedback": "Preferences matter less than what food is available and affordable nearby.",
+    "misconception": "sdoh-individual-only"
+   },
+   {
+    "id": "c",
+    "text": "The result of a coin toss.",
+    "feedback": "Chance is not a social condition.",
+    "misconception": "sdoh-individual-only"
+   },
+   {
+    "id": "d",
+    "text": "Whether a neighborhood has a safe place to be physically active.",
+    "feedback": "Right: the built environment is one of the conditions that shape health.",
+    "correct": true
+   }
+  ],
+  "explanation": "Conditions of everyday life, such as housing, income, safe places to play, and schools, are social determinants.",
+  "context": "lesson:city-sdoh",
+  "seconds": 40,
+  "parallel": "q-sdoh-1",
+  "hint": "Think about conditions of daily life, not individual measurements."
+ },
+ {
+  "id": "q-sdoh-2",
+  "module": "city",
+  "concept": "sdoh",
+  "type": "mc",
+  "difficulty": 1,
+  "trigger": "lesson-check",
+  "prompt": "A neighborhood has no safe sidewalks or parks. Which domain of the social determinants of health does this belong to?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Neighborhood and built environment",
+    "feedback": "Yes: sidewalks, parks, and safe streets are part of the built environment.",
+    "correct": true
+   },
+   {
+    "id": "b",
+    "text": "Education access and quality",
+    "feedback": "Education is about schools and learning, not sidewalks or parks.",
+    "misconception": "sdoh-domain-mix"
+   },
+   {
+    "id": "c",
+    "text": "Economic stability",
+    "feedback": "Economic stability is about income, jobs, and housing costs.",
+    "misconception": "sdoh-domain-mix"
+   },
+   {
+    "id": "d",
+    "text": "Health care access and quality",
+    "feedback": "Health care access is about clinics, insurance, and distance to care.",
+    "misconception": "sdoh-domain-mix"
+   }
+  ],
+  "explanation": "The five domains are economic stability, education access and quality, health care access and quality, neighborhood and built environment, and social and community context.",
+  "context": "lesson:city-sdoh",
+  "seconds": 40,
+  "parallel": "q-sdoh-2p",
+  "hint": "Ask what the problem is mainly about."
+ },
+ {
+  "id": "q-sdoh-2p",
+  "module": "city",
+  "concept": "sdoh",
+  "type": "mc",
+  "difficulty": 1,
+  "trigger": "lesson-check",
+  "prompt": "A family spends 60% of its income on rent and often skips meals to pay bills. Which domain of the social determinants of health is this?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Neighborhood and built environment",
+    "feedback": "This family's problem is about money, not sidewalks or parks.",
+    "misconception": "sdoh-domain-mix"
+   },
+   {
+    "id": "b",
+    "text": "Education access and quality",
+    "feedback": "Nothing here is about schooling.",
+    "misconception": "sdoh-domain-mix"
+   },
+   {
+    "id": "c",
+    "text": "Social and community context",
+    "feedback": "That domain is about relationships, trust, and discrimination.",
+    "misconception": "sdoh-domain-mix"
+   },
+   {
+    "id": "d",
+    "text": "Economic stability",
+    "feedback": "Right: income, jobs, and the cost of housing and food are economic stability.",
+    "correct": true
+   }
+  ],
+  "explanation": "Match the problem to the domain: money, schools, care, place, or community.",
+  "context": "lesson:city-sdoh",
+  "seconds": 40,
+  "parallel": "q-sdoh-2",
+  "hint": "Ask what the problem is mainly about."
+ },
+ {
+  "id": "q-sdoh-3",
+  "module": "city",
+  "concept": "sdoh",
+  "type": "mc",
+  "difficulty": 1,
+  "trigger": "lesson-check",
+  "prompt": "Two Riverton neighborhoods 3 miles apart have a 12-year gap in life expectancy. What best explains it?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Differences in conditions such as income, food access, housing, air quality, and access to care.",
+    "feedback": "Yes: these conditions add up over a lifetime and differ greatly between nearby neighborhoods.",
+    "correct": true
+   },
+   {
+    "id": "b",
+    "text": "People in one neighborhood simply make worse choices.",
+    "feedback": "Choices are shaped by what is available. Blaming people hides the conditions.",
+    "misconception": "sdoh-individual-only"
+   },
+   {
+    "id": "c",
+    "text": "It is only due to genes.",
+    "feedback": "Genes cannot explain large differences between nearby neighborhoods.",
+    "misconception": "sdoh-individual-only"
+   },
+   {
+    "id": "d",
+    "text": "It is random.",
+    "feedback": "Large, consistent gaps follow patterns in conditions.",
+    "misconception": "sdoh-individual-only"
+   }
+  ],
+  "explanation": "Differences in conditions of daily life explain much of the gap in health between neighborhoods.",
+  "context": "lesson:city-sdoh",
+  "seconds": 40,
+  "parallel": "q-sdoh-3p",
+  "hint": "What is different about where these people live?"
+ },
+ {
+  "id": "q-sdoh-3p",
+  "module": "city",
+  "concept": "sdoh",
+  "type": "mc",
+  "difficulty": 1,
+  "trigger": "lesson-check",
+  "prompt": "Children living near a highway have triple the asthma rate of children far from it. What best explains this?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Their families care less.",
+    "feedback": "That blames families. The environment is a likelier cause.",
+    "misconception": "sdoh-individual-only"
+   },
+   {
+    "id": "b",
+    "text": "Asthma is only inherited.",
+    "feedback": "Genes matter but cannot explain a threefold difference by location.",
+    "misconception": "sdoh-individual-only"
+   },
+   {
+    "id": "c",
+    "text": "It is a coincidence.",
+    "feedback": "A pattern this strong is unlikely to be chance.",
+    "misconception": "sdoh-individual-only"
+   },
+   {
+    "id": "d",
+    "text": "Traffic pollution and older housing near the highway, which are conditions of the place.",
+    "feedback": "Right: a place-based exposure, not a personal failing.",
+    "correct": true
+   }
+  ],
+  "explanation": "Large gaps between nearby places point to differences in conditions, not in people's character.",
+  "context": "lesson:city-sdoh",
+  "seconds": 40,
+  "parallel": "q-sdoh-3",
+  "hint": "What is different about where these people live?"
+ },
+ {
+  "id": "q-ud-1",
+  "module": "city",
+  "concept": "upstream-downstream",
+  "type": "mc",
+  "difficulty": 1,
+  "trigger": "lesson-check",
+  "prompt": "Which action is the most upstream?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Prescribing an inhaler after an attack.",
+    "feedback": "Treatment is important but downstream.",
+    "misconception": "ud-downstream-confuse"
+   },
+   {
+    "id": "b",
+    "text": "Opening a new hospital burn unit.",
+    "feedback": "Hospital care responds to harm that has already happened.",
+    "misconception": "ud-downstream-confuse"
+   },
+   {
+    "id": "c",
+    "text": "Building affordable housing so fewer families face unstable housing.",
+    "feedback": "Yes: upstream actions change the conditions that cause problems in the first place.",
+    "correct": true
+   },
+   {
+    "id": "d",
+    "text": "Treating asthma attacks in the emergency room.",
+    "feedback": "That is downstream: it responds after someone is already sick.",
+    "misconception": "ud-downstream-confuse"
+   }
+  ],
+  "explanation": "Think of a river. Upstream actions fix what pollutes the water. Downstream actions rescue people already in the current.",
+  "context": "lesson:city-upstream",
+  "seconds": 40,
+  "parallel": "q-ud-1p",
+  "hint": "Which action prevents the problem rather than responding to it?"
+ },
+ {
+  "id": "q-ud-1p",
+  "module": "city",
+  "concept": "upstream-downstream",
+  "type": "mc",
+  "difficulty": 1,
+  "trigger": "lesson-check",
+  "prompt": "Which action is the most upstream?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Training ER staff in asthma care.",
+    "feedback": "Helpful, but still downstream.",
+    "misconception": "ud-downstream-confuse"
+   },
+   {
+    "id": "b",
+    "text": "Requiring cleaner emissions from a factory so fewer children develop asthma.",
+    "feedback": "Right: it prevents the exposure that causes illness.",
+    "correct": true
+   },
+   {
+    "id": "c",
+    "text": "Treating children in the ER during asthma attacks.",
+    "feedback": "That responds after illness.",
+    "misconception": "ud-downstream-confuse"
+   },
+   {
+    "id": "d",
+    "text": "Buying more ambulances.",
+    "feedback": "Ambulances respond to emergencies.",
+    "misconception": "ud-downstream-confuse"
+   }
+  ],
+  "explanation": "Upstream = change the causes. Downstream = respond to the results.",
+  "context": "lesson:city-upstream",
+  "seconds": 40,
+  "parallel": "q-ud-1",
+  "hint": "Which action prevents the problem rather than responding to it?"
+ },
+ {
+  "id": "q-pl-1",
+  "module": "city",
+  "concept": "prevention-levels",
+  "type": "mc",
+  "difficulty": 1,
+  "trigger": "lesson-check",
+  "prompt": "A community offers free blood pressure screenings at a street fair. What level of prevention is this?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Tertiary prevention: managing an existing condition.",
+    "feedback": "Tertiary prevention limits harm in people who already have a disease.",
+    "misconception": "pl-levels"
+   },
+   {
+    "id": "b",
+    "text": "It is not prevention.",
+    "feedback": "Screening is a classic form of prevention.",
+    "misconception": "pl-levels"
+   },
+   {
+    "id": "c",
+    "text": "Secondary prevention: finding a problem early.",
+    "feedback": "Yes: screening catches disease early, when treatment works best.",
+    "correct": true
+   },
+   {
+    "id": "d",
+    "text": "Primary prevention: stopping a problem before it starts.",
+    "feedback": "Primary prevention keeps people from getting the condition, for example with vaccines.",
+    "misconception": "pl-levels"
+   }
+  ],
+  "explanation": "Primary prevention stops a problem before it starts, secondary catches it early, and tertiary limits the harm of an existing problem.",
+  "context": "lesson:city-upstream",
+  "seconds": 40,
+  "parallel": "q-pl-1p",
+  "hint": "Is the illness absent, just starting, or already established?"
+ },
+ {
+  "id": "q-pl-1p",
+  "module": "city",
+  "concept": "prevention-levels",
+  "type": "mc",
+  "difficulty": 1,
+  "trigger": "lesson-check",
+  "prompt": "A clinic offers mammograms to catch breast cancer early. What level of prevention is this?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Not prevention.",
+    "feedback": "Screening is secondary prevention.",
+    "misconception": "pl-levels"
+   },
+   {
+    "id": "b",
+    "text": "Secondary prevention: early detection.",
+    "feedback": "Right: screening finds disease early.",
+    "correct": true
+   },
+   {
+    "id": "c",
+    "text": "Primary prevention.",
+    "feedback": "Primary stops disease from starting.",
+    "misconception": "pl-levels"
+   },
+   {
+    "id": "d",
+    "text": "Tertiary prevention.",
+    "feedback": "Tertiary manages disease already diagnosed.",
+    "misconception": "pl-levels"
+   }
+  ],
+  "explanation": "Screening means finding disease early: secondary prevention.",
+  "context": "lesson:city-upstream",
+  "seconds": 40,
+  "parallel": "q-pl-1",
+  "hint": "Is the illness absent, just starting, or already established?"
+ },
+ {
+  "id": "q-pl-2",
+  "module": "city",
+  "concept": "prevention-levels",
+  "type": "mc",
+  "difficulty": 1,
+  "trigger": "lesson-check",
+  "prompt": "A vaccination clinic gives flu shots before flu season. What level of prevention is this?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Tertiary prevention.",
+    "feedback": "Tertiary manages existing disease.",
+    "misconception": "pl-levels"
+   },
+   {
+    "id": "b",
+    "text": "Treatment only.",
+    "feedback": "Vaccination prevents illness.",
+    "misconception": "pl-levels"
+   },
+   {
+    "id": "c",
+    "text": "Primary prevention: stopping illness before it starts.",
+    "feedback": "Yes: vaccines prevent infection in the first place.",
+    "correct": true
+   },
+   {
+    "id": "d",
+    "text": "Secondary prevention.",
+    "feedback": "Secondary finds disease early.",
+    "misconception": "pl-levels"
+   }
+  ],
+  "explanation": "Vaccines are the classic example of primary prevention.",
+  "context": "lesson:city-upstream",
+  "seconds": 40,
+  "parallel": "q-pl-2p",
+  "hint": "Has anyone become ill yet?"
+ },
+ {
+  "id": "q-pl-2p",
+  "module": "city",
+  "concept": "prevention-levels",
+  "type": "mc",
+  "difficulty": 1,
+  "trigger": "lesson-check",
+  "prompt": "A city adds fluoride to drinking water to prevent cavities. What level of prevention is this?",
+  "options": [
+   {
+    "id": "a",
+    "text": "It is treatment.",
+    "feedback": "It prevents rather than treats.",
+    "misconception": "pl-levels"
+   },
+   {
+    "id": "b",
+    "text": "Primary prevention: stopping problems before they begin.",
+    "feedback": "Right: it prevents cavities from forming.",
+    "correct": true
+   },
+   {
+    "id": "c",
+    "text": "Secondary prevention.",
+    "feedback": "Nobody has been screened here.",
+    "misconception": "pl-levels"
+   },
+   {
+    "id": "d",
+    "text": "Tertiary prevention.",
+    "feedback": "It is not managing existing disease.",
+    "misconception": "pl-levels"
+   }
+  ],
+  "explanation": "If it stops disease before it starts, it is primary prevention.",
+  "context": "lesson:city-upstream",
+  "seconds": 40,
+  "parallel": "q-pl-2",
+  "hint": "Has anyone become ill yet?"
+ },
+ {
+  "id": "q-eq-1",
+  "module": "city",
+  "concept": "equity-equality",
+  "type": "mc",
+  "difficulty": 1,
+  "trigger": "lesson-check",
+  "prompt": "A city gives every neighborhood the same $1 million for clinics, whatever its needs. This is an example of:",
+  "options": [
+   {
+    "id": "a",
+    "text": "Both equity and equality, since they mean the same thing.",
+    "feedback": "They are different ideas, and the difference matters for health gaps.",
+    "misconception": "eq-same-thing"
+   },
+   {
+    "id": "b",
+    "text": "Neither: it is random.",
+    "feedback": "It follows a clear rule, equal shares.",
+    "misconception": "eq-same-thing"
+   },
+   {
+    "id": "c",
+    "text": "Equality: the same for everyone, which may not close gaps.",
+    "feedback": "Yes: equal shares can leave the neighborhoods with the greatest needs behind.",
+    "correct": true
+   },
+   {
+    "id": "d",
+    "text": "Equity: giving each group what it needs.",
+    "feedback": "Equity would give more to the places with the greatest needs.",
+    "misconception": "eq-same-thing"
+   }
+  ],
+  "explanation": "Equality means everyone gets the same. Equity means everyone gets what they need to have a fair chance at good health.",
+  "context": "lesson:city-equity",
+  "seconds": 40,
+  "parallel": "q-eq-1p",
+  "hint": "Does everyone start at the same place?"
+ },
+ {
+  "id": "q-eq-1p",
+  "module": "city",
+  "concept": "equity-equality",
+  "type": "mc",
+  "difficulty": 1,
+  "trigger": "lesson-check",
+  "prompt": "A school gives every student the same size shoes. This is an example of:",
+  "options": [
+   {
+    "id": "a",
+    "text": "Neither.",
+    "feedback": "Giving everyone the same item is equality.",
+    "misconception": "eq-same-thing"
+   },
+   {
+    "id": "b",
+    "text": "Equality: identical treatment, which does not fit everyone.",
+    "feedback": "Right: the same shoes do not help students whose feet are different sizes.",
+    "correct": true
+   },
+   {
+    "id": "c",
+    "text": "Equity.",
+    "feedback": "Equity would give each student shoes that fit.",
+    "misconception": "eq-same-thing"
+   },
+   {
+    "id": "d",
+    "text": "Equity and equality together.",
+    "feedback": "They differ: equal means the same, equitable means fair given needs.",
+    "misconception": "eq-same-thing"
+   }
+  ],
+  "explanation": "Equal treatment can still leave gaps if people start from different places.",
+  "context": "lesson:city-equity",
+  "seconds": 40,
+  "parallel": "q-eq-1",
+  "hint": "Does everyone start at the same place?"
+ },
+ {
+  "id": "q-eq-2",
+  "module": "city",
+  "concept": "equity-equality",
+  "type": "mc",
+  "difficulty": 1,
+  "trigger": "lesson-check",
+  "prompt": "A health department wants to close the life expectancy gap. Which approach is most equitable?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Funding whichever neighborhood asks first.",
+    "feedback": "That rewards who can ask, not who needs help most.",
+    "misconception": "eq-squeaky"
+   },
+   {
+    "id": "b",
+    "text": "Funding the wealthiest neighborhood, since it will use the money well.",
+    "feedback": "That widens the gap.",
+    "misconception": "eq-same-thing"
+   },
+   {
+    "id": "c",
+    "text": "Directing more resources to neighborhoods with the worst outcomes.",
+    "feedback": "Yes: closing a gap means giving more where the need and the gap are greatest.",
+    "correct": true
+   },
+   {
+    "id": "d",
+    "text": "Splitting funds evenly across neighborhoods.",
+    "feedback": "That is equality. It leaves the starting gap largely in place.",
+    "misconception": "eq-same-thing"
+   }
+  ],
+  "explanation": "Equitable approaches direct more to where the gap and need are greatest.",
+  "context": "lesson:city-equity",
+  "seconds": 40,
+  "parallel": "q-eq-2p",
+  "hint": "Where is the need greatest?"
+ },
+ {
+  "id": "q-eq-2p",
+  "module": "city",
+  "concept": "equity-equality",
+  "type": "mc",
+  "difficulty": 1,
+  "trigger": "lesson-check",
+  "prompt": "Flood-prevention money is limited. Which approach is most equitable?",
+  "options": [
+   {
+    "id": "a",
+    "text": "Funding only the cheapest projects.",
+    "feedback": "Cost alone says nothing about fairness.",
+    "misconception": "eq-same-thing"
+   },
+   {
+    "id": "b",
+    "text": "Prioritizing neighborhoods with the highest flood risk and the fewest resources to recover.",
+    "feedback": "Right: focus on greatest need and least capacity.",
+    "correct": true
+   },
+   {
+    "id": "c",
+    "text": "Giving every neighborhood the same amount.",
+    "feedback": "Equal shares ignore different risks.",
+    "misconception": "eq-same-thing"
+   },
+   {
+    "id": "d",
+    "text": "Funding whoever lobbies the loudest.",
+    "feedback": "Loud is not the same as needy.",
+    "misconception": "eq-squeaky"
+   }
+  ],
+  "explanation": "Equity looks at need and outcomes, not just equal shares.",
+  "context": "lesson:city-equity",
+  "seconds": 40,
+  "parallel": "q-eq-2",
+  "hint": "Where is the need greatest?"
+ },
+ {
+  "id": "q-city-cer",
+  "module": "city",
+  "concept": "sdoh",
+  "type": "cer",
+  "difficulty": 3,
+  "trigger": "sim-conclusion",
+  "context": "sim:city",
+  "required": true,
+  "prompt": "Write your conclusion for Close the Gap. Claim: did your plan narrow the gap, and by how much? Evidence: cite numbers from your charts, snapshots, or the Why did this change? panel. Reasoning: explain the mechanism (which determinants and behaviors changed), why outcomes took years, whether your plan was upstream or downstream, whether it was equitable, and one limitation of this model.",
+  "explanation": "A strong conclusion states the result with numbers, traces cause and effect through determinants and behaviors, notes lags and equity, and names what the simplified model leaves out.",
+  "rubric": [
+   {
+    "id": "claim",
+    "criterion": "States whether the gap narrowed and by how much."
+   },
+   {
+    "id": "evidence",
+    "criterion": "Cites specific numbers or trends from the city."
+   },
+   {
+    "id": "mechanism",
+    "criterion": "Explains the causal chain: intervention, then conditions, then behaviors, then outcomes, including lags."
+   },
+   {
+    "id": "equity",
+    "criterion": "Discusses upstream vs. downstream or equity, and who benefited."
+   },
+   {
+    "id": "limits",
+    "criterion": "Names a limitation of the model."
+   }
+  ],
+  "sampleAnswer": "Claim: My plan narrowed the gap between Hillcrest and Eastside by about 2.6 years over ten years. Evidence: In the Trends chart, Eastside life expectancy rose from 69.7 to 72.3, and preventable ER visits fell from 142 to about 100 per 1,000. The Why panel showed most of the ER drop came from the clinic and the community health workers. Reasoning: The clinic raised healthcare access, which increased preventive care and cut ER use within two years, while the supermarket and nutrition education moved diet slowly, so obesity barely changed. Most of my spending was upstream, on conditions like food, housing, and care access, which is why life expectancy kept rising late in the run, because it moves slowest. It was equitable because I spent almost everything in Eastside, and the model showed little citywide change from the same money in Hillcrest. One limitation is that the model is a simplified teaching tool with invented numbers, so the real effects would differ."
+ }
+]

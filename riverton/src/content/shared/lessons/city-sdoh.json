@@ -1,0 +1,107 @@
+{
+ "id": "city-sdoh",
+ "title": "Social determinants of health",
+ "module": "city",
+ "concepts": [
+  "sdoh"
+ ],
+ "minutes": 3,
+ "blocks": [
+  {
+   "type": "hook",
+   "text": "Hillcrest and Eastside are three miles apart. Life expectancy differs by twelve years. What is different about the two places?",
+   "map": [
+    "hillcrest",
+    "eastside"
+   ]
+  },
+  {
+   "type": "explain",
+   "chunks": [
+    {
+     "text": "**Social determinants of health** are the conditions where people are born, live, learn, work, and play. They shape health more than medical care alone.",
+     "terms": [
+      "determinants of health"
+     ]
+    },
+    {
+     "text": "There are five domains: **economic stability**, **education**, **health care access**, **neighborhood and built environment**, and **social and community context**. In Riverton\u2019s City model you will see them as ten conditions that you can change.",
+     "terms": [
+      "health equity"
+     ]
+    }
+   ]
+  },
+  {
+   "type": "visual",
+   "title": "From conditions to health",
+   "steps": [
+    {
+     "caption": "Start with a condition of a place: for example, no full-service grocery nearby.",
+     "nodes": [
+      "Condition: food access"
+     ],
+     "active": [
+      0
+     ]
+    },
+    {
+     "caption": "The condition shapes what people can easily do or eat.",
+     "nodes": [
+      "Condition: food access",
+      "Behavior: diet"
+     ],
+     "active": [
+      0,
+      1
+     ]
+    },
+    {
+     "caption": "Over years, behaviors and exposures add up to health outcomes.",
+     "nodes": [
+      "Condition: food access",
+      "Behavior: diet",
+      "Outcome: diabetes"
+     ],
+     "active": [
+      0,
+      1,
+      2
+     ]
+    }
+   ]
+  },
+  {
+   "type": "worked",
+   "title": "Worked example: which domain?",
+   "steps": [
+    "Situation: Children near a busy highway breathe more polluted air.",
+    "Ask: is this about money, school, care, the place, or community?",
+    "It is about the place, so the domain is the neighborhood and built environment.",
+    "Because it is a condition and not a personal choice, the solution is also at the community level: filters, trees, cleaner emissions."
+   ]
+  },
+  {
+   "type": "guided",
+   "questionId": "q-sdoh-1p"
+  },
+  {
+   "type": "check",
+   "questionIds": [
+    "q-sdoh-1",
+    "q-sdoh-2",
+    "q-sdoh-3"
+   ]
+  },
+  {
+   "type": "summary",
+   "cardId": "card-city-sdoh",
+   "bullets": [
+    "Social determinants are the conditions where people live, learn, work, and play.",
+    "There are five domains: economic, education, health care, neighborhood, community.",
+    "Gaps between nearby neighborhoods usually come from differences in conditions.",
+    "In the City model, interventions change conditions first, then behaviors, then outcomes."
+   ]
+  }
+ ]
+}

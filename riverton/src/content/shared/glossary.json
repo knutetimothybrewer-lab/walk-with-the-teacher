@@ -82,5 +82,17 @@
  {
   "term": "trusted messenger",
   "definition": "A person the community already trusts, who helps accurate health information be believed."
+ },
+ {
+  "term": "upstream",
+  "definition": "Actions that change the causes of poor health, such as housing, income, and clean air."
+ },
+ {
+  "term": "downstream",
+  "definition": "Actions that respond after harm has happened, such as emergency care."
+ },
+ {
+  "term": "prevention",
+  "definition": "Primary stops problems before they start, secondary finds them early, and tertiary limits harm from existing problems."
  }
 ]

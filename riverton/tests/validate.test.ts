@@ -11,7 +11,7 @@ const base = (): Bundle => ({ questions: dir('questions').flat(), lessons: dir('
 describe('content validator', () => {
   it('shipped content has no errors', () => expect(validateBundle(base()).errors).toEqual([]));
   it('catches a distractor without a reteach card', () => {
-    const b = base(); (b.questions[0] as any).options[0].misconception = 'nope';
+    const b = base(); const q = b.questions.find((x) => x.type === 'mc') as any; q.options.find((o: any) => !o.correct).misconception = 'nope';
     expect(validateBundle(b).errors.join()).toContain('no reteach card');
   });
   it('catches a check question without a parallel', () => {

@@ -1,0 +1,107 @@
+{
+ "det": {
+  "economic": [
+   "Economic stability",
+   "Steady income and jobs"
+  ],
+  "healthcare": [
+   "Healthcare access",
+   "Nearby, affordable care and insurance"
+  ],
+  "food": [
+   "Food access",
+   "Fresh, affordable food nearby"
+  ],
+  "water": [
+   "Water quality",
+   "Safe drinking water"
+  ],
+  "air": [
+   "Air quality",
+   "Clean air"
+  ],
+  "walkability": [
+   "Built environment",
+   "Safe places to walk, bike and play"
+  ],
+  "cohesion": [
+   "Social cohesion",
+   "Neighbors who know and support each other"
+  ],
+  "education": [
+   "Education",
+   "Schooling and health knowledge"
+  ],
+  "housing": [
+   "Housing quality",
+   "Safe, affordable, stable homes"
+  ],
+  "safety": [
+   "Safety",
+   "Low crime and safe streets"
+  ]
+ },
+ "beh": {
+  "diet": [
+   "Diet quality",
+   "How healthy people's usual food is"
+  ],
+  "activity": [
+   "Physical activity",
+   "How much people move each day"
+  ],
+  "preventiveCare": [
+   "Preventive care use",
+   "Screenings, vaccines, regular check-ups"
+  ],
+  "erAsPrimary": [
+   "ER used as primary care",
+   "Going to the ER for care a clinic could provide"
+  ],
+  "smoking": [
+   "Smoking",
+   "Share who smoke"
+  ],
+  "stress": [
+   "Stress",
+   "Ongoing strain from money, housing, safety"
+  ],
+  "leadExposure": [
+   "Lead exposure",
+   "Contact with lead in water, paint, dust"
+  ],
+  "pollutantExposure": [
+   "Pollutant exposure",
+   "Breathing polluted air"
+  ]
+ },
+ "out": {
+  "lifeExpectancy": "Life expectancy",
+  "obesity": "Obesity",
+  "diabetes": "Type 2 diabetes",
+  "hypertension": "High blood pressure",
+  "asthma": "Childhood asthma",
+  "waterborne": "Waterborne illness",
+  "leadElevated": "Child blood lead",
+  "infantMortality": "Infant mortality",
+  "preventableER": "Preventable ER visits",
+  "vaccination": "Vaccination",
+  "uninsured": "Uninsured",
+  "mentalDays": "Poor mental health days",
+  "displacement": "Residents displaced"
+ },
+ "short": {
+  "lifeExpectancy": "Life exp.",
+  "obesity": "Obesity",
+  "diabetes": "Diabetes",
+  "hypertension": "Hypertension",
+  "asthma": "Asthma",
+  "waterborne": "Waterborne",
+  "leadElevated": "Blood lead",
+  "infantMortality": "Infant mort.",
+  "preventableER": "Prev. ER",
+  "vaccination": "Vaccination",
+  "uninsured": "Uninsured",
+  "mentalDays": "Mental health"
+ }
+}

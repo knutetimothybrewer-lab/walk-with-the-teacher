@@ -598,5 +598,117 @@
    "Opportunity cost is what you give up by choosing one option over the next best.",
    "Ask what you lose, and who bears it."
   ]
+ },
+ {
+  "id": "sdoh-individual-only",
+  "concept": "sdoh",
+  "title": "Conditions, not just individuals",
+  "body": [
+   "Social determinants are the conditions of daily life: housing, income, schools, food, safe places, and care.",
+   "Genes and single test results describe a person. Determinants describe the place and system around people."
+  ],
+  "steps": [
+   {
+    "caption": "Condition",
+    "art": "A neighborhood with no safe park."
+   },
+   {
+    "caption": "Effect",
+    "art": "Less daily activity."
+   },
+   {
+    "caption": "Outcome",
+    "art": "Higher rates of obesity and heart disease over time."
+   }
+  ]
+ },
+ {
+  "id": "sdoh-domain-mix",
+  "concept": "sdoh",
+  "title": "Five domains",
+  "body": [
+   "The five domains are: economic stability, education access and quality, health care access and quality, neighborhood and built environment, and social and community context.",
+   "Ask what the problem is mainly about: money, school, care, the place itself, or relationships and trust."
+  ]
+ },
+ {
+  "id": "ud-downstream-confuse",
+  "concept": "upstream-downstream",
+  "title": "Upstream and downstream",
+  "body": [
+   "Upstream actions change the causes: housing, income, clean air, safe streets.",
+   "Downstream actions respond after harm: ER care, rescue, and treatment. They matter, but they do not stop the next person from getting sick."
+  ],
+  "steps": [
+   {
+    "caption": "Upstream",
+    "art": "Fix what pollutes the river."
+   },
+   {
+    "caption": "Downstream",
+    "art": "Rescue people from the current."
+   }
+  ]
+ },
+ {
+  "id": "pl-levels",
+  "concept": "prevention-levels",
+  "title": "Three levels of prevention",
+  "body": [
+   "Primary prevention stops a problem before it starts (vaccines, clean water).",
+   "Secondary prevention finds it early (screenings).",
+   "Tertiary prevention limits harm from an existing problem (rehab, managing chronic disease)."
+  ],
+  "steps": [
+   {
+    "caption": "Before",
+    "art": "Primary: nobody is sick yet."
+   },
+   {
+    "caption": "Early",
+    "art": "Secondary: catch it quickly."
+   },
+   {
+    "caption": "After",
+    "art": "Tertiary: manage what exists."
+   }
+  ]
+ },
+ {
+  "id": "eq-same-thing",
+  "concept": "equity-equality",
+  "title": "Equal is not the same as equitable",
+  "body": [
+   "Equality means everyone gets the same share. Equity means everyone gets what they need for a fair chance at good health.",
+   "If people start in different places, equal shares can leave gaps in place."
+  ],
+  "steps": [
+   {
+    "caption": "Equality",
+    "art": "Same boxes for everyone."
+   },
+   {
+    "caption": "Equity",
+    "art": "Boxes that match each person's height."
+   }
+  ]
+ },
+ {
+  "id": "eq-squeaky",
+  "concept": "equity-equality",
+  "title": "Need, not noise",
+  "body": [
+   "Equitable decisions look at need and outcomes, not who is most able to ask.",
+   "People with the most need often have the least time or power to lobby."
+  ]
+ },
+ {
+  "id": "graph-misread",
+  "concept": "reading-graphs",
+  "title": "Compare the size of changes",
+  "body": [
+   "To compare neighborhoods on a graph, measure the change in each from the same starting point.",
+   "Direction alone is not enough: a big drop and a small drop both go down."
+  ]
  }
 ]

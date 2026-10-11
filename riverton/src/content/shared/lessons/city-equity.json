@@ -1,0 +1,100 @@
+{
+ "id": "city-equity",
+ "title": "Health equity vs. equality",
+ "module": "city",
+ "concepts": [
+  "equity-equality"
+ ],
+ "minutes": 3,
+ "blocks": [
+  {
+   "type": "hook",
+   "text": "The city has $4 million. Should each of eight neighborhoods get $500,000, or should the money go where the need is greatest?"
+  },
+  {
+   "type": "explain",
+   "chunks": [
+    {
+     "text": "**Equality** means everyone gets the same share. **Health equity** means everyone has a fair chance to be as healthy as possible, which sometimes means giving more to those with more needs.",
+     "terms": [
+      "health equity"
+     ]
+    },
+    {
+     "text": "The **health equity gap** in Riverton is the difference in life expectancy between the best-off and worst-off neighborhoods. A plan that is equal but not equitable can leave that gap in place.",
+     "terms": [
+      "health equity gap"
+     ]
+    }
+   ]
+  },
+  {
+   "type": "visual",
+   "title": "Equal vs. equitable",
+   "steps": [
+    {
+     "caption": "Equality: every neighborhood gets the same amount.",
+     "nodes": [
+      "Same for everyone"
+     ],
+     "active": [
+      0
+     ]
+    },
+    {
+     "caption": "But neighborhoods start in different places.",
+     "nodes": [
+      "Same for everyone",
+      "Different starting points"
+     ],
+     "active": [
+      1
+     ]
+    },
+    {
+     "caption": "Equity: put more where the need and gap are greatest, so outcomes become fairer.",
+     "nodes": [
+      "Different starting points",
+      "More where need is greatest",
+      "Smaller gap"
+     ],
+     "active": [
+      1,
+      2
+     ]
+    }
+   ]
+  },
+  {
+   "type": "worked",
+   "title": "Worked example: split the money",
+   "steps": [
+    "Situation: Eight neighborhoods, one with a life expectancy 12 years lower.",
+    "Equality: $500,000 each. The low-income neighborhood stays far behind.",
+    "Equity: put most of the money in the worst-off neighborhood.",
+    "Check: did the gap shrink? That is the test of whether it was equitable."
+   ]
+  },
+  {
+   "type": "guided",
+   "questionId": "q-eq-1p"
+  },
+  {
+   "type": "check",
+   "questionIds": [
+    "q-eq-1",
+    "q-eq-2"
+   ]
+  },
+  {
+   "type": "summary",
+   "cardId": "card-city-equity",
+   "bullets": [
+    "Equality means the same for everyone.",
+    "Equity means giving what each group needs for a fair chance at good health.",
+    "Equal shares can leave gaps in place.",
+    "The test: does the gap between neighborhoods get smaller?"
+   ]
+  }
+ ]
+}

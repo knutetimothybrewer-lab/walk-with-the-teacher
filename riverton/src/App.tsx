@@ -8,6 +8,7 @@ import LessonPlayer from './platform/learn/LessonPlayer';
 import Notebook from './platform/ui/Notebook';
 import { lazy, Suspense } from 'react';
 const TeacherPage = lazy(() => import('./platform/teacher/TeacherPage'));
+const CityPage = lazy(() => import('./modules/city/ui/CityPage'));
 const LabPage = lazy(() => import('./modules/lab/ui/LabPage'));
 const CrossroadsHub = lazy(() => import('./modules/crossroads/ui/CrossroadsHub'));
 const XrPlayer = lazy(() => import('./modules/crossroads/ui/Player'));
@@ -23,6 +24,7 @@ export default function App() {
           <Route path="/lesson/:id" element={<LessonPlayer />} />
           <Route path="/notebook" element={<Notebook />} />
           <Route path="/teacher" element={<Suspense fallback={<main className="page">Loading…</main>}><TeacherPage /></Suspense>} />
+          <Route path="/city" element={<Suspense fallback={<main className="page">Loading City…</main>}><CityPage /></Suspense>} />
           <Route path="/lab" element={<Suspense fallback={<main className="page">Loading Sim Lab…</main>}><LabPage /></Suspense>} />
           <Route path="/crossroads" element={<Suspense fallback={<main className="page">Loading Crossroads…</main>}><CrossroadsHub /></Suspense>} />
           <Route path="/crossroads/:id" element={<Suspense fallback={<main className="page">Loading…</main>}><XrPlayer /></Suspense>} />

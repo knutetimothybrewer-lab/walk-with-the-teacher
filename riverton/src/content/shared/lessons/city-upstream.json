@@ -1,0 +1,101 @@
+{
+ "id": "city-upstream",
+ "title": "Upstream vs. downstream, and levels of prevention",
+ "module": "city",
+ "concepts": [
+  "upstream-downstream",
+  "prevention-levels"
+ ],
+ "minutes": 3,
+ "blocks": [
+  {
+   "type": "hook",
+   "text": "A boy keeps falling into a river. You can keep rescuing him downstream, or you can walk upstream and find out who is pushing people in. Which saves more people?"
+  },
+  {
+   "type": "explain",
+   "chunks": [
+    {
+     "text": "**Downstream** actions respond after harm, such as ER care. **Upstream** actions change the causes, such as housing, clean air, and income. Upstream work usually takes longer to show results but prevents more illness.",
+     "terms": [
+      "upstream"
+     ]
+    },
+    {
+     "text": "**Primary prevention** stops a problem before it starts (vaccines). **Secondary prevention** catches it early (screenings). **Tertiary prevention** limits harm from an existing problem (managing diabetes).",
+     "terms": [
+      "prevention"
+     ]
+    }
+   ]
+  },
+  {
+   "type": "visual",
+   "title": "Three levels of prevention",
+   "steps": [
+    {
+     "caption": "Primary: nobody is sick yet. Stop the problem from starting.",
+     "nodes": [
+      "Healthy",
+      "Primary: vaccines, clean water"
+     ],
+     "active": [
+      1
+     ]
+    },
+    {
+     "caption": "Secondary: the illness is just starting. Catch it early.",
+     "nodes": [
+      "Early illness",
+      "Secondary: screenings"
+     ],
+     "active": [
+      1
+     ]
+    },
+    {
+     "caption": "Tertiary: the illness is established. Limit the harm.",
+     "nodes": [
+      "Established illness",
+      "Tertiary: treatment, rehab"
+     ],
+     "active": [
+      1
+     ]
+    }
+   ]
+  },
+  {
+   "type": "worked",
+   "title": "Worked example: classify the program",
+   "steps": [
+    "Situation: Free blood pressure checks at a community event.",
+    "Is anyone sick yet? Some people may have high blood pressure and not know it.",
+    "The program finds it early, so it is secondary prevention.",
+    "It is more upstream than ER care, but less upstream than raising incomes."
+   ]
+  },
+  {
+   "type": "guided",
+   "questionId": "q-ud-1p"
+  },
+  {
+   "type": "check",
+   "questionIds": [
+    "q-ud-1",
+    "q-pl-1",
+    "q-pl-2"
+   ]
+  },
+  {
+   "type": "summary",
+   "cardId": "card-city-upstream",
+   "bullets": [
+    "Upstream actions change causes. Downstream actions respond to harm.",
+    "Primary prevention stops problems before they start.",
+    "Secondary prevention finds them early.",
+    "Tertiary prevention limits harm from existing problems."
+   ]
+  }
+ ]
+}

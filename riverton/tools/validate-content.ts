@@ -16,6 +16,16 @@ const bundle: Bundle = {
   world: json('riverton-world.json'), castIds: CAST.map((c) => c.id),
 };
 const r = validateBundle(bundle, process.argv.includes('--strict'));
+const tuning = JSON.parse(readFileSync(join(import.meta.dirname, '..', 'src', 'modules', 'city', 'content', 'tuning.json'), 'utf8')) as { interventions: Record<string, unknown>; policies: Record<string, unknown> };
+const poe = JSON.parse(readFileSync(join(import.meta.dirname, '..', 'src', 'modules', 'city', 'content', 'poe.json'), 'utf8')) as Record<string, { concept: string; expect: Record<string, number>; lag: string }>;
+for (const id of [...Object.keys(tuning.interventions), ...Object.keys(tuning.policies)]) {
+  const e = poe[id];
+  if (!e) { r.errors.push(`City: ${id} has no Predict-Observe-Explain entry`); continue; }
+  if (!Object.keys(e.expect).length) r.errors.push(`City: ${id} POE has no expected outcome`);
+  if (!e.lag || e.lag.length < 20) r.errors.push(`City: ${id} POE has no explanation`);
+  if (!bundle.concepts.some((c) => c.id === e.concept)) r.errors.push(`City: ${id} POE concept ${e.concept} is not a known concept`);
+}
+console.log(`city: ${Object.keys(tuning.interventions).length} interventions and ${Object.keys(tuning.policies).length} policies, all with POE entries`);
 const xrDir = join(import.meta.dirname, '..', 'src', 'modules', 'crossroads', 'content');
 const qIds = new Set(bundle.questions.map((q) => q.id)); const cast = new Set(CAST.map((c) => c.id));
 for (const f of readdirSync(xrDir).filter((x) => x.endsWith('.json'))) {
