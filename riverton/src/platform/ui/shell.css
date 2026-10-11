@@ -1,0 +1,9 @@
+.topbar { position: sticky; top: 0; z-index: 10; display: flex; gap: .5rem; align-items: center; padding: .6rem 16px; flex-wrap: wrap;
+  background: color-mix(in srgb, var(--bg-2) 88%, transparent); backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); }
+.topbar .btn { padding: .45em .9em; font-size: .9rem; text-decoration: none; }
+.topbar .grow { flex: 1; }
+.brand { font-size: 1.5rem; color: var(--ink); text-decoration: none; background: linear-gradient(90deg, var(--city-a), var(--cross-a)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+@keyframes bob { 50% { transform: translateY(-4px); } }
+@keyframes drift { from { transform: translateX(-20%); } to { transform: translateX(120vw); } }
+@keyframes pop { 0% { transform: scale(.7); opacity: 0; } 70% { transform: scale(1.08); } 100% { transform: scale(1); opacity: 1; } }
+@keyframes pulse { 0%,100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--lab-b) 60%, transparent); } 50% { box-shadow: 0 0 0 14px transparent; } }
