@@ -5,20 +5,20 @@ from ._h import mc, ms, match, cr
 
 # ---------------- U6-D1 Injury risk overview ----------------
 L = "U6-D1"
-mc(L, "C1", "A fictional data card says: \"In a sample of 10 fatal teen car crashes, 6 teens were not wearing a seatbelt.\" What is the main finding?",
-   "Most of the teens who died in the sampled crashes were unbuckled, which links seatbelt use to survival.",
-   ["Seatbelts cause most crashes.", "Most teens in crashes were buckled and still died, so belts do not help.", "Seatbelts only matter on highways."],
-   "Summarizing a data card means stating what the numbers show, not adding conclusions the data does not support.")
+mc(L, "C1", "A CDC data card reports that of 1,658 teens (ages 16-19) killed in car crashes in 2020 with known belt use, 936 were not wearing a seat belt. What is the main finding?",
+   "More than half of the teens killed were not buckled up.",
+   ["Most of the teens who were killed had been wearing seat belts.", "Seat belts caused more than half of these teen deaths.", "Only a small share of the teens killed were unbuckled."],
+   "936 of 1,658 is about 56%. Summarizing a data card means stating what the numbers show. (Figure from the CDC teen driver risk-factors page; swap in the latest CDC or NHTSA numbers when you teach.)")
 mc(L, "C1", "Which source would give the most credible injury statistics?",
    "CDC WISQARS or NHTSA", ["A friend's story", "A meme with no source", "An ad for a car accessory"],
    "Credible statistics come from government health and safety agencies that publish their data.")
 mc(L, "C2", "How does a seatbelt reduce the risk of serious injury in a crash?",
-   "It spreads crash forces across stronger parts of the body and helps keep you from being thrown from the vehicle.",
-   ["It prevents the crash from happening.", "It makes the car stop faster.", "It only protects the driver."],
+   "It spreads crash force across the body and keeps you inside the vehicle.",
+   ["It prevents the crash from ever happening in the first place.", "It makes the car itself stop faster than it otherwise would.", "It only protects the driver, not the passengers in the car."],
    "Seatbelts reduce the force on the body and keep people inside the protective space of the vehicle.")
 mc(L, "C2", "How does a helmet reduce the risk of serious head injury?",
-   "It cushions and spreads out the force of an impact so the head and brain take less of it.",
-   ["It prevents falls from happening.", "It only matters for beginners.", "It protects only the face, not the head."],
+   "It cushions the impact so the head takes less force.",
+   ["It prevents crashes and falls from happening in the first place.", "It only matters for beginners who are learning to ride.", "It protects only the face and jaw, not the rest of the head."],
    "Helmets reduce the force that reaches the head and brain at any skill level.")
 match(L, "C2", "Sort each statement as a myth or a fact.",
      ["Myth", "Fact"],
@@ -37,14 +37,14 @@ ms(L, "C1", "Which are links in the Chain of Survival? Select all that apply.",
    ["Wait for symptoms to pass", "Give the person water"],
    "The chain is recognize, call 911, compress, use an AED, and hand off to EMS.")
 mc(L, "C2", "Where do you place your hands for hands-only CPR on an adult?",
-   "On the center of the chest, one hand stacked on the other", ["On the stomach", "On the left side of the chest", "On the neck"],
+   "On the center of the chest, hands stacked", ["On the upper stomach, just below the ribs", "On the left side of the chest, right over the heart", "On the neck, with both hands pressing near the throat"],
    "Compressions go on the center of the chest.")
 mc(L, "C3", "Which rhythm matches the recommended compression rate for hands-only CPR?",
-   "A steady 100 to 120 compressions per minute", ["About 60 per minute", "As fast as possible, about 180 per minute", "Fast, then slow, then fast again"],
+   "A steady 100 to 120 compressions per minute", ["A slow, careful pace of about 60 compressions per minute", "As fast as possible, about 180 compressions per minute", "Fast, then slow, then fast again in a repeating pattern"],
    "A steady rate of 100 to 120 per minute keeps blood moving effectively.")
 mc(L, "C3", "Which best describes hands-only CPR?",
-   "Continuous hard, fast chest compressions without rescue breaths until help arrives",
-   ["Gentle presses once every few seconds", "Rescue breaths only", "Compressions for one minute, then waiting for EMS"],
+   "Nonstop hard, fast chest compressions, no breaths",
+   ["Gentle chest presses once every few seconds until help comes", "Giving rescue breaths only, with no chest compressions", "One minute of compressions, then stopping to wait for EMS"],
    "Hands-only CPR is recommended for teens and adults who see someone suddenly collapse.")
 cr(L, "List the Chain of Survival steps in order.")
 
@@ -56,15 +56,15 @@ match(L, "C1", "Put the AED steps in order. Match each step to when it happens."
       ("Make sure no one is touching the person while it analyzes or shocks", 2), ("Resume CPR when the AED says to", 3)],
      "The sequence is power on, pads on, stand clear, then resume CPR as prompted.")
 mc(L, "C1", "The AED has delivered a shock. What should you do next?",
-   "Resume CPR right away or when the AED prompts you", ["Wait ten minutes before touching the person", "Remove the pads and stop", "Wait for the person to sit up on their own"],
+   "Resume CPR right away or when the AED prompts you", ["Wait about ten minutes before touching the person again", "Remove the pads and stop", "Wait for the person to sit up on their own"],
    "CPR continues after a shock until the AED prompts otherwise or EMS takes over.")
 mc(L, "C2", "How do CPR and an AED work together in the Chain of Survival?",
-   "CPR keeps blood moving until the AED can analyze and, if needed, shock the heart; both continue until EMS arrives.",
-   ["An AED replaces the need for CPR.", "CPR is only used after the AED fails.", "Either one alone is always enough."],
+   "CPR keeps blood moving while an AED checks and shocks the heart if needed.",
+   ["An AED replaces the need for CPR once it has been turned on.", "CPR is only started after the AED has already failed twice.", "Either one used alone is always enough to save a person."],
    "CPR, the AED, and calling 911 together make up the response most likely to save a life.")
 mc(L, "C3", "Myth: \"Doctors will not try as hard to save a registered organ donor.\" Which fact corrects it?",
-   "Registered donors receive the same life-saving care; donation is only considered after the medical team has done everything to save them.",
-   ["Registered donors are treated second.", "Doctors only try hard for young donors.", "Registering is a legal contract that replaces medical care."],
+   "Registered donors get the same life-saving care as anyone else.",
+   ["Registered donors are treated after other patients are seen.", "Doctors only try hard to save donors who are very young.", "Registering is a legal contract that replaces normal medical care."],
    "Being a registered donor does not change the medical care a person receives.")
 mc(L, "C3", "Myth: \"Organ donation rules out an open-casket funeral.\" Which fact corrects it?",
    "Donation does not prevent an open-casket funeral.", ["Donation always rules out a funeral.", "Only some religions allow funerals after donation.", "Donors cannot have any service."],
@@ -74,8 +74,8 @@ cr(L, "Write a two-sentence \"myth vs. fact\" message about organ donation.")
 # ---------------- U6-D5 Digital & road safety ----------------
 L = "U6-D5"
 mc(L, "C1", "In a ruler-drop test, students catch the ruler more slowly while also reading a text aloud. What does this show?",
-   "Distraction slows reaction time, which at driving speeds means more distance traveled before reacting.",
-   ["Multitasking improves reaction time.", "Reaction time does not change with attention.", "Only physical distractions slow reactions."],
+   "Distraction slows reaction time, so a driver travels farther before reacting.",
+   ["Multitasking sharpens reaction time by keeping the brain busy.", "Reaction time stays the same no matter how much attention is split.", "Only physical distractions, like holding a phone, slow reactions."],
    "Divided attention measurably delays response, which raises crash risk.")
 match(L, "C1", "Match each example to the type of distraction it shows.",
      ["Visual", "Manual", "Cognitive"],
@@ -83,15 +83,15 @@ match(L, "C1", "Match each example to the type of distraction it shows.",
       ("Mind busy replaying an argument", 2), ("Reading a text while crossing a street", 0)],
      "Distractions can take eyes, hands, or attention away from the task.")
 mc(L, "C1", "Why is texting while driving especially dangerous?",
-   "It combines visual, manual, and cognitive distraction at the same time.",
-   ["It only distracts the eyes.", "It is safe at low speeds.", "It only matters on highways."],
+   "It combines visual, manual, and cognitive distraction.",
+   ["It only distracts the eyes and not the hands or the mind.", "It is safe at low speeds, so it matters little in town.", "It only matters on highways and never on side streets."],
    "Texting takes the eyes, hands, and mind off driving at once.")
 ms(L, "C2", "Which are healthy technology habits that support safety? Select all that apply.",
    ["Using do-not-disturb driving mode or keeping the phone out of reach", "Not using a phone while crossing streets", "Setting boundaries around notifications", "Being careful about sharing real-time location publicly"],
    ["Sharing your live location publicly so friends can find you", "Texting only at red lights while driving"],
    "Safe habits limit distractions and protect privacy; public live location and texting at lights add risk.")
 mc(L, "C3", "Which is a specific, realistic safety commitment for a fictional student?",
-   "\"I will turn on do-not-disturb and put my phone in my bag before I start the car.\"",
-   ["\"I'll try to be safer.\"", "\"I will never use technology again.\"", "\"I'll only text when I think it's safe.\""],
+   "\"I will put my phone in my bag before I drive.\"",
+   ["\"I will try to be a lot safer when I am driving.\"", "\"I will never use any kind of technology ever again.\"", "\"I will only text when I feel like it is safe to.\""],
    "A strong commitment names a specific action, a time, and is realistic to follow.")
 cr(L, "Describe one specific, realistic change a fictional student could make to reduce a distraction-related risk.")

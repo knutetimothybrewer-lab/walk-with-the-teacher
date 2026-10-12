@@ -4,13 +4,13 @@ from ._h import mc, ms, match, cr
 # ---------------- U2-D1 What is mental health? ----------------
 L = "U2-D1"
 mc(L, "C1", "Which statement best defines mental health?",
-   "A person's emotional, psychological, and social well-being: how they think, feel, and handle daily life",
-   ["The absence of any mental illness", "Feeling happy all of the time", "Another term for mental illness"],
+   "A person's emotional and social well-being in daily life",
+   ["The complete absence of any diagnosed mental illness", "Feeling happy and calm every single day of the school year", "Another everyday term that simply means mental illness"],
    "Everyone has mental health; it is part of overall wellness, not just the absence of illness.")
 mc(L, "C2", "Why is mental health better described as a continuum than as \"healthy\" or \"mentally ill\"?",
-   "People move along a range from thriving to struggling, and where they are can change over time.",
-   ["A person is either mentally healthy or mentally ill and stays that way.", "Only people with a diagnosis fall anywhere on the range.",
-    "Mental health is set at birth and never changes."],
+   "People move along a range from thriving to struggling over time.",
+   ["A person is either mentally healthy or mentally ill and stays that way.", "Only people who have a diagnosis fall anywhere on that range.",
+    "Mental health is set at birth and does not change in life."],
    "A continuum shows that mental health shifts with experiences, support, and stress.")
 ms(L, "C3", "Which statements are true about what can influence teen mental health? Select all that apply.",
    ["Sleep and daily routines can affect it", "Supportive family and friends can protect it",
@@ -32,8 +32,8 @@ cr(L, "Explain one way stigma can stop a fictional teen from asking for help.")
 # ---------------- U2-D2 Stress, anxiety, depression & warning signs ----------------
 L = "U2-D2"
 mc(L, "C1", "Which fictional student's situation most likely suggests a need for extra support?",
-   "Has avoided friends and struggled to get out of bed for several weeks",
-   ["Feels nervous the night before a test", "Feels sad for a day after a game loss", "Feels tired after a very busy week"],
+   "Has avoided friends and struggled to get up for several weeks",
+   ["Feels nervous the night before a big test at school", "Feels sad for one day after losing an important game", "Feels tired after a very busy week of activities"],
    "Feelings that last for weeks and interfere with daily life go beyond an everyday challenge.")
 ms(L, "C2", "Which could be warning signs that a person needs help? Select all that apply.",
    ["Pulling away from friends and activities", "Big changes in sleep or appetite", "Talking about feeling hopeless", "A sudden drop in schoolwork"],
@@ -46,20 +46,20 @@ match(L, "C3", "Which part of the Duration, Intensity, Interference check does e
      "How long, how strong, and how much it disrupts daily life all help decide the level of concern.")
 mc(L, "C4", "A fictional student shows several warning signs. Which is the most appropriate source of support?",
    "A school counselor or another trusted adult",
-   ["An anonymous online forum", "A social media influencer's coping video", "Waiting to see if it goes away on its own"],
+   ["An anonymous online forum with no moderators", "A social media influencer's coping video", "Waiting to see if it goes away on its own"],
    "Counselors and trusted adults can assess the situation and connect the student to the right help.")
 mc(L, "C5", "Why should a peer recognize and refer instead of trying to diagnose a friend?",
-   "Only trained professionals can diagnose; a friend's job is to notice changes and connect the person to help.",
-   ["A friend can diagnose if they have read about it online.", "Naming the disorder is the most helpful thing a friend can do.",
-    "Warning signs only matter after a diagnosis."],
+   "Only professionals can diagnose, so friends notice and connect.",
+   ["A friend can diagnose a disorder after reading about it online.", "Naming the exact disorder is the most helpful thing a friend can do.",
+    "Warning signs only matter once a professional has diagnosed someone."],
    "Peers notice and refer; diagnosing is for professionals.")
 cr(L, "What is the difference between recognizing that someone may need help and diagnosing them?")
 
 # ---------------- U2-D3 Coping strategies & stress management ----------------
 L = "U2-D3"
 mc(L, "C1", "What happens in the body during the basic stress (fight-or-flight) response?",
-   "Heart rate and breathing speed up as the body prepares to react.",
-   ["The body shuts down to rest until the stressor passes.", "Only the mind is affected, not the body.", "Heart rate and breathing slow down to save energy."],
+   "Heart rate and breathing speed up as the body prepares.",
+   ["The body shuts down to rest until the stressor has passed.", "Only the mind is affected by stress, never the body.", "Heart rate and breathing slow down so the body saves energy."],
    "The stress response activates the body, and recovery afterward is important.")
 match(L, "C2", "Sort each coping behavior as generally helpful or potentially harmful.",
      ["Generally helpful", "Potentially harmful"],
@@ -71,12 +71,12 @@ ms(L, "C3", "Which are evidence-informed coping strategies? Select all that appl
    ["Avoiding the problem completely", "Staying up all night to make up for lost time"],
    "Breathing, movement, relaxation, and realistic thinking help; avoidance and lost sleep make stress worse.")
 mc(L, "C4", "Alex (fictional) has a big game tomorrow and feels jittery. Which strategy fits best?",
-   "Controlled breathing and a short walk to calm the body",
-   ["Staying up late rewatching old games", "Scrolling for hours to avoid thinking about it", "Skipping practice to avoid the pressure"],
+   "Controlled breathing and a short walk to calm down",
+   ["Staying up late rewatching old games to feel ready", "Scrolling for hours to avoid thinking about the game", "Skipping practice to avoid feeling any pressure"],
    "Calming the body fits a stressor that is about nerves; avoidance does not address it.")
 mc(L, "C5", "Which coping plan for a fictional student is the most realistic and complete?",
-   "Names warning signs, two or three strategies, a person to talk to, and when to ask an adult for more help",
-   ["Uses one strategy every time, no matter the stressor", "Plans to never feel stress again", "Handles everything alone without telling anyone"],
+   "Lists warning signs, strategies, a trusted person, and when to get more help",
+   ["Uses the same single strategy every time, whatever the stressor is", "Aims to never feel any stress again, starting right now", "Handles every problem alone without telling any other person"],
    "A realistic plan matches strategies to stressors, includes support, and knows when to get more help.")
 cr(L, "Describe one stressful situation for a fictional student and the coping strategy that fits it best.")
 
@@ -92,16 +92,16 @@ match(L, "C2", "Sort each response to a struggling friend as supportive or dismi
      [("That sounds really difficult.", 0), ("I'm glad you told me.", 0), ("Just get over it.", 1), ("Other people have it worse.", 1)],
      "Supportive language validates feelings; dismissive language minimizes them.")
 mc(L, "C4", "After listening to a friend who is struggling, which response best connects them to support?",
-   "\"Would you be willing to talk to the school counselor? I can go with you.\"",
-   ["\"You should just handle it yourself.\"", "\"I'll fix this for you.\"", "\"Post about it online to get advice.\""],
+   "\"Would you talk to the school counselor? I can go with you.\"",
+   ["\"You should just handle it on your own, honestly.\"", "\"I'll fix this for you, so do not worry.\"", "\"Post about it online and see what people say.\""],
    "Offering to connect and accompany a friend to a trusted adult is a safe, supportive step.")
 ms(L, "C5", "A friend asks you to keep a secret. In which situations must you involve a trusted adult? Select all that apply.",
    ["A friend talks about hurting themselves", "A friend is being hurt or abused", "A friend says they plan to hurt someone"],
    ["A friend is stressed about an upcoming test", "A friend had an argument with a sibling"],
    "Safety comes before secrecy when someone may be hurt.")
 mc(L, "C6", "A friend keeps coming to you with serious struggles. Which statement is accurate?",
-   "Supporting someone means listening and connecting them to help, not treating or fixing the problem yourself.",
-   ["A good friend becomes their therapist.", "If they do not improve, it is your fault.", "You should promise to keep everything secret no matter what."],
+   "Supporting someone means listening and connecting them to help, not treating them.",
+   ["A good friend becomes the person's therapist and treats them.", "If the friend does not improve, it is the supporter's fault.", "A supporter should promise to keep everything secret no matter what."],
    "Friends are support, not treatment; professionals and trusted adults provide the help.")
 cr(L, "Write the first three things a supportive friend might say to someone who says they are not doing okay.")
 
@@ -117,12 +117,12 @@ match(L, "C2", "Sort each resource as crisis support or non-crisis support.",
       ("Scheduling regular visits with a therapist", 1), ("Talking with the school counselor about ongoing stress", 1)],
      "Crisis resources are for immediate danger; non-crisis resources support ongoing needs.")
 mc(L, "C3", "Which source is most likely to give credible mental-health information?",
-   "A government health agency or major medical organization, like the CDC or NIH",
-   ["An anonymous forum post", "An influencer selling a supplement", "An ad promising a quick cure"],
+   "A government health agency or medical group like the CDC",
+   ["An anonymous post written on a public online forum thread", "An influencer who earns money by selling a supplement", "An ad promising a quick cure for stress and anxiety"],
    "Credible information comes from experts and evidence-based organizations.")
 mc(L, "C4", "Noah (fictional) has felt down for weeks but is not in danger. Which resource fits best?",
-   "A school counselor or primary-care provider to talk and plan next steps",
-   ["Wait until it becomes an emergency", "Strangers' advice in an online post", "Calling 911"],
+   "A school counselor or primary-care provider to plan next steps",
+   ["Waiting until the situation becomes a real emergency before acting", "Taking advice from strangers in an online comment thread", "Calling 911 right away, even though there is no danger"],
    "Ongoing, non-emergency concerns match counselors and health providers.")
 match(L, "C5", "Sort each strategy by the barrier to getting help it helps overcome.",
      ["Stigma or embarrassment", "Cost or transportation", "Not knowing where to go"],

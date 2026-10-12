@@ -1,7 +1,8 @@
 # Item bank report
 
-- Daily items: 190 ({'ms': 44, 'match': 43, 'mc': 103}); unit-review items: 34
-- ITEMS_PER_TICKET = 5; PARALLEL_FORMS = False (form-B items not generated)
+- Daily items: 190 form A ({'ms': 44, 'match': 43, 'mc': 103}) and 190 form B; unit-review items: 34 per form
+- ITEMS_PER_TICKET = 5; PARALLEL_FORMS = False (form B is only served when true)
+- Longest-option check (multiple choice, share where the correct option is the longest): form A 32/103, form B 23/103
 - Correct-answer position for multiple choice (0=first shown): {0: 27, 1: 16, 2: 35, 3: 25}
 
 ## Criteria with no auto-graded item

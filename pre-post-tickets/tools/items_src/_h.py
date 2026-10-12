@@ -6,7 +6,7 @@
     match("U1-D1", "C3", stem, ["Category A", "Category B"], [("example text", 0), ("example text", 1)], why)
     cr("U1-D1", "prompt")     # optional constructed response (not auto-graded)
 """
-ITEMS, CR = [], {}
+ITEMS, CR, ITEMS_B = [], {}, []
 
 
 def _add(d):
@@ -28,3 +28,21 @@ def match(lesson, crit, stem, categories, rows, why):
 
 def cr(lesson, prompt):
     CR[lesson] = prompt
+
+
+# ---- Form B (parallel) items --------------------------------------------------------------------------------
+# Same signature as above but the second argument is the NUMBER of the form-A item in that lesson it mirrors
+# (1-5, in the order the A items are written). B inherits the A item's criterion and must be the same type:
+# same skill and difficulty, different scenario/names/wording.
+#     b_mc("U1-D1", 3, stem, correct, [wrong, wrong, wrong], why)
+def b_mc(lesson, n, stem, correct, wrong, why):
+    ITEMS_B.append(dict(lesson_id=lesson, n=n, type="mc", stem=stem, options=[correct] + list(wrong), n_correct=1, why=why))
+
+
+def b_ms(lesson, n, stem, right, wrong, why):
+    ITEMS_B.append(dict(lesson_id=lesson, n=n, type="ms", stem=stem, options=list(right) + list(wrong), n_correct=len(right), why=why))
+
+
+def b_match(lesson, n, stem, categories, rows, why):
+    ITEMS_B.append(dict(lesson_id=lesson, n=n, type="match", stem=stem, options=list(categories),
+                        rows=[r[0] for r in rows], key=[r[1] for r in rows], why=why))

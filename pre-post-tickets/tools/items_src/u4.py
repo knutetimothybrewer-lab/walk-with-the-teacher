@@ -20,20 +20,20 @@ ms(L, "C3", "Which statements about substance-use risk are accurate? Select all 
    ["Addiction is just a lack of willpower", "Any single risk factor guarantees addiction"],
    "Risk comes from many interacting factors; no single factor decides the outcome.")
 mc(L, "C4", "Why can adolescents be more vulnerable to risk-taking?",
-   "The brain systems for planning and impulse control are still developing while reward systems are highly active.",
-   ["Teen brains are fully developed, so risk comes only from choices.", "Teens cannot learn from consequences.", "Impulse control develops before the reward system."],
+   "Impulse control is still developing while the reward system is very active.",
+   ["Teen brains are fully developed, so risk comes only from choices.", "Teens are unable to learn from the consequences of their actions.", "Impulse control matures first while the reward system lags behind."],
    "Adolescent brain development makes reward-seeking strong while self-control is still maturing.")
 mc(L, "C5", "Which source is best for supporting a claim about how addiction affects the brain?",
-   "NIDA (National Institute on Drug Abuse) or another NIH or CDC page",
-   ["A viral video from an anonymous account", "A website selling a detox product", "A friend's opinion"],
+   "NIDA, the National Institute on Drug Abuse",
+   ["A viral video posted by an anonymous online account", "A commercial website that is selling a detox product", "A close friend's strong opinion about the topic"],
    "Credible claims are backed by expert, evidence-based organizations.")
 cr(L, "Correct this statement in two or three sentences: \"Tolerance and addiction mean the same thing.\"")
 
 # ---------------- U4-D2 Tobacco & vaping ----------------
 L = "U4-D2"
 mc(L, "C1", "Why is nicotine especially concerning for teens?",
-   "It is highly addictive and can affect attention, learning, and impulse control while the brain is still developing.",
-   ["Teen brains are not affected by nicotine.", "Nicotine is only harmful in cigarettes.", "Nicotine only matters after many years of use."],
+   "It is highly addictive and can affect attention in teens.",
+   ["Teen brains are protected from nicotine's effects until adulthood.", "Nicotine is only harmful when it comes from burning cigarettes.", "Nicotine only causes problems after many years of daily use."],
    "The developing brain is more vulnerable to nicotine's effects and to dependence.")
 ms(L, "C2", "Which are health risks linked to tobacco or vaping? Select all that apply.",
    ["Nicotine addiction", "Irritation and harm to the lungs", "Effects on attention and learning", "Cancer risk from toxic chemicals in burned tobacco"],
@@ -49,8 +49,8 @@ ms(L, "C4", "Which of these claims are inaccurate? Select all that apply.",
    ["Vaping can still expose users to nicotine and other chemicals.", "Burning tobacco creates many toxic chemicals."],
    "Aerosol contains more than water, and legal sale does not mean safe for youth.")
 mc(L, "C5", "Which counter-message is accurate and teen-appropriate?",
-   "\"Vape aerosol can contain nicotine and other chemicals. Check the facts at the CDC or NIH.\"",
-   ["\"Vaping will kill you within a week.\"", "\"Everyone who vapes gets cancer.\"", "\"Vaping is fine if you only do it sometimes.\""],
+   "\"Vape aerosol can contain nicotine and other chemicals. Check the CDC.\"",
+   ["\"Vaping will kill you within a week, so never even try it.\"", "\"Everyone who ever vapes will definitely get lung cancer.\"", "\"Vaping is totally fine as long as you only do it sometimes.\""],
    "Good counter-messages are accurate, avoid exaggeration, and point to credible sources.")
 cr(L, "Name one influence on youth nicotine use and explain how a public-health message could counter it.")
 
@@ -70,8 +70,8 @@ match(L, "C3", "A fictional teen's ride home has been drinking. Match each state
       ("A crash could cause injury, legal trouble, and harm to others", 2), ("I will call a parent for a ride", 3)],
      "A structured process moves from the problem to options, consequences, and the safest choice.")
 mc(L, "C4", "Mia (fictional) is offered a ride from someone who has been drinking. Which response best weighs alternatives and consequences?",
-   "Lists options like calling an adult or a sober driver, thinks through the risks of each, and picks the safest",
-   ["Takes the first ride offered because it is easiest", "Decides based on what friends are doing", "Avoids deciding and hopes it works out"],
+   "Compares options like a sober driver, weighs the risks, and picks the safest",
+   ["Takes the first ride offered because it is the easiest option", "Decides based on whatever most of the friends there are doing", "Avoids making any decision and hopes it all works out fine"],
    "Safer alternatives and their consequences should be compared before acting.")
 ms(L, "C5", "Which are signs that someone who drank alcohol needs emergency help right away? Select all that apply.",
    ["Cannot be woken up", "Vomiting repeatedly and confused", "Slow or irregular breathing"],
@@ -96,8 +96,8 @@ mc(L, "C3", "Why can opioids cause life-threatening overdose?",
    ["They speed up the heart until it stops.", "They only cause overdose when injected.", "They only affect people who misuse them regularly."],
    "Opioids depress breathing, which is what makes overdose life-threatening.")
 mc(L, "C4", "A classmate offers a pill said to be \"the same as a prescription one.\" Why can't that claim show the pill is safe?",
-   "Counterfeit pills can look real but contain fentanyl or other unknown substances, so appearance cannot show contents.",
-   ["Pills that look like medicine always come from drug companies.", "Cheap pills are always weaker.", "Natural ingredients guarantee safety."],
+   "Counterfeit pills can look real but contain fentanyl, so looks prove nothing.",
+   ["Pills that look like medicine always come from drug companies.", "Pills sold for a low price are always the weaker versions.", "Pills with natural-sounding ingredients are guaranteed to be safe."],
    "You cannot tell what is in a pill by looking, and counterfeit pills can be deadly.")
 ms(L, "C5", "Which are key parts of responding to a suspected opioid overdose? Select all that apply.",
    ["Call 911 right away", "Give naloxone if it is available", "Stay with the person until help arrives"],
@@ -122,11 +122,11 @@ ms(L, "C3", "Which are effective refusal or exit strategies? Select all that app
    ["Giving a long, apologetic explanation hoping they stop asking", "Going along now and planning to quit later"],
    "Short, confident refusals, alternatives, allies, and leaving are effective; long excuses and going along are not.")
 mc(L, "C4", "Which response uses effective body language and concise words?",
-   "Eye contact, a calm voice, and \"No thanks, I'm good. Let's go.\"",
-   ["Looking at the floor and saying, \"maybe, I guess\"", "Standing close and shouting a long insult", "Laughing nervously and giving a long excuse"],
+   "Eye contact, a calm voice, and \"No thanks, I'm good.\"",
+   ["Looking at the floor and saying, \"maybe, I guess\"", "Standing close to the person and shouting a long insult", "Laughing nervously while giving a long, rambling excuse"],
    "Confident posture and a brief, clear statement make refusal more effective.")
 mc(L, "C5", "A fictional friend at a party is unresponsive after drinking. What is the best action?",
-   "Call for emergency help and get a trusted adult right away",
-   ["Keep it secret to protect the friend from trouble", "Handle it alone so no one finds out", "Wait until morning to see how they are"],
+   "Call for emergency help and get a trusted adult",
+   ["Keep it secret to protect the friend from trouble", "Handle it alone so that no one else ever finds out", "Wait until the morning to see how they are doing"],
    "Safety comes before secrecy; some situations need an adult or emergency help immediately.")
 cr(L, "Write a three-line response to a pressure scenario: a refusal, an alternative or exit, and a support plan.")
