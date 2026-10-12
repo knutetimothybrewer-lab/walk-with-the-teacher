@@ -16,15 +16,8 @@ from pathlib import Path
 # Units whose Day 6 is a project/summative day -> no criterion items of their own.
 UNIT_REVIEW_UNITS = {1, 2, 3, 4, 6, 7, 8}
 
-# Decision already made: U1-D4's single-sentence criterion is stored as four.
-CRITERIA_OVERRIDES = {
-    "U1-D4": [
-        "Identify warning signs of misleading health information.",
-        "Evaluate the credibility of a source.",
-        "Verify claims using reliable evidence.",
-        "Justify whether a health claim should or should not be trusted.",
-    ]
-}
+# Approved criterion splits live in data/criteria_overrides.json (edit that file, not this one).
+# Each entry replaces the criteria parsed from that lesson plan. U1-D4 and Units 5-8 are in there.
 
 # Section label patterns, matched at the start of a table cell / line.
 LABELS = {
@@ -200,6 +193,12 @@ def main():
     norm = (lambda f: (lambda s: re.sub(r"\s+(\.\w+)$", r"\1", s))(re.sub(r"\s+", " ", f.strip()).lower()))
     on_disk = {norm(p.name): p for p in lessons_dir.glob("*") if p.is_file()} if lessons_dir.exists() else {}
 
+    overrides = json.loads((data_dir / "criteria_overrides.json").read_text()) if (data_dir / "criteria_overrides.json").exists() else {}
+    scope = {}
+    if (data_dir / "scope_sequence.csv").exists():
+        with open(data_dir / "scope_sequence.csv", newline="") as f:
+            scope = {r["lesson_id"]: r for r in csv.DictReader(f)}
+
     with open(data_dir / "manifest.csv", newline="") as f:
         manifest = list(csv.DictReader(f))
     manifest.sort(key=lambda r: (int(r["unit"]), int(r["day"])))
@@ -213,6 +212,8 @@ def main():
             "ticket_type": "unit_review" if (day == 6 and unit in UNIT_REVIEW_UNITS) else "daily",
             "status": "ok", "knowledge": [], "skills": [], "objective": "",
             "criteria": [], "existing_check": [],
+            "scope_focus": scope.get(lid, {}).get("scope_focus", ""),
+            "skill_emphasis": scope.get(lid, {}).get("skill_emphasis", ""),
         }
         if not row["filename"]:
             rec["status"] = "gap"
@@ -246,18 +247,23 @@ def main():
         rec["skills"] = sec.get("skills", [])
         rec["objective"] = " ".join(sec.get("objective", [])).strip()
         rec["existing_check"] = sec.get("check", [])
-        crit = CRITERIA_OVERRIDES.get(lid) or split_criteria(sec.get("criteria", []))
-        rec["criteria"] = [{"criterion_id": f"{lid}-C{i}", "text": t} for i, t in enumerate(crit, 1)]
+        if lid in overrides:
+            rec["criteria"] = [{"criterion_id": f"{lid}-C{i}", **o} for i, o in enumerate(overrides[lid], 1)]
+            rec["criteria_original"] = split_criteria(sec.get("criteria", []))
+        else:
+            rec["criteria"] = [{"criterion_id": f"{lid}-C{i}", "text": t, "source": "statement"}
+                               for i, t in enumerate(split_criteria(sec.get("criteria", [])), 1)]
 
         for k, label in (("objective", "Lesson Objective"), ("criteria", "Criteria for Success")):
             if not (rec["objective"] if k == "objective" else rec["criteria"]):
                 issues["empty"].append(f"{lid}: no **{label}** found in `{path.name}` - check layout")
-        if rec["ticket_type"] == "daily" or lid in CRITERIA_OVERRIDES:
+        if rec["ticket_type"] == "daily" and lid not in overrides:
             for c in rec["criteria"]:
                 fl = criterion_flags(c["text"])
                 if re.search(r"meets the objective if", c["text"], re.I):
                     issues["mastery"].append(f"{c['criterion_id']}: \"{c['text']}\"")
-                elif fl and lid not in CRITERIA_OVERRIDES:
+                    continue
+                elif fl:
                     issues["criteria"].append(f"{c['criterion_id']}: \"{c['text']}\" - {'; '.join(fl)}")
         out.append(rec)
 
@@ -286,10 +292,24 @@ def main():
     block("Lesson Objective copied from the previous lesson", issues["dupobj"])
     block("Criteria written as ONE mastery statement (no criteria list) - need your decision", issues["mastery"])
     block("Vague or bundled criteria (proposed splits NOT applied)", issues["criteria"])
+    split = [r for r in out if r["lesson_id"] in overrides and r["status"] == "ok"]
+    rep += ["## Approved criterion splits (from data/criteria_overrides.json)", "",
+            "`obs` = performed/observed in class, so the ticket tests the knowledge behind it. "
+            "`src`: statement = your criteria text, objective = Lesson Objective, plan_knowledge = the plan's Knowledge standards.", ""]
+    for r in split:
+        rep.append(f"**{r['lesson_id']} {r['title']}** ({len(r['criteria'])} criteria)")
+        for c in r["criteria"]:
+            rep.append(f"- {c['criterion_id']} [{c['source']}{', obs' if c.get('observed') else ''}] {c['text']}")
+            if c.get("note"):
+                rep.append(f"  - NOTE: {c['note']}")
+        rep.append("")
     rep += ["## Decisions applied", "",
             "- U1-D4 stored as four criteria (C1-C4): " + ("yes" if any(r["lesson_id"] == "U1-D4" and len(r["criteria"]) == 4 for r in out)
                                                            else "no"),
             "- `ticket_type: unit_review` set on: " + ", ".join(r["lesson_id"] for r in out if r["ticket_type"] == "unit_review"),
+            "- U6-D4 topic filled from the Scope & Sequence: Home & School Safety (fire safety, basic first aid). Still no lesson plan, so no criteria yet.",
+            "- Scope & Sequence (Howard_Health_Course_.docx) adds `scope_focus` and `skill_emphasis` to every lesson.",
+            "- OPEN QUESTION: the U5-D4 plan says it administers the Unit 5 summative exam that day, so the exit ticket would share a day with the exam. Unit 5 currently has no unit-review ticket; confirm.",
             "- Unit 5 has no unit-review ticket; U6-D4 is a placeholder and will join Unit 6's review pool once it has criteria.", ""]
     (data_dir / "extraction_report.md").write_text("\n".join(rep))
     print("\n".join(rep))
