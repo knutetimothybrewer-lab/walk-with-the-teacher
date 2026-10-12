@@ -26,19 +26,20 @@ CRITERIA_OVERRIDES = {
     ]
 }
 
-# Section label patterns (matched at the start of a line / first table cell).
+# Section label patterns, matched at the start of a table cell / line.
 LABELS = {
-    "knowledge": r"knowledge(\s+standards?)?",
-    "skills": r"skills?(\s+standards?)?",
+    "knowledge": r"(what\s+should\s+students\s+know|knowledge(\s+standards?)?)",
+    "skills": r"(what\s+should\s+students\s+be\s+able\s+to\s+do|skills?(\s+standards?)?)",
     "objective": r"(lesson\s+)?objectives?",
     "criteria": r"criteri(a|on)\s+for\s+success|success\s+criteri(a|on)",
     "check": r"(check\s+for\s+understanding|exit\s+ticket)",
 }
-# Headings that end a section even if we don't extract them.
-STOP = (r"materials|vocabulary|warm[- ]?up|do now|agenda|procedure|activity|activities|"
-        r"direct instruction|guided practice|independent practice|closure|assessment|"
-        r"differentiation|homework|resources|standards|lesson plan checklist|notes?")
+# Cells/lines that end a section (the template's procedure table and its rows).
+STOP = (r"standard\(s\)|minutes|procedure\s+followed|statement\s+of\s+objectives|"
+        r"review\s+previously|class\s+starter|learning\s+activity|class\s+closure|"
+        r"is\s+content\s+in|\d+[- ]?min(ute)?s?\s+procedure|materials|vocabulary|homework|differentiation|teacher\s*:|date\s*:|subject\s*:|unit\s*:|period")
 SEP = " :: "
+PAREN = r"(?:\s*\([^)]*\))?"
 
 
 # ---------- reading files ----------
@@ -88,7 +89,9 @@ def pandoc_lines(path):
 
 
 def expand(lines):
-    """A table cell may hold several lines; keep them as separate lines after the label."""
+    """A table cell may hold several lines; keep each as its own line. A multi-line cell
+    only keeps the ' :: ' separator on its first/last line, which is what we want:
+    the label cell comes first and the following cells carry on after it."""
     out = []
     for l in lines:
         out.extend(x for x in l.split("\n") if x.strip())
@@ -105,56 +108,66 @@ def read_lines(path):
 
 
 # ---------- section parsing ----------
-def match_label(line):
-    """Return (key, remainder) if the line starts a known section, else (None, None)."""
+def match_label(cell):
+    """(key, remainder) if the cell starts a known section label, else (None, None)."""
     for key, pat in LABELS.items():
-        m = re.match(rf"^\W*(?:{pat})\s*(?:\(s\))?\s*(?:{re.escape(SEP.strip())}|[:\-–—]|\s)\s*(.*)$",
-                     line, re.I)
-        if m and len(line.split(SEP)[0]) < 60:       # a label, not a sentence that starts with "Skills"
-            return key, m.groups()[-1].strip()
+        m = re.match(rf"^\W*(?:{pat}){PAREN}\s*(?:[:\-–—]\s*(.*)|)$", cell, re.I | re.S)
+        if m:
+            return key, (m.groups()[-1] or "").strip()
     return None, None
 
 
-def is_stop(line):
-    head = line.split(SEP)[0]
-    return bool(re.match(rf"^\W*(?:{STOP})\b", head, re.I)) and len(head) < 50
+def is_stop(cell):
+    return bool(re.match(rf"^\W*(?:{STOP})", cell, re.I)) and len(cell) < 90
 
 
 def sections(lines):
+    """Walk cells in order; a label cell switches section, a stop cell ends it."""
     found, cur = {}, None
     for line in lines:
-        key, rest = match_label(line)
-        if key:
-            cur = key
-            found.setdefault(cur, [])
-            for part in rest.split(SEP):
-                if part.strip():
-                    found[cur].append(part.strip())
-            continue
-        if is_stop(line):
-            cur = None
-            continue
-        if cur:
-            found[cur].extend(p.strip() for p in line.split(SEP) if p.strip())
+        for cell in (c.strip() for c in line.split(SEP)):
+            if not cell:
+                continue
+            key, rest = match_label(cell)
+            if key:
+                cur = key
+                found.setdefault(cur, [])
+                if rest:
+                    found[cur].append(rest)
+            elif is_stop(cell):
+                cur = None
+            elif cur:
+                found[cur].append(cell)
     return found
 
 
-BULLET = re.compile(r"^\s*(?:[•●▪◦\-\*–—☐□✓✔]|\(?\d+[\.\)]|\(?[a-zA-Z][\.\)])\s+")
-STEM = re.compile(r"^(students?\s+(will|can)(\s+be\s+able\s+to)?|i\s+can|swbat)\s*[:,]?\s*", re.I)
+NUM = re.compile(r"^\s*\(?\d+[\.\)]\s*")
+BULLET = re.compile(r"^\s*(?:[•●▪◦\-\*–—☐□✓✔]|\(?[a-zA-Z][\.\)])\s+")
+LEAD = r"(?:by\s+the\s+end\s+of\s+(?:class|the\s+lesson|today)[,:]?\s*)?"
+STEM = re.compile(rf"^{LEAD}(?:students?\s+(?:will|can)(?:\s+be\s+able\s+to)?|i\s+can|swbat)?\s*[:,…\.]*\s*", re.I)
 
 
 def split_criteria(parts):
+    marked = [bool(NUM.match(p) or BULLET.match(p)) for p in parts]
     items = []
-    for p in parts:
-        p = BULLET.sub("", p).strip()
-        if p:
+    for p, mk in zip(parts, marked):
+        p = BULLET.sub("", NUM.sub("", p)).replace("**", "").strip()
+        if not p:
+            continue
+        # PDF text wraps mid-sentence: when the list is numbered, unmarked lines continue the last item.
+        if sum(marked) >= 2 and not mk and items:
+            items[-1] += " " + p
+        else:
             items.append(p)
-    # a lead-in line such as "Students will be able to:" is not itself a criterion
-    items = [i for i in items if not re.fullmatch(STEM.pattern + r"[:\s]*", i, re.I)]
-    return [STEM.sub("", i).strip().rstrip(";") for i in items]
+    out = []
+    for i in items:
+        t = STEM.sub("", i, count=1).strip().rstrip(";")
+        if len(t) > 2:                       # drops pure lead-ins like "I can…"
+            out.append(t[0].upper() + t[1:])
+    return out
 
 
-VERBS = r"identify|explain|describe|distinguish|evaluate|analy[sz]e|compare|define|list|apply|demonstrate|create|design|justify|interpret|calculate|predict|recognize|summari[sz]e|use|verify|assess|select|differentiate|classify|develop|choose|locate|practice"
+VERBS = r"identify|explain|describe|distinguish|evaluate|analy[sz]e|compare|define|list|apply|demonstrate|create|design|justify|interpret|calculate|predict|recognize|summari[sz]e|use|verify|assess|select|differentiate|classify|develop|choose|locate|practice|complete|review|revise|generate|challenge|correct|understand"
 
 
 def criterion_flags(text):
@@ -162,7 +175,7 @@ def criterion_flags(text):
     verbs = re.findall(rf"\b(?:{VERBS})\b", text, re.I)
     if len(verbs) >= 3 or (len(verbs) >= 2 and re.search(r",|;|\band\b", text)):
         flags.append("bundled (multiple skills in one criterion)")
-    if len(text.split()) < 5:
+    if len(text.split()) < 4:
         flags.append("very short / vague")
     if not verbs:
         flags.append("no measurable verb")
@@ -191,7 +204,7 @@ def main():
         manifest = list(csv.DictReader(f))
     manifest.sort(key=lambda r: (int(r["unit"]), int(r["day"])))
 
-    out, issues = [], {"missing": [], "unparsed": [], "mismatch": [], "gap": [], "criteria": [], "empty": []}
+    out, issues = [], {"mastery": [], "dupobj": [], "missing": [], "unparsed": [], "mismatch": [], "gap": [], "criteria": [], "empty": []}
     for seq, row in enumerate(manifest, 1):
         lid, unit, day = row["lesson_id"], int(row["unit"]), int(row["day"])
         rec = {
@@ -242,9 +255,19 @@ def main():
         if rec["ticket_type"] == "daily" or lid in CRITERIA_OVERRIDES:
             for c in rec["criteria"]:
                 fl = criterion_flags(c["text"])
-                if fl and lid not in CRITERIA_OVERRIDES:
+                if re.search(r"meets the objective if", c["text"], re.I):
+                    issues["mastery"].append(f"{c['criterion_id']}: \"{c['text']}\"")
+                elif fl and lid not in CRITERIA_OVERRIDES:
                     issues["criteria"].append(f"{c['criterion_id']}: \"{c['text']}\" - {'; '.join(fl)}")
         out.append(rec)
+
+    # A document whose Lesson Objective is word-for-word the previous lesson's is probably a copy-paste.
+    prev = None
+    for r in out:
+        if r["status"] == "ok" and prev and r["objective"] and r["objective"] == prev["objective"]:
+            issues["dupobj"].append(f"{r['lesson_id']} has the same Lesson Objective as {prev['lesson_id']}")
+        if r["status"] == "ok":
+            prev = r
 
     (data_dir / "lessons.json").write_text(json.dumps(out, indent=2, ensure_ascii=False))
 
@@ -260,6 +283,8 @@ def main():
     block("Unit/Day mismatches (manifest vs. document)", issues["mismatch"])
     block("Gaps", issues["gap"])
     block("Lessons where Objective or Criteria were not found", issues["empty"])
+    block("Lesson Objective copied from the previous lesson", issues["dupobj"])
+    block("Criteria written as ONE mastery statement (no criteria list) - need your decision", issues["mastery"])
     block("Vague or bundled criteria (proposed splits NOT applied)", issues["criteria"])
     rep += ["## Decisions applied", "",
             "- U1-D4 stored as four criteria (C1-C4): " + ("yes" if any(r["lesson_id"] == "U1-D4" and len(r["criteria"]) == 4 for r in out)
