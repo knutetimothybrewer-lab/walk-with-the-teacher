@@ -1,0 +1,4998 @@
+{
+  "meta": {
+    "items_per_ticket": 5,
+    "parallel_forms": false,
+    "review_rotation_offset": 0,
+    "n_items": 190,
+    "n_review_items": 34
+  },
+  "items": [
+    {
+      "item_id": "U1-D1-I1",
+      "lesson_id": "U1-D1",
+      "criterion_id": "U1-D1-C1",
+      "type": "ms",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Which of these are health metrics a clinic might record at a checkup? Select all that apply.",
+      "rationale": "Health metrics are measurable facts about the body or habits, like blood pressure, heart rate, and height and weight.",
+      "options": [
+        "Favorite music genre",
+        "Blood pressure",
+        "Resting heart rate",
+        "Number of social media followers",
+        "Height and weight"
+      ],
+      "correct": [
+        1,
+        2,
+        4
+      ]
+    },
+    {
+      "item_id": "U1-D1-I2",
+      "lesson_id": "U1-D1",
+      "criterion_id": "U1-D1-C2",
+      "type": "match",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Sort each fictional person's result as a positive health metric or one that needs attention.",
+      "rationale": "Positive metrics fall in healthy ranges for a teen; repeated readings outside those ranges are a signal to follow up.",
+      "options": [
+        "Positive metric",
+        "Needs attention"
+      ],
+      "rows": [
+        "Sleeps about 5 hours on school nights",
+        "Blood pressure far above the normal range at repeated visits",
+        "Resting heart rate of 68 beats per minute",
+        "Sleeps 9 hours on most school nights"
+      ],
+      "correct": [
+        1,
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "item_id": "U1-D1-I3",
+      "lesson_id": "U1-D1",
+      "criterion_id": "U1-D1-C2",
+      "type": "mc",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Jamal's blood pressure was a little high at one visit. Which statement about reading health metrics is most accurate?",
+      "rationale": "Metrics are most useful when tracked over time and interpreted by a professional in context.",
+      "options": [
+        "Every person has exactly the same healthy range, no matter their age.",
+        "A reading outside the range means the person is definitely sick.",
+        "One number always tells the whole story of a person's health.",
+        "One reading is one piece of information; trends over time and a health professional's interpretation matter."
+      ],
+      "correct": [
+        3
+      ]
+    },
+    {
+      "item_id": "U1-D1-I4",
+      "lesson_id": "U1-D1",
+      "criterion_id": "U1-D1-C3",
+      "type": "match",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Sort each lifestyle factor by whether it generally supports health or diminishes it.",
+      "rationale": "Activity and balanced eating support health metrics; inactivity and chronic sleep loss work against them.",
+      "options": [
+        "Supports health",
+        "Diminishes health"
+      ],
+      "rows": [
+        "Long stretches of sitting with little movement",
+        "Regularly getting too little sleep",
+        "Regular physical activity",
+        "Eating a variety of fruits and vegetables"
+      ],
+      "correct": [
+        1,
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "item_id": "U1-D1-I5",
+      "lesson_id": "U1-D1",
+      "criterion_id": "U1-D1-C3",
+      "type": "mc",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Dana (fictional) sleeps 5 hours a night and sits most evenings. Which change would most likely improve her health metrics?",
+      "rationale": "Regular movement and enough sleep are lifestyle changes that improve many health metrics at once.",
+      "options": [
+        "Drink an energy drink every afternoon to stay alert.",
+        "Stop checking any health numbers.",
+        "Move more during the day and go to bed earlier.",
+        "Skip breakfast so she has more time to sleep."
+      ],
+      "correct": [
+        2
+      ]
+    },
+    {
+      "item_id": "U1-D2-I1",
+      "lesson_id": "U1-D2",
+      "criterion_id": "U1-D2-C1",
+      "type": "ms",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Which of these are physical health metrics? Select all that apply.",
+      "rationale": "Physical metrics measure the body and its habits, such as sleep, heart rate, and activity.",
+      "options": [
+        "Hours of sleep per night",
+        "How well a person handles disappointment",
+        "Minutes of physical activity per day",
+        "Resting heart rate",
+        "How many people they feel close to"
+      ],
+      "correct": [
+        0,
+        2,
+        3
+      ]
+    },
+    {
+      "item_id": "U1-D2-I2",
+      "lesson_id": "U1-D2",
+      "criterion_id": "U1-D2-C2",
+      "type": "mc",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Which is the best example of a mental health metric?",
+      "rationale": "Mental health metrics describe thinking, focus, stress, and coping rather than the body or relationships.",
+      "options": [
+        "How well a person can concentrate and cope with everyday stress",
+        "Number of steps taken per day",
+        "A blood pressure reading",
+        "Number of friends a person has"
+      ],
+      "correct": [
+        0
+      ]
+    },
+    {
+      "item_id": "U1-D2-I3",
+      "lesson_id": "U1-D2",
+      "criterion_id": "U1-D2-C2",
+      "type": "mc",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "A fictional student sleeps poorly and then has trouble focusing and feels irritable. What does this show about wellness?",
+      "rationale": "Physical habits like sleep influence mental and emotional wellness, so the dimensions are linked.",
+      "options": [
+        "The dimensions of wellness are connected and affect each other.",
+        "Each dimension of wellness works completely on its own.",
+        "Mood is only affected by what a person eats.",
+        "Only physical health matters for doing well in school."
+      ],
+      "correct": [
+        0
+      ]
+    },
+    {
+      "item_id": "U1-D2-I4",
+      "lesson_id": "U1-D2",
+      "criterion_id": "U1-D2-C3",
+      "type": "mc",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Priya (fictional) often feels left out and has no one to talk to when school is hard. Which dimension of wellness is mostly affected?",
+      "rationale": "Having supportive relationships and someone to talk to are social wellness metrics.",
+      "options": [
+        "Social wellness",
+        "Financial wellness",
+        "Environmental wellness",
+        "Physical wellness"
+      ],
+      "correct": [
+        0
+      ]
+    },
+    {
+      "item_id": "U1-D2-I5",
+      "lesson_id": "U1-D2",
+      "criterion_id": "U1-D2-C3",
+      "type": "match",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Sort each example by the dimension it best shows.",
+      "rationale": "Social wellness is about relationships; emotional wellness is about understanding and managing feelings.",
+      "options": [
+        "Social wellness",
+        "Emotional wellness"
+      ],
+      "rows": [
+        "Notices when feeling overwhelmed and uses a coping skill",
+        "Has at least one trusted person to talk with",
+        "Can name feelings and handle disappointment without lashing out",
+        "Treats others with respect and communicates clearly"
+      ],
+      "correct": [
+        1,
+        0,
+        1,
+        0
+      ]
+    },
+    {
+      "item_id": "U1-D3-I1",
+      "lesson_id": "U1-D3",
+      "criterion_id": "U1-D3-C1",
+      "type": "mc",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "What is the main purpose of a personal wellness self-assessment?",
+      "rationale": "A self-assessment is a reflection tool; it is not a test, a diagnosis, or a ranking.",
+      "options": [
+        "To reflect honestly on current habits and find strengths and areas to improve",
+        "To prove that a person is already healthy",
+        "To diagnose a medical condition",
+        "To earn a grade that is compared with other students"
+      ],
+      "correct": [
+        0
+      ]
+    },
+    {
+      "item_id": "U1-D3-I2",
+      "lesson_id": "U1-D3",
+      "criterion_id": "U1-D3-C2",
+      "type": "mc",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Maya's (fictional) self-assessment shows sleep 2 out of 5, physical activity 4 out of 5, and stress 3 out of 5. What are her strength and her area to improve?",
+      "rationale": "Her highest score is a strength and her lowest score is the clearest area to work on.",
+      "options": [
+        "Strength: physical activity. Area to improve: sleep.",
+        "She has no strengths because no score is 5.",
+        "Strength: stress. Area to improve: physical activity.",
+        "Strength: sleep. Area to improve: physical activity."
+      ],
+      "correct": [
+        0
+      ]
+    },
+    {
+      "item_id": "U1-D3-I3",
+      "lesson_id": "U1-D3",
+      "criterion_id": "U1-D3-C3",
+      "type": "match",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Match each description to the SMART letter it shows.",
+      "rationale": "SMART stands for Specific, Measurable, Achievable, Relevant, and Time-bound.",
+      "options": [
+        "Specific",
+        "Measurable",
+        "Achievable",
+        "Relevant",
+        "Time-bound"
+      ],
+      "rows": [
+        "Has a deadline: by the end of May",
+        "Realistic for your schedule and resources",
+        "Names exactly what you will do: drink water with lunch",
+        "Includes a number you can track: 20 minutes",
+        "Matters for your own wellness needs"
+      ],
+      "correct": [
+        4,
+        2,
+        0,
+        1,
+        3
+      ]
+    },
+    {
+      "item_id": "U1-D3-I4",
+      "lesson_id": "U1-D3",
+      "criterion_id": "U1-D3-C4",
+      "type": "mc",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "A goal says, \"Be healthier.\" Which revision fixes the missing SMART parts?",
+      "rationale": "The revision names the action, a number, a realistic plan, and a time frame.",
+      "options": [
+        "Exercise a lot more and eat better soon.",
+        "Run a marathon next week.",
+        "Walk 20 minutes after school on 4 days a week for the next 6 weeks.",
+        "Never eat sweets again starting tomorrow."
+      ],
+      "correct": [
+        2
+      ]
+    },
+    {
+      "item_id": "U1-D3-I5",
+      "lesson_id": "U1-D3",
+      "criterion_id": "U1-D3-C6",
+      "type": "ms",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Which of these goals include all five SMART parts? Select all that apply.",
+      "rationale": "A SMART goal names a specific action, a measure, a realistic target, a reason, and a deadline.",
+      "options": [
+        "Sleep 8 hours on school nights, Sunday to Thursday, for the next month to help focus in class.",
+        "Drink 6 cups of water a day for two weeks to reduce afternoon headaches.",
+        "Lose a lot of weight fast.",
+        "Be less stressed."
+      ],
+      "correct": [
+        0,
+        1
+      ]
+    },
+    {
+      "item_id": "U1-D4-I1",
+      "lesson_id": "U1-D4",
+      "criterion_id": "U1-D4-C1",
+      "type": "ms",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Which are warning signs that a health claim may be misleading? Select all that apply.",
+      "rationale": "Quick-fix promises, testimonials instead of evidence, and a sales motive are common red flags.",
+      "options": [
+        "Uses only before-and-after photos and personal testimonials as proof",
+        "Promises fast results with no effort, like \"lose 15 pounds in 10 days\"",
+        "Cites a named study and links to it",
+        "Sells a product while giving the advice",
+        "Is reviewed by a medical organization"
+      ],
+      "correct": [
+        0,
+        1,
+        3
+      ]
+    },
+    {
+      "item_id": "U1-D4-I2",
+      "lesson_id": "U1-D4",
+      "criterion_id": "U1-D4-C2",
+      "type": "match",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Sort each feature by whether it points to a credible source or a source to question.",
+      "rationale": "Credible sources show expertise and evidence; popularity and a sales motive do not make a source credible.",
+      "options": [
+        "Credible source",
+        "Question this source"
+      ],
+      "rows": [
+        "An influencer with many followers who sells supplements",
+        "Cites research and names its authors",
+        "Anonymous post with no sources",
+        "A government health agency or university medical center"
+      ],
+      "correct": [
+        1,
+        0,
+        1,
+        0
+      ]
+    },
+    {
+      "item_id": "U1-D4-I3",
+      "lesson_id": "U1-D4",
+      "criterion_id": "U1-D4-C2",
+      "type": "mc",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "A fitness influencer with millions of followers says a tea \"melts belly fat.\" What does their popularity show?",
+      "rationale": "Follower counts and appearance are not evidence; credibility comes from expertise and reliable proof.",
+      "options": [
+        "Nothing about whether the claim is true; credibility depends on evidence and expertise.",
+        "The claim must be true because so many people follow them.",
+        "The claim is true if many comments agree with it.",
+        "The claim is true if the influencer looks fit."
+      ],
+      "correct": [
+        0
+      ]
+    },
+    {
+      "item_id": "U1-D4-I4",
+      "lesson_id": "U1-D4",
+      "criterion_id": "U1-D4-C3",
+      "type": "mc",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Which is the best way to check a health claim you saw on social media?",
+      "rationale": "Verifying means checking the claim against reliable, independent sources, not repeating it.",
+      "options": [
+        "Share it and see whether friends believe it.",
+        "Compare it with credible sources such as the CDC, NIH, or a medical center.",
+        "Search for another post that says the same thing.",
+        "Trust it if the video looks professionally made."
+      ],
+      "correct": [
+        1
+      ]
+    },
+    {
+      "item_id": "U1-D4-I5",
+      "lesson_id": "U1-D4",
+      "criterion_id": "U1-D4-C4",
+      "type": "mc",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "A fictional ad claims a supplement \"burns fat while you sleep.\" Which decision and reason are best?",
+      "rationale": "A good justification points to missing evidence and the seller's motive, not to reviews or blanket distrust.",
+      "options": [
+        "Do not trust it yet: there is no evidence given, and the seller profits from the claim.",
+        "Do not trust it: ads are always lies.",
+        "Trust it: the ad has lots of five-star reviews.",
+        "Trust it: supplements are always tested for safety and results."
+      ],
+      "correct": [
+        0
+      ]
+    },
+    {
+      "item_id": "U1-D5-I1",
+      "lesson_id": "U1-D5",
+      "criterion_id": "U1-D5-C1",
+      "type": "mc",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Sam (fictional) has a big test tomorrow. It is 11:30 p.m. and friends invite him to play online. What decision must Sam make?",
+      "rationale": "The decision is the choice Sam must make now, which affects his rest and his test.",
+      "options": [
+        "Whether to take the test",
+        "Whether to stay up playing or go to sleep before the test",
+        "Whether his friends are good friends",
+        "Which game is the most fun"
+      ],
+      "correct": [
+        1
+      ]
+    },
+    {
+      "item_id": "U1-D5-I2",
+      "lesson_id": "U1-D5",
+      "criterion_id": "U1-D5-C2",
+      "type": "ms",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Lena is exhausted, has homework left, and friends want to hang out online. Which are realistic choices she could make? Select all that apply.",
+      "rationale": "Good options are realistic and fit her responsibilities; ignoring the situation is not a choice that solves it.",
+      "options": [
+        "Tell her friends she will connect tomorrow",
+        "Ignore everything and hope it works out",
+        "Stay up all night doing both",
+        "Play online for a short, set time, then stop and go to bed",
+        "Finish homework, then go to bed on time"
+      ],
+      "correct": [
+        0,
+        3,
+        4
+      ]
+    },
+    {
+      "item_id": "U1-D5-I3",
+      "lesson_id": "U1-D5",
+      "criterion_id": "U1-D5-C3",
+      "type": "match",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Sort each consequence of regularly staying up very late on school nights.",
+      "rationale": "Choices often have short-term benefits and longer-term costs, and both belong in the decision.",
+      "options": [
+        "Positive consequence",
+        "Negative consequence"
+      ],
+      "rows": [
+        "Finishing a game or show you enjoy",
+        "Feeling tired and irritable over time",
+        "More time to relax with friends tonight",
+        "Trouble focusing in class tomorrow"
+      ],
+      "correct": [
+        0,
+        1,
+        0,
+        1
+      ]
+    },
+    {
+      "item_id": "U1-D5-I4",
+      "lesson_id": "U1-D5",
+      "criterion_id": "U1-D5-C4",
+      "type": "mc",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Using the STOP steps, which choice is the most responsible for a tired student with a test tomorrow?",
+      "rationale": "A responsible choice considers consequences for health and responsibilities.",
+      "options": [
+        "Skip the test preparation altogether.",
+        "Stay up as late as friends are online.",
+        "Set a stopping time, finish what is necessary, and get enough sleep.",
+        "Do whatever an adult says without thinking."
+      ],
+      "correct": [
+        2
+      ]
+    },
+    {
+      "item_id": "U1-D5-I5",
+      "lesson_id": "U1-D5",
+      "criterion_id": "U1-D5-C5",
+      "type": "mc",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Which reasoning best explains why a choice is a responsible health decision?",
+      "rationale": "Responsible decisions are based on consequences and ownership, not on pleasing others or perfection.",
+      "options": [
+        "It is the choice that is perfect in every way.",
+        "It is what most of my friends are doing.",
+        "It weighs the likely short- and long-term consequences for my health and responsibilities.",
+        "It is what an adult told me to do."
+      ],
+      "correct": [
+        2
+      ]
+    },
+    {
+      "item_id": "U2-D1-I1",
+      "lesson_id": "U2-D1",
+      "criterion_id": "U2-D1-C1",
+      "type": "mc",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Which statement best defines mental health?",
+      "rationale": "Everyone has mental health; it is part of overall wellness, not just the absence of illness.",
+      "options": [
+        "Another term for mental illness",
+        "The absence of any mental illness",
+        "Feeling happy all of the time",
+        "A person's emotional, psychological, and social well-being: how they think, feel, and handle daily life"
+      ],
+      "correct": [
+        3
+      ]
+    },
+    {
+      "item_id": "U2-D1-I2",
+      "lesson_id": "U2-D1",
+      "criterion_id": "U2-D1-C2",
+      "type": "mc",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Why is mental health better described as a continuum than as \"healthy\" or \"mentally ill\"?",
+      "rationale": "A continuum shows that mental health shifts with experiences, support, and stress.",
+      "options": [
+        "A person is either mentally healthy or mentally ill and stays that way.",
+        "Only people with a diagnosis fall anywhere on the range.",
+        "People move along a range from thriving to struggling, and where they are can change over time.",
+        "Mental health is set at birth and never changes."
+      ],
+      "correct": [
+        2
+      ]
+    },
+    {
+      "item_id": "U2-D1-I3",
+      "lesson_id": "U2-D1",
+      "criterion_id": "U2-D1-C3",
+      "type": "ms",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Which statements are true about what can influence teen mental health? Select all that apply.",
+      "rationale": "Family, peers, school, media, and life experiences all influence mental health; willpower alone is not the whole story.",
+      "options": [
+        "Sleep and daily routines can affect it",
+        "Willpower is the only thing that matters; outside experiences have no effect",
+        "Supportive family and friends can protect it",
+        "It is fixed at birth and nothing can influence it",
+        "Social media experiences can influence it",
+        "Ongoing bullying or conflict can harm it"
+      ],
+      "correct": [
+        0,
+        2,
+        4,
+        5
+      ]
+    },
+    {
+      "item_id": "U2-D1-I4",
+      "lesson_id": "U2-D1",
+      "criterion_id": "U2-D1-C4",
+      "type": "match",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Sort each factor for a fictional teen as a risk factor or a protective factor.",
+      "rationale": "Risk factors raise the chance of struggling; protective factors, like connectedness, help buffer stress.",
+      "options": [
+        "Risk factor",
+        "Protective factor"
+      ],
+      "rows": [
+        "Feeling close to family",
+        "Being bullied at school",
+        "Feeling connected to a school team or club",
+        "Ongoing lack of sleep"
+      ],
+      "correct": [
+        1,
+        0,
+        1,
+        0
+      ]
+    },
+    {
+      "item_id": "U2-D1-I5",
+      "lesson_id": "U2-D1",
+      "criterion_id": "U2-D1-C5",
+      "type": "ms",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Which of these statements are inaccurate? Select all that apply.",
+      "rationale": "These myths add stigma; stress can be helpful in small amounts and counseling is a healthy step.",
+      "options": [
+        "Stress is always harmful.",
+        "Seeking counseling means someone cannot handle their own problems.",
+        "Mental health can change throughout a person's life.",
+        "A person with a diagnosed mental illness can still function well.",
+        "People with mental illness are always visibly struggling."
+      ],
+      "correct": [
+        0,
+        1,
+        4
+      ]
+    },
+    {
+      "item_id": "U2-D2-I1",
+      "lesson_id": "U2-D2",
+      "criterion_id": "U2-D2-C1",
+      "type": "mc",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Which fictional student's situation most likely suggests a need for extra support?",
+      "rationale": "Feelings that last for weeks and interfere with daily life go beyond an everyday challenge.",
+      "options": [
+        "Feels sad for a day after a game loss",
+        "Feels tired after a very busy week",
+        "Feels nervous the night before a test",
+        "Has avoided friends and struggled to get out of bed for several weeks"
+      ],
+      "correct": [
+        3
+      ]
+    },
+    {
+      "item_id": "U2-D2-I2",
+      "lesson_id": "U2-D2",
+      "criterion_id": "U2-D2-C2",
+      "type": "ms",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Which could be warning signs that a person needs help? Select all that apply.",
+      "rationale": "Lasting changes in behavior, mood, and daily functioning are warning signs; occasional nerves are normal.",
+      "options": [
+        "Feeling nervous before a performance",
+        "A sudden drop in schoolwork",
+        "Talking about feeling hopeless",
+        "Wanting some quiet time after a long day",
+        "Pulling away from friends and activities",
+        "Big changes in sleep or appetite"
+      ],
+      "correct": [
+        1,
+        2,
+        4,
+        5
+      ]
+    },
+    {
+      "item_id": "U2-D2-I3",
+      "lesson_id": "U2-D2",
+      "criterion_id": "U2-D2-C3",
+      "type": "match",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Which part of the Duration, Intensity, Interference check does each detail show?",
+      "rationale": "How long, how strong, and how much it disrupts daily life all help decide the level of concern.",
+      "options": [
+        "Duration",
+        "Intensity",
+        "Interference"
+      ],
+      "rows": [
+        "Worry is so strong it causes panic",
+        "Has not felt like himself for months",
+        "Has felt this way most days for six weeks",
+        "Can no longer focus on homework or go to practice"
+      ],
+      "correct": [
+        1,
+        0,
+        0,
+        2
+      ]
+    },
+    {
+      "item_id": "U2-D2-I4",
+      "lesson_id": "U2-D2",
+      "criterion_id": "U2-D2-C4",
+      "type": "mc",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "A fictional student shows several warning signs. Which is the most appropriate source of support?",
+      "rationale": "Counselors and trusted adults can assess the situation and connect the student to the right help.",
+      "options": [
+        "An anonymous online forum",
+        "Waiting to see if it goes away on its own",
+        "A social media influencer's coping video",
+        "A school counselor or another trusted adult"
+      ],
+      "correct": [
+        3
+      ]
+    },
+    {
+      "item_id": "U2-D2-I5",
+      "lesson_id": "U2-D2",
+      "criterion_id": "U2-D2-C5",
+      "type": "mc",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Why should a peer recognize and refer instead of trying to diagnose a friend?",
+      "rationale": "Peers notice and refer; diagnosing is for professionals.",
+      "options": [
+        "A friend can diagnose if they have read about it online.",
+        "Warning signs only matter after a diagnosis.",
+        "Only trained professionals can diagnose; a friend's job is to notice changes and connect the person to help.",
+        "Naming the disorder is the most helpful thing a friend can do."
+      ],
+      "correct": [
+        2
+      ]
+    },
+    {
+      "item_id": "U2-D3-I1",
+      "lesson_id": "U2-D3",
+      "criterion_id": "U2-D3-C1",
+      "type": "mc",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "What happens in the body during the basic stress (fight-or-flight) response?",
+      "rationale": "The stress response activates the body, and recovery afterward is important.",
+      "options": [
+        "The body shuts down to rest until the stressor passes.",
+        "Heart rate and breathing speed up as the body prepares to react.",
+        "Heart rate and breathing slow down to save energy.",
+        "Only the mind is affected, not the body."
+      ],
+      "correct": [
+        1
+      ]
+    },
+    {
+      "item_id": "U2-D3-I2",
+      "lesson_id": "U2-D3",
+      "criterion_id": "U2-D3-C2",
+      "type": "match",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Sort each coping behavior as generally helpful or potentially harmful.",
+      "rationale": "Helpful coping addresses stress or helps the body recover; harmful coping avoids it or adds new risks.",
+      "options": [
+        "Generally helpful",
+        "Potentially harmful"
+      ],
+      "rows": [
+        "Slow, controlled breathing",
+        "Talking with a trusted person",
+        "Avoiding responsibilities and doomscrolling",
+        "Using alcohol or drugs to escape"
+      ],
+      "correct": [
+        0,
+        0,
+        1,
+        1
+      ]
+    },
+    {
+      "item_id": "U2-D3-I3",
+      "lesson_id": "U2-D3",
+      "criterion_id": "U2-D3-C3",
+      "type": "ms",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Which are evidence-informed coping strategies? Select all that apply.",
+      "rationale": "Breathing, movement, relaxation, and realistic thinking help; avoidance and lost sleep make stress worse.",
+      "options": [
+        "A short walk or other movement",
+        "Avoiding the problem completely",
+        "Progressive muscle relaxation",
+        "Staying up all night to make up for lost time",
+        "Replacing \"I'm going to fail\" with a more realistic thought",
+        "Slow, controlled breathing"
+      ],
+      "correct": [
+        0,
+        2,
+        4,
+        5
+      ]
+    },
+    {
+      "item_id": "U2-D3-I4",
+      "lesson_id": "U2-D3",
+      "criterion_id": "U2-D3-C4",
+      "type": "mc",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Alex (fictional) has a big game tomorrow and feels jittery. Which strategy fits best?",
+      "rationale": "Calming the body fits a stressor that is about nerves; avoidance does not address it.",
+      "options": [
+        "Controlled breathing and a short walk to calm the body",
+        "Staying up late rewatching old games",
+        "Skipping practice to avoid the pressure",
+        "Scrolling for hours to avoid thinking about it"
+      ],
+      "correct": [
+        0
+      ]
+    },
+    {
+      "item_id": "U2-D3-I5",
+      "lesson_id": "U2-D3",
+      "criterion_id": "U2-D3-C5",
+      "type": "mc",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Which coping plan for a fictional student is the most realistic and complete?",
+      "rationale": "A realistic plan matches strategies to stressors, includes support, and knows when to get more help.",
+      "options": [
+        "Handles everything alone without telling anyone",
+        "Uses one strategy every time, no matter the stressor",
+        "Names warning signs, two or three strategies, a person to talk to, and when to ask an adult for more help",
+        "Plans to never feel stress again"
+      ],
+      "correct": [
+        2
+      ]
+    },
+    {
+      "item_id": "U2-D4-I1",
+      "lesson_id": "U2-D4",
+      "criterion_id": "U2-D4-C1",
+      "type": "ms",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Which show active listening? Select all that apply.",
+      "rationale": "Active listening means attention, patience, and checking understanding before offering ideas.",
+      "options": [
+        "Telling a story about your own bigger problem",
+        "Immediately giving advice",
+        "Giving full attention and putting your phone away",
+        "Letting the person finish without interrupting",
+        "Repeating back what you heard to check you understood"
+      ],
+      "correct": [
+        2,
+        3,
+        4
+      ]
+    },
+    {
+      "item_id": "U2-D4-I2",
+      "lesson_id": "U2-D4",
+      "criterion_id": "U2-D4-C2",
+      "type": "match",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Sort each response to a struggling friend as supportive or dismissive.",
+      "rationale": "Supportive language validates feelings; dismissive language minimizes them.",
+      "options": [
+        "Supportive",
+        "Dismissive"
+      ],
+      "rows": [
+        "That sounds really difficult.",
+        "Other people have it worse.",
+        "I'm glad you told me.",
+        "Just get over it."
+      ],
+      "correct": [
+        0,
+        1,
+        0,
+        1
+      ]
+    },
+    {
+      "item_id": "U2-D4-I3",
+      "lesson_id": "U2-D4",
+      "criterion_id": "U2-D4-C4",
+      "type": "mc",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "After listening to a friend who is struggling, which response best connects them to support?",
+      "rationale": "Offering to connect and accompany a friend to a trusted adult is a safe, supportive step.",
+      "options": [
+        "\"Post about it online to get advice.\"",
+        "\"You should just handle it yourself.\"",
+        "\"I'll fix this for you.\"",
+        "\"Would you be willing to talk to the school counselor? I can go with you.\""
+      ],
+      "correct": [
+        3
+      ]
+    },
+    {
+      "item_id": "U2-D4-I4",
+      "lesson_id": "U2-D4",
+      "criterion_id": "U2-D4-C5",
+      "type": "ms",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "A friend asks you to keep a secret. In which situations must you involve a trusted adult? Select all that apply.",
+      "rationale": "Safety comes before secrecy when someone may be hurt.",
+      "options": [
+        "A friend talks about hurting themselves",
+        "A friend says they plan to hurt someone",
+        "A friend is stressed about an upcoming test",
+        "A friend is being hurt or abused",
+        "A friend had an argument with a sibling"
+      ],
+      "correct": [
+        0,
+        1,
+        3
+      ]
+    },
+    {
+      "item_id": "U2-D4-I5",
+      "lesson_id": "U2-D4",
+      "criterion_id": "U2-D4-C6",
+      "type": "mc",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "A friend keeps coming to you with serious struggles. Which statement is accurate?",
+      "rationale": "Friends are support, not treatment; professionals and trusted adults provide the help.",
+      "options": [
+        "You should promise to keep everything secret no matter what.",
+        "If they do not improve, it is your fault.",
+        "Supporting someone means listening and connecting them to help, not treating or fixing the problem yourself.",
+        "A good friend becomes their therapist."
+      ],
+      "correct": [
+        2
+      ]
+    },
+    {
+      "item_id": "U2-D5-I1",
+      "lesson_id": "U2-D5",
+      "criterion_id": "U2-D5-C1",
+      "type": "ms",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Which are sources of mental-health support for teens? Select all that apply.",
+      "rationale": "Counselors, health providers, trusted adults, and crisis lines are reliable supports.",
+      "options": [
+        "An anonymous comment section",
+        "An advertisement promising a quick cure",
+        "A school counselor",
+        "The 988 Suicide & Crisis Lifeline",
+        "A primary-care provider",
+        "A trusted parent, coach, or teacher"
+      ],
+      "correct": [
+        2,
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "item_id": "U2-D5-I2",
+      "lesson_id": "U2-D5",
+      "criterion_id": "U2-D5-C2",
+      "type": "match",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Sort each resource as crisis support or non-crisis support.",
+      "rationale": "Crisis resources are for immediate danger; non-crisis resources support ongoing needs.",
+      "options": [
+        "Crisis support",
+        "Non-crisis support"
+      ],
+      "rows": [
+        "Calling 911 in an immediate emergency",
+        "Talking with the school counselor about ongoing stress",
+        "Scheduling regular visits with a therapist",
+        "988 Suicide & Crisis Lifeline"
+      ],
+      "correct": [
+        0,
+        1,
+        1,
+        0
+      ]
+    },
+    {
+      "item_id": "U2-D5-I3",
+      "lesson_id": "U2-D5",
+      "criterion_id": "U2-D5-C3",
+      "type": "mc",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Which source is most likely to give credible mental-health information?",
+      "rationale": "Credible information comes from experts and evidence-based organizations.",
+      "options": [
+        "An influencer selling a supplement",
+        "A government health agency or major medical organization, like the CDC or NIH",
+        "An anonymous forum post",
+        "An ad promising a quick cure"
+      ],
+      "correct": [
+        1
+      ]
+    },
+    {
+      "item_id": "U2-D5-I4",
+      "lesson_id": "U2-D5",
+      "criterion_id": "U2-D5-C4",
+      "type": "mc",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Noah (fictional) has felt down for weeks but is not in danger. Which resource fits best?",
+      "rationale": "Ongoing, non-emergency concerns match counselors and health providers.",
+      "options": [
+        "Calling 911",
+        "Wait until it becomes an emergency",
+        "Strangers' advice in an online post",
+        "A school counselor or primary-care provider to talk and plan next steps"
+      ],
+      "correct": [
+        3
+      ]
+    },
+    {
+      "item_id": "U2-D5-I5",
+      "lesson_id": "U2-D5",
+      "criterion_id": "U2-D5-C5",
+      "type": "match",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Sort each strategy by the barrier to getting help it helps overcome.",
+      "rationale": "Naming the barrier makes it easier to choose a strategy that works.",
+      "options": [
+        "Stigma or embarrassment",
+        "Cost or transportation",
+        "Not knowing where to go"
+      ],
+      "rows": [
+        "Ask a trusted adult to help arrange rides or appointments",
+        "Ask the school counselor about free or low-cost options",
+        "Remember that asking for help is common and a sign of strength",
+        "Check the school's resource list to see who to contact"
+      ],
+      "correct": [
+        1,
+        1,
+        0,
+        2
+      ]
+    },
+    {
+      "item_id": "U3-D1-I1",
+      "lesson_id": "U3-D1",
+      "criterion_id": "U3-D1-C1",
+      "type": "ms",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Which of these can influence the health of a community? Select all that apply.",
+      "rationale": "Community conditions like air, water, care, food, and safe spaces all shape health alongside personal choices.",
+      "options": [
+        "Access to healthcare",
+        "Nothing, because health is decided only by genes",
+        "Access to affordable healthy food",
+        "Nothing, because health is decided only by each person's choices",
+        "Air and water quality",
+        "Safe places to be physically active"
+      ],
+      "correct": [
+        0,
+        2,
+        4,
+        5
+      ]
+    },
+    {
+      "item_id": "U3-D1-I2",
+      "lesson_id": "U3-D1",
+      "criterion_id": "U3-D1-C2",
+      "type": "match",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Sort each example as an individual health behavior or an environmental influence.",
+      "rationale": "Behaviors are personal choices; environmental influences are conditions around a person that make choices easier or harder.",
+      "options": [
+        "Individual behavior",
+        "Environmental influence"
+      ],
+      "rows": [
+        "Deciding what to eat for lunch",
+        "Whether a grocery store with fresh food is nearby",
+        "Whether safe sidewalks exist on the route to school",
+        "Choosing to walk to school"
+      ],
+      "correct": [
+        0,
+        1,
+        1,
+        0
+      ]
+    },
+    {
+      "item_id": "U3-D1-I3",
+      "lesson_id": "U3-D1",
+      "criterion_id": "U3-D1-C3",
+      "type": "match",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Sort each feature of a fictional neighborhood as a risk factor or a protective factor.",
+      "rationale": "Risk factors raise the chance of poor health outcomes; protective factors support health.",
+      "options": [
+        "Risk factor",
+        "Protective factor"
+      ],
+      "rows": [
+        "A free community health clinic",
+        "No bus service to the clinic",
+        "A park with walking paths",
+        "A busy highway next to the homes"
+      ],
+      "correct": [
+        1,
+        0,
+        1,
+        0
+      ]
+    },
+    {
+      "item_id": "U3-D1-I4",
+      "lesson_id": "U3-D1",
+      "criterion_id": "U3-D1-C4",
+      "type": "mc",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "A fictional neighborhood has no grocery store within five miles. How could this condition influence health?",
+      "rationale": "Conditions can make healthy choices easier or harder without determining one person's outcome.",
+      "options": [
+        "Residents may find it harder to get fresh, affordable food, which can affect nutrition over time.",
+        "It only affects adults.",
+        "It has no effect because food choices are entirely personal.",
+        "It guarantees that everyone there will become ill."
+      ],
+      "correct": [
+        0
+      ]
+    },
+    {
+      "item_id": "U3-D1-I5",
+      "lesson_id": "U3-D1",
+      "criterion_id": "U3-D1-C5",
+      "type": "mc",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Clinics and grocery stores are nearby, but residents lack reliable transportation. Which intervention is the most realistic and best justified?",
+      "rationale": "A good intervention targets the actual barrier identified in the scenario.",
+      "options": [
+        "Expand a bus route that connects the neighborhood to the clinic and grocery store, because transportation is the barrier.",
+        "Build another hospital, even though one is nearby.",
+        "Open a luxury gym.",
+        "Tell residents to walk farther."
+      ],
+      "correct": [
+        0
+      ]
+    },
+    {
+      "item_id": "U3-D2-I1",
+      "lesson_id": "U3-D2",
+      "criterion_id": "U3-D2-C1",
+      "type": "mc",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Which best describes the difference between healthcare and public health?",
+      "rationale": "Healthcare focuses on individual patients, while public health works at the population level.",
+      "options": [
+        "Public health only handles emergencies.",
+        "They are the same thing.",
+        "Healthcare mainly treats individuals; public health protects and improves the health of whole populations.",
+        "Public health treats individual patients in hospitals; healthcare protects populations."
+      ],
+      "correct": [
+        2
+      ]
+    },
+    {
+      "item_id": "U3-D2-I2",
+      "lesson_id": "U3-D2",
+      "criterion_id": "U3-D2-C2",
+      "type": "ms",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Which are functions of public-health agencies? Select all that apply.",
+      "rationale": "Surveillance, prevention, outbreak response, and preparedness protect whole communities.",
+      "options": [
+        "Performing surgery on individual patients",
+        "Writing prescriptions for each patient",
+        "Promoting vaccination and prevention programs",
+        "Responding to outbreaks",
+        "Preparing for emergencies",
+        "Tracking disease patterns (surveillance)"
+      ],
+      "correct": [
+        2,
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "item_id": "U3-D2-I3",
+      "lesson_id": "U3-D2",
+      "criterion_id": "U3-D2-C3",
+      "type": "match",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Match each problem to the group most likely to respond.",
+      "rationale": "Individual care goes to providers; local problems go to local departments; multi-state problems involve the CDC.",
+      "options": [
+        "Doctor or hospital",
+        "Local health department",
+        "CDC (federal)"
+      ],
+      "rows": [
+        "A student needs treatment for an ear infection",
+        "Running vaccination clinics for a county",
+        "Inspecting restaurants after several people in one town get sick",
+        "Tracking a measles outbreak spreading across many states"
+      ],
+      "correct": [
+        0,
+        1,
+        1,
+        2
+      ]
+    },
+    {
+      "item_id": "U3-D2-I4",
+      "lesson_id": "U3-D2",
+      "criterion_id": "U3-D2-C4",
+      "type": "match",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Match each question to the part of STOP (Source, Timeliness, Objective, Proof) it checks.",
+      "rationale": "STOP helps judge a source's authority, timing, purpose, and evidence.",
+      "options": [
+        "Source",
+        "Timeliness",
+        "Objective",
+        "Proof"
+      ],
+      "rows": [
+        "Is the information from a health agency or expert?",
+        "Does it cite data or research?",
+        "Is the creator trying to sell or persuade?",
+        "Is the information current?"
+      ],
+      "correct": [
+        0,
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "item_id": "U3-D2-I5",
+      "lesson_id": "U3-D2",
+      "criterion_id": "U3-D2-C5",
+      "type": "mc",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Data show a higher asthma rate in Neighborhood A than in Neighborhood B. What does the data alone show?",
+      "rationale": "A disparity shows a difference exists; it does not prove why.",
+      "options": [
+        "That the data must be wrong",
+        "That pollution is the cause",
+        "That people in A make worse choices",
+        "A difference in outcomes; more information is needed before explaining the cause."
+      ],
+      "correct": [
+        3
+      ]
+    },
+    {
+      "item_id": "U3-D3-I1",
+      "lesson_id": "U3-D3",
+      "criterion_id": "U3-D3-C1",
+      "type": "ms",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Which are common environmental health hazards? Select all that apply.",
+      "rationale": "Air pollution, UV, loud noise, and heat can all harm health.",
+      "options": [
+        "UV radiation from the sun",
+        "Drinking water from a tested, safe supply",
+        "Excessive noise",
+        "Extreme heat",
+        "Walking outdoors when air quality is good",
+        "Air pollution"
+      ],
+      "correct": [
+        0,
+        2,
+        3,
+        5
+      ]
+    },
+    {
+      "item_id": "U3-D3-I2",
+      "lesson_id": "U3-D3",
+      "criterion_id": "U3-D3-C2",
+      "type": "match",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Match each example to hazard, exposure, or risk.",
+      "rationale": "A hazard can cause harm, exposure is contact with it, and risk is the likelihood and severity of harm.",
+      "options": [
+        "Hazard",
+        "Exposure",
+        "Risk"
+      ],
+      "rows": [
+        "The chance of sunburn or skin damage",
+        "Strong UV radiation from the midday sun",
+        "Water contaminated with lead",
+        "Working outside at noon without sunscreen"
+      ],
+      "correct": [
+        2,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "item_id": "U3-D3-I3",
+      "lesson_id": "U3-D3",
+      "criterion_id": "U3-D3-C3",
+      "type": "mc",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "One student uses earbuds at low volume for 30 minutes. Another uses them at very high volume for hours every day. Whose hearing risk is higher?",
+      "rationale": "Risk depends on intensity, duration, and frequency, not just the presence of a hazard.",
+      "options": [
+        "The same, because both use earbuds.",
+        "The second student: higher intensity, longer duration, and more frequent exposure raise risk.",
+        "Neither, because music cannot harm hearing.",
+        "The first student, because lower volume is more damaging."
+      ],
+      "correct": [
+        1
+      ]
+    },
+    {
+      "item_id": "U3-D3-I4",
+      "lesson_id": "U3-D3",
+      "criterion_id": "U3-D3-C4",
+      "type": "mc",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Today's Air Quality Index (AQI) is 160, which credible guidance labels \"Unhealthy.\" What is the best interpretation?",
+      "rationale": "At an AQI in the Unhealthy range, everyone may feel effects and sensitive groups are at greater risk.",
+      "options": [
+        "Everyone should reduce long or heavy outdoor exertion, and people with asthma should take extra care.",
+        "AQI only matters for machines.",
+        "Only people who smoke are affected.",
+        "The air is safe for all activity."
+      ],
+      "correct": [
+        0
+      ]
+    },
+    {
+      "item_id": "U3-D3-I5",
+      "lesson_id": "U3-D3",
+      "criterion_id": "U3-D3-C5",
+      "type": "ms",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "A soccer tournament is scheduled on a day with poor air quality. Which protective behaviors are realistic? Select all that apply.",
+      "rationale": "Risk can be reduced with practical steps even when the hazard cannot be removed.",
+      "options": [
+        "Check the AQI before and during the event",
+        "Take more breaks and watch for symptoms",
+        "Play harder to finish faster",
+        "Ignore the air quality because nothing can be done",
+        "Shorten games or lower the intensity"
+      ],
+      "correct": [
+        0,
+        1,
+        4
+      ]
+    },
+    {
+      "item_id": "U3-D4-I1",
+      "lesson_id": "U3-D4",
+      "criterion_id": "U3-D4-C1",
+      "type": "mc",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "A fictional sports drink ad uses upbeat pop music, teen athletes, and social media influencers. Who is the intended audience?",
+      "rationale": "Music, models, and platforms show who the advertiser wants to reach.",
+      "options": [
+        "Teenagers and young adults",
+        "Doctors",
+        "Older adults",
+        "Young children"
+      ],
+      "correct": [
+        0
+      ]
+    },
+    {
+      "item_id": "U3-D4-I2",
+      "lesson_id": "U3-D4",
+      "criterion_id": "U3-D4-C2",
+      "type": "match",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Match each ad line to the persuasive technique it uses.",
+      "rationale": "Advertisers use proof from the crowd, famous faces, urgency, and fear to persuade.",
+      "options": [
+        "Social proof",
+        "Celebrity or influencer endorsement",
+        "Scarcity",
+        "Fear"
+      ],
+      "rows": [
+        "\"Join the 2 million teens who already switched!\"",
+        "A famous athlete holds the product",
+        "\"Without this, you're falling behind your teammates.\"",
+        "\"Only 50 left. Limited edition!\""
+      ],
+      "correct": [
+        0,
+        1,
+        3,
+        2
+      ]
+    },
+    {
+      "item_id": "U3-D4-I3",
+      "lesson_id": "U3-D4",
+      "criterion_id": "U3-D4-C3",
+      "type": "mc",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "An ad shows a smiling athlete holding a sugary drink but never states that it improves performance. What is the implied message?",
+      "rationale": "Ads can communicate implied messages without making an explicit claim.",
+      "options": [
+        "That it is the cheapest drink",
+        "There is no message because no claim is stated",
+        "That drinking it will help you become athletic and successful",
+        "That it is made with only water"
+      ],
+      "correct": [
+        2
+      ]
+    },
+    {
+      "item_id": "U3-D4-I4",
+      "lesson_id": "U3-D4",
+      "criterion_id": "U3-D4-C4",
+      "type": "mc",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Many students believe \"everyone stays up past midnight on school nights,\" but a survey shows most do not. How can this belief affect behavior?",
+      "rationale": "People often follow what they think is normal, even when they are wrong about it.",
+      "options": [
+        "It only affects people who disagree.",
+        "It cannot, because only facts influence behavior.",
+        "Perceived norms can push people to act like others, even when the perception is inaccurate.",
+        "It only matters if the belief is true."
+      ],
+      "correct": [
+        2
+      ]
+    },
+    {
+      "item_id": "U3-D4-I5",
+      "lesson_id": "U3-D4",
+      "criterion_id": "U3-D4-C5",
+      "type": "mc",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "A fast-food chain advertises discount meals to teens on many platforms every day. How could the repeated messages affect community health behaviors?",
+      "rationale": "Repeated exposure can shape norms and choices across a community without determining any one person's decision.",
+      "options": [
+        "It only affects people who already like the product.",
+        "It guarantees every teen will buy it.",
+        "Repetition has no effect; people only decide based on facts.",
+        "They can make the product seem normal, familiar, and appealing, influencing what many people choose."
+      ],
+      "correct": [
+        3
+      ]
+    },
+    {
+      "item_id": "U3-D5-I1",
+      "lesson_id": "U3-D5",
+      "criterion_id": "U3-D5-C1",
+      "type": "mc",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Which is the clearest, most specific community-health problem statement?",
+      "rationale": "A clear problem names who is affected and what the harm is.",
+      "options": [
+        "Health is bad.",
+        "People should be healthier.",
+        "Many students at our school listen to music at unsafe volumes, risking hearing damage.",
+        "Noise exists."
+      ],
+      "correct": [
+        2
+      ]
+    },
+    {
+      "item_id": "U3-D5-I2",
+      "lesson_id": "U3-D5",
+      "criterion_id": "U3-D5-C4",
+      "type": "mc",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "For the problem of unsafe listening volume at school, which intervention is the most specific and realistic?",
+      "rationale": "A good intervention is specific, feasible, and linked to the problem.",
+      "options": [
+        "A volume-awareness campaign with posters and a free hearing-screening day at school",
+        "Make everyone healthier",
+        "Tell students to care more",
+        "Ban all music"
+      ],
+      "correct": [
+        0
+      ]
+    },
+    {
+      "item_id": "U3-D5-I3",
+      "lesson_id": "U3-D5",
+      "criterion_id": "U3-D5-C5",
+      "type": "mc",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "To get crosswalk lights installed near a school, which is the best audience for an advocacy message?",
+      "rationale": "Advocacy targets people with the power to act.",
+      "options": [
+        "The city council or transportation department, who can decide and fund it",
+        "Students who already agree",
+        "A celebrity with no connection to the town",
+        "Anyone who happens to see a social media post"
+      ],
+      "correct": [
+        0
+      ]
+    },
+    {
+      "item_id": "U3-D5-I4",
+      "lesson_id": "U3-D5",
+      "criterion_id": "U3-D5-C6",
+      "type": "mc",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Which is a clear call to action?",
+      "rationale": "A call to action names who should do what and by when.",
+      "options": [
+        "We ask the school board to approve water bottle filling stations by next semester.",
+        "We hope people think about hydration.",
+        "Someone should do something about water.",
+        "Water is important for everyone."
+      ],
+      "correct": [
+        0
+      ]
+    },
+    {
+      "item_id": "U3-D5-I5",
+      "lesson_id": "U3-D5",
+      "criterion_id": "U3-D5-C7",
+      "type": "ms",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Which could show that a hearing-safety campaign worked? Select all that apply.",
+      "rationale": "Success is measured by changes in behavior or outcomes, not by effort or appearance.",
+      "options": [
+        "The share of students using volume limits at a follow-up check",
+        "The number of posters printed",
+        "A student survey on listening volume before and after",
+        "How colorful the posters look"
+      ],
+      "correct": [
+        0,
+        2
+      ]
+    },
+    {
+      "item_id": "U4-D1-I1",
+      "lesson_id": "U4-D1",
+      "criterion_id": "U4-D1-C1",
+      "type": "match",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Match each fictional example to tolerance, physical dependence, or addiction.",
+      "rationale": "Tolerance and physical dependence are body adaptations; addiction involves compulsive use despite harm, so they are not the same.",
+      "options": [
+        "Tolerance",
+        "Physical dependence",
+        "Addiction (substance use disorder)"
+      ],
+      "rows": [
+        "The body adjusts so the same dose no longer works as well",
+        "Needing larger amounts to get the same effect",
+        "Continuing to use despite repeated harm and loss of control",
+        "A patient takes prescribed pain medicine as directed and has withdrawal symptoms when it stops, with no compulsive use"
+      ],
+      "correct": [
+        0,
+        0,
+        2,
+        1
+      ]
+    },
+    {
+      "item_id": "U4-D1-I2",
+      "lesson_id": "U4-D1",
+      "criterion_id": "U4-D1-C2",
+      "type": "ms",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "How can psychoactive substances affect brain function or behavior? Select all that apply.",
+      "rationale": "Substances alter brain signaling and can change judgment, coordination, mood, and memory.",
+      "options": [
+        "They can change how brain cells communicate",
+        "They can affect mood and memory",
+        "They always cause permanent damage after one use",
+        "They can impair judgment and coordination",
+        "They affect behavior only when a large amount is used"
+      ],
+      "correct": [
+        0,
+        1,
+        3
+      ]
+    },
+    {
+      "item_id": "U4-D1-I3",
+      "lesson_id": "U4-D1",
+      "criterion_id": "U4-D1-C3",
+      "type": "ms",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Which statements about substance-use risk are accurate? Select all that apply.",
+      "rationale": "Risk comes from many interacting factors; no single factor decides the outcome.",
+      "options": [
+        "Many factors together influence risk, such as stress, genetics, and availability",
+        "Supportive family and friends can reduce risk",
+        "Addiction is just a lack of willpower",
+        "Any single risk factor guarantees addiction",
+        "Starting at a younger age raises the risk of problems"
+      ],
+      "correct": [
+        0,
+        1,
+        4
+      ]
+    },
+    {
+      "item_id": "U4-D1-I4",
+      "lesson_id": "U4-D1",
+      "criterion_id": "U4-D1-C4",
+      "type": "mc",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Why can adolescents be more vulnerable to risk-taking?",
+      "rationale": "Adolescent brain development makes reward-seeking strong while self-control is still maturing.",
+      "options": [
+        "Teens cannot learn from consequences.",
+        "Teen brains are fully developed, so risk comes only from choices.",
+        "The brain systems for planning and impulse control are still developing while reward systems are highly active.",
+        "Impulse control develops before the reward system."
+      ],
+      "correct": [
+        2
+      ]
+    },
+    {
+      "item_id": "U4-D1-I5",
+      "lesson_id": "U4-D1",
+      "criterion_id": "U4-D1-C5",
+      "type": "mc",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Which source is best for supporting a claim about how addiction affects the brain?",
+      "rationale": "Credible claims are backed by expert, evidence-based organizations.",
+      "options": [
+        "NIDA (National Institute on Drug Abuse) or another NIH or CDC page",
+        "A website selling a detox product",
+        "A friend's opinion",
+        "A viral video from an anonymous account"
+      ],
+      "correct": [
+        0
+      ]
+    },
+    {
+      "item_id": "U4-D2-I1",
+      "lesson_id": "U4-D2",
+      "criterion_id": "U4-D2-C1",
+      "type": "mc",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Why is nicotine especially concerning for teens?",
+      "rationale": "The developing brain is more vulnerable to nicotine's effects and to dependence.",
+      "options": [
+        "Teen brains are not affected by nicotine.",
+        "It is highly addictive and can affect attention, learning, and impulse control while the brain is still developing.",
+        "Nicotine is only harmful in cigarettes.",
+        "Nicotine only matters after many years of use."
+      ],
+      "correct": [
+        1
+      ]
+    },
+    {
+      "item_id": "U4-D2-I2",
+      "lesson_id": "U4-D2",
+      "criterion_id": "U4-D2-C2",
+      "type": "ms",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Which are health risks linked to tobacco or vaping? Select all that apply.",
+      "rationale": "Nicotine, aerosol chemicals, and smoke are linked to addiction, lung harm, brain effects, and cancer.",
+      "options": [
+        "Better focus in the long run",
+        "Effects on attention and learning",
+        "Improved lung capacity",
+        "Nicotine addiction",
+        "Irritation and harm to the lungs",
+        "Cancer risk from toxic chemicals in burned tobacco"
+      ],
+      "correct": [
+        1,
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "item_id": "U4-D2-I3",
+      "lesson_id": "U4-D2",
+      "criterion_id": "U4-D2-C3",
+      "type": "match",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Match each influence to the category it shows.",
+      "rationale": "Marketing, flavors and design, and perceived norms all shape youth nicotine use.",
+      "options": [
+        "Marketing",
+        "Product design or flavors",
+        "Peer norms"
+      ],
+      "rows": [
+        "Fruit and candy flavors",
+        "Social media influencers who make vaping look fun",
+        "Believing \"most teens my age vape\"",
+        "Small, sleek devices that are easy to hide"
+      ],
+      "correct": [
+        1,
+        0,
+        2,
+        1
+      ]
+    },
+    {
+      "item_id": "U4-D2-I4",
+      "lesson_id": "U4-D2",
+      "criterion_id": "U4-D2-C4",
+      "type": "ms",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Which of these claims are inaccurate? Select all that apply.",
+      "rationale": "Aerosol contains more than water, and legal sale does not mean safe for youth.",
+      "options": [
+        "E-cigarette aerosol is just harmless water vapor.",
+        "Nicotine-free means risk-free.",
+        "Burning tobacco creates many toxic chemicals.",
+        "If a product is sold legally, it must be safe for teens.",
+        "Vaping can still expose users to nicotine and other chemicals."
+      ],
+      "correct": [
+        0,
+        1,
+        3
+      ]
+    },
+    {
+      "item_id": "U4-D2-I5",
+      "lesson_id": "U4-D2",
+      "criterion_id": "U4-D2-C5",
+      "type": "mc",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Which counter-message is accurate and teen-appropriate?",
+      "rationale": "Good counter-messages are accurate, avoid exaggeration, and point to credible sources.",
+      "options": [
+        "\"Everyone who vapes gets cancer.\"",
+        "\"Vaping will kill you within a week.\"",
+        "\"Vape aerosol can contain nicotine and other chemicals. Check the facts at the CDC or NIH.\"",
+        "\"Vaping is fine if you only do it sometimes.\""
+      ],
+      "correct": [
+        2
+      ]
+    },
+    {
+      "item_id": "U4-D3-I1",
+      "lesson_id": "U4-D3",
+      "criterion_id": "U4-D3-C1",
+      "type": "ms",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Which are short-term effects of alcohol that can affect safety or decisions? Select all that apply.",
+      "rationale": "Alcohol is a central nervous system depressant that impairs judgment, reaction time, coordination, and memory.",
+      "options": [
+        "Reduced coordination",
+        "Memory problems or blackouts",
+        "Slower reaction time",
+        "Better driving ability",
+        "Sharper decision-making",
+        "Poorer judgment"
+      ],
+      "correct": [
+        0,
+        1,
+        2,
+        5
+      ]
+    },
+    {
+      "item_id": "U4-D3-I2",
+      "lesson_id": "U4-D3",
+      "criterion_id": "U4-D3-C2",
+      "type": "ms",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Which statements explain why alcohol affects people differently? Select all that apply.",
+      "rationale": "Impairment varies with amount, speed, body, food, and medications, and people cannot reliably judge their own impairment.",
+      "options": [
+        "Everyone is affected the same way by the same number of drinks",
+        "Body size and composition can change the effect",
+        "Feeling fine means a person is not impaired",
+        "Drinking quickly increases impairment compared with drinking slowly",
+        "Food and medications can change the effect"
+      ],
+      "correct": [
+        1,
+        3,
+        4
+      ]
+    },
+    {
+      "item_id": "U4-D3-I3",
+      "lesson_id": "U4-D3",
+      "criterion_id": "U4-D3-C3",
+      "type": "match",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "A fictional teen's ride home has been drinking. Match each statement to the decision-making step it shows.",
+      "rationale": "A structured process moves from the problem to options, consequences, and the safest choice.",
+      "options": [
+        "Define the problem",
+        "List options",
+        "Think about consequences",
+        "Choose the safest decision"
+      ],
+      "rows": [
+        "I could call a parent, find a sober driver, or stay overnight",
+        "A crash could cause injury, legal trouble, and harm to others",
+        "My ride has been drinking and I need to get home",
+        "I will call a parent for a ride"
+      ],
+      "correct": [
+        1,
+        2,
+        0,
+        3
+      ]
+    },
+    {
+      "item_id": "U4-D3-I4",
+      "lesson_id": "U4-D3",
+      "criterion_id": "U4-D3-C4",
+      "type": "mc",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Mia (fictional) is offered a ride from someone who has been drinking. Which response best weighs alternatives and consequences?",
+      "rationale": "Safer alternatives and their consequences should be compared before acting.",
+      "options": [
+        "Lists options like calling an adult or a sober driver, thinks through the risks of each, and picks the safest",
+        "Avoids deciding and hopes it works out",
+        "Takes the first ride offered because it is easiest",
+        "Decides based on what friends are doing"
+      ],
+      "correct": [
+        0
+      ]
+    },
+    {
+      "item_id": "U4-D3-I5",
+      "lesson_id": "U4-D3",
+      "criterion_id": "U4-D3-C5",
+      "type": "ms",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Which are signs that someone who drank alcohol needs emergency help right away? Select all that apply.",
+      "rationale": "Unresponsiveness and breathing problems can mean alcohol poisoning; call emergency services.",
+      "options": [
+        "Being loud and talkative",
+        "Cannot be woken up",
+        "Vomiting repeatedly and confused",
+        "Slow or irregular breathing",
+        "Feeling slightly dizzy but walking and talking normally"
+      ],
+      "correct": [
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "item_id": "U4-D4-I1",
+      "lesson_id": "U4-D4",
+      "criterion_id": "U4-D4-C1",
+      "type": "ms",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Which are ways marijuana can affect functioning or safety? Select all that apply.",
+      "rationale": "Cannabis can impair attention, reaction time, coordination, memory, and judgment.",
+      "options": [
+        "Slower reaction time",
+        "Reduced coordination while driving",
+        "Poorer judgment",
+        "It is harmless because it is natural",
+        "Trouble with attention and memory",
+        "It improves driving reaction time"
+      ],
+      "correct": [
+        0,
+        1,
+        2,
+        4
+      ]
+    },
+    {
+      "item_id": "U4-D4-I2",
+      "lesson_id": "U4-D4",
+      "criterion_id": "U4-D4-C2",
+      "type": "match",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Sort each example as prescribed use or misuse.",
+      "rationale": "Using someone else's medication, more than prescribed, or for another purpose is misuse.",
+      "options": [
+        "Prescribed use",
+        "Misuse"
+      ],
+      "rows": [
+        "Taking medicine exactly as directed by the prescriber",
+        "Taking a friend's ADHD medication to study",
+        "Using a medicine that was prescribed to you, in the amount and way directed",
+        "Taking extra pills because the pain feels worse"
+      ],
+      "correct": [
+        0,
+        1,
+        0,
+        1
+      ]
+    },
+    {
+      "item_id": "U4-D4-I3",
+      "lesson_id": "U4-D4",
+      "criterion_id": "U4-D4-C3",
+      "type": "mc",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Why can opioids cause life-threatening overdose?",
+      "rationale": "Opioids depress breathing, which is what makes overdose life-threatening.",
+      "options": [
+        "They only affect people who misuse them regularly.",
+        "They slow breathing, and too much can stop it.",
+        "They speed up the heart until it stops.",
+        "They only cause overdose when injected."
+      ],
+      "correct": [
+        1
+      ]
+    },
+    {
+      "item_id": "U4-D4-I4",
+      "lesson_id": "U4-D4",
+      "criterion_id": "U4-D4-C4",
+      "type": "mc",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "A classmate offers a pill said to be \"the same as a prescription one.\" Why can't that claim show the pill is safe?",
+      "rationale": "You cannot tell what is in a pill by looking, and counterfeit pills can be deadly.",
+      "options": [
+        "Natural ingredients guarantee safety.",
+        "Cheap pills are always weaker.",
+        "Pills that look like medicine always come from drug companies.",
+        "Counterfeit pills can look real but contain fentanyl or other unknown substances, so appearance cannot show contents."
+      ],
+      "correct": [
+        3
+      ]
+    },
+    {
+      "item_id": "U4-D4-I5",
+      "lesson_id": "U4-D4",
+      "criterion_id": "U4-D4-C5",
+      "type": "ms",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Which are key parts of responding to a suspected opioid overdose? Select all that apply.",
+      "rationale": "Naloxone can temporarily reverse an overdose, but emergency medical help is still needed.",
+      "options": [
+        "Call 911 right away",
+        "Stay with the person until help arrives",
+        "Give them coffee or food to wake them up",
+        "Give naloxone if it is available",
+        "Wait to see if they sleep it off"
+      ],
+      "correct": [
+        0,
+        1,
+        3
+      ]
+    },
+    {
+      "item_id": "U4-D5-I1",
+      "lesson_id": "U4-D5",
+      "criterion_id": "U4-D5-C1",
+      "type": "match",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Sort each fictional situation as direct or indirect pressure.",
+      "rationale": "Direct pressure is said out loud; indirect pressure comes from the situation and social cues.",
+      "options": [
+        "Direct pressure",
+        "Indirect pressure"
+      ],
+      "rows": [
+        "Your ride depends on someone who has been drinking",
+        "A friend says, \"Just try it, don't be weird.\"",
+        "Everyone in the room is holding a vape",
+        "Someone keeps handing you a drink and asking again"
+      ],
+      "correct": [
+        1,
+        0,
+        1,
+        0
+      ]
+    },
+    {
+      "item_id": "U4-D5-I2",
+      "lesson_id": "U4-D5",
+      "criterion_id": "U4-D5-C2",
+      "type": "match",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Match each response to passive, aggressive, or assertive communication.",
+      "rationale": "Assertive communication is clear and respectful; passive gives in and aggressive attacks.",
+      "options": [
+        "Passive",
+        "Aggressive",
+        "Assertive"
+      ],
+      "rows": [
+        "Looks them in the eye and says, \"No thanks, I'm not interested.\"",
+        "Mumbles \"um, maybe... okay\" and looks away",
+        "Yells, \"You're stupid for asking!\"",
+        "Says, \"Sure, whatever you want\" to avoid conflict"
+      ],
+      "correct": [
+        2,
+        0,
+        1,
+        0
+      ]
+    },
+    {
+      "item_id": "U4-D5-I3",
+      "lesson_id": "U4-D5",
+      "criterion_id": "U4-D5-C3",
+      "type": "ms",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Which are effective refusal or exit strategies? Select all that apply.",
+      "rationale": "Short, confident refusals, alternatives, allies, and leaving are effective; long excuses and going along are not.",
+      "options": [
+        "Leaving the setting and contacting a trusted adult",
+        "Going along now and planning to quit later",
+        "Teaming up with a friend who will leave with you",
+        "Giving a long, apologetic explanation hoping they stop asking",
+        "Saying a clear \"No thanks\" and suggesting something else to do"
+      ],
+      "correct": [
+        0,
+        2,
+        4
+      ]
+    },
+    {
+      "item_id": "U4-D5-I4",
+      "lesson_id": "U4-D5",
+      "criterion_id": "U4-D5-C4",
+      "type": "mc",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Which response uses effective body language and concise words?",
+      "rationale": "Confident posture and a brief, clear statement make refusal more effective.",
+      "options": [
+        "Looking at the floor and saying, \"maybe, I guess\"",
+        "Laughing nervously and giving a long excuse",
+        "Standing close and shouting a long insult",
+        "Eye contact, a calm voice, and \"No thanks, I'm good. Let's go.\""
+      ],
+      "correct": [
+        3
+      ]
+    },
+    {
+      "item_id": "U4-D5-I5",
+      "lesson_id": "U4-D5",
+      "criterion_id": "U4-D5-C5",
+      "type": "mc",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "A fictional friend at a party is unresponsive after drinking. What is the best action?",
+      "rationale": "Safety comes before secrecy; some situations need an adult or emergency help immediately.",
+      "options": [
+        "Handle it alone so no one finds out",
+        "Keep it secret to protect the friend from trouble",
+        "Call for emergency help and get a trusted adult right away",
+        "Wait until morning to see how they are"
+      ],
+      "correct": [
+        2
+      ]
+    },
+    {
+      "item_id": "U5-D1-I1",
+      "lesson_id": "U5-D1",
+      "criterion_id": "U5-D1-C1",
+      "type": "match",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Match each description to the correct term.",
+      "rationale": "Probability measures chance, house edge is the game's built-in advantage, and the gambler's fallacy is a false belief about streaks.",
+      "options": [
+        "Probability",
+        "House edge",
+        "Gambler's fallacy"
+      ],
+      "rows": [
+        "The built-in advantage that lets the business win over time",
+        "The percentage of bets a game is designed to keep on average",
+        "The math of how likely an event is to happen",
+        "Believing a long losing streak means a win is \"due\""
+      ],
+      "correct": [
+        1,
+        1,
+        0,
+        2
+      ]
+    },
+    {
+      "item_id": "U5-D1-I2",
+      "lesson_id": "U5-D1",
+      "criterion_id": "U5-D1-C1",
+      "type": "mc",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "A fair coin lands on heads five times in a row. What does the gambler's fallacy say, and what is true?",
+      "rationale": "Past results do not change the odds of the next independent event.",
+      "options": [
+        "The coin is broken.",
+        "The fallacy says tails is \"due,\" but each flip is independent and still has a 50% chance of tails.",
+        "Heads is now certain to continue.",
+        "Tails is now more likely because the coin must balance out."
+      ],
+      "correct": [
+        1
+      ]
+    },
+    {
+      "item_id": "U5-D1-I3",
+      "lesson_id": "U5-D1",
+      "criterion_id": "U5-D1-C2",
+      "type": "mc",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "A fair six-sided die is rolled once. What is the probability of rolling a 4?",
+      "rationale": "One of six equally likely outcomes is a 4, so the probability is 1/6.",
+      "options": [
+        "1 in 2",
+        "4 in 6",
+        "1 in 4",
+        "1 in 6"
+      ],
+      "correct": [
+        3
+      ]
+    },
+    {
+      "item_id": "U5-D1-I4",
+      "lesson_id": "U5-D1",
+      "criterion_id": "U5-D1-C2",
+      "type": "mc",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "A game costs $2 to play. There is a 1-in-10 chance to win $10 and otherwise you win nothing. What is the expected result per play, on average?",
+      "rationale": "Expected value is (1/10 x $10) - $2 = -$1, so players lose on average.",
+      "options": [
+        "Break even ($0)",
+        "A loss of $1 per play",
+        "A gain of $8 per play",
+        "A gain of $1 per play"
+      ],
+      "correct": [
+        1
+      ]
+    },
+    {
+      "item_id": "U5-D1-I5",
+      "lesson_id": "U5-D1",
+      "criterion_id": "U5-D1-C3",
+      "type": "mc",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Why does a gambling business profit over time even though some players win?",
+      "rationale": "House advantage guarantees an average profit for the business over many bets.",
+      "options": [
+        "The business picks who wins and loses each time.",
+        "Players who learn a system eventually beat the odds.",
+        "The games pay out less than the true odds, so over many plays the business keeps a percentage.",
+        "Winners always lose their money back the next day."
+      ],
+      "correct": [
+        2
+      ]
+    },
+    {
+      "item_id": "U5-D2-I1",
+      "lesson_id": "U5-D2",
+      "criterion_id": "U5-D2-C1",
+      "type": "match",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Match each fictional example to the term it shows.",
+      "rationale": "These are the key patterns that keep reward systems engaged and keep people gambling.",
+      "options": [
+        "Variable reinforcement",
+        "Near miss",
+        "Chasing losses",
+        "Tolerance"
+      ],
+      "rows": [
+        "A spin stops one symbol short of the jackpot",
+        "Wins arrive at unpredictable times, like a slot machine",
+        "Needing larger bets to feel the same excitement",
+        "Betting bigger to win back money already lost"
+      ],
+      "correct": [
+        1,
+        0,
+        3,
+        2
+      ]
+    },
+    {
+      "item_id": "U5-D2-I2",
+      "lesson_id": "U5-D2",
+      "criterion_id": "U5-D2-C1",
+      "type": "mc",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Why do unpredictable rewards, like slot machine payouts, keep people playing?",
+      "rationale": "Variable reinforcement produces a strong, persistent reward response.",
+      "options": [
+        "Players always know when a win is coming.",
+        "Predictable rewards trigger more dopamine.",
+        "Dopamine is released only after a win.",
+        "Unpredictable rewards trigger a stronger, longer-lasting dopamine response than predictable ones."
+      ],
+      "correct": [
+        3
+      ]
+    },
+    {
+      "item_id": "U5-D2-I3",
+      "lesson_id": "U5-D2",
+      "criterion_id": "U5-D2-C2",
+      "type": "mc",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Which statement describes the mismatch in the teen brain?",
+      "rationale": "Reward-seeking develops before impulse control and judgment finish maturing.",
+      "options": [
+        "Teen brains have no reward system.",
+        "The prefrontal cortex finishes before the reward system.",
+        "The reward system matures earlier than the prefrontal cortex, which handles impulse control and long-term judgment.",
+        "Both systems are fully mature by age 12."
+      ],
+      "correct": [
+        2
+      ]
+    },
+    {
+      "item_id": "U5-D2-I4",
+      "lesson_id": "U5-D2",
+      "criterion_id": "U5-D2-C3",
+      "type": "mc",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Why does that mismatch raise teens' vulnerability to gambling and other addictive behaviors?",
+      "rationale": "The gap between reward drive and self-control increases the risk of developing addictive patterns.",
+      "options": [
+        "Teens are less intelligent than adults.",
+        "Teens cannot feel rewards.",
+        "Strong reward-seeking with still-maturing impulse control makes it harder to stop after a rewarding experience.",
+        "Teens always know the odds, so they are protected."
+      ],
+      "correct": [
+        2
+      ]
+    },
+    {
+      "item_id": "U5-D2-I5",
+      "lesson_id": "U5-D2",
+      "criterion_id": "U5-D2-C4",
+      "type": "ms",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Which can raise a person's vulnerability to problem gambling? Select all that apply.",
+      "rationale": "Impulsivity, reward-seeking, and early exposure raise risk; support and understanding odds are protective.",
+      "options": [
+        "Early exposure to gambling or gambling-like games",
+        "Strong support from trusted adults",
+        "Knowing the odds of a game",
+        "High impulsivity",
+        "Strong reward-seeking"
+      ],
+      "correct": [
+        0,
+        3,
+        4
+      ]
+    },
+    {
+      "item_id": "U5-D3-I1",
+      "lesson_id": "U5-D3",
+      "criterion_id": "U5-D3-C1",
+      "type": "match",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Match each fictional ad line to the technique it uses.",
+      "rationale": "Bonuses, famous faces, rewards for staying active, and crowd appeal are common betting marketing tactics.",
+      "options": [
+        "Sign-up bonus or \"risk-free\" bet",
+        "Celebrity or influencer promotion",
+        "Streak or loyalty reward",
+        "Social proof"
+      ],
+      "rows": [
+        "\"You're on a 5-day streak. Bet again to unlock a bonus!\"",
+        "\"Join millions of fans already betting!\"",
+        "A famous player says he bets on every game he watches",
+        "\"Your first bet is risk-free up to $100!\""
+      ],
+      "correct": [
+        2,
+        3,
+        1,
+        0
+      ]
+    },
+    {
+      "item_id": "U5-D3-I2",
+      "lesson_id": "U5-D3",
+      "criterion_id": "U5-D3-C1",
+      "type": "ms",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Which are persuasive techniques used in sports-betting ads? Select all that apply.",
+      "rationale": "Ads highlight excitement and rewards and rarely show the odds or the house edge.",
+      "options": [
+        "Explaining the house edge to viewers",
+        "Sign-up bonuses",
+        "Showing the true odds of losing in large print",
+        "Loyalty or streak rewards",
+        "\"Risk-free bet\" language",
+        "Celebrity endorsements"
+      ],
+      "correct": [
+        1,
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "item_id": "U5-D3-I3",
+      "lesson_id": "U5-D3",
+      "criterion_id": "U5-D3-C2",
+      "type": "mc",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "A fictional betting app promo uses game-style graphics, popular streamers, and meme slang. Which audience is it most likely aiming for?",
+      "rationale": "Style, platforms, and language show who an ad wants to reach.",
+      "options": [
+        "Professional gamblers",
+        "Teens and young adults",
+        "Elementary-aged children",
+        "Retired adults"
+      ],
+      "correct": [
+        1
+      ]
+    },
+    {
+      "item_id": "U5-D3-I4",
+      "lesson_id": "U5-D3",
+      "criterion_id": "U5-D3-C3",
+      "type": "mc",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "How can constant betting ads during sports broadcasts normalize gambling for young people?",
+      "rationale": "Repeated exposure shapes what feels normal, even for people who cannot yet bet.",
+      "options": [
+        "It makes betting seem rare and unusual.",
+        "It has no effect because teens cannot legally bet.",
+        "Pairing betting with fun, fandom, and celebrities makes it seem like a normal part of watching sports.",
+        "It informs viewers of the real odds."
+      ],
+      "correct": [
+        2
+      ]
+    },
+    {
+      "item_id": "U5-D3-I5",
+      "lesson_id": "U5-D3",
+      "criterion_id": "U5-D3-C3",
+      "type": "mc",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Why is a \"risk-free bet\" not really risk-free?",
+      "rationale": "The wording hides the conditions and keeps the player betting.",
+      "options": [
+        "Odds change in the player's favor.",
+        "The company covers every loss without conditions.",
+        "Bonuses usually have conditions, and money often must be wagered before it can be withdrawn.",
+        "Risk-free bets cannot lose any money ever."
+      ],
+      "correct": [
+        2
+      ]
+    },
+    {
+      "item_id": "U5-D4-I1",
+      "lesson_id": "U5-D4",
+      "criterion_id": "U5-D4-C1",
+      "type": "ms",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Which could be warning signs of problem gambling? Select all that apply.",
+      "rationale": "Hiding behavior, money problems, chasing losses, and neglecting responsibilities are warning signs.",
+      "options": [
+        "Betting more to win back lost money",
+        "Skipping school or activities to gamble",
+        "Borrowing money repeatedly",
+        "Lying about losses",
+        "Spending time on hobbies and friends",
+        "Choosing not to bet"
+      ],
+      "correct": [
+        0,
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "item_id": "U5-D4-I2",
+      "lesson_id": "U5-D4",
+      "criterion_id": "U5-D4-C2",
+      "type": "match",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Chris (fictional) is invited to join a betting pool. Match each statement to the decision-making step.",
+      "rationale": "A decision-making model moves from the problem to options, consequences, and a choice.",
+      "options": [
+        "Identify the problem",
+        "List options",
+        "Think about consequences",
+        "Make the decision"
+      ],
+      "rows": [
+        "Chris declines and suggests a pickup game",
+        "Chris is asked to put money into a betting pool",
+        "Losing money, feeling pressure again, straining friendships",
+        "Join, say no, or suggest another activity"
+      ],
+      "correct": [
+        3,
+        0,
+        2,
+        1
+      ]
+    },
+    {
+      "item_id": "U5-D4-I3",
+      "lesson_id": "U5-D4",
+      "criterion_id": "U5-D4-C3",
+      "type": "mc",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Which is the clearest refusal to a friend pressuring you to join a betting pool?",
+      "rationale": "A clear, calm \"no\" with an alternative is an effective refusal.",
+      "options": [
+        "\"I'd join, but I'd probably get caught.\"",
+        "\"Maybe next time, I guess...\"",
+        "\"No thanks, I'm not putting in money. Want to play basketball instead?\"",
+        "\"That's a dumb thing to do!\""
+      ],
+      "correct": [
+        2
+      ]
+    },
+    {
+      "item_id": "U5-D4-I4",
+      "lesson_id": "U5-D4",
+      "criterion_id": "U5-D4-C4",
+      "type": "ms",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Where can someone find help for problem gambling? Select all that apply.",
+      "rationale": "Counselors, trusted adults, and the helpline offer support; secrecy and borrowing make things worse.",
+      "options": [
+        "Keep it secret and handle it alone",
+        "A school counselor",
+        "A trusted adult",
+        "Borrow money from friends to cover losses",
+        "The National Problem Gambling Helpline, 1-800-522-4700"
+      ],
+      "correct": [
+        1,
+        2,
+        4
+      ]
+    },
+    {
+      "item_id": "U5-D4-I5",
+      "lesson_id": "U5-D4",
+      "criterion_id": "U5-D4-C5",
+      "type": "match",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Sort each consequence of problem gambling as financial or social.",
+      "rationale": "Problem gambling harms both money and relationships.",
+      "options": [
+        "Financial consequence",
+        "Social consequence"
+      ],
+      "rows": [
+        "Missing team events or school to gamble",
+        "Friends or family losing trust after lies about losses",
+        "Losing money needed for everyday things",
+        "Borrowing money and not repaying it"
+      ],
+      "correct": [
+        1,
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "item_id": "U6-D1-I1",
+      "lesson_id": "U6-D1",
+      "criterion_id": "U6-D1-C1",
+      "type": "mc",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "A fictional data card says: \"In a sample of 10 fatal teen car crashes, 6 teens were not wearing a seatbelt.\" What is the main finding?",
+      "rationale": "Summarizing a data card means stating what the numbers show, not adding conclusions the data does not support.",
+      "options": [
+        "Seatbelts cause most crashes.",
+        "Most teens in crashes were buckled and still died, so belts do not help.",
+        "Most of the teens who died in the sampled crashes were unbuckled, which links seatbelt use to survival.",
+        "Seatbelts only matter on highways."
+      ],
+      "correct": [
+        2
+      ]
+    },
+    {
+      "item_id": "U6-D1-I2",
+      "lesson_id": "U6-D1",
+      "criterion_id": "U6-D1-C1",
+      "type": "mc",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Which source would give the most credible injury statistics?",
+      "rationale": "Credible statistics come from government health and safety agencies that publish their data.",
+      "options": [
+        "An ad for a car accessory",
+        "CDC WISQARS or NHTSA",
+        "A meme with no source",
+        "A friend's story"
+      ],
+      "correct": [
+        1
+      ]
+    },
+    {
+      "item_id": "U6-D1-I3",
+      "lesson_id": "U6-D1",
+      "criterion_id": "U6-D1-C2",
+      "type": "mc",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "How does a seatbelt reduce the risk of serious injury in a crash?",
+      "rationale": "Seatbelts reduce the force on the body and keep people inside the protective space of the vehicle.",
+      "options": [
+        "It spreads crash forces across stronger parts of the body and helps keep you from being thrown from the vehicle.",
+        "It only protects the driver.",
+        "It makes the car stop faster.",
+        "It prevents the crash from happening."
+      ],
+      "correct": [
+        0
+      ]
+    },
+    {
+      "item_id": "U6-D1-I4",
+      "lesson_id": "U6-D1",
+      "criterion_id": "U6-D1-C2",
+      "type": "mc",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "How does a helmet reduce the risk of serious head injury?",
+      "rationale": "Helmets reduce the force that reaches the head and brain at any skill level.",
+      "options": [
+        "It cushions and spreads out the force of an impact so the head and brain take less of it.",
+        "It protects only the face, not the head.",
+        "It prevents falls from happening.",
+        "It only matters for beginners."
+      ],
+      "correct": [
+        0
+      ]
+    },
+    {
+      "item_id": "U6-D1-I5",
+      "lesson_id": "U6-D1",
+      "criterion_id": "U6-D1-C2",
+      "type": "match",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Sort each statement as a myth or a fact.",
+      "rationale": "Skill does not replace protective gear, and many injuries can be prevented with simple habits.",
+      "options": [
+        "Myth",
+        "Fact"
+      ],
+      "rows": [
+        "\"Wearing a helmet reduces the risk of serious head injury.\"",
+        "\"Helmets are only necessary for beginners.\"",
+        "\"Many serious teen injuries are predictable and preventable.\"",
+        "\"I'm a good driver, so I don't need a seatbelt.\""
+      ],
+      "correct": [
+        1,
+        0,
+        1,
+        0
+      ]
+    },
+    {
+      "item_id": "U6-D2-I1",
+      "lesson_id": "U6-D2",
+      "criterion_id": "U6-D2-C1",
+      "type": "mc",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "A person suddenly collapses and is not breathing normally. What are the first two steps in the Chain of Survival?",
+      "rationale": "The first links are recognizing cardiac arrest and calling 911 right away.",
+      "options": [
+        "Move them to a car, then drive to the hospital",
+        "Give rescue breaths, then check a pulse for a minute",
+        "Wait to see if they wake up, then call a parent",
+        "Recognize the emergency and call 911"
+      ],
+      "correct": [
+        3
+      ]
+    },
+    {
+      "item_id": "U6-D2-I2",
+      "lesson_id": "U6-D2",
+      "criterion_id": "U6-D2-C1",
+      "type": "ms",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Which are links in the Chain of Survival? Select all that apply.",
+      "rationale": "The chain is recognize, call 911, compress, use an AED, and hand off to EMS.",
+      "options": [
+        "Hand off to EMS when they arrive",
+        "Start compressions",
+        "Recognize and call 911",
+        "Give the person water",
+        "Wait for symptoms to pass",
+        "Use an AED"
+      ],
+      "correct": [
+        0,
+        1,
+        2,
+        5
+      ]
+    },
+    {
+      "item_id": "U6-D2-I3",
+      "lesson_id": "U6-D2",
+      "criterion_id": "U6-D2-C2",
+      "type": "mc",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Where do you place your hands for hands-only CPR on an adult?",
+      "rationale": "Compressions go on the center of the chest.",
+      "options": [
+        "On the left side of the chest",
+        "On the center of the chest, one hand stacked on the other",
+        "On the stomach",
+        "On the neck"
+      ],
+      "correct": [
+        1
+      ]
+    },
+    {
+      "item_id": "U6-D2-I4",
+      "lesson_id": "U6-D2",
+      "criterion_id": "U6-D2-C3",
+      "type": "mc",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Which rhythm matches the recommended compression rate for hands-only CPR?",
+      "rationale": "A steady rate of 100 to 120 per minute keeps blood moving effectively.",
+      "options": [
+        "As fast as possible, about 180 per minute",
+        "Fast, then slow, then fast again",
+        "A steady 100 to 120 compressions per minute",
+        "About 60 per minute"
+      ],
+      "correct": [
+        2
+      ]
+    },
+    {
+      "item_id": "U6-D2-I5",
+      "lesson_id": "U6-D2",
+      "criterion_id": "U6-D2-C3",
+      "type": "mc",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Which best describes hands-only CPR?",
+      "rationale": "Hands-only CPR is recommended for teens and adults who see someone suddenly collapse.",
+      "options": [
+        "Rescue breaths only",
+        "Compressions for one minute, then waiting for EMS",
+        "Gentle presses once every few seconds",
+        "Continuous hard, fast chest compressions without rescue breaths until help arrives"
+      ],
+      "correct": [
+        3
+      ]
+    },
+    {
+      "item_id": "U6-D3-I1",
+      "lesson_id": "U6-D3",
+      "criterion_id": "U6-D3-C1",
+      "type": "match",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Put the AED steps in order. Match each step to when it happens.",
+      "rationale": "The sequence is power on, pads on, stand clear, then resume CPR as prompted.",
+      "options": [
+        "First",
+        "Second",
+        "Third",
+        "Fourth"
+      ],
+      "rows": [
+        "Turn on the AED and follow its voice prompts",
+        "Make sure no one is touching the person while it analyzes or shocks",
+        "Resume CPR when the AED says to",
+        "Attach the pads to bare skin as pictured"
+      ],
+      "correct": [
+        0,
+        2,
+        3,
+        1
+      ]
+    },
+    {
+      "item_id": "U6-D3-I2",
+      "lesson_id": "U6-D3",
+      "criterion_id": "U6-D3-C1",
+      "type": "mc",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "The AED has delivered a shock. What should you do next?",
+      "rationale": "CPR continues after a shock until the AED prompts otherwise or EMS takes over.",
+      "options": [
+        "Wait ten minutes before touching the person",
+        "Resume CPR right away or when the AED prompts you",
+        "Remove the pads and stop",
+        "Wait for the person to sit up on their own"
+      ],
+      "correct": [
+        1
+      ]
+    },
+    {
+      "item_id": "U6-D3-I3",
+      "lesson_id": "U6-D3",
+      "criterion_id": "U6-D3-C2",
+      "type": "mc",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "How do CPR and an AED work together in the Chain of Survival?",
+      "rationale": "CPR, the AED, and calling 911 together make up the response most likely to save a life.",
+      "options": [
+        "CPR keeps blood moving until the AED can analyze and, if needed, shock the heart; both continue until EMS arrives.",
+        "An AED replaces the need for CPR.",
+        "Either one alone is always enough.",
+        "CPR is only used after the AED fails."
+      ],
+      "correct": [
+        0
+      ]
+    },
+    {
+      "item_id": "U6-D3-I4",
+      "lesson_id": "U6-D3",
+      "criterion_id": "U6-D3-C3",
+      "type": "mc",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Myth: \"Doctors will not try as hard to save a registered organ donor.\" Which fact corrects it?",
+      "rationale": "Being a registered donor does not change the medical care a person receives.",
+      "options": [
+        "Doctors only try hard for young donors.",
+        "Registering is a legal contract that replaces medical care.",
+        "Registered donors receive the same life-saving care; donation is only considered after the medical team has done everything to save them.",
+        "Registered donors are treated second."
+      ],
+      "correct": [
+        2
+      ]
+    },
+    {
+      "item_id": "U6-D3-I5",
+      "lesson_id": "U6-D3",
+      "criterion_id": "U6-D3-C3",
+      "type": "mc",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Myth: \"Organ donation rules out an open-casket funeral.\" Which fact corrects it?",
+      "rationale": "Donation is performed with care and does not stop families from having a viewing or service.",
+      "options": [
+        "Donors cannot have any service.",
+        "Donation always rules out a funeral.",
+        "Donation does not prevent an open-casket funeral.",
+        "Only some religions allow funerals after donation."
+      ],
+      "correct": [
+        2
+      ]
+    },
+    {
+      "item_id": "U6-D5-I1",
+      "lesson_id": "U6-D5",
+      "criterion_id": "U6-D5-C1",
+      "type": "mc",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "In a ruler-drop test, students catch the ruler more slowly while also reading a text aloud. What does this show?",
+      "rationale": "Divided attention measurably delays response, which raises crash risk.",
+      "options": [
+        "Only physical distractions slow reactions.",
+        "Reaction time does not change with attention.",
+        "Distraction slows reaction time, which at driving speeds means more distance traveled before reacting.",
+        "Multitasking improves reaction time."
+      ],
+      "correct": [
+        2
+      ]
+    },
+    {
+      "item_id": "U6-D5-I2",
+      "lesson_id": "U6-D5",
+      "criterion_id": "U6-D5-C1",
+      "type": "match",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Match each example to the type of distraction it shows.",
+      "rationale": "Distractions can take eyes, hands, or attention away from the task.",
+      "options": [
+        "Visual",
+        "Manual",
+        "Cognitive"
+      ],
+      "rows": [
+        "Looking away from the road at a notification",
+        "Reading a text while crossing a street",
+        "Mind busy replaying an argument",
+        "Taking a hand off the wheel to type"
+      ],
+      "correct": [
+        0,
+        0,
+        2,
+        1
+      ]
+    },
+    {
+      "item_id": "U6-D5-I3",
+      "lesson_id": "U6-D5",
+      "criterion_id": "U6-D5-C1",
+      "type": "mc",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Why is texting while driving especially dangerous?",
+      "rationale": "Texting takes the eyes, hands, and mind off driving at once.",
+      "options": [
+        "It only distracts the eyes.",
+        "It is safe at low speeds.",
+        "It combines visual, manual, and cognitive distraction at the same time.",
+        "It only matters on highways."
+      ],
+      "correct": [
+        2
+      ]
+    },
+    {
+      "item_id": "U6-D5-I4",
+      "lesson_id": "U6-D5",
+      "criterion_id": "U6-D5-C2",
+      "type": "ms",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Which are healthy technology habits that support safety? Select all that apply.",
+      "rationale": "Safe habits limit distractions and protect privacy; public live location and texting at lights add risk.",
+      "options": [
+        "Being careful about sharing real-time location publicly",
+        "Sharing your live location publicly so friends can find you",
+        "Setting boundaries around notifications",
+        "Not using a phone while crossing streets",
+        "Using do-not-disturb driving mode or keeping the phone out of reach",
+        "Texting only at red lights while driving"
+      ],
+      "correct": [
+        0,
+        2,
+        3,
+        4
+      ]
+    },
+    {
+      "item_id": "U6-D5-I5",
+      "lesson_id": "U6-D5",
+      "criterion_id": "U6-D5-C3",
+      "type": "mc",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Which is a specific, realistic safety commitment for a fictional student?",
+      "rationale": "A strong commitment names a specific action, a time, and is realistic to follow.",
+      "options": [
+        "\"I'll try to be safer.\"",
+        "\"I will never use technology again.\"",
+        "\"I will turn on do-not-disturb and put my phone in my bag before I start the car.\"",
+        "\"I'll only text when I think it's safe.\""
+      ],
+      "correct": [
+        2
+      ]
+    },
+    {
+      "item_id": "U7-D1-I1",
+      "lesson_id": "U7-D1",
+      "criterion_id": "U7-D1-C1",
+      "type": "match",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Match each job to the macronutrient that does it.",
+      "rationale": "Carbohydrates fuel the body, protein builds and repairs, and fat stores energy and supports cells.",
+      "options": [
+        "Carbohydrates",
+        "Protein",
+        "Fat"
+      ],
+      "rows": [
+        "Builds and repairs body tissue",
+        "Stores energy and supports cell function",
+        "Found mostly in foods like bread, rice, and fruit",
+        "The body's main source of energy"
+      ],
+      "correct": [
+        1,
+        2,
+        0,
+        0
+      ]
+    },
+    {
+      "item_id": "U7-D1-I2",
+      "lesson_id": "U7-D1",
+      "criterion_id": "U7-D1-C1",
+      "type": "ms",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Which foods are mostly protein? Select all that apply.",
+      "rationale": "Chicken, tofu, and eggs are protein-rich; rice is mostly carbohydrate and olive oil is mostly fat.",
+      "options": [
+        "Eggs",
+        "White rice",
+        "Olive oil",
+        "Grilled chicken",
+        "Tofu"
+      ],
+      "correct": [
+        0,
+        3,
+        4
+      ]
+    },
+    {
+      "item_id": "U7-D1-I3",
+      "lesson_id": "U7-D1",
+      "criterion_id": "U7-D1-C2",
+      "type": "mc",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Which fictional lunch best matches the MyPlate proportions?",
+      "rationale": "A MyPlate meal includes fruits, vegetables, grains, protein, and dairy in balanced proportions.",
+      "options": [
+        "A large order of fries and a soda",
+        "Two slices of pizza and a bag of chips",
+        "Grilled chicken, brown rice, steamed broccoli, an apple, and a glass of milk",
+        "Only a bowl of fruit"
+      ],
+      "correct": [
+        2
+      ]
+    },
+    {
+      "item_id": "U7-D1-I4",
+      "lesson_id": "U7-D1",
+      "criterion_id": "U7-D1-C2",
+      "type": "mc",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "How is MyPlate best described?",
+      "rationale": "MyPlate shows balance across food groups rather than one perfect meal.",
+      "options": [
+        "A list of foods to avoid",
+        "A strict plan every meal must match exactly",
+        "A weight-loss diet",
+        "A simple proportional guide that emphasizes balance and variety, not a strict rule"
+      ],
+      "correct": [
+        3
+      ]
+    },
+    {
+      "item_id": "U7-D1-I5",
+      "lesson_id": "U7-D1",
+      "criterion_id": "U7-D1-C3",
+      "type": "mc",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "What do micronutrients do?",
+      "rationale": "Micronutrients are needed in small amounts and are found in a variety of foods.",
+      "options": [
+        "They are the same thing as fats.",
+        "Vitamins and minerals support body functions in small amounts, such as calcium for bones.",
+        "They provide most of the body's energy.",
+        "They can only be found in supplements."
+      ],
+      "correct": [
+        1
+      ]
+    },
+    {
+      "item_id": "U7-D2-I1",
+      "lesson_id": "U7-D2",
+      "criterion_id": "U7-D2-C1",
+      "type": "match",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Match each description to the part of the nutrition facts label.",
+      "rationale": "Each part of the label answers a different question about the food.",
+      "options": [
+        "Serving size",
+        "Calories",
+        "% Daily Value",
+        "Added sugars"
+      ],
+      "rows": [
+        "The standard amount that all the numbers on the label are based on",
+        "Sugars put in during processing, not found naturally",
+        "The energy you get from one serving",
+        "A rough guide to how much a serving adds toward a day's needs"
+      ],
+      "correct": [
+        0,
+        3,
+        1,
+        2
+      ]
+    },
+    {
+      "item_id": "U7-D2-I2",
+      "lesson_id": "U7-D2",
+      "criterion_id": "U7-D2-C1",
+      "type": "mc",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "A nutrient lists 25% Daily Value per serving. How is that generally described?",
+      "rationale": "A rough guide: 5% or less is low and 20% or more is high.",
+      "options": [
+        "Not important",
+        "Exactly right for one meal",
+        "Low (5% or less)",
+        "High (20% or more)"
+      ],
+      "correct": [
+        3
+      ]
+    },
+    {
+      "item_id": "U7-D2-I3",
+      "lesson_id": "U7-D2",
+      "criterion_id": "U7-D2-C2",
+      "type": "mc",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Cereal A has 12 g added sugar per serving and Cereal B has 5 g per serving, with the same serving size. Which statement is accurate?",
+      "rationale": "Comparing the same serving size on both labels shows which has less added sugar.",
+      "options": [
+        "The label cannot be used to compare them.",
+        "Cereal A has less added sugar.",
+        "They have the same added sugar.",
+        "Cereal B has less added sugar per serving."
+      ],
+      "correct": [
+        3
+      ]
+    },
+    {
+      "item_id": "U7-D2-I4",
+      "lesson_id": "U7-D2",
+      "criterion_id": "U7-D2-C3",
+      "type": "mc",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "A bag lists 2 servings with 150 calories each. A student eats the whole bag. How many calories did they eat, and what does the serving size on the label mean?",
+      "rationale": "Portion size is what a person actually eats; serving size is just a standard amount for comparison.",
+      "options": [
+        "300 calories; the serving size is the amount everyone should eat.",
+        "75 calories; labels list half a serving.",
+        "300 calories; the serving size is a standard reference amount, not a recommendation for how much to eat.",
+        "150 calories; the label shows the whole bag."
+      ],
+      "correct": [
+        2
+      ]
+    },
+    {
+      "item_id": "U7-D2-I5",
+      "lesson_id": "U7-D2",
+      "criterion_id": "U7-D2-C4",
+      "type": "match",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Match each visual reference to what it can help estimate.",
+      "rationale": "Hand-based references are a practical estimating tool, not a strict rule.",
+      "options": [
+        "Palm",
+        "Fist",
+        "Cupped hand",
+        "Thumb"
+      ],
+      "rows": [
+        "About one serving of meat or other protein",
+        "About a serving of peanut butter or oil",
+        "About a small handful-sized snack portion",
+        "About a cup of cooked pasta or fruit"
+      ],
+      "correct": [
+        0,
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "item_id": "U7-D3-I1",
+      "lesson_id": "U7-D3",
+      "criterion_id": "U7-D3-C1",
+      "type": "match",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Match each description to the FITT component.",
+      "rationale": "FITT stands for Frequency, Intensity, Time, and Type.",
+      "options": [
+        "Frequency",
+        "Intensity",
+        "Time",
+        "Type"
+      ],
+      "rows": [
+        "How many minutes each session lasts",
+        "How hard the body is working",
+        "Walking, swimming, or strength training",
+        "How many days per week"
+      ],
+      "correct": [
+        2,
+        1,
+        3,
+        0
+      ]
+    },
+    {
+      "item_id": "U7-D3-I2",
+      "lesson_id": "U7-D3",
+      "criterion_id": "U7-D3-C2",
+      "type": "mc",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Kai (fictional) walks at an easy pace for 20 minutes on 2 days a week. Which change increases the Frequency component?",
+      "rationale": "Frequency is how often; the other choices change time, intensity, and type.",
+      "options": [
+        "Swimming instead of walking",
+        "Adding short jogging intervals",
+        "Walking for 30 minutes each time",
+        "Walking on 4 days a week instead of 2"
+      ],
+      "correct": [
+        3
+      ]
+    },
+    {
+      "item_id": "U7-D3-I3",
+      "lesson_id": "U7-D3",
+      "criterion_id": "U7-D3-C2",
+      "type": "mc",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Which activity plan includes all four FITT components?",
+      "rationale": "A FITT plan names how often, how hard, how long, and what kind of activity.",
+      "options": [
+        "Play a sport hard",
+        "Jog (type) at a moderate pace (intensity) for 30 minutes (time) on 3 days a week (frequency)",
+        "Jog for 30 minutes",
+        "Do something active on some days"
+      ],
+      "correct": [
+        1
+      ]
+    },
+    {
+      "item_id": "U7-D3-I4",
+      "lesson_id": "U7-D3",
+      "criterion_id": "U7-D3-C3",
+      "type": "mc",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "During an activity a student can say only a few words at a time. Using the talk test, what is the intensity?",
+      "rationale": "If you can only say a few words, the activity is vigorous.",
+      "options": [
+        "Light",
+        "Moderate, because they can sing easily",
+        "There is no way to tell",
+        "Vigorous"
+      ],
+      "correct": [
+        3
+      ]
+    },
+    {
+      "item_id": "U7-D3-I5",
+      "lesson_id": "U7-D3",
+      "criterion_id": "U7-D3-C3",
+      "type": "mc",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "A student rates their effort 3 out of 10 and can sing easily. What does this suggest about intensity?",
+      "rationale": "A low effort rating and easy singing show light intensity.",
+      "options": [
+        "Vigorous intensity",
+        "Moderate intensity",
+        "Perceived effort cannot show intensity",
+        "Light intensity"
+      ],
+      "correct": [
+        3
+      ]
+    },
+    {
+      "item_id": "U7-D4-I1",
+      "lesson_id": "U7-D4",
+      "criterion_id": "U7-D4-C1",
+      "type": "match",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Match each example to the marketing technique it uses.",
+      "rationale": "Front-label claims, influencer promotion, and dramatic before/after images are common patterns.",
+      "options": [
+        "Health halo (front-label claim)",
+        "Influencer promotion",
+        "Dramatic before/after claim"
+      ],
+      "rows": [
+        "Photos showing a huge change in two weeks",
+        "\"100% NATURAL! LOW FAT!\" on a package that is high in added sugar",
+        "\"Natural\" printed in large type on a candy wrapper",
+        "A fitness creator holding a supplement with a discount code"
+      ],
+      "correct": [
+        2,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "item_id": "U7-D4-I2",
+      "lesson_id": "U7-D4",
+      "criterion_id": "U7-D4-C1",
+      "type": "mc",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "A snack bar front says \"Made with real fruit!\" but the label shows 18 g of added sugar. Which technique is this?",
+      "rationale": "The front claim draws attention while the added sugar is on the full label.",
+      "options": [
+        "A health halo: a front claim makes the product seem healthier than the full label shows.",
+        "A medical recommendation",
+        "Social proof from other buyers",
+        "A lower price"
+      ],
+      "correct": [
+        0
+      ]
+    },
+    {
+      "item_id": "U7-D4-I3",
+      "lesson_id": "U7-D4",
+      "criterion_id": "U7-D4-C1",
+      "type": "ms",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Which are common patterns in social-media fitness marketing? Select all that apply.",
+      "rationale": "These patterns grab attention without giving reliable evidence.",
+      "options": [
+        "Influencer-promoted supplements",
+        "Linked studies from credible organizations",
+        "Claims of fast or extreme results",
+        "Dramatic before/after images",
+        "Balanced advice from a registered dietitian"
+      ],
+      "correct": [
+        0,
+        2,
+        3
+      ]
+    },
+    {
+      "item_id": "U7-D4-I4",
+      "lesson_id": "U7-D4",
+      "criterion_id": "U7-D4-C2",
+      "type": "mc",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Why should a fitness claim be checked against a credible source?",
+      "rationale": "Credible sources, like a registered dietitian or public health organization, provide the real picture.",
+      "options": [
+        "Package claims must always be complete.",
+        "If many people follow it, it has been verified.",
+        "Marketing aims to grab attention fast; credible sources and the full label show the evidence.",
+        "Influencers are always trained experts."
+      ],
+      "correct": [
+        2
+      ]
+    },
+    {
+      "item_id": "U7-D4-I5",
+      "lesson_id": "U7-D4",
+      "criterion_id": "U7-D4-C2",
+      "type": "ms",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Which are credible sources for checking a fitness or nutrition claim? Select all that apply.",
+      "rationale": "Experts and public health organizations are credible; sellers and anonymous posts are not.",
+      "options": [
+        "An established public health organization",
+        "A doctor",
+        "An influencer's discount-code page",
+        "A registered dietitian",
+        "An anonymous comment"
+      ],
+      "correct": [
+        0,
+        1,
+        3
+      ]
+    },
+    {
+      "item_id": "U7-D5-I1",
+      "lesson_id": "U7-D5",
+      "criterion_id": "U7-D5-C1",
+      "type": "mc",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Which goal includes all five SMART components?",
+      "rationale": "The goal names an action, a number, a realistic target, a reason, and a time frame.",
+      "options": [
+        "Eat vegetables at every meal forever.",
+        "Add vegetables sometimes.",
+        "I will add one serving of vegetables to dinner on four nights a week for the next four weeks to get more fiber.",
+        "Eat healthier."
+      ],
+      "correct": [
+        2
+      ]
+    },
+    {
+      "item_id": "U7-D5-I2",
+      "lesson_id": "U7-D5",
+      "criterion_id": "U7-D5-C1",
+      "type": "match",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Match each phrase from a goal to the SMART component it shows.",
+      "rationale": "Each part of a SMART goal answers a different question.",
+      "options": [
+        "Specific",
+        "Measurable",
+        "Achievable",
+        "Relevant",
+        "Time-bound"
+      ],
+      "rows": [
+        "\"for the next three weeks\"",
+        "\"on 4 days a week\"",
+        "\"to keep my energy up for practice\"",
+        "\"using fruit I already have at home\"",
+        "\"add a serving of fruit to breakfast\""
+      ],
+      "correct": [
+        4,
+        1,
+        3,
+        2,
+        0
+      ]
+    },
+    {
+      "item_id": "U7-D5-I3",
+      "lesson_id": "U7-D5",
+      "criterion_id": "U7-D5-C2",
+      "type": "mc",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Which is a habit-based nutrition or activity goal?",
+      "rationale": "Habit-based goals focus on actions, not weight, calories, or body size.",
+      "options": [
+        "Change my body shape.",
+        "Eat under a set number of calories every day.",
+        "Add one serving of vegetables to dinner four nights this week.",
+        "Lose 10 pounds by June."
+      ],
+      "correct": [
+        2
+      ]
+    },
+    {
+      "item_id": "U7-D5-I4",
+      "lesson_id": "U7-D5",
+      "criterion_id": "U7-D5-C3",
+      "type": "ms",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Which are realistic barriers to a goal of eating breakfast before school? Select all that apply.",
+      "rationale": "A barrier is something that could get in the way of the goal.",
+      "options": [
+        "Not feeling hungry early in the day",
+        "Not enough time in the morning",
+        "Writing the goal down",
+        "No grab-and-go options at home",
+        "Having a clear goal"
+      ],
+      "correct": [
+        0,
+        1,
+        3
+      ]
+    },
+    {
+      "item_id": "U7-D5-I5",
+      "lesson_id": "U7-D5",
+      "criterion_id": "U7-D5-C4",
+      "type": "mc",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Barrier: \"I don't have time before school.\" Which strategy fits?",
+      "rationale": "A strategy directly addresses the barrier.",
+      "options": [
+        "Skip it entirely",
+        "Wait until there is more time",
+        "Prepare something the night before",
+        "Drop the goal"
+      ],
+      "correct": [
+        2
+      ]
+    },
+    {
+      "item_id": "U8-D1-I1",
+      "lesson_id": "U8-D1",
+      "criterion_id": "U8-D1-C1",
+      "type": "match",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Sort each statement about puberty as a myth or a fact.",
+      "rationale": "Puberty timing varies, and changes are physical, emotional, and social.",
+      "options": [
+        "Myth",
+        "Fact"
+      ],
+      "rows": [
+        "Puberty includes both physical and emotional changes.",
+        "The timing and pace of puberty vary widely and are normal.",
+        "Everyone goes through puberty at exactly the same age.",
+        "If puberty starts later than friends', something is wrong."
+      ],
+      "correct": [
+        1,
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "item_id": "U8-D1-I2",
+      "lesson_id": "U8-D1",
+      "criterion_id": "U8-D1-C1",
+      "type": "mc",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Several of Maya's (fictional) friends started puberty earlier than she did. Which statement is most accurate?",
+      "rationale": "There is a wide, normal range for when puberty begins.",
+      "options": [
+        "Her body will skip puberty.",
+        "Everyone should start at the same age.",
+        "She must have a health problem.",
+        "Timing varies widely from person to person, and that range is normal."
+      ],
+      "correct": [
+        3
+      ]
+    },
+    {
+      "item_id": "U8-D1-I3",
+      "lesson_id": "U8-D1",
+      "criterion_id": "U8-D1-C2",
+      "type": "ms",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Which changes can happen during puberty? Select all that apply.",
+      "rationale": "Puberty involves physical, hormonal, emotional, and social changes.",
+      "options": [
+        "Height and weight stay exactly the same",
+        "Growth spurts",
+        "The brain stops developing",
+        "Changes in social interests",
+        "Hormonal changes",
+        "Mood and emotional changes"
+      ],
+      "correct": [
+        1,
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "item_id": "U8-D1-I4",
+      "lesson_id": "U8-D1",
+      "criterion_id": "U8-D1-C3",
+      "type": "mc",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Which is the most reliable place to get an answer about puberty or body changes?",
+      "rationale": "Reliable information comes from health professionals and recognized health organizations.",
+      "options": [
+        "A doctor, the school nurse, or a trusted site such as KidsHealth or the CDC",
+        "An anonymous forum post",
+        "An ad for a product",
+        "A rumor passed along in the hallway"
+      ],
+      "correct": [
+        0
+      ]
+    },
+    {
+      "item_id": "U8-D1-I5",
+      "lesson_id": "U8-D1",
+      "criterion_id": "U8-D1-C3",
+      "type": "ms",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Which are signs of a reliable health website? Select all that apply.",
+      "rationale": "Credible sources are run by experts, cite evidence, and are not mainly selling something.",
+      "options": [
+        "It is run by a recognized health organization",
+        "It has no author or sources",
+        "It is mainly trying to sell a product",
+        "It cites medical sources"
+      ],
+      "correct": [
+        0,
+        3
+      ]
+    },
+    {
+      "item_id": "U8-D2-I1",
+      "lesson_id": "U8-D2",
+      "criterion_id": "U8-D2-C1",
+      "type": "match",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Sort each characteristic as healthy or unhealthy in a relationship.",
+      "rationale": "Healthy relationships have respect, trust, and equality; control and pressure are unhealthy.",
+      "options": [
+        "Healthy",
+        "Unhealthy"
+      ],
+      "rows": [
+        "Pressuring someone to do things they do not want to do",
+        "Controlling who the other person can talk to",
+        "Honesty and trust",
+        "Respect for each other's opinions"
+      ],
+      "correct": [
+        1,
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "item_id": "U8-D2-I2",
+      "lesson_id": "U8-D2",
+      "criterion_id": "U8-D2-C1",
+      "type": "ms",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Which are warning signs of an unhealthy relationship? Select all that apply.",
+      "rationale": "Isolation, control, pressure, and disrespect are warning signs; respectful disagreement is normal.",
+      "options": [
+        "Pressure",
+        "Spending time with other friends",
+        "Isolation from friends and family",
+        "Disrespect",
+        "Control over decisions",
+        "Disagreeing and talking it through respectfully"
+      ],
+      "correct": [
+        0,
+        2,
+        3,
+        4
+      ]
+    },
+    {
+      "item_id": "U8-D2-I3",
+      "lesson_id": "U8-D2",
+      "criterion_id": "U8-D2-C2",
+      "type": "mc",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Which statement correctly describes consent?",
+      "rationale": "Consent must be freely given and can be taken back at any time.",
+      "options": [
+        "Once given, it cannot be changed.",
+        "Silence means yes.",
+        "Asking repeatedly until someone agrees is fine.",
+        "It is clear, freely given, and can be withdrawn at any time."
+      ],
+      "correct": [
+        3
+      ]
+    },
+    {
+      "item_id": "U8-D2-I4",
+      "lesson_id": "U8-D2",
+      "criterion_id": "U8-D2-C2",
+      "type": "mc",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "What is a personal boundary?",
+      "rationale": "Boundaries apply in every relationship, including friendships and family.",
+      "options": [
+        "A limit a person sets for what they are comfortable with, which others should respect",
+        "Something that only counts if the other person agrees",
+        "A way to punish someone",
+        "A rule that applies only in romantic relationships"
+      ],
+      "correct": [
+        0
+      ]
+    },
+    {
+      "item_id": "U8-D2-I5",
+      "lesson_id": "U8-D2",
+      "criterion_id": "U8-D2-C3",
+      "type": "mc",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "A group-project partner keeps ignoring a student's ideas. Which statement sets a boundary clearly and respectfully?",
+      "rationale": "A clear, respectful boundary names the feeling, the situation, and what is needed.",
+      "options": [
+        "\"I feel ignored when my ideas get skipped, so I need us to hear everyone's ideas before we decide.\"",
+        "\"Fine, whatever, do it your way.\"",
+        "\"You never listen and you're useless.\"",
+        "\"I'll just do the whole project myself.\""
+      ],
+      "correct": [
+        0
+      ]
+    },
+    {
+      "item_id": "U8-D3-I1",
+      "lesson_id": "U8-D3",
+      "criterion_id": "U8-D3-C1",
+      "type": "match",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Sort each way as one that can or cannot spread HIV.",
+      "rationale": "HIV spreads only through certain body fluids; it does not spread through casual contact or insects.",
+      "options": [
+        "Can spread HIV",
+        "Cannot spread HIV"
+      ],
+      "rows": [
+        "From a parent to a baby during pregnancy, birth, or breastfeeding",
+        "Sharing needles",
+        "Mosquito bites",
+        "Hugging"
+      ],
+      "correct": [
+        0,
+        0,
+        1,
+        1
+      ]
+    },
+    {
+      "item_id": "U8-D3-I2",
+      "lesson_id": "U8-D3",
+      "criterion_id": "U8-D3-C1",
+      "type": "mc",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Which statement about STIs is accurate?",
+      "rationale": "Many STIs have no symptoms, which is why testing matters for anyone who is sexually active.",
+      "options": [
+        "All STIs can be cured with antibiotics.",
+        "Only certain kinds of people can get STIs.",
+        "STIs always cause visible symptoms.",
+        "Some are bacterial and can be cured, others are viral and can be managed but not cured, and many have no obvious symptoms."
+      ],
+      "correct": [
+        3
+      ]
+    },
+    {
+      "item_id": "U8-D3-I3",
+      "lesson_id": "U8-D3",
+      "criterion_id": "U8-D3-C2",
+      "type": "ms",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Which are prevention methods for STIs? Select all that apply.",
+      "rationale": "Abstinence, vaccination, testing, and condoms help; birth control pills do not protect against STIs.",
+      "options": [
+        "Abstinence",
+        "Vaccination where available, such as the HPV vaccine",
+        "Correct and consistent condom use (reduces, but does not eliminate, risk)",
+        "Birth control pills (they prevent pregnancy, not STIs)",
+        "Washing up after contact",
+        "Regular testing"
+      ],
+      "correct": [
+        0,
+        1,
+        2,
+        5
+      ]
+    },
+    {
+      "item_id": "U8-D3-I4",
+      "lesson_id": "U8-D3",
+      "criterion_id": "U8-D3-C2",
+      "type": "mc",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Which prevention method has no risk of sexually transmitted infection?",
+      "rationale": "Other methods reduce risk, but abstinence removes it entirely.",
+      "options": [
+        "Abstinence",
+        "Regular testing",
+        "Correct and consistent condom use",
+        "Vaccination"
+      ],
+      "correct": [
+        0
+      ]
+    },
+    {
+      "item_id": "U8-D3-I5",
+      "lesson_id": "U8-D3",
+      "criterion_id": "U8-D3-C3",
+      "type": "match",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Sort each HIV statement as a myth or a fact.",
+      "rationale": "Accurate information reduces stigma and fear.",
+      "options": [
+        "Myth",
+        "Fact"
+      ],
+      "rows": [
+        "HIV can spread by sharing food or drinks.",
+        "HIV can spread through hugging.",
+        "Stigma and misinformation harm people living with HIV.",
+        "With modern treatment, HIV is a manageable long-term condition."
+      ],
+      "correct": [
+        0,
+        0,
+        1,
+        1
+      ]
+    },
+    {
+      "item_id": "U8-D4-I1",
+      "lesson_id": "U8-D4",
+      "criterion_id": "U8-D4-C1",
+      "type": "mc",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Why is abstinence presented as the most effective prevention method?",
+      "rationale": "Abstinence is the only method with no risk; others reduce risk but do not eliminate it.",
+      "options": [
+        "Because it is easy for everyone.",
+        "Because no other method has any effect.",
+        "Because it only matters for one kind of person.",
+        "It removes the risk of pregnancy and STI transmission from sexual activity entirely, while other methods only reduce risk."
+      ],
+      "correct": [
+        3
+      ]
+    },
+    {
+      "item_id": "U8-D4-I2",
+      "lesson_id": "U8-D4",
+      "criterion_id": "U8-D4-C1",
+      "type": "mc",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Which statement about choosing abstinence is accurate?",
+      "rationale": "People choose abstinence for values, goals, readiness, or health reasons, and can re-affirm the decision at any time.",
+      "options": [
+        "It can be made and re-affirmed at any point, for many different reasons.",
+        "It cannot be changed once decided.",
+        "It is only chosen for one reason.",
+        "It only counts if a person has never faced pressure."
+      ],
+      "correct": [
+        0
+      ]
+    },
+    {
+      "item_id": "U8-D4-I3",
+      "lesson_id": "U8-D4",
+      "criterion_id": "U8-D4-C2",
+      "type": "match",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "A fictional teen feels pressured. Match each statement to the decision-making step.",
+      "rationale": "A decision-making model moves from the situation and values to options, consequences, a decision, and reflection.",
+      "options": [
+        "Identify the situation and values",
+        "List options",
+        "Weigh consequences",
+        "Decide",
+        "Reflect"
+      ],
+      "rows": [
+        "Pressure may continue, but saying no protects my values and health",
+        "A partner is pressuring me, and I want to wait",
+        "Later, I think about what worked and what I would do differently",
+        "I will say no and suggest something else to do",
+        "I can say no, change the subject, leave, or talk to a trusted adult"
+      ],
+      "correct": [
+        2,
+        0,
+        4,
+        3,
+        1
+      ]
+    },
+    {
+      "item_id": "U8-D4-I4",
+      "lesson_id": "U8-D4",
+      "criterion_id": "U8-D4-C3",
+      "type": "mc",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Which is a clear, respectful refusal that stays consistent with personal values?",
+      "rationale": "Clear, calm, and respectful language protects boundaries and the relationship.",
+      "options": [
+        "\"No, I'm not ready for that, and that's okay. Let's do something else.\"",
+        "\"I guess, if you really want.\"",
+        "\"Maybe later, I don't know...\"",
+        "\"You're pathetic for asking.\""
+      ],
+      "correct": [
+        0
+      ]
+    },
+    {
+      "item_id": "U8-D4-I5",
+      "lesson_id": "U8-D4",
+      "criterion_id": "U8-D4-C3",
+      "type": "ms",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Which strategies help someone stay consistent with their values under pressure? Select all that apply.",
+      "rationale": "Planning, exit strategies, and support work better than going along or over-explaining.",
+      "options": [
+        "Talking with a trusted adult",
+        "Giving a long explanation hoping the pressure stops",
+        "Leaving the situation",
+        "Planning a response ahead of time",
+        "Going along to avoid conflict"
+      ],
+      "correct": [
+        0,
+        2,
+        3
+      ]
+    },
+    {
+      "item_id": "U8-D5-I1",
+      "lesson_id": "U8-D5",
+      "criterion_id": "U8-D5-C1",
+      "type": "ms",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Which are reliable resources for health information? Select all that apply.",
+      "rationale": "Health professionals and recognized health organizations are reliable.",
+      "options": [
+        "A trusted doctor",
+        "An anonymous forum",
+        "The CDC",
+        "An ad with miracle-cure claims",
+        "The local health department",
+        "The school nurse or counselor"
+      ],
+      "correct": [
+        0,
+        2,
+        4,
+        5
+      ]
+    },
+    {
+      "item_id": "U8-D5-I2",
+      "lesson_id": "U8-D5",
+      "criterion_id": "U8-D5-C1",
+      "type": "mc",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "A fictional friend is worried about a health question and does not know who to ask. Which two resources would you name?",
+      "rationale": "Reliable, accessible resources include the school nurse or counselor and a trusted doctor.",
+      "options": [
+        "No one; they should handle it alone",
+        "An anonymous forum and an ad",
+        "A rumor in a group chat and an influencer",
+        "The school nurse or counselor and a trusted doctor"
+      ],
+      "correct": [
+        3
+      ]
+    },
+    {
+      "item_id": "U8-D5-I3",
+      "lesson_id": "U8-D5",
+      "criterion_id": "U8-D5-C2",
+      "type": "mc",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "What is generally true about testing and health services for minors?",
+      "rationale": "Rules differ by state and provider; a nurse or counselor can explain what is available locally.",
+      "options": [
+        "They are always free and fully confidential everywhere.",
+        "Only a parent can find out where to go.",
+        "Availability and confidentiality vary by state and provider, so a school nurse or counselor is a good first contact.",
+        "They are never available to minors."
+      ],
+      "correct": [
+        2
+      ]
+    },
+    {
+      "item_id": "U8-D5-I4",
+      "lesson_id": "U8-D5",
+      "criterion_id": "U8-D5-C2",
+      "type": "ms",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Which are good first places to ask where to get testing or help? Select all that apply.",
+      "rationale": "Professionals and public-health offices can give accurate local information.",
+      "options": [
+        "Rumors in a group chat",
+        "The school counselor",
+        "A trusted doctor",
+        "A social media influencer",
+        "The school nurse",
+        "The local health department"
+      ],
+      "correct": [
+        1,
+        2,
+        4,
+        5
+      ]
+    },
+    {
+      "item_id": "U8-D5-I5",
+      "lesson_id": "U8-D5",
+      "criterion_id": "U8-D5-C3",
+      "type": "mc",
+      "form": "A",
+      "ticket_type": "daily",
+      "stem": "Which message to a friend is accurate and non-judgmental?",
+      "rationale": "An effective message is caring, accurate, and free of shame.",
+      "options": [
+        "\"Everyone will find out, so be careful.\"",
+        "\"I care about you. If you have a question about your health, the school nurse can help, and it's okay to ask.\"",
+        "\"Just google it, I don't care.\"",
+        "\"You should be ashamed to need help.\""
+      ],
+      "correct": [
+        1
+      ]
+    }
+  ],
+  "review_items": [
+    {
+      "item_id": "U1-D6-R1",
+      "lesson_id": "U1-D6",
+      "criterion_id": "U1-D1-C2",
+      "type": "mc",
+      "form": "A",
+      "ticket_type": "unit_review",
+      "stem": "Jamal's blood pressure was a little high at one visit. Which statement about reading health metrics is most accurate?",
+      "rationale": "Metrics are most useful when tracked over time and interpreted by a professional in context.",
+      "options": [
+        "Every person has exactly the same healthy range, no matter their age.",
+        "A reading outside the range means the person is definitely sick.",
+        "One number always tells the whole story of a person's health.",
+        "One reading is one piece of information; trends over time and a health professional's interpretation matter."
+      ],
+      "correct": [
+        3
+      ],
+      "source_item_id": "U1-D1-I3",
+      "source_lesson_id": "U1-D1"
+    },
+    {
+      "item_id": "U1-D6-R2",
+      "lesson_id": "U1-D6",
+      "criterion_id": "U1-D2-C3",
+      "type": "mc",
+      "form": "A",
+      "ticket_type": "unit_review",
+      "stem": "Priya (fictional) often feels left out and has no one to talk to when school is hard. Which dimension of wellness is mostly affected?",
+      "rationale": "Having supportive relationships and someone to talk to are social wellness metrics.",
+      "options": [
+        "Social wellness",
+        "Financial wellness",
+        "Environmental wellness",
+        "Physical wellness"
+      ],
+      "correct": [
+        0
+      ],
+      "source_item_id": "U1-D2-I4",
+      "source_lesson_id": "U1-D2"
+    },
+    {
+      "item_id": "U1-D6-R3",
+      "lesson_id": "U1-D6",
+      "criterion_id": "U1-D3-C6",
+      "type": "ms",
+      "form": "A",
+      "ticket_type": "unit_review",
+      "stem": "Which of these goals include all five SMART parts? Select all that apply.",
+      "rationale": "A SMART goal names a specific action, a measure, a realistic target, a reason, and a deadline.",
+      "options": [
+        "Sleep 8 hours on school nights, Sunday to Thursday, for the next month to help focus in class.",
+        "Drink 6 cups of water a day for two weeks to reduce afternoon headaches.",
+        "Lose a lot of weight fast.",
+        "Be less stressed."
+      ],
+      "correct": [
+        0,
+        1
+      ],
+      "source_item_id": "U1-D3-I5",
+      "source_lesson_id": "U1-D3"
+    },
+    {
+      "item_id": "U1-D6-R4",
+      "lesson_id": "U1-D6",
+      "criterion_id": "U1-D4-C1",
+      "type": "ms",
+      "form": "A",
+      "ticket_type": "unit_review",
+      "stem": "Which are warning signs that a health claim may be misleading? Select all that apply.",
+      "rationale": "Quick-fix promises, testimonials instead of evidence, and a sales motive are common red flags.",
+      "options": [
+        "Uses only before-and-after photos and personal testimonials as proof",
+        "Promises fast results with no effort, like \"lose 15 pounds in 10 days\"",
+        "Cites a named study and links to it",
+        "Sells a product while giving the advice",
+        "Is reviewed by a medical organization"
+      ],
+      "correct": [
+        0,
+        1,
+        3
+      ],
+      "source_item_id": "U1-D4-I1",
+      "source_lesson_id": "U1-D4"
+    },
+    {
+      "item_id": "U1-D6-R5",
+      "lesson_id": "U1-D6",
+      "criterion_id": "U1-D5-C2",
+      "type": "ms",
+      "form": "A",
+      "ticket_type": "unit_review",
+      "stem": "Lena is exhausted, has homework left, and friends want to hang out online. Which are realistic choices she could make? Select all that apply.",
+      "rationale": "Good options are realistic and fit her responsibilities; ignoring the situation is not a choice that solves it.",
+      "options": [
+        "Tell her friends she will connect tomorrow",
+        "Ignore everything and hope it works out",
+        "Stay up all night doing both",
+        "Play online for a short, set time, then stop and go to bed",
+        "Finish homework, then go to bed on time"
+      ],
+      "correct": [
+        0,
+        3,
+        4
+      ],
+      "source_item_id": "U1-D5-I2",
+      "source_lesson_id": "U1-D5"
+    },
+    {
+      "item_id": "U2-D6-R1",
+      "lesson_id": "U2-D6",
+      "criterion_id": "U2-D1-C4",
+      "type": "match",
+      "form": "A",
+      "ticket_type": "unit_review",
+      "stem": "Sort each factor for a fictional teen as a risk factor or a protective factor.",
+      "rationale": "Risk factors raise the chance of struggling; protective factors, like connectedness, help buffer stress.",
+      "options": [
+        "Risk factor",
+        "Protective factor"
+      ],
+      "rows": [
+        "Feeling close to family",
+        "Being bullied at school",
+        "Feeling connected to a school team or club",
+        "Ongoing lack of sleep"
+      ],
+      "correct": [
+        1,
+        0,
+        1,
+        0
+      ],
+      "source_item_id": "U2-D1-I4",
+      "source_lesson_id": "U2-D1"
+    },
+    {
+      "item_id": "U2-D6-R2",
+      "lesson_id": "U2-D6",
+      "criterion_id": "U2-D2-C5",
+      "type": "mc",
+      "form": "A",
+      "ticket_type": "unit_review",
+      "stem": "Why should a peer recognize and refer instead of trying to diagnose a friend?",
+      "rationale": "Peers notice and refer; diagnosing is for professionals.",
+      "options": [
+        "A friend can diagnose if they have read about it online.",
+        "Warning signs only matter after a diagnosis.",
+        "Only trained professionals can diagnose; a friend's job is to notice changes and connect the person to help.",
+        "Naming the disorder is the most helpful thing a friend can do."
+      ],
+      "correct": [
+        2
+      ],
+      "source_item_id": "U2-D2-I5",
+      "source_lesson_id": "U2-D2"
+    },
+    {
+      "item_id": "U2-D6-R3",
+      "lesson_id": "U2-D6",
+      "criterion_id": "U2-D3-C1",
+      "type": "mc",
+      "form": "A",
+      "ticket_type": "unit_review",
+      "stem": "What happens in the body during the basic stress (fight-or-flight) response?",
+      "rationale": "The stress response activates the body, and recovery afterward is important.",
+      "options": [
+        "The body shuts down to rest until the stressor passes.",
+        "Heart rate and breathing speed up as the body prepares to react.",
+        "Heart rate and breathing slow down to save energy.",
+        "Only the mind is affected, not the body."
+      ],
+      "correct": [
+        1
+      ],
+      "source_item_id": "U2-D3-I1",
+      "source_lesson_id": "U2-D3"
+    },
+    {
+      "item_id": "U2-D6-R4",
+      "lesson_id": "U2-D6",
+      "criterion_id": "U2-D4-C2",
+      "type": "match",
+      "form": "A",
+      "ticket_type": "unit_review",
+      "stem": "Sort each response to a struggling friend as supportive or dismissive.",
+      "rationale": "Supportive language validates feelings; dismissive language minimizes them.",
+      "options": [
+        "Supportive",
+        "Dismissive"
+      ],
+      "rows": [
+        "That sounds really difficult.",
+        "Other people have it worse.",
+        "I'm glad you told me.",
+        "Just get over it."
+      ],
+      "correct": [
+        0,
+        1,
+        0,
+        1
+      ],
+      "source_item_id": "U2-D4-I2",
+      "source_lesson_id": "U2-D4"
+    },
+    {
+      "item_id": "U2-D6-R5",
+      "lesson_id": "U2-D6",
+      "criterion_id": "U2-D5-C3",
+      "type": "mc",
+      "form": "A",
+      "ticket_type": "unit_review",
+      "stem": "Which source is most likely to give credible mental-health information?",
+      "rationale": "Credible information comes from experts and evidence-based organizations.",
+      "options": [
+        "An influencer selling a supplement",
+        "A government health agency or major medical organization, like the CDC or NIH",
+        "An anonymous forum post",
+        "An ad promising a quick cure"
+      ],
+      "correct": [
+        1
+      ],
+      "source_item_id": "U2-D5-I3",
+      "source_lesson_id": "U2-D5"
+    },
+    {
+      "item_id": "U3-D6-R1",
+      "lesson_id": "U3-D6",
+      "criterion_id": "U3-D1-C5",
+      "type": "mc",
+      "form": "A",
+      "ticket_type": "unit_review",
+      "stem": "Clinics and grocery stores are nearby, but residents lack reliable transportation. Which intervention is the most realistic and best justified?",
+      "rationale": "A good intervention targets the actual barrier identified in the scenario.",
+      "options": [
+        "Expand a bus route that connects the neighborhood to the clinic and grocery store, because transportation is the barrier.",
+        "Build another hospital, even though one is nearby.",
+        "Open a luxury gym.",
+        "Tell residents to walk farther."
+      ],
+      "correct": [
+        0
+      ],
+      "source_item_id": "U3-D1-I5",
+      "source_lesson_id": "U3-D1"
+    },
+    {
+      "item_id": "U3-D6-R2",
+      "lesson_id": "U3-D6",
+      "criterion_id": "U3-D2-C1",
+      "type": "mc",
+      "form": "A",
+      "ticket_type": "unit_review",
+      "stem": "Which best describes the difference between healthcare and public health?",
+      "rationale": "Healthcare focuses on individual patients, while public health works at the population level.",
+      "options": [
+        "Public health only handles emergencies.",
+        "They are the same thing.",
+        "Healthcare mainly treats individuals; public health protects and improves the health of whole populations.",
+        "Public health treats individual patients in hospitals; healthcare protects populations."
+      ],
+      "correct": [
+        2
+      ],
+      "source_item_id": "U3-D2-I1",
+      "source_lesson_id": "U3-D2"
+    },
+    {
+      "item_id": "U3-D6-R3",
+      "lesson_id": "U3-D6",
+      "criterion_id": "U3-D3-C2",
+      "type": "match",
+      "form": "A",
+      "ticket_type": "unit_review",
+      "stem": "Match each example to hazard, exposure, or risk.",
+      "rationale": "A hazard can cause harm, exposure is contact with it, and risk is the likelihood and severity of harm.",
+      "options": [
+        "Hazard",
+        "Exposure",
+        "Risk"
+      ],
+      "rows": [
+        "The chance of sunburn or skin damage",
+        "Strong UV radiation from the midday sun",
+        "Water contaminated with lead",
+        "Working outside at noon without sunscreen"
+      ],
+      "correct": [
+        2,
+        0,
+        0,
+        1
+      ],
+      "source_item_id": "U3-D3-I2",
+      "source_lesson_id": "U3-D3"
+    },
+    {
+      "item_id": "U3-D6-R4",
+      "lesson_id": "U3-D6",
+      "criterion_id": "U3-D4-C3",
+      "type": "mc",
+      "form": "A",
+      "ticket_type": "unit_review",
+      "stem": "An ad shows a smiling athlete holding a sugary drink but never states that it improves performance. What is the implied message?",
+      "rationale": "Ads can communicate implied messages without making an explicit claim.",
+      "options": [
+        "That it is the cheapest drink",
+        "There is no message because no claim is stated",
+        "That drinking it will help you become athletic and successful",
+        "That it is made with only water"
+      ],
+      "correct": [
+        2
+      ],
+      "source_item_id": "U3-D4-I3",
+      "source_lesson_id": "U3-D4"
+    },
+    {
+      "item_id": "U3-D6-R5",
+      "lesson_id": "U3-D6",
+      "criterion_id": "U3-D5-C6",
+      "type": "mc",
+      "form": "A",
+      "ticket_type": "unit_review",
+      "stem": "Which is a clear call to action?",
+      "rationale": "A call to action names who should do what and by when.",
+      "options": [
+        "We ask the school board to approve water bottle filling stations by next semester.",
+        "We hope people think about hydration.",
+        "Someone should do something about water.",
+        "Water is important for everyone."
+      ],
+      "correct": [
+        0
+      ],
+      "source_item_id": "U3-D5-I4",
+      "source_lesson_id": "U3-D5"
+    },
+    {
+      "item_id": "U4-D6-R1",
+      "lesson_id": "U4-D6",
+      "criterion_id": "U4-D1-C1",
+      "type": "match",
+      "form": "A",
+      "ticket_type": "unit_review",
+      "stem": "Match each fictional example to tolerance, physical dependence, or addiction.",
+      "rationale": "Tolerance and physical dependence are body adaptations; addiction involves compulsive use despite harm, so they are not the same.",
+      "options": [
+        "Tolerance",
+        "Physical dependence",
+        "Addiction (substance use disorder)"
+      ],
+      "rows": [
+        "The body adjusts so the same dose no longer works as well",
+        "Needing larger amounts to get the same effect",
+        "Continuing to use despite repeated harm and loss of control",
+        "A patient takes prescribed pain medicine as directed and has withdrawal symptoms when it stops, with no compulsive use"
+      ],
+      "correct": [
+        0,
+        0,
+        2,
+        1
+      ],
+      "source_item_id": "U4-D1-I1",
+      "source_lesson_id": "U4-D1"
+    },
+    {
+      "item_id": "U4-D6-R2",
+      "lesson_id": "U4-D6",
+      "criterion_id": "U4-D2-C2",
+      "type": "ms",
+      "form": "A",
+      "ticket_type": "unit_review",
+      "stem": "Which are health risks linked to tobacco or vaping? Select all that apply.",
+      "rationale": "Nicotine, aerosol chemicals, and smoke are linked to addiction, lung harm, brain effects, and cancer.",
+      "options": [
+        "Better focus in the long run",
+        "Effects on attention and learning",
+        "Improved lung capacity",
+        "Nicotine addiction",
+        "Irritation and harm to the lungs",
+        "Cancer risk from toxic chemicals in burned tobacco"
+      ],
+      "correct": [
+        1,
+        3,
+        4,
+        5
+      ],
+      "source_item_id": "U4-D2-I2",
+      "source_lesson_id": "U4-D2"
+    },
+    {
+      "item_id": "U4-D6-R3",
+      "lesson_id": "U4-D6",
+      "criterion_id": "U4-D3-C3",
+      "type": "match",
+      "form": "A",
+      "ticket_type": "unit_review",
+      "stem": "A fictional teen's ride home has been drinking. Match each statement to the decision-making step it shows.",
+      "rationale": "A structured process moves from the problem to options, consequences, and the safest choice.",
+      "options": [
+        "Define the problem",
+        "List options",
+        "Think about consequences",
+        "Choose the safest decision"
+      ],
+      "rows": [
+        "I could call a parent, find a sober driver, or stay overnight",
+        "A crash could cause injury, legal trouble, and harm to others",
+        "My ride has been drinking and I need to get home",
+        "I will call a parent for a ride"
+      ],
+      "correct": [
+        1,
+        2,
+        0,
+        3
+      ],
+      "source_item_id": "U4-D3-I3",
+      "source_lesson_id": "U4-D3"
+    },
+    {
+      "item_id": "U4-D6-R4",
+      "lesson_id": "U4-D6",
+      "criterion_id": "U4-D4-C4",
+      "type": "mc",
+      "form": "A",
+      "ticket_type": "unit_review",
+      "stem": "A classmate offers a pill said to be \"the same as a prescription one.\" Why can't that claim show the pill is safe?",
+      "rationale": "You cannot tell what is in a pill by looking, and counterfeit pills can be deadly.",
+      "options": [
+        "Natural ingredients guarantee safety.",
+        "Cheap pills are always weaker.",
+        "Pills that look like medicine always come from drug companies.",
+        "Counterfeit pills can look real but contain fentanyl or other unknown substances, so appearance cannot show contents."
+      ],
+      "correct": [
+        3
+      ],
+      "source_item_id": "U4-D4-I4",
+      "source_lesson_id": "U4-D4"
+    },
+    {
+      "item_id": "U4-D6-R5",
+      "lesson_id": "U4-D6",
+      "criterion_id": "U4-D5-C5",
+      "type": "mc",
+      "form": "A",
+      "ticket_type": "unit_review",
+      "stem": "A fictional friend at a party is unresponsive after drinking. What is the best action?",
+      "rationale": "Safety comes before secrecy; some situations need an adult or emergency help immediately.",
+      "options": [
+        "Handle it alone so no one finds out",
+        "Keep it secret to protect the friend from trouble",
+        "Call for emergency help and get a trusted adult right away",
+        "Wait until morning to see how they are"
+      ],
+      "correct": [
+        2
+      ],
+      "source_item_id": "U4-D5-I5",
+      "source_lesson_id": "U4-D5"
+    },
+    {
+      "item_id": "U6-D6-R1",
+      "lesson_id": "U6-D6",
+      "criterion_id": "U6-D1-C2",
+      "type": "mc",
+      "form": "A",
+      "ticket_type": "unit_review",
+      "stem": "How does a seatbelt reduce the risk of serious injury in a crash?",
+      "rationale": "Seatbelts reduce the force on the body and keep people inside the protective space of the vehicle.",
+      "options": [
+        "It spreads crash forces across stronger parts of the body and helps keep you from being thrown from the vehicle.",
+        "It only protects the driver.",
+        "It makes the car stop faster.",
+        "It prevents the crash from happening."
+      ],
+      "correct": [
+        0
+      ],
+      "source_item_id": "U6-D1-I3",
+      "source_lesson_id": "U6-D1"
+    },
+    {
+      "item_id": "U6-D6-R2",
+      "lesson_id": "U6-D6",
+      "criterion_id": "U6-D2-C3",
+      "type": "mc",
+      "form": "A",
+      "ticket_type": "unit_review",
+      "stem": "Which rhythm matches the recommended compression rate for hands-only CPR?",
+      "rationale": "A steady rate of 100 to 120 per minute keeps blood moving effectively.",
+      "options": [
+        "As fast as possible, about 180 per minute",
+        "Fast, then slow, then fast again",
+        "A steady 100 to 120 compressions per minute",
+        "About 60 per minute"
+      ],
+      "correct": [
+        2
+      ],
+      "source_item_id": "U6-D2-I4",
+      "source_lesson_id": "U6-D2"
+    },
+    {
+      "item_id": "U6-D6-R3",
+      "lesson_id": "U6-D6",
+      "criterion_id": "U6-D3-C3",
+      "type": "mc",
+      "form": "A",
+      "ticket_type": "unit_review",
+      "stem": "Myth: \"Organ donation rules out an open-casket funeral.\" Which fact corrects it?",
+      "rationale": "Donation is performed with care and does not stop families from having a viewing or service.",
+      "options": [
+        "Donors cannot have any service.",
+        "Donation always rules out a funeral.",
+        "Donation does not prevent an open-casket funeral.",
+        "Only some religions allow funerals after donation."
+      ],
+      "correct": [
+        2
+      ],
+      "source_item_id": "U6-D3-I5",
+      "source_lesson_id": "U6-D3"
+    },
+    {
+      "item_id": "U6-D6-R4",
+      "lesson_id": "U6-D6",
+      "criterion_id": "U6-D5-C1",
+      "type": "match",
+      "form": "A",
+      "ticket_type": "unit_review",
+      "stem": "Match each example to the type of distraction it shows.",
+      "rationale": "Distractions can take eyes, hands, or attention away from the task.",
+      "options": [
+        "Visual",
+        "Manual",
+        "Cognitive"
+      ],
+      "rows": [
+        "Looking away from the road at a notification",
+        "Reading a text while crossing a street",
+        "Mind busy replaying an argument",
+        "Taking a hand off the wheel to type"
+      ],
+      "correct": [
+        0,
+        0,
+        2,
+        1
+      ],
+      "source_item_id": "U6-D5-I2",
+      "source_lesson_id": "U6-D5"
+    },
+    {
+      "item_id": "U7-D6-R1",
+      "lesson_id": "U7-D6",
+      "criterion_id": "U7-D1-C2",
+      "type": "mc",
+      "form": "A",
+      "ticket_type": "unit_review",
+      "stem": "How is MyPlate best described?",
+      "rationale": "MyPlate shows balance across food groups rather than one perfect meal.",
+      "options": [
+        "A list of foods to avoid",
+        "A strict plan every meal must match exactly",
+        "A weight-loss diet",
+        "A simple proportional guide that emphasizes balance and variety, not a strict rule"
+      ],
+      "correct": [
+        3
+      ],
+      "source_item_id": "U7-D1-I4",
+      "source_lesson_id": "U7-D1"
+    },
+    {
+      "item_id": "U7-D6-R2",
+      "lesson_id": "U7-D6",
+      "criterion_id": "U7-D2-C4",
+      "type": "match",
+      "form": "A",
+      "ticket_type": "unit_review",
+      "stem": "Match each visual reference to what it can help estimate.",
+      "rationale": "Hand-based references are a practical estimating tool, not a strict rule.",
+      "options": [
+        "Palm",
+        "Fist",
+        "Cupped hand",
+        "Thumb"
+      ],
+      "rows": [
+        "About one serving of meat or other protein",
+        "About a serving of peanut butter or oil",
+        "About a small handful-sized snack portion",
+        "About a cup of cooked pasta or fruit"
+      ],
+      "correct": [
+        0,
+        3,
+        2,
+        1
+      ],
+      "source_item_id": "U7-D2-I5",
+      "source_lesson_id": "U7-D2"
+    },
+    {
+      "item_id": "U7-D6-R3",
+      "lesson_id": "U7-D6",
+      "criterion_id": "U7-D3-C1",
+      "type": "match",
+      "form": "A",
+      "ticket_type": "unit_review",
+      "stem": "Match each description to the FITT component.",
+      "rationale": "FITT stands for Frequency, Intensity, Time, and Type.",
+      "options": [
+        "Frequency",
+        "Intensity",
+        "Time",
+        "Type"
+      ],
+      "rows": [
+        "How many minutes each session lasts",
+        "How hard the body is working",
+        "Walking, swimming, or strength training",
+        "How many days per week"
+      ],
+      "correct": [
+        2,
+        1,
+        3,
+        0
+      ],
+      "source_item_id": "U7-D3-I1",
+      "source_lesson_id": "U7-D3"
+    },
+    {
+      "item_id": "U7-D6-R4",
+      "lesson_id": "U7-D6",
+      "criterion_id": "U7-D4-C1",
+      "type": "mc",
+      "form": "A",
+      "ticket_type": "unit_review",
+      "stem": "A snack bar front says \"Made with real fruit!\" but the label shows 18 g of added sugar. Which technique is this?",
+      "rationale": "The front claim draws attention while the added sugar is on the full label.",
+      "options": [
+        "A health halo: a front claim makes the product seem healthier than the full label shows.",
+        "A medical recommendation",
+        "Social proof from other buyers",
+        "A lower price"
+      ],
+      "correct": [
+        0
+      ],
+      "source_item_id": "U7-D4-I2",
+      "source_lesson_id": "U7-D4"
+    },
+    {
+      "item_id": "U7-D6-R5",
+      "lesson_id": "U7-D6",
+      "criterion_id": "U7-D5-C2",
+      "type": "mc",
+      "form": "A",
+      "ticket_type": "unit_review",
+      "stem": "Which is a habit-based nutrition or activity goal?",
+      "rationale": "Habit-based goals focus on actions, not weight, calories, or body size.",
+      "options": [
+        "Change my body shape.",
+        "Eat under a set number of calories every day.",
+        "Add one serving of vegetables to dinner four nights this week.",
+        "Lose 10 pounds by June."
+      ],
+      "correct": [
+        2
+      ],
+      "source_item_id": "U7-D5-I3",
+      "source_lesson_id": "U7-D5"
+    },
+    {
+      "item_id": "U8-D6-R1",
+      "lesson_id": "U8-D6",
+      "criterion_id": "U8-D1-C3",
+      "type": "ms",
+      "form": "A",
+      "ticket_type": "unit_review",
+      "stem": "Which are signs of a reliable health website? Select all that apply.",
+      "rationale": "Credible sources are run by experts, cite evidence, and are not mainly selling something.",
+      "options": [
+        "It is run by a recognized health organization",
+        "It has no author or sources",
+        "It is mainly trying to sell a product",
+        "It cites medical sources"
+      ],
+      "correct": [
+        0,
+        3
+      ],
+      "source_item_id": "U8-D1-I5",
+      "source_lesson_id": "U8-D1"
+    },
+    {
+      "item_id": "U8-D6-R2",
+      "lesson_id": "U8-D6",
+      "criterion_id": "U8-D2-C1",
+      "type": "match",
+      "form": "A",
+      "ticket_type": "unit_review",
+      "stem": "Sort each characteristic as healthy or unhealthy in a relationship.",
+      "rationale": "Healthy relationships have respect, trust, and equality; control and pressure are unhealthy.",
+      "options": [
+        "Healthy",
+        "Unhealthy"
+      ],
+      "rows": [
+        "Pressuring someone to do things they do not want to do",
+        "Controlling who the other person can talk to",
+        "Honesty and trust",
+        "Respect for each other's opinions"
+      ],
+      "correct": [
+        1,
+        1,
+        0,
+        0
+      ],
+      "source_item_id": "U8-D2-I1",
+      "source_lesson_id": "U8-D2"
+    },
+    {
+      "item_id": "U8-D6-R3",
+      "lesson_id": "U8-D6",
+      "criterion_id": "U8-D3-C1",
+      "type": "mc",
+      "form": "A",
+      "ticket_type": "unit_review",
+      "stem": "Which statement about STIs is accurate?",
+      "rationale": "Many STIs have no symptoms, which is why testing matters for anyone who is sexually active.",
+      "options": [
+        "All STIs can be cured with antibiotics.",
+        "Only certain kinds of people can get STIs.",
+        "STIs always cause visible symptoms.",
+        "Some are bacterial and can be cured, others are viral and can be managed but not cured, and many have no obvious symptoms."
+      ],
+      "correct": [
+        3
+      ],
+      "source_item_id": "U8-D3-I2",
+      "source_lesson_id": "U8-D3"
+    },
+    {
+      "item_id": "U8-D6-R4",
+      "lesson_id": "U8-D6",
+      "criterion_id": "U8-D4-C2",
+      "type": "match",
+      "form": "A",
+      "ticket_type": "unit_review",
+      "stem": "A fictional teen feels pressured. Match each statement to the decision-making step.",
+      "rationale": "A decision-making model moves from the situation and values to options, consequences, a decision, and reflection.",
+      "options": [
+        "Identify the situation and values",
+        "List options",
+        "Weigh consequences",
+        "Decide",
+        "Reflect"
+      ],
+      "rows": [
+        "Pressure may continue, but saying no protects my values and health",
+        "A partner is pressuring me, and I want to wait",
+        "Later, I think about what worked and what I would do differently",
+        "I will say no and suggest something else to do",
+        "I can say no, change the subject, leave, or talk to a trusted adult"
+      ],
+      "correct": [
+        2,
+        0,
+        4,
+        3,
+        1
+      ],
+      "source_item_id": "U8-D4-I3",
+      "source_lesson_id": "U8-D4"
+    },
+    {
+      "item_id": "U8-D6-R5",
+      "lesson_id": "U8-D6",
+      "criterion_id": "U8-D5-C2",
+      "type": "ms",
+      "form": "A",
+      "ticket_type": "unit_review",
+      "stem": "Which are good first places to ask where to get testing or help? Select all that apply.",
+      "rationale": "Professionals and public-health offices can give accurate local information.",
+      "options": [
+        "Rumors in a group chat",
+        "The school counselor",
+        "A trusted doctor",
+        "A social media influencer",
+        "The school nurse",
+        "The local health department"
+      ],
+      "correct": [
+        1,
+        2,
+        4,
+        5
+      ],
+      "source_item_id": "U8-D5-I4",
+      "source_lesson_id": "U8-D5"
+    }
+  ],
+  "constructed_response": {
+    "U1-D1": "Choose one health metric (for example, resting heart rate) and explain one lifestyle change that could help it.",
+    "U1-D2": "Give one example of a physical, a mental, and a social/emotional health metric for a fictional student.",
+    "U1-D3": "Rewrite the goal \"Get fit\" as a SMART goal for a fictional student.",
+    "U1-D4": "A video shows a dramatic before-and-after photo. Name two things you would check before trusting it.",
+    "U1-D5": "Describe a fictional student's decision and explain, step by step, how the STOP process helps.",
+    "U2-D1": "Explain one way stigma can stop a fictional teen from asking for help.",
+    "U2-D2": "What is the difference between recognizing that someone may need help and diagnosing them?",
+    "U2-D3": "Describe one stressful situation for a fictional student and the coping strategy that fits it best.",
+    "U2-D4": "Write the first three things a supportive friend might say to someone who says they are not doing okay.",
+    "U2-D5": "Name two barriers to asking for help and one way to overcome each.",
+    "U3-D1": "Name one behavior people see as only a personal choice and explain how the environment could make it easier or harder.",
+    "U3-D2": "In two or three sentences, explain the difference between healthcare and public health.",
+    "U3-D3": "Explain why \"hazard\" and \"risk\" are not the same thing.",
+    "U3-D4": "Explain one way marketing can influence a health behavior without directly telling someone what to do.",
+    "U3-D5": "Complete the pitch: We want ______ to ______ because ______.",
+    "U4-D1": "Correct this statement in two or three sentences: \"Tolerance and addiction mean the same thing.\"",
+    "U4-D2": "Name one influence on youth nicotine use and explain how a public-health message could counter it.",
+    "U4-D3": "Describe one alcohol-related situation where the safest decision should be made before anyone starts drinking.",
+    "U4-D4": "Complete: One drug misconception that can increase risk is ___ because ___.",
+    "U4-D5": "Write a three-line response to a pressure scenario: a refusal, an alternative or exit, and a support plan.",
+    "U5-D1": "Explain in your own words why \"a system\" cannot reliably beat a truly random game.",
+    "U5-D2": "Using three vocabulary words from today, explain why someone might keep gambling while losing money.",
+    "U5-D3": "Name one persuasive technique in a mock sports-betting ad and what the ad does not tell you.",
+    "U5-D4": "Write a short refusal and an alternative plan for a fictional peer invited to a betting pool.",
+    "U6-D1": "Summarize one statistic from today's data stations and explain one protective behavior that reduces that risk.",
+    "U6-D2": "List the Chain of Survival steps in order.",
+    "U6-D3": "Write a two-sentence \"myth vs. fact\" message about organ donation.",
+    "U6-D5": "Describe one specific, realistic change a fictional student could make to reduce a distraction-related risk.",
+    "U7-D1": "Name the three macronutrients and one job of each.",
+    "U7-D2": "Explain the difference between serving size and portion size.",
+    "U7-D3": "Describe how the talk test shows whether activity is light, moderate, or vigorous.",
+    "U7-D4": "Explain why a front-of-package claim like \"natural\" should be checked against the nutrition label.",
+    "U7-D5": "Write a SMART habit-based goal for a fictional student, with one barrier and one strategy.",
+    "U8-D1": "Name one physical change, one emotional change, and one reliable place to ask a question about puberty.",
+    "U8-D2": "List two characteristics of a healthy relationship and one sign of an unhealthy one.",
+    "U8-D3": "Correct one common HIV myth using an accurate fact.",
+    "U8-D4": "Write a short, respectful refusal statement for a fictional teen under pressure.",
+    "U8-D5": "Write a short, caring message encouraging a fictional friend to use a reliable resource."
+  },
+  "excluded_criteria": {
+    "U1-D3-C5": "Personal preference ('choose a wellness area that is meaningful to me'); not auto-gradable. Lesson has 6 criteria and 5 items.",
+    "U2-D4-C3": "'Ask appropriate questions' is folded into the Listen-Validate-Ask-Connect items. Lesson has 6 criteria and 5 items.",
+    "U3-D5-C2": "'Use at least two credible sources' is tested in U1-D4 and U3-D2 (STOP). Lesson has 7 criteria and 5 items.",
+    "U3-D5-C3": "'Population affected and contributing influences' is tested in U3-D1. Lesson has 7 criteria and 5 items.",
+    "U4-D4-C6": "'Use credible sources, not social-media claims' is tested in U1-D4 and U4-D1-C5. Lesson has 6 criteria and 5 items.",
+    "U5-D3-C4": "Group PSA draft; a product, not auto-gradable."
+  }
+}
