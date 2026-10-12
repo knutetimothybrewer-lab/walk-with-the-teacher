@@ -1,0 +1,517 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Teacher Dashboard</title>
+<style>
+  :root {
+    --bg: #f4f6f9; --card: #ffffff; --fg: #18202d; --mut: #5b6677; --line: #d6dce6; --accent: #1d5fbf; --accent-fg: #fff;
+    --ok: #137a3c; --ok-bg: #e0f4e7; --bad: #a3261f; --bad-bg: #fcebe9; --warn: #8a5a00; --warn-bg: #fff3d1; --sel: #e7f0ff;
+    --pre: #8a94a6; --post: #1d5fbf;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #10141b; --card: #1a202a; --fg: #e8edf5; --mut: #9aa5b8; --line: #323b4a; --accent: #5a9bff; --accent-fg: #0b1220;
+            --ok: #6fd69a; --ok-bg: #12331f; --bad: #ff9c94; --bad-bg: #3a1a18; --warn: #f2c35f; --warn-bg: #3a3014; --sel: #1f2e4a;
+            --pre: #7d889c; --post: #5a9bff; }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--fg); font: 17px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  body.big { font-size: 21px; }
+  header { background: var(--card); border-bottom: 1px solid var(--line); position: sticky; top: 0; z-index: 10; }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 0 16px; }
+  .top { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 0 0; flex-wrap: wrap; }
+  .top h1 { font-size: 1.15rem; margin: 0; }
+  nav { display: flex; gap: 4px; overflow-x: auto; }
+  nav button { border: none; background: none; font: inherit; font-weight: 600; color: var(--mut); padding: 12px 18px; border-bottom: 4px solid transparent; cursor: pointer; white-space: nowrap; }
+  nav button[aria-selected=true] { color: var(--accent); border-bottom-color: var(--accent); }
+  main { padding: 18px 0 60px; }
+  h2 { margin: 0 0 8px; font-size: 1.3rem; } h3 { margin: 18px 0 8px; font-size: 1.05rem; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 16px; margin: 14px 0; }
+  .muted { color: var(--mut); } .small { font-size: .85rem; }
+  button, select, input { font: inherit; }
+  .btn { font-weight: 600; min-height: 46px; padding: 8px 18px; border-radius: 10px; border: 2px solid var(--accent); background: var(--accent); color: var(--accent-fg); cursor: pointer; }
+  .btn.sec { background: transparent; color: var(--accent); } .btn.stop { border-color: var(--bad); color: var(--bad); background: transparent; }
+  .btn.on { box-shadow: inset 0 0 0 3px var(--card); } .btn:disabled { opacity: .5; cursor: not-allowed; }
+  .btn.mini { min-height: 34px; padding: 4px 12px; font-size: .9rem; }
+  select, input[type=text], input[type=password], input[type=search] { padding: 10px 12px; border-radius: 10px; border: 2px solid var(--line); background: var(--bg); color: var(--fg); max-width: 100%; }
+  :focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+  .hidden { display: none !important; }
+  .err { background: var(--bad-bg); color: var(--bad); padding: 10px 14px; border-radius: 10px; margin: 10px 0; }
+  .ok { background: var(--ok-bg); color: var(--ok); padding: 10px 14px; border-radius: 10px; margin: 10px 0; }
+  .pill { display: inline-block; padding: 2px 12px; border-radius: 999px; font-weight: 700; font-size: .85rem; background: var(--line); color: var(--fg); }
+  .pill.open { background: var(--ok-bg); color: var(--ok); } .pill.warn { background: var(--warn-bg); color: var(--warn); }
+
+  /* run class */
+  .periods { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 14px; }
+  .pcard { margin: 0; } .phead { display: flex; justify-content: space-between; gap: 8px; align-items: baseline; flex-wrap: wrap; }
+  .phead h2 { margin: 0; } .code { font-family: ui-monospace, Menlo, Consolas, monospace; font-weight: 700; letter-spacing: .05em; }
+  .field { display: block; margin: 12px 0 6px; font-weight: 600; } .field select { width: 100%; }
+  .btns { display: flex; gap: 8px; flex-wrap: wrap; margin: 10px 0; }
+  .meter { height: 14px; background: var(--line); border-radius: 99px; overflow: hidden; margin: 6px 0; }
+  .meter > div { height: 100%; background: var(--ok); width: 0; transition: width .3s; }
+  .count { font-size: 1.15rem; } .count b { font-size: 1.8rem; }
+  details summary { cursor: pointer; color: var(--mut); margin-top: 6px; }
+
+  /* tiles */
+  .tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin: 12px 0; }
+  .tile { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; }
+  .tile .n { font-size: 1.9rem; font-weight: 800; line-height: 1.15; } .tile .l { color: var(--mut); font-size: .85rem; }
+  .tile.good .n { color: var(--ok); } .tile.bad .n { color: var(--bad); }
+  .controls { display: flex; gap: 12px; align-items: end; flex-wrap: wrap; }
+  .controls label { display: flex; flex-direction: column; gap: 4px; font-weight: 600; font-size: .9rem; }
+  .chartbox { position: relative; height: 320px; }
+
+  /* tables */
+  .scroll { overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; font-size: .95rem; }
+  th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { color: var(--mut); font-weight: 600; font-size: .8rem; text-transform: uppercase; letter-spacing: .04em; cursor: pointer; white-space: nowrap; user-select: none; }
+  th[aria-sort=ascending]::after { content: " \25B2"; } th[aria-sort=descending]::after { content: " \25BC"; }
+  td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+  tr.click { cursor: pointer; } tr.click:hover { background: var(--sel); }
+  .up { color: var(--ok); font-weight: 700; } .down { color: var(--bad); font-weight: 700; } .flat { color: var(--mut); }
+  .tag { display: inline-block; font-size: .75rem; font-weight: 700; padding: 1px 8px; border-radius: 6px; background: var(--warn-bg); color: var(--warn); }
+  .tag.red { background: var(--bad-bg); color: var(--bad); } .tag.blue { background: var(--sel); color: var(--accent); }
+  .yes { color: var(--ok); font-weight: 700; } .no { color: var(--bad); font-weight: 700; }
+  .idetail .it { border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; margin: 8px 0; }
+  .idetail .pp { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 6px; }
+  .idetail .box { border-radius: 8px; padding: 8px 10px; font-size: .9rem; } .box.good { background: var(--ok-bg); } .box.miss { background: var(--bad-bg); } .box.none { background: var(--line); }
+  @media (max-width: 640px) { .idetail .pp { grid-template-columns: 1fr; } }
+  ol.help li { margin: 6px 0; }
+</style>
+</head>
+<body>
+
+<!-- sign in -->
+<div id="login" class="wrap" style="max-width:460px;padding-top:12vh">
+  <div class="card">
+    <h2>Teacher sign in</h2>
+    <p class="muted">Enter the teacher passcode.</p>
+    <form id="login-form">
+      <input id="pass" type="password" autocomplete="current-password" style="width:100%" aria-label="Teacher passcode" required>
+      <div id="login-err" class="err hidden" role="alert"></div>
+      <p><button class="btn" type="submit">Sign in</button></p>
+    </form>
+  </div>
+</div>
+
+<div id="app" class="hidden">
+<header>
+  <div class="wrap">
+    <div class="top">
+      <h1>Class Tickets</h1>
+      <div><button class="btn sec mini" id="bigger" title="Make the text bigger for the projector">A+</button>
+           <button class="btn sec mini" id="signout">Sign out</button></div>
+    </div>
+    <nav role="tablist">
+      <button role="tab" data-tab="run" aria-selected="true">Run class</button>
+      <button role="tab" data-tab="results" aria-selected="false">Results</button>
+      <button role="tab" data-tab="students" aria-selected="false">Students</button>
+      <button role="tab" data-tab="help" aria-selected="false">Help</button>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- RUN CLASS -->
+  <section id="tab-run">
+    <h2>Run class</h2>
+    <p class="muted">Pick the lesson, then open the warm-up at the start of class and the exit ticket at the end. Students only ever see the one ticket you have open for their period.</p>
+    <div id="run-err" class="err hidden" role="alert"></div>
+    <div id="periods" class="periods"></div>
+  </section>
+
+  <!-- RESULTS -->
+  <section id="tab-results" class="hidden">
+    <h2>Results</h2>
+    <div class="card controls">
+      <label>Lesson <select id="r-lesson"></select></label>
+      <label>Class <select id="r-period"></select></label>
+      <button class="btn" id="r-go">Show results</button>
+    </div>
+    <div id="r-err" class="err hidden" role="alert"></div>
+    <div id="r-body"></div>
+  </section>
+
+  <!-- STUDENTS -->
+  <section id="tab-students" class="hidden">
+    <h2>Students</h2>
+    <div class="card controls">
+      <label>Find a student <input id="s-search" type="search" list="s-list" placeholder="Type a name or ID" autocomplete="off"></label>
+      <datalist id="s-list"></datalist>
+      <button class="btn" id="s-go">Show growth</button>
+    </div>
+    <div id="s-err" class="err hidden" role="alert"></div>
+    <div id="s-body"></div>
+  </section>
+
+  <!-- HELP -->
+  <section id="tab-help" class="hidden">
+    <h2>Help</h2>
+    <div class="card">
+      <h3 style="margin-top:0">A normal day</h3>
+      <ol class="help">
+        <li><b>Run class</b>: for each period, check the lesson in the box (it suggests the next one), then press <b>Open warm-up</b>. Students enter the class code and their ID.</li>
+        <li>Watch the count go up. Press <b>Close</b> when everyone is in (or when time is up).</li>
+        <li>At the end of class press <b>Open exit ticket</b>. Students see their score, their warm-up score, the change, and an explanation of each question.</li>
+        <li>Open <b>Results</b> for the class, or <b>Students</b> for one student's growth over time.</li>
+      </ol>
+      <h3>Reading the numbers</h3>
+      <ul>
+        <li><b>Change</b> = exit ticket % minus warm-up %, in points.</li>
+        <li><b>Growth (g)</b> = the share of the possible improvement a student achieved: (exit − warm-up) ÷ (100 − warm-up). 0.5 means they closed half the gap. It is not shown when the warm-up was already 100%.</li>
+        <li><b>Class growth</b> uses the class averages the same way, so it is not thrown off by one student.</li>
+        <li>Only students who took <b>both</b> tickets are used for change and growth. Absent students are listed but never pull the averages down.</li>
+        <li>A criterion is flagged <span class="tag">Reteach</span> when the class is below the mastery line on the exit ticket or improved by less than 10 points. If the class was already at the mastery line at the warm-up and stayed there, it shows <span class="tag blue">Already strong</span> instead.</li>
+      </ul>
+      <h3>Behind the scenes</h3>
+      <p>Everything is stored in your Google Sheet. The <b>Growth</b>, <b>ClassSummary</b> and <b>CriterionMastery</b> tabs are refreshed every night, or press the button below to refresh them now.</p>
+      <p><button class="btn sec" id="recompute">Refresh the summary tabs now</button> <span id="recompute-msg" class="muted"></span></p>
+    </div>
+  </section>
+</main>
+</div>
+
+<script src="config.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js" defer></script>
+<script>
+(function () {
+  'use strict';
+  const CFG = Object.assign({ API_URL: '' }, window.CONFIG || {});
+  const $ = s => document.querySelector(s);
+  const esc = s => String(s === null || s === undefined ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  let pass = ''; try { pass = sessionStorage.getItem('tp') || ''; } catch (e) { /* ignore */ }
+  let lessons = [], roster = [], runBuilt = false, pollTimer = null, charts = {}, state = null, curTab = 'run';
+
+  async function api(action, body) {
+    if (!CFG.API_URL) throw new Error('Not connected: set API_URL in config.js.');
+    const res = await fetch(CFG.API_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                                           body: JSON.stringify(Object.assign({ action, passcode: pass }, body)) });
+    const j = await res.json();
+    if (!j.ok) { const e = new Error(j.error); e.passcode = /passcode is not right/i.test(j.error); throw e; }
+    return j;
+  }
+  function showErr(id, e) { const el = $(id); el.textContent = e.message || String(e); el.classList.remove('hidden'); }
+  function clearErr(id) { $(id).classList.add('hidden'); }
+
+  // ---------- formats ----------
+  const pct = v => v === null || v === undefined ? '—' : Math.round(v) + '%';
+  const num = (v, d) => v === null || v === undefined ? '—' : Number(v).toFixed(d);
+  const change = v => v === null || v === undefined ? '—' : `<span class="${v > 0 ? 'up' : v < 0 ? 'down' : 'flat'}">${v > 0 ? '+' : ''}${Math.round(v * 10) / 10}</span>`;
+  const when = iso => { if (!iso) return ''; const d = new Date(iso); return isNaN(d) ? '' : d.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }); };
+  const lessonLabel = l => `U${l.unit} · Day ${l.day} · ${l.title}${l.ticket_type === 'unit_review' ? ' (Unit Review)' : ''}`;
+  const statusText = { matched: 'Both', 'pre only': 'Warm-up only', 'post only': 'Exit ticket only', 'no data': 'Not yet' };
+
+  // ---------- sign in ----------
+  $('#login-form').addEventListener('submit', async ev => {
+    ev.preventDefault(); clearErr('#login-err'); pass = $('#pass').value;
+    try { await api('t_ping'); try { sessionStorage.setItem('tp', pass); } catch (e) { /* ignore */ } start(); }
+    catch (e) { showErr('#login-err', e); }
+  });
+  function signOut() { pass = ''; try { sessionStorage.removeItem('tp'); } catch (e) { /* ignore */ } clearTimeout(pollTimer); $('#app').classList.add('hidden'); $('#login').classList.remove('hidden'); $('#pass').value = ''; }
+  $('#signout').addEventListener('click', signOut);
+  $('#bigger').addEventListener('click', () => document.body.classList.toggle('big'));
+
+  async function start() {
+    $('#login').classList.add('hidden'); $('#app').classList.remove('hidden');
+    try {
+      [lessons, roster] = await Promise.all([api('t_lessons').then(r => r.lessons), api('t_roster').then(r => r.students)]);
+    } catch (e) { if (e.passcode) return signOut(); showErr('#run-err', e); }
+    fillLessonSelect($('#r-lesson'), false);
+    $('#s-list').innerHTML = roster.map(s => `<option value="${esc(s.last + ', ' + s.first + ' (' + s.student_id + ')')}"></option>`).join('');
+    tab('run');
+  }
+
+  // ---------- tabs ----------
+  document.querySelectorAll('nav [data-tab]').forEach(b => b.addEventListener('click', () => tab(b.dataset.tab)));
+  function tab(name) {
+    curTab = name;
+    document.querySelectorAll('nav [data-tab]').forEach(b => b.setAttribute('aria-selected', b.dataset.tab === name));
+    ['run', 'results', 'students', 'help'].forEach(t => $('#tab-' + t).classList.toggle('hidden', t !== name));
+    clearTimeout(pollTimer);
+    if (name === 'run') refreshRun();
+    if (name === 'results') initResults();
+  }
+
+  function fillLessonSelect(sel, onlyReady, keep) {
+    const cur = keep || sel.value; let html = '', unit = null;
+    lessons.filter(l => !onlyReady || l.ready).forEach(l => {
+      if (l.unit !== unit) { if (unit !== null) html += '</optgroup>'; html += `<optgroup label="Unit ${l.unit}: ${esc(l.unit_title)}">`; unit = l.unit; }
+      html += `<option value="${esc(l.lesson_id)}" ${l.ready ? '' : 'disabled'}>Day ${l.day} · ${esc(l.title)}${l.ticket_type === 'unit_review' ? ' (Unit Review)' : ''}${l.ready ? '' : ' — no questions yet'}</option>`;
+    });
+    sel.innerHTML = html + (unit !== null ? '</optgroup>' : '');
+    if (cur) sel.value = cur;
+  }
+
+  // =====================================================================================================
+  // RUN CLASS
+  // =====================================================================================================
+  async function refreshRun() {
+    clearTimeout(pollTimer);
+    try {
+      state = await api('t_state'); clearErr('#run-err');
+      if (!runBuilt) buildRun(); else updateRun();
+    } catch (e) { if (e.passcode) return signOut(); showErr('#run-err', e); }
+    if (curTab === 'run') pollTimer = setTimeout(refreshRun, 5000);
+  }
+
+  function buildRun() {
+    const box = $('#periods'); box.innerHTML = '';
+    state.periods.forEach(p => {
+      const el = document.createElement('div'); el.className = 'card pcard'; el.dataset.period = p.period;
+      el.innerHTML = `<div class="phead"><h2>${esc(p.label)}</h2><span class="pill status">Closed</span></div>
+        <div class="small muted">Class code: <span class="code codeval"></span></div>
+        <label class="field">Lesson<select class="lesson"></select></label>
+        <div class="btns">
+          <button class="btn b-pre">Open warm-up</button><button class="btn b-post">Open exit ticket</button><button class="btn stop b-close">Close</button>
+        </div>
+        <div class="msg err hidden" role="alert"></div>
+        <div class="live"><div class="count"><b class="done">0</b> of <span class="of">0</span> turned in</div>
+          <div class="meter"><div></div></div><div class="small muted info"></div>
+          <details><summary class="wsum">Still waiting</summary><div class="small wlist"></div></details></div>`;
+      const sel = el.querySelector('.lesson');
+      fillLessonSelect(sel, true);
+      sel.value = p.open || p.lesson_id ? p.lesson_id : p.suggested_lesson_id;
+      if (!sel.value) sel.selectedIndex = 0;
+      const act = async (kind) => {
+        const msg = el.querySelector('.msg'); msg.classList.add('hidden');
+        try {
+          await api('t_set', kind === 'close' ? { period: p.period, open: false } : { period: p.period, lesson_id: sel.value, phase: kind, open: true });
+          await refreshRun();
+        } catch (e) { msg.textContent = e.message; msg.classList.remove('hidden'); }
+      };
+      el.querySelector('.b-pre').addEventListener('click', () => act('pre'));
+      el.querySelector('.b-post').addEventListener('click', () => act('post'));
+      el.querySelector('.b-close').addEventListener('click', () => act('close'));
+      box.appendChild(el);
+    });
+    runBuilt = true; updateRun();
+  }
+
+  function updateRun() {
+    state.periods.forEach(p => {
+      const el = document.querySelector(`.pcard[data-period="${CSS.escape(p.period)}"]`); if (!el) return;
+      const pill = el.querySelector('.status');
+      pill.textContent = p.open ? `${p.ticket_label} open` : 'Closed'; pill.className = 'pill status' + (p.open ? ' open' : '');
+      const code = el.querySelector('.codeval');
+      code.textContent = p.code || 'NOT SET'; if (p.code_needs_change) { code.innerHTML = '<span class="tag red">Change the code in the Periods tab</span>'; }
+      el.querySelector('.b-pre').classList.toggle('on', p.open && p.phase === 'pre');
+      el.querySelector('.b-post').classList.toggle('on', p.open && p.phase === 'post');
+      el.querySelector('.b-pre').textContent = p.open && p.phase === 'pre' ? '✓ Warm-up open' : 'Open warm-up';
+      el.querySelector('.b-post').textContent = p.open && p.phase === 'post' ? '✓ Exit ticket open' : 'Open exit ticket';
+      el.querySelector('.b-close').disabled = !p.open;
+      const showing = !!p.lesson_id, total = p.roster || 0;
+      el.querySelector('.live').classList.toggle('hidden', !showing);
+      el.querySelector('.done').textContent = p.submitted; el.querySelector('.of').textContent = total;
+      el.querySelector('.meter > div').style.width = total ? Math.min(100, 100 * p.submitted / total) + '%' : '0';
+      el.querySelector('.info').textContent = `${p.ticket_label || ''} · ${p.lesson_title}${p.open && p.opened_at ? ' · opened ' + when(p.opened_at) : ' · closed'}${p.median_seconds ? ' · typical time ' + (p.median_seconds < 60 ? p.median_seconds + ' sec' : Math.round(p.median_seconds / 6) / 10 + ' min') : ''}`;
+      el.querySelector('.wsum').textContent = `Still waiting (${p.waiting.length})`;
+      el.querySelector('.wlist').textContent = p.waiting.length ? p.waiting.join(', ') : 'Everyone is in.';
+    });
+  }
+
+  // =====================================================================================================
+  // RESULTS
+  // =====================================================================================================
+  function initResults() {
+    const ps = $('#r-period');
+    if (!ps.options.length) {
+      ps.innerHTML = '<option value="ALL">All classes</option>' + (state ? state.periods.map(p => `<option value="${esc(p.period)}">${esc(p.label)}</option>`).join('') : '');
+      const open = state && state.periods.find(p => p.lesson_id);
+      if (open) $('#r-lesson').value = open.lesson_id;
+      if (!$('#r-lesson').value) { const first = lessons.find(l => l.ready); if (first) $('#r-lesson').value = first.lesson_id; }
+    }
+  }
+  $('#r-go').addEventListener('click', loadResults);
+  $('#r-lesson').addEventListener('change', loadResults); $('#r-period').addEventListener('change', loadResults);
+
+  async function loadResults() {
+    clearErr('#r-err'); const body = $('#r-body'); body.innerHTML = '<p class="muted">Loading…</p>';
+    try {
+      const r = await api('t_report', { lesson_id: $('#r-lesson').value, period: $('#r-period').value });
+      renderResults(r);
+    } catch (e) { body.innerHTML = ''; if (e.passcode) return signOut(); showErr('#r-err', e); }
+  }
+
+  function tile(n, l, cls) { return `<div class="tile ${cls || ''}"><div class="n">${n}</div><div class="l">${l}</div></div>`; }
+
+  function renderResults(r) {
+    const s = r.summary, body = $('#r-body');
+    const gainCls = s.mean_gain > 0 ? 'good' : s.mean_gain < 0 ? 'bad' : '';
+    const tiles = [
+      tile(pct(s.mean_pre), 'Warm-up average'), tile(pct(s.mean_post), 'Exit ticket average'),
+      tile(s.mean_gain === null ? '—' : (s.mean_gain > 0 ? '+' : '') + num(s.mean_gain, 1), 'Average change (points)', gainCls),
+      tile(num(s.class_g, 2), 'Class growth (g)', gainCls), tile(pct(s.pct_mastery), `Reached ${r.mastery}% on exit ticket`),
+      tile(`${s.n_matched}<span class="small muted"> of ${s.n_roster}</span>`, 'Took both tickets')
+    ].join('');
+    const miss = [];
+    if (s.n_no_pre) miss.push(`${s.n_no_pre} missing the warm-up`);
+    if (s.n_no_post) miss.push(`${s.n_no_post} missing the exit ticket`);
+    const note = r.lesson.ticket_type === 'unit_review' ? '<span class="tag blue">Unit Review</span> ' : '';
+
+    const crit = r.criteria.map(c => `<tr><td><b>${esc(c.criterion_id.split('-').slice(-1)[0])}</b></td><td>${esc(c.text)}${c.observed ? ' <span class="tag blue">observed in class</span>' : ''}</td>
+      <td class="num">${pct(c.pre)}</td><td class="num">${pct(c.post)}</td><td class="num">${change(c.gain)}</td><td>${c.reteach ? '<span class="tag">Reteach</span>' : c.already_known ? '<span class="tag blue">Already strong</span>' : ''}</td></tr>`).join('');
+
+    body.innerHTML = `<div class="card"><h2 style="margin:0">${note}${esc(r.lesson.title)}</h2>
+        <div class="muted">${esc(r.lesson.unit_title)} · Day ${r.lesson.day} · ${r.period === 'ALL' ? 'All classes' : 'Period ' + esc(r.period)}</div>
+        <div class="tiles">${tiles}</div>
+        <div class="small muted">Change and growth use only the ${s.n_matched} student${s.n_matched === 1 ? '' : 's'} who took both tickets${miss.length ? ' (' + miss.join('; ') + ')' : ''}.${s.n_ceiling ? ` ${s.n_ceiling} started at 100% so growth (g) does not apply to them.` : ''}
+        ${s.n_matched > 1 && s.pct_gained !== null ? ` ${Math.round(s.pct_gained)}% improved, ${Math.round(s.pct_flat)}% stayed the same, ${Math.round(s.pct_declined)}% dropped.` : ''}</div></div>
+
+      <div class="card"><h3 style="margin-top:0">Which skills moved?</h3>
+        ${r.criteria.length ? '<div class="chartbox"><canvas id="crit-chart" aria-label="Warm-up and exit ticket percent correct for each criterion"></canvas></div>' : '<p class="muted">No responses yet.</p>'}
+        <div id="chart-note" class="small muted"></div>
+        ${r.criteria.length ? `<div class="scroll"><table><thead><tr><th style="cursor:default">#</th><th style="cursor:default">Criterion for success</th><th class="num" style="cursor:default">Warm-up</th><th class="num" style="cursor:default">Exit</th><th class="num" style="cursor:default">Change</th><th style="cursor:default"></th></tr></thead><tbody>${crit}</tbody></table></div>` : ''}</div>
+
+      <div class="card"><div class="controls" style="justify-content:space-between"><h3 style="margin:0">Every student</h3>
+        <button class="btn sec mini" id="dl-students">Download CSV</button></div>
+        <div class="scroll"><table id="stu-table"></table></div>
+        <p class="small muted">Click a student to see their answers, question by question. Click a column heading to sort.</p></div>
+
+      <details class="card"><summary>Question-by-question results (percent correct)</summary>
+        <div class="scroll"><table><thead><tr><th style="cursor:default">Question</th><th style="cursor:default">Criterion</th><th class="num" style="cursor:default">Warm-up</th><th class="num" style="cursor:default">Exit</th></tr></thead><tbody>
+        ${r.items.map(i => `<tr><td>${esc(i.stem)}<div class="small muted">${esc(i.item_id)}</div></td><td>${esc(i.criterion_id.split('-').slice(-1)[0])}</td><td class="num">${i.pre_p === null ? '—' : i.pre_p + '%'}</td><td class="num">${i.post_p === null ? '—' : i.post_p + '%'}</td></tr>`).join('')}
+        </tbody></table></div></details>`;
+
+    drawCritChart(r);
+    studentTable(r);
+    $('#dl-students').addEventListener('click', () => csv(`results-${r.lesson.lesson_id}-${r.period}.csv`,
+      ['Student ID', 'Last', 'First', 'Period', 'Warm-up %', 'Exit ticket %', 'Change', 'Growth g', 'Status'],
+      r.students.map(x => [x.student_id, x.last, x.first, x.period, x.pre, x.post, x.gain, x.g, statusText[x.status]])));
+  }
+
+  function drawCritChart(r) {
+    const cv = $('#crit-chart'); if (!cv) return;
+    if (charts.crit) { charts.crit.destroy(); charts.crit = null; }
+    if (!window.Chart) { $('#chart-note').textContent = 'The chart needs an internet connection to load. The table below has the same numbers.'; cv.parentElement.classList.add('hidden'); return; }
+    const css = getComputedStyle(document.documentElement), fg = css.getPropertyValue('--fg').trim(), line = css.getPropertyValue('--line').trim();
+    charts.crit = new Chart(cv, {
+      type: 'bar',
+      data: { labels: r.criteria.map(c => c.criterion_id.split('-').slice(-1)[0]),
+              datasets: [{ label: 'Warm-up', data: r.criteria.map(c => c.pre), backgroundColor: css.getPropertyValue('--pre').trim() },
+                         { label: 'Exit ticket', data: r.criteria.map(c => c.post), backgroundColor: css.getPropertyValue('--post').trim() }] },
+      options: { responsive: true, maintainAspectRatio: false, animation: false,
+        scales: { y: { min: 0, max: 100, ticks: { color: fg, callback: v => v + '%' }, grid: { color: line } }, x: { ticks: { color: fg }, grid: { display: false } } },
+        plugins: { legend: { labels: { color: fg } }, tooltip: { callbacks: { title: items => r.criteria[items[0].dataIndex].text, label: c => `${c.dataset.label}: ${Math.round(c.parsed.y)}%` } } } }
+    });
+  }
+
+  function sortable(table, cols, rows, render, onClick) {
+    let key = cols[0].key, dir = 1;
+    const draw = () => {
+      const sorted = rows.slice().sort((a, b) => { const x = a[key], y = b[key]; if (x === null || x === undefined) return 1; if (y === null || y === undefined) return -1; return (typeof x === 'string' ? x.localeCompare(y) : x - y) * dir; });
+      table.innerHTML = `<thead><tr>${cols.map(c => `<th data-k="${c.key}" class="${c.num ? 'num' : ''}" ${c.key === key ? `aria-sort="${dir > 0 ? 'ascending' : 'descending'}"` : ''}>${c.label}</th>`).join('')}</tr></thead>
+        <tbody>${sorted.map((r, i) => `<tr class="click" data-i="${rows.indexOf(r)}" tabindex="0">${render(r)}</tr>`).join('')}</tbody>`;
+      table.querySelectorAll('th').forEach(th => th.addEventListener('click', () => { const k = th.dataset.k; dir = k === key ? -dir : 1; key = k; draw(); }));
+      table.querySelectorAll('tbody tr').forEach(tr => { const go = () => onClick(rows[Number(tr.dataset.i)]); tr.addEventListener('click', go); tr.addEventListener('keydown', e => { if (e.key === 'Enter') go(); }); });
+    };
+    draw();
+  }
+
+  function studentTable(r) {
+    const rows = r.students.map(s => Object.assign({ name: `${s.last}, ${s.first}` }, s));
+    sortable($('#stu-table'), [
+      { key: 'name', label: 'Student' }, { key: 'period', label: 'Period' }, { key: 'pre', label: 'Warm-up', num: 1 }, { key: 'post', label: 'Exit ticket', num: 1 },
+      { key: 'gain', label: 'Change', num: 1 }, { key: 'g', label: 'Growth (g)', num: 1 }, { key: 'status', label: 'Took' }
+    ], rows, s => `<td>${esc(s.name)}</td><td>${esc(s.period)}</td><td class="num">${pct(s.pre)}</td><td class="num">${pct(s.post)}${s.mastery ? ' <span class="yes" title="Reached mastery">✓</span>' : ''}</td>
+      <td class="num">${change(s.gain)}</td><td class="num">${s.ceiling ? '<span class="muted" title="Started at 100%">top</span>' : num(s.g, 2)}</td>
+      <td>${s.status === 'matched' ? 'Both' : s.status === 'no data' ? '<span class="muted">Not yet</span>' : `<span class="tag">${statusText[s.status]}</span>`}</td>`,
+      s => openStudent(s.student_id, r.lesson.lesson_id));
+  }
+
+  // =====================================================================================================
+  // STUDENTS
+  // =====================================================================================================
+  function idFromSearch(v) {
+    const m = /\((\w+)\)\s*$/.exec(v); if (m) return m[1];
+    const hit = roster.find(s => s.student_id === v.trim()) || roster.find(s => (s.last + ', ' + s.first).toLowerCase() === v.trim().toLowerCase())
+      || roster.find(s => (s.first + ' ' + s.last).toLowerCase() === v.trim().toLowerCase());
+    return hit ? hit.student_id : null;
+  }
+  $('#s-go').addEventListener('click', () => { const id = idFromSearch($('#s-search').value); if (!id) return showErr('#s-err', new Error('Pick a student from the list, or type their ID.')); openStudent(id); });
+  $('#s-search').addEventListener('change', () => { const id = idFromSearch($('#s-search').value); if (id) openStudent(id); });
+
+  async function openStudent(id, lessonId) {
+    tab('students'); clearErr('#s-err');
+    const me = roster.find(s => s.student_id === id); if (me) $('#s-search').value = `${me.last}, ${me.first} (${me.student_id})`;
+    const body = $('#s-body'); body.innerHTML = '<p class="muted">Loading…</p>';
+    try {
+      const r = await api('t_student', { student_id: id });
+      renderStudent(r);
+      if (lessonId && r.lessons.some(l => l.lesson_id === lessonId)) showItems(id, lessonId);
+    } catch (e) { body.innerHTML = ''; if (e.passcode) return signOut(); showErr('#s-err', e); }
+  }
+
+  function renderStudent(r) {
+    const s = r.summary, st = r.student, body = $('#s-body');
+    const daily = r.lessons.filter(l => l.ticket_type !== 'unit_review');
+    const tiles = [tile(s.lessons_with_pairs, 'Lessons with both tickets'), tile(pct(s.mean_pre), 'Average warm-up'), tile(pct(s.mean_post), 'Average exit ticket'),
+      tile(s.mean_gain === null ? '—' : (s.mean_gain > 0 ? '+' : '') + num(s.mean_gain, 1), 'Average change (points)', s.mean_gain > 0 ? 'good' : s.mean_gain < 0 ? 'bad' : ''),
+      tile(num(s.class_g, 2), 'Growth (g)', s.class_g > 0 ? 'good' : s.class_g < 0 ? 'bad' : ''), tile(pct(s.pct_mastery), `Reached ${r.mastery}%`)].join('');
+    const weak = r.weakest.length ? `<h3>Skills to revisit <span class="small muted">(lowest exit ticket scores)</span></h3><ul>${r.weakest.map(w => `<li><b>${pct(w.post_pct)}</b> · ${esc(w.text || w.criterion_id)} <span class="small muted">(${esc(w.criterion_id)}, ${w.n} question${w.n === 1 ? '' : 's'})</span></li>`).join('')}</ul>` : '';
+    body.innerHTML = `<div class="card"><h2 style="margin:0">${esc(st.first)} ${esc(st.last)}</h2><div class="muted">Period ${esc(st.period)} · ID ${esc(st.student_id)}</div>
+        <div class="tiles">${tiles}</div>
+        ${daily.length ? '<div class="chartbox"><canvas id="stu-chart" aria-label="Warm-up and exit ticket scores across lessons"></canvas></div><div id="schart-note" class="small muted"></div>' : '<p class="muted">No tickets yet.</p>'}
+        ${weak}</div>
+      <div class="card"><div class="controls" style="justify-content:space-between"><h3 style="margin:0">Lesson by lesson</h3><button class="btn sec mini" id="dl-student">Download CSV</button></div>
+        <div class="scroll"><table id="les-table"></table></div><p class="small muted">Click a lesson to see this student's answers question by question.</p></div>
+      <div id="items-panel"></div>`;
+
+    if (daily.length) drawStudentChart(daily);
+    sortable($('#les-table'), [
+      { key: 'sequence', label: 'Lesson' }, { key: 'pre', label: 'Warm-up', num: 1 }, { key: 'post', label: 'Exit ticket', num: 1 }, { key: 'gain', label: 'Change', num: 1 }, { key: 'g', label: 'Growth (g)', num: 1 }
+    ], r.lessons, l => `<td>U${l.unit} · Day ${l.day} · ${esc(l.title)} ${l.ticket_type === 'unit_review' ? '<span class="tag blue">Unit Review</span>' : ''}${l.status !== 'matched' ? ` <span class="tag">${statusText[l.status]}</span>` : ''}</td>
+      <td class="num">${pct(l.pre)}</td><td class="num">${pct(l.post)}${l.mastery ? ' <span class="yes">✓</span>' : ''}</td><td class="num">${change(l.gain)}</td><td class="num">${num(l.g, 2)}</td>`,
+      l => showItems(st.student_id, l.lesson_id));
+    $('#dl-student').addEventListener('click', () => csv(`growth-${st.student_id}.csv`, ['Lesson', 'Title', 'Type', 'Warm-up %', 'Exit ticket %', 'Change', 'Growth g', 'Took'],
+      r.lessons.map(l => [l.lesson_id, l.title, l.ticket_type, l.pre, l.post, l.gain, l.g, statusText[l.status]])));
+  }
+
+  function drawStudentChart(daily) {
+    const cv = $('#stu-chart'); if (charts.stu) { charts.stu.destroy(); charts.stu = null; }
+    if (!window.Chart) { $('#schart-note').textContent = 'The chart needs an internet connection to load. The table below has the same numbers.'; cv.parentElement.classList.add('hidden'); return; }
+    const css = getComputedStyle(document.documentElement), fg = css.getPropertyValue('--fg').trim(), line = css.getPropertyValue('--line').trim();
+    charts.stu = new Chart(cv, { type: 'line',
+      data: { labels: daily.map(l => `U${l.unit}D${l.day}`), datasets: [
+        { label: 'Warm-up', data: daily.map(l => l.pre), borderColor: css.getPropertyValue('--pre').trim(), backgroundColor: css.getPropertyValue('--pre').trim(), borderDash: [6, 4], spanGaps: true, tension: .2 },
+        { label: 'Exit ticket', data: daily.map(l => l.post), borderColor: css.getPropertyValue('--post').trim(), backgroundColor: css.getPropertyValue('--post').trim(), spanGaps: true, tension: .2 }] },
+      options: { responsive: true, maintainAspectRatio: false, animation: false,
+        scales: { y: { min: 0, max: 100, ticks: { color: fg, callback: v => v + '%' }, grid: { color: line } }, x: { ticks: { color: fg }, grid: { display: false } } },
+        plugins: { legend: { labels: { color: fg } }, tooltip: { callbacks: { title: i => daily[i[0].dataIndex].title } } } } });
+  }
+
+  async function showItems(sid, lid) {
+    const panel = $('#items-panel'); panel.innerHTML = '<p class="muted">Loading answers…</p>';
+    try {
+      const r = await api('t_student_lesson', { student_id: sid, lesson_id: lid });
+      const l = lessons.find(x => x.lesson_id === lid);
+      const box = (p, label) => !p ? `<div class="box none"><b>${label}</b><br>Not taken</div>` : `<div class="box ${p.correct ? 'good' : 'miss'}"><b>${label} ${p.correct ? '✓' : '✗'}</b><br>${esc(p.answer)}${p.correct ? '' : `<br><span class="muted">Correct: ${esc(p.correct_answer)}</span>`}</div>`;
+      panel.innerHTML = `<div class="card idetail"><h3 style="margin-top:0">${esc(l ? l.title : lid)}: question by question</h3>
+        ${r.items.map((it, n) => `<div class="it"><div class="small muted">Question ${n + 1} · ${esc(it.criterion_id.split('-').slice(-1)[0])}</div><div><b>${esc((it.pre || it.post).stem)}</b></div>
+          <div class="pp">${box(it.pre, 'Warm-up')}${box(it.post, 'Exit ticket')}</div></div>`).join('') || '<p class="muted">No answers recorded.</p>'}</div>`;
+      panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } catch (e) { panel.innerHTML = ''; showErr('#s-err', e); }
+  }
+
+  // =====================================================================================================
+  // CSV + misc
+  // =====================================================================================================
+  function csv(name, head, rows) {
+    const q = v => v === null || v === undefined ? '' : /[",\n]/.test(String(v)) ? '"' + String(v).replace(/"/g, '""') + '"' : String(v);
+    const text = [head].concat(rows).map(r => r.map(q).join(',')).join('\n');
+    const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([text], { type: 'text/csv' })); a.download = name; document.body.appendChild(a); a.click(); a.remove();
+  }
+  $('#recompute').addEventListener('click', async () => {
+    const m = $('#recompute-msg'); m.textContent = 'Working…';
+    try { const r = await api('t_recompute'); m.textContent = `Done (${r.rows} rows written).`; } catch (e) { m.textContent = e.message; }
+  });
+  document.addEventListener('visibilitychange', () => { if (!document.hidden && curTab === 'run' && runBuilt) refreshRun(); });
+
+  if (pass) { api('t_ping').then(start).catch(() => signOut()); }
+  if (!CFG.API_URL) { const e = $('#login-err'); e.textContent = 'Not connected yet: set API_URL in config.js.'; e.classList.remove('hidden'); }
+})();
+</script>
+</body>
+</html>

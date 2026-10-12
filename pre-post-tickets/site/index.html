@@ -1,0 +1,335 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Class Ticket</title>
+<style>
+  :root {
+    --bg: #f6f7f9; --card: #ffffff; --fg: #1a2230; --mut: #5a6577; --line: #d5dae3;
+    --accent: #1d5fbf; --accent-fg: #ffffff; --ok: #137a3c; --ok-bg: #e3f5e9; --bad: #a3261f; --bad-bg: #fdecea;
+    --warn-bg: #fff4d6; --sel: #e6efff;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #11151c; --card: #1b212b; --fg: #e8edf5; --mut: #9aa5b8; --line: #323b4a;
+            --accent: #5a9bff; --accent-fg: #0b1220; --ok: #6fd69a; --ok-bg: #123422; --bad: #ff9c94; --bad-bg: #3a1a18;
+            --warn-bg: #3b3216; --sel: #1f2f4d; }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--fg); font: 18px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  main { max-width: 680px; margin: 0 auto; padding: 16px; }
+  h1 { font-size: 1.5rem; margin: 8px 0 4px; }
+  h2 { font-size: 1.15rem; margin: 0 0 8px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 18px; margin: 14px 0; }
+  .muted { color: var(--mut); }
+  label.field { display: block; font-weight: 600; margin: 14px 0 6px; }
+  input[type=text], input[type=password], input[type=tel] {
+    width: 100%; font: inherit; padding: 14px; border-radius: 10px; border: 2px solid var(--line); background: var(--bg); color: var(--fg);
+  }
+  input[type=text]:focus, input[type=tel]:focus { outline: 3px solid var(--accent); border-color: var(--accent); }
+  button { font: inherit; font-weight: 600; min-height: 52px; padding: 12px 22px; border-radius: 12px; border: 2px solid var(--accent);
+           background: var(--accent); color: var(--accent-fg); cursor: pointer; }
+  button.secondary { background: transparent; color: var(--accent); }
+  button.link { border: none; background: none; color: var(--mut); text-decoration: underline; min-height: 40px; font-weight: 400; padding: 6px 4px; }
+  button:disabled { opacity: .55; cursor: not-allowed; }
+  button:focus-visible, .opt:focus-within { outline: 3px solid var(--accent); outline-offset: 2px; }
+  .err { background: var(--bad-bg); color: var(--bad); border-radius: 10px; padding: 12px 14px; margin: 12px 0; }
+  .note { background: var(--warn-bg); border-radius: 10px; padding: 12px 14px; margin: 12px 0; }
+  .hidden { display: none !important; }
+  .badge { display: inline-block; background: var(--accent); color: var(--accent-fg); font-weight: 700; border-radius: 999px; padding: 4px 14px; font-size: .9rem; }
+
+  .q { margin: 22px 0; }
+  .q h2 { font-size: 1.1rem; line-height: 1.4; }
+  .qnum { color: var(--mut); font-size: .85rem; font-weight: 600; text-transform: uppercase; letter-spacing: .04em; }
+  .hint { color: var(--mut); font-size: .9rem; margin: 0 0 8px; }
+  .opt { display: flex; gap: 12px; align-items: flex-start; min-height: 56px; padding: 12px 14px; margin: 8px 0; border: 2px solid var(--line);
+         border-radius: 12px; cursor: pointer; background: var(--card); }
+  .opt:has(input:checked) { border-color: var(--accent); background: var(--sel); }
+  .opt input { width: 24px; height: 24px; margin: 2px 0 0; flex: none; accent-color: var(--accent); }
+  .row { border: 1px solid var(--line); border-radius: 12px; padding: 12px; margin: 10px 0; }
+  .row .stmt { margin: 0 0 8px; font-weight: 500; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip { display: inline-flex; align-items: center; gap: 8px; min-height: 48px; padding: 8px 14px; border: 2px solid var(--line); border-radius: 999px; cursor: pointer; }
+  .chip:has(input:checked) { border-color: var(--accent); background: var(--sel); font-weight: 600; }
+  .chip input { width: 20px; height: 20px; accent-color: var(--accent); }
+  .bar { display: flex; gap: 10px; justify-content: space-between; align-items: center; margin-top: 18px; flex-wrap: wrap; }
+  .progress { height: 8px; background: var(--line); border-radius: 99px; overflow: hidden; margin: 10px 0 0; }
+  .progress > div { height: 100%; background: var(--accent); width: 0; transition: width .2s; }
+
+  .score { text-align: center; }
+  .score .big { font-size: 3.2rem; font-weight: 800; line-height: 1.1; }
+  .compare { display: flex; justify-content: center; gap: 22px; align-items: center; margin: 12px 0; flex-wrap: wrap; }
+  .compare div { text-align: center; }
+  .compare .n { font-size: 1.8rem; font-weight: 700; }
+  .arrow { font-size: 1.6rem; color: var(--mut); }
+  .fb { border-left: 6px solid var(--line); padding: 10px 14px; margin: 12px 0; background: var(--card); border-radius: 0 10px 10px 0; }
+  .fb.good { border-left-color: var(--ok); } .fb.miss { border-left-color: var(--bad); }
+  .fb .tag { font-weight: 700; } .fb.good .tag { color: var(--ok); } .fb.miss .tag { color: var(--bad); }
+  .spinner { display: inline-block; width: 18px; height: 18px; border: 3px solid var(--line); border-top-color: var(--accent); border-radius: 50%; animation: spin 1s linear infinite; vertical-align: -3px; margin-right: 8px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @media (prefers-reduced-motion: reduce) { .spinner { animation: none; } .progress > div { transition: none; } }
+</style>
+</head>
+<body>
+<main>
+
+  <!-- 1. Sign in -->
+  <section id="s-login" class="hidden">
+    <h1>Class Ticket</h1>
+    <p class="muted">Enter the class code your teacher gave you and your student ID.</p>
+    <form id="login" class="card" autocomplete="off">
+      <label class="field" for="code">Class code</label>
+      <input id="code" type="text" autocapitalize="characters" autocomplete="off" spellcheck="false" required>
+      <label class="field" for="sid">Student ID</label>
+      <input id="sid" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" required>
+      <div id="login-err" class="err hidden" role="alert"></div>
+      <div class="bar"><button id="login-go" type="submit">Continue</button></div>
+    </form>
+  </section>
+
+  <!-- 2. Waiting for the teacher -->
+  <section id="s-wait" class="hidden">
+    <h1 id="hello">Hi!</h1>
+    <div class="card">
+      <h2><span class="spinner" aria-hidden="true"></span>Waiting for your teacher to open the ticket</h2>
+      <p class="muted">Keep this page open. It will start by itself.</p>
+      <div id="wait-note" class="note hidden" role="status"></div>
+    </div>
+    <button class="link" data-signout>Not you? Sign out</button>
+  </section>
+
+  <!-- 3. The ticket -->
+  <section id="s-ticket" class="hidden">
+    <span id="t-badge" class="badge"></span>
+    <h1 id="t-title"></h1>
+    <p class="muted" id="t-sub"></p>
+    <div class="progress" aria-hidden="true"><div id="t-progress"></div></div>
+    <div id="items"></div>
+    <div id="submit-err" class="err hidden" role="alert"></div>
+    <div id="skip-warn" class="note hidden" role="alert"></div>
+    <div class="bar">
+      <button id="back" class="secondary hidden" type="button">Back</button>
+      <button id="next" class="secondary hidden" type="button">Next</button>
+      <button id="submit" type="button">Turn in</button>
+    </div>
+  </section>
+
+  <!-- 4. Done -->
+  <section id="s-done" class="hidden">
+    <div id="done-body"></div>
+    <button class="link" data-signout>Done? Sign out</button>
+  </section>
+
+</main>
+<script src="config.js"></script>
+<script>
+(function () {
+  'use strict';
+  const CFG = Object.assign({ API_URL: '', POLL_SECONDS: 10 }, window.CONFIG || {});
+  const $ = s => document.querySelector(s);
+  const screens = ['login', 'wait', 'ticket', 'done'];
+  let me = null, pollTimer = null, ticket = null, items = [], answers = {}, page = 0, startedAt = 0, onePerScreen = false, submitting = false;
+
+  function show(name) {
+    screens.forEach(s => $('#s-' + s).classList.toggle('hidden', s !== name));
+    clearTimeout(pollTimer);
+    window.scrollTo(0, 0);
+  }
+  const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+  async function api(action, body) {
+    if (!CFG.API_URL) throw new Error('This page is not connected yet. Tell your teacher.');
+    const res = await fetch(CFG.API_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                                           body: JSON.stringify(Object.assign({ action }, body)) });
+    return res.json();
+  }
+  const creds = () => ({ code: me.code, student_id: me.student_id });
+
+  // ---------- sign in ----------
+  function saved() { try { return JSON.parse(sessionStorage.getItem('me') || 'null'); } catch (e) { return null; } }
+  function save() { try { sessionStorage.setItem('me', JSON.stringify(me)); } catch (e) { /* private mode */ } }
+  function signOut() { me = null; try { sessionStorage.removeItem('me'); } catch (e) { /* ignore */ } $('#sid').value = ''; show('login'); $('#code').focus(); }
+  document.querySelectorAll('[data-signout]').forEach(b => b.addEventListener('click', signOut));
+
+  $('#login').addEventListener('submit', async ev => {
+    ev.preventDefault();
+    const err = $('#login-err'), btn = $('#login-go');
+    err.classList.add('hidden'); btn.disabled = true;
+    try {
+      const candidate = { code: $('#code').value.trim(), student_id: $('#sid').value.trim() };
+      const r = await api('s_status', candidate);
+      if (!r.ok) throw new Error(r.error);
+      me = Object.assign(candidate, { first: r.student.first }); save();
+      await check();
+    } catch (e) { err.textContent = e.message || 'Could not connect. Check your internet and try again.'; err.classList.remove('hidden'); }
+    btn.disabled = false;
+  });
+
+  // ---------- wait for the teacher ----------
+  async function check() {
+    let r;
+    try { r = await api('s_status', creds()); }
+    catch (e) { return waiting('Can’t reach the server right now. Trying again…'); }
+    if (!r.ok) { try { sessionStorage.removeItem('me'); } catch (e2) { /* ignore */ } show('login'); const er = $('#login-err'); er.textContent = r.error; er.classList.remove('hidden'); return; }
+    if (r.open) return loadTicket();
+    waiting('');
+  }
+  function waiting(note) {
+    show('wait');
+    $('#hello').textContent = 'Hi, ' + (me.first || 'there') + '!';
+    const n = $('#wait-note'); n.textContent = note; n.classList.toggle('hidden', !note);
+    pollTimer = setTimeout(check, CFG.POLL_SECONDS * 1000);
+  }
+
+  // ---------- the ticket ----------
+  function hash(str) { let h = 1779033703 ^ str.length; for (let i = 0; i < str.length; i++) { h = Math.imul(h ^ str.charCodeAt(i), 3432918353); h = (h << 13) | (h >>> 19); } return () => { h = Math.imul(h ^ (h >>> 16), 2246822507); h = Math.imul(h ^ (h >>> 13), 3266489909); return (h ^= h >>> 16) >>> 0; }; }
+  function rng(seed) { let a = hash(seed)(); return () => { a |= 0; a = (a + 0x6D2B79F5) | 0; let t = Math.imul(a ^ (a >>> 15), 1 | a); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
+  function shuffled(arr, seed) { const a = arr.slice(), r = rng(seed); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(r() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+
+  async function loadTicket() {
+    let r;
+    try { r = await api('s_ticket', creds()); } catch (e) { return waiting('Can’t reach the server right now. Trying again…'); }
+    if (!r.ok) return waiting(r.error);
+    if (!r.open) return waiting('');
+    ticket = r.ticket; onePerScreen = !!r.one_per_screen;
+    if (r.already) return done(r.result, true);
+    const seed = me.student_id + '|' + ticket.lesson_id + '|' + ticket.phase;
+    items = shuffled(r.items, seed + '|order');
+    answers = {}; page = 0; startedAt = Date.now(); submitting = false;
+    renderTicket(seed);
+    show('ticket');
+  }
+
+  function renderTicket(seed) {
+    $('#t-badge').textContent = ticket.label;
+    $('#t-title').textContent = ticket.title;
+    $('#t-sub').textContent = ticket.phase === 'pre' ? 'Answer as best you can. It is okay if you are not sure yet.' : 'Show what you learned today.';
+    const box = $('#items'); box.innerHTML = '';
+    items.forEach((it, idx) => box.appendChild(renderItem(it, idx, seed)));
+    $('#submit-err').classList.add('hidden'); $('#skip-warn').classList.add('hidden');
+    showPage();
+  }
+
+  function renderItem(it, idx, seed) {
+    const wrap = document.createElement('div'); wrap.className = 'q'; wrap.dataset.idx = idx;
+    const hint = it.type === 'ms' ? 'Choose all that apply.' : it.type === 'match' ? 'Pick one for each line.' : 'Choose one answer.';
+    wrap.innerHTML = `<div class="qnum">Question ${idx + 1} of ${items.length}</div><h2>${esc(it.stem)}</h2><p class="hint">${hint}</p>`;
+    if (it.type === 'match') {
+      shuffled(it.rows.map((r, i) => ({ r, i })), seed + '|' + it.item_id).forEach(({ r, i }) => {
+        const row = document.createElement('div'); row.className = 'row';
+        row.innerHTML = `<p class="stmt">${esc(r)}</p><div class="chips" role="radiogroup"></div>`;
+        const chips = row.querySelector('.chips');
+        it.options.forEach((cat, c) => {
+          const l = document.createElement('label'); l.className = 'chip';
+          l.innerHTML = `<input type="radio" name="${it.item_id}-r${i}" value="${c}"> <span>${esc(cat)}</span>`;
+          l.querySelector('input').addEventListener('change', () => capture(it));
+          chips.appendChild(l);
+        });
+        wrap.appendChild(row);
+      });
+    } else {
+      const type = it.type === 'ms' ? 'checkbox' : 'radio';
+      shuffled(it.options.map((o, i) => ({ o, i })), seed + '|' + it.item_id).forEach(({ o, i }) => {
+        const l = document.createElement('label'); l.className = 'opt';
+        l.innerHTML = `<input type="${type}" name="${it.item_id}" value="${i}"> <span>${esc(o)}</span>`;
+        l.querySelector('input').addEventListener('change', () => capture(it));
+        wrap.appendChild(l);
+      });
+    }
+    return wrap;
+  }
+
+  // Answers are always sent using the ORIGINAL option/row numbers, whatever order the student saw.
+  function capture(it) {
+    const q = document.querySelector(`[data-idx="${items.indexOf(it)}"]`);
+    if (it.type === 'match') {
+      const out = it.rows.map(() => null);
+      it.rows.forEach((_, i) => { const c = q.querySelector(`input[name="${it.item_id}-r${i}"]:checked`); if (c) out[i] = Number(c.value); });
+      answers[it.item_id] = out;
+    } else {
+      answers[it.item_id] = Array.from(q.querySelectorAll('input:checked')).map(x => Number(x.value)).sort((a, b) => a - b);
+    }
+    $('#skip-warn').classList.add('hidden');
+    progress();
+  }
+  function isAnswered(it) {
+    const a = answers[it.item_id];
+    if (!a) return false;
+    return it.type === 'match' ? a.every(v => v !== null) : a.length > 0;
+  }
+  function progress() { $('#t-progress').style.width = (100 * items.filter(isAnswered).length / items.length) + '%'; }
+
+  function showPage() {
+    document.querySelectorAll('#items .q').forEach((q, i) => q.classList.toggle('hidden', onePerScreen && i !== page));
+    const last = !onePerScreen || page === items.length - 1;
+    $('#back').classList.toggle('hidden', !onePerScreen || page === 0);
+    $('#next').classList.toggle('hidden', last);
+    $('#submit').classList.toggle('hidden', !last);
+    progress();
+  }
+  $('#back').addEventListener('click', () => { page = Math.max(0, page - 1); showPage(); window.scrollTo(0, 0); });
+  $('#next').addEventListener('click', () => { page = Math.min(items.length - 1, page + 1); showPage(); window.scrollTo(0, 0); });
+
+  $('#submit').addEventListener('click', async () => {
+    if (submitting) return;
+    const skipped = items.map((it, i) => isAnswered(it) ? 0 : i + 1).filter(Boolean);
+    const warn = $('#skip-warn');
+    if (skipped.length && warn.classList.contains('hidden')) {
+      warn.innerHTML = `You have not answered ${skipped.length === 1 ? 'question' : 'questions'} ${skipped.join(', ')}. Press <b>Turn in</b> again to turn it in anyway, or go back and answer.`;
+      warn.classList.remove('hidden');
+      if (onePerScreen) { page = skipped[0] - 1; showPage(); }
+      return;
+    }
+    submitting = true; $('#submit').disabled = true; $('#submit-err').classList.add('hidden');
+    try {
+      const r = await api('s_submit', Object.assign(creds(), { lesson_id: ticket.lesson_id, phase: ticket.phase, answers, seconds: Math.round((Date.now() - startedAt) / 1000) }));
+      if (!r.ok) {
+        if (/already/i.test(r.error)) return loadTicket();
+        throw new Error(r.error);
+      }
+      done(r.result, false);
+    } catch (e) {
+      submitting = false; $('#submit').disabled = false;
+      const er = $('#submit-err'); er.textContent = (e.message || 'Could not send. Check your internet and press Turn in again.') + ' Your answers are still here.'; er.classList.remove('hidden');
+    }
+  });
+  window.addEventListener('beforeunload', ev => { if (!$('#s-ticket').classList.contains('hidden') && !submitting && Object.keys(answers).length) { ev.preventDefault(); ev.returnValue = ''; } });
+
+  // ---------- after turning in ----------
+  function done(res, returning) {
+    const body = $('#done-body');
+    if (res.phase === 'pre') {
+      body.innerHTML = `<div class="card"><span class="badge">Warm-Up</span><h1>${returning ? 'You already turned this in' : 'Submitted ✓'}</h1>
+        <p>Thanks${me.first ? ', ' + esc(me.first) : ''}! We’ll come back to these at the end of class.</p></div>`;
+    } else {
+      body.innerHTML = postHtml(res, returning);
+    }
+    show('done');
+  }
+
+  function postHtml(r, returning) {
+    let change = '';
+    if (r.pre_pct === null) change = '<p class="muted">You were not here for the warm-up, so there is no change to show.</p>';
+    else {
+      const d = r.change, sign = d > 0 ? '+' : '';
+      const msg = d > 0 ? `You grew by ${d} points. Nice work!` : d === 0 ? 'Same as your warm-up. The explanations below show what to review.'
+                : 'Some of these were tricky. The explanations below make a great study guide.';
+      change = `<div class="compare"><div><div class="n">${r.pre_pct}%</div><div class="muted">Warm-up</div></div><div class="arrow" aria-hidden="true">→</div>
+        <div><div class="n">${r.pct}%</div><div class="muted">Exit ticket</div></div><div><div class="n">${sign}${d}</div><div class="muted">points</div></div></div><p>${msg}</p>`;
+    }
+    const fb = (r.items || []).map(i => `<div class="fb ${i.correct ? 'good' : 'miss'}"><div class="tag">${i.correct ? '✓ Correct' : i.points > 0 ? '◐ Partly right' : '✗ Not yet'}</div>
+        <div><b>${esc(i.stem)}</b></div><div class="muted">${esc(i.rationale)}</div></div>`).join('');
+    return `<div class="card score"><span class="badge">Exit Ticket</span><h1>${r.pct === 100 ? 'Perfect score!' : 'Nice work!'}</h1>
+        <div class="big">${r.raw % 1 ? r.raw.toFixed(1) : r.raw} / ${r.max}</div><div class="muted">${r.pct}%</div>${change}</div>
+      ${r.objective ? `<div class="card"><h2>Today’s goal</h2><p>${esc(r.objective)}</p></div>` : ''}
+      ${fb ? `<h2>Let’s look at each question</h2>${fb}` : ''}`;
+  }
+
+  // ---------- start ----------
+  me = saved();
+  if (me && me.code && me.student_id) check(); else show('login');
+  if (!CFG.API_URL) { show('login'); const e = $('#login-err'); e.textContent = 'This page is not connected yet. (Teacher: set API_URL in config.js.)'; e.classList.remove('hidden'); }
+})();
+</script>
+</body>
+</html>
