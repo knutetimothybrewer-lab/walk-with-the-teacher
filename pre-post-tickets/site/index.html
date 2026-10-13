@@ -99,6 +99,20 @@
     </form>
   </section>
 
+  <!-- 1b. First sign-in: type your name once -->
+  <section id="s-name" class="hidden">
+    <h1>Welcome! What is your name?</h1>
+    <p class="muted">You only type this once. Your teacher will see it.</p>
+    <form id="nameform" class="card" autocomplete="off">
+      <label class="field" for="nfirst">First name</label>
+      <input id="nfirst" type="text" maxlength="30" autocomplete="off" spellcheck="false" required>
+      <label class="field" for="nlast">Last name</label>
+      <input id="nlast" type="text" maxlength="30" autocomplete="off" spellcheck="false" required>
+      <div id="name-err" class="err hidden" role="alert"></div>
+      <div class="bar"><button id="name-go" type="submit">Save my name</button></div>
+    </form>
+  </section>
+
   <!-- 2. Waiting for the teacher -->
   <section id="s-wait" class="hidden">
     <h1 id="hello">Hi!</h1>
@@ -148,7 +162,7 @@
   'use strict';
   const CFG = Object.assign({ API_URL: '', POLL_SECONDS: 10 }, window.CONFIG || {});
   const $ = s => document.querySelector(s);
-  const screens = ['login', 'wait', 'ticket', 'done', 'progress'];
+  const screens = ['login', 'name', 'wait', 'ticket', 'done', 'progress'];
   let me = null, pollTimer = null, ticket = null, items = [], answers = {}, page = 0, startedAt = 0, onePerScreen = false, submitting = false;
   let reflect = null, refAnswers = ['', '', ''];       // the three written exit-ticket questions (not scored)
 
@@ -180,7 +194,7 @@
   // ---------- sign in ----------
   function saved() { try { return JSON.parse(sessionStorage.getItem('me') || 'null'); } catch (e) { return null; } }
   function save() { try { sessionStorage.setItem('me', JSON.stringify(me)); } catch (e) { /* private mode */ } }
-  function signOut() { me = null; try { sessionStorage.removeItem('me'); } catch (e) { /* ignore */ } $('#sid').value = ''; show('login'); $('#code').focus(); }
+  function signOut() { me = null; try { sessionStorage.removeItem('me'); } catch (e) { /* ignore */ } $('#sid').value = ''; $('#nfirst').value = ''; $('#nlast').value = ''; show('login'); $('#code').focus(); }
   document.addEventListener('click', e => { if (e.target.closest('[data-signout]')) signOut(); });
 
   $('#login').addEventListener('submit', async ev => {
@@ -197,6 +211,21 @@
     btn.disabled = false;
   });
 
+  // ---------- first sign-in: type your name once ----------
+  function askName() { show('name'); $('#nfirst').focus(); }
+  $('#nameform').addEventListener('submit', async ev => {
+    ev.preventDefault();
+    const err = $('#name-err'), btn = $('#name-go');
+    err.classList.add('hidden'); btn.disabled = true;
+    try {
+      const r = await api('s_set_name', Object.assign(creds(), { first: $('#nfirst').value.trim(), last: $('#nlast').value.trim() }));
+      if (!r.ok) throw new Error(r.error);
+      takeName(r.student);
+      await check();
+    } catch (e) { err.textContent = e.message || 'Could not connect. Check your internet and try again.'; err.classList.remove('hidden'); }
+    btn.disabled = false;
+  });
+
   // ---------- wait for the teacher ----------
   async function check() {
     let r;
@@ -204,6 +233,7 @@
     catch (e) { return waiting('Can’t reach the server right now. Trying again…'); }
     if (!r.ok) { try { sessionStorage.removeItem('me'); } catch (e2) { /* ignore */ } show('login'); const er = $('#login-err'); er.textContent = r.error; er.classList.remove('hidden'); return; }
     takeName(r.student);
+    if (r.student && r.student.needs_name) return askName();
     if (r.held) return waiting(HELD_MSG);
     if (r.open) return loadTicket();
     waiting('');
