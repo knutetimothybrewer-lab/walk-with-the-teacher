@@ -9,6 +9,7 @@
   var W = root.WWQ, P = W.P, V = W.V, S = W.Sim, U = W.U;
   var M = U.fmtSigned;
   W.defActivity({ id: 'playWeek', m: 6, title: 'Play Jordan’s week (unscored)' });
+  W.defActivity({ id: 'playWeek2', m: 6, title: 'Play Maya’s week, the second pass (unscored)' });
 
   function wk(id) { return S.makeWeek(W.CASEWEEKS[id].rows); }
   var ORDER = ['jordan', 'maya', 'eli'];
@@ -141,4 +142,31 @@
     hint: 'Check feasibility first (limits), then which domain is weakest compared to its own maximum, then compute the effect with the category weight.',
     why: 'A strong revision fits the case constraints, targets the part of the week that most needs it, and has a predicted effect computed with the category weight. Several feasible revisions can be valid; simulation points are fictional and never convert into assessment points.',
     variants: stopVariants });
+
+  /* ---------- 6.8 compare two weeks (required checkpoint, no points) ----------
+   * Uses FIXED case weeks (like the scored questions) so every key is valid however the student played the two unscored weeks. Worth 0 points: the 16 Simulator points are unchanged. */
+  function cmpVariant(tag, a, b) {
+    var wa = wk(a), wb = wk(b), ca = S.compute(wa), cb = S.compute(wb), na = W.CASEWEEKS[a].name, nb = W.CASEWEEKS[b].name;
+    var spread = function (c) { var v = S.DOMAINS.map(function (d) { return c.normalized[d.id]; }); return Math.max.apply(null, v) - Math.min.apply(null, v); };
+    var strongest = function (c) { return S.DOMAINS.map(function (d) { return d.id; }).sort(function (x, y) { return c.normalized[y] - c.normalized[x]; })[0]; };
+    var higher = ca.total > cb.total ? 'w1' : 'w2', wider = spread(ca) > spread(cb) ? 'w1' : 'w2';
+    var weakA = S.weakestDomain(wa).ids[0], weakB = S.weakestDomain(wb).ids[0], rawA = S.lowestRawDomain(wa).ids[0], rawB = S.lowestRawDomain(wb).ids[0];
+    var pair = function (x, y) { return na + ': ' + S.DOM[x].n + '; ' + nb + ': ' + S.DOM[y].n; };
+    var key = pair(weakA, weakB), seen = {}, pairOpts = [['p1', key, 1]]; seen[key] = true;
+    [pair(rawA, rawB), pair(strongest(ca), strongest(cb)), pair(weakB, weakA), pair(rawA, weakB), pair('phys', 'phys'), pair('soc', 'env')].forEach(function (t) { if (!seen[t] && pairOpts.length < 4) { seen[t] = true; pairOpts.push(['p' + (pairOpts.length + 1), t, 0]); } });
+    var tot = [['w1', na + '’s week', higher === 'w1' ? 1 : 0], ['w2', nb + '’s week', higher === 'w2' ? 1 : 0], ['tie', 'They are equal.', 0]];
+    var gap = [['w1', na + '’s week', wider === 'w1' ? 1 : 0], ['w2', nb + '’s week', wider === 'w2' ? 1 : 0], ['tie', 'They are about equal.', 0]];
+    return V('ck.m6.cmp.' + tag, 'Compare **' + na + '’s** case week and **' + nb + '’s** case week (both fictional). Use the graph and the domain bars.', [
+      P('tot', 'Part 1 · Which week ends with the higher running total?', 'radio', tot, { fixed: true, hint: 'Read the last point on each running-total line.' }),
+      P('weak', 'Part 2 · Which pair names each week’s weakest domain, compared to that domain’s own maximum?', 'radio', pairOpts, { hint: 'Compare each domain to its OWN weekly maximum (Physical ±56, Mental ±49, Emotional ±49, Social ±56, Environmental ±35), not to the other domains’ raw numbers.' }),
+      P('gap', 'Part 3 · Which week has the wider gap between its strongest and weakest domain (as a percent of each domain’s own maximum)?', 'radio', gap, { fixed: true, hint: 'Find the highest and lowest bars in each week and compare how far apart they are.' }),
+      P('why', 'Part 4 · What is the best-supported conclusion?', 'radio', [['a', 'A higher weekly total can hide a weak domain, so look at each domain’s own bar as well as the totals.', 1], ['b', 'The week with the higher total is healthier in every domain.', 0], ['c', 'Raw points compare fairly because every domain has the same maximum.', 0], ['d', 'The week with the lower total proves that person made worse choices, so limits like time and money do not matter.', 0]], { hint: 'Think about what a total hides and why maximums differ by domain.' })
+    ], { vis: { type: 'cmpweeks', a: a, b: b } });
+  }
+  W.defCheck({
+    id: 'ck.m6.cmp', m: 6, st: '6.8', topic: 'Compare two weeks: totals versus domain balance', src: 'Health_by_a_Thousand_Choices_Worksheet (domain ranges, running totals)', kind: 'form',
+    hint: 'Compare the totals first, then compare each domain to its own maximum, then ask what a single total can and cannot show.',
+    why: 'Two weeks can be compared by their running totals, but a total adds everything together. Because domain maximums differ, the fairest comparison puts each domain against its own maximum. A positive total can sit beside a weak domain, and a low total can come from real limits like time and money. These points are fictional teaching weights, never assessment points.',
+    variants: [cmpVariant('a', 'jordan', 'maya'), cmpVariant('b', 'maya', 'eli')]
+  });
 })(typeof window !== 'undefined' ? window : globalThis);

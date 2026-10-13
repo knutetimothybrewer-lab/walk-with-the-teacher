@@ -89,6 +89,14 @@ const S = (page, js, arg) => page.evaluate(js, arg);
   await page.locator('fieldset.part').nth(0).locator('label.opt', { hasText: 'focus and memory' }).click();
   await page.locator('fieldset.part').nth(1).locator('label.opt', { hasText: 'Sleep supports attention' }).click(); await page.click('#btn-submit'); await page.waitForSelector('.explain');
   ok(await S(page, () => Math.abs(WWQ.App.state.items['m1.ripple'].best - 2) < 1e-9), 'ripple full credit 2/2'); 
+  ok(await page.locator('.celebrate').count() === 0, 'no completion badge until the required checkpoint is done');
+  await page.click('.step >> text=Ripple chain'); await page.waitForSelector('.item');
+  ok(await page.locator('.item-meta >> text=Checkpoint · not scored').count() === 1, 'checkpoint is labelled as not scored');
+  await page.locator('fieldset.part').nth(0).locator('label.opt', { hasText: 'Emotional: belonging' }).click();
+  await page.locator('fieldset.part').nth(1).locator('label.opt', { hasText: 'ask a teacher for help' }).click();
+  await page.locator('fieldset.part').nth(2).locator('label.opt', { hasText: 'set a dinner time' }).click(); await page.click('#btn-submit'); await page.waitForSelector('.explain');
+  ok(await S(page, () => { const r = WWQ.App.state.checks['ck.m1.chain']; return r.finalized && r.best === 0 && r.attempts[0].raw === 1; }), 'checkpoint finishes on a full-fit answer and earns 0 points');
+  ok(await S(page, () => Math.abs(WWQ.Policy.totals(WWQ.App.state).earned - WWQ.Policy.totals(WWQ.App.state).byMission[1].earned) < 1e-9), 'checkpoint leaves the Mission 1 score unchanged');
   ok(await page.locator('.celebrate').count() === 1, 'mission 1 completion badge shown (completion, not grade)');
   ok((await page.locator('.celebrate').innerText()).includes('not your grade'), 'badge text distinguishes completion from grade');
 

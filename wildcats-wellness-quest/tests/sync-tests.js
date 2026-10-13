@@ -58,7 +58,7 @@ function makeBackend() {
   console.log('== real run -> payload -> Sheet');
   function finish(alias, code, mode) {
     const s = St.newState(); s.student.alias = alias; s.student.period = '3'; s.student.code = code; s.progress.started = true;
-    W.ITEMS.forEach(it => { const rec = St.ensureItem(s, it.id); while (!rec.finalized) { if (rec.attempts.length && !rec.retryReady) P.startRetry(it, rec); const dir = mode === 'best' ? 1 : -1; P.submit(it, rec, extreme(P.currentVariant(it, rec), dir)); } });
+    W.ITEMS.concat(W.CHECKS).forEach(it => { const rec = St.ensureItem(s, it.id); while (!rec.finalized) { if (rec.attempts.length && !rec.retryReady) P.startRetry(it, rec); const dir = mode === 'best' ? 1 : -1; P.submit(it, rec, extreme(P.currentVariant(it, rec), dir)); } });
     W.ACTIVITIES.forEach(a => s.progress.activities[a.id] = true);
     const r = St.submitFinal(s); if (!r.ok) throw new Error('submit failed'); return r.state;
   }

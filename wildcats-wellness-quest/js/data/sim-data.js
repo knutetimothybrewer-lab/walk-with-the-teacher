@@ -107,4 +107,27 @@
       A: '20-minute walk with a friend.', B: 'Sit on the porch 10 minutes.', C: 'Stay indoors all day.' },
       ripple: 'Time outside can support mood and energy.' }
   ];
+
+  /* Second pass: Maya's week. Six consequential decisions, one scored cell each (no double counting), all aimed at the Mental, Emotional and Social
+     cells where Maya's baseline week is weakest. Unscored; used only for the required second-week activity. */
+  W.DECISIONS2 = [
+    { id: 'e1', day: 0, cat: 'rest', scene: 'Mon: swim practice at 6 a.m. is done, and Maya needs to decompress after school.', opts: {
+      A: 'A 10-minute no-screen wind-down (stretch, music, no phone).', B: 'Scroll for a few minutes, then start homework.', C: 'Scroll until dinner with no break at all.' },
+      ripple: 'Mental rest helps focus and mood later in the day.' },
+    { id: 'e2', day: 1, cat: 'screens', scene: 'Tue night: her phone is also her alarm, her music and her planner.', opts: {
+      A: 'Set an app timer and charge the phone across the room at 9:30, using it as the alarm.', B: 'Scroll 30 more minutes in bed.', C: 'Watch videos in bed past midnight.' },
+      ripple: 'Late screens can cut into sleep; sleep is scored in its own row.' },
+    { id: 'e3', day: 2, cat: 'stress', scene: 'Wed: a chemistry quiz, a swim meet this weekend and a Saturday shift are all on the calendar.', opts: {
+      A: 'Write a week plan, mark a quiz-study block, and ask a teammate to share a ride.', B: 'Hope it works out and study if there is time.', C: 'Stay up late worrying and study nothing.' },
+      ripple: 'Handling workload well helps sleep, focus and mood.' },
+    { id: 'e4', day: 3, cat: 'connect', scene: 'Thu: friends invite Maya to a 20-minute lunch hangout. She usually studies alone.', opts: {
+      A: 'Join them for lunch and study right after school.', B: 'Wave hello, then study alone.', C: 'Skip every social plan this week to study.' },
+      ripple: 'Quality time with friends supports mood and belonging.' },
+    { id: 'e5', day: 4, cat: 'setbacks', scene: 'Fri: her swim time is slower than last week.', opts: {
+      A: 'Look at what changed, set one small goal for the next meet, and ask the coach for one tip.', B: 'Shrug it off and not think about it.', C: '“I am just slow” and think about quitting.' },
+      ripple: 'Self-talk and effort after a setback shape what happens next.' },
+    { id: 'e6', day: 5, cat: 'express', scene: 'Sat after her shift: Maya is worn out and snappy.', opts: {
+      A: 'Tell a friend or journal for five minutes.', B: 'Say “I am fine” and keep going.', C: 'Bottle it up, then snap at family.' },
+      ripple: 'Naming feelings makes them easier to handle.' }
+  ];
 })(typeof window !== 'undefined' ? window : globalThis);

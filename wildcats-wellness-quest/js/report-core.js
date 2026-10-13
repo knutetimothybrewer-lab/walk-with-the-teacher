@@ -48,6 +48,10 @@
         firstAttempt: f ? { response: f.response, rawFraction: f.raw, points: f.awarded, variantId: f.variantId } : null
       };
     });
+    var checkpoints = W.CHECKS.map(function (ck) {
+      var rec = (state.checks || {})[ck.id] || P.newRec(), f = rec.attempts[0], l = rec.attempts[rec.attempts.length - 1];
+      return { id: ck.id, mission: ck.m, stage: ck.st, topic: ck.topic, scored: false, finalized: !!rec.finalized, tries: rec.attempts.length, firstTryFit: f ? f.raw : null, lastTryFit: l ? l.raw : null };
+    });
     var missions = W.MISSIONS.filter(function (m) { return m.id >= 1; }).map(function (m) {
       var b = tot.byMission[m.id], st = P.missionStatus(state, m.id);
       return { id: m.id, title: m.title, earned: b.earned, max: b.max, firstAttempt: b.first, items: b.items, finalized: b.finalized, activitiesDone: st.done, activitiesTotal: st.total };
@@ -70,10 +74,11 @@
       attemptUsage: { attemptsUsed: tot.attemptsUsed, attemptsAllowed: tot.attemptsAllowed, itemsFinalizedWithUnusedRetries: tot.unusedRetryItems.length },
       policy: { caps: W.CONFIG.caps, limits: W.CONFIG.attemptLimits, rule: 'earned = rubric fraction x item points x attempt cap; the greatest earned value across attempts is retained; only the final total is rounded.' },
       missions: missions, topics: topics, strengths: strengths, nextSteps: next, items: items,
+      checkpoints: { note: 'Required but unscored checkpoints. They never change the score; they count toward completion only.', list: checkpoints },
       simulation: { picks: state.sim.picks || {}, note: 'The unscored week Jordan played. Simulation points are fictional teaching weights and never convert into assessment points.' },
-      reflections: state.reflections && state.reflections.share ? { m3: state.reflections.m3 || '', m7: state.reflections.m7 || '', note: 'Optional, ungraded; included because the student chose to share.' } : null,
+      reflections: state.reflections && state.reflections.share ? { m3: state.reflections.m3 || '', m7: state.reflections.m7 || '', plan: state.reflections.plan && state.reflections.plan.saved ? state.reflections.plan : null, note: 'Optional, ungraded; included because the student chose to share.' } : null,
       timing: state.timing || {},
-      notes: ['This is a client-side record. It is not independently verified and can be altered by a technically capable user.', 'Optional practice is never part of this record’s scores.']
+      notes: ['This is a client-side record. It is not independently verified and can be altered by a technically capable user.', 'Optional practice and required checkpoints are never part of this record’s scores.']
     };
   };
 })(typeof window !== 'undefined' ? window : globalThis);

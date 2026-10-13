@@ -22,8 +22,8 @@ let fails = 0, passes = 0; const ok = (c, m) => { if (c) { passes++; console.log
     else { const idx = await page.evaluate(([n, v]) => [...document.querySelectorAll(`input[name="${n}"]`)].findIndex(e => e.value === v), [name, p.val]); await tabTo(`input[name="${esc(name)}"]`); for (let i = 0; i < idx; i++) await K('ArrowDown'); if (idx === 0) await K('Space'); }
   }
   async function kbItems() {
-    const ids = await page.evaluate(() => [...document.querySelectorAll('section.item[data-item]')].map(s => s.dataset.item).filter(id => WWQ.Policy.mode(WWQ.ITEM_BY_ID[id], WWQ.App.state.items[id] || WWQ.Policy.newRec()) === 'draft'));
-    for (const id of ids) { const plan = await page.evaluate(id => { const it = WWQ.ITEM_BY_ID[id], rec = WWQ.App.state.items[id] || WWQ.Policy.newRec(), v = WWQ.Policy.currentVariant(it, rec), r = __T.extreme(v, 1); return { vid: v.id, parts: v.parts.map(p => ({ id: p.id, type: p.type, val: r[p.id] })) }; }, id); for (const p of plan.parts) await kbPart(id, plan.vid, p); }
+    const ids = await page.evaluate(() => [...document.querySelectorAll('section.item[data-item]')].map(s => s.dataset.item).filter(id => WWQ.Policy.mode((WWQ.ITEM_BY_ID[id] || WWQ.CHECK_BY_ID[id]), WWQ.Store.peek(WWQ.App.state, id) || WWQ.Policy.newRec()) === 'draft'));
+    for (const id of ids) { const plan = await page.evaluate(id => { const it = (WWQ.ITEM_BY_ID[id] || WWQ.CHECK_BY_ID[id]), rec = WWQ.Store.peek(WWQ.App.state, id) || WWQ.Policy.newRec(), v = WWQ.Policy.currentVariant(it, rec), r = __T.extreme(v, 1); return { vid: v.id, parts: v.parts.map(p => ({ id: p.id, type: p.type, val: r[p.id] })) }; }, id); for (const p of plan.parts) await kbPart(id, plan.vid, p); }
     if (ids.length) await act('#btn-submit');
   }
   const nextStage = async () => { await act('.stagenav .btn:last-child'); await page.waitForTimeout(20); };
@@ -53,7 +53,17 @@ let fails = 0, passes = 0; const ok = (c, m) => { if (c) { passes++; console.log
       else if (st.kind === 'play') {
         for (const d of await page.evaluate(() => WWQ.DECISIONS.map(d => d.id))) { const idx = await page.evaluate(d => [...document.querySelectorAll(`input[name="${d}"]`)].findIndex(e => document.querySelector(`input[name="${d}"][value="A"]`) === e), d); await tabTo(`input[name="${d}"]`); for (let i = 0; i < idx; i++) await K('ArrowDown'); if (idx === 0) await K('Space'); }
         await act('.actionbar .btn.primary.big:not([disabled])');
-      } else if (st.kind === 'form') {
+      } else if (st.kind === 'play2') {
+        for (const d of await page.evaluate(() => WWQ.DECISIONS2.map(d => d.id))) { const idx = await page.evaluate(d => [...document.querySelectorAll(`input[name="${d}"]`)].findIndex(e => document.querySelector(`input[name="${d}"][value="A"]`) === e), d); await tabTo(`input[name="${d}"]`); for (let i = 0; i < idx; i++) await K('ArrowDown'); if (idx === 0) await K('Space'); }
+        await act('.actionbar .btn.primary.big:not([disabled])');
+      } else if (st.kind === 'myplan') {
+        for (const r of await page.evaluate(() => WWQ.PLAN.rate.map(r => r[0]))) { await tabTo(`input[name="rate-${r}"]`); await K('ArrowDown'); await K('ArrowDown'); }
+        await tabTo('input[name="plan-dim"]'); await K('Space');
+        await tabTo('input[name="plan-act"]'); await K('ArrowDown');
+        for (const [id, n] of [['plan-cue', 2], ['plan-obs', 1], ['plan-back', 1]]) { await tabTo('#' + id); for (let i = 0; i < n; i++) await K('ArrowDown'); }
+        for (const d of [0, 2, 4]) { await tabTo(`input[data-fk="plan-day-${d}"]`); await K('Space'); }
+        await act('#btn-plan');
+      } else if (st.kind === 'form' || st.kind === 'cmp') {
         // media tabs by keyboard (arrow keys) on the first post of a post stage
         if (m === 4 && st.id !== '4.6') { await tabTo('[role=tab][aria-selected="true"]'); await K('ArrowRight'); await K('ArrowRight'); }
         await kbItems();

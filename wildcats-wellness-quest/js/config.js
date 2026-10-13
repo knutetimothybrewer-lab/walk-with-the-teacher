@@ -26,7 +26,7 @@
     // At zero, any answer that is selected but not yet submitted is submitted, the assessment is locked and sent, and anything
     // unanswered earns 0. Set to 0 for no limit. The pacing guide below is guidance only and is never speed-scored.
     timeLimitMinutes: 90,
-    timeGuidance: { targetMinutes: 36, rangeMinutes: [30, 40], extendedMultiplier: 1.5, extendedTime: false },
+    timeGuidance: { targetMinutes: 60, rangeMinutes: [55, 65], extendedMultiplier: 1.5, extendedTime: false },
     // Show optional deeper-exploration extras inside missions (never required, never scored).
     extendedExploration: false,
 

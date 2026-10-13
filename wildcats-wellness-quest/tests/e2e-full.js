@@ -11,7 +11,7 @@ let fails = 0, passes = 0; const ok = (c, m) => { if (c) { passes++; console.log
   const t0 = Date.now(); let submitsClicked = 0;
 
   async function applyResponse(itemId, dir) {
-    const plan = await page.evaluate(([id, dir]) => { const W = WWQ, it = W.ITEM_BY_ID[id], rec = W.App.state.items[id] || W.Policy.newRec(), v = W.Policy.currentVariant(it, rec); const r = __T.extreme(v, dir); return { vid: v.id, parts: v.parts.map(p => ({ id: p.id, type: p.type, val: r[p.id] })) }; }, [itemId, dir]);
+    const plan = await page.evaluate(([id, dir]) => { const W = WWQ, it = (W.ITEM_BY_ID[id] || W.CHECK_BY_ID[id]), rec = W.Store.peek(W.App.state, id) || W.Policy.newRec(), v = W.Policy.currentVariant(it, rec); const r = __T.extreme(v, dir); return { vid: v.id, parts: v.parts.map(p => ({ id: p.id, type: p.type, val: r[p.id] })) }; }, [itemId, dir]);
     for (const p of plan.parts) {
       const name = `${itemId}|${plan.vid}|${p.id}`;
       if (p.type === 'num') await page.locator(`section[data-item="${itemId}"] input.txt[data-fk="n-${name}"]`).fill(String(p.val));
@@ -22,13 +22,13 @@ let fails = 0, passes = 0; const ok = (c, m) => { if (c) { passes++; console.log
   }
   async function answerStage() {
     for (let guard = 0; guard < 8; guard++) {
-      const ids = await page.evaluate(() => [...document.querySelectorAll('section.item[data-item]')].map(s => s.dataset.item).filter(id => WWQ.Policy.mode(WWQ.ITEM_BY_ID[id], WWQ.App.state.items[id] || WWQ.Policy.newRec()) !== 'final'));
+      const ids = await page.evaluate(() => [...document.querySelectorAll('section.item[data-item]')].map(s => s.dataset.item).filter(id => WWQ.Policy.mode((WWQ.ITEM_BY_ID[id] || WWQ.CHECK_BY_ID[id]), WWQ.Store.peek(WWQ.App.state, id) || WWQ.Policy.newRec()) !== 'final'));
       if (!ids.length) return;
       let answered = 0;
       for (const id of ids) {
-        const mode = await page.evaluate(id => WWQ.Policy.mode(WWQ.ITEM_BY_ID[id], WWQ.App.state.items[id] || WWQ.Policy.newRec()), id);
-        if (mode === 'review') { await page.locator(`section[data-item="${id}"] input[id^="rc-"]`).check(); await page.locator(`section[data-item="${id}"] button:has-text("Retry with a similar question")`).click(); continue; }
-        const att = await page.evaluate(id => (WWQ.App.state.items[id] || { attempts: [] }).attempts.length, id);
+        const mode = await page.evaluate(id => WWQ.Policy.mode((WWQ.ITEM_BY_ID[id] || WWQ.CHECK_BY_ID[id]), WWQ.Store.peek(WWQ.App.state, id) || WWQ.Policy.newRec()), id);
+        if (mode === 'review') { await page.locator(`section[data-item="${id}"] input[id^="rc-"]`).check(); await page.locator(`section[data-item="${id}"] button:has-text("Retry with a similar question"), section[data-item="${id}"] button:has-text("Try a similar question")`).first().click(); continue; }
+        const att = await page.evaluate(id => (WWQ.Store.peek(WWQ.App.state, id) || { attempts: [] }).attempts.length, id);
         await applyResponse(id, MODE === 'wrongfirst' && att === 0 ? -1 : 1); answered++;
       }
       if (answered) { await page.click('#btn-submit'); submitsClicked++; await page.waitForTimeout(30); }
@@ -65,6 +65,20 @@ let fails = 0, passes = 0; const ok = (c, m) => { if (c) { passes++; console.log
         for (const d of await page.evaluate(() => WWQ.DECISIONS.map(d => ({ id: d.id, A: d.opts.A })))) await page.locator(`input[name="${d.id}"]`).first().locator('xpath=..').click();
         await page.click('button:has-text("Finish the week")');
         ok(await page.evaluate(() => WWQ.App.state.progress.activities.playWeek), 'simulation week finished through the UI (unscored)');
+      }
+      else if (st.kind === 'play2') {
+        for (const d of await page.evaluate(() => WWQ.DECISIONS2.map(d => ({ id: d.id })))) await page.locator(`input[name="${d.id}"]`).first().locator('xpath=..').click();
+        await page.click('button:has-text("Finish Maya")');
+        ok(await page.evaluate(() => WWQ.App.state.progress.activities.playWeek2), 'second-pass week finished through the UI (unscored)');
+      }
+      else if (st.kind === 'myplan') {
+        for (const r of await page.evaluate(() => WWQ.PLAN.rate.map(r => r[0]))) await page.locator(`input[name="rate-${r}"][value="3"]`).locator('xpath=..').click();
+        await page.locator('input[name="plan-dim"][value="phys"]').locator('xpath=..').click();
+        await page.locator('input[name="plan-act"][value="a2"]').locator('xpath=..').click();
+        await page.selectOption('#plan-cue', 'c2'); await page.selectOption('#plan-obs', 'o1'); await page.selectOption('#plan-back', 'b1');
+        for (const d of [0, 2, 4]) await page.locator(`input[data-fk="plan-day-${d}"]`).locator('xpath=..').click();
+        await page.click('#btn-plan');
+        ok(await page.evaluate(() => WWQ.App.state.progress.activities.myPlan === true && WWQ.PLAN.ready(WWQ.App.state.reflections.plan)), 'My 7-day plan saved through the UI (unscored)');
       }
       else await answerStage();
     }

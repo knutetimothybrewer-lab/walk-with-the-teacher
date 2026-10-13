@@ -16,7 +16,7 @@
   };
   Views.example = function (n, stage, env) {
     var ex = W.EXAMPLES[n]; if (!ex) return null;
-    var items = W.itemsForStage(stage.id), started = items.some(function (i) { return (env.state.items[i.id] || { attempts: [] }).attempts.length; });
+    var items = W.itemsForStage(stage.id), started = items.some(function (i) { return (St.peek(env.state, i.id) || { attempts: [] }).attempts.length; });
     return h('details.example', { open: started ? null : true },
       h('summary', A.iconEl('bulb'), ex.title + ' — ' + (stage.title)),
       h('div.body', U.rich(ex.scenario), h('ol', ex.steps.map(function (s) { return h('li', s); })), h('div.ans', h('b', 'Example answer: '), ex.answer + '. ', ex.reasoning), h('p.hint-line', 'This example uses different content from the graded questions and is never scored.')));
@@ -31,7 +31,9 @@
     return ol;
   };
   Views.stageDone = function (stage, state) {
-    var items = W.itemsForStage(stage.id), ok = items.every(function (i) { return (state.items[i.id] || {}).finalized; });
+    var items = W.itemsForStage(stage.id), ok = items.every(function (i) { return (St.peek(state, i.id) || {}).finalized; });
+    if (stage.kind === 'play2') return !!state.progress.activities.playWeek2;
+    if (stage.kind === 'myplan') return !!state.progress.activities.myPlan;
     if (stage.kind === 'overlap') return !!state.progress.activities.overlap;
     if (stage.kind === 'play') return !!state.progress.activities.playWeek;
     if (stage.kind === 'practice') return !!state.progress.activities.tutorial;
@@ -122,7 +124,7 @@
       h('tbody', caps.map(function (c, i) { return h('tr', h('td', String(i + 1)), h('td', Math.round(c * 100) + '%'), h('td', U.fmt2(5 * c) + ' points')); })));
     var cards = h('div.howgrid.stagger',
       h('div.how', A.iconEl('map'), h('h2', 'Walk the campus'), h('p', 'Seven missions. The next one opens when you have submitted the work in the one before, right or wrong.')),
-      h('div.how', A.iconEl('search'), h('h2', 'Investigate, then submit'), h('p', 'Nothing counts until you press Submit. Opening tabs earns no points.')),
+      h('div.how', A.iconEl('search'), h('h2', 'Investigate, then submit'), h('p', 'Nothing counts until you press Submit. Opening tabs earns no points. A few steps are unscored checkpoints: required, but worth no points.')),
       h('div.how', A.iconEl('undo'), h('h2', 'Hints and retries'), h('p', 'Short questions allow ' + lim.short + ' attempts, complex ones ' + lim.complex + '. A retry is a similar new question. Your best score stays.')),
       h('div.how', A.iconEl('save'), h('h2', 'Saved on this device'), h('p', 'Progress saves in this browser. Download a recovery file now and then.')),
       h('div.how', A.iconEl('eye'), h('h2', 'Comfortable to use'), h('p', 'Works with a keyboard. Settings can turn animation off or enlarge text.')),
@@ -274,6 +276,102 @@
     }
     var finBtn = UI.btn(done ? 'Week finished: continue' : 'Finish the week', { cls: 'primary big', icon: 'check', disabled: !all || ro, onclick: function () { st.sim.finished = true; st.progress.activities.playWeek = true; env.save(true); env.rerender(); UI.announce('Week finished.'); if (!done) UI.toast('Week finished. Next, answer questions about three fixed case weeks.', 'ok'); } });
     wrap.appendChild(h('div.actionbar', h('div.info', done ? 'You finished the unscored week. The questions that follow use fixed case weeks, so they stay valid however you played.' : all ? 'All 12 decisions made. Press Finish the week.' : 'Make all 12 decisions to finish the week.'), finBtn));
+    return wrap;
+  };
+
+
+  /* ---------- 6.7 play Maya's week, the second pass (unscored) ---------- */
+  Views.mayaWeek = function (state) {
+    var wk = S.makeWeek(W.CASEWEEKS.maya.rows);
+    W.DECISIONS2.forEach(function (d) { var g = state.sim2.picks[d.id]; if (g) wk = S.setCell(wk, d.cat, d.day, g); });
+    return wk;
+  };
+  Views.play2 = function (m, stage, env) {
+    var st = env.state, ro = env.readOnly, base = S.makeWeek(W.CASEWEEKS.maya.rows), mine = Views.mayaWeek(st), picks = st.sim2.picks, nPick = Object.keys(picks).length, total = W.DECISIONS2.length, wrap = h('div.stack');
+    var all = nPick === total, done = !!st.progress.activities.playWeek2;
+    wrap.appendChild(h('div.callout.info', A.iconEl('info'), h('div', h('b', 'Unscored second pass. '), 'Same model, different starting profile. ' + W.CASEWEEKS.maya.bio + ' Her baseline week (dashed line) is strong in Physical and Environmental but weaker in Mental, Emotional and Social. Make the ' + total + ' decisions below. Each choice changes exactly one category on one day. These points are fictional teaching weights, never assessment points.')));
+    var left = h('div');
+    W.DECISIONS2.forEach(function (dec) {
+      var ct = S.CAT[dec.cat], chosen = picks[dec.id], dm = S.DOM[ct.dom];
+      var opts = h('div.opts', { role: 'radiogroup', 'aria-label': ct.n + ' decision' });
+      U.shuffle(['A', 'B', 'C'], st.session.id + '|' + dec.id).forEach(function (gr) {
+        opts.appendChild(h('label.opt' + (chosen === gr ? '.picked' : '') + (ro ? '.locked' : ''), h('input', { type: 'radio', name: dec.id, value: gr, checked: chosen === gr, disabled: ro || null, 'data-fk': 'dec-' + dec.id + gr, onchange: function () { st.sim2.picks[dec.id] = gr; st.sim2.finished = false; env.save(); env.rerender(); } }), h('span.mark', A.iconEl('check')), h('span.txt', dec.opts[gr])));
+      });
+      var out = chosen ? h('div.outcome.rise', h('span.domtag.dom-' + ct.dom, A.iconEl(dm.ico), ct.n + ' (±' + ct.w + ')'), ' rating ', h('b', chosen), ' = ', h('b', M(S.points(dec.cat, chosen)) + ' points'), ' on ' + S.DAYS[dec.day] + '. ', h('span.muted', dec.ripple)) : null;
+      left.appendChild(h('div.daygroup', h('h2', A.iconEl('clock'), S.DAY_NAMES[dec.day]), h('div.dec' + (chosen ? '.done' : ''), h('div.scene', dec.scene), h('div.small.muted', 'Category: ', h('b', ct.n), ' · ' + dm.n), opts, out)));
+    });
+    var right = h('div.sticky.stack',
+      h('div.card.flat', h('div.row.between', h('b', nPick + ' of ' + total + ' decisions made'), h('span.chip.' + (all ? 'ok' : 'warn'), all ? 'Ready to finish' : 'Choose all ' + total)), h('div.bar', { style: { marginTop: '8px' }, role: 'progressbar', 'aria-valuemin': '0', 'aria-valuemax': String(total), 'aria-valuenow': String(nPick), 'aria-label': 'Decisions made' }, h('i', { style: { width: (nPick / total * 100) + '%' } }))),
+      V.runChart([{ week: mine, color: '#9a3412', label: 'Your Maya week' }, { week: base, color: '#5a6683', dash: true, label: 'Maya’s baseline week' }], { title: 'Running total: your week vs. baseline' }),
+      V.domainBars(mine, base));
+    wrap.appendChild(h('div.playgrid', left, right));
+    var finBtn = UI.btn(done ? 'Week finished: continue' : 'Finish Maya’s week', { cls: 'primary big', icon: 'check', disabled: !all || ro, onclick: function () { st.sim2.finished = true; st.progress.activities.playWeek2 = true; env.save(true); env.rerender(); UI.announce('Maya’s week finished.'); if (!done) UI.toast('Both weeks played. Next, compare them.', 'ok'); } });
+    wrap.appendChild(h('div.actionbar', h('div.info', done ? 'You finished the unscored second week. The comparison that follows uses fixed case weeks, so it stays valid however you played.' : all ? 'All ' + total + ' decisions made. Press Finish Maya’s week.' : 'Make all ' + total + ' decisions to finish the week.'), finBtn));
+    return wrap;
+  };
+
+  /* ---------- 6.8 compare two weeks: your two played weeks at a glance, then the keyed checkpoint ---------- */
+  Views.cmp = function (m, stage, env) {
+    var st = env.state, wrap = h('div.stack'), jb = S.makeWeek(W.CASEWEEKS.jordan.rows), mb = S.makeWeek(W.CASEWEEKS.maya.rows), j = Views.yourWeek(st), my = Views.mayaWeek(st);
+    var line = function (name, mine, base) { return h('li', h('b', name + ': '), 'your week ends at ', h('b', M(S.total(mine))), ' (baseline ' + M(S.total(base)) + ', so your choices moved it ' + M(S.total(mine) - S.total(base)) + ').'); };
+    wrap.appendChild(h('div.card.flat', h('h2', 'Your two weeks at a glance'), h('p.small', 'These are the weeks you just played. They are for noticing, not for points.'),
+      V.runChart([{ week: j, color: '#2b3a8c', label: 'Your Jordan week' }, { week: my, color: '#9a3412', label: 'Your Maya week' }], { title: 'Your two weeks: running totals' }),
+      h('ul', line('Jordan', j, jb), line('Maya', my, mb)),
+      h('p.hint-line', 'The question below uses two fixed case weeks, so its answer does not depend on how you played.')));
+    wrap.appendChild(Views.form(m, stage, env));
+    return wrap;
+  };
+
+  /* ---------- 7.4 My 7-day plan (required, unscored, no right answers) ---------- */
+  Views.myplan = function (m, stage, env) {
+    var st = env.state, ro = env.readOnly, PL = W.PLAN, wrap = h('div.stack');
+    if (!st.reflections.plan) st.reflections.plan = { rate: {}, dim: '', act: '', cue: '', obs: '', back: '', days: [], why: '', saved: false };
+    var p = st.reflections.plan, done = !!st.progress.activities.myPlan, locked = ro || done;
+    var change = function () { env.save(); env.rerender(); };
+    wrap.appendChild(h('div.callout.info', A.iconEl('sparkle'), h('div', h('b', 'Your plan, your choices. '), 'There are no right answers and nothing here is graded. Use a fictional person if you prefer. It takes about four minutes, and it saves a one-page plan card you can keep.')));
+
+    var rate = h('div.card.stack-sm', h('h2', '1 · How ready do you feel?'), h('p.small', 'Rate yourself honestly. A “Not yet” is useful information, not a grade.'));
+    PL.rate.forEach(function (r) {
+      var grp = h('div.opts.chips', { role: 'radiogroup', 'aria-label': r[1] });
+      PL.levels.forEach(function (lv) { grp.appendChild(h('label.opt' + (p.rate[r[0]] === lv[0] ? '.picked' : ''), h('input', { type: 'radio', name: 'rate-' + r[0], value: String(lv[0]), checked: p.rate[r[0]] === lv[0], disabled: locked || null, 'data-fk': 'rate-' + r[0] + lv[0], onchange: function () { p.rate[r[0]] = lv[0]; change(); } }), h('span.mark', A.iconEl('check')), lv[1])); });
+      rate.appendChild(h('fieldset.part', h('legend', r[1]), grp));
+    });
+    wrap.appendChild(rate);
+
+    var focus = h('div.card.stack-sm', h('h2', '2 · Pick one dimension to strengthen this week'));
+    var dg = h('div.opts.chips', { role: 'radiogroup', 'aria-label': 'Dimension to strengthen' });
+    PL.dims.forEach(function (d) { dg.appendChild(h('label.opt' + (p.dim === d[0] ? '.picked' : ''), h('input', { type: 'radio', name: 'plan-dim', value: d[0], checked: p.dim === d[0], disabled: locked || null, 'data-fk': 'plan-dim-' + d[0], onchange: function () { if (p.dim !== d[0]) { p.dim = d[0]; p.act = ''; } change(); } }), h('span.mark', A.iconEl('check')), d[1])); });
+    focus.appendChild(dg);
+    if (p.dim) {
+      var ag = h('div.opts', { role: 'radiogroup', 'aria-label': 'One small daily action' });
+      PL.acts[p.dim].forEach(function (a) { ag.appendChild(h('label.opt' + (p.act === a[0] ? '.picked' : ''), h('input', { type: 'radio', name: 'plan-act', value: a[0], checked: p.act === a[0], disabled: locked || null, 'data-fk': 'plan-act-' + a[0], onchange: function () { p.act = a[0]; change(); } }), h('span.mark', A.iconEl('check')), h('span.txt', a[1]))); });
+      focus.appendChild(h('fieldset.part', h('legend', 'Pick one small action you could do almost every day'), ag));
+    }
+    wrap.appendChild(focus);
+
+    var when = h('div.card.stack-sm', h('h2', '3 · Make it easy to remember'));
+    var sel = function (label, list, key, fk) {
+      var s = h('select.sel', { id: 'plan-' + key, 'data-fk': fk, disabled: locked || null, onchange: function (e) { p[key] = e.target.value; change(); } }, h('option', { value: '' }, 'Choose…'));
+      list.forEach(function (o) { s.appendChild(h('option', { value: o[0], selected: p[key] === o[0] || null }, o[1])); });
+      return h('div', h('label.field', { 'for': 'plan-' + key }, label), s);
+    };
+    when.appendChild(sel('After I…', PL.cues, 'cue', 'plan-cue'));
+    when.appendChild(sel('If this gets in the way:', PL.obs.map(function (o) { return [o[0], 'If ' + o[1]]; }), 'obs', 'plan-obs'));
+    when.appendChild(sel('…then I will:', PL.backs.map(function (o) { return [o[0], 'Then I will ' + o[1]]; }), 'back', 'plan-back'));
+    var days = h('div.opts.chips', { role: 'group', 'aria-label': 'Days to try it' });
+    PL.days.forEach(function (d, i) { var on = p.days.indexOf(i) >= 0; days.appendChild(h('label.opt' + (on ? '.picked' : ''), h('input', { type: 'checkbox', value: String(i), checked: on, disabled: locked || null, 'data-fk': 'plan-day-' + i, onchange: function (e) { var k = p.days.indexOf(i); if (e.target.checked && k < 0) p.days.push(i); else if (!e.target.checked && k >= 0) p.days.splice(k, 1); p.days.sort(function (a, b) { return a - b; }); change(); } }), h('span.mark', A.iconEl('check')), d)); });
+    when.appendChild(h('fieldset.part', h('legend', 'Which days will you try it? (pick at least ' + PL.minDays + ')'), days));
+    var why = h('textarea.txt', { id: 'plan-why', maxlength: '300', disabled: locked || null, 'data-fk': 'plan-why', placeholder: 'Optional. One sentence about why this matters to you (or to a fictional person).', oninput: function (e) { p.why = e.target.value; env.save(); } }); why.value = p.why || '';
+    when.appendChild(h('div', h('label.field', { 'for': 'plan-why' }, 'Why it matters (optional, never graded)'), why, h('p.hint-line', 'Please do not include private health information. It stays on this device unless you tick the sharing box on the Claim, evidence, reasoning step.')));
+    wrap.appendChild(when);
+
+    var ready = PL.ready(p), actTxt = p.dim && p.act ? PL.label(PL.acts[p.dim], p.act) : '';
+    var card = h('div.card.plancard', h('h2', 'My 7-day plan card'),
+      ready ? h('ul', h('li', h('b', 'Focus: '), PL.label(PL.dims, p.dim)), h('li', h('b', 'Small action: '), actTxt), h('li', h('b', 'When: '), 'After I ' + PL.label(PL.cues, p.cue) + '.'), h('li', h('b', 'Backup: '), 'If ' + PL.label(PL.obs, p.obs) + ', then I will ' + PL.label(PL.backs, p.back) + '.'), h('li', h('b', 'Days: '), p.days.map(function (i) { return PL.days[i]; }).join(', ') + '.'), p.why ? h('li', h('b', 'Why it matters: '), p.why) : null)
+        : h('p.small', 'Finish all three sections (all five ratings, a focus and action, a cue, a backup and at least ' + PL.minDays + ' days) and your plan card appears here.'));
+    wrap.appendChild(card);
+    var saveBtn = UI.btn(done ? 'Plan saved: continue' : 'Save my plan', { cls: 'primary big', icon: 'check', id: 'btn-plan', disabled: !ready || ro || done, onclick: function () { p.saved = true; st.progress.activities.myPlan = true; env.save(true); env.rerender(); UI.announce('Plan saved.'); UI.toast('Plan saved. You can now review and submit.', 'ok'); } });
+    wrap.appendChild(h('div.actionbar', h('div.info', done ? 'Your plan is saved. It is not graded; take a screenshot or print the results page to keep it.' : ready ? 'Ready. Press Save my plan.' : 'Finish every section to save your plan.'), saveBtn));
     return wrap;
   };
 

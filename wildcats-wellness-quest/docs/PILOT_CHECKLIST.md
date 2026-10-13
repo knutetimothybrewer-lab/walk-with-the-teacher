@@ -32,7 +32,7 @@ Record in the form. Observe silently; note, do not rescue, unless a student is s
 
 | Area | What to look for | Observed |
 |---|---|---|
-| Elapsed time | Total vs 30-40 min design range; missions that run long | |
+| Elapsed time | Total vs 55-65 min design range; missions that run long | |
 | Unclear instructions | Re-reading, asking "what do I do?", wrong guesses at controls | |
 | Reading load | Skimming options, giving up on long passages, rereading the same stem | |
 | Perceived challenge | "Too easy" or "tricky wording" comments; unfair-feeling items | |

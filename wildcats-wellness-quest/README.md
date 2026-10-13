@@ -5,7 +5,7 @@ An animated, walk-through **summative assessment** for a high school health unit
 - Static HTML/CSS/JavaScript. **No server, accounts, API keys, paid services or build step.** Local relative paths only.
 - Runs on Chromebooks (Chrome) from one student link on GitHub Pages.
 - Saves in each student's own browser. **By default nothing is sent anywhere.** Optionally, results can be sent to **your Google Sheet** with a class code (see "Send results to a Google Sheet").
-- Designed for a 30-40-minute class period, with a **90-minute hard limit** counted from when the student presses Start (`timeLimitMinutes` in `js/config.js`; 0 turns it off). A countdown shows in the top bar, and at zero any selected-but-unsubmitted answer is submitted, the assessment locks and sends, and anything unanswered earns 0. See "Timing, honestly" below.
+- Designed for about an hour (55-65 minutes for a typical reader), with a **90-minute hard limit** counted from when the student presses Start (`timeLimitMinutes` in `js/config.js`; 0 turns it off). A countdown shows in the top bar, and at zero any selected-but-unsubmitted answer is submitted, the assessment locks and sends, and anything unanswered earns 0. See "Timing, honestly" below.
 
 > **Before using for grades:** set your teacher passcode ([docs/TEACHER_SETUP.md](docs/TEACHER_SETUP.md)), verify the clinical reference values ([docs/SOURCE_REGISTER.md](docs/SOURCE_REGISTER.md)), and run a short pilot on real Chromebooks ([docs/PILOT_CHECKLIST.md](docs/PILOT_CHECKLIST.md)). The six source decks/worksheet were not available when this was built, so slide numbers in the coverage matrix are unverified.
 
@@ -14,15 +14,17 @@ An animated, walk-through **summative assessment** for a high school health unit
 | # | Mission (campus building) | Points | Experience |
 |---|---|---|---|
 | 0 | Welcome (front gate) | 0 | Pick an avatar, learn controls and the attempt policy, try an ungraded practice item |
-| 1 | Whole-Health Hub | 12 | Sort 10 situations by *primary* dimension (click, drag or keyboard), Overlap Lab (unscored), ripple-effect item |
+| 1 | Whole-Health Hub | 12 | Sort 10 situations by *primary* dimension (click, drag or keyboard), Overlap Lab (unscored), ripple-effect item, then a **ripple-chain checkpoint** (unscored) |
 | 2 | Know Your Numbers (nurse's office) | 16 | Fictional **adult** check-ups, reference panel, metric meanings, reading and follow-up judgments, lifestyle links, intake questions |
 | 3 | Habit Workshop | 18 | Ratings analysis, habit-loop repair, strategies, SMART repair, SMART builder with a keyed compatibility matrix |
 | 4 | Fact or Fiction Media Lab | 18 | Five fictional posts (fad diet, supplement ad, influencer, before/after photo, AI/deepfake) with Author/Evidence/Purpose/Independent tabs, plus a checklist |
-| 5 | STOP Crossroads | 14 | Two branching situations plus a structured justification |
-| 6 | Thousand Choices Simulator (dashboard) | 16 | Play Jordan's week (12 decisions, unscored), then five questions on fixed case weeks |
-| 7 | Final Transfer (dashboard top floor) | 6 | A new integrated case: three decisions plus claim-evidence-reasoning |
+| 5 | STOP Crossroads | 14 | Two branching situations plus a structured justification, and a third **STOP situation about setting limits and speaking up** (unscored checkpoint) |
+| 6 | Thousand Choices Simulator (dashboard) | 16 | Play Jordan's week (12 decisions, unscored), play **Maya's week** as a second pass with a different starting profile (6 decisions, unscored), a **compare-two-weeks checkpoint** (unscored), then five questions on fixed case weeks |
+| 7 | Final Transfer (dashboard top floor) | 6 | A new integrated case: three decisions plus claim-evidence-reasoning, then a **second case with a SMART plan** (unscored checkpoint) and **My 7-day plan**, a guided self-check and plan card (unscored, no right answers) |
 
 A mission opens once the work in the previous one is **submitted**, whether or not it was correct. Low scores never trap a student.
+
+**Unscored checkpoints.** The extra tasks added to reach about an hour are *required* (they count toward completion) but worth **0 points**, so the 100-point weights above never change. They use the same engine as scored items (a hint after a miss, one retry with a similar question, an explanation at the end) and are listed in `docs/ANSWER_KEY.md`. They never send item-level data to your Sheet. To make any of them count toward the grade, that is a content decision (it needs points taken from, or added to, a mission); ask before editing the keys.
 
 ## Run it locally
 
@@ -60,8 +62,8 @@ Give students **one link**. Each student enters the alias or ID you assign, work
 | `attemptLimits` | `{ short: 2, complex: 3 }` | Total attempts per scored item (initial submission included); `complex` may be 2 or 3 |
 | `caps` | `[1, 0.9, 0.75]` | Max share of points on attempt 1 / 2 / 3 (a teacher policy, not a research formula) |
 | `timeLimitMinutes` | `90` | Hard limit from the moment the student presses Start; `0` = no limit |
-| `timeGuidance` | 36 min target, 30-40 range, `extendedTime: false` | Pacing guidance only (the optional pacing line); does not change the limit |
-| `extendedExploration` | `false` | Show optional unscored extras |
+| `timeGuidance` | 60 min target, 55-65 range, `extendedTime: false` | Pacing guidance only (the optional pacing line); does not change the limit |
+| `extendedExploration` | `true` in `js/teacher-config.js` (default `false`) | Show optional unscored extras (the "all A / B / C" extremes in Jordan's week) |
 | `motion` | `auto` | Follow device reduced-motion, or force on/off |
 | `letterGrades` | disabled | Optional letter grade (boundaries use the unrounded total) |
 | `assessmentVersion` | `wwq-1.0` | Part of browser-storage keys; change only between class sets (see setup guide) |
@@ -105,7 +107,7 @@ Fully keyboard operable (a keyboard-only run through all seven missions is teste
 
 ## Timing, honestly
 
-The estimate from word counts and selection counts is about **35 minutes for fast readers, 40-44 for typical readers, 55+ for slower readers** ([docs/TEST_REPORT.md](docs/TEST_REPORT.md), `node tools/pacing.js`). This is **not a validated student duration**. The 90-minute hard limit is generous against these estimates, but pilot it; plan the period with your pilot data and consider the extended-time setting.
+The estimate from word counts and selection counts is about **48 minutes for fast readers (280 wpm), 56 for typical readers (220 wpm) and 65-70 for slower readers (180-160 wpm)** ([docs/TEST_REPORT.md](docs/TEST_REPORT.md), `node tools/pacing.js`). This is **not a validated student duration**. The 90-minute hard limit still leaves room, but it is tighter for slower readers now, so pilot it; plan the period with your pilot data and consider the extended-time setting.
 
 ## Folder map
 

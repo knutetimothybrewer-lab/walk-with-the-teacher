@@ -85,6 +85,32 @@
       { a: 'After practice Ari explains how the comment felt. The friend apologizes and they agree how to handle disagreements.', b: 'The friend replies, “Yes, I’m sorry.” They talk after practice.', c: 'The chat piles on. Ari feels worse and now has more to repair.', d: 'The silence leaves the problem unresolved and both feel hurt.' })
   ]);
 
+  /* ---------- Situation C (required checkpoint, no points) ----------
+   * A third STOP situation about limits and speaking up. Worth 0 points: the 14 STOP points are unchanged. */
+  W.defCheck({
+    id: 'ck.m5.c', m: 5, st: '5.4', topic: 'STOP: setting limits and speaking up', src: 'Wildcats_Personal_Responsibility deck + curriculum spec (STOP)', kind: 'form',
+    hint: 'Work through S, T, O, P in order. Compare the options right away AND over time, then pick a choice that protects health and responsibilities and is feasible.',
+    why: 'STOP: State the decision, Think of options, Observe consequences (right away and repeated), Pick a responsible, health-enhancing choice and explain why. Setting a limit or speaking up about a warning sign is part of personal responsibility, not a failure of it.',
+    variants: [
+      scen('ck.m5.c.a', '**Saying yes to everything.** Nia agreed to decorate for Thursday’s school dance (4:00–7:00 p.m.). Her coach just added an optional extra practice at 4:00 the same day, and her lab report is due Friday morning. She has been tired all week and has not eaten dinner before 8 p.m.',
+        'Offer one hour at the dance, skip the optional practice, finish the report that evening', 'Say yes to all three and stay up to finish',
+        [['a', 'How to keep her commitments honest and doable without wearing herself out.', 1], ['b', 'Whether the dance matters more than school.', 0], ['c', 'How to make everyone happy at the same time.', 0], ['d', 'Who is to blame for putting it all on one day.', 0]],
+        [['a', 'Tell the dance committee she can help for one hour.', 1], ['b', 'Skip the optional practice and tell the coach why.', 1], ['c', 'Ask the teacher about a short extension, with a plan for finishing.', 1], ['d', 'Say yes to everything and decide later.', 0], ['e', 'Skip the report because the dance is more fun.', 0], ['f', 'Pretend to be sick so nobody is upset.', 0]],
+        cmp('A: the committee gets less of her time, but she eats dinner, finishes the report and sleeps near normal. B: nobody is let down tonight, but she is exhausted and rushed.', 'A: Nia disappoints everyone and learns nothing. B: she finishes everything easily.', 'A and B feel exactly the same on Friday.'),
+        cmp('A repeated builds a habit of realistic limits that protects sleep, mood and grades. B repeated wears down sleep and mood and makes mistakes more likely.', 'B repeated makes her stronger with no costs.', 'Setting limits means she can never take on anything.'),
+        [['a', 'Offer one hour, skip the optional practice, finish the report that evening.', 1], ['b', 'Help at the dance, skip the optional practice, ask the teacher about a short extension, and keep a bedtime.', 1], ['c', 'Say yes to all three and stay up to finish.', 0], ['d', 'Skip the lab report to enjoy the dance.', 0]],
+        { a: 'The committee thanks Nia for the hour. She eats dinner, finishes the report and is rested on Friday.', b: 'The teacher agrees to Monday with a progress check. Nia helps at the dance and still keeps her bedtime.', c: 'Nia is exhausted, the report is rushed and she makes careless errors.', d: 'Without the report she loses points, and the stress comes back on Friday morning.' }),
+      scen('ck.m5.c.b', '**Hot-day practice.** Pri’s soccer team practices outdoors at 3:30 on a 92°F afternoon. After 20 minutes of drills Pri feels dizzy and has a headache. Teammates are still running, and a captain jokes, “Anyone who sits out is weak.”',
+        'Stop, tell the coach, and rest in the shade with water', 'Keep going so no one thinks she is weak',
+        [['a', 'How to respond to warning signs of heat illness while staying honest with the coach and team.', 1], ['b', 'Whether she is a tough enough player.', 0], ['c', 'How to win the next drill.', 0], ['d', 'Who to blame for the weather.', 0]],
+        [['a', 'Stop and tell the coach she feels dizzy.', 1], ['b', 'Move to shade, sip water and ask a teammate to stay nearby.', 1], ['c', 'Ask the trainer or school nurse to check on her.', 1], ['d', 'Keep running; the dizziness will pass.', 0], ['e', 'Drink an energy drink and go back to drills.', 0], ['f', 'Hide it so teammates do not notice.', 0]],
+        cmp('A: she may feel embarrassed for a moment, but she cools down and gets help. B: she avoids a comment now, but dizziness can get worse and become dangerous.', 'A: she loses her place on the team for sure. B: the symptoms go away on their own.', 'A and B carry the same risk.'),
+        cmp('A repeated shows that speaking up about symptoms keeps athletes safe, and good teams respond with water breaks. B repeated raises the chance of heat illness and injury.', 'B repeated builds toughness with no risk.', 'Speaking up always ends a player’s season.'),
+        [['a', 'Stop, tell the coach, and rest in the shade with water.', 1], ['b', 'Ask the nurse or trainer to check her before she returns.', 1], ['c', 'Keep going to prove she is committed.', 0], ['d', 'Walk home without telling anyone.', 0]],
+        { a: 'The coach checks on her. After rest and water she feels better, and the team adds more water breaks.', b: 'The nurse takes her temperature and tells her to rest. She returns to practice the next day.', c: 'The dizziness gets worse and she may need medical help. Pushing through a warning sign was not worth it.', d: 'Leaving silently means no one knows she was unwell, so no one can help her.' })
+    ]
+  });
+
   /* ---------- Structured justification (2 pts) ---------- */
   function just(id, story, pick, ev, rat, matrix) {
     return V(id, story + '\n\n**Choice made:** ' + pick, [

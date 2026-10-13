@@ -129,7 +129,7 @@
     var series = weeks.map(function (w) { return { values: S.running(w.week), color: w.color, dash: w.dash, label: w.label }; });
     var desc = weeks.map(function (w) { return w.label + ' running total by day: ' + S.running(w.week).map(function (v, i) { return S.DAYS[i] + ' ' + M(v); }).join(', '); }).join('. ');
     var box = h('div.chartbox', h('h3', opts.title || 'Running total by day'), V.lineChart({ series: series, title: opts.title || 'Running total by day', desc: desc }),
-      h('div.legend', weeks.map(function (w) { return h('span', h('span.sw' + (w.dash ? '.dash' : '')), w.label); })));
+      h('div.legend', weeks.map(function (w) { return h('span', h('span.sw' + (w.dash ? '.dash' : ''), w.dash ? null : { style: { borderColor: w.color } }), w.label); })));
     return box;
   };
 
@@ -179,6 +179,20 @@
     if (vis.show.indexOf('domain') >= 0) out.appendChild(V.domainBars(wk));
     if (vis.show.indexOf('log') >= 0) { var d = h('details', { open: vis.show.indexOf('daily') >= 0 || vis.show.length === 1 ? true : null }, h('summary', { style: { cursor: 'pointer', fontWeight: '800', margin: '8px 0' } }, 'Full daily log (20 categories × 7 days)'), V.logTable(wk)); out.appendChild(d); }
     return out;
+  };
+
+  /* Two fixed case weeks side by side (checkpoint 6.8). */
+  V.cmpweeks = function (vis) {
+    var da = W.CASEWEEKS[vis.a], db = W.CASEWEEKS[vis.b], wa = S.makeWeek(da.rows), wb = S.makeWeek(db.rows);
+    var out = h('div', h('p.muted.small', 'Case files for ' + da.name + ' and ' + db.name + ' (fictional). Points are worksheet scoring rules: A = +weight, B = 0, C = −weight.'));
+    out.appendChild(V.runChart([{ week: wa, color: '#2b3a8c', label: da.name + '’s case week' }, { week: wb, color: '#9a3412', label: db.name + '’s case week' }], { title: 'Running totals: ' + da.name + ' and ' + db.name }));
+    [[da, wa], [db, wb]].forEach(function (x) { out.appendChild(h('details', { open: true }, h('summary', { style: { cursor: 'pointer', fontWeight: '800', margin: '8px 0' } }, 'Domain balance: ' + x[0].name), V.domainBars(x[1]))); });
+    return out;
+  };
+  /* Integrated case for the second Final Transfer case (checkpoint 7.3): responsibilities, wellness pattern and goal. */
+  V.plancase = function (vis) {
+    var c = W.PLANCASES[vis.idx];
+    return h('div.finalcase', h('div', h('h3', 'Responsibilities'), h('p', c.resp)), h('div', h('h3', 'Wellness pattern this week'), h('ul.pat', c.pattern.map(function (p) { return h('li', h('b', p[0] + ': '), p[1]); }))), h('div', h('h3', 'Proposed goal'), h('p', c.goal)));
   };
 
   V.render = function (vis, ctx) {
