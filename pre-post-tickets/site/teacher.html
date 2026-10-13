@@ -141,6 +141,11 @@
     </div>
     <div id="r-err" class="err hidden" role="alert"></div>
     <div id="r-body"></div>
+    <details class="card" id="q-card"><summary>Question review: which questions are too easy or too hard? (all lessons)</summary>
+      <div class="controls" style="margin-top:8px"><button class="btn sec" id="q-go" type="button">Check all questions</button><span class="small muted">Uses the Class selected above.</span></div>
+      <div id="q-err" class="err hidden" role="alert"></div>
+      <div id="q-body"></div>
+    </details>
   </section>
 
   <!-- STUDENTS -->
@@ -364,6 +369,23 @@
     } catch (e) { body.innerHTML = ''; if (e.passcode) return signOut(); showErr('#r-err', e); }
   }
 
+  const FLAG_TEXT = { easy: 'Easy: most knew it before', hard: 'Hard: many still miss it', flat: 'Did not improve' };
+  function flagTag(i) {
+    if (!i.flag) return '';
+    const w = i.top_wrong ? `<div class="small muted">Most-picked wrong answer (${i.top_wrong.pct}%): ${esc(i.top_wrong.text)}</div>` : '';
+    return `<span class="tag ${i.flag === 'easy' ? 'blue' : ''}">${FLAG_TEXT[i.flag]}</span>${w}`;
+  }
+  $('#q-go').addEventListener('click', async () => {
+    clearErr('#q-err'); const body = $('#q-body'); body.innerHTML = '<p class="muted">Loading\u2026</p>';
+    try {
+      const r = await api('t_item_review', { period: $('#r-period').value });
+      if (!r.flagged.length) { body.innerHTML = `<p class="muted">${r.checked ? 'Nothing flagged. Every question with enough answers looks fine.' : 'No answers yet.'} (A question needs at least ${r.rules.min_n} answers to be checked.)</p>`; return; }
+      body.innerHTML = `<p class="small muted">${r.flagged.length} of ${r.checked} questions checked. Easy = ${r.rules.too_easy}%+ right on the warm-up. Hard = under ${r.rules.too_hard}% right on the exit ticket.</p>
+        <div class="scroll"><table><thead><tr><th style="cursor:default">Lesson</th><th style="cursor:default">Question</th><th class="num" style="cursor:default">Warm-up</th><th class="num" style="cursor:default">Exit</th><th style="cursor:default">Look at</th></tr></thead><tbody>
+        ${r.flagged.map(i => `<tr><td>${esc(i.lesson_title)}</td><td>${esc(i.stem)}<div class="small muted">${esc(i.item_id)}</div></td><td class="num">${i.pre_p === null ? '\u2014' : i.pre_p + '%'}</td><td class="num">${i.post_p === null ? '\u2014' : i.post_p + '%'}</td><td>${flagTag(i)}</td></tr>`).join('')}</tbody></table></div>`;
+    } catch (e) { body.innerHTML = ''; if (e.passcode) return signOut(); showErr('#q-err', e); }
+  });
+
   function tile(n, l, cls) { return `<div class="tile ${cls || ''}"><div class="n">${n}</div><div class="l">${l}</div></div>`; }
 
   function renderResults(r) {
@@ -402,10 +424,11 @@
       <details class="card" id="refl-card"><summary id="refl-sum">What students wrote: exit-ticket reflections</summary>
         <div id="refl-body" class="small" style="margin-top:8px"><span class="muted">Loading\u2026</span></div></details>
 
-      <details class="card"><summary>Question-by-question results (percent correct)</summary>
-        <div class="scroll"><table><thead><tr><th style="cursor:default">Question</th><th style="cursor:default">Criterion</th><th class="num" style="cursor:default">Warm-up</th><th class="num" style="cursor:default">Exit</th></tr></thead><tbody>
-        ${r.items.map(i => `<tr><td>${esc(i.stem)}<div class="small muted">${esc(i.item_id)}</div></td><td>${esc(i.criterion_id.split('-').slice(-1)[0])}</td><td class="num">${i.pre_p === null ? '—' : i.pre_p + '%'}</td><td class="num">${i.post_p === null ? '—' : i.post_p + '%'}</td></tr>`).join('')}
-        </tbody></table></div></details>`;
+      <details class="card"><summary>Question-by-question results (percent correct)${r.items.some(i => i.flag) ? ` <span class="tag">${r.items.filter(i => i.flag).length} to look at</span>` : ''}</summary>
+        <div class="scroll"><table><thead><tr><th style="cursor:default">Question</th><th style="cursor:default">Criterion</th><th class="num" style="cursor:default">Warm-up</th><th class="num" style="cursor:default">Exit</th><th style="cursor:default">Look at</th></tr></thead><tbody>
+        ${r.items.map(i => `<tr><td>${esc(i.stem)}<div class="small muted">${esc(i.item_id)}</div></td><td>${esc(i.criterion_id.split('-').slice(-1)[0])}</td><td class="num">${i.pre_p === null ? '—' : i.pre_p + '%'}</td><td class="num">${i.post_p === null ? '—' : i.post_p + '%'}</td><td>${flagTag(i)}</td></tr>`).join('')}
+        </tbody></table></div>
+        <p class="small muted">A flag needs at least ${5} answers. Easy = ${85}%+ right on the warm-up. Hard = under ${60}% right on the exit ticket. Did not improve = exit no better than warm-up.</p></details>`;
 
     drawCritChart(r);
     studentTable(r);
