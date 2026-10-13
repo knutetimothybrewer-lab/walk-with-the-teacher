@@ -159,6 +159,7 @@
         <li>Watch the count go up. Press <b>Close</b> when everyone is in (or when time is up). Open <b>Students</b> on the card to see who has started and how far along they are.</li>
         <li><b>Hold</b> pauses one student on the current ticket (they see "your teacher paused your ticket" and cannot continue); <b>Release</b> lets them carry on where they left off. <b>Reset</b> clears a turned-in ticket so that student can retake it; the old answers are kept on the Voided tab.</li>
         <li>At the end of class press <b>Open exit ticket</b>. Students see their score, their warm-up score, the change, and an explanation of each question.</li>
+        <li>The exit ticket ends with three written questions (what did you learn, how do you know, how will you apply it). They are not scored. Read them under <b>Results</b> &gt; <b>What students wrote</b>, or in a student's lesson view. Edit the wording on the Config tab (<code>REFLECT_Q1</code> to <code>REFLECT_Q3</code>), or turn them off with <code>EXIT_REFLECTION</code>.</li>
         <li>Open <b>Results</b> for the class, or <b>Students</b> for one student's growth over time.</li>
       </ol>
       <h3>Reading the numbers</h3>
@@ -392,6 +393,9 @@
         <div class="scroll"><table id="stu-table"></table></div>
         <p class="small muted">Click a student to see their answers, question by question. Click a column heading to sort.</p></div>
 
+      <details class="card" id="refl-card"><summary id="refl-sum">What students wrote: exit-ticket reflections</summary>
+        <div id="refl-body" class="small" style="margin-top:8px"><span class="muted">Loading\u2026</span></div></details>
+
       <details class="card"><summary>Question-by-question results (percent correct)</summary>
         <div class="scroll"><table><thead><tr><th style="cursor:default">Question</th><th style="cursor:default">Criterion</th><th class="num" style="cursor:default">Warm-up</th><th class="num" style="cursor:default">Exit</th></tr></thead><tbody>
         ${r.items.map(i => `<tr><td>${esc(i.stem)}<div class="small muted">${esc(i.item_id)}</div></td><td>${esc(i.criterion_id.split('-').slice(-1)[0])}</td><td class="num">${i.pre_p === null ? '—' : i.pre_p + '%'}</td><td class="num">${i.post_p === null ? '—' : i.post_p + '%'}</td></tr>`).join('')}
@@ -399,6 +403,7 @@
 
     drawCritChart(r);
     studentTable(r);
+    loadReflections(r.lesson.lesson_id, r.period, r.lesson.title);
     $('#dl-students').addEventListener('click', () => csv(`results-${r.lesson.lesson_id}-${r.period}.csv`,
       ['Student ID', 'Last', 'First', 'Period', 'Warm-up %', 'Exit ticket %', 'Change', 'Growth g', 'Status'],
       r.students.map(x => [x.student_id, x.last, x.first, x.period, x.pre, x.post, x.gain, x.g, statusText[x.status]])));
@@ -418,6 +423,21 @@
         scales: { y: { min: 0, max: 100, ticks: { color: fg, callback: v => v + '%' }, grid: { color: line } }, x: { ticks: { color: fg }, grid: { display: false } } },
         plugins: { legend: { labels: { color: fg } }, tooltip: { callbacks: { title: items => r.criteria[items[0].dataIndex].text, label: c => `${c.dataset.label}: ${Math.round(c.parsed.y)}%` } } } }
     });
+  }
+
+  // The three written exit-ticket questions are not scored; this is where you read them.
+  async function loadReflections(lessonId, period, title) {
+    const box = $('#refl-body'), sum = $('#refl-sum'); if (!box) return;
+    try {
+      const r = await api('t_reflections', { lesson_id: lessonId, period });
+      sum.textContent = `What students wrote: exit-ticket reflections (${r.rows.length})`;
+      if (!r.rows.length) { box.innerHTML = '<span class="muted">No reflections yet for this lesson.</span>'; return; }
+      box.innerHTML = `<div style="margin:6px 0"><button class="btn sec mini" id="dl-refl">Download CSV</button></div>` + r.rows.map(x => `<div class="it" style="border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin:8px 0">
+          <div><b>${esc(x.last)}, ${esc(x.first)}</b> <span class="muted">\u00B7 Period ${esc(x.period)}</span></div>
+          ${r.prompts.map((p, i) => `<div style="margin-top:6px"><span class="muted">${esc(p)}</span><br>${esc([x.learned, x.how_know, x.apply][i]) || '<span class="muted">(blank)</span>'}</div>`).join('')}</div>`).join('');
+      $('#dl-refl').addEventListener('click', () => csv(`reflections-${lessonId}-${period}.csv`, ['Student ID', 'Last', 'First', 'Period'].concat(r.prompts),
+        r.rows.map(x => [x.student_id, x.last, x.first, x.period, x.learned, x.how_know, x.apply])));
+    } catch (e) { box.innerHTML = `<div class="err">${esc(e.message)}</div>`; }
   }
 
   function sortable(table, cols, rows, render, onClick) {
@@ -512,7 +532,8 @@
       const box = (p, label) => !p ? `<div class="box none"><b>${label}</b><br>Not taken</div>` : `<div class="box ${p.correct ? 'good' : 'miss'}"><b>${label} ${p.correct ? '✓' : '✗'}</b><br>${esc(p.answer)}${p.correct ? '' : `<br><span class="muted">Correct: ${esc(p.correct_answer)}</span>`}</div>`;
       panel.innerHTML = `<div class="card idetail"><h3 style="margin-top:0">${esc(l ? l.title : lid)}: question by question</h3>
         ${r.items.map((it, n) => `<div class="it"><div class="small muted">Question ${n + 1} · ${esc(it.criterion_id.split('-').slice(-1)[0])}</div><div><b>${esc((it.pre || it.post).stem)}</b></div>
-          <div class="pp">${box(it.pre, 'Warm-up')}${box(it.post, 'Exit ticket')}</div></div>`).join('') || '<p class="muted">No answers recorded.</p>'}</div>`;
+          <div class="pp">${box(it.pre, 'Warm-up')}${box(it.post, 'Exit ticket')}</div></div>`).join('') || '<p class="muted">No answers recorded.</p>'}
+        ${r.reflection ? `<h3>Reflection (not scored)</h3>${r.prompts.map((p, i) => `<div class="it"><div class="small muted">${esc(p)}</div><div>${esc([r.reflection.learned, r.reflection.how_know, r.reflection.apply][i]) || '<span class="muted">(blank)</span>'}</div></div>`).join('')}` : ''}</div>`;
       panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
     } catch (e) { panel.innerHTML = ''; showErr('#s-err', e); }
   }

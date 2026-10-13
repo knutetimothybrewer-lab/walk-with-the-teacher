@@ -71,6 +71,9 @@
   .lrow .lt { font-weight: 600; } .lrow .vals { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin: 4px 0 6px; color: var(--mut); }
   .chg { font-weight: 700; } .chg.up { color: var(--ok); } .chg.down { color: var(--bad); } .chg.flat { color: var(--mut); }
   .mbar { height: 10px; background: var(--line); border-radius: 99px; overflow: hidden; } .mbar > div { height: 100%; background: var(--accent); }
+  textarea.ref { width: 100%; min-height: 96px; font: inherit; padding: 12px; border-radius: 10px; border: 2px solid var(--line); background: var(--bg); color: var(--fg); resize: vertical; }
+  textarea.ref:focus { outline: 3px solid var(--accent); border-color: var(--accent); }
+  .reflect label { display: block; font-weight: 600; margin: 14px 0 6px; }
   .spinner { display: inline-block; width: 18px; height: 18px; border: 3px solid var(--line); border-top-color: var(--accent); border-radius: 50%; animation: spin 1s linear infinite; vertical-align: -3px; margin-right: 8px; }
   @keyframes spin { to { transform: rotate(360deg); } }
   @media (prefers-reduced-motion: reduce) { .spinner { animation: none; } .progress > div { transition: none; } }
@@ -147,6 +150,7 @@
   const $ = s => document.querySelector(s);
   const screens = ['login', 'wait', 'ticket', 'done', 'progress'];
   let me = null, pollTimer = null, ticket = null, items = [], answers = {}, page = 0, startedAt = 0, onePerScreen = false, submitting = false;
+  let reflect = null, refAnswers = ['', '', ''];       // the three written exit-ticket questions (not scored)
 
   function show(name) {
     screens.forEach(s => $('#s-' + s).classList.toggle('hidden', s !== name));
@@ -223,7 +227,7 @@
     if (r.held) return waiting(HELD_MSG);
     if (!r.open) return waiting('');
     takeName(r.student);
-    ticket = r.ticket; onePerScreen = !!r.one_per_screen;
+    ticket = r.ticket; onePerScreen = !!r.one_per_screen; reflect = r.reflection || null; refAnswers = ['', '', ''];
     if (r.already) return done(r.result, true);
     const seed = me.student_id + '|' + ticket.lesson_id + '|' + ticket.phase;
     items = shuffled(r.items, seed + '|order');
@@ -240,8 +244,17 @@
     $('#t-sub').textContent = ticket.phase === 'pre' ? 'Answer as best you can. It is okay if you are not sure yet.' : 'Show what you learned today.';
     const box = $('#items'); box.innerHTML = '';
     items.forEach((it, idx) => box.appendChild(renderItem(it, idx, seed)));
+    if (reflect) box.appendChild(renderReflection());
     $('#submit-err').classList.add('hidden'); $('#skip-warn').classList.add('hidden');
     showPage();
+  }
+
+  function renderReflection() {
+    const wrap = document.createElement('div'); wrap.className = 'q reflect'; wrap.dataset.idx = items.length;
+    wrap.innerHTML = `<div class="qnum">Reflection</div><h2>Think about today\u2019s lesson</h2><p class="hint">${esc(reflect.note)}</p>` +
+      reflect.prompts.map((p, i) => `<label for="ref${i}">${i + 1}. ${esc(p)}</label><textarea id="ref${i}" class="ref" rows="3" maxlength="1200"></textarea>`).join('');
+    wrap.querySelectorAll('textarea').forEach((t, i) => t.addEventListener('input', () => { refAnswers[i] = t.value; $('#skip-warn').classList.add('hidden'); saveDraft(); }));
+    return wrap;
   }
 
   function renderItem(it, idx, seed) {
@@ -290,10 +303,11 @@
 
   // ---------- keep their place: answers are saved on this computer as they go, and the teacher sees how far along they are ----------
   const draftKey = () => `tk|${me.student_id}|${ticket.lesson_id}|${ticket.phase}`;
-  function saveDraft() { try { localStorage.setItem(draftKey(), JSON.stringify(answers)); } catch (e) { /* storage blocked: fine */ } }
+  function saveDraft() { try { localStorage.setItem(draftKey(), JSON.stringify(Object.assign({}, answers, { __reflect: refAnswers }))); } catch (e) { /* storage blocked: fine */ } }
   function clearDraft() { try { localStorage.removeItem(draftKey()); } catch (e) { /* ignore */ } }
   function restoreDraft() {
     let d = {}; try { d = JSON.parse(localStorage.getItem(draftKey()) || '{}') || {}; } catch (e) { d = {}; }
+    if (reflect && Array.isArray(d.__reflect)) document.querySelectorAll('textarea.ref').forEach((t, i) => { t.value = refAnswers[i] = String(d.__reflect[i] || ''); });
     items.forEach(it => {
       const a = d[it.item_id]; if (!a) return;
       const q = document.querySelector(`[data-idx="${items.indexOf(it)}"]`);
@@ -327,28 +341,34 @@
 
   function showPage() {
     document.querySelectorAll('#items .q').forEach((q, i) => q.classList.toggle('hidden', onePerScreen && i !== page));
-    const last = !onePerScreen || page === items.length - 1;
+    const last = !onePerScreen || page === pageCount() - 1;
     $('#back').classList.toggle('hidden', !onePerScreen || page === 0);
     $('#next').classList.toggle('hidden', last);
     $('#submit').classList.toggle('hidden', !last);
     progress();
   }
   $('#back').addEventListener('click', () => { page = Math.max(0, page - 1); showPage(); window.scrollTo(0, 0); });
-  $('#next').addEventListener('click', () => { page = Math.min(items.length - 1, page + 1); showPage(); window.scrollTo(0, 0); });
+  $('#next').addEventListener('click', () => { page = Math.min(pageCount() - 1, page + 1); showPage(); window.scrollTo(0, 0); });
+  function pageCount() { return items.length + (reflect ? 1 : 0); }
 
   $('#submit').addEventListener('click', async () => {
     if (submitting) return;
     const skipped = items.map((it, i) => isAnswered(it) ? 0 : i + 1).filter(Boolean);
+    const refBlank = reflect ? refAnswers.map((t, i) => (t.trim() ? 0 : i + 1)).filter(Boolean) : [];
     const warn = $('#skip-warn');
-    if (skipped.length && warn.classList.contains('hidden')) {
-      warn.innerHTML = `You have not answered ${skipped.length === 1 ? 'question' : 'questions'} ${skipped.join(', ')}. Press <b>Turn in</b> again to turn it in anyway, or go back and answer.`;
+    if ((skipped.length || refBlank.length) && warn.classList.contains('hidden')) {
+      const parts = [];
+      if (skipped.length) parts.push(`You have not answered ${skipped.length === 1 ? 'question' : 'questions'} ${skipped.join(', ')}.`);
+      if (refBlank.length) parts.push(`You left ${refBlank.length === 1 ? 'reflection question' : 'reflection questions'} ${refBlank.join(', ')} blank.`);
+      warn.innerHTML = parts.join(' ') + ' Press <b>Turn in</b> again to turn it in anyway, or go back and finish.';
       warn.classList.remove('hidden');
-      if (onePerScreen) { page = skipped[0] - 1; showPage(); }
+      if (onePerScreen) { page = skipped.length ? skipped[0] - 1 : items.length; showPage(); }
       return;
     }
     submitting = true; $('#submit').disabled = true; $('#submit-err').classList.add('hidden');
     try {
-      const r = await api('s_submit', Object.assign(creds(), { lesson_id: ticket.lesson_id, phase: ticket.phase, answers, seconds: Math.round((Date.now() - startedAt) / 1000) }));
+      const r = await api('s_submit', Object.assign(creds(), { lesson_id: ticket.lesson_id, phase: ticket.phase, answers, seconds: Math.round((Date.now() - startedAt) / 1000),
+        reflection: reflect ? { learned: refAnswers[0], how_know: refAnswers[1], apply: refAnswers[2] } : undefined }));
       if (!r.ok) {
         if (/already/i.test(r.error)) return loadTicket();
         throw new Error(r.error);
