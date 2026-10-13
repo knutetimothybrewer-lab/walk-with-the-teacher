@@ -270,7 +270,7 @@
         <div class="msg err hidden" role="alert"></div>
         <div class="live"><div class="count"><b class="done">0</b> of <span class="of">0</span> turned in</div>
           <div class="meter"><div></div></div><div class="small muted info"></div>
-          <details><summary class="wsum">Still waiting</summary><div class="small wlist"></div></details></div>`;
+          <details open><summary class="wsum">Working</summary><div class="small wlist"></div></details></div>`;
       const sel = el.querySelector('.lesson');
       fillLessonSelect(sel, true);
       sel.value = p.open || p.lesson_id ? p.lesson_id : p.suggested_lesson_id;
@@ -307,8 +307,12 @@
       el.querySelector('.done').textContent = p.submitted; el.querySelector('.of').textContent = total;
       el.querySelector('.meter > div').style.width = total ? Math.min(100, 100 * p.submitted / total) + '%' : '0';
       el.querySelector('.info').textContent = `${p.ticket_label || ''} · ${p.lesson_title}${p.open && p.opened_at ? ' · opened ' + when(p.opened_at) : ' · closed'}${p.median_seconds ? ' · typical time ' + (p.median_seconds < 60 ? p.median_seconds + ' sec' : Math.round(p.median_seconds / 6) / 10 + ' min') : ''}`;
-      el.querySelector('.wsum').textContent = `Still waiting (${p.waiting.length})`;
-      el.querySelector('.wlist').textContent = p.waiting.length ? p.waiting.join(', ') : 'Everyone is in.';
+      const working = p.working || [], notStarted = p.not_started || p.waiting;
+      el.querySelector('.wsum').textContent = p.waiting.length ? `Working ${working.length} \u00B7 Not started ${notStarted.length}` : 'Everyone is in';
+      el.querySelector('.wlist').innerHTML = p.waiting.length
+        ? (working.length ? `<div><b>Working now:</b> ${working.map(w => `${esc(w.name)} (${w.answered}/${w.total})`).join(', ')}</div>` : '')
+          + (notStarted.length ? `<div style="margin-top:6px"><b>Not started:</b> ${notStarted.map(esc).join(', ')}</div>` : '')
+        : 'Everyone is in.';
     });
   }
 

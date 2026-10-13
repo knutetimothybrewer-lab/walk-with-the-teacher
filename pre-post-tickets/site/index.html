@@ -65,6 +65,12 @@
   .fb { border-left: 6px solid var(--line); padding: 10px 14px; margin: 12px 0; background: var(--card); border-radius: 0 10px 10px 0; }
   .fb.good { border-left-color: var(--ok); } .fb.miss { border-left-color: var(--bad); }
   .fb .tag { font-weight: 700; } .fb.good .tag { color: var(--ok); } .fb.miss .tag { color: var(--bad); }
+  .who { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; padding: 8px 4px 0; font-weight: 600; }
+  .who .sub { color: var(--mut); font-weight: 400; }
+  .lrow { border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; margin: 10px 0; background: var(--card); }
+  .lrow .lt { font-weight: 600; } .lrow .vals { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin: 4px 0 6px; color: var(--mut); }
+  .chg { font-weight: 700; } .chg.up { color: var(--ok); } .chg.down { color: var(--bad); } .chg.flat { color: var(--mut); }
+  .mbar { height: 10px; background: var(--line); border-radius: 99px; overflow: hidden; } .mbar > div { height: 100%; background: var(--accent); }
   .spinner { display: inline-block; width: 18px; height: 18px; border: 3px solid var(--line); border-top-color: var(--accent); border-radius: 50%; animation: spin 1s linear infinite; vertical-align: -3px; margin-right: 8px; }
   @keyframes spin { to { transform: rotate(360deg); } }
   @media (prefers-reduced-motion: reduce) { .spinner { animation: none; } .progress > div { transition: none; } }
@@ -72,6 +78,9 @@
 </head>
 <body>
 <main>
+
+  <!-- who is signed in (shown on every screen after sign in) -->
+  <div id="who" class="who hidden"><span id="who-name"></span><button class="link" data-signout type="button">Not you?</button></div>
 
   <!-- 1. Sign in -->
   <section id="s-login" class="hidden">
@@ -95,7 +104,7 @@
       <p class="muted">Keep this page open. It will start by itself.</p>
       <div id="wait-note" class="note hidden" role="status"></div>
     </div>
-    <button class="link" data-signout>Not you? Sign out</button>
+    <button class="secondary" type="button" data-progress="wait">See my progress</button>
   </section>
 
   <!-- 3. The ticket -->
@@ -117,7 +126,15 @@
   <!-- 4. Done -->
   <section id="s-done" class="hidden">
     <div id="done-body"></div>
-    <button class="link" data-signout>Done? Sign out</button>
+    <div class="bar"><button class="secondary" type="button" data-progress="done">See my progress</button></div>
+    <button class="link" data-signout type="button">Done? Sign out</button>
+  </section>
+
+  <!-- 5. My progress -->
+  <section id="s-progress" class="hidden">
+    <h1>My progress</h1>
+    <div id="progress-body"></div>
+    <div class="bar"><button id="progress-back" class="secondary" type="button">Back</button></div>
   </section>
 
 </main>
@@ -127,12 +144,13 @@
   'use strict';
   const CFG = Object.assign({ API_URL: '', POLL_SECONDS: 10 }, window.CONFIG || {});
   const $ = s => document.querySelector(s);
-  const screens = ['login', 'wait', 'ticket', 'done'];
+  const screens = ['login', 'wait', 'ticket', 'done', 'progress'];
   let me = null, pollTimer = null, ticket = null, items = [], answers = {}, page = 0, startedAt = 0, onePerScreen = false, submitting = false;
 
   function show(name) {
     screens.forEach(s => $('#s-' + s).classList.toggle('hidden', s !== name));
     clearTimeout(pollTimer);
+    showWho(name);
     window.scrollTo(0, 0);
   }
   const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -145,11 +163,20 @@
   }
   const creds = () => ({ code: me.code, student_id: me.student_id });
 
+  // "Ava Adams \u00B7 Period 1  Not you?" at the top of every screen after sign in
+  function showWho(screen) {
+    const w = $('#who');
+    if (!me || screen === 'login') { w.classList.add('hidden'); return; }
+    $('#who-name').innerHTML = `${esc(((me.first || '') + ' ' + (me.last || '')).trim() || 'Student ' + me.student_id)} <span class="sub">\u00B7 ${esc(me.period_label || '')}</span>`;
+    w.classList.remove('hidden');
+  }
+  function takeName(s) { if (s) { me.first = s.first; me.last = s.last; me.period_label = s.period_label; save(); } }
+
   // ---------- sign in ----------
   function saved() { try { return JSON.parse(sessionStorage.getItem('me') || 'null'); } catch (e) { return null; } }
   function save() { try { sessionStorage.setItem('me', JSON.stringify(me)); } catch (e) { /* private mode */ } }
   function signOut() { me = null; try { sessionStorage.removeItem('me'); } catch (e) { /* ignore */ } $('#sid').value = ''; show('login'); $('#code').focus(); }
-  document.querySelectorAll('[data-signout]').forEach(b => b.addEventListener('click', signOut));
+  document.addEventListener('click', e => { if (e.target.closest('[data-signout]')) signOut(); });
 
   $('#login').addEventListener('submit', async ev => {
     ev.preventDefault();
@@ -159,7 +186,7 @@
       const candidate = { code: $('#code').value.trim(), student_id: $('#sid').value.trim() };
       const r = await api('s_status', candidate);
       if (!r.ok) throw new Error(r.error);
-      me = Object.assign(candidate, { first: r.student.first }); save();
+      me = Object.assign(candidate, { first: r.student.first, last: r.student.last, period_label: r.student.period_label }); save();
       await check();
     } catch (e) { err.textContent = e.message || 'Could not connect. Check your internet and try again.'; err.classList.remove('hidden'); }
     btn.disabled = false;
@@ -171,6 +198,7 @@
     try { r = await api('s_status', creds()); }
     catch (e) { return waiting('Can’t reach the server right now. Trying again…'); }
     if (!r.ok) { try { sessionStorage.removeItem('me'); } catch (e2) { /* ignore */ } show('login'); const er = $('#login-err'); er.textContent = r.error; er.classList.remove('hidden'); return; }
+    takeName(r.student);
     if (r.open) return loadTicket();
     waiting('');
   }
@@ -191,6 +219,7 @@
     try { r = await api('s_ticket', creds()); } catch (e) { return waiting('Can’t reach the server right now. Trying again…'); }
     if (!r.ok) return waiting(r.error);
     if (!r.open) return waiting('');
+    takeName(r.student);
     ticket = r.ticket; onePerScreen = !!r.one_per_screen;
     if (r.already) return done(r.result, true);
     const seed = me.student_id + '|' + ticket.lesson_id + '|' + ticket.phase;
@@ -198,6 +227,8 @@
     answers = {}; page = 0; startedAt = Date.now(); submitting = false;
     renderTicket(seed);
     show('ticket');
+    restoreDraft();
+    schedulePing(true);
   }
 
   function renderTicket(seed) {
@@ -251,6 +282,31 @@
     }
     $('#skip-warn').classList.add('hidden');
     progress();
+    saveDraft(); schedulePing(false);
+  }
+
+  // ---------- keep their place: answers are saved on this computer as they go, and the teacher sees how far along they are ----------
+  const draftKey = () => `tk|${me.student_id}|${ticket.lesson_id}|${ticket.phase}`;
+  function saveDraft() { try { localStorage.setItem(draftKey(), JSON.stringify(answers)); } catch (e) { /* storage blocked: fine */ } }
+  function clearDraft() { try { localStorage.removeItem(draftKey()); } catch (e) { /* ignore */ } }
+  function restoreDraft() {
+    let d = {}; try { d = JSON.parse(localStorage.getItem(draftKey()) || '{}') || {}; } catch (e) { d = {}; }
+    items.forEach(it => {
+      const a = d[it.item_id]; if (!a) return;
+      const q = document.querySelector(`[data-idx="${items.indexOf(it)}"]`);
+      if (it.type === 'match') a.forEach((c, i) => { if (c !== null) { const el = q.querySelector(`input[name="${it.item_id}-r${i}"][value="${c}"]`); if (el) el.checked = true; } });
+      else a.forEach(v => { const el = q.querySelector(`input[value="${v}"]`); if (el) el.checked = true; });
+      capture(it);
+    });
+  }
+  let pingTimer = null, lastPing = '';
+  function schedulePing(now) { clearTimeout(pingTimer); pingTimer = setTimeout(ping, now ? 0 : 4000); }
+  async function ping() {
+    if (!ticket || submitting) return;
+    const answered = items.filter(isAnswered).length, key = answered + '/' + items.length;
+    if (key === lastPing) return;
+    lastPing = key;
+    try { await api('s_progress', Object.assign(creds(), { lesson_id: ticket.lesson_id, phase: ticket.phase, answered, total: items.length })); } catch (e) { lastPing = ''; }
   }
   function isAnswered(it) {
     const a = answers[it.item_id];
@@ -287,6 +343,7 @@
         if (/already/i.test(r.error)) return loadTicket();
         throw new Error(r.error);
       }
+      clearDraft(); clearTimeout(pingTimer);
       done(r.result, false);
     } catch (e) {
       submitting = false; $('#submit').disabled = false;
@@ -323,6 +380,31 @@
         <div class="big">${r.raw % 1 ? r.raw.toFixed(1) : r.raw} / ${r.max}</div><div class="muted">${r.pct}%</div>${change}</div>
       ${r.objective ? `<div class="card"><h2>Today’s goal</h2><p>${esc(r.objective)}</p></div>` : ''}
       ${fb ? `<h2>Let’s look at each question</h2>${fb}` : ''}`;
+  }
+
+  // ---------- my progress (their own results only) ----------
+  let backTo = 'wait';
+  document.addEventListener('click', e => { const b = e.target.closest('[data-progress]'); if (b) showProgress(b.dataset.progress); });
+  $('#progress-back').addEventListener('click', () => { if (backTo === 'done') show('done'); else check(); });
+  async function showProgress(from) {
+    backTo = from; show('progress');
+    const box = $('#progress-body'); box.innerHTML = '<p class="muted">Loading\u2026</p>';
+    try {
+      const r = await api('s_my_progress', creds());
+      if (!r.ok) throw new Error(r.error);
+      takeName(r.student); showWho('progress');
+      const s = r.summary;
+      if (!r.lessons.length) { box.innerHTML = '<div class="card"><p>Your results will show up here after you finish an exit ticket.</p></div>'; return; }
+      const sign = v => (v > 0 ? '+' : '') + v;
+      const head = s.paired ? `You have finished <b>${s.lessons}</b> exit ticket${s.lessons === 1 ? '' : 's'}. On the ${s.paired} lesson${s.paired === 1 ? '' : 's'} where you took both,
+          you improved on <b>${s.improved}</b>${s.avg_change > 0 ? ` and your average change is <b>${sign(s.avg_change)} points</b>. Keep it up!` : '.'}` : `You have finished <b>${s.lessons}</b> exit ticket${s.lessons === 1 ? '' : 's'}.`;
+      box.innerHTML = `<div class="card">${head}</div>` + r.lessons.map(l => {
+        const chg = l.change === null ? '' : `<span class="chg ${l.change > 0 ? 'up' : l.change < 0 ? 'down' : 'flat'}">${sign(l.change)}</span>`;
+        return `<div class="lrow"><div class="lt">${l.ticket_type === 'unit_review' ? 'Unit Review \u00B7 ' : ''}U${l.unit} \u00B7 Day ${l.day} \u00B7 ${esc(l.title)}</div>
+          <div class="vals"><span>${l.pre === null ? 'No warm-up' : 'Warm-up ' + l.pre + '%'} \u2192 Exit ticket <b>${l.post}%</b></span>${chg}</div>
+          <div class="mbar" aria-hidden="true"><div style="width:${l.post}%"></div></div></div>`;
+      }).join('');
+    } catch (e) { box.innerHTML = `<div class="err">${esc(e.message || 'Could not load.')}</div>`; }
   }
 
   // ---------- start ----------
