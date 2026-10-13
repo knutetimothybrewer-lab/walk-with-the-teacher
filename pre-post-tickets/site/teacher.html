@@ -75,6 +75,12 @@
   .up { color: var(--ok); font-weight: 700; } .down { color: var(--bad); font-weight: 700; } .flat { color: var(--mut); }
   .tag { display: inline-block; font-size: .75rem; font-weight: 700; padding: 1px 8px; border-radius: 6px; background: var(--warn-bg); color: var(--warn); }
   .tag.red { background: var(--bad-bg); color: var(--bad); } .tag.blue { background: var(--sel); color: var(--accent); }
+  .tag.green { background: var(--ok-bg); color: var(--ok); } .tag.gray { background: var(--line); color: var(--mut); }
+  .seg { display: inline-flex; border: 2px solid var(--line); border-radius: 8px; overflow: hidden; margin-top: 4px; }
+  .seg button { border: none; background: var(--card); color: var(--mut); font: inherit; font-size: .8rem; padding: 4px 10px; cursor: pointer; border-right: 1px solid var(--line); }
+  .seg button:last-child { border-right: none; } .seg button.on { background: var(--accent); color: var(--accent-fg); font-weight: 700; }
+  .rcard { border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; margin: 8px 0; } .rcard.flag { border-left: 6px solid var(--bad); }
+  .rtags { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0; }
   .yes { color: var(--ok); font-weight: 700; } .no { color: var(--bad); font-weight: 700; }
   .idetail .it { border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; margin: 8px 0; }
   .idetail .pp { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 6px; }
@@ -425,20 +431,81 @@
     });
   }
 
-  // The three written exit-ticket questions are not scored; this is where you read them.
+  // The three written exit-ticket questions are not scored. Fixed rules (see Reflect.gs) tag each one; your own rating sits beside each answer.
+  const EV = { evidence: ['Gave evidence', 'green'], feeling: ['Went by feeling', ''], unsure: ['Said unsure', 'blue'], vague: ['Vague', 'gray'], blank: ['Blank', 'gray'] };
+  const LEVELS = ['Not yet', 'Developing', 'Strong'];
+  const rbtn = (sid, lid, q, cur) => `<span class="seg" role="group" aria-label="Your rating">${LEVELS.map((l, i) => `<button type="button" class="${cur === i ? 'on' : ''}" data-rate data-sid="${esc(sid)}" data-lid="${esc(lid)}" data-q="${q}" data-level="${i}">${l}</button>`).join('')}</span>`;
+  function reflTags(an, score) {
+    const t = [];
+    t.push(`<span class="tag blue" title="${esc(an.vocab.used.join(', ') || 'none')}">Lesson ideas used: ${an.vocab.n} of ${an.vocab.of}</span>`);
+    const e = EV[an.evidence]; t.push(`<span class="tag ${e[1]}">How they know: ${e[0]}</span>`);
+    t.push(an.apply.blank ? '<span class="tag gray">Plan: blank</span>' : `<span class="tag ${an.apply.specific ? 'green' : 'gray'}">Plan: ${an.apply.specific ? 'concrete' : 'vague'}${an.apply.where.length ? ' · ' + esc(an.apply.where.join(', ')) : ''}</span>`);
+    if (an.alignment === 'overconfident') t.push(`<span class="tag red">Sounds sure, scored ${Math.round(score)}%</span>`);
+    if (an.alignment === 'underselling') t.push(`<span class="tag red">Sounds unsure, scored ${Math.round(score)}%</span>`);
+    an.myths.forEach(m => t.push(`<span class="tag">Mentions: ${esc(m)}</span>`));
+    if (an.look) t.push('<span class="tag red">Take a look: may need support</span>');
+    return t.join('');
+  }
+  let reflData = null, reflOnlyFlag = false;
+  function reflSummaryHtml(r) {
+    const s = r.summary, p = v => v === null ? '—' : v + '%';
+    const where = Object.keys(s.where).sort((a, b) => s.where[b] - s.where[a]).map(k => `${esc(k)} ${s.where[k]}`).join(' · ') || '—';
+    return `<div class="tiles">${tile(s.n, 'Wrote a reflection')}${tile(p(s.completed_all), 'Answered all three')}${tile(p(s.used_vocab), 'Used 2+ lesson ideas')}${tile(p(s.gave_evidence), 'Said how they know (evidence)')}
+      ${tile(p(s.concrete_plan), 'Gave a concrete plan')}${tile(s.avg_words === null ? '—' : s.avg_words, 'Typical length (words)')}
+      ${tile(s.overconfident, 'Sound sure, scored low', s.overconfident ? 'bad' : '')}${tile(s.underselling, 'Sound unsure, scored high')}${tile(s.myths, 'Mention a common myth')}${tile(s.look, 'Take a look', s.look ? 'bad' : '')}
+      ${tile(`${s.rated}<span class="small muted"> of ${s.n}</span>`, 'Rated by you' + (s.avg_rubric !== null ? ` (avg ${s.avg_rubric} of 2)` : ''))}</div>
+      <div class="small muted">Where they plan to use it: ${where}</div>`;
+  }
+  function reflCards() {
+    const r = reflData, box = $('#refl-list');
+    const rows = r.rows.filter(x => !reflOnlyFlag || x.flagged || x.analysis.look);
+    box.innerHTML = rows.map(x => `<div class="rcard ${x.analysis.look || x.flagged ? 'flag' : ''}"><div><b>${esc(x.last)}, ${esc(x.first)}</b> <span class="muted">· Period ${esc(x.period)} · exit ticket ${x.score === null ? '—' : Math.round(x.score) + '%'}</span></div>
+        <div class="rtags">${reflTags(x.analysis, x.score)}</div>
+        ${r.prompts.map((p, i) => `<div style="margin-top:8px"><span class="muted">${esc(p)}</span><br>${esc([x.learned, x.how_know, x.apply][i]) || '<span class="muted">(blank)</span>'}<br>${rbtn(x.student_id, reflLesson, i + 1, x.rubric[i])}</div>`).join('')}</div>`).join('') || '<span class="muted">Nobody to show.</span>';
+  }
+  let reflLesson = '';
   async function loadReflections(lessonId, period, title) {
     const box = $('#refl-body'), sum = $('#refl-sum'); if (!box) return;
+    reflLesson = lessonId; reflOnlyFlag = false;
     try {
-      const r = await api('t_reflections', { lesson_id: lessonId, period });
+      const r = await api('t_reflections', { lesson_id: lessonId, period }); reflData = r;
       sum.textContent = `What students wrote: exit-ticket reflections (${r.rows.length})`;
       if (!r.rows.length) { box.innerHTML = '<span class="muted">No reflections yet for this lesson.</span>'; return; }
-      box.innerHTML = `<div style="margin:6px 0"><button class="btn sec mini" id="dl-refl">Download CSV</button></div>` + r.rows.map(x => `<div class="it" style="border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin:8px 0">
-          <div><b>${esc(x.last)}, ${esc(x.first)}</b> <span class="muted">\u00B7 Period ${esc(x.period)}</span></div>
-          ${r.prompts.map((p, i) => `<div style="margin-top:6px"><span class="muted">${esc(p)}</span><br>${esc([x.learned, x.how_know, x.apply][i]) || '<span class="muted">(blank)</span>'}</div>`).join('')}</div>`).join('');
-      $('#dl-refl').addEventListener('click', () => csv(`reflections-${lessonId}-${period}.csv`, ['Student ID', 'Last', 'First', 'Period'].concat(r.prompts),
-        r.rows.map(x => [x.student_id, x.last, x.first, x.period, x.learned, x.how_know, x.apply])));
+      box.innerHTML = `<div id="refl-sumbox">${reflSummaryHtml(r)}</div>
+        <div class="controls" style="margin:8px 0;align-items:center"><label style="flex-direction:row;align-items:center;gap:6px;font-weight:400"><input type="checkbox" id="refl-only"> Show only students to look at</label>
+          <button class="btn sec mini" id="dl-refl">Download CSV</button></div>
+        <details class="small" style="margin:6px 0"><summary class="muted">How these tags are worked out</summary><ul>
+          <li><b>Lesson ideas used</b>: counts this lesson's ${r.term_count} key terms found in what they wrote.</li>
+          <li><b>How they know</b>: "evidence" if they point to something they did or can do ("I got the sorting right," "I can explain it"); "went by feeling" ("I just get it"); "said unsure" for honest uncertainty.</li>
+          <li><b>Plan</b>: "concrete" needs a real action and a full sentence ("I will check the serving size on labels"), not "use it in life". It also notes where (school, friends, family, sports, the future, personal).</li>
+          <li><b>Sound sure / unsure vs. score</b>: flagged when they sound sure but scored under ${r.thresholds.OVERCONFIDENT_BELOW}%, or sound unsure but scored ${r.thresholds.UNDERSELLING_AT_OR_ABOVE}% or more.</li>
+          <li><b>Mentions a myth</b>: they used words tied to a common myth from the lessons. They may be correcting it, so read it. <b>Take a look</b>: first-person phrases that might mean a student needs support. These are only prompts for you to read; they miss things and are never a diagnosis.</li>
+          <li>Rules are plain lists in <code>Reflect.gs</code> (and lesson terms in <code>ReflectTerms.gs</code>) if you want to change them.</li></ul></details>
+        <div id="refl-list"></div>`;
+      reflCards();
+      $('#refl-only').addEventListener('change', e => { reflOnlyFlag = e.target.checked; reflCards(); });
+      $('#dl-refl').addEventListener('click', () => csv(`reflections-${lessonId}-${period}.csv`,
+        ['Student ID', 'Last', 'First', 'Period', 'Exit ticket %'].concat(r.prompts, ['Lesson ideas used', 'Ideas', 'How they know', 'Plan concrete', 'Where', 'Sound vs score', 'Mentions myth', 'Take a look', 'Your rating Q1', 'Q2', 'Q3']),
+        r.rows.map(x => [x.student_id, x.last, x.first, x.period, x.score, x.learned, x.how_know, x.apply, x.analysis.vocab.n, x.analysis.vocab.used.join('; '), x.analysis.evidence,
+          x.analysis.apply.specific ? 'yes' : 'no', x.analysis.apply.where.join('; '), x.analysis.alignment, x.analysis.myths.join('; '), x.analysis.look ? 'yes' : '', ...x.rubric.map(v => v === null ? '' : LEVELS[v])])));
     } catch (e) { box.innerHTML = `<div class="err">${esc(e.message)}</div>`; }
   }
+  // your rating buttons (click the selected one again to clear it)
+  document.addEventListener('click', async ev => {
+    const b = ev.target.closest('[data-rate]'); if (!b) return;
+    const sid = b.dataset.sid, lid = b.dataset.lid, q = Number(b.dataset.q), lvl = Number(b.dataset.level);
+    const next = b.classList.contains('on') ? null : lvl;
+    try {
+      const r = await api('t_rate', { student_id: sid, lesson_id: lid, q, level: next });
+      document.querySelectorAll(`[data-rate][data-sid="${CSS.escape(sid)}"][data-lid="${CSS.escape(lid)}"][data-q="${q}"]`).forEach(x => x.classList.toggle('on', next !== null && Number(x.dataset.level) === next));
+      if (reflData && reflLesson === lid) {
+        const row = reflData.rows.find(x => x.student_id === sid); if (row) { row.rubric = r.rubric; row.rubric_avg = r.rubric_avg; }
+        const rated = reflData.rows.filter(x => x.rubric_avg !== null); reflData.summary.rated = rated.length;
+        reflData.summary.avg_rubric = rated.length ? Math.round(10 * rated.reduce((t, x) => t + x.rubric_avg, 0) / rated.length) / 10 : null;
+        $('#refl-sumbox').innerHTML = reflSummaryHtml(reflData);
+      }
+    } catch (e) { showErr('#r-err', e); }
+  });
 
   function sortable(table, cols, rows, render, onClick) {
     let key = cols[0].key, dir = 1;
@@ -499,6 +566,10 @@
         ${weak}</div>
       <div class="card"><div class="controls" style="justify-content:space-between"><h3 style="margin:0">Lesson by lesson</h3><button class="btn sec mini" id="dl-student">Download CSV</button></div>
         <div class="scroll"><table id="les-table"></table></div><p class="small muted">Click a lesson to see this student's answers question by question.</p></div>
+      ${r.reflection_trend && r.reflection_trend.length ? `<div class="card"><h3 style="margin-top:0">Reflections over time <span class="small muted">(not scored)</span></h3><div class="scroll"><table><thead><tr>
+        <th style="cursor:default">Lesson</th><th class="num" style="cursor:default">Words</th><th class="num" style="cursor:default">Lesson ideas used</th><th style="cursor:default">How they know</th><th style="cursor:default">Plan</th><th class="num" style="cursor:default">Your rating (0–2)</th></tr></thead><tbody>
+        ${r.reflection_trend.map(x => `<tr><td>U${x.unit} · Day ${x.day} · ${esc(x.title)}</td><td class="num">${x.words}</td><td class="num">${x.vocab_n} of ${x.vocab_of}</td><td>${esc((EV[x.evidence] || ['', ''])[0])}</td><td>${x.specific ? 'Concrete' : 'Vague/blank'}</td><td class="num">${x.rubric_avg === null ? '—' : x.rubric_avg}</td></tr>`).join('')}
+        </tbody></table></div><p class="small muted">Look for the writing getting longer, using more of the lesson's ideas, and giving evidence and concrete plans as the semester goes on.</p></div>` : ''}
       <div id="items-panel"></div>`;
 
     if (daily.length) drawStudentChart(daily);
@@ -533,7 +604,7 @@
       panel.innerHTML = `<div class="card idetail"><h3 style="margin-top:0">${esc(l ? l.title : lid)}: question by question</h3>
         ${r.items.map((it, n) => `<div class="it"><div class="small muted">Question ${n + 1} · ${esc(it.criterion_id.split('-').slice(-1)[0])}</div><div><b>${esc((it.pre || it.post).stem)}</b></div>
           <div class="pp">${box(it.pre, 'Warm-up')}${box(it.post, 'Exit ticket')}</div></div>`).join('') || '<p class="muted">No answers recorded.</p>'}
-        ${r.reflection ? `<h3>Reflection (not scored)</h3>${r.prompts.map((p, i) => `<div class="it"><div class="small muted">${esc(p)}</div><div>${esc([r.reflection.learned, r.reflection.how_know, r.reflection.apply][i]) || '<span class="muted">(blank)</span>'}</div></div>`).join('')}` : ''}</div>`;
+        ${r.reflection ? `<h3>Reflection (not scored)</h3><div class="rtags">${r.analysis ? reflTags(r.analysis, r.score) : ''}</div>${r.prompts.map((p, i) => `<div class="it"><div class="small muted">${esc(p)}</div><div>${esc([r.reflection.learned, r.reflection.how_know, r.reflection.apply][i]) || '<span class="muted">(blank)</span>'}</div>${rbtn(sid, lid, i + 1, r.rubric[i])}</div>`).join('')}` : ''}</div>`;
       panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
     } catch (e) { panel.innerHTML = ''; showErr('#s-err', e); }
   }
