@@ -113,6 +113,7 @@
     <h1 id="t-title"></h1>
     <p class="muted" id="t-sub"></p>
     <div class="progress" aria-hidden="true"><div id="t-progress"></div></div>
+    <div id="held-banner" class="note hidden" role="alert"><b>Your teacher paused your ticket.</b> Your answers are saved. Please wait or raise your hand.</div>
     <div id="items"></div>
     <div id="submit-err" class="err hidden" role="alert"></div>
     <div id="skip-warn" class="note hidden" role="alert"></div>
@@ -199,6 +200,7 @@
     catch (e) { return waiting('Can’t reach the server right now. Trying again…'); }
     if (!r.ok) { try { sessionStorage.removeItem('me'); } catch (e2) { /* ignore */ } show('login'); const er = $('#login-err'); er.textContent = r.error; er.classList.remove('hidden'); return; }
     takeName(r.student);
+    if (r.held) return waiting(HELD_MSG);
     if (r.open) return loadTicket();
     waiting('');
   }
@@ -218,6 +220,7 @@
     let r;
     try { r = await api('s_ticket', creds()); } catch (e) { return waiting('Can’t reach the server right now. Trying again…'); }
     if (!r.ok) return waiting(r.error);
+    if (r.held) return waiting(HELD_MSG);
     if (!r.open) return waiting('');
     takeName(r.student);
     ticket = r.ticket; onePerScreen = !!r.one_per_screen;
@@ -226,7 +229,7 @@
     items = shuffled(r.items, seed + '|order');
     answers = {}; page = 0; startedAt = Date.now(); submitting = false;
     renderTicket(seed);
-    show('ticket');
+    show('ticket'); setHeld(false);
     restoreDraft();
     schedulePing(true);
   }
@@ -301,13 +304,20 @@
   }
   let pingTimer = null, lastPing = '';
   function schedulePing(now) { clearTimeout(pingTimer); pingTimer = setTimeout(ping, now ? 0 : 4000); }
-  async function ping() {
+  const HELD_MSG = 'Your teacher paused your ticket. Please wait or raise your hand.';
+  async function ping(force) {
     if (!ticket || submitting) return;
     const answered = items.filter(isAnswered).length, key = answered + '/' + items.length;
-    if (key === lastPing) return;
+    if (force !== true && key === lastPing) return;
     lastPing = key;
-    try { await api('s_progress', Object.assign(creds(), { lesson_id: ticket.lesson_id, phase: ticket.phase, answered, total: items.length })); } catch (e) { lastPing = ''; }
+    try {
+      const r = await api('s_progress', Object.assign(creds(), { lesson_id: ticket.lesson_id, phase: ticket.phase, answered, total: items.length }));
+      setHeld(!!(r && r.held));
+    } catch (e) { lastPing = ''; }
   }
+  // If the teacher pauses you mid-ticket, you see why and cannot turn in until released. Answers stay saved.
+  function setHeld(h) { $('#held-banner').classList.toggle('hidden', !h); $('#submit').disabled = h || submitting; }
+  setInterval(() => { if (!$('#s-ticket').classList.contains('hidden')) ping(true); }, 8000);
   function isAnswered(it) {
     const a = answers[it.item_id];
     if (!a) return false;

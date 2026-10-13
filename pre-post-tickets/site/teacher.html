@@ -70,6 +70,8 @@
   th[aria-sort=ascending]::after { content: " \25B2"; } th[aria-sort=descending]::after { content: " \25BC"; }
   td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
   tr.click { cursor: pointer; } tr.click:hover { background: var(--sel); }
+  .srow { display: flex; align-items: center; gap: 8px; padding: 5px 0; border-bottom: 1px solid var(--line); }
+  .srow .sname { flex: 1; min-width: 0; } .srow .sst { min-width: 92px; font-size: .85rem; }
   .up { color: var(--ok); font-weight: 700; } .down { color: var(--bad); font-weight: 700; } .flat { color: var(--mut); }
   .tag { display: inline-block; font-size: .75rem; font-weight: 700; padding: 1px 8px; border-radius: 6px; background: var(--warn-bg); color: var(--warn); }
   .tag.red { background: var(--bad-bg); color: var(--bad); } .tag.blue { background: var(--sel); color: var(--accent); }
@@ -154,7 +156,8 @@
       <h3 style="margin-top:0">A normal day</h3>
       <ol class="help">
         <li><b>Run class</b>: for each period, check the lesson in the box (it suggests the next one), then press <b>Open warm-up</b>. Students enter the class code and their ID.</li>
-        <li>Watch the count go up. Press <b>Close</b> when everyone is in (or when time is up).</li>
+        <li>Watch the count go up. Press <b>Close</b> when everyone is in (or when time is up). Open <b>Students</b> on the card to see who has started and how far along they are.</li>
+        <li><b>Hold</b> pauses one student on the current ticket (they see "your teacher paused your ticket" and cannot continue); <b>Release</b> lets them carry on where they left off. <b>Reset</b> clears a turned-in ticket so that student can retake it; the old answers are kept on the Voided tab.</li>
         <li>At the end of class press <b>Open exit ticket</b>. Students see their score, their warm-up score, the change, and an explanation of each question.</li>
         <li>Open <b>Results</b> for the class, or <b>Students</b> for one student's growth over time.</li>
       </ol>
@@ -270,7 +273,7 @@
         <div class="msg err hidden" role="alert"></div>
         <div class="live"><div class="count"><b class="done">0</b> of <span class="of">0</span> turned in</div>
           <div class="meter"><div></div></div><div class="small muted info"></div>
-          <details open><summary class="wsum">Working</summary><div class="small wlist"></div></details></div>`;
+          <details open><summary class="wsum">Students</summary><div class="small wlist"></div></details></div>`;
       const sel = el.querySelector('.lesson');
       fillLessonSelect(sel, true);
       sel.value = p.open || p.lesson_id ? p.lesson_id : p.suggested_lesson_id;
@@ -285,6 +288,16 @@
       el.querySelector('.b-pre').addEventListener('click', () => act('pre'));
       el.querySelector('.b-post').addEventListener('click', () => act('post'));
       el.querySelector('.b-close').addEventListener('click', () => act('close'));
+      // Hold / Release / Reset buttons live in the student list (rebuilt every few seconds), so listen on the card.
+      el.addEventListener('click', async ev => {
+        const b = ev.target.closest('[data-op]'); if (!b) return;
+        const sid = b.dataset.sid, op = b.dataset.op, who = (state.periods.find(x => x.period === p.period).students || []).find(s => s.student_id === sid);
+        const name = who ? who.name : sid, msg = el.querySelector('.msg'); msg.classList.add('hidden');
+        if (op === 'reset' && !confirm(`Reset ${name}'s ticket? Their answers are moved to the Voided tab (not deleted) and they can take it again.`)) return;
+        b.disabled = true;
+        try { await api('t_student_control', { period: p.period, student_id: sid, op }); await refreshRun(); }
+        catch (e) { msg.textContent = e.message; msg.classList.remove('hidden'); b.disabled = false; }
+      });
       box.appendChild(el);
     });
     runBuilt = true; updateRun();
@@ -307,12 +320,17 @@
       el.querySelector('.done').textContent = p.submitted; el.querySelector('.of').textContent = total;
       el.querySelector('.meter > div').style.width = total ? Math.min(100, 100 * p.submitted / total) + '%' : '0';
       el.querySelector('.info').textContent = `${p.ticket_label || ''} · ${p.lesson_title}${p.open && p.opened_at ? ' · opened ' + when(p.opened_at) : ' · closed'}${p.median_seconds ? ' · typical time ' + (p.median_seconds < 60 ? p.median_seconds + ' sec' : Math.round(p.median_seconds / 6) / 10 + ' min') : ''}`;
-      const working = p.working || [], notStarted = p.not_started || p.waiting;
-      el.querySelector('.wsum').textContent = p.waiting.length ? `Working ${working.length} \u00B7 Not started ${notStarted.length}` : 'Everyone is in';
-      el.querySelector('.wlist').innerHTML = p.waiting.length
-        ? (working.length ? `<div><b>Working now:</b> ${working.map(w => `${esc(w.name)} (${w.answered}/${w.total})`).join(', ')}</div>` : '')
-          + (notStarted.length ? `<div style="margin-top:6px"><b>Not started:</b> ${notStarted.map(esc).join(', ')}</div>` : '')
-        : 'Everyone is in.';
+      const stu = p.students || [], rank = s => s.held ? 0 : s.done ? 3 : s.total ? 1 : 2;
+      const n = { held: stu.filter(s => s.held).length, working: stu.filter(s => !s.done && !s.held && s.total).length, not: stu.filter(s => !s.done && !s.held && !s.total).length };
+      el.querySelector('.wsum').textContent = !stu.length ? 'Students' : p.waiting.length ? `Working ${n.working} \u00B7 Not started ${n.not}${n.held ? ' \u00B7 Held ' + n.held : ''}` : 'Everyone is in';
+      el.querySelector('.wlist').innerHTML = !stu.length ? '<span class="muted">Open a ticket to see your students here.</span>'
+        : stu.slice().sort((a, b) => rank(a) - rank(b) || a.name.localeCompare(b.name)).map(s => {
+          const st = s.held ? '<span class="tag red">Held</span>' : s.done ? '<span class="yes">Done \u2713</span>' : s.total ? `Working ${s.answered}/${s.total}` : '<span class="muted">Not started</span>';
+          const btn = s.done ? `<button class="btn sec mini" data-op="reset" data-sid="${esc(s.student_id)}" title="Clear their turned-in ticket so they can retake it">Reset</button>`
+            : s.held ? `<button class="btn mini" data-op="release" data-sid="${esc(s.student_id)}">Release</button>`
+            : `<button class="btn sec mini" data-op="hold" data-sid="${esc(s.student_id)}" title="Pause this student on the current ticket">Hold</button>`;
+          return `<div class="srow"><span class="sname">${esc(s.name)}</span><span class="sst">${st}</span>${btn}</div>`;
+        }).join('');
     });
   }
 
