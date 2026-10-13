@@ -14,6 +14,8 @@
   var U = W.U, EPS = 1e-9;
 
   W.ITEMS = []; W.ITEM_BY_ID = {}; W.ACTIVITIES = [];
+  // Checkpoints: required but UNSCORED tasks. Same engine (hints, retries, explanations) but worth 0 points, so the 100-point total never changes.
+  W.CHECKS = []; W.CHECK_BY_ID = {};
 
   /* ---------- authoring helpers ---------- */
   // P(id, label, type, opts, extra) — opts entries: [id, text, credit]
@@ -45,6 +47,13 @@
     return def;
   };
   W.defActivity = function (a) { W.ACTIVITIES.push(a); };
+  W.defCheck = function (def) {
+    def.pts = 0; def.unscored = true; def.cls = def.cls || 'short';
+    W.normItem(def);
+    if (W.CHECK_BY_ID[def.id] || W.ITEM_BY_ID[def.id]) throw new Error('Duplicate checkpoint id ' + def.id);
+    W.CHECKS.push(def); W.CHECK_BY_ID[def.id] = def;
+    return def;
+  };
 
   var P = {};
   W.Policy = P;
@@ -161,7 +170,7 @@
     rec.retryReady = false; rec.draft = {};
     if (n >= limit) P.finalize(rec, 'exhausted', nowIso);
     else if (res.raw >= 1 - EPS) P.finalize(rec, n === 1 ? 'full' : 'full-on-retry', nowIso);
-    else if (rec.best >= item.pts * P.capFor(n + 1) - EPS) P.finalize(rec, 'no-gain', nowIso);
+    else if (!item.unscored && rec.best >= item.pts * P.capFor(n + 1) - EPS) P.finalize(rec, 'no-gain', nowIso);
     return { ok: true, attempt: rec.attempts[rec.attempts.length - 1], finalized: rec.finalized };
   };
   P.finalize = function (rec, reason, nowIso) { rec.finalized = true; rec.finalizedReason = reason; rec.finalizedAt = nowIso || U.nowISO(); rec.retryReady = false; };
@@ -210,15 +219,16 @@
     return { earned: earned, max: max, first: first, byMission: byMission, finalized: finalized, items: W.ITEMS.length, attemptsUsed: attemptsUsed, attemptsAllowed: attemptsAllowed, unusedRetryItems: unused };
   };
   P.completion = function (state) {
-    var done = 0, total = W.ITEMS.length + W.ACTIVITIES.length;
+    var done = 0, total = W.ITEMS.length + W.CHECKS.length + W.ACTIVITIES.length;
     W.ITEMS.forEach(function (it) { if ((state.items[it.id] || {}).finalized) done++; });
+    W.CHECKS.forEach(function (it) { if (((state.checks || {})[it.id] || {}).finalized) done++; });
     W.ACTIVITIES.forEach(function (a) { if (state.progress.activities[a.id]) done++; });
     return { done: done, total: total, pct: total ? Math.floor((done / total) * 1000) / 10 : 0 };
   };
   P.missionStatus = function (state, m) {
-    var items = W.ITEMS.filter(function (i) { return i.m === m; }), acts = W.ACTIVITIES.filter(function (a) { return a.m === m; });
-    var done = items.filter(function (i) { return (state.items[i.id] || {}).finalized; }).length + acts.filter(function (a) { return state.progress.activities[a.id]; }).length;
-    var total = items.length + acts.length;
+    var items = W.ITEMS.filter(function (i) { return i.m === m; }), checks = W.CHECKS.filter(function (i) { return i.m === m; }), acts = W.ACTIVITIES.filter(function (a) { return a.m === m; });
+    var done = items.filter(function (i) { return (state.items[i.id] || {}).finalized; }).length + checks.filter(function (i) { return ((state.checks || {})[i.id] || {}).finalized; }).length + acts.filter(function (a) { return state.progress.activities[a.id]; }).length;
+    var total = items.length + checks.length + acts.length;
     return { done: done, total: total, complete: done === total };
   };
   P.maxByMission = function () {

@@ -95,4 +95,97 @@
     hint: 'Connect two dimensions in the case, point to a fact that shows it, and explain a feasible action using STOP or SMART.',
     why: 'Strong reasoning connects at least two wellness domains, uses a fact that is actually in the case, and justifies a feasible action with STOP or SMART. Several claims are defensible, but the evidence and rationale must match the claim.',
     variants: [0, 1, 2].map(cerVariant) });
+
+  /* ---------- 7.3 Second case: build a plan (required checkpoint, no points) ----------
+   * Two more integrated FICTIONAL cases (no misleading post). Each asks for a claim, evidence, reasoning AND a fully SMART plan that fits the claim.
+   * Worth 0 points: the 6 Final Transfer points are unchanged. */
+  W.PLANCASES = [
+    { id: 'd', who: 'Dani', resp: 'Dani plays in the school orchestra (rehearsal Monday and Wednesday, 3:30–5:00), helps in the family shop on Saturdays, and has a history presentation next Friday.',
+      pattern: [['Physical', 'Eats a rushed lunch at her locker and drinks mostly soda.'], ['Mental', 'Loses track of the history reading.'], ['Emotional', 'Feels nervous about speaking in front of the class.'], ['Social', 'Skips lunch with her orchestra friends to practice alone.'], ['Environmental', 'Studies at home with the TV on; a quiet library room is open twice a week.']],
+      goal: 'Dani’s goal: “Be less nervous about the presentation.”' },
+    { id: 'e', who: 'Rafa', resp: 'Rafa runs cross-country (practice daily, 3:30–5:00), spends Sunday afternoons caring for his grandmother, and has a science fair project due in two weeks.',
+      pattern: [['Physical', 'Runs every day but often goes to practice without a snack.'], ['Mental', 'Keeps putting off the science fair project.'], ['Emotional', 'Feels overwhelmed and a little guilty about the project.'], ['Social', 'His teammates are supportive, but he rarely asks them for help.'], ['Environmental', 'Works at a crowded kitchen table; the library is open until 6.']],
+      goal: 'Rafa’s goal: “Get the project done and feel less stressed.”' }
+  ];
+  var PC = [
+    [['a', 'Emotional and Social: nerves rise because Dani practices alone and skips lunch with friends who could listen.', 1], ['b', 'Physical and Mental: rushed, sugary lunches can leave her with less steady energy for the reading.', 1], ['c', 'Environmental and Mental: studying with the TV on makes the reading harder to follow.', 1], ['d', 'Social and Environmental: orchestra friends change the lighting in the room.', 0], ['e', 'Only Emotional matters; the other dimensions are unaffected.', 0]],
+    [['a', 'Emotional and Mental: feeling overwhelmed makes him put the project off, which adds more guilt.', 1], ['b', 'Physical and Mental: practicing without a snack can leave him foggy when he sits down to work.', 1], ['c', 'Social and Emotional: teammates could ease the overwhelm if he asked for help.', 1], ['d', 'Environmental and Physical: the crowded kitchen table makes his legs stronger.', 0], ['e', 'Only Physical matters; the other dimensions are unaffected.', 0]]
+  ];
+  var PF = [
+    [['f1', 'Dani skips lunch with her orchestra friends to practice alone.', 0], ['f2', 'Dani feels nervous about speaking in front of the class.', 0], ['f3', 'Dani eats a rushed lunch and drinks mostly soda.', 0], ['f4', 'Dani studies at home with the TV on.', 0], ['f5', 'The family shop opens at 9 a.m. on Saturdays.', 0]],
+    [['f1', 'Rafa feels overwhelmed and a little guilty about the project.', 0], ['f2', 'Rafa often goes to practice without a snack.', 0], ['f3', 'Rafa rarely asks his supportive teammates for help.', 0], ['f4', 'Rafa’s grandmother lives two blocks away.', 0], ['f5', 'The science fair is in two weeks.', 0]]
+  ];
+  var PFM = [{ a: { f1: 1, f2: 0.5 }, b: { f3: 1 }, c: { f4: 1 } }, { a: { f1: 1, f5: 0.5 }, b: { f2: 1 }, c: { f3: 1, f1: 0.5 } }];
+  var PR = [
+    [['r1', 'STOP: practicing alone means no one hears the talk first; asking two friends to listen to a run-through at lunch is free and feasible.', 0], ['r2', 'STOP: rushed, sugary lunches leave little steady energy; packing a lunch with water takes five minutes and is feasible.', 0], ['r3', 'STOP: the TV makes the reading hard to follow; using the quiet library room on non-rehearsal days is free and feasible.', 0], ['r4', 'Quit orchestra and the shop so there is nothing to be nervous about; that guarantees good health.', 0], ['r5', 'Buy a calming supplement; it fixes everything.', 0]],
+    [['r1', 'STOP: the project feels too big to start; splitting it into three small steps and doing the first one this week is feasible.', 0], ['r2', 'STOP: running on an empty stomach leaves him foggy; a banana or granola bar before practice is cheap and feasible.', 0], ['r3', 'STOP: help is already on the team; asking one teammate for a 20-minute study session is free and feasible.', 0], ['r4', 'Quit cross-country and stop visiting his grandmother to free up time; that guarantees good health.', 0], ['r5', 'Skip the project; the stress goes away right away.', 0]]
+  ];
+  var PRM = [{ a: { r1: 1 }, b: { r2: 1 }, c: { r3: 1 } }, { a: { r1: 1 }, b: { r2: 1 }, c: { r3: 1 } }];
+  var PP = [
+    [['p1', 'Practice the presentation for two friends at lunch on Tuesdays and Thursdays for 3 weeks, tracked on a calendar, to feel calmer.', 0], ['p2', 'Pack a lunch with water on 4 school days a week for 3 weeks, tracked on a checklist, for steadier energy.', 0], ['p3', 'Study the reading in the library room on 3 non-rehearsal days a week for 3 weeks, tracked on a calendar, to follow it more easily.', 0], ['p4', 'Be less nervous soon.', 0], ['p5', 'Practice for three hours every day, starting tomorrow, forever.', 0]],
+    [['p1', 'Finish one small step of the project (research, outline, draft) on 3 days a week for 2 weeks, tracked on a checklist, to feel less overwhelmed.', 0], ['p2', 'Eat a snack before practice on all 5 practice days for 3 weeks, tracked on a calendar, for steadier energy.', 0], ['p3', 'Study with one teammate for 20 minutes after practice on 2 days a week for 2 weeks, tracked on a calendar, to feel supported.', 0], ['p4', 'Try to get the project done soon.', 0], ['p5', 'Work on the project 6 hours every night until it is done.', 0]]
+  ];
+  var PPM = [{ a: { p1: 1, p2: 0.5, p3: 0.5 }, b: { p2: 1, p1: 0.5, p3: 0.5 }, c: { p3: 1, p1: 0.5, p2: 0.5 } }, { a: { p1: 1, p2: 0.5, p3: 0.5 }, b: { p2: 1, p1: 0.5, p3: 0.5 }, c: { p3: 1, p1: 0.5, p2: 0.5 } }];
+  function planVariant(i) {
+    return V('ck.m7.plan.' + 'ab'[i], 'Use the case for **' + W.PLANCASES[i].who + '** (fictional). Build a claim, evidence, reasoning and a plan that all fit together.', [
+      P('claim', 'CLAIM · Which two dimensions connect?', 'radio', PC[i], { hint: 'Pick two dimensions and a connection the case describes.' }),
+      P('evid', 'EVIDENCE · Which case fact supports it?', 'radio', PF[i], { dep: 'claim', matrix: PFM[i], hint: 'The fact must be in the case AND support your claim. Prices, opening hours and other dimensions don’t.' }),
+      P('why', 'REASONING · Which rationale supports a feasible action?', 'radio', PR[i], { dep: 'claim', matrix: PRM[i], hint: 'The action must fit the case limits and your claim. Quitting everything or buying a product isn’t feasible STOP/SMART.' }),
+      P('plan', 'PLAN · Which plan is fully SMART and fits your claim?', 'radio', PP[i], { dep: 'claim', matrix: PPM[i], hint: 'Check each of S, M, A, R and T, then check that the plan works on the connection you claimed.' })
+    ], { vis: { type: 'plancase', idx: i } });
+  }
+  W.defCheck({
+    id: 'ck.m7.plan', m: 7, st: '7.3', topic: 'Second case: claim, evidence, reasoning and a SMART plan', src: 'All five decks + worksheet', kind: 'form',
+    hint: 'Connect two dimensions in the case, point to a fact that shows it, explain a feasible action using STOP, then pick the SMART plan that fits that same connection.',
+    why: 'A strong plan starts from a claim about how two dimensions connect, uses a fact that is actually in the case, explains a feasible action with STOP, and turns it into a goal that is specific, measurable, achievable, relevant and time-bound. Several claims are defensible, but the evidence, reasoning and plan must all match the claim.',
+    variants: [planVariant(0), planVariant(1)]
+  });
+
+  /* ---------- 7.4 My 7-day plan (required, unscored, no right answers) ---------- */
+  W.defActivity({ id: 'myPlan', m: 7, title: 'My 7-day plan and self-check (unscored)' });
+  W.PLAN = {
+    rate: [
+      ['r1', 'I can name the five dimensions of wellness and show how they connect.'],
+      ['r2', 'I can read a health number and know when follow-up makes sense.'],
+      ['r3', 'I can turn a vague goal into a SMART goal.'],
+      ['r4', 'I can judge a health post using author, evidence, purpose and independent sources.'],
+      ['r5', 'I can use STOP when two good choices compete.']
+    ],
+    levels: [[1, 'Not yet'], [2, 'A little'], [3, 'Mostly'], [4, 'Yes']],
+    dims: [['phys', 'Physical'], ['ment', 'Mental'], ['emo', 'Emotional'], ['soc', 'Social'], ['env', 'Environmental']],
+    acts: {
+      phys: [['a1', 'Drink a glass of water with breakfast'], ['a2', 'Walk for 10 minutes'], ['a3', 'Lights out at the same time on school nights'], ['a4', 'Eat a real snack before practice or an activity']],
+      ment: [['a1', 'Do a 10-minute focused study block with the phone away'], ['a2', 'Write tomorrow’s top three tasks'], ['a3', 'Take a 5-minute screen-free break after homework'], ['a4', 'Do three slow breaths before a test or hard task']],
+      emo: [['a1', 'Name one feeling and why, in a sentence'], ['a2', 'Write down one thing that went okay today'], ['a3', 'Say one kind thing to myself after a mistake'], ['a4', 'Tell a trusted person how the day went']],
+      soc: [['a1', 'Check in with one friend or family member'], ['a2', 'Sit with someone new at lunch once a week'], ['a3', 'Offer help to someone'], ['a4', 'Plan one screen-free hangout']],
+      env: [['a1', 'Clear my study spot for 5 minutes'], ['a2', 'Spend 10 minutes outside'], ['a3', 'Use a refillable bottle'], ['a4', 'Keep my phone charging away from my bed']]
+    },
+    cues: [['c1', 'brush my teeth in the morning'], ['c2', 'get home from school'], ['c3', 'sit down to dinner'], ['c4', 'start my homework'], ['c5', 'pack my bag for the next day']],
+    obs: [['o1', 'I am tired'], ['o2', 'I forget'], ['o3', 'my plans change'], ['o4', 'friends invite me out']],
+    backs: [['b1', 'do the 2-minute version'], ['b2', 'move it to later the same day'], ['b3', 'ask someone to remind me'], ['b4', 'set a phone reminder']],
+    days: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+    minDays: 3,
+    ids: function (list) { return list.map(function (x) { return x[0]; }); },
+    /* Sanitize a stored plan (never trust stored data). */
+    clean: function (raw) {
+      if (!raw || typeof raw !== 'object') return null;
+      var self = W.PLAN, out = { rate: {}, dim: '', act: '', cue: '', obs: '', back: '', days: [], why: '', saved: raw.saved === true };
+      var rate = raw.rate && typeof raw.rate === 'object' ? raw.rate : {};
+      self.rate.forEach(function (r) { var v = rate[r[0]] | 0; if (v >= 1 && v <= 4) out.rate[r[0]] = v; });
+      if (self.ids(self.dims).indexOf(raw.dim) >= 0) out.dim = raw.dim;
+      if (out.dim && self.ids(self.acts[out.dim]).indexOf(raw.act) >= 0) out.act = raw.act;
+      if (self.ids(self.cues).indexOf(raw.cue) >= 0) out.cue = raw.cue;
+      if (self.ids(self.obs).indexOf(raw.obs) >= 0) out.obs = raw.obs;
+      if (self.ids(self.backs).indexOf(raw.back) >= 0) out.back = raw.back;
+      if (Array.isArray(raw.days)) raw.days.forEach(function (d) { d = d | 0; if (d >= 0 && d <= 6 && out.days.indexOf(d) < 0) out.days.push(d); });
+      out.days.sort(function (a, b) { return a - b; });
+      out.why = typeof raw.why === 'string' ? raw.why.slice(0, 300) : '';
+      return out;
+    },
+    ready: function (p) {
+      var self = W.PLAN; if (!p) return false;
+      return self.rate.every(function (r) { return !!p.rate[r[0]]; }) && !!p.dim && !!p.act && !!p.cue && !!p.obs && !!p.back && p.days.length >= self.minDays;
+    },
+    label: function (list, id) { for (var i = 0; i < list.length; i++) if (list[i][0] === id) return list[i][1]; return ''; }
+  };
 })(typeof window !== 'undefined' ? window : globalThis);

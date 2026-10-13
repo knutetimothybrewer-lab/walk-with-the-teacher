@@ -46,6 +46,22 @@ Object.keys(W.CASEWEEKS).forEach(id => { const w = S.makeWeek(W.CASEWEEKS[id].ro
 k.push('', 'Model checks (verified by `tests/content-tests.js`): all-A week = +245, all-B = 0, all-C = -245; daily maximum 35; domain weekly maxima Physical 56, Mental 49, Emotional 49, Social 56, Environmental 35. Ties are handled explicitly (`S.greatestDay`, `S.weakestDomain` return every tied day/domain); the three case weeks have unique answers.', '');
 k.push('## Jordan\'s 12 playable decisions (unscored)', '', '| # | Day | Category (weight) | A / B / C options | Baseline grade |', '|---|---|---|---|---|');
 const jw = W.CASEWEEKS.jordan.rows; W.DECISIONS.forEach((d, i) => k.push(`| ${i + 1} | ${S.DAYS[d.day]} | ${S.CAT[d.cat].n} (${S.CAT[d.cat].w}) | A: ${clean(d.opts.A)} / B: ${clean(d.opts.B)} / C: ${clean(d.opts.C)} | ${jw[d.cat][d.day]} |`));
+k.push('', '## Required unscored checkpoints (0 points)', '', 'Each checkpoint is required for completion but never changes the score. Same engine as scored items: hint after a miss, one retry with a similar question, explanation at the end. Credited options shown (1 = full fit, 0.5 = partial).', '');
+W.CHECKS.forEach(ck => {
+  k.push(`### ${ck.id}: ${clean(ck.topic)}`, '', `- Mission ${ck.m}, stage ${ck.st} | **0 pts** | ${P.limitFor(ck)} tries | Source: ${clean(ck.src)}`, `- Why: ${clean(ck.why)}`, '');
+  ck.variants.forEach((v, vi) => {
+    k.push(`#### Variant ${'ABC'[vi]} (\`${v.id}\`)`, '', `Prompt: ${clean(v.ctx)}`, '');
+    v.parts.forEach(p => {
+      k.push(`**${clean(p.label)}**`, '');
+      if (!p.dep) { p.opts.filter(o => o.c > 0).forEach(o => k.push(`- ${o.c}: ${clean(o.t)}`)); }
+      else { const anchor = v.parts.find(q => q.id === [].concat(p.dep)[0]); Object.keys(p.matrix).forEach(kk => k.push(`- If \`${clean(anchor.opts.find(o => o.id === kk).t)}\`: ` + Object.keys(p.matrix[kk]).filter(id => p.matrix[kk][id] > 0).map(id => `${clean(p.opts.find(o => o.id === id).t)} = ${p.matrix[kk][id]}`).join('; '))); }
+      k.push('');
+    });
+  });
+});
+k.push('## Maya\'s 6 second-pass decisions (unscored)', '', '| # | Day | Category (weight) | A / B / C options | Baseline grade |', '|---|---|---|---|---|');
+const mw2 = W.CASEWEEKS.maya.rows; W.DECISIONS2.forEach((d, i) => k.push(`| ${i + 1} | ${S.DAYS[d.day]} | ${S.CAT[d.cat].n} (${S.CAT[d.cat].w}) | A: ${clean(d.opts.A)} / B: ${clean(d.opts.B)} / C: ${clean(d.opts.C)} | ${mw2[d.cat][d.day]} |`));
+k.push('', '## My 7-day plan (unscored, no right answers)', '', 'A required reflection step: five self-ratings (Not yet / A little / Mostly / Yes), one dimension and small action, a cue, an if-then backup and at least ' + W.PLAN.minDays + ' days. Stored on the student\'s device; included in the downloadable report only if the student ticks the sharing box.');
 fs.writeFileSync(path.join(DOCS, 'ANSWER_KEY.md'), k.join('\n') + '\n');
 
 /* ------------------------------------------------------------------ COVERAGE MATRIX */
@@ -88,7 +104,7 @@ c.push('# Coverage matrix, scoring blueprint and cognitive-demand audit', '', '>
 c.push('## 1. Scoring blueprint', '', '| Mission | Title | Items | Points | Blueprint | Pacing target (min) |', '|---|---|---|---|---|---|');
 const bp = { 1: 12, 2: 16, 3: 18, 4: 18, 5: 14, 6: 16, 7: 6 }; let tp = 0;
 Object.keys(byM).forEach(m => { const pts = byM[m].reduce((s, i) => s + i.pts, 0); tp += pts; c.push(`| ${m} | ${W.MISSION[m].title} | ${byM[m].length} | ${pts} | ${bp[m]} ${pts === bp[m] ? '(match)' : '(MISMATCH)'} | ${W.MISSION[m].est} |`); });
-c.push(`| | **Total** | ${W.ITEMS.length} | **${tp}** | 100 | ${W.estTotal()} (incl. 2 min launch) |`, '', 'Manual-review points: **0**. Teacher-graded points: **0**. Required unscored activities (count toward completion only): ' + W.ACTIVITIES.map(a => a.title).join('; ') + '.', '');
+c.push(`| | **Total** | ${W.ITEMS.length} | **${tp}** | 100 | ${W.estTotal()} (incl. 2 min launch) |`, '', 'Manual-review points: **0**. Teacher-graded points: **0**. Required unscored checkpoints (0 points, count toward completion only): ' + W.CHECKS.map(c => c.id + ' (' + clean(c.topic) + ')').join('; ') + '. Required unscored activities (count toward completion only): ' + W.ACTIVITIES.map(a => a.title).join('; ') + '.', '');
 c.push('## 2. Coverage matrix', '', '| # | Objective / topic | Source file (slide unverified) | Activity | Scored evidence (items) | Points | Cognitive demand F/A/D | Answer rationale / notes |', '|---|---|---|---|---|---|---|---|');
 rows.forEach((r, i) => { const items = r[3], pts = items.reduce((s, it) => s + it.pts, 0), d = items.reduce((o, it) => { const x = dem(it); o.F += x.F; o.A += x.A; o.D += x.D; return o; }, { F: 0, A: 0, D: 0 }); c.push(`| ${i + 1} | ${r[0]} | ${r[1]} | ${r[2]} | ${items.length ? items.map(x => x.id).join(', ') : '(unscored: clarification)'} | ${items.length ? fmt(pts) : 0} | ${fmt(d.F)}/${fmt(d.A)}/${fmt(d.D)} | ${r[4]} |`); });
 c.push('', 'Points can appear in more than one row when an item assesses more than one objective; row totals are not additive.', '', 'Instructional content intentionally **not** graded as recall: logistical slide directions, historical trivia, exact habit-timing statistics, SMART history, and prevalence percentages from the slides (original studies not verified; see CONTENT_NOTES.md).', '');

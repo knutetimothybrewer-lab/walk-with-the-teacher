@@ -61,6 +61,33 @@
     ]
   });
 
+  /* ---------- Ripple chain (required checkpoint, no points) ----------
+   * Follows a change two links down the chain and picks a small action that keeps it helpful. Worth 0 points: the 12 Hub points are unchanged. */
+  function chain(id, ctx, first, second, matrix, keep) {
+    return V(id, ctx, [
+      P('first', 'Step 1 · Pick a first ripple into a DIFFERENT dimension', 'radio', first, { hint: 'The first ripple must land in another dimension and be plausible for this person.' }),
+      P('second', 'Step 2 · Pick the next link that follows from Step 1', 'radio', second, { dep: 'first', matrix: matrix, hint: 'The next link has to grow out of the ripple you chose in Step 1. A true statement about a different ripple does not fit.' }),
+      P('keep', 'Step 3 · Which small action best keeps the chain helpful?', 'radio', keep, { hint: 'Pick a small, feasible action that protects what is going well and plans for what could strain.' })
+    ]);
+  }
+  W.defCheck({
+    id: 'ck.m1.chain', m: 1, st: '1.4', topic: 'Follow a ripple chain two links deep', src: 'Dimensions_of_Wellness deck + curriculum spec (Dimensions overlap)', kind: 'form',
+    hint: 'Start from the main dimension. Ask what changes next, and then what changes because of that.',
+    why: 'Dimensions overlap, and a ripple can keep travelling: one change affects another dimension, which affects a third. Ripples can help or strain. A strong answer names a different dimension, follows the link one step at a time, and adds a small, feasible action that keeps the chain helpful.',
+    variants: [
+      chain('ck.m1.chain.a', '**Priya** (fictional) joins the school band. Rehearsals are Tuesday and Thursday, 3:30 to 5:30 p.m., and she makes two new friends there. Her main dimension is **Social**. Follow the ripple one link at a time.',
+        [['a', 'Emotional: belonging and pride make her mood steadier', 1], ['b', 'Mental: learning new music builds focus and memory', 1], ['c', 'Physical: late rehearsals push dinner and homework later, so sleep can shrink', 1], ['d', 'Environmental: the band room changes the school’s weather', 0], ['e', 'None: joining a club only affects friendships', 0]],
+        [['m1', 'Because she feels she belongs, she is more willing to ask a teacher for help, which eases school stress.', 0], ['m2', 'Sharper focus from practicing music carries over to homework, so she finishes sooner and can wind down earlier.', 0], ['m3', 'Less sleep makes her more irritable, which can strain the new friendships.', 0], ['m4', 'A louder school day makes the weather colder.', 0], ['m5', 'Nothing else can follow from Step 1.', 0]],
+        { a: { m1: 1 }, b: { m2: 1 }, c: { m3: 1 } },
+        [['k1', 'On rehearsal days, set a dinner time and a lights-out time, and start homework in a free period.', 1], ['k2', 'Quit band so nothing in her week can change.', 0], ['k3', 'Ignore it; ripple effects sort themselves out.', 0], ['k4', 'Do homework after midnight so rehearsal is never affected.', 0]]),
+      chain('ck.m1.chain.b', '**Marcus** (fictional) starts walking the 15 minutes to school with a neighbor each morning instead of getting a ride. His main dimension is **Physical**. Follow the ripple one link at a time.',
+        [['a', 'Mental: the morning movement helps him feel alert and ready to focus', 1], ['b', 'Emotional: fresh air and a steady routine lift his mood', 1], ['c', 'Social: the daily conversation builds a friendship', 1], ['d', 'Environmental: walking changes the temperature inside the classroom', 0], ['e', 'None: walking only affects his legs', 0]],
+        [['m1', 'Feeling alert in first period helps him follow lessons, so homework takes less time.', 0], ['m2', 'A steadier mood makes it easier to stay patient with his family in the morning.', 0], ['m3', 'A closer friendship gives him someone to talk with when school feels stressful.', 0], ['m4', 'Walking makes his grades go up automatically.', 0], ['m5', 'Nothing else can follow from Step 1.', 0]],
+        { a: { m1: 1 }, b: { m2: 1 }, c: { m3: 1 } },
+        [['k1', 'Pick a regular leave-by time, keep the walking partner, and plan a rainy-day backup such as the bus.', 1], ['k2', 'Stop walking so nothing changes.', 0], ['k3', 'Walk only when it feels like it and skip any plan.', 0], ['k4', 'Leave five minutes before the bell and run the whole way.', 0]])
+    ]
+  });
+
   /* ---------- Unscored overlap exploration (required activity, no points) ---------- */
   W.defActivity({ id: 'overlap', m: 1, title: 'Overlap Lab exploration (unscored)' });
   W.OVERLAP = [

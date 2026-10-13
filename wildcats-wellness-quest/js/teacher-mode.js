@@ -68,18 +68,28 @@
       W.DECISIONS.forEach(function (d) { if (!state.sim.picks[d.id]) state.sim.picks[d.id] = 'A'; });
       state.sim.finished = true;
     }
+    if (W.ACTIVITIES.some(function (a) { return a.id === 'playWeek2' && pred(a); })) {
+      W.DECISIONS2.forEach(function (d) { if (!state.sim2.picks[d.id]) state.sim2.picks[d.id] = 'A'; });
+      state.sim2.finished = true;
+    }
+    if (W.ACTIVITIES.some(function (a) { return a.id === 'myPlan' && pred(a); }) && !W.PLAN.ready(state.reflections.plan)) {
+      var PL = W.PLAN;
+      state.reflections.plan = { rate: { r1: 3, r2: 3, r3: 3, r4: 3, r5: 3 }, dim: 'phys', act: 'a2', cue: 'c2', obs: 'o1', back: 'b1', days: [0, 2, 4], why: '', saved: true };
+    }
   }
   T.fillStage = function (state, stage) {
     W.itemsForStage(stage.id).forEach(function (it) { doItem(state, it); });
     if (stage.kind === 'overlap') doActivities(state, function (a) { return a.id === 'overlap'; });
     if (stage.kind === 'play') doActivities(state, function (a) { return a.id === 'playWeek'; });
+    if (stage.kind === 'play2') doActivities(state, function (a) { return a.id === 'playWeek2'; });
+    if (stage.kind === 'myplan') doActivities(state, function (a) { return a.id === 'myPlan'; });
   };
   T.fillMission = function (state, m) {
-    W.ITEMS.filter(function (i) { return i.m === m; }).forEach(function (it) { doItem(state, it); });
+    W.ITEMS.concat(W.CHECKS).filter(function (i) { return i.m === m; }).forEach(function (it) { doItem(state, it); });
     doActivities(state, function (a) { return a.m === m; });
   };
   T.fillAll = function (state) {
-    W.ITEMS.forEach(function (it) { doItem(state, it); });
+    W.ITEMS.concat(W.CHECKS).forEach(function (it) { doItem(state, it); });
     doActivities(state, function () { return true; });
   };
 

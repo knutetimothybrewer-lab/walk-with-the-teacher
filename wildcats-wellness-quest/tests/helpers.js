@@ -13,10 +13,11 @@ window.__T = {
     }); return r;
   },
   answerItem(id, mode) { // mode: 'best' | 'worst' | 'wrongfirst'
-    const W = window.WWQ, P = W.Policy, St = W.Store, st = W.App.state, it = W.ITEM_BY_ID[id], rec = St.ensureItem(st, id);
+    const W = window.WWQ, P = W.Policy, St = W.Store, st = W.App.state, it = (W.ITEM_BY_ID[id] || W.CHECK_BY_ID[id]), rec = St.ensureItem(st, id);
     while (!rec.finalized) { if (rec.attempts.length && !rec.retryReady) P.startRetry(it, rec); const dir = mode === 'best' || (mode === 'wrongfirst' && rec.attempts.length) ? 1 : -1; P.submit(it, rec, this.extreme(P.currentVariant(it, rec), dir)); }
   },
-  completeMission(m, mode) { const W = window.WWQ; W.ITEMS.filter(i => i.m === m).forEach(i => this.answerItem(i.id, mode || 'best')); W.ACTIVITIES.filter(a => a.m === m).forEach(a => W.App.state.progress.activities[a.id] = true); if (m === 6) { W.DECISIONS.forEach(d => { W.App.state.sim.picks[d.id] = 'A'; }); W.App.state.sim.finished = true; } },
+  completeMission(m, mode) { const W = window.WWQ; W.ITEMS.concat(W.CHECKS).filter(i => i.m === m).forEach(i => this.answerItem(i.id, mode || 'best')); W.ACTIVITIES.filter(a => a.m === m).forEach(a => W.App.state.progress.activities[a.id] = true); if (m === 6) { W.DECISIONS.forEach(d => { W.App.state.sim.picks[d.id] = 'A'; }); W.App.state.sim.finished = true; W.DECISIONS2.forEach(d => { W.App.state.sim2.picks[d.id] = 'A'; }); W.App.state.sim2.finished = true; }
+    if (m === 7) { W.App.state.reflections.plan = { rate: { r1: 3, r2: 3, r3: 3, r4: 3, r5: 3 }, dim: 'phys', act: 'a2', cue: 'c2', obs: 'o1', back: 'b1', days: [0, 2, 4], why: '', saved: true }; } },
   start(alias) { const W = window.WWQ, st = W.App.state; st.student.alias = alias || 'tester'; st.progress.started = true; st.progress.howto = true; st.progress.activities.tutorial = true; },
   go(m, s) { window.WWQ.App.save(true); window.WWQ.App.go(s ? { m, s } : { view: m }); }
 };`;

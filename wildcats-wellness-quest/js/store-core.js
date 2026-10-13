@@ -34,9 +34,9 @@
       session: { id: St.newSessionId(), createdAt: now, status: 'ACTIVE', submittedAt: null, resetCount: extra.resetCount || 0, reset: extra.reset || null },
       student: { alias: '', period: '', code: '', avatar: 'a1' },
       progress: { pos: { m: 0, s: '0.1' }, started: false, activities: {}, view: 'stage' },
-      items: {}, practice: { tut: P.newRec() }, optPractice: {},
-      sim: { picks: {}, finished: false, compare: null },
-      reflections: { m3: '', m7: '', share: false },
+      items: {}, checks: {}, practice: { tut: P.newRec() }, optPractice: {},
+      sim: { picks: {}, finished: false, compare: null }, sim2: { picks: {}, finished: false },
+      reflections: { m3: '', m7: '', share: false, plan: null },
       settings: { motion: 'auto', textScale: 1, pacing: false },
       timing: { startedAt: now, beganAt: '', missions: {} },
       meta: { savedAt: now, saveCount: 0, imports: [] },
@@ -46,12 +46,19 @@
   St.ensureItem = function (state, id) {
     // practice records live outside state.items so they can never enter scoring, completion or the exported grade record
     if (id === 'pr.tut') return state.practice.tut;
+    // checkpoints (required, unscored) live outside state.items for the same reason: they can never enter scoring
+    if (id.indexOf('ck.') === 0) { state.checks = state.checks || {}; return state.checks[id] || (state.checks[id] = P.newRec()); }
     if (id.indexOf('po.') === 0) { state.optPractice = state.optPractice || {}; return state.optPractice[id] || (state.optPractice[id] = P.newRec()); }
     if (!state.items[id]) state.items[id] = P.newRec(); return state.items[id];
   };
 
+  /* Read a record without creating it (scored items, checkpoints). */
+  St.peek = function (state, id) { return (id.indexOf('ck.') === 0 ? (state.checks || {})[id] : state.items[id]) || null; };
+
   St.hasProgress = function (state) {
     if (Object.keys(state.items).some(function (k) { return state.items[k].attempts.length; })) return true;
+    if (Object.keys(state.checks || {}).some(function (k) { return state.checks[k].attempts.length; })) return true;
+    if (Object.keys((state.sim2 || {}).picks || {}).length) return true;
     if (Object.keys(state.progress.activities).length) return true;
     return !!Object.keys(state.sim.picks || {}).length;
   };
@@ -96,12 +103,10 @@
     ['view'].forEach(function (k) { out.progress.view = ['stage', 'map', 'review'].indexOf(pr.view) >= 0 ? pr.view : 'stage'; });
     var acts = U.isObj(pr.activities) ? pr.activities : {};
     W.ACTIVITIES.forEach(function (a) { if (acts[a.id] === true) out.progress.activities[a.id] = true; });
-    // items: recompute every attempt from the key
-    var items = U.isObj(raw.items) ? raw.items : {};
-    Object.keys(items).forEach(function (id) {
-      var it = W.ITEM_BY_ID[id]; if (!it) { problems.push('unknown item ' + id); return; }
-      var rec = P.newRec(), src = items[id]; if (!U.isObj(src) || !Array.isArray(src.attempts)) { problems.push('bad record ' + id); return; }
-      var limit = P.limitFor(it);
+    // items and checkpoints: recompute every attempt from the key
+    function rebuild(id, it, src, store) {
+      var rec = P.newRec(); if (!U.isObj(src) || !Array.isArray(src.attempts)) { problems.push('bad record ' + id); return; }
+      var limit = P.limitFor(it), unscored = !!it.unscored;
       if (src.attempts.length > limit) { problems.push(id + ': more attempts than allowed'); src = { attempts: src.attempts.slice(0, limit), finalized: src.finalized, finalizedReason: src.finalizedReason, retryReady: src.retryReady }; }
       var bad = false;
       src.attempts.forEach(function (a, idx) {
@@ -119,26 +124,40 @@
       var n = rec.attempts.length;
       if (n) {
         var last = rec.attempts[n - 1];
-        var shouldFinal = n >= limit || last.raw >= 1 - 1e-9 || rec.best >= it.pts * P.capFor(n + 1) - 1e-9;
+        var noGain = !unscored && rec.best >= it.pts * P.capFor(n + 1) - 1e-9;
+        var shouldFinal = n >= limit || last.raw >= 1 - 1e-9 || noGain;
         if (shouldFinal || src.finalized === true) {
           rec.finalized = true; rec.finalizedAt = str(src.finalizedAt, 40) || last.at;
-          rec.finalizedReason = n >= limit ? 'exhausted' : last.raw >= 1 - 1e-9 ? (n === 1 ? 'full' : 'full-on-retry') : rec.best >= it.pts * P.capFor(n + 1) - 1e-9 ? 'no-gain' : 'kept';
+          rec.finalizedReason = n >= limit ? 'exhausted' : last.raw >= 1 - 1e-9 ? (n === 1 ? 'full' : 'full-on-retry') : noGain ? 'no-gain' : 'kept';
         } else rec.retryReady = src.retryReady === true;
       } else if (out.session.timedOut && src.finalized === true) { rec.finalized = true; rec.finalizedReason = 'timeout'; rec.finalizedAt = str(src.finalizedAt, 40); }
       if (!rec.finalized && U.isObj(src.draft)) rec.draft = St.cleanDraft(it, rec, src.draft);
-      out.items[id] = rec;
+      store[id] = rec;
+    }
+    var items = U.isObj(raw.items) ? raw.items : {};
+    Object.keys(items).forEach(function (id) {
+      var it = W.ITEM_BY_ID[id]; if (!it) { problems.push('unknown item ' + id); return; }
+      rebuild(id, it, items[id], out.items);
+    });
+    var checks = U.isObj(raw.checks) ? raw.checks : {};
+    Object.keys(checks).forEach(function (id) {
+      var ck = W.CHECK_BY_ID[id]; if (!ck) { problems.push('unknown checkpoint ' + id); return; }
+      rebuild(id, ck, checks[id], out.checks);
     });
     if (out.__bad) return { ok: false, problems: problems };
     var sim = U.isObj(raw.sim) ? raw.sim : {}, picks = U.isObj(sim.picks) ? sim.picks : {};
     W.DECISIONS.forEach(function (d) { if (['A', 'B', 'C'].indexOf(picks[d.id]) >= 0) out.sim.picks[d.id] = picks[d.id]; });
     out.sim.finished = sim.finished === true && Object.keys(out.sim.picks).length === W.DECISIONS.length;
+    var sim2 = U.isObj(raw.sim2) ? raw.sim2 : {}, picks2 = U.isObj(sim2.picks) ? sim2.picks : {};
+    (W.DECISIONS2 || []).forEach(function (d) { if (['A', 'B', 'C'].indexOf(picks2[d.id]) >= 0) out.sim2.picks[d.id] = picks2[d.id]; });
+    out.sim2.finished = sim2.finished === true && Object.keys(out.sim2.picks).length === (W.DECISIONS2 || []).length;
     out.sim.compare = U.isObj(sim.compare) && W.DECISIONS.some(function (d) { return d.id === sim.compare.id; }) && ['A', 'B', 'C'].indexOf(sim.compare.to) >= 0 ? { id: sim.compare.id, to: sim.compare.to } : null;
     // practice (never scored)
     if (U.isObj(raw.practice) && U.isObj(raw.practice.tut) && Array.isArray(raw.practice.tut.attempts)) {
       var ps = St.rebuildPractice(raw.practice.tut); if (ps) out.practice.tut = ps;
     }
     var rf = U.isObj(raw.reflections) ? raw.reflections : {};
-    out.reflections = { m3: str(rf.m3, 1200), m7: str(rf.m7, 1200), share: rf.share === true };
+    out.reflections = { m3: str(rf.m3, 1200), m7: str(rf.m7, 1200), share: rf.share === true, plan: W.PLAN ? W.PLAN.clean(rf.plan) : null };
     var se = U.isObj(raw.settings) ? raw.settings : {};
     out.settings = { motion: ['auto', 'on', 'off'].indexOf(se.motion) >= 0 ? se.motion : 'auto', textScale: [1, 1.125, 1.25].indexOf(se.textScale) >= 0 ? se.textScale : 1, pacing: se.pacing === true };
     var tm = U.isObj(raw.timing) ? raw.timing : {};
@@ -147,7 +166,7 @@
     out.meta = { savedAt: str(raw.meta && raw.meta.savedAt, 40) || U.nowISO(), saveCount: Math.max(0, (raw.meta && raw.meta.saveCount) | 0), imports: Array.isArray(raw.meta && raw.meta.imports) ? raw.meta.imports.slice(-10).map(function (x) { return { at: str(x.at, 40), kind: str(x.kind, 40) }; }) : [] };
     if (out.session.status === 'SUBMITTED') {
       if (!opts.allowSubmitted) return { ok: false, problems: ['submitted record not allowed here'] };
-      var allDone = W.ITEMS.every(function (i) { return out.items[i.id] && out.items[i.id].finalized; });
+      var allDone = W.ITEMS.every(function (i) { return out.items[i.id] && out.items[i.id].finalized; }) && W.CHECKS.every(function (i) { return out.checks[i.id] && out.checks[i.id].finalized; });
       if (!allDone && !out.session.timedOut) return { ok: false, problems: ['submitted record has unfinalized items'] };
       var rep = W.Report.build(out, { submittedAt: out.session.submittedAt });
       out.final = { submittedAt: out.session.submittedAt, report: rep };
@@ -186,8 +205,9 @@
   St.canSubmit = function (state) {
     if (state.session.status !== 'ACTIVE') return { ok: false, reason: 'already submitted' };
     var open = W.ITEMS.filter(function (i) { return !(state.items[i.id] && state.items[i.id].finalized); });
+    var openChecks = W.CHECKS.filter(function (i) { return !((state.checks || {})[i.id] && state.checks[i.id].finalized); });
     var acts = W.ACTIVITIES.filter(function (a) { return !state.progress.activities[a.id]; });
-    return { ok: !open.length && !acts.length, openItems: open.map(function (i) { return i.id; }), openActivities: acts.map(function (a) { return a.id; }) };
+    return { ok: !open.length && !openChecks.length && !acts.length, openItems: open.map(function (i) { return i.id; }), openChecks: openChecks.map(function (i) { return i.id; }), openActivities: acts.map(function (a) { return a.id; }) };
   };
   /* opts.force (time limit reached): lock the session even though work is unfinished. Unfinished items keep whatever they
      have already earned (0 if never submitted) and are marked 'timeout'. */
@@ -196,7 +216,7 @@
     if (state.session.status === 'SUBMITTED' || (existing && existing.state && existing.state.session && existing.state.session.id === state.session.id)) return { ok: true, already: true, state: state };
     if (force) {
       state.session.timedOut = true;
-      W.ITEMS.forEach(function (i) { var rec = St.ensureItem(state, i.id); if (!rec.finalized) P.finalize(rec, 'timeout'); });
+      W.ITEMS.concat(W.CHECKS).forEach(function (i) { var rec = St.ensureItem(state, i.id); if (!rec.finalized) P.finalize(rec, 'timeout'); });
     } else { var can = St.canSubmit(state); if (!can.ok) return { ok: false, reason: 'incomplete', detail: can }; }
     state.session.status = 'SUBMITTED'; state.session.submittedAt = U.nowISO(); state.progress.view = 'review';
     var rep = W.Report.build(state, { submittedAt: state.session.submittedAt });
@@ -237,6 +257,12 @@
         var a = inc.items[id], b = merged.items[id];
         if (!b || a.attempts.length > b.attempts.length || (a.attempts.length === b.attempts.length && a.finalized && !b.finalized)) { merged.items[id] = a; changed++; }
       });
+      Object.keys(inc.checks || {}).forEach(function (id) {
+        var a = inc.checks[id], b = merged.checks && merged.checks[id]; merged.checks = merged.checks || {};
+        if (!b || a.attempts.length > b.attempts.length || (a.attempts.length === b.attempts.length && a.finalized && !b.finalized)) { merged.checks[id] = a; changed++; }
+      });
+      Object.keys((inc.sim2 || {}).picks || {}).forEach(function (k) { merged.sim2 = merged.sim2 || { picks: {}, finished: false }; if (!merged.sim2.picks[k]) { merged.sim2.picks[k] = inc.sim2.picks[k]; changed++; } });
+      if (inc.reflections && inc.reflections.plan && !(merged.reflections && merged.reflections.plan)) { merged.reflections = merged.reflections || {}; merged.reflections.plan = inc.reflections.plan; changed++; }
       Object.keys(inc.progress.activities).forEach(function (k) { if (!merged.progress.activities[k]) { merged.progress.activities[k] = true; changed++; } });
       Object.keys(inc.sim.picks).forEach(function (k) { if (!merged.sim.picks[k]) { merged.sim.picks[k] = inc.sim.picks[k]; changed++; } });
       if (!merged.student.alias && inc.student.alias) merged.student = inc.student;

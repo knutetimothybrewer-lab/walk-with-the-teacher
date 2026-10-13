@@ -12,11 +12,15 @@ W.MISSIONS.forEach(m => {
     const items = W.itemsForStage(st.id); if (items.length) submits++;
     items.forEach(it => { const v = it.variants[0]; let ctxw = (v.vis && v.vis.type === 'finalcase' && v.vis.show.includes('resp')) ? 8 : words(v.ctx); const vis = v.vis; if (vis && vis.type === 'post') ctxw += words(vis.post.text) + Object.values(vis.post.tabs).reduce((a, t) => a + words(t), 0);
       if (vis && vis.type === 'finalcase') { const c = W.FINALCASES[vis.idx], sh = vis.show; if (sh.includes('resp')) ctxw += words(c.resp); if (sh.includes('pattern')) ctxw += c.pattern.reduce((a, p) => a + words(p[1]), 0); if (sh.includes('goal')) ctxw += words(c.goal); if (sh.includes('post')) ctxw += words(c.post.text) + Object.values(c.post.tabs).reduce((a, t) => a + words(t), 0); }
+      if (vis && vis.type === 'plancase') { const c = W.PLANCASES[vis.idx]; ctxw += words(c.resp) + c.pattern.reduce((a, p) => a + words(p[1]), 0) + words(c.goal); }
+      if (vis && vis.type === 'cmpweeks') ctxw += 80;
       if (vis && vis.type === 'reading') ctxw += 20; if (vis && vis.type === 'caseweek') ctxw += 60; if (vis && vis.type === 'calc') ctxw += 40;
       w += ctxw + partWords(v); choices += v.parts.length; extra += RETRY_RATE * (ctxw + partWords(v)); }); });
   if (m.id === 2) w += 170 * 0.5; // reference panel (students consult about half of it)
   if (m.id === 1) { w += 90; choices += 3; }          // overlap lab lenses
-  if (m.id === 6) { w += W.DECISIONS.reduce((a, d) => a + words(d.scene) + Object.values(d.opts).reduce((x, o) => x + words(o), 0), 0); choices += 12; submits += 1; }
+  if (m.id === 6) { w += W.DECISIONS.reduce((a, d) => a + words(d.scene) + Object.values(d.opts).reduce((x, o) => x + words(o), 0), 0); choices += 12; submits += 1;
+    w += W.DECISIONS2.reduce((a, d) => a + words(d.scene) + Object.values(d.opts).reduce((x, o) => x + words(o), 0), 0); choices += W.DECISIONS2.length; submits += 1; }   // second pass: Maya's week
+  if (m.id === 7) { const PL = W.PLAN; w += PL.rate.reduce((a, r) => a + words(r[1]), 0) + 120; choices += PL.rate.length + 6; submits += 1; }   // 7-day plan builder
   if (m.id === 0) { w += 250; choices += 2; submits += 1; }
   const readMin = (w + extra) / wpm, actMin = (choices * SEC_PER_CHOICE + submits * SEC_PER_SUBMIT) / 60, tot = readMin + actMin; totalMin += tot;
   rows.push({ id: m.id, title: m.title, words: Math.round(w), retryWords: Math.round(extra), choices, readMin: readMin.toFixed(1), actMin: actMin.toFixed(1), est: tot.toFixed(1), target: m.est });

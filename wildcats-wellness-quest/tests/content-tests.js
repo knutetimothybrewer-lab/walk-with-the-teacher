@@ -141,6 +141,50 @@ console.log('== Dependency / compatibility scoring');
   ok(P.scoreResponse(post, { rating: 'notc', evid: ['e', 'f'] }).raw < 0.5, 'media: right rating, irrelevant evidence < half');
 })();
 
+
+console.log('== Checkpoints (required, unscored)');
+(function () {
+  ok(W.CHECKS.length >= 4, 'checkpoints defined (' + W.CHECKS.length + ')');
+  W.CHECKS.forEach(ck => {
+    ok(ck.pts === 0 && ck.unscored === true, ck.id + ' is worth 0 points');
+    ok(!!ck.hint && !!ck.why && !!ck.src && !!ck.topic, ck.id + ' has hint/why/src/topic');
+    ok(ck.variants.length >= 2, ck.id + ' has a retry variant (' + ck.variants.length + ')');
+    ok(W.MISSIONS.some(m => m.id === ck.m && m.stages.some(s => s.id === ck.st)), ck.id + ' belongs to a stage');
+    ok(!W.ITEM_BY_ID[ck.id], ck.id + ' is not a scored item');
+    const sig = v => v.parts.map(p => p.id + ':' + p.type).join('|'), base = sig(ck.variants[0]);
+    ck.variants.forEach(v => {
+      ok(sig(v) === base, ck.id + '/' + v.id + ' same part structure as variant 1');
+      v.parts.forEach(p => {
+        ok(!!p.hint, v.id + '.' + p.id + ' has a hint');
+        const ids = p.opts.map(o => o.id); ok(new Set(ids).size === ids.length, v.id + '.' + p.id + ' unique option ids');
+        const texts = p.opts.map(o => o.t); ok(new Set(texts).size === texts.length, v.id + '.' + p.id + ' unique option text');
+      });
+      let n = 0, perfect = 0, max = 0;
+      for (const r of combos(v.parts, 0, {})) { const sc = P.scoreResponse(v, r); ok(sc.valid, v.id + ' enumerated response valid'); n++; if (sc.raw > max) max = sc.raw; if (near(sc.raw, 1)) perfect++; }
+      ok(near(max, 1), v.id + ' a perfect response exists');
+      ok(perfect / n < 0.35, v.id + ' is not easily guessed (' + perfect + ' of ' + n + ' combinations are perfect)');
+    });
+  });
+  // a checkpoint never changes the score and never finalizes early
+  const ck = W.CHECKS[0], rec = P.newRec();
+  P.submit(ck, rec, { first: 'd', second: 'm4', keep: 'k2' });
+  ok(!rec.finalized && rec.best === 0, 'a wrong checkpoint try is not final and earns 0 (retry available)');
+  P.startRetry(ck, rec); const best = {}; ck.variants[1].parts.forEach(p => { best[p.id] = p.opts.slice().sort((a, b) => P.optionCredit(p, b.id, best) - P.optionCredit(p, a.id, best))[0].id; });
+  P.submit(ck, rec, best); ok(rec.finalized && rec.best === 0, 'a perfect retry finalizes and still earns 0 points');
+  const full = P.newRec(); const one = {}; ck.variants[0].parts.forEach(p => { one[p.id] = p.opts.slice().sort((a, b) => P.optionCredit(p, b.id, one) - P.optionCredit(p, a.id, one))[0].id; });
+  P.submit(ck, full, one); ok(full.finalized && full.finalizedReason === 'full', 'a perfect first try finalizes');
+  // second-pass week
+  ok(W.DECISIONS2.length === 6, '6 second-pass decisions');
+  const cells2 = new Set(W.DECISIONS2.map(d => d.cat + d.day)); ok(cells2.size === 6, 'no second-pass cell used twice');
+  W.DECISIONS2.forEach(d => ok(Object.keys(d.opts).sort().join('') === 'ABC' && !!d.ripple && !!d.scene, d.id + ' has scene, ripple and A/B/C'));
+  const mw = S.makeWeek(W.CASEWEEKS.maya.rows); let w2 = mw; W.DECISIONS2.forEach(d => { w2 = S.setCell(w2, d.cat, d.day, 'A'); }); ok(S.validWeek(w2) && S.total(w2) > S.total(mw), 'all-A second pass beats Maya’s baseline');
+  // plan builder
+  const PL = W.PLAN; ok(PL.ready(null) === false, 'empty plan is not ready');
+  const good = PL.clean({ rate: { r1: 3, r2: 2, r3: 4, r4: 1, r5: 3 }, dim: 'soc', act: 'a3', cue: 'c1', obs: 'o2', back: 'b4', days: [0, 3, 5, 5, 99], why: 'x'.repeat(500) });
+  ok(PL.ready(good) && good.days.length === 3 && good.why.length === 300, 'plan sanitizer keeps valid picks, de-duplicates days and trims text');
+  ok(!PL.ready(PL.clean({ rate: { r1: 3 }, dim: 'soc', act: 'zzz' })), 'plan with invalid or missing picks is not ready');
+})();
+
 console.log('== Simulation model');
 (function () {
   ok(S.WEEK_MAX === 245 && S.DAILY_MAX === 35, 'daily max 35, week max 245');
@@ -187,8 +231,8 @@ console.log('== Misc');
   ok(JSON.stringify(a) === JSON.stringify(b), 'shuffle deterministic'); ok(JSON.stringify(a) !== JSON.stringify(c) || true, 'shuffle varies by seed');
   ok(W.ITEMS.every(i => W.ITEM_BY_ID[i.id] === i), 'item index consistent');
   ok(W.ITEMS.every(i => W.MISSIONS.some(m => m.id === i.m && m.stages.some(s => s.id === i.st))), 'every item belongs to a stage');
-  ok(W.ACTIVITIES.length === 3 || W.ACTIVITIES.length === 2, 'activities defined (' + W.ACTIVITIES.length + ')');
-  ok(W.estTotal() === 36, 'pacing estimate totals 36 minutes');
+  ok(W.ACTIVITIES.length === 5, 'activities defined (' + W.ACTIVITIES.length + ')');
+  ok(W.estTotal() >= 55 && W.estTotal() <= 65, 'pacing estimate totals about an hour (' + W.estTotal() + ' minutes)');
   // option text lengths readable
   let maxOpt = 0; W.ITEMS.forEach(i => i.variants.forEach(v => v.parts.forEach(p => p.opts.forEach(o => { if (o.t.length > maxOpt) maxOpt = o.t.length; })))); ok(maxOpt < 260, 'longest option < 260 chars (' + maxOpt + ')');
 })();

@@ -8,16 +8,16 @@
 
 | Mission | Title | Items | Points | Blueprint | Pacing target (min) |
 |---|---|---|---|---|---|
-| 1 | Whole-Health Hub | 11 | 12 | 12 (match) | 4 |
-| 2 | Know Your Numbers | 13 | 16 | 16 (match) | 5 |
-| 3 | Habit Workshop | 7 | 18 | 18 (match) | 5 |
-| 4 | Fact or Fiction Media Lab | 6 | 18 | 18 (match) | 5 |
-| 5 | STOP Crossroads | 3 | 14 | 14 (match) | 4 |
-| 6 | Thousand Choices Simulator | 5 | 16 | 16 (match) | 7 |
-| 7 | Final Transfer Challenge | 4 | 6 | 6 (match) | 4 |
-| | **Total** | 49 | **100** | 100 | 36 (incl. 2 min launch) |
+| 1 | Whole-Health Hub | 11 | 12 | 12 (match) | 6 |
+| 2 | Know Your Numbers | 13 | 16 | 16 (match) | 7 |
+| 3 | Habit Workshop | 7 | 18 | 18 (match) | 6 |
+| 4 | Fact or Fiction Media Lab | 6 | 18 | 18 (match) | 7 |
+| 5 | STOP Crossroads | 3 | 14 | 14 (match) | 8 |
+| 6 | Thousand Choices Simulator | 5 | 16 | 16 (match) | 13 |
+| 7 | Final Transfer Challenge | 4 | 6 | 6 (match) | 8 |
+| | **Total** | 49 | **100** | 100 | 57 (incl. 2 min launch) |
 
-Manual-review points: **0**. Teacher-graded points: **0**. Required unscored activities (count toward completion only): Overlap Lab exploration (unscored); Play Jordan’s week (unscored); Launch practice (unscored).
+Manual-review points: **0**. Teacher-graded points: **0**. Required unscored checkpoints (0 points, count toward completion only): ck.m1.chain (Follow a ripple chain two links deep); ck.m5.c (STOP: setting limits and speaking up); ck.m6.cmp (Compare two weeks: totals versus domain balance); ck.m7.plan (Second case: claim, evidence, reasoning and a SMART plan). Required unscored activities (count toward completion only): Overlap Lab exploration (unscored); Play Jordan’s week (unscored); Play Maya’s week, the second pass (unscored); My 7-day plan and self-check (unscored); Launch practice (unscored).
 
 ## 2. Coverage matrix
 

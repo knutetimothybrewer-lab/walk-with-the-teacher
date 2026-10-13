@@ -11,15 +11,16 @@
         { id: '0.2', title: 'How this works', kind: 'howto' },
         { id: '0.3', title: 'Practice (not graded)', kind: 'practice' }
       ] },
-    { id: 1, short: 'Hub', title: 'Whole-Health Hub', place: 'hub', placeName: 'Wellness Hub', est: 4, color: 'teal', max: 12,
+    { id: 1, short: 'Hub', title: 'Whole-Health Hub', place: 'hub', placeName: 'Wellness Hub', est: 6, color: 'teal', max: 12,
       intro: 'Sort situations by the dimension MOST directly involved, then trace a ripple effect.',
       guide: 'Wellness is active and ongoing, not just the absence of illness.',
       stages: [
         { id: '1.1', title: 'Sort the situations', kind: 'sort', example: 1 },
         { id: '1.2', title: 'Overlap Lab', kind: 'overlap' },
-        { id: '1.3', title: 'Ripple effect', kind: 'form' }
+        { id: '1.3', title: 'Ripple effect', kind: 'form' },
+        { id: '1.4', title: 'Ripple chain', kind: 'form' }
       ] },
-    { id: 2, short: 'Numbers', title: 'Know Your Numbers', place: 'nurse', placeName: 'Nurse’s Office', est: 5, color: 'coral', max: 16,
+    { id: 2, short: 'Numbers', title: 'Know Your Numbers', place: 'nurse', placeName: 'Nurse’s Office', est: 7, color: 'coral', max: 16,
       intro: 'Read fictional adult check-up numbers with the reference panel. A reading is a reason for follow-up, never an automatic diagnosis.',
       guide: 'Lower is not always better. An unusual reading means follow up, not panic.',
       stages: [
@@ -28,7 +29,7 @@
         { id: '2.3', title: 'Habits and health measures', kind: 'form' },
         { id: '2.4', title: 'Intake desk', kind: 'form' }
       ] },
-    { id: 3, short: 'Habits', title: 'Habit Workshop', place: 'workshop', placeName: 'Habit Workshop', est: 5, color: 'gold', max: 18,
+    { id: 3, short: 'Habits', title: 'Habit Workshop', place: 'workshop', placeName: 'Habit Workshop', est: 6, color: 'gold', max: 18,
       intro: 'Read ratings as information, repair a habit loop, and build a SMART goal.',
       guide: 'A missed day does not erase progress. Habit timing varies by person.',
       stages: [
@@ -38,32 +39,35 @@
         { id: '3.4', title: 'SMART repair', kind: 'form' },
         { id: '3.5', title: 'SMART builder', kind: 'form', example: 3, reflection: true }
       ] },
-    { id: 4, short: 'Media Lab', title: 'Fact or Fiction Media Lab', place: 'lab', placeName: 'Media Lab', est: 5, color: 'violet', max: 18,
+    { id: 4, short: 'Media Lab', title: 'Fact or Fiction Media Lab', place: 'lab', placeName: 'Media Lab', est: 7, color: 'violet', max: 18,
       intro: 'Open every tab on five fictional posts, rate each, and pick the strongest evidence. Some are credible.',
       guide: 'A sales motive deserves scrutiny but does not prove a claim false.',
       stages: [
         { id: '4.1', title: 'Case 1', kind: 'form', example: 4 }, { id: '4.2', title: 'Case 2', kind: 'form' }, { id: '4.3', title: 'Case 3', kind: 'form' },
         { id: '4.4', title: 'Case 4', kind: 'form' }, { id: '4.5', title: 'Case 5', kind: 'form' }, { id: '4.6', title: 'Checklist', kind: 'form' }
       ] },
-    { id: 5, short: 'STOP', title: 'STOP Crossroads', place: 'crossroads', placeName: 'Decision Crossroads', est: 4, color: 'green', max: 14,
+    { id: 5, short: 'STOP', title: 'STOP Crossroads', place: 'crossroads', placeName: 'Decision Crossroads', est: 8, color: 'green', max: 14,
       intro: 'Use STOP: State, Think, Observe, Pick. More than one choice can be responsible.',
       guide: 'Responsibility is not perfection. Asking for support is a responsible choice.',
       stages: [
-        { id: '5.1', title: 'Situation A', kind: 'form', example: 5 }, { id: '5.2', title: 'Situation B', kind: 'form' }, { id: '5.3', title: 'Defend a choice', kind: 'form' }
+        { id: '5.1', title: 'Situation A', kind: 'form', example: 5 }, { id: '5.2', title: 'Situation B', kind: 'form' }, { id: '5.4', title: 'Situation C: limits', kind: 'form' }, { id: '5.3', title: 'Defend a choice', kind: 'form' }
       ] },
-    { id: 6, short: 'Simulator', title: 'Thousand Choices Simulator', place: 'dashboard', placeName: 'Whole-Health Dashboard', est: 7, color: 'indigo', max: 16,
-      intro: 'Play Jordan’s week (not scored), then answer questions about fixed case weeks.',
+    { id: 6, short: 'Simulator', title: 'Thousand Choices Simulator', place: 'dashboard', placeName: 'Whole-Health Dashboard', est: 13, color: 'indigo', max: 16,
+      intro: 'Play Jordan’s week and Maya’s week (not scored), compare them, then answer questions about fixed case weeks.',
       guide: 'These points are fictional teaching weights, not a health score.',
       stages: [
         { id: '6.1', title: 'Play Jordan’s week', kind: 'play', example: 6 },
+        { id: '6.7', title: 'Play Maya’s week', kind: 'play2' },
+        { id: '6.8', title: 'Compare two weeks', kind: 'cmp' },
         { id: '6.2', title: 'Calculate', kind: 'form' }, { id: '6.3', title: 'Trajectory', kind: 'form' }, { id: '6.4', title: 'Overlooked domain', kind: 'form' },
         { id: '6.5', title: 'Small choices, big sums', kind: 'form' }, { id: '6.6', title: 'STOP revision', kind: 'form' }
       ] },
-    { id: 7, short: 'Final', title: 'Final Transfer Challenge', place: 'dashboard', placeName: 'Dashboard Top Floor', est: 4, color: 'navy', max: 6,
-      intro: 'A new case: a misleading post, conflicting duties, a wellness pattern and a goal.',
+    { id: 7, short: 'Final', title: 'Final Transfer Challenge', place: 'dashboard', placeName: 'Dashboard Top Floor', est: 8, color: 'navy', max: 6,
+      intro: 'A new case: a misleading post, conflicting duties, a wellness pattern and a goal. Then a second case, and your own 7-day plan.',
       guide: 'Use facts from the case. Your evidence and reasoning must match your claim.',
       stages: [
-        { id: '7.1', title: 'Three decisions', kind: 'form', example: 7 }, { id: '7.2', title: 'Claim, evidence, reasoning', kind: 'form', reflection: true }
+        { id: '7.1', title: 'Three decisions', kind: 'form', example: 7 }, { id: '7.2', title: 'Claim, evidence, reasoning', kind: 'form', reflection: true },
+        { id: '7.3', title: 'Second case: build a plan', kind: 'form' }, { id: '7.4', title: 'My 7-day plan', kind: 'myplan' }
       ] }
   ];
   W.MISSION = {}; W.MISSIONS.forEach(function (m) { W.MISSION[m.id] = m; });
@@ -78,6 +82,6 @@
 
   // Stage lookup helpers
   W.stageList = function () { var out = []; W.MISSIONS.forEach(function (m) { m.stages.forEach(function (s) { out.push({ m: m, s: s }); }); }); return out; };
-  W.itemsForStage = function (stageId) { return W.ITEMS.filter(function (i) { return i.st === stageId; }); };
+  W.itemsForStage = function (stageId) { return W.ITEMS.concat(W.CHECKS).filter(function (i) { return i.st === stageId; }); };
   W.estTotal = function () { return W.MISSIONS.reduce(function (s, m) { return s + m.est; }, 0); };
 })(typeof window !== 'undefined' ? window : globalThis);

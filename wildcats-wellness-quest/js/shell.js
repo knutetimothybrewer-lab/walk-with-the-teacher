@@ -148,7 +148,7 @@
     var list = h('div.card.stack-sm', h('div.row.between', h('h2', 'Required work'), h('span.chip.' + (can.ok ? 'ok' : 'warn'), comp.done + ' of ' + comp.total + ' submitted')));
     W.MISSIONS.forEach(function (m) { var s = P.missionStatus(state, m.id); if (!s.total) return; list.appendChild(h('div.row.between', { style: { borderBottom: '1px solid var(--line)', padding: '6px 0' } }, h('span', (m.id ? 'Mission ' + m.id + ' · ' : '') + m.title), h('span.row', UI.chip(s.done + ' / ' + s.total, s.complete ? 'ok' : 'warn'), s.complete ? null : UI.btn('Go', { cls: 'sm', onclick: function () { var first = m.stages.filter(function (x) { return !Views.stageDone(x, state); })[0] || m.stages[0]; App().go({ m: m.id, s: first.id }); } })))); });
     wrap.appendChild(list);
-    var open = can.openItems || [];
+    var open = (can.openItems || []).concat(can.openChecks || []);
     if (open.length) wrap.appendChild(h('div.callout.warn', { style: { marginTop: '16px' } }, A.iconEl('alert'), h('div', h('b', open.length + ' item' + (open.length === 1 ? ' is' : 's are') + ' not finished yet. '), 'Submitting is available after every required item is submitted and finished (you may finish an item at any time by keeping your score).')));
     // unused retries (kept items)
     var unused = W.ITEMS.filter(function (it) { var r = state.items[it.id]; return r && P.canReopen(it, r); });
@@ -227,6 +227,12 @@
     wrap.appendChild(h('details.card', { style: { marginTop: '16px' } }, h('summary', { style: { cursor: 'pointer', fontWeight: '800' } }, 'Breakdown by topic'), tb));
     var it = h('table.itemtable', h('thead', h('tr', h('th', 'Item'), h('th', 'Attempts'), h('th', 'First try'), h('th', 'Final'))), h('tbody', rep.items.map(function (i) { return h('tr', h('td', i.id + ' · ' + i.topic), h('td', i.attempts.length + ' / ' + i.attemptLimit), h('td', i.firstAttempt ? U.fmt1(i.firstAttempt.points) : '—'), h('td', U.fmt1(i.best) + ' / ' + i.pts)); })));
     wrap.appendChild(h('details.card', { style: { marginTop: '16px' } }, h('summary', { style: { cursor: 'pointer', fontWeight: '800' } }, 'Every item: attempts, first try and final points'), it));
+    var pl = state.reflections && state.reflections.plan;
+    if (pl && pl.saved && W.PLAN.ready(pl)) {
+      var PL = W.PLAN;
+      wrap.appendChild(h('div.card.plancard', { style: { marginTop: '16px' } }, h('h2', 'My 7-day plan'), h('p.small.muted', 'Your own plan from the last step. It was not graded.'),
+        h('ul', h('li', h('b', 'Focus: '), PL.label(PL.dims, pl.dim)), h('li', h('b', 'Small action: '), PL.label(PL.acts[pl.dim], pl.act)), h('li', h('b', 'When: '), 'After I ' + PL.label(PL.cues, pl.cue) + '.'), h('li', h('b', 'Backup: '), 'If ' + PL.label(PL.obs, pl.obs) + ', then I will ' + PL.label(PL.backs, pl.back) + '.'), h('li', h('b', 'Days: '), pl.days.map(function (i) { return PL.days[i]; }).join(', ') + '.'), pl.why ? h('li', h('b', 'Why it matters: '), pl.why) : null)));
+    }
     if (state.session.reset) wrap.appendChild(h('div.callout.info', { style: { marginTop: '16px' } }, A.iconEl('key'), h('div', h('b', 'Teacher-authorized new attempt. '), 'This session began after a teacher reset on ' + new Date(state.session.reset.at).toLocaleString() + '. This note is recorded locally and is not independently verified.')));
     wrap.appendChild(Sh.practiceSection(state));
     wrap.appendChild(h('div.card.flat', { style: { marginTop: '16px' } }, h('h3', 'How to hand this in'), h('p.small', W.Sync.enabled() ? 'Your result is sent to your teacher automatically (see the box at the top). If it says “Not sent yet,” or your teacher asks for it, press “Download results (JSON)” and hand in that file the way they told you. The printed report can also be saved as a PDF.' : 'Press “Download results (JSON)” and give that file to your teacher the way they told you (for example, upload it to your class assignment). The printed report can also be saved as a PDF. Nothing is sent automatically.')));

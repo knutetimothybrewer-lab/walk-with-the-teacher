@@ -20,7 +20,7 @@ function extremeResponse(v, dir) {
   return r;
 }
 const bestResponse = v => extremeResponse(v, +1), worstResponse = v => extremeResponse(v, -1);
-function answerAll(state, fn) { W.ITEMS.forEach(it => { const rec = St.ensureItem(state, it.id); while (!rec.finalized) { if (rec.attempts.length && !rec.retryReady) P.startRetry(it, rec); P.submit(it, rec, fn(P.currentVariant(it, rec), it, rec)); } }); W.ACTIVITIES.forEach(a => state.progress.activities[a.id] = true); }
+function answerAll(state, fn) { W.ITEMS.concat(W.CHECKS).forEach(it => { const rec = St.ensureItem(state, it.id); while (!rec.finalized) { if (rec.attempts.length && !rec.retryReady) P.startRetry(it, rec); P.submit(it, rec, fn(P.currentVariant(it, rec), it, rec)); } }); W.ACTIVITIES.forEach(a => state.progress.activities[a.id] = true); }
 
 console.log('== Fresh state, save, resume');
 let st = fakeStorage(); ok(St.useStorage(st), 'storage probe ok');

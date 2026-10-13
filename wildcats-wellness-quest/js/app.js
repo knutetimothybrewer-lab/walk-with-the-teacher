@@ -66,7 +66,7 @@
     var st = App.state; if (!st || App.ro() || App.submitting) return;
     App.submitting = true;
     UI.modalStack.slice().forEach(function (m) { m.close(); });
-    W.ITEMS.forEach(function (it) { var rec = St.ensureItem(st, it.id); if (W.ItemsUI.status(it, rec) === 'ready') P.submit(it, rec, W.ItemsUI.responseOf(it, rec)); });
+    W.ITEMS.concat(W.CHECKS).forEach(function (it) { var rec = St.ensureItem(st, it.id); if (W.ItemsUI.status(it, rec) === 'ready') P.submit(it, rec, W.ItemsUI.responseOf(it, rec)); });
     var res = St.submitFinal(st, { force: true });
     App.submitting = false;
     if (!res.ok) return;

@@ -3885,3 +3885,232 @@ Model checks (verified by `tests/content-tests.js`): all-A week = +245, all-B = 
 | 10 | Fri | Peer Pressure/Social Choices (3) | A: Say no, suggest something else, text an adult if pushed. / B: Say “maybe later”; drift away. / C: Take it to fit in. | B |
 | 11 | Sat | Emotional Expression (2) | A: Tell a friend or write it down. / B: Say “I’m fine”; stay busy. / C: Bottle it up, then snap at family. | B |
 | 12 | Sun | Time Outdoors/Nature (1) | A: 20-minute walk with a friend. / B: Sit on the porch 10 minutes. / C: Stay indoors all day. | B |
+
+## Required unscored checkpoints (0 points)
+
+Each checkpoint is required for completion but never changes the score. Same engine as scored items: hint after a miss, one retry with a similar question, explanation at the end. Credited options shown (1 = full fit, 0.5 = partial).
+
+### ck.m1.chain: Follow a ripple chain two links deep
+
+- Mission 1, stage 1.4 | **0 pts** | 2 tries | Source: Dimensions_of_Wellness deck + curriculum spec (Dimensions overlap)
+- Why: Dimensions overlap, and a ripple can keep travelling: one change affects another dimension, which affects a third. Ripples can help or strain. A strong answer names a different dimension, follows the link one step at a time, and adds a small, feasible action that keeps the chain helpful.
+
+#### Variant A (`ck.m1.chain.a`)
+
+Prompt: Priya (fictional) joins the school band. Rehearsals are Tuesday and Thursday, 3:30 to 5:30 p.m., and she makes two new friends there. Her main dimension is Social. Follow the ripple one link at a time.
+
+**Step 1 · Pick a first ripple into a DIFFERENT dimension**
+
+- 1: Emotional: belonging and pride make her mood steadier
+- 1: Mental: learning new music builds focus and memory
+- 1: Physical: late rehearsals push dinner and homework later, so sleep can shrink
+
+**Step 2 · Pick the next link that follows from Step 1**
+
+- If `Emotional: belonging and pride make her mood steadier`: Because she feels she belongs, she is more willing to ask a teacher for help, which eases school stress. = 1
+- If `Mental: learning new music builds focus and memory`: Sharper focus from practicing music carries over to homework, so she finishes sooner and can wind down earlier. = 1
+- If `Physical: late rehearsals push dinner and homework later, so sleep can shrink`: Less sleep makes her more irritable, which can strain the new friendships. = 1
+
+**Step 3 · Which small action best keeps the chain helpful?**
+
+- 1: On rehearsal days, set a dinner time and a lights-out time, and start homework in a free period.
+
+#### Variant B (`ck.m1.chain.b`)
+
+Prompt: Marcus (fictional) starts walking the 15 minutes to school with a neighbor each morning instead of getting a ride. His main dimension is Physical. Follow the ripple one link at a time.
+
+**Step 1 · Pick a first ripple into a DIFFERENT dimension**
+
+- 1: Mental: the morning movement helps him feel alert and ready to focus
+- 1: Emotional: fresh air and a steady routine lift his mood
+- 1: Social: the daily conversation builds a friendship
+
+**Step 2 · Pick the next link that follows from Step 1**
+
+- If `Mental: the morning movement helps him feel alert and ready to focus`: Feeling alert in first period helps him follow lessons, so homework takes less time. = 1
+- If `Emotional: fresh air and a steady routine lift his mood`: A steadier mood makes it easier to stay patient with his family in the morning. = 1
+- If `Social: the daily conversation builds a friendship`: A closer friendship gives him someone to talk with when school feels stressful. = 1
+
+**Step 3 · Which small action best keeps the chain helpful?**
+
+- 1: Pick a regular leave-by time, keep the walking partner, and plan a rainy-day backup such as the bus.
+
+### ck.m5.c: STOP: setting limits and speaking up
+
+- Mission 5, stage 5.4 | **0 pts** | 2 tries | Source: Wildcats_Personal_Responsibility deck + curriculum spec (STOP)
+- Why: STOP: State the decision, Think of options, Observe consequences (right away and repeated), Pick a responsible, health-enhancing choice and explain why. Setting a limit or speaking up about a warning sign is part of personal responsibility, not a failure of it.
+
+#### Variant A (`ck.m5.c.a`)
+
+Prompt: Saying yes to everything. Nia agreed to decorate for Thursday’s school dance (4:00–7:00 p.m.). Her coach just added an optional extra practice at 4:00 the same day, and her lab report is due Friday morning. She has been tired all week and has not eaten dinner before 8 p.m.
+
+**S · State the decision**
+
+- 1: How to keep her commitments honest and doable without wearing herself out.
+
+**T · Think of options: pick the 2 most reasonable**
+
+- 1: Tell the dance committee she can help for one hour.
+- 1: Skip the optional practice and tell the coach why.
+- 1: Ask the teacher about a short extension, with a plan for finishing.
+
+**O · Comparing A and B RIGHT AWAY**
+
+- 1: A: the committee gets less of her time, but she eats dinner, finishes the report and sleeps near normal. B: nobody is let down tonight, but she is exhausted and rushed.
+
+**O · Comparing A and B IF REPEATED**
+
+- 1: A repeated builds a habit of realistic limits that protects sleep, mood and grades. B repeated wears down sleep and mood and makes mistakes more likely.
+
+**P · Pick a responsible, health-enhancing choice**
+
+- 1: Offer one hour, skip the optional practice, finish the report that evening.
+- 1: Help at the dance, skip the optional practice, ask the teacher about a short extension, and keep a bedtime.
+
+#### Variant B (`ck.m5.c.b`)
+
+Prompt: Hot-day practice. Pri’s soccer team practices outdoors at 3:30 on a 92°F afternoon. After 20 minutes of drills Pri feels dizzy and has a headache. Teammates are still running, and a captain jokes, “Anyone who sits out is weak.”
+
+**S · State the decision**
+
+- 1: How to respond to warning signs of heat illness while staying honest with the coach and team.
+
+**T · Think of options: pick the 2 most reasonable**
+
+- 1: Stop and tell the coach she feels dizzy.
+- 1: Move to shade, sip water and ask a teammate to stay nearby.
+- 1: Ask the trainer or school nurse to check on her.
+
+**O · Comparing A and B RIGHT AWAY**
+
+- 1: A: she may feel embarrassed for a moment, but she cools down and gets help. B: she avoids a comment now, but dizziness can get worse and become dangerous.
+
+**O · Comparing A and B IF REPEATED**
+
+- 1: A repeated shows that speaking up about symptoms keeps athletes safe, and good teams respond with water breaks. B repeated raises the chance of heat illness and injury.
+
+**P · Pick a responsible, health-enhancing choice**
+
+- 1: Stop, tell the coach, and rest in the shade with water.
+- 1: Ask the nurse or trainer to check her before she returns.
+
+### ck.m6.cmp: Compare two weeks: totals versus domain balance
+
+- Mission 6, stage 6.8 | **0 pts** | 2 tries | Source: Health_by_a_Thousand_Choices_Worksheet (domain ranges, running totals)
+- Why: Two weeks can be compared by their running totals, but a total adds everything together. Because domain maximums differ, the fairest comparison puts each domain against its own maximum. A positive total can sit beside a weak domain, and a low total can come from real limits like time and money. These points are fictional teaching weights, never assessment points.
+
+#### Variant A (`ck.m6.cmp.a`)
+
+Prompt: Compare Jordan’s case week and Maya’s case week (both fictional). Use the graph and the domain bars.
+
+**Part 1 · Which week ends with the higher running total?**
+
+- 1: Maya’s week
+
+**Part 2 · Which pair names each week’s weakest domain, compared to that domain’s own maximum?**
+
+- 1: Jordan: Environmental; Maya: Mental
+
+**Part 3 · Which week has the wider gap between its strongest and weakest domain (as a percent of each domain’s own maximum)?**
+
+- 1: Maya’s week
+
+**Part 4 · What is the best-supported conclusion?**
+
+- 1: A higher weekly total can hide a weak domain, so look at each domain’s own bar as well as the totals.
+
+#### Variant B (`ck.m6.cmp.b`)
+
+Prompt: Compare Maya’s case week and Eli’s case week (both fictional). Use the graph and the domain bars.
+
+**Part 1 · Which week ends with the higher running total?**
+
+- 1: Maya’s week
+
+**Part 2 · Which pair names each week’s weakest domain, compared to that domain’s own maximum?**
+
+- 1: Maya: Mental; Eli: Environmental
+
+**Part 3 · Which week has the wider gap between its strongest and weakest domain (as a percent of each domain’s own maximum)?**
+
+- 1: Maya’s week
+
+**Part 4 · What is the best-supported conclusion?**
+
+- 1: A higher weekly total can hide a weak domain, so look at each domain’s own bar as well as the totals.
+
+### ck.m7.plan: Second case: claim, evidence, reasoning and a SMART plan
+
+- Mission 7, stage 7.3 | **0 pts** | 2 tries | Source: All five decks + worksheet
+- Why: A strong plan starts from a claim about how two dimensions connect, uses a fact that is actually in the case, explains a feasible action with STOP, and turns it into a goal that is specific, measurable, achievable, relevant and time-bound. Several claims are defensible, but the evidence, reasoning and plan must all match the claim.
+
+#### Variant A (`ck.m7.plan.a`)
+
+Prompt: Use the case for Dani (fictional). Build a claim, evidence, reasoning and a plan that all fit together.
+
+**CLAIM · Which two dimensions connect?**
+
+- 1: Emotional and Social: nerves rise because Dani practices alone and skips lunch with friends who could listen.
+- 1: Physical and Mental: rushed, sugary lunches can leave her with less steady energy for the reading.
+- 1: Environmental and Mental: studying with the TV on makes the reading harder to follow.
+
+**EVIDENCE · Which case fact supports it?**
+
+- If `Emotional and Social: nerves rise because Dani practices alone and skips lunch with friends who could listen.`: Dani skips lunch with her orchestra friends to practice alone. = 1; Dani feels nervous about speaking in front of the class. = 0.5
+- If `Physical and Mental: rushed, sugary lunches can leave her with less steady energy for the reading.`: Dani eats a rushed lunch and drinks mostly soda. = 1
+- If `Environmental and Mental: studying with the TV on makes the reading harder to follow.`: Dani studies at home with the TV on. = 1
+
+**REASONING · Which rationale supports a feasible action?**
+
+- If `Emotional and Social: nerves rise because Dani practices alone and skips lunch with friends who could listen.`: STOP: practicing alone means no one hears the talk first; asking two friends to listen to a run-through at lunch is free and feasible. = 1
+- If `Physical and Mental: rushed, sugary lunches can leave her with less steady energy for the reading.`: STOP: rushed, sugary lunches leave little steady energy; packing a lunch with water takes five minutes and is feasible. = 1
+- If `Environmental and Mental: studying with the TV on makes the reading harder to follow.`: STOP: the TV makes the reading hard to follow; using the quiet library room on non-rehearsal days is free and feasible. = 1
+
+**PLAN · Which plan is fully SMART and fits your claim?**
+
+- If `Emotional and Social: nerves rise because Dani practices alone and skips lunch with friends who could listen.`: Practice the presentation for two friends at lunch on Tuesdays and Thursdays for 3 weeks, tracked on a calendar, to feel calmer. = 1; Pack a lunch with water on 4 school days a week for 3 weeks, tracked on a checklist, for steadier energy. = 0.5; Study the reading in the library room on 3 non-rehearsal days a week for 3 weeks, tracked on a calendar, to follow it more easily. = 0.5
+- If `Physical and Mental: rushed, sugary lunches can leave her with less steady energy for the reading.`: Pack a lunch with water on 4 school days a week for 3 weeks, tracked on a checklist, for steadier energy. = 1; Practice the presentation for two friends at lunch on Tuesdays and Thursdays for 3 weeks, tracked on a calendar, to feel calmer. = 0.5; Study the reading in the library room on 3 non-rehearsal days a week for 3 weeks, tracked on a calendar, to follow it more easily. = 0.5
+- If `Environmental and Mental: studying with the TV on makes the reading harder to follow.`: Study the reading in the library room on 3 non-rehearsal days a week for 3 weeks, tracked on a calendar, to follow it more easily. = 1; Practice the presentation for two friends at lunch on Tuesdays and Thursdays for 3 weeks, tracked on a calendar, to feel calmer. = 0.5; Pack a lunch with water on 4 school days a week for 3 weeks, tracked on a checklist, for steadier energy. = 0.5
+
+#### Variant B (`ck.m7.plan.b`)
+
+Prompt: Use the case for Rafa (fictional). Build a claim, evidence, reasoning and a plan that all fit together.
+
+**CLAIM · Which two dimensions connect?**
+
+- 1: Emotional and Mental: feeling overwhelmed makes him put the project off, which adds more guilt.
+- 1: Physical and Mental: practicing without a snack can leave him foggy when he sits down to work.
+- 1: Social and Emotional: teammates could ease the overwhelm if he asked for help.
+
+**EVIDENCE · Which case fact supports it?**
+
+- If `Emotional and Mental: feeling overwhelmed makes him put the project off, which adds more guilt.`: Rafa feels overwhelmed and a little guilty about the project. = 1; The science fair is in two weeks. = 0.5
+- If `Physical and Mental: practicing without a snack can leave him foggy when he sits down to work.`: Rafa often goes to practice without a snack. = 1
+- If `Social and Emotional: teammates could ease the overwhelm if he asked for help.`: Rafa rarely asks his supportive teammates for help. = 1; Rafa feels overwhelmed and a little guilty about the project. = 0.5
+
+**REASONING · Which rationale supports a feasible action?**
+
+- If `Emotional and Mental: feeling overwhelmed makes him put the project off, which adds more guilt.`: STOP: the project feels too big to start; splitting it into three small steps and doing the first one this week is feasible. = 1
+- If `Physical and Mental: practicing without a snack can leave him foggy when he sits down to work.`: STOP: running on an empty stomach leaves him foggy; a banana or granola bar before practice is cheap and feasible. = 1
+- If `Social and Emotional: teammates could ease the overwhelm if he asked for help.`: STOP: help is already on the team; asking one teammate for a 20-minute study session is free and feasible. = 1
+
+**PLAN · Which plan is fully SMART and fits your claim?**
+
+- If `Emotional and Mental: feeling overwhelmed makes him put the project off, which adds more guilt.`: Finish one small step of the project (research, outline, draft) on 3 days a week for 2 weeks, tracked on a checklist, to feel less overwhelmed. = 1; Eat a snack before practice on all 5 practice days for 3 weeks, tracked on a calendar, for steadier energy. = 0.5; Study with one teammate for 20 minutes after practice on 2 days a week for 2 weeks, tracked on a calendar, to feel supported. = 0.5
+- If `Physical and Mental: practicing without a snack can leave him foggy when he sits down to work.`: Eat a snack before practice on all 5 practice days for 3 weeks, tracked on a calendar, for steadier energy. = 1; Finish one small step of the project (research, outline, draft) on 3 days a week for 2 weeks, tracked on a checklist, to feel less overwhelmed. = 0.5; Study with one teammate for 20 minutes after practice on 2 days a week for 2 weeks, tracked on a calendar, to feel supported. = 0.5
+- If `Social and Emotional: teammates could ease the overwhelm if he asked for help.`: Study with one teammate for 20 minutes after practice on 2 days a week for 2 weeks, tracked on a calendar, to feel supported. = 1; Finish one small step of the project (research, outline, draft) on 3 days a week for 2 weeks, tracked on a checklist, to feel less overwhelmed. = 0.5; Eat a snack before practice on all 5 practice days for 3 weeks, tracked on a calendar, for steadier energy. = 0.5
+
+## Maya's 6 second-pass decisions (unscored)
+
+| # | Day | Category (weight) | A / B / C options | Baseline grade |
+|---|---|---|---|---|
+| 1 | Mon | Mental Rest/Downtime (1) | A: A 10-minute no-screen wind-down (stretch, music, no phone). / B: Scroll for a few minutes, then start homework. / C: Scroll until dinner with no break at all. | C |
+| 2 | Tue | Screens/Media Use (2) | A: Set an app timer and charge the phone across the room at 9:30, using it as the alarm. / B: Scroll 30 more minutes in bed. / C: Watch videos in bed past midnight. | C |
+| 3 | Wed | Stress Management (2) | A: Write a week plan, mark a quiz-study block, and ask a teammate to share a ride. / B: Hope it works out and study if there is time. / C: Stay up late worrying and study nothing. | C |
+| 4 | Thu | Quality Connection Time (2) | A: Join them for lunch and study right after school. / B: Wave hello, then study alone. / C: Skip every social plan this week to study. | C |
+| 5 | Fri | Handling Setbacks (2) | A: Look at what changed, set one small goal for the next meet, and ask the coach for one tip. / B: Shrug it off and not think about it. / C: “I am just slow” and think about quitting. | C |
+| 6 | Sat | Emotional Expression (2) | A: Tell a friend or journal for five minutes. / B: Say “I am fine” and keep going. / C: Bottle it up, then snap at family. | B |
+
+## My 7-day plan (unscored, no right answers)
+
+A required reflection step: five self-ratings (Not yet / A little / Mostly / Yes), one dimension and small action, a cue, an if-then backup and at least 3 days. Stored on the student's device; included in the downloadable report only if the student ticks the sharing box.

@@ -127,7 +127,12 @@
       var rid = 'rc-' + item.id.replace(/\./g, '-'), checked = !!IU.reconsider[item.id];
       var cb = h('input', { type: 'checkbox', id: rid, checked: checked, 'data-fk': rid, onchange: function (e) { IU.reconsider[item.id] = e.target.checked; env.rerender(); } });
       var maxNext = pts(item.pts * nextCap);
-      box.appendChild(h('div.stack-sm', { style: { marginTop: '12px' } },
+      if (item.unscored) box.appendChild(h('div.stack-sm', { style: { marginTop: '12px' } },
+        h('label', { 'for': rid, style: { display: 'flex', gap: '8px', alignItems: 'flex-start', fontWeight: '600' } }, cb, h('span', 'I re-read the situation and the hint above and I am ready to try again.')),
+        h('div.row', UI.btn('Try a similar question', { cls: 'primary', disabled: !checked, fk: 'retry-' + item.id, onclick: function () { if (P.startRetry(item, rec)) { IU.reconsider[item.id] = false; env.save(true); env.rerender(); UI.announce('Another try started with a similar question.'); } } }),
+          UI.btn('Move on and see the explanation', { onclick: function () { P.keep(item, rec); env.save(true); env.rerender(); UI.announce('Moving on.'); } })),
+        h('p.hint-line', left + ' more ' + (left === 1 ? 'try' : 'tries') + ' available. This checkpoint is not scored, so a retry costs nothing; it is just a chance to think it through again.')));
+      else box.appendChild(h('div.stack-sm', { style: { marginTop: '12px' } },
         h('label', { 'for': rid, style: { display: 'flex', gap: '8px', alignItems: 'flex-start', fontWeight: '600' } }, cb, h('span', 'I re-read the evidence and the hint above and I am ready to reconsider.')),
         h('div.row', UI.btn('Retry with a similar question (up to ' + pctTxt(nextCap) + ' · max ' + maxNext + ' pts)', { cls: 'primary', disabled: !checked, fk: 'retry-' + item.id, onclick: function () { if (P.startRetry(item, rec)) { IU.reconsider[item.id] = false; env.save(true); env.rerender(); UI.announce('Attempt ' + (rec.attempts.length + 1) + ' started with a similar question.'); } } }),
           UI.btn('Keep my score (' + pts(rec.best) + ' of ' + item.pts + ' pts) and move on', { onclick: function () { P.keep(item, rec); env.save(true); env.rerender(); UI.announce('Score kept for this item.'); } })),
@@ -140,6 +145,9 @@
     var a = rec.attempts[rec.attempts.length - 1]; if (!a) return null;
     var kind = a.raw >= 1 - 1e-9 ? 'full' : a.raw > 0 ? 'partial' : 'none';
     var head = a.raw >= 1 - 1e-9 ? 'Full credit for this attempt' : a.raw > 0 ? 'Partial credit for this attempt' : 'No credit yet for this attempt';
+    if (item.unscored) return h('div.result.' + kind, { role: 'status' },
+      h('div.big', a.raw >= 1 - 1e-9 ? 'That fits the evidence' : a.raw > 0 ? 'Part of that fits the evidence' : 'Not quite yet'),
+      h('p', 'Try ' + a.n + ': ' + Math.round(a.raw * 100) + '% of the parts fit. This checkpoint is ', h('b', 'not scored'), '. It only helps you practice.'));
     return h('div.result.' + kind, { role: 'status' },
       h('div.big', head),
       h('p', 'Attempt ' + a.n + ': ' + Math.round(a.raw * 100) + '% correct × ' + pts(item.pts) + ' pts × ' + pctTxt(a.cap) + ' attempt cap = ', h('b', pts(a.awarded) + ' pts'), '. Best so far: ', h('b', pts(rec.best) + ' of ' + item.pts + ' pts'), '.'));
@@ -156,8 +164,8 @@
     opts = opts || {};
     var rec = St.ensureItem(env.state, item.id), mode = P.mode(item, rec), variant = P.currentVariant(item, rec), limit = P.limitFor(item), n = rec.attempts.length;
     var card = h('section.item' + (opts.compact ? '.compact' : ''), { 'aria-labelledby': 'h-' + item.id.replace(/\./g, '-'), 'data-item': item.id });
-    var meta = h('div.item-meta', UI.chip(item.pts + ' pt' + (item.pts === 1 ? '' : 's'), 'brand'), UI.chip('up to ' + limit + ' attempts', 'info'));
-    if (mode === 'final') meta.appendChild(UI.chip('Submitted · ' + pts(rec.best) + ' / ' + item.pts, rec.best >= item.pts - 1e-9 ? 'ok' : 'gold', 'check'));
+    var meta = item.unscored ? h('div.item-meta', UI.chip('Checkpoint · not scored', 'gold'), UI.chip('up to ' + limit + ' tries', 'info')) : h('div.item-meta', UI.chip(item.pts + ' pt' + (item.pts === 1 ? '' : 's'), 'brand'), UI.chip('up to ' + limit + ' attempts', 'info'));
+    if (mode === 'final') meta.appendChild(item.unscored ? UI.chip('Submitted', 'ok', 'check') : UI.chip('Submitted · ' + pts(rec.best) + ' / ' + item.pts, rec.best >= item.pts - 1e-9 ? 'ok' : 'gold', 'check'));
     else if (mode === 'review') meta.appendChild(UI.chip('Submitted · not final', 'warn'));
     card.appendChild(h('div.item-head', h('h2#h-' + item.id.replace(/\./g, '-'), opts.title || item.topic), meta));
     var ctx = h('div.item-ctx'); if (variant.ctx) ctx.appendChild(U.rich(variant.ctx));
@@ -170,13 +178,14 @@
       card.appendChild(partEl(item, rec, variant, p, env, mode));
     });
     if (mode === 'draft') {
-      card.appendChild(h('p.policyline', 'Attempt ' + (n + 1) + ' of ' + limit + ' · up to ' + pctTxt(P.capFor(n + 1)) + ' credit (max ' + pts(item.pts * P.capFor(n + 1)) + ' pts)' + (n + 1 < limit ? ' · next attempt would be capped at ' + pctTxt(P.capFor(n + 2)) : ' · this is your last attempt')));
-      if (n > 0) card.appendChild(h('div.callout.info', { style: { marginTop: '12px' } }, A.iconEl('info'), h('div', 'This is a ', h('b', 'similar new question'), ' with the same goal. Your best score so far (' + pts(rec.best) + ') is kept.')));
+      if (item.unscored) card.appendChild(h('p.policyline', 'Try ' + (n + 1) + ' of ' + limit + ' · not scored, so this adds no points and cannot lower your grade' + (n + 1 < limit ? '' : ' · this is your last try')));
+      else card.appendChild(h('p.policyline', 'Attempt ' + (n + 1) + ' of ' + limit + ' · up to ' + pctTxt(P.capFor(n + 1)) + ' credit (max ' + pts(item.pts * P.capFor(n + 1)) + ' pts)' + (n + 1 < limit ? ' · next attempt would be capped at ' + pctTxt(P.capFor(n + 2)) : ' · this is your last attempt')));
+      if (n > 0) card.appendChild(h('div.callout.info', { style: { marginTop: '12px' } }, A.iconEl('info'), h('div', 'This is a ', h('b', 'similar new question'), ' with the same goal.' + (item.unscored ? '' : ' Your best score so far (' + pts(rec.best) + ') is kept.'))));
     } else {
       var rb = resultBox(item, rec, mode); if (rb) card.appendChild(rb);
       if (mode === 'review') card.appendChild(IU.reviewPanel(item, rec, env));
       if (mode === 'final') {
-        var ex = h('div.explain', h('h3', 'Why this works'), U.rich(item.why), h('p.small', h('b', 'Status: '), REASON[rec.finalizedReason] || 'Finalized.'), attemptsTable(item, rec));
+        var ex = h('div.explain', h('h3', 'Why this works'), U.rich(item.why), h('p.small', h('b', 'Status: '), item.unscored ? (rec.finalizedReason === 'full' || rec.finalizedReason === 'full-on-retry' ? 'Everything fit the evidence.' : 'You moved on after trying. The explanation above shows what fits best.') : (REASON[rec.finalizedReason] || 'Finalized.')), item.unscored ? null : attemptsTable(item, rec));
         var av = rec.attempts[rec.attempts.length - 1]; var lv = P.variantAt(item, av.n - 1);
         if (lv.branches && lv.branches[av.response.p]) ex.appendChild(h('p', h('b', 'Your path: '), lv.branches[av.response.p]));
         card.appendChild(ex);
