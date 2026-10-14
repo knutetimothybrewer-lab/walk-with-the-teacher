@@ -80,6 +80,9 @@ async function handleScene(page, stage) {
     for (let i = 0; i < 3; i++) await page.locator('.stepper button[aria-label^="One more"]').click();
     await page.waitForSelector('.progress-note:has-text("unlocked")');
   } else if (stage === 'overdose') {
+    for (let i = 0; i < 4; i++) await page.getByRole('button', { name: 'Take another dose' }).click();
+    await page.waitForSelector('.od-scene.collapsed', { timeout: 30000 });
+    await page.waitForTimeout(1500);
     for (const l of ['Try to wake them', 'Check breathing', 'Look at lips and skin']) await page.locator(`.hs2[aria-label="${l}"]`).click();
     await page.waitForSelector('.progress-note:has-text("Observation complete")');
   }
