@@ -2,8 +2,8 @@ import { mc, sort, match, order, tag, scene, chatStep } from './dsl.js';
 
 const D = 'D · Communication Mini-Lesson (slides)';
 
-const riley = { name: 'Riley', color: '#6c5fc7', scene: 'Scene 1 · A teammate who has gone quiet' };
-const sasha = { name: 'Sasha', color: '#2a8c8f', scene: 'Scene 2 · A friend says something worrying' };
+const riley = { name: 'Riley', color: '#6c5fc7', moods: ['sad', 'quiet', 'hopeful'], scene: 'Scene 1 · A teammate who has gone quiet' };
+const sasha = { name: 'Sasha', color: '#2a8c8f', moods: ['scared', 'worried', 'hopeful'], scene: 'Scene 2 · A friend says something worrying' };
 
 export default {
   id: 's8', title: 'Be a Bridge', short: 'Be a bridge', topic: 'COMM',

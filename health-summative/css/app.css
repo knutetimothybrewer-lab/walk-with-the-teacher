@@ -120,6 +120,7 @@ a { color: var(--teal-d); }
 .bigpts { font-family: var(--font-head); font-size: 2rem; font-weight: 800; color: var(--teal-d); }
 .sparkle { color: #d49a1a; }
 .item-foot { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-top: 18px; flex-wrap: wrap; }
+.foot-left { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
 .foot-right { display: flex; gap: 10px; margin-left: auto; }
 
 /* ---------- final ---------- */

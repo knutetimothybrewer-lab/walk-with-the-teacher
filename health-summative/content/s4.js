@@ -49,6 +49,7 @@ export default {
       explain: 'Acute stress rises and then falls when the demand passes. Chronic stress stays high or builds because recovery is missing.',
     }),
     multi('s4-06', {
+      person: { who: 'Noor', mood: 'stressed', says: 'I have been on edge all week.' },
       level: 'apply', visual: 'gauges', visualSeconds: 10, src: `${C} › Recovery: coping reduces the demand or improves recovery`,
       prompt: 'Noor has been in "gas pedal" mode all week. Choose the actions that help the brake work. Watch the gauges.',
       options: [
@@ -71,6 +72,7 @@ export default {
       explain: 'Notice → Regulate → Choose → Recover. You cannot choose well until your body has calmed a bit.',
     }),
     mc('s4-08', {
+      person: { who: 'Nia', mood: 'scared', says: 'My heart is pounding!', after: 'calm' },
       level: 'apply', src: `${C} › Practice situation 1: presentation jitters`,
       prompt: 'Before a class presentation, Nia\'s heart pounds and her hands feel shaky. An hour afterward she feels fine again. What best describes this?',
       right: 'A normal acute stress response that ended with the demand',
@@ -83,6 +85,7 @@ export default {
       explain: 'Acute stress rises with a demand and falls once it is over. This is the gas pedal doing its job.',
     }),
     mc('s4-09', {
+      person: { who: 'Mateo', mood: 'tired', says: 'I am always on edge.' },
       level: 'apply', src: `${C} › Practice situation 2: 4 hours of sleep, always on edge`,
       prompt: 'For two weeks, Mateo has slept about 4 hours a night and says he is "always on edge." What is the most useful insight?',
       right: 'Stress may be building without recovery. Sleep is a good start, and a trusted adult can help.',
@@ -95,6 +98,7 @@ export default {
       explain: 'Chronic stress is stress without enough recovery. Sleep is a major recovery tool, and teens need 8 to 10 hours. If it goes on for weeks, talking with a trusted adult is a good next step too.',
     }),
     mc('s4-10', {
+      person: { who: 'Kai', mood: 'stressed', says: 'I cannot calm down.' },
       level: 'apply', src: `${C} › Practice situation 3: scrolling after an argument`,
       prompt: 'After a big argument, Kai scrolls for hours but still cannot calm down. Why might scrolling not be helping?',
       right: 'It may keep his body on alert instead of letting it recover.',

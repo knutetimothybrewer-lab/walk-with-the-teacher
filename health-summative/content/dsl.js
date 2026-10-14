@@ -78,5 +78,5 @@ export function scene(id, steps, extra = {}) { return { id, block: steps, ...ext
 
 /** One step of a chat scene (an mc whose options carry `react`: the friend's reply). */
 export function chatStep(id, who, o) {
-  return mc(id, { ...o, chat: { who: who.name, color: who.color, scene: who.scene, step: o.step } });
+  return mc(id, { ...o, chat: { who: who.name, color: who.color, scene: who.scene, step: o.step, moods: who.moods } });
 }

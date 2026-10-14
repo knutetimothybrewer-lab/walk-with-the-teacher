@@ -25,6 +25,7 @@ export default {
       explain: 'Red flags include: talking about wanting to die or disappear; giving away belongings or saying goodbye; sudden calm after deep distress; signs of self-harm or talk of hurting self or others; and a drastic, rapid change in behavior or mood. Safety overrides uncertainty.',
     }),
     mc('s7-02', {
+      person: { who: 'Friend', mood: 'worried', says: 'I have not been okay lately.', after: 'calm' },
       level: 'apply', sensitive: true, alert: true, src: `${B} › You don't need the diagnosis before getting an adult involved`,
       prompt: 'You are not sure what is going on, but a friend said something that sounded like wanting to disappear. What should you do?',
       right: 'Get a trusted adult involved now; you do not need to know the cause first.',
@@ -37,6 +38,7 @@ export default {
       explain: 'You do not have to know the diagnosis or the cause. If there is a red flag, tell a trusted adult or the counselor, and stay with your friend if you can. Call or text 988 together, or call 911 if someone is in immediate danger.',
     }),
     mc('s7-04', {
+      person: { who: 'Friend', mood: 'scared', says: 'Promise you will not tell anyone.', after: 'calm' },
       level: 'apply', sensitive: true, alert: true, src: `${B} › Do not keep it a secret, even if asked`,
       prompt: 'A friend tells you something that makes you worry they might be unsafe, and says, "Promise you will not tell anyone." What is the best response?',
       right: '"I care too much to keep this secret. Let me go with you to talk to someone."',

@@ -39,6 +39,7 @@ export default {
       explain: 'The zones run from coping well to needing help now. The big clues are how long it lasts and how much it interferes with daily life. Being in Struggling or Injured does not mean something is wrong with you. It means you may need extra support.',
     }),
     mc('s1-03', {
+      person: { who: 'Student', mood: 'worried', says: 'Maybe something is wrong with me.' },
       level: 'apply', src: `${A} › Continuum: struggling or injured ≠ something wrong with you`,
       prompt: 'A student says, "I\'m in the Struggling zone, so something must be wrong with me." What is the best response?',
       right: 'No. It means you may need extra support, and support helps.',

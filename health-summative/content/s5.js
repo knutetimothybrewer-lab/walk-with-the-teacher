@@ -54,6 +54,7 @@ export default {
     }),
     scene('s5-sc1', [
       tag('s5-06', {
+      person: { who: 'Maya', mood: 'sad', says: 'I am so overwhelmed.' },
         level: 'analyze', skin: 'detective', src: `${B} › D.I.I.S. in practice: scenario 1 (skipped lunch for 3 weeks)`,
         prompt: 'D.I.I.S. Detective: your friend Maya. Tag each sentence with the kind of evidence it gives.',
         slots: DIIS,
@@ -67,6 +68,7 @@ export default {
         explain: 'Three weeks is Duration. Feeling this overwhelmed shows Intensity. Snapping and sitting alone show Interference. The friendship history is Background.',
       }),
       mc('s5-07', {
+      person: { who: 'Maya', mood: 'sad', says: 'I do not want to talk.' },
         level: 'apply', src: `${B} › D.I.I.S. in practice: next step for scenario 1`,
         prompt: 'Based on the evidence about Maya, what is the best next step?',
         right: 'Check in privately, listen without judging, and help her connect with a counselor or trusted adult.',
@@ -81,6 +83,7 @@ export default {
     ]),
     scene('s5-sc2', [
       tag('s5-08', {
+      person: { who: 'Jordan', mood: 'quiet', says: 'I am just tired.' },
         level: 'analyze', skin: 'detective', src: `${B} › D.I.I.S. in practice: scenario 2 (quiet for a week)`,
         prompt: 'D.I.I.S. Detective: your classmate Jordan. Tag each sentence.',
         slots: DIIS,
@@ -95,6 +98,7 @@ export default {
         explain: 'A week of quiet is short Duration. Missed practices show some Interference. Homework and laughing show he is still functioning.',
       }),
       mc('s5-09', {
+      person: { who: 'Jordan', mood: 'quiet', says: 'I am fine, really.' },
         level: 'analyze', src: `${B} › D.I.I.S. in practice: "not enough evidence yet"`,
         prompt: 'What is the best next step for Jordan?',
         right: 'Not enough evidence yet: check in casually, keep watching, and tell an adult if it lasts.',

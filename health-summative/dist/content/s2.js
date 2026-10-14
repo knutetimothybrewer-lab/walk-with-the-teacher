@@ -61,6 +61,7 @@ export default {
       explain: 'Resilience is a set of skills and supports (relationships, coping skills, growth mindset, purpose) you can build. It is not a fixed trait.',
     }),
     mc('s2-08', {
+      person: [{ who: 'Lena', mood: 'calm', says: 'I have people I can lean on.', after: 'happy' }, { who: 'Ben', mood: 'sad', says: 'I do not have anyone to talk to.', after: 'quiet' }],
       level: 'analyze', src: `${A} › Risk, protection, and balance`,
       prompt: 'Two students face the same stress: a parent lost a job. Lena has close friends, a mentor, and uses exercise to cope. Ben has no one to talk to and no outlets right now. Why might they cope differently?',
       right: 'Protective factors can balance risk, and Lena has more of them right now.',

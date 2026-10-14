@@ -121,9 +121,10 @@ function stationIntro(app, st) {
     st.callout ? h('div', { class: 'note calm' }, rich(st.callout)) : null,
     h('p', { class: 'meta' }, `${scored} questions · about ${mins} min`),
     trailStrip(app, st.index),
-    h('div', { class: 'item-foot' }, h('span'), h('button', { type: 'button', class: 'btn-primary big', id: 'btn-begin' }, 'Begin this station →')));
+    h('div', { class: 'item-foot' }, app.canBack() ? h('button', { type: 'button', class: 'btn-quiet', id: 'btn-back' }, '← Back') : h('span'), h('button', { type: 'button', class: 'btn-primary big', id: 'btn-begin' }, 'Begin this station →')));
   mount(node);
   $('#btn-begin').addEventListener('click', () => app.beginStation());
+  const bb = $('#btn-back'); if (bb) bb.addEventListener('click', () => app.back());
 }
 
 function stationEnd(app, st) {
@@ -140,11 +141,12 @@ function stationEnd(app, st) {
     h('p', { class: 'lead' }, h('span', { class: 'sparkle', 'aria-hidden': 'true' }, '✦ '), val, ` of ${fmtPts(possible)} wellness points earned here`),
     h('p', {}, `${first} of ${rows.length} questions right on the first try.`),
     st.farewell ? h('p', { class: 'note calm' }, rich(st.farewell)) : null,
-    h('div', { class: 'item-foot' }, h('button', { type: 'button', class: 'btn-quiet', id: 'btn-trail' }, 'See the trail'),
+    h('div', { class: 'item-foot' }, h('span', { class: 'foot-left' }, h('button', { type: 'button', class: 'btn-quiet', id: 'btn-back' }, '← Back'), h('button', { type: 'button', class: 'btn-quiet', id: 'btn-trail' }, 'See the trail')),
       h('button', { type: 'button', class: 'btn-primary big', id: 'btn-cont' }, last ? 'See my results →' : 'Continue to the next station →')));
   mount(node);
   animateNumber(val, 0, earned);
   $('#btn-cont').addEventListener('click', () => app.nextStation());
+  $('#btn-back').addEventListener('click', () => app.back());
   $('#btn-trail').addEventListener('click', (e) => { trailDialog(app); openDialog($('#trail'), e.currentTarget); });
 }
 
