@@ -6,9 +6,9 @@ const NS = 'http://www.w3.org/2000/svg';
 const S = (tag, attrs = {}, parent) => { const e = document.createElementNS(NS, tag); for (const [k, v] of Object.entries(attrs)) e.setAttribute(k, v); if (parent) parent.appendChild(e); return e; };
 
 const HOTSPOTS = [
-  { k: 'wake', x: 222, y: 168, label: 'Try to wake them', text: 'You shout their name and shake their shoulder. There is no response.', fx: 'shout' },
-  { k: 'breath', x: 285, y: 205, label: 'Check breathing', text: 'You watch their chest and listen. Breathing is very slow, with long pauses and a gurgling, snoring-like sound.', fx: 'count' },
-  { k: 'lips', x: 160, y: 178, label: 'Look at lips and skin', text: 'Their lips and skin look pale, with a bluish-gray color.', fx: 'color' },
+  { k: 'wake', x: 222, y: 158, label: 'Try to wake them', text: 'You shout their name and shake their shoulder. There is no response.', fx: 'shout' },
+  { k: 'breath', x: 285, y: 195, label: 'Check breathing', text: 'You watch their chest and listen. Breathing is very slow, with long pauses and a gurgling, snoring-like sound.', fx: 'count' },
+  { k: 'lips', x: 160, y: 168, label: 'Look at lips and skin', text: 'Their lips and skin look pale, with a bluish-gray color.', fx: 'color' },
   { k: 'phone', x: 520, y: 255, label: 'Look at the phone', text: 'A phone on the table is playing music.', fx: 'phone' },
   { k: 'drink', x: 462, y: 276, label: 'Look at the table', text: 'A drink is spilled on the table.', fx: 'drink' }
 ];
@@ -32,9 +32,9 @@ const ART = `
   <linearGradient id="odwall" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#16213f"/><stop offset="1" stop-color="#0d1530"/></linearGradient>
   <linearGradient id="odfloor" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#241d2b"/><stop offset="1" stop-color="#120f18"/></linearGradient>
   <radialGradient id="odlamp" cx="50%" cy="40%" r="60%"><stop offset="0" stop-color="#ffcf7a" stop-opacity=".55"/><stop offset="1" stop-color="#ffcf7a" stop-opacity="0"/></radialGradient>
-  <linearGradient id="odcouch" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4b5fa3"/><stop offset="1" stop-color="#33427c"/></linearGradient>
+  <linearGradient id="odcouch" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9a6550"/><stop offset="1" stop-color="#6f4536"/></linearGradient>
   <linearGradient id="odhood" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#c9d4e6"/><stop offset="1" stop-color="#8c9cb8"/></linearGradient>
-  <linearGradient id="odjeans" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3a4d7a"/><stop offset="1" stop-color="#27365b"/></linearGradient>
+  <linearGradient id="odjeans" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2b3c66"/><stop offset="1" stop-color="#1b2748"/></linearGradient>
   <filter id="odblur"><feGaussianBlur stdDeviation="6"/></filter>
 </defs>
 <rect width="640" height="360" fill="url(#odwall)"/>
@@ -42,11 +42,11 @@ const ART = `
 <rect y="292" width="640" height="68" fill="url(#odfloor)"/>
 <ellipse cx="300" cy="332" rx="250" ry="22" fill="#2b2140" opacity=".7"/>
 <g><rect x="40" y="206" width="6" height="86" fill="#2c2a3a"/><ellipse cx="43" cy="202" rx="26" ry="14" fill="#f2c36b" opacity=".9"/><ellipse cx="43" cy="210" rx="120" ry="110" fill="url(#odlamp)"/></g>
-<g id="odcouchback"><rect x="104" y="132" width="350" height="104" rx="26" fill="url(#odcouch)"/><path d="M110 150 C200 140 360 140 448 150" stroke="#2a376c" stroke-width="2" fill="none" opacity=".6"/></g>
-<g id="odperson">
-  <g id="odlegs"><path d="M318 238 C360 232 396 226 420 228 C436 230 440 246 432 252 C412 262 372 264 322 268 Z" fill="url(#odjeans)"/><path d="M416 232 C428 250 432 280 430 308 L452 310 C456 280 450 252 440 232 Z" fill="url(#odjeans)"/><path d="M426 306 h34 c8 0 10 10 2 12 h-38 z" fill="#e9eaf2"/></g>
-  <g id="odtorso"><path d="M190 190 C214 168 262 170 302 196 C326 212 336 238 332 268 L214 270 C196 246 186 216 190 190 Z" fill="url(#odhood)"/><path d="M214 206 C240 196 270 204 292 224" stroke="#7d8ca8" stroke-width="2.4" fill="none" opacity=".7"/><path d="M236 230 C256 238 282 238 306 230" stroke="#7d8ca8" stroke-width="2" fill="none" opacity=".5"/></g>
-  <g id="odarm"><path d="M214 200 C232 232 240 262 244 300" stroke="#a9b6cf" stroke-width="22" fill="none" stroke-linecap="round"/><path d="M244 300 c-4 8 -3 20 4 24 c8 3 14 -3 14 -12 l-1 -16 z" class="skin"/><g class="nails"><rect x="246" y="320" width="4" height="3" rx="1"/><rect x="252" y="321" width="4" height="3" rx="1"/><rect x="258" y="318" width="4" height="3" rx="1"/></g></g>
+<g id="odcouchback"><rect x="104" y="132" width="350" height="104" rx="26" fill="url(#odcouch)"/><path d="M110 150 C200 140 360 140 448 150" stroke="#4d2e24" stroke-width="2" fill="none" opacity=".7"/><path d="M110 134 C200 124 360 124 448 134" stroke="#b98265" stroke-width="2" fill="none" opacity=".5"/></g>
+<rect x="104" y="240" width="350" height="28" rx="12" fill="#8c5a45"/><rect x="104" y="240" width="350" height="8" rx="4" fill="#a8745c"/><ellipse cx="290" cy="262" rx="160" ry="9" fill="#1c0f0a" opacity=".5"/>
+<g transform="translate(0 -10)"><g id="odperson">
+  <g id="odlegs"><path d="M318 238 C360 232 396 226 420 228 C436 230 440 246 432 252 C412 262 372 264 322 268 Z" fill="url(#odjeans)" stroke="#0d1530" stroke-width="1.4"/><path d="M416 232 C428 250 432 280 430 308 L452 310 C456 280 450 252 440 232 Z" fill="url(#odjeans)" stroke="#0d1530" stroke-width="1.4"/><path d="M426 306 h34 c8 0 10 10 2 12 h-38 z" fill="#e9eaf2"/></g>
+  <g id="odtorso"><path d="M190 190 C214 168 262 170 302 196 C326 212 336 238 332 268 L214 270 C196 246 186 216 190 190 Z" fill="url(#odhood)" stroke="#44506a" stroke-width="1.6"/><path d="M214 206 C240 196 270 204 292 224" stroke="#7d8ca8" stroke-width="2.4" fill="none" opacity=".7"/><path d="M236 230 C256 238 282 238 306 230" stroke="#7d8ca8" stroke-width="2" fill="none" opacity=".5"/></g>
   <g id="odhead"><path d="M178 190 C170 182 168 170 172 160 L196 158 L204 188 Z" class="skin"/>
     <ellipse cx="170" cy="146" rx="32" ry="36" class="skin" transform="rotate(-18 170 146)"/>
     <path d="M140 134 C142 110 176 100 198 116 C206 124 206 134 202 140 C192 128 164 124 140 134 Z" fill="#2a1d1a"/>
@@ -55,8 +55,10 @@ const ART = `
     <path d="M166 150 q-4 10 2 12" stroke="#00000033" stroke-width="2" fill="none" stroke-linecap="round"/>
     <ellipse id="odmouth" cx="166" cy="172" rx="9" ry="4.2" fill="#2d1215"/><path class="lip" d="M156 171 Q166 165 176 171 Q166 178 156 171 Z" opacity=".92"/><path d="M158 172 Q166 175 174 172" stroke="#2d1215" stroke-width="1.4" fill="none"/>
     <ellipse cx="196" cy="150" rx="5" ry="8" class="skin" stroke="#00000022"/></g>
+</g></g>
+<g id="odcouchfront"><rect x="100" y="262" width="360" height="30" rx="10" fill="#7a4c3b"/><rect x="100" y="262" width="360" height="6" rx="3" fill="#94624c"/><path d="M280 270 V290" stroke="#4d2e24" stroke-width="2" opacity=".6"/><rect x="86" y="170" width="36" height="122" rx="16" fill="#7a4c3b" stroke="#4d2e24" stroke-width="1.4"/><rect x="438" y="170" width="36" height="122" rx="16" fill="#7a4c3b" stroke="#4d2e24" stroke-width="1.4"/><rect x="108" y="290" width="8" height="12" fill="#1e120d"/><rect x="444" y="290" width="8" height="12" fill="#1e120d"/></g>
+<g transform="translate(0 -10)">  <g id="odarm"><path d="M214 200 C232 232 240 262 244 300" stroke="#a9b3c6" stroke-width="22" fill="none" stroke-linecap="round"/><path d="M244 300 c-4 8 -3 20 4 24 c8 3 14 -3 14 -12 l-1 -16 z" class="skin"/><g class="nails"><rect x="246" y="320" width="4" height="3" rx="1"/><rect x="252" y="321" width="4" height="3" rx="1"/><rect x="258" y="318" width="4" height="3" rx="1"/></g></g>
 </g>
-<g id="odcouchfront"><rect x="100" y="228" width="360" height="62" rx="14" fill="#3b4c8e"/><rect x="100" y="228" width="360" height="12" rx="6" fill="#4b5fa3"/><path d="M280 240 V288" stroke="#2a376c" stroke-width="2" opacity=".55"/><rect x="86" y="170" width="36" height="120" rx="16" fill="#3b4c8e"/><rect x="438" y="170" width="36" height="120" rx="16" fill="#3b4c8e"/><rect x="108" y="290" width="8" height="12" fill="#1e2440"/><rect x="444" y="290" width="8" height="12" fill="#1e2440"/></g>
 <g id="odtable"><rect x="430" y="276" width="170" height="14" rx="4" fill="#4a3a2a"/><rect x="448" y="290" width="9" height="46" fill="#3a2d20"/><rect x="574" y="290" width="9" height="46" fill="#3a2d20"/>
   <g id="odphone"><rect x="494" y="256" width="46" height="20" rx="4" fill="#0e1630" stroke="#69b0ff" stroke-width="1.6"/><g class="eq" fill="#69b0ff"><rect x="502" y="262" width="4" height="10"/><rect x="510" y="262" width="4" height="10"/><rect x="518" y="262" width="4" height="10"/><rect x="526" y="262" width="4" height="10"/></g></g>
   <g id="oddrink"><path class="puddle" d="M468 282 q16 -6 38 -1 q8 3 -2 5 q-20 4 -40 0 q-6 -2 4 -4 z" fill="#9bd6ff" opacity=".42"/><path d="M452 272 l26 -10 l6 14 l-26 8 z" fill="#bfe6ff" opacity=".35" stroke="#cfeaff" stroke-width="1.4"/><path class="drip" d="M506 284 v12" stroke="#9bd6ff" stroke-width="2.4" stroke-linecap="round"/></g></g>

@@ -65,6 +65,7 @@ input[type="range"] { width: 100%; accent-color: var(--accent); min-height: 32px
 @keyframes odshake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-3px) rotate(-.6deg); } 75% { transform: translateX(3px) rotate(.6deg); } }
 .od-scene .shout-ring { fill: none; stroke: #ffe27a; stroke-width: 3; stroke-linecap: round; opacity: 0; animation: shout 1s ease-out forwards; }
 @keyframes shout { 0% { opacity: .9; transform: scale(.6); } 100% { opacity: 0; transform: scale(2.6); } }
+.od-scene .skin { stroke: #5a3328; stroke-opacity: .45; stroke-width: 1.2; }
 .od-scene .eq rect { transform-box: fill-box; transform-origin: bottom; animation: eq .8s ease-in-out infinite alternate; }
 .od-scene .eq rect:nth-child(2) { animation-delay: -.3s; } .od-scene .eq rect:nth-child(3) { animation-delay: -.6s; } .od-scene .eq rect:nth-child(4) { animation-delay: -.15s; }
 @keyframes eq { from { transform: scaleY(.25); } to { transform: scaleY(1); } }
@@ -252,3 +253,17 @@ input[type="range"] { width: 100%; accent-color: var(--accent); min-height: 32px
 .ig-node + text { fill: var(--accent-ink); }
 .ig-hub { animation: igbeat 3s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
 @media (max-width: 640px) { .infog .ig-foot { flex-direction: column; align-items: flex-start; } }
+
+/* evidence board: chart cards sit on paper, so their text and controls must be dark */
+.ecard.graph { grid-column: 1 / -1; }
+.ecard .chartbox .axis text, .ecard .chartbox .annot text { fill: #2b2410; font-weight: 600; }
+.ecard .chartbox .axis line, .ecard .chartbox .axis path { stroke: #7a6a40; }
+.ecard .chartbox .grid line { stroke: rgba(0, 0, 0, .18); }
+.ecard .chartbox .annot line { stroke: #6a5a30; }
+.ecard .chartbox .pt { stroke: #f4efe2; }
+.ecard .btn { color: #20190c; background: rgba(0, 0, 0, .06); border-color: #6a5a30; }
+.ecard .btn:hover { background: rgba(0, 0, 0, .12); }
+.ecard .chart-note, .ecard .chart-actions, .ecard .note, .ecard table, .ecard th, .ecard td, .ecard caption { color: #20190c; }
+.ecard .note { color: #4a3d1c; }
+.ecard th, .ecard td { border-color: rgba(0, 0, 0, .25); }
+.ecard .chartbox svg text { fill: #2b2410 !important; }

@@ -14,52 +14,82 @@ const S = (tag, attrs = {}, parent) => { const e = document.createElementNS(NS, 
 // Scene 'synapse': two panels, animated particle model of dopamine signaling
 // =====================================================================================================
 function synapsePanel(blocked) {
-  const svg = S('svg', { viewBox: '0 0 320 270', role: 'img', 'aria-label': blocked ? 'Panel B: dopamine lingers in the synapse because its clearing is slowed.' : 'Panel A: typical signaling. Dopamine crosses the synapse, binds receptors, and is cleared.' });
+  const svg = S('svg', { viewBox: '0 0 320 290', role: 'img', 'aria-label': blocked ? 'Panel B: dopamine lingers in the synapse because its clearing is slowed. The signal bar stays high.' : 'Panel A: typical signaling. Dopamine crosses the synapse, binds receptors, and is cleared. The signal bar rises briefly and falls.' });
   svg.innerHTML = `
-    <defs><linearGradient id="g${blocked ? 'b' : 'a'}" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#2a2370"/><stop offset="1" stop-color="#191452"/></linearGradient></defs>
-    <path d="M30 0 H290 V62 C290 96 262 104 240 104 H80 C58 104 30 96 30 62 Z" fill="#3b2f8f" stroke="#a58bff" stroke-width="2"/>
-    <text x="42" y="22" font-size="11" fill="#cfc6ff">Sending neuron</text>
-    <path d="M30 270 V196 C30 176 52 168 74 168 H246 C268 168 290 176 290 196 V270 Z" fill="#1d4a78" stroke="#59c4ff" stroke-width="2"/>
-    <text x="42" y="258" font-size="11" fill="#bfe3ff">Receiving neuron</text>
-    ${[0, 1, 2].map((i) => `<circle cx="${70 + i * 90}" cy="46" r="13" fill="#6b57c9" stroke="#bda9ff"/><circle cx="${66 + i * 90}" cy="44" r="2.6" fill="#ffd36e"/><circle cx="${74 + i * 90}" cy="48" r="2.6" fill="#ffd36e"/>`).join('')}`;
-  const tpos = [90, 160, 230], rpos = [60, 120, 180, 240];
-  tpos.forEach((x) => { S('rect', { x: x - 9, y: 98, width: 18, height: 10, rx: 3, fill: blocked ? '#7a2c3b' : '#59c4ff' }, svg); if (blocked) { S('path', { d: `M${x - 7} 96 l14 14 M${x + 7} 96 l-14 14`, stroke: '#ff8a7a', 'stroke-width': 3, 'stroke-linecap': 'round' }, svg); } });
-  const rec = rpos.map((x) => S('path', { d: `M${x - 13} 168 C${x - 13} 182 ${x + 13} 182 ${x + 13} 168`, fill: 'none', stroke: '#9bd6ff', 'stroke-width': 4, 'stroke-linecap': 'round' }, svg));
-  S('text', { x: 160, y: 138, 'text-anchor': 'middle', 'font-size': 10.5, fill: '#aab5d6' }, svg).textContent = blocked ? 'Clearing slowed (transporters blocked)' : 'Transporters clear dopamine';
+    <defs>
+      <linearGradient id="sn${blocked ? 'b' : 'a'}s" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#4a3aa8"/><stop offset="1" stop-color="#2e2478"/></linearGradient>
+      <linearGradient id="sn${blocked ? 'b' : 'a'}r" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#245d92"/><stop offset="1" stop-color="#173f66"/></linearGradient>
+      <radialGradient id="sn${blocked ? 'b' : 'a'}d"><stop offset="0" stop-color="#fff2b8"/><stop offset="1" stop-color="#ffc83d"/></radialGradient>
+    </defs>
+    <path d="M24 0 H296 V64 C296 96 266 106 242 106 H78 C54 106 24 96 24 64 Z" fill="url(#sn${blocked ? 'b' : 'a'}s)" stroke="#a58bff" stroke-width="2.4"/>
+    <path d="M24 290 V200 C24 178 50 168 74 168 H246 C270 168 296 178 296 200 V290 Z" fill="url(#sn${blocked ? 'b' : 'a'}r)" stroke="#59c4ff" stroke-width="2.4"/>
+    <text x="36" y="20" font-size="12" font-weight="700" fill="#e1daff">Sending neuron</text>
+    <text x="284" y="20" font-size="11.5" font-weight="700" text-anchor="end" fill="${blocked ? '#ff9c8c' : '#8ff0c4'}">${blocked ? 'Clean-up pumps: BLOCKED' : 'Clean-up pumps: working'}</text>
+    <text x="36" y="196" font-size="12" font-weight="700" fill="#d3ecff">Receiving neuron</text>
+    <text x="36" y="240" font-size="11.5" fill="#d3ecff">Signal received</text>
+    <rect x="36" y="248" width="248" height="14" rx="7" fill="rgba(255,255,255,.12)" stroke="rgba(255,255,255,.3)"/>`;
+  const tpos = [62, 160, 258], rpos = [60, 120, 180, 240], vpos = [112, 208];
+  const pumps = tpos.map((x) => { const g = S('g', {}, svg); S('rect', { x: x - 11, y: 99, width: 22, height: 12, rx: 4, fill: blocked ? '#7a2c3b' : '#3fb6ee', stroke: blocked ? '#ff8a7a' : '#bfe9ff', 'stroke-width': 1.6 }, g); if (blocked) S('path', { d: `M${x - 7} 97 l14 16 M${x + 7} 97 l-14 16`, stroke: '#ff8a7a', 'stroke-width': 3.2, 'stroke-linecap': 'round' }, g); return g; });
+  const rec = rpos.map((x) => S('path', { d: `M${x - 15} 168 C${x - 15} 186 ${x + 15} 186 ${x + 15} 168`, fill: 'none', stroke: '#9bd6ff', 'stroke-width': 4, 'stroke-linecap': 'round' }, svg));
+  const ripples = S('g', { fill: 'none' }, svg);
+  const vesicles = vpos.map((x) => { const g = S('g', {}, svg); S('circle', { r: 14, fill: '#7a66d6', stroke: '#cfc3ff', 'stroke-width': 1.6 }, g); [[-4, -3], [4, 2], [-1, 6]].forEach(([dx, dy]) => S('circle', { cx: dx, cy: dy, r: 2.6, fill: '#ffd36e' }, g)); g.setAttribute('transform', `translate(${x} 48)`); return g; });
+  const meter = S('rect', { x: 38, y: 250, width: 0, height: 10, rx: 5, fill: blocked ? '#ff9c6e' : '#6fe3a1' }, svg);
   const g = S('g', {}, svg);
-  return { svg, g, rec, tpos, rpos };
+  return { svg, g, rec, tpos, rpos, vpos, vesicles, ripples, meter, pumps };
 }
 function makeSynapseSim(blocked, rand) {
-  const panel = synapsePanel(blocked), P = [], dots = [];
-  let acts = [], t = 0, burstT = 2.0;
-  const spawn = () => { for (let i = 0; i < 9; i++) { if (P.length > 70) break; const x = 60 + rand() * 200; P.push({ x, y: 96 + rand() * 6, vx: (rand() - .5) * 30, vy: 20 + rand() * 20, st: 'free', timer: 0, rec: -1 }); } };
-  const recBusy = panel.rpos.map(() => 0);
+  const panel = synapsePanel(blocked), P = [], dots = [], ripples = [];
+  let acts = [], t = 0, relT = 1.2, sig = 0, vi = 0;
+  const ves = panel.vpos.map(() => ({ st: 'idle', k: 0 }));
+  const recBusy = panel.rpos.map(() => 0), recGlow = panel.rpos.map(() => 0);
+  const clamp01 = (x) => Math.max(0, Math.min(1, x));
   function step(dt) {
-    t += dt; burstT += dt; if (burstT > 2.3) { burstT = 0; spawn(); }
+    t += dt; relT -= dt;
+    if (relT <= 0 && P.length < 56) { const v = ves[vi % ves.length]; if (v.st === 'idle') { v.st = 'dock'; v.k = 0; } vi++; relT = 2.6; }
+    ves.forEach((v, i) => {
+      if (v.st === 'dock') { v.k += dt / .9; if (v.k >= 1) { v.st = 'fuse'; v.k = 0; for (let n = 0; n < 5; n++) P.push({ x: panel.vpos[i] + (rand() - .5) * 16, y: 106, vx: (rand() - .5) * 16, vy: 10 + rand() * 10, st: 'free', timer: 0, rec: -1, age: 0, ph: rand() * 6.28 }); } }
+      else if (v.st === 'fuse') { v.k += dt / .5; if (v.k >= 1) { v.st = 'refill'; v.k = 0; } }
+      else if (v.st === 'refill') { v.k += dt / 1.6; if (v.k >= 1) { v.st = 'idle'; v.k = 0; } }
+    });
     for (const p of P) {
+      p.age += dt;
       if (p.st === 'free') {
-        p.vx += (rand() - .5) * 220 * dt; p.vy += (rand() - .5) * 220 * dt; p.vx *= .96; p.vy *= .96;
+        let ri = -1, bd = 1e9;
+        panel.rpos.forEach((rx, i) => { if (recBusy[i] <= 0) { const d = Math.abs(rx - p.x); if (d < bd) { bd = d; ri = i; } } });
+        const ax = Math.sin(t * 1.4 + p.ph) * 18 + (ri >= 0 ? (panel.rpos[ri] - p.x) * .9 : 0), ay = Math.cos(t * 1.1 + p.ph) * 10 + 12;
+        p.vx = (p.vx + ax * dt) * (1 - 1.6 * dt); p.vy = (p.vy + ay * dt) * (1 - 1.6 * dt);
         p.x += p.vx * dt; p.y += p.vy * dt;
-        if (p.x < 24) { p.x = 24; p.vx = Math.abs(p.vx); } if (p.x > 296) { p.x = 296; p.vx = -Math.abs(p.vx); }
-        if (p.y < 110) { p.y = 110; p.vy = Math.abs(p.vy); } if (p.y > 163) { p.y = 163; p.vy = -Math.abs(p.vy); }
-        if (p.y > 150) panel.rpos.forEach((rx, i) => { if (p.st === 'free' && recBusy[i] <= 0 && Math.abs(p.x - rx) < 16) { p.st = 'bound'; p.timer = .7; p.x = rx; p.y = 166; recBusy[i] = .7; p.rec = i; acts.push(t); } });
+        if (p.x < 34) { p.x = 34; p.vx = Math.abs(p.vx); } if (p.x > 286) { p.x = 286; p.vx = -Math.abs(p.vx); }
+        if (p.y < 112) { p.y = 112; p.vy = Math.abs(p.vy) * .6; } if (p.y > 160) { p.y = 160; p.vy = -Math.abs(p.vy) * .6; }
+        if (p.y > 148) panel.rpos.forEach((rx, i) => { if (p.st === 'free' && recBusy[i] <= 0 && Math.abs(p.x - rx) < 14) { p.st = 'bound'; p.timer = 1.1; p.rec = i; recBusy[i] = 1.1; acts.push(t); ripples.push({ x: rx, k: 0 }); } });
+        if (blocked && p.age > 24) p.fade = (p.fade || 0) + dt;
       } else if (p.st === 'bound') {
-        p.timer -= dt; if (p.timer <= 0) { recBusy[p.rec] = 0; if (blocked) { p.st = 'free'; p.vy = -40; } else { p.st = 'clear'; } }
+        const rx = panel.rpos[p.rec]; p.x += (rx - p.x) * Math.min(1, 9 * dt); p.y += (165 - p.y) * Math.min(1, 9 * dt);
+        p.timer -= dt; if (p.timer <= 0) { recBusy[p.rec] = 0; if (blocked) { p.st = 'free'; p.vy = -22; p.vx = (rand() - .5) * 20; } else p.st = 'clear'; }
       } else if (p.st === 'clear') {
-        const tx = panel.tpos.reduce((b, x) => (Math.abs(x - p.x) < Math.abs(b - p.x) ? x : b)); p.x += Math.sign(tx - p.x) * Math.min(Math.abs(tx - p.x), 90 * dt); p.y -= 90 * dt; if (p.y < 106) p.dead = true;
+        const tx = panel.tpos.reduce((b, x) => (Math.abs(x - p.x) < Math.abs(b - p.x) ? x : b));
+        p.vx += (tx - p.x) * 3 * dt; p.vx *= 1 - 2.2 * dt; p.x += p.vx * dt; p.y -= (34 + (160 - p.y) * .35) * dt;
+        if (p.y < 108) p.dead = true;
       }
+      if (p.fade > 1.5) p.dead = true;
     }
     for (let i = P.length - 1; i >= 0; i--) if (P[i].dead) P.splice(i, 1);
-    recBusy.forEach((v, i) => { if (v > 0) recBusy[i] = v - dt; });
+    recBusy.forEach((v, i) => { if (v > 0) recBusy[i] = v - dt; recGlow[i] += ((recBusy[i] > 0 ? 1 : 0) - recGlow[i]) * Math.min(1, 8 * dt); });
+    ripples.forEach((r) => { r.k += dt / 1.1; }); for (let i = ripples.length - 1; i >= 0; i--) if (ripples[i].k >= 1) ripples.splice(i, 1);
+    const bound = recBusy.filter((v) => v > 0).length;
+    sig += (clamp01(bound / 3) - sig) * Math.min(1, 2.2 * dt);
     acts = acts.filter((a) => t - a < 10);
   }
   function paint() {
-    while (dots.length < P.length) { const c = S('circle', { r: 4.2, fill: '#ffd36e', stroke: '#fff4c9', 'stroke-width': .8 }, panel.g); dots.push(c); }
+    while (dots.length < P.length) dots.push(S('circle', { r: 4.6, fill: `url(#sn${blocked ? 'b' : 'a'}d)`, stroke: '#fff4c9', 'stroke-width': .8 }, panel.g));
     while (dots.length > P.length) dots.pop().remove();
-    P.forEach((p, i) => { dots[i].setAttribute('cx', p.x.toFixed(1)); dots[i].setAttribute('cy', p.y.toFixed(1)); });
-    panel.rec.forEach((r, i) => { const on = recBusy[i] > 0; r.setAttribute('stroke', on ? '#ffe27a' : '#9bd6ff'); r.setAttribute('stroke-width', on ? 6 : 4); });
+    P.forEach((p, i) => { dots[i].setAttribute('cx', p.x.toFixed(1)); dots[i].setAttribute('cy', p.y.toFixed(1)); dots[i].setAttribute('opacity', p.fade ? (1 - p.fade / 1.5).toFixed(2) : 1); });
+    panel.rec.forEach((r, i) => { const gl = recGlow[i]; r.setAttribute('stroke', gl > .5 ? '#ffe27a' : '#9bd6ff'); r.setAttribute('stroke-width', (4 + 3 * gl).toFixed(1)); r.setAttribute('stroke-opacity', (.75 + .25 * gl).toFixed(2)); });
+    panel.ripples.replaceChildren(); ripples.forEach((r) => S('circle', { cx: r.x, cy: 190, r: (6 + r.k * 34).toFixed(1), stroke: '#ffe27a', 'stroke-width': 2, opacity: (.7 * (1 - r.k)).toFixed(2), fill: 'none' }, panel.ripples));
+    panel.vesicles.forEach((g, i) => { const v = ves[i], x = panel.vpos[i]; let y = 48, o = 1, sc = 1; if (v.st === 'dock') y = 48 + 40 * v.k * v.k; else if (v.st === 'fuse') { y = 88; o = 1 - v.k; sc = 1 + .3 * v.k; } else if (v.st === 'refill') { o = v.k; y = 48; } else if (v.st === 'idle') { y = 48; } g.setAttribute('transform', `translate(${x} ${y.toFixed(1)}) scale(${sc.toFixed(2)})`); g.setAttribute('opacity', o.toFixed(2)); });
+    panel.meter.setAttribute('width', (244 * sig).toFixed(1));
   }
-  return { panel, step, paint, count: () => acts.length, total: () => acts.length, reset() { P.length = 0; acts = []; t = 0; burstT = 2.0; } };
+  return { panel, step, paint, count: () => acts.length, total: () => acts.length, reset() { P.length = 0; ripples.length = 0; acts = []; t = 0; relT = 1.2; sig = 0; vi = 0; ves.forEach((v) => { v.st = 'idle'; v.k = 0; }); recBusy.fill(0); recGlow.fill(0); } };
 }
 export function sceneSynapse(host, ctx) {
   const rand = rng(seedFrom('syn|' + ctx.session.state.seed));
@@ -75,7 +105,7 @@ export function sceneSynapse(host, ctx) {
   function loop() { cancelAnimationFrame(raf); last = performance.now(); raf = requestAnimationFrame(frame); }
   function fast() { A.reset(); B.reset(); for (let i = 0; i < 1500; i++) { A.step(.02); B.step(.02); } A.paint(); B.paint(); cA.textContent = A.count(); cB.textContent = B.count(); }
   host.append(h('div.sim', h('h3', ctx.stage.title), h('p.lead', ctx.stage.lead), h('div.syn-panels', figA, figB),
-    h('div.row', { style: { marginTop: '.6rem' } }, pbtn, rbtn, h('span.small.muted', 'Yellow dots are dopamine. Receptors glow when dopamine binds. A simplified, illustrative model.'))));
+    h('div.row', { style: { marginTop: '.6rem' } }, pbtn, rbtn, h('span.small.muted', 'Yellow dots are dopamine. Receptors glow when dopamine binds, and the bar at the bottom of each receiving neuron shows how strong the signal is. A simplified, illustrative model.'))));
   if (reducedMotion()) { toggle(false); fast(); } else loop();
   return { destroy() { cancelAnimationFrame(raf); } };
 }
