@@ -108,11 +108,18 @@
 
 /* ---------- hotspot ---------- */
 .diagram { display: grid; place-items: center; }
-.diagram svg { width: 100%; max-width: 560px; height: auto; }
+.diagram svg { width: 100%; max-width: 660px; height: auto; }
 .hs { cursor: pointer; }
 .hs .shape { transition: fill .2s, stroke .2s; }
 .hs:hover .shape, .hs:focus-visible .shape { stroke: var(--focus); stroke-width: 3; }
 .hs[aria-checked="true"] .shape { stroke: var(--focus); stroke-width: 4; fill-opacity: .95; }
+.hs .lab .lead { stroke: var(--line-strong); stroke-width: 1.4; }
+.hs .lab .dot { fill: var(--ink); }
+.hs[aria-checked="true"] .lab .lead { stroke: var(--focus); }
+.hs .flow { animation: flowdash 1.6s linear infinite; }
+.hs .glow, .hs .glow2 { animation: glowpulse 2.6s ease-in-out infinite; }
+@keyframes flowdash { to { stroke-dashoffset: -20; } }
+@keyframes glowpulse { 50% { opacity: .45; } }
 .hs .lab rect { fill: rgba(5, 10, 22, .88); stroke: var(--line-strong); }
 .hs[aria-checked="true"] .lab rect { stroke: var(--focus); fill: #2a2400; }
 .hs .lab text { fill: var(--ink); font-size: 13px; font-weight: 700; }

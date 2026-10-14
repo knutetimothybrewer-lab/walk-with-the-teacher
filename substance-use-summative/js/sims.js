@@ -5,6 +5,7 @@ import { simulate, band, BODY, WINDOWS } from './bacmodel.js';
 import { runChat, METERS, METER_LABEL, TAG_LABEL } from './chatmodel.js';
 import { icon } from './visuals.js';
 import { sfx } from './sound.js';
+import { sceneOverdose } from './odscene.js';
 
 const NS = 'http://www.w3.org/2000/svg';
 const S = (tag, attrs = {}, parent) => { const e = document.createElementNS(NS, tag); for (const [k, v] of Object.entries(attrs)) e.setAttribute(k, v); if (parent) parent.appendChild(e); return e; };
@@ -259,71 +260,6 @@ export function sceneBac(host, ctx) {
 }
 
 // =====================================================================================================
-// Scene 'overdose': Simulation C
-// =====================================================================================================
-const OD_HOTSPOTS = [
-  { k: 'wake', x: 300, y: 118, label: 'Try to wake them', text: 'You shout their name and shake their shoulder. There is no response.' },
-  { k: 'breath', x: 330, y: 215, label: 'Check breathing', text: 'You watch their chest and listen. Breathing is very slow, with long pauses and a gurgling, snoring-like sound.' },
-  { k: 'lips', x: 275, y: 150, label: 'Look at lips and skin', text: 'Their lips and skin look pale, with a bluish-gray color.' },
-  { k: 'phone', x: 520, y: 238, label: 'Look at the phone', text: 'A phone on the table is playing music.' },
-  { k: 'drink', x: 455, y: 262, label: 'Look at the table', text: 'A drink is spilled on the table.' }
-];
-export function sceneOverdose(host, ctx) {
-  const sim = ctx.sim; sim.seen = sim.seen || {}; sim.t0 = sim.t0 || Date.now();
-  const box = h('div.sim', h('h3', ctx.stage.title), h('p.lead', ctx.stage.lead));
-  const svg = S('svg', { viewBox: '0 0 640 360', role: 'img', 'aria-label': 'A living room. A person is slumped on a couch. A phone and a spilled drink are on a table.' });
-  svg.innerHTML = `<rect width="640" height="360" fill="#0b1226"/><rect y="270" width="640" height="90" fill="#0a0f1d"/>
-    <rect x="460" y="40" width="130" height="110" rx="6" fill="#16213f" stroke="#2c3b6b"/><path d="M525 40 V150 M460 95 H590" stroke="#2c3b6b" stroke-width="3"/>
-    <rect x="130" y="170" width="300" height="110" rx="22" fill="#2b3a6d"/><rect x="110" y="140" width="60" height="140" rx="18" fill="#34457f"/><rect x="390" y="140" width="60" height="140" rx="18" fill="#34457f"/><rect x="130" y="130" width="300" height="60" rx="20" fill="#3a4c8c"/>
-    <g class="breath"><path d="M250 190 C250 150 300 140 345 160 L388 205 L370 245 L262 250 Z" fill="#7a5a8a"/></g>
-    <circle cx="258" cy="136" r="30" fill="#d9a98c"/><path d="M230 126 C236 100 282 100 288 124 C270 114 248 116 230 126 Z" fill="#2a1d1a"/><path class="lips" d="M246 152 Q258 158 270 152" stroke="#c98a85" stroke-width="5" fill="none" stroke-linecap="round"/>
-    <path d="M246 130 q4 3 8 0 M264 130 q4 3 8 0" stroke="#3a2a2a" stroke-width="2.4" fill="none" stroke-linecap="round"/>
-    <path d="M366 214 C400 238 410 262 404 282" stroke="#d9a98c" stroke-width="14" fill="none" stroke-linecap="round"/>
-    <rect x="430" y="270" width="150" height="14" rx="4" fill="#3a2e22"/><rect x="450" y="284" width="8" height="46" fill="#3a2e22"/><rect x="552" y="284" width="8" height="46" fill="#3a2e22"/>
-    <rect x="500" y="248" width="34" height="22" rx="4" fill="#111a33" stroke="#69b0ff"/><path d="M510 242 q8 -10 16 0 M506 236 q12 -16 24 0" stroke="#69b0ff" fill="none" stroke-width="2" opacity=".7"/>
-    <path d="M440 270 q14 -22 24 0 z" fill="#9bd6ff" opacity=".6"/><ellipse cx="478" cy="272" rx="22" ry="4" fill="#9bd6ff" opacity=".35"/>`;
-  const scene = h('div.od-scene'); scene.append(svg);
-  const hsGroup = S('g', {}, svg);
-  OD_HOTSPOTS.forEach((hs) => {
-    const g = S('g', { class: 'hs2' + (sim.seen[hs.k] ? ' seen' : ''), tabindex: 0, role: 'button', 'aria-label': hs.label }, hsGroup);
-    S('circle', { cx: hs.x, cy: hs.y, r: 24 }, g);
-    const ex = () => { sim.seen[hs.k] = true; g.classList.add('seen'); ctx.save(); log.append(h('p', h('b', hs.label + ': '), hs.text)); log.lastChild.scrollIntoView({ block: 'nearest' }); check(); };
-    g.addEventListener('click', ex); g.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); ex(); } });
-  });
-  const clock = h('div.od-clock', 'Time since you found them', h('b', '0:00'));
-  scene.append(clock);
-  const log = h('div.od-log', { 'aria-live': 'polite' });
-  const note = h('p.progress-note');
-  const mon = S('svg', { viewBox: '0 0 400 60', role: 'img', 'aria-label': 'Breathing monitor: breaths are slow with long pauses.', style: 'width:100%;height:56px;background:#050914;border-radius:8px;border:1px solid #20305a;margin-top:.5rem' });
-  mon.innerHTML = '<path class="ekg" d="M0 40 H60 q10 -26 20 0 H220 q10 -26 20 0 H400" stroke-dasharray="0"><animate attributeName="d" dur="6s" repeatCount="indefinite" values="M0 40 H60 q10 -26 20 0 H220 q10 -26 20 0 H400;M-120 40 H-60 q10 -26 20 0 H100 q10 -26 20 0 H280;M0 40 H60 q10 -26 20 0 H220 q10 -26 20 0 H400"/></path>';
-  box.append(scene, h('p.small.muted', { style: { marginTop: '.5rem' } }, 'Select the parts of the scene (or use Tab and Enter) to examine what you can see and hear. Examine at least the first three.'), log, mon, note);
-  host.append(box);
-  const need = ['wake', 'breath', 'lips'];
-  function check() {
-    const have = need.filter((k) => sim.seen[k]).length;
-    if (!sim.ready) { if (have >= need.length) { sim.ready = true; ctx.save(); ctx.markReady(); note.textContent = 'Observation complete. The questions are unlocked.'; } else note.textContent = `Examine the scene: ${have} of ${need.length} key checks done.`; } else note.textContent = 'Observation complete. The questions are unlocked.';
-  }
-  check();
-  OD_HOTSPOTS.filter((x) => sim.seen[x.k]).forEach((hs) => log.append(h('p', h('b', hs.label + ': '), hs.text)));
-  let iv = null;
-  function tick() {
-    const stopAt = sim.helpedAt || null; const secs = Math.floor(((stopAt || Date.now()) - sim.t0) / 1000);
-    clock.querySelector('b').textContent = `${Math.floor(secs / 60)}:${String(secs % 60).padStart(2, '0')}`;
-    clock.firstChild.textContent = stopAt ? 'Time until help was called' : 'Time since you found them';
-    if (stopAt) { scene.classList.add('helped'); clearInterval(iv); }
-  }
-  tick(); iv = setInterval(tick, 1000);
-  const ws = (Date.now() - sim.t0) / 1000; svg.querySelector('.lips').style.animationDelay = '-' + Math.min(ws, 60) + 's';
-  return {
-    onPartDone(qid) {
-      if (qid === 'ov2') { sim.helpedAt = Date.now(); ctx.save(); tick(); log.append(h('p', h('b', 'Help is on the way. '), 'The dispatcher stays on the line with you.')); }
-      if (qid === 'ov3') log.append(h('p', h('b', 'Help arrives. '), 'Paramedics take over. Staying and giving clear information made it easier for them.'));
-    },
-    destroy() { clearInterval(iv); }
-  };
-}
-
-// =====================================================================================================
 // Scene 'chat': Simulation D, branching conversation
 // =====================================================================================================
 export function sceneChat(host, ctx) {
@@ -438,4 +374,5 @@ export function sceneCase(host, ctx) {
   return { destroy() {} };
 }
 
+export { sceneOverdose };
 export const SCENES = { synapse: sceneSynapse, chart: sceneChart, reaction: sceneReaction, bac: sceneBac, overdose: sceneOverdose, chat: sceneChat, board: sceneBoard, case: sceneCase };

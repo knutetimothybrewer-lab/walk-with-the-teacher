@@ -114,31 +114,73 @@ export const ICON = {
 export const icon = (name, size = 20) => { const s = document.createElementNS(NS, 'svg'); s.setAttribute('viewBox', '0 0 24 24'); s.setAttribute('width', size); s.setAttribute('height', size); s.setAttribute('aria-hidden', 'true'); s.innerHTML = ICON[name]; return s; };
 
 // ---------- brain diagram (hotspot) ----------
+// Lateral view of the left side of the brain (front of the brain on the left). Surface folds are drawn on the
+// cerebrum; deep structures (reward circuit, hippocampus) are shown as if seen through the tissue.
+let brainSeq = 0;
 export function brainDiagram(regions, { onPick, selected, locked } = {}) {
   const isLocked = () => (typeof locked === 'function' ? locked() : !!locked);
-  const colors = { pfc: '#7b5cff', reward: '#ff7fb0', cerebellum: '#3da6a0', brainstem: '#e0a040', hippo: '#5aa0ff' };
+  const uid = 'br' + (++brainSeq);
   const wrap = h('div.diagram');
-  const s = document.createElementNS(NS, 'svg'); s.setAttribute('viewBox', '0 0 560 360'); s.setAttribute('role', 'radiogroup'); s.setAttribute('aria-label', 'Side view of the brain; the front of the brain is on the left.');
+  const s = document.createElementNS(NS, 'svg'); s.setAttribute('viewBox', '0 0 660 420'); s.setAttribute('role', 'radiogroup'); s.setAttribute('aria-label', 'Side view of the brain; the front of the brain is on the left.');
+  const CER = 'M78 192 C60 122 108 54 196 40 C286 26 396 38 446 98 C486 146 486 204 450 234 C432 250 404 252 380 246 C352 242 332 252 304 260 C272 270 232 272 202 258 C182 250 170 242 150 244 C110 246 84 226 78 192 Z';
+  const r = rng(41);
+  // fine surface folds: wandering rows, a dark groove with a pale ridge beside it
+  let folds = '', ridges = '';
+  for (let row = 0; row < 15; row++) {
+    const y0 = 48 + row * 14.5; let d = `M60 ${y0}`, d2 = `M60 ${y0 + 3.5}`, ph = r() * 6, amp = 5 + r() * 5, fr = .075 + r() * .05;
+    for (let x = 64; x <= 500; x += 9) { const y = y0 + Math.sin(x * fr + ph) * amp + Math.sin(x * fr * 2.3 + ph * 1.7) * 2.6; d += ` L${x} ${y.toFixed(1)}`; d2 += ` L${x} ${(y + 3.5).toFixed(1)}`; }
+    folds += `<path d="${d}"/>`; ridges += `<path d="${d2}"/>`;
+  }
+  let cross = '';
+  for (let k = 0; k < 16; k++) { const x0 = 96 + k * 25 + r() * 10, y0 = 52 + r() * 150; cross += `<path d="M${x0} ${y0} q${(r() * 16 - 8).toFixed(1)} ${(14 + r() * 12).toFixed(1)} ${(r() * 14 - 7).toFixed(1)} ${(26 + r() * 18).toFixed(1)}"/>`; }
+  let folia = '';
+  for (let k = 0; k < 11; k++) folia += `<path d="M${338 + k * 1.5} ${256 + k * 6} q60 ${-10 + (k % 2) * 5} 122 ${-6 + k * 1.5}"/>`;
   s.innerHTML = `
-  <defs><radialGradient id="bgl" cx="40%" cy="30%"><stop offset="0" stop-color="#3a2f78"/><stop offset="1" stop-color="#171244"/></radialGradient></defs>
-  <path id="cerebrum" d="M74 185 C62 110 128 48 226 42 C334 36 438 66 468 142 C488 192 466 224 422 236 C388 245 352 244 318 250 C290 255 258 257 226 252 C154 246 84 236 74 185 Z" fill="url(#bgl)" stroke="#8d82e8" stroke-width="2"/>
-  <path d="M130 100 C170 80 210 96 232 80 M220 150 C260 126 300 150 340 128 M330 96 C370 90 410 104 436 130 M150 200 C190 180 240 200 280 184 M300 210 C340 198 380 214 420 200" fill="none" stroke="#8d82e8" stroke-opacity=".45" stroke-width="2.2"/>`;
+  <defs>
+    <clipPath id="${uid}c"><path d="${CER}"/></clipPath>
+    <clipPath id="${uid}cb"><path d="M346 250 C376 238 450 240 474 262 C490 284 462 322 414 328 C374 332 340 300 346 250 Z"/></clipPath>
+    <radialGradient id="${uid}g" cx="38%" cy="28%" r="80%"><stop offset="0" stop-color="#f1c9c0"/><stop offset=".55" stop-color="#d79e9b"/><stop offset="1" stop-color="#a96f77"/></radialGradient>
+    <linearGradient id="${uid}cbg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#cf938f"/><stop offset="1" stop-color="#97616c"/></linearGradient>
+    <linearGradient id="${uid}bs" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#c9a08f"/><stop offset=".5" stop-color="#e8c8b4"/><stop offset="1" stop-color="#b78b82"/></linearGradient>
+    <radialGradient id="${uid}sh" cx="50%" cy="100%" r="70%"><stop offset="0" stop-color="#3b1a2c" stop-opacity=".55"/><stop offset="1" stop-color="#3b1a2c" stop-opacity="0"/></radialGradient>
+    <filter id="${uid}soft" x="-5%" y="-5%" width="110%" height="110%"><feGaussianBlur stdDeviation=".6"/></filter>
+    <filter id="${uid}glow" x="-30%" y="-60%" width="160%" height="220%"><feGaussianBlur stdDeviation="3.2"/></filter>
+  </defs>
+  <g transform="translate(40 44)">
+    <ellipse cx="250" cy="332" rx="210" ry="14" fill="rgba(0,0,0,.35)" filter="url(#${uid}soft)"/>
+    <path d="M296 214 C300 236 306 262 304 282 C318 296 322 322 324 352 C332 356 346 354 352 346 C350 318 356 292 366 264 C356 246 346 232 336 214 Z" fill="url(#${uid}bs)" stroke="#8a5a60" stroke-width="1.6"/>
+    <path d="M308 270 C322 276 342 276 360 268 M312 296 C324 300 340 298 352 294" fill="none" stroke="#8a5a60" stroke-opacity=".5" stroke-width="1.4"/>
+    <path d="M346 250 C376 238 450 240 474 262 C490 284 462 322 414 328 C374 332 340 300 346 250 Z" fill="url(#${uid}cbg)" stroke="#7d4d5a" stroke-width="1.8"/>
+    <g clip-path="url(#${uid}cb)" fill="none" stroke="#6d3f4e" stroke-opacity=".6" stroke-width="1.5">${folia}</g>
+    <path d="${CER}" fill="url(#${uid}g)"/>
+    <g clip-path="url(#${uid}c)">
+      <g fill="none" stroke="#f6d8cf" stroke-opacity=".38" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">${ridges}</g>
+      <g fill="none" stroke="#8a4f5e" stroke-opacity=".55" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" filter="url(#${uid}soft)">${folds}</g>
+      <g fill="none" stroke="#8a4f5e" stroke-opacity=".4" stroke-width="1.6" stroke-linecap="round">${cross}</g>
+      <path d="M268 40 C258 80 246 112 232 168" fill="none" stroke="#6e3a4c" stroke-opacity=".8" stroke-width="3.6" stroke-linecap="round"/>
+      <path d="M156 232 C196 214 250 190 300 174 C336 162 380 160 420 176" fill="none" stroke="#6e3a4c" stroke-opacity=".85" stroke-width="4" stroke-linecap="round"/>
+      <path d="M404 98 C410 140 408 176 396 214" fill="none" stroke="#6e3a4c" stroke-opacity=".5" stroke-width="2.6" stroke-linecap="round"/>
+      <rect x="60" y="200" width="460" height="90" fill="url(#${uid}sh)"/>
+    </g>
+    <path d="${CER}" fill="none" stroke="#7b4756" stroke-width="2.2"/>
+    <path d="M110 120 C130 76 176 56 226 54" fill="none" stroke="#fff" stroke-opacity=".32" stroke-width="5" stroke-linecap="round" filter="url(#${uid}soft)"/>
+  </g>`;
+  const art = s.querySelector('g');
   const shapes = {
-    pfc: '<path class="shape" d="M74 185 C62 110 128 48 200 43 C190 95 188 165 196 248 C140 242 82 232 74 185 Z" fill="#7b5cff" fill-opacity=".55" stroke="#c9bcff" stroke-width="2"/>',
-    reward: '<ellipse class="shape" cx="268" cy="182" rx="34" ry="19" fill="#ff7fb0" fill-opacity=".6" stroke="#ffc0d8" stroke-width="2" stroke-dasharray="5 3"/>',
-    cerebellum: '<path class="shape" d="M348 252 C372 236 440 240 458 266 C470 290 436 316 396 314 C362 312 336 290 348 252 Z" fill="#3da6a0" fill-opacity=".6" stroke="#9be8e0" stroke-width="2"/><path d="M366 262 C390 270 420 268 444 262 M360 282 C390 292 422 290 450 282" fill="none" stroke="#9be8e0" stroke-opacity=".6" stroke-width="2"/>',
-    brainstem: '<path class="shape" d="M300 254 L346 250 L356 346 L318 352 Z" fill="#e0a040" fill-opacity=".62" stroke="#ffd98f" stroke-width="2"/>',
-    hippo: '<path class="shape" d="M296 196 C322 176 358 184 366 208 C370 222 354 226 346 214 C338 202 318 202 304 214 C296 220 286 208 296 196 Z" fill="#5aa0ff" fill-opacity=".62" stroke="#b4d4ff" stroke-width="2"/>'
+    pfc: `<path class="shape" clip-path="url(#${uid}c)" d="M40 20 L214 20 C202 90 204 170 214 290 L40 290 Z" fill="#7b5cff" fill-opacity=".5" stroke="#d7ccff" stroke-width="2.2"/>`,
+    reward: `<g class="shape-g"><ellipse class="glow" cx="262" cy="196" rx="52" ry="22" fill="#ff5fa0" fill-opacity=".45" filter="url(#${uid}glow)"/><path class="flow" d="M312 238 C296 222 280 214 262 206 C246 198 232 190 222 182" fill="none" stroke="#fff" stroke-opacity=".85" stroke-width="2.4" stroke-dasharray="3 7" stroke-linecap="round"/><ellipse class="shape" cx="262" cy="196" rx="52" ry="22" fill="#ff7fb0" fill-opacity=".34" stroke="#ffd0e2" stroke-width="2.4" stroke-dasharray="6 4"/><circle cx="222" cy="182" r="7" fill="#ffd0e2" stroke="#b03a72" stroke-width="1.6"/><circle cx="312" cy="238" r="6" fill="#ffd0e2" stroke="#b03a72" stroke-width="1.6"/></g>`,
+    cerebellum: `<path class="shape" d="M346 250 C376 238 450 240 474 262 C490 284 462 322 414 328 C374 332 340 300 346 250 Z" fill="#2fb5a8" fill-opacity=".42" stroke="#aef2ea" stroke-width="2.2"/>`,
+    brainstem: `<path class="shape" d="M296 214 C300 236 306 262 304 282 C318 296 322 322 324 352 C332 356 346 354 352 346 C350 318 356 292 366 264 C356 246 346 232 336 214 Z" fill="#f0a530" fill-opacity=".5" stroke="#ffe0a3" stroke-width="2.2"/>`,
+    hippo: `<path class="glow2" d="M300 226 C312 200 342 192 366 204 C384 214 380 232 366 230 C352 228 346 214 330 216 C318 218 312 236 300 226 Z" fill="#5aa0ff" fill-opacity=".5" filter="url(#${uid}glow)"/><path class="shape" d="M296 228 C306 198 340 190 366 202 C386 212 384 234 368 234 C354 234 350 218 334 220 C322 222 316 240 304 238 C296 238 292 234 296 228 Z" fill="#5aa0ff" fill-opacity=".55" stroke="#c4dcff" stroke-width="2.2"/>`
   };
-  const labelPos = { pfc: [18, 66], reward: [206, 124], cerebellum: [392, 326], brainstem: [172, 322], hippo: [380, 176] };
-  const lines = { pfc: [[100, 92], [92, 100]], reward: [[268, 164], [268, 148]], cerebellum: [[420, 316], [430, 322]], brainstem: [[340, 320], [372, 318]], hippo: [[350, 196], [372, 190]] };
-  const labw = { pfc: 138, reward: 124, cerebellum: 100, brainstem: 100, hippo: 100 };
-  const group = document.createElementNS(NS, 'g'); s.appendChild(group);
+  // label box (x, y within the art group), leader line from the box to the structure
+  const lab = { pfc: { x: -30, y: -24, w: 138, a: [96, 110] }, reward: { x: 190, y: -38, w: 124, a: [262, 192] }, cerebellum: { x: 392, y: 338, w: 100, a: [440, 316] }, brainstem: { x: 150, y: 340, w: 110, a: [326, 330] }, hippo: { x: 480, y: 168, w: 100, a: [372, 214] } };
+  const NSG = (t, a, p) => { const e = document.createElementNS(NS, t); for (const [k, v] of Object.entries(a)) e.setAttribute(k, v); if (p) p.appendChild(e); return e; };
+  const group = NSG('g', {}, art);
   regions.forEach(([k, name]) => {
-    const g = document.createElementNS(NS, 'g'); g.setAttribute('class', 'hs'); g.setAttribute('role', 'radio'); g.setAttribute('tabindex', isLocked() ? '-1' : '0'); g.setAttribute('aria-label', name); g.dataset.k = k; g.setAttribute('aria-checked', selected === k ? 'true' : 'false');
-    const [lx, ly] = labelPos[k], w = labw[k];
-    g.innerHTML = shapes[k] + `<g class="lab"><rect x="${lx}" y="${ly}" width="${w}" height="26" rx="8"/><text x="${lx + 9}" y="${ly + 18}">${name.replace('Reward circuit', 'Reward circuit')}</text></g>`;
-    group.appendChild(g);
+    const g = NSG('g', { class: 'hs', role: 'radio', tabindex: isLocked() ? '-1' : '0', 'aria-label': name, 'aria-checked': selected === k ? 'true' : 'false', 'data-k': k }, group);
+    const L = lab[k], ax = L.x + L.w / 2, ay = L.y + (L.y > 200 ? 0 : 26);
+    g.innerHTML = shapes[k] + `<g class="lab"><line class="lead" x1="${ax}" y1="${ay}" x2="${L.a[0]}" y2="${L.a[1]}"/><circle class="dot" cx="${L.a[0]}" cy="${L.a[1]}" r="3.4"/><rect x="${L.x}" y="${L.y}" width="${L.w}" height="26" rx="8"/><text x="${L.x + 9}" y="${L.y + 18}">${name}</text></g>`;
     const pick = () => { if (isLocked()) return; group.querySelectorAll('.hs').forEach((x) => x.setAttribute('aria-checked', x === g ? 'true' : 'false')); onPick && onPick(k); };
     g.addEventListener('click', pick);
     g.addEventListener('keydown', (e) => { if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); pick(); } else if (e.key.startsWith('Arrow')) { e.preventDefault(); const all = [...group.querySelectorAll('.hs')]; const i = all.indexOf(g); const nx = all[(i + (e.key === 'ArrowLeft' || e.key === 'ArrowUp' ? -1 : 1) + all.length) % all.length]; nx.focus(); } });
