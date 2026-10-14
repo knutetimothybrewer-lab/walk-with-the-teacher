@@ -8,6 +8,7 @@ import { canon } from './canon.js';
 import { buildItem, renderStim } from './items.js';
 import { SCENES } from './sims.js';
 import { setBackground, heroWave, icon } from './visuals.js';
+import { missionInfographic } from './infographics.js';
 import { send, hasBackend } from './transport.js';
 import { renderResults } from './results.js';
 import { setSound, soundOn } from './sound.js';
@@ -295,7 +296,7 @@ function renderStage() {
   backBtn.hidden = si === 0;
   const head = h('div.stagehead', h('div', h('div.kicker', `${mission.kicker} • ${mission.title}`), isScene ? h('h2', stage.title) : ''), h('div.count', `Step ${si + 1} of ${stages.length}`));
   const body = isScene ? h('div.scene-layout', hostEl, list) : h('div.scene-layout.solo', list);
-  const screen = h('section.screen', head, body, h('div.navrow', h('div.row', backBtn, status), nextBtn));
+  const screen = h('section.screen', head, si === 0 ? missionInfographic(mission.theme) : '', body, h('div.navrow', h('div.row', backBtn, status), nextBtn));
   setScreen(screen, { theme: mission.theme });
   current = { stage, items };
   if (isScene) {
