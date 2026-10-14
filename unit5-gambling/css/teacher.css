@@ -51,9 +51,9 @@
 .pvbar .pv-row { display: flex; flex-wrap: wrap; gap: .5rem .8rem; align-items: flex-end; }
 .pvbar .pv-f { color: #cfd8ea; }
 .pvbar .input, .pvbar select { background: #fff; color: #14213d; border-color: #fff; min-height: 34px; padding: .2rem .5rem; font-size: .85rem; max-width: 230px; }
-.pvbar .btn { background: #fff; color: #14213d; border-color: #fff; }
-.pvbar .btn-primary { background: #ffc857; color: #14213d; border-color: #ffc857; }
-.pvbar .btn-danger { background: transparent; color: #ffb4aa; border-color: #ffb4aa; }
+.pvbar .btn { background: #fff; color: #14213d; border-color: #fff; font-family: var(--font-ui); font-size: .9rem; font-weight: 700; line-height: 1.2; white-space: nowrap; }
+.pvbar .btn.btn-danger { background: #fff; color: #9b1c14; border-color: #ff8a7a; }
+.pvbar .btn.btn-primary { background: #ffc857; color: #14213d; border-color: #ffc857; }
 .pvbar .check-line { color: #fff; }
 .pvbar .check-line input { accent-color: #ffc857; }
 #pvbar { position: sticky; top: var(--bar-h); z-index: 38; }

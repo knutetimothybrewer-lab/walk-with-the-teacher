@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en" data-motion="auto" data-size="normal" data-font="default" data-contrast="normal">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Helpers demo (development only)</title>
+<link rel="stylesheet" href="../../css/tokens.css"><link rel="stylesheet" href="../../css/base.css"><link rel="stylesheet" href="../../css/items.css"><link rel="stylesheet" href="../../css/sims.css"><link rel="stylesheet" href="../../css/helpers.css"></head>
+<body data-ch="1"><div id="app" style="max-width:900px;margin:1rem auto;padding:0 1rem"></div>
+<div id="live" class="sr-only" aria-live="polite"></div><div id="alert" class="sr-only" role="alert"></div>
+<script src="../../shared/core.js"></script><script src="../../shared/seeds.js"></script><script src="../../shared/data.js"></script>
+<script type="module">
+// Renders every question helper against stand-in items (the real wording lives in the private bank).  Development only.
+import { renderBlocks } from '../../js/blocks.js';
+import { skinFor, helperFor } from '../../js/helpers.js';
+import { h } from '../../js/util.js';
+const app = document.getElementById('app'), q = new URLSearchParams(location.search).get('only');
+const items = [
+  { id: 'c1-ledger', stim: [{ k: 'table', cap: 'Your ledger (fictional)', cols: ['Bet', 'Odds', 'Stake', 'Result', 'Net'], rows: [['Waves to win', '−250', '$50', 'Won', '+$20'], ['Falcons to win', '−280', '$50', 'Lost', '−$50'], ['Raptors to win', '+130', '$20', 'Lost', '−$20']] }] },
+  { id: 'c1-market', stim: [{ k: 'table', cap: 'Contracts (fictional)', cols: ['Contract', 'Yes price', 'No price', 'Chance'], rows: [['Rain in Metro on Friday?', '62¢', '38¢', '62%'], ['Gas above $4 by June?', '25¢', '75¢', '25%']] }] },
+  { id: 'c2-basics', prompt: 'A bag holds 3 red marbles, 5 blue marbles and 2 green marbles.', stim: [] },
+  { id: 'c4-implied', stim: [] }, { id: 'c4-eval', stim: [] }, { id: 'c5-riskfree', stim: [] }, { id: 'c5-match', stim: [] }
+].filter((i) => !q || i.id === q);
+for (const it of items) app.append(h('h2', null, it.id), skinFor(it, renderBlocks(it.stim)), helperFor(it) || '');
+window.__ready = true;
+</script></body></html>

@@ -1,5 +1,6 @@
 // Renders stimulus blocks delivered by the server (briefings and item stems).  Text goes through md(): no innerHTML.
 import { h, md, add } from './util.js';
+import { adArt } from './fxads.js';
 
 const TONE = { fiction: 'FICTIONAL DATA', real: 'REAL RESEARCH / DATA', info: 'NOTE', warn: 'NOTE' };
 
@@ -44,7 +45,9 @@ function note(b) {
 
 function ad(b) {
   const body = h('div', { class: 'ad-body' }, md(b.body || ''));
+  const known = ((window.U5D && window.U5D.ADS) || []).find((x) => x.brand === b.brand), art = known && adArt(known.id);
   const card = h('div', { class: 'b-ad', role: 'group', 'aria-label': 'Fictional advertisement from ' + b.brand },
+    art ? h('div', { class: 'adfx adfx-lab' }, art) : null,
     h('div', { class: 'ad-top' }, h('strong', null, b.brand), h('span', { class: 'ad-flag' }, 'FICTIONAL AD')),
     h('div', { class: 'ad-head' }, md(b.head)));
   if (b.compact) card.append(h('details', null, h('summary', null, 'Read the full ad'), body, b.cta ? h('span', { class: 'ad-cta' }, b.cta) : null));
