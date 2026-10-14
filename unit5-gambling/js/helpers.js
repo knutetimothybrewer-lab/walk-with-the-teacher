@@ -212,15 +212,33 @@ const NUDGES = {
   'c4-lottery': ['Ask: how many different tickets are possible in all?', 'Your ticket is one of them, so your chance is 1 out of that total.', 'Compare how tiny that chance is with the price of the ticket.'],
   'c5-riskfree': ['Read exactly what Kai receives: cash, or a bonus bet?', 'A bonus bet’s stake is not paid back, only the winnings.', 'Expected value = (chance × what you receive) added up over every outcome.']
 };
+// Worked examples: the same steps as the question, on DIFFERENT invented numbers, so a student can copy the method and plug in their own.
+const EXAMPLES = {
+  'c1-ledger': ['Bet A: staked **$40**, got back **$90**. Profit = 90 − 40 = **$50**.', 'Bet B: staked **$25**, got back **$0**. Profit = 0 − 25 = **−$25**.', 'Net result = 50 + (−25) = **$25**.'],
+  'c1-market': ['A contract costs **35¢**. That is about a **35%** chance.', 'It pays **$1.00** if the event happens, **$0** if not.', 'If it happens: profit = 100¢ − 35¢ = **65¢**. If not: you lose the **35¢**.'],
+  'c2-basics': ['Bag: **6 purple** and **9 orange**. Total = 6 + 9 = **15**.', 'Probability of purple = 6 ÷ 15 = **0.4**, which is **40%**.', 'Odds of purple = purple : not purple = 6 : 9, which simplifies to **2 : 3**.'],
+  'c2-indep': ['Chance of rolling a 6 is **1 ÷ 6** each time, and each roll is independent.', 'Two sixes in a row: 1/6 × 1/6 = **1/36**.', '1 ÷ 36 = 0.0278, which is about **2.8%**.'],
+  'c2-house': ['A game averages a loss of **$0.50** on every **$10** bet.', 'House edge = 0.50 ÷ 10 × 100 = **5%**.', 'Over 200 bets the expected loss is 200 × 0.50 = **$100**.'],
+  'c2-roulette': ['An American wheel has **38** pockets. A “dozen” bet covers **12** of them.', 'Chance = 12 ÷ 38 = 0.3158, which is about **31.6%**.', 'In a short run the result can be far from 31.6%. Over thousands of spins it gets close.'],
+  'c4-implied': ['Odds **−175**: top = **175**, bottom = 175 + 100 = **275**.', '175 ÷ 275 = 0.636, so break-even is about **63.6%**.', 'Odds **+240**: top = **100**, bottom = 240 + 100 = **340**. 100 ÷ 340 = 0.294, about **29.4%**.'],
+  'c4-parlay': ['Legs win **80%**, **50%** and **40%** of the time. As decimals: 0.8, 0.5, 0.4.', 'Multiply: 0.8 × 0.5 × 0.4 = **0.16**, which is **16%**.', 'Check: 16% is smaller than the weakest leg (40%). Good.'],
+  'c4-parlay-table': ['Every leg has a **60%** chance (0.6).', '1 leg: **60%**. 2 legs: 0.6 × 0.6 = **0.36** (36%). 3 legs: 0.36 × 0.6 = **0.216** (21.6%).', 'Each added leg multiplies by 0.6, so the chance keeps shrinking.'],
+  'c4-eval': ['She makes **40** bets and luck alone would win **50%**.', 'Expected wins = 40 × 50 ÷ 100 = **20**. Suppose she won **27**: gap = 27 − 20 = **7**.', '7 ÷ 40 = 0.175, so she is about **17.5 points** ahead of luck. Is 40 bets long enough to prove skill?'],
+  'c4-lottery': ['Pick **2 different digits** from 0 to 9, in order. First choice: **10** ways. Second: **9** ways left.', 'Total tickets = 10 × 9 = **90**.', 'Chance of winning = 1 ÷ 90 = 0.0111, about **1.1%**.'],
+  'c5-riskfree': ['A bonus bet of **$40** wins **$120** cash with a **25%** chance, and $0 otherwise.', 'Expected value = 0.25 × 120 + 0.75 × 0 = **$30**.', 'Compare the **$30** with the **$40** face value of the bonus bet.']
+};
 export function nudgeBox(id) {
   const list = NUDGES[id]; if (!list) return null;
+  const ex = EXAMPLES[id], total = list.length + (ex ? 1 : 0);
   let n = 0;
   const shown = h('ol', { class: 'nd-list', 'aria-live': 'polite' }), btn = h('button', { class: 'btn btn-sm', type: 'button' }, 'Stuck? Get a nudge');
   btn.addEventListener('click', () => {
-    shown.append(h('li', null, md(list[n]))); n++;
-    btn.textContent = n >= list.length ? 'No more nudges' : `Another nudge (${n} of ${list.length} used)`; btn.disabled = n >= list.length;
+    if (n < list.length) shown.append(h('li', null, md(list[n])));
+    else shown.append(h('li', { class: 'nd-example-li' }, h('div', { class: 'nd-example' }, h('b', null, 'Worked example (different numbers from your question)'), h('ol', null, ex.map((x) => h('li', null, md(x)))), h('p', { class: 'muted small' }, 'Now repeat these same steps with the numbers in your question.'))));
+    n++;
+    btn.textContent = n >= total ? 'No more nudges' : n === total - 1 && ex ? `Show a worked example (${n} of ${total} used)` : `Another nudge (${n} of ${total} used)`; btn.disabled = n >= total;
   });
-  return h('div', { class: 'helper nudge' }, h('div', { class: 'nd-row' }, btn, h('span', { class: 'muted small' }, 'Nudges never give the answer and never use up an attempt.')), shown);
+  return h('div', { class: 'helper nudge' }, h('div', { class: 'nd-row' }, btn, h('span', { class: 'muted small' }, 'Nudges never use your question’s numbers and never use up an attempt.')), shown);
 }
 
 // ============================================================================================ bonus bet explainer
