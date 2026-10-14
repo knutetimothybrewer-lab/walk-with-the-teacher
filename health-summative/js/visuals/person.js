@@ -30,6 +30,13 @@ const LOOKS = {
   Kai:    { skin: '#f3cfae', hair: '#3b3d52', shirt: '#8b6bd0', style: 'short' },
   Lena:   { skin: '#e8b890', hair: '#a8552d', shirt: '#2a9d9f', style: 'long' },
   Ben:    { skin: '#b97d57', hair: '#20170f', shirt: '#6a7389', style: 'short' },
+  Dev:    { skin: '#c99468', hair: '#201813', shirt: '#4c9a6b', style: 'short' },
+  Mira:   { skin: '#b9825a', hair: '#1a1210', shirt: '#d1566f', style: 'long' },
+  Tess:   { skin: '#eebf99', hair: '#6b3b22', shirt: '#2f6fb0', style: 'bun' },
+  Ana:    { skin: '#d8a27a', hair: '#2a1b14', shirt: '#8b6bd0', style: 'long' },
+  Eli:    { skin: '#e7b38c', hair: '#3a2a1c', shirt: '#e0793d', style: 'short' },
+  Sam:    { skin: '#a8714d', hair: '#17110d', shirt: '#2a8c8f', style: 'short' },
+  Zoe:    { skin: '#f0c6a0', hair: '#22273b', shirt: '#7a6bd6', style: 'bun' },
   Student:{ skin: '#d9a47c', hair: '#30221a', shirt: '#7a6bd6', style: 'short' },
   Friend: { skin: '#cf9a72', hair: '#25201f', shirt: '#2a8c8f', style: 'long' },
 };

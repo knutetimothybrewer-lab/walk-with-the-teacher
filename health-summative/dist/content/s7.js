@@ -62,5 +62,18 @@ export default {
       hint: 'Think about how much it changed and how fast.',
       explain: 'Drastic, rapid changes, including sudden calm after deep distress, are red flags. They are a reason to check in and bring in an adult.',
     }),
+    mc('s7-k1', {
+      points: 0, sensitive: true, alert: true, person: { who: 'Friend', mood: 'worried', says: 'Everyone would be better off without me. (laughs)', after: 'calm' },
+      level: 'apply', src: `${B} › Checkpoint: a "joke" is still a red flag`,
+      prompt: 'A teammate says, "Everyone would be better off without me," and then laughs it off. What is the best response?',
+      right: 'Take it seriously: stay kind, and tell a trusted adult or counselor today.',
+      wrong: [
+        ['Treat it as a joke and ignore it, because they laughed.', 'Laughing it off does not make it safe. Safety overrides uncertainty.'],
+        ['Joke back so it feels less awkward.', 'Joking back can make them feel unheard.'],
+        ['Wait and see whether they say it again before telling anyone.', 'Waiting can be risky. You do not need to be sure before telling an adult.'],
+      ],
+      hint: 'When a comment could be about safety, do not wait to be sure.',
+      explain: 'You do not need proof or a diagnosis. If something sounds like a red flag, even as a joke, tell a trusted adult or counselor. The Need help? button is always at the top.',
+    }),
   ],
 };

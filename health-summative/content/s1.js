@@ -59,5 +59,36 @@ export default {
       hint: 'Ask of each one: could this change over time, or does it treat your zone as permanent?',
       explain: 'Sleep, stress, relationships, big changes, support, and coping all move the needle. One bad day does not set your zone for good, and your zone is not fixed.',
     }),
+    mc('s1-k1', {
+      points: 0, person: { who: 'Dev', mood: 'worried', says: 'Monday was rough.', after: 'happy' },
+      level: 'apply', topic: 'MH101', src: `${A} › Checkpoint: the continuum can move`,
+      prompt: 'Dev felt "Struggling" on Monday after a rough week. By Friday, after more sleep and a good talk with a friend, Dev felt "Doing well." What does this best show?',
+      right: 'A person\'s place on the continuum can move, and sleep and support can help it shift.',
+      wrong: [
+        ['Dev must have had a mental illness that went away by Friday.', 'The continuum is about how someone is doing right now. It is not a diagnosis.'],
+        ['Dev\'s Monday feelings were not real because Friday felt better.', 'Both days were real. Feelings change with what is happening.'],
+        ['Where you are on the continuum on one day stays the same all year.', 'People move along the continuum over time.'],
+      ],
+      hint: 'Think about what changed for Dev between Monday and Friday.',
+      explain: 'Sleep, stress, relationships, and support can all move a person along the continuum. One hard week does not fix someone in the Struggling zone for good.',
+    }),
+    sort('s1-k2', {
+      points: 0, level: 'apply', skin: 'continuum', src: `${A} › Checkpoint: more continuum practice`,
+      prompt: 'Place each situation in the zone that fits best right now.',
+      slots: [
+        ['h', 'Healthy', 'Coping well and feeling good'],
+        ['s', 'Struggling', 'Low mood and more stress'],
+        ['i', 'Injured', 'Symptoms get in the way of daily life'],
+        ['l', 'Ill', 'Unable to function; needs help now'],
+      ],
+      cards: [
+        ['Nico is excited and a little nervous about a new school year, and sleeps and eats as usual.', 'h'],
+        ['Rosa has been irritable and tired for a few days during finals but still sees her friends.', 's'],
+        ['For several weeks, Theo has stopped hanging out with friends, skips his team practices, and cannot focus in class.', 'i'],
+        ['For weeks, Jada has been unable to leave her room, eat regular meals, or go to school, even with family encouraging her.', 'l'],
+      ],
+      hint: 'Ask: how long, how strong, and how much is it getting in the way of daily life?',
+      explain: 'The zones describe how a person is doing right now. Short, mild stress is Struggling. Weeks of interference is Injured. Being unable to function and needing help now is Ill.',
+    }),
   ],
 };

@@ -68,5 +68,30 @@ export default {
       hint: 'Look at the words in each description. What is different about them?',
       explain: 'Measures differ in what they ask and how far back they look. Always check the definition before comparing numbers.',
     }),
+    mc('s3-k1', {
+      points: 0, visual: 'yrbs', visualSeconds: 8, level: 'analyze', src: `${B} › Checkpoint: what a trend chart can and cannot show`,
+      prompt: 'A classmate looks at this chart and says, "The numbers dropped after 2021, so they will keep dropping." What is the best reply?',
+      right: 'The chart shows what happened in past surveys. It cannot predict what the next survey will show.',
+      wrong: [
+        ['You are right, because a downward line always continues.', 'Trends can level off or turn around. A chart does not promise what comes next.'],
+        ['Charts only count when the line goes up.', 'A chart is evidence whether the line goes up, down, or stays flat.'],
+        ['The 2025 dot must be a mistake because it is lower.', 'Nothing about the chart suggests a mistake. Real numbers change.'],
+      ],
+      hint: 'A chart can show a trend. What can it not do?',
+      explain: 'A chart describes the past. Good data detectives do not use one chart to predict the future or to explain why the numbers changed.',
+    }),
+    tag('s3-k2', {
+      points: 0, visual: 'yrbs', visualSeconds: 10, level: 'analyze', src: `${B} › Checkpoint: reading the chart carefully`,
+      prompt: 'Use the chart. Does it support each statement, show otherwise, or leave it unknown?',
+      slots: [['y', 'Supported', 'The chart shows this', { short: 'Supported' }], ['n', 'Not supported', 'The chart shows otherwise', { short: 'Not supported' }], ['c', "Can't tell", 'Needs more than this chart', { short: "Can't tell" }]],
+      rows: [
+        ['The percent was about the same in 2013 and 2015.', 'y'],
+        ['The percent in 2021 was higher than in 2017.', 'y'],
+        ['Students who felt connected at school had lower percents.', 'c'],
+        ['The percent in 2025 was higher than in 2021.', 'n'],
+      ],
+      hint: 'Only use what the line on this chart shows. Does it say anything about connectedness?',
+      explain: 'The chart shows how the percent changed over time. It does not show groups of students, so it cannot say whether connectedness made a difference.',
+    }),
   ],
 };

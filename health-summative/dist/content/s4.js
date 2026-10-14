@@ -110,5 +110,27 @@ export default {
       hint: 'Which actions switch on the brake pedal?',
       explain: 'Distraction is not the same as recovery. Breathing, movement, sleep, support, and time engage the brake pedal.',
     }),
+    mc('s4-k1', {
+      points: 0, person: { who: 'Tess', mood: 'stressed', says: 'What a day...', after: 'calm' },
+      level: 'apply', topic: 'STRESS', src: `${C} › Checkpoint: signs the brake pedal is working`,
+      prompt: 'Tess had a stressful school day. Which is the best sign that her "brake pedal" (recovery) is working?',
+      right: 'After a walk and some music, her breathing slows and her shoulders relax.',
+      wrong: [
+        ['She feels wired and keeps replaying the day for hours.', 'That sounds like the gas pedal is still pressed.'],
+        ['She stays up late scrolling and still feels tense.', 'If she still feels tense, recovery has not happened yet.'],
+        ['Her heart is still racing a long time after the stress ended.', 'A body that is still revved up has not recovered.'],
+      ],
+      hint: 'Recovery means the body calms down. Which choice shows that?',
+      explain: 'The brake pedal slows the body after stress: breathing slows, muscles loosen, and the body settles. Walks, music, and sleep can help it work.',
+    }),
+    multi('s4-k2', {
+      points: 0, person: { who: 'Mateo', mood: 'tired', says: 'I cannot switch off.', after: 'calm' },
+      level: 'apply', topic: 'STRESS', src: `${C} › Checkpoint: helping the brake work`,
+      prompt: 'Mateo has been in "gas pedal" mode all week. Select all the actions that help his brake pedal work.',
+      right: ['A short walk outside after school', 'Putting his phone away 30 minutes before bed', 'Slow breathing for a few minutes'],
+      wrong: ['Staying up late to finish everything tonight', 'Scrolling for hours to forget about it'],
+      hint: 'Pick the actions that lower the demand or help the body calm down.',
+      explain: 'Movement, sleep habits, and slow breathing help the body recover. Late nights and endless scrolling usually keep the stress response going.',
+    }),
   ],
 };

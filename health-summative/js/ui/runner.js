@@ -96,7 +96,7 @@ export function renderItem(app, rec, host) {
   const listen = listenButton(() => [plain(item.friendSays || ''), plain(item.prompt), ...(item.options || []).map(o => plain(o.t))].join('. '), 'Listen');
   card.append(h('h1', { class: 'sr-only' }, `${stationTitle}, question ${rec.num} of ${total}`));
   card.append(h('div', { class: 'item-head' },
-    h('span', { class: 'chip' }, `Question ${rec.num} of ${total}`), attemptChip, listen));
+    h('span', { class: 'chip' }, `Question ${rec.num} of ${total}`), rec.points === 0 ? h('span', { class: 'chip soft' }, 'Checkpoint') : null, attemptChip, listen));
 
   /* chat header + transcript */
   let trust = null, log = null, chatPerson = null;
@@ -163,13 +163,13 @@ export function renderItem(app, rec, host) {
     if (state.done) { attemptChip.textContent = ''; attemptChip.hidden = true; return; }
     const n = state.attempts.length + 1;
     attemptChip.hidden = false;
-    attemptChip.textContent = `Try ${n} of ${attemptsMax} · ${credit(n) === 100 ? 'full credit' : credit(n) + '% credit'}`;
+    attemptChip.textContent = rec.points === 0 ? `Try ${n} of ${attemptsMax} · practice, not scored` : `Try ${n} of ${attemptsMax} · ${credit(n) === 100 ? 'full credit' : credit(n) + '% credit'}`;
   }
 
   function feedback(kind, title, body, extra) {
     fb.className = `feedback ${kind}`;
     fb.replaceChildren(h('p', { class: 'fb-title' }, h('span', { 'aria-hidden': 'true', class: 'fb-ic' }, kind === 'good' ? '✓' : kind === 'try' ? '↺' : 'ℹ'), ' ', title),
-      body ? h('p', { class: 'fb-body' }, rich(body)) : null, extra || null);
+      ...[body ? h('p', { class: 'fb-body' }, rich(body)) : null, extra || null].filter(Boolean));
     announce(`${title}. ${plain(body || '')}`);
   }
 
@@ -186,15 +186,15 @@ export function renderItem(app, rec, host) {
     refreshAttemptChip();
     check.hidden = true; next.hidden = false;
     const earned = state.earned;
-    const frac = earned / rec.points;
+    const frac = rec.points ? earned / rec.points : 1;
     if (solved) {
       const n = state.attempts.length;
-      feedback('good', n === 1 ? 'Correct — full credit.' : `Correct on try ${n} — ${credit(n)}% credit.`, null, explainBlock(false));
+      feedback('good', rec.points === 0 ? 'Correct.' : n === 1 ? 'Correct — full credit.' : `Correct on try ${n} — ${credit(n)}% credit.`, null, explainBlock(false));
       sparkle(card);
       if (scen) scen.relieve();
       card.classList.add('glow'); setTimeout(() => card.classList.remove('glow'), 900);
     } else {
-      const partial = frac > 0 ? ` You earned ${pct(frac)}% for the parts you got right.` : '';
+      const partial = rec.points && frac > 0 ? ` You earned ${pct(frac)}% for the parts you got right.` : '';
       feedback('info', 'Let\'s look at this one together.', 'The correct answer is now shown above.' + partial, explainBlock(true));
     }
     if (item.chat) chatAfter(true, res);

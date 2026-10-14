@@ -7,20 +7,20 @@ The app's gentle "about N min left" note uses the same estimates. It never locks
 | # | Station | Questions | Est. minutes |
 |---|---|---|---|
 | 0 | Welcome, class code, how scoring works | — | 2.0 |
-| 1 | Mental Health Basics | 4 | 2.9 |
-| 2 | Risk, Protection & Resilience | 5 | 3.9 |
-| 3 | Connectedness & the Data | 5 | 3.8 |
-| 4 | Stress & the Brain | 9 | 6.8 |
-| 5 | Patterns, Not Labels | 7 | 5.5 |
-| 6 | Phones, Teens & Evidence | 6 | 4.4 |
-| 7 | Red Flags & Safety | 4 | 3.0 |
-| 8 | Be a Bridge | 10 | 5.7 |
-| 9 | Who Can Help? | 6 | 4.7 |
+| 1 | Mental Health Basics | 6 | 4.5 |
+| 2 | Risk, Protection & Resilience | 7 | 4.9 |
+| 3 | Connectedness & the Data | 7 | 5.4 |
+| 4 | Stress & the Brain | 11 | 7.8 |
+| 5 | Patterns, Not Labels | 9 | 6.9 |
+| 6 | Phones, Teens & Evidence | 8 | 5.6 |
+| 7 | Red Flags & Safety | 5 | 3.5 |
+| 8 | Be a Bridge | 12 | 6.8 |
+| 9 | Who Can Help? | 8 | 5.8 |
 | 10 | Capstone: Infographic Studio | 8 | 5.5 |
 | 11 | Final score + calm next-step card | — | 1.0 |
-| | **Total** | **64** | **49.2** |
+| | **Total** | **81** | **59.6** |
 
-Target: 45 minutes ±5. ✅ Within range.
+Target: about 60 minutes (55 to 65). ✅ Within range.
 
 ## Per-item estimates (seconds)
 
@@ -32,6 +32,8 @@ Target: 45 minutes ±5. ✅ Within range.
 | s1-02 | sort | apply | 62 |
 | s1-03 | mc | apply | 29 |
 | s1-05 | multi | recall | 34 |
+| s1-k1 | mc | apply | 34 |
+| s1-k2 | sort | apply | 61 |
 
 ### Risk, Protection & Resilience
 
@@ -42,6 +44,8 @@ Target: 45 minutes ±5. ✅ Within range.
 | s2-04 | match | apply | 49 |
 | s2-05 | mc | recall | 21 |
 | s2-08 | mc | analyze | 39 |
+| s2-k1 | mc | apply | 26 |
+| s2-k2 | multi | apply | 32 |
 
 ### Connectedness & the Data
 
@@ -52,6 +56,8 @@ Target: 45 minutes ±5. ✅ Within range.
 | s3-04 | mc | recall | 27 |
 | s3-06 | mc | recall | 31 |
 | s3-07 | mc | analyze | 35 |
+| s3-k1 | mc | analyze | 39 |
+| s3-k2 | tag | analyze | 58 |
 
 ### Stress & the Brain
 
@@ -67,6 +73,8 @@ Target: 45 minutes ±5. ✅ Within range.
 | s4-08 | mc | apply | 30 |
 | s4-09 | mc | apply | 33 |
 | s4-10 | mc | apply | 30 |
+| s4-k1 | mc | apply | 28 |
+| s4-k2 | multi | apply | 33 |
 
 ### Patterns, Not Labels
 
@@ -79,6 +87,8 @@ Target: 45 minutes ±5. ✅ Within range.
 | s5-08 | tag | analyze | 45 |
 | s5-09 | mc | analyze | 28 |
 | s5-10 | mc | analyze | 28 |
+| s5-k1 | mc | analyze | 36 |
+| s5-k2 | tag | analyze | 49 |
 
 ### Phones, Teens & Evidence
 
@@ -90,6 +100,8 @@ Target: 45 minutes ±5. ✅ Within range.
 | s6-06 | multi | analyze | 37 |
 | s6-07 | mc | analyze | 41 |
 | s6-08 | mc | recall | 30 |
+| s6-k1 | mc | analyze | 30 |
+| s6-k2 | multi | analyze | 39 |
 
 ### Red Flags & Safety
 
@@ -99,6 +111,7 @@ Target: 45 minutes ±5. ✅ Within range.
 | s7-02 | mc | apply | 31 |
 | s7-04 | mc | apply | 33 |
 | s7-06 | mc | analyze | 28 |
+| s7-k1 | mc | apply | 28 |
 
 ### Be a Bridge
 
@@ -114,6 +127,8 @@ Target: 45 minutes ±5. ✅ Within range.
 | s8-c2c | mc | apply | 32 |
 | s8-08 | match | apply | 48 |
 | s8-10 | mc | apply | 28 |
+| s8-k1 | mc | apply | 26 |
+| s8-k2 | match | apply | 40 |
 
 ### Who Can Help?
 
@@ -125,6 +140,8 @@ Target: 45 minutes ±5. ✅ Within range.
 | s9-06 | multi | recall | 29 |
 | s9-07 | mc | apply | 29 |
 | s9-08 | mc | recall | 27 |
+| s9-k1 | mc | apply | 30 |
+| s9-k2 | multi | apply | 37 |
 
 ### Capstone: Infographic Studio
 

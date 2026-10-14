@@ -235,7 +235,7 @@ export const app = {
 
   payload() {
     const s = this.session; const t = s.result;
-    const items = this.plan.all.map(r => {
+    const items = this.plan.all.filter(r => r.points > 0).map(r => {
       const st = s.items[r.id] || { attempts: [], earned: 0 };
       return {
         id: r.id, station: r.station, topic: r.topic, label: plain(r.item.prompt).slice(0, 90),

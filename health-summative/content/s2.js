@@ -73,5 +73,26 @@ export default {
       hint: 'Compare the supports each student has. What is different about the protective side?',
       explain: 'The same stressor does not have the same effect on everyone. Supports and coping skills (protective factors) can balance risk. Ben could build supports too.',
     }),
+    mc('s2-k1', {
+      points: 0, person: { who: 'Mira', mood: 'sad', says: 'I do not know anyone here yet.', after: 'hopeful' },
+      level: 'apply', topic: 'MH101', src: `${A} › Checkpoint: adding a protective factor`,
+      prompt: 'Mira just moved to a new town and feels alone. Which change would add a protective factor?',
+      right: 'Joining a club where she can meet people and feel she belongs.',
+      wrong: [
+        ['Staying up late every night so she has more time alone.', 'Less sleep and more isolation raise risk. They do not protect.'],
+        ['Telling herself she should not need anyone.', 'Support from other people is protective. Pushing it away is not.'],
+        ['Skipping meals when she is busy settling in.', 'Skipping meals can make stress harder to handle.'],
+      ],
+      hint: 'A protective factor helps balance risk. Which choice builds a connection?',
+      explain: 'Belonging and caring relationships are protective factors. A new club is a small step that can add connection.',
+    }),
+    multi('s2-k2', {
+      points: 0, level: 'apply', topic: 'MH101', src: `${A} › Checkpoint: building resilience`,
+      prompt: 'Select all the choices that build resilience.',
+      right: ['Practicing a calming skill, like slow breathing, before a hard day', 'Talking to a trusted adult when something feels heavy', 'Keeping a regular sleep routine during a stressful week'],
+      wrong: ['Hiding every problem so no one worries', 'Avoiding anything that feels hard, forever'],
+      hint: 'Resilience grows from skills, support, and healthy routines.',
+      explain: 'Calming skills, support from others, and steady routines help people bounce back. Hiding problems or always avoiding hard things makes coping harder.',
+    }),
   ],
 };

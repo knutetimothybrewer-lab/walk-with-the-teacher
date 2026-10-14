@@ -123,5 +123,32 @@ export default {
       hint: 'Compare how long, how strong, and how much interference in each scenario.',
       explain: 'D.I.I.S. helps you match your response to the evidence: casual check-in and watching for a short, mild change; a caring conversation and connecting to an adult for a longer pattern that interferes.',
     }),
+    mc('s5-k1', {
+      points: 0, person: { who: 'Ana', mood: 'sad', says: 'I am fine. Really.' },
+      level: 'analyze', src: `${B} › Checkpoint: D.I.I.S. with a longer pattern`,
+      prompt: 'Ana has barely answered texts for a month, stopped going to the band she loves, and her grades are dropping. She says, "I am fine." Using D.I.I.S., what is the best next step?',
+      right: 'A month plus interference is a pattern. Check in privately and help her connect with a counselor or trusted adult.',
+      wrong: [
+        ['Wait until she brings it up herself, since she says she is fine.', 'A month of change with interference is worth a caring check-in now.'],
+        ['Tell her friends so they can all push her to talk.', 'That can feel like gossip and pressure. Start with a private, caring check-in.'],
+        ['Tell Ana you think she has depression so she can get help.', 'Noticing is not diagnosing. Leave naming conditions to professionals.'],
+      ],
+      hint: 'Compare how long, how strong, and how much interference Ana shows.',
+      explain: 'A month is long Duration, and the changes interfere with friends, activities, and school. That calls for a caring check-in and a connection to an adult, without labeling.',
+    }),
+    tag('s5-k2', {
+      points: 0, person: { who: 'Ana', mood: 'sad', says: 'I am fine. Really.' },
+      level: 'analyze', skin: 'detective', src: `${B} › Checkpoint: D.I.I.S. Detective, Ana`,
+      prompt: 'D.I.I.S. Detective: your friend Ana. Tag each sentence with the kind of evidence it gives.',
+      slots: DIIS,
+      rows: [
+        ['Ana has barely answered texts for about a month.', 'd'],
+        ['She quit the band she used to love and her grades are dropping.', 'f'],
+        ['She says she has never felt this low and cries without knowing why.', 'n'],
+        ['You have sat next to her in homeroom since ninth grade.', 'b'],
+      ],
+      hint: 'Duration is how long. Intensity is how strong. Interference is how it affects daily life. Background is context.',
+      explain: 'A month is Duration. Quitting band and dropping grades show Interference. Feeling this low shows Intensity. Sitting together in homeroom is Background.',
+    }),
   ],
 };

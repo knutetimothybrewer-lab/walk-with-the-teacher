@@ -52,7 +52,7 @@ function welcome(app, existing) {
   const node = h('section', { class: 'card hero' },
     h('p', { class: 'eyebrow' }, `${cfg.schoolName} ${cfg.mascot} · ${cfg.unitName}`),
     h('h1', {}, cfg.appTitle),
-    h('p', { class: 'lead' }, 'Walk the trail from storm to sunrise. Ten short stations, about 45 minutes. The sky gets brighter as you go.'),
+    h('p', { class: 'lead' }, 'Walk the trail from storm to sunrise. Ten short stations, about an hour. The sky gets brighter as you go.'),
     h('div', { class: 'note calm' }, h('strong', {}, 'A quick note. '), 'This assessment includes scenarios about stress, sadness, and safety. You can take a break or skip any scenario. The "Need help? / Take a break" button is always at the top of the screen.'),
     form,
     h('details', { class: 'how' }, h('summary', {}, 'How scoring works'),
@@ -129,7 +129,7 @@ function stationIntro(app, st) {
 
 function stationEnd(app, st) {
   const s = app.session;
-  const rows = st.steps.filter(r => !r.explore);
+  const rows = st.steps.filter(r => !r.explore && r.points > 0);
   const earned = rows.reduce((t, r) => t + (s.items[r.id] ? s.items[r.id].earned : 0), 0);
   const possible = rows.reduce((t, r) => t + r.points, 0);
   const first = rows.filter(r => { const x = s.items[r.id]; return x && !x.skipped && x.attempts[0] && x.attempts[0].fraction >= 1; }).length;

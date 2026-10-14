@@ -192,3 +192,12 @@ test('plan: no more than 3 consecutive entries of the same kind (except scenes)'
     }
   }
 });
+
+test('checkpoint (points: 0) adds no points and does not move percents', () => {
+  const cfg = { attemptCredit: [1, 0.9, 0.75], maxAttempts: 3, pointsBySubparts: [[0, 1]] };
+  assert.equal(pointsFor({ points: 0 }, 1, cfg), 0);
+  const out = itemOutcome(0, [{ fraction: 0 }, { fraction: 1 }], cfg);
+  assert.equal(out.earned, 0); assert.equal(out.solved, true);
+  const t = totals([{ id: 'a', station: 's1', topic: 'T', points: 2, earned: 2 }, { id: 'k', station: 's1', topic: 'T', points: 0, earned: 0 }]);
+  assert.equal(t.percent, 100); assert.equal(t.possible, 2);
+});

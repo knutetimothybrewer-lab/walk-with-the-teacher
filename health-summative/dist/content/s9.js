@@ -79,5 +79,26 @@ export default {
       hint: 'Think "any time, free, private."',
       explain: '988 can be reached by call, text, or chat, 24/7. It is free and confidential (with legal exceptions when someone\'s safety is at risk).',
     }),
+    mc('s9-k1', {
+      points: 0, person: { who: 'Zoe', mood: 'worried', says: 'Adults will not get it.', after: 'hopeful' },
+      level: 'apply', topic: 'HELP', src: `${E} › Checkpoint: a barrier reframe`,
+      prompt: 'Zoe feels overwhelmed but thinks, "Adults will not understand, and I do not have the right words." Which reframe is best?',
+      right: '"A counselor is trained to listen and can help me figure out what to say and what to do next."',
+      wrong: [
+        ['"I should wait until it is serious enough to count."', 'You do not need to wait. Asking early is a good plan.'],
+        ['"Asking for help is weakness, so I should handle it alone."', 'Asking for help is a strength. Everyone needs support sometimes.'],
+        ['"Only my closest friends can really help me."', 'Friends matter, and trained adults can help in ways friends cannot.'],
+      ],
+      hint: 'Which thought makes the first step feel doable?',
+      explain: 'You do not need perfect words. Saying "I have been feeling overwhelmed" is enough to start, and a counselor can help from there.',
+    }),
+    multi('s9-k2', {
+      points: 0, level: 'apply', topic: 'HELP', src: `${E} › Checkpoint: first steps to ask for help`,
+      prompt: 'Zoe wants to ask a school counselor for help. Select all the good first steps.',
+      right: ['Stop by the counseling office or send a short message asking to talk', 'Say, "I have been feeling overwhelmed and I am not sure what to do."', 'Ask a friend to come along for support if she wants'],
+      wrong: ['Wait until she has a perfect explanation ready', 'Only ask after things have gotten much worse'],
+      hint: 'Good first steps are small and doable. You do not need perfect words.',
+      explain: 'A short message, a simple sentence, and a supportive friend are all good ways to begin. You do not need to wait for the perfect words or for things to get worse.',
+    }),
   ],
 };
