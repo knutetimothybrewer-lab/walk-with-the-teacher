@@ -2,6 +2,7 @@
 import { gameFx } from './gamefx.js';
 import { h, md, announce, uid, clear, fmt, money } from './util.js';
 import { renderBlocks } from './blocks.js';
+import { skinFor, helperFor } from './helpers.js';
 import { call } from './api.js';
 import { S, payload } from './state.js';
 
@@ -226,8 +227,9 @@ export function renderItem(root, item, hooks) {
     h('div', { class: 'step-head' }, h('div', { class: 'kicker' }, `Question · ${item.pts} point${item.pts === 1 ? '' : 's'}`), h('h2', { id: 'step-title', tabindex: '-1' }, item.title)),
     item.sim && hooks.openLab ? h('p', null, h('button', { class: 'btn btn-sm', type: 'button', onclick: () => hooks.openLab(item.sim) }, '\u{1F52C} Open the lab for this question')) : null,
     gameFx(item.id),
-    renderBlocks(item.stim),
-    item.prompt ? h('div', { class: 'prompt' }, md(item.prompt)) : null);
+    skinFor(item, renderBlocks(item.stim)),
+    item.prompt ? h('div', { class: 'prompt' }, md(item.prompt)) : null,
+    helperFor(item));
   const right = h('div', { class: 'item-right' }, widgets.map((x) => x.w.el), feedback, bar, hooks.extra ? hooks.extra(item) : null);
   const wide = item.parts.some((p) => p.type === 'map' && p.ui === 'drag');
   root.append(h('section', { class: 'item enter', 'aria-labelledby': 'step-title', 'data-item': item.id }, h('div', { class: 'item-grid' + (wide ? ' wide' : '') }, left, right)));

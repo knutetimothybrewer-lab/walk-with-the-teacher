@@ -3,6 +3,7 @@
 import { h, clear, announce, fmt } from '../util.js';
 import { barChart } from '../charts.js';
 import { stat, tabs, note } from './kit.js';
+import { adArt } from '../fxads.js';
 
 const opened = new Set(), tools = {};       // ad id -> Set of tools used.  Survive closing and reopening the lab drawer.
 const marks = {};                            // ad id -> Set of "seg:index" the student highlighted
@@ -30,7 +31,7 @@ export function mount(container, ctx) {
       D.ADS.forEach((a) => {
         const full = tools[a.id] && tools[a.id].size >= 3;
         grid.append(h('button', { class: 'adtile' + (opened.has(a.id) ? ' seen' : ''), type: 'button', onclick: () => openAd(a) },
-          h('small', { class: 'muted' }, opened.has(a.id) ? (full ? '✓ fully investigated' : '✓ opened') : 'Not opened yet'), h('b', null, a.brand), h('span', { class: 'muted small' }, a.head.replace(/[“”]/g, ''))));
+          h('small', { class: 'muted' }, opened.has(a.id) ? (full ? '✓ fully investigated' : '✓ opened') : 'Not opened yet'), h('span', { class: 'adfx adfx-thumb' }, adArt(a.id)), h('b', null, a.brand), h('span', { class: 'muted small' }, a.head.replace(/[“”]/g, ''))));
       });
     }
     function openAd(a) {
@@ -68,7 +69,7 @@ export function mount(container, ctx) {
       const btnFine = h('button', { class: 'btn', type: 'button', 'aria-expanded': 'false', onclick: () => { finePane.hidden = !finePane.hidden; btnFine.setAttribute('aria-expanded', String(!finePane.hidden)); if (!finePane.hidden) use(a.id, 'fine'); drawGrid(); } }, 'Fine print');
       const btnWho = h('button', { class: 'btn', type: 'button', 'aria-expanded': 'false', onclick: () => { whoPane.hidden = !whoPane.hidden; btnWho.setAttribute('aria-expanded', String(!whoPane.hidden)); if (!whoPane.hidden) { drawWho(); use(a.id, 'who'); } drawGrid(); } }, 'Who sees it?');
       const back = h('button', { class: 'btn', type: 'button', onclick: () => { detail.hidden = true; grid.hidden = false; drawGrid(); const t = grid.querySelectorAll('.adtile'); const i = D.ADS.indexOf(a); t[i] && t[i].focus(); } }, '← All six ads');
-      detail.append(h('div', { class: 'controls' }, back), h('div', { class: 'panel', style: 'margin-top:.6rem' }, adBox, finePane),
+      detail.append(h('div', { class: 'controls' }, back), h('div', { class: 'panel', style: 'margin-top:.6rem' }, h('div', { class: 'adfx adfx-lab' }, adArt(a.id)), adBox, finePane),
         h('div', { class: 'controls', style: 'margin-top:.7rem' }, btnHl, btnCheck, btnFine, btnWho), result, h('div', { class: 'panel', style: 'margin-top:.6rem' }, whoPane), extra,
         note('Ask three questions: **What technique is this? Who is it aimed at? What does it NOT tell me?** All brands, people and numbers here are fictional.'));
       btnHl.focus();

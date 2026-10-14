@@ -1,0 +1,106 @@
+/* ---------- question helpers (js/helpers.js) and animated ads (js/fxads.js) ---------- */
+.helpers { display: grid; gap: .8rem; margin-top: 1rem; }
+.helper { padding: .8rem .9rem; background: var(--panel2); border: 1px solid var(--line); border-radius: var(--radius); min-width: 0; }
+.helper .gfx-head strong { font-size: 1rem; }
+
+/* nudges */
+.nd-row { display: flex; flex-wrap: wrap; gap: .5rem .8rem; align-items: center; }
+.nd-list { margin: .5rem 0 0; padding-left: 1.3rem; display: grid; gap: .35rem; } .nd-list li { animation: rise .35s var(--ease); }
+
+/* walk-through calculator */
+.wk-fields { display: grid; gap: .5rem; margin: .5rem 0; }
+.wk-f { display: grid; gap: .2rem; } .wk-f span { font-weight: 700; font-size: .92rem; } .wk-f .input { max-width: 14rem; }
+.wk-steps { list-style: none; margin: .4rem 0; padding: 0; display: grid; gap: .5rem; }
+.wk-step { border-left: 4px solid var(--accent); background: var(--panel); border-radius: 8px; padding: .5rem .7rem; animation: rise .3s var(--ease); }
+.wk-step b { display: block; color: var(--accent); }
+.wk-plug { margin-top: .35rem; display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; }
+.wk-plug code { font: 800 1.15rem var(--font-ui); background: var(--bg0); color: var(--ink); border: 2px solid var(--accent); border-radius: 8px; padding: .15rem .6rem; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+
+/* marbles */
+.mb-stage { display: grid; justify-items: center; }
+.mb-svg { width: 100%; max-width: 280px; overflow: visible; }
+.mb-marble { animation: mbjiggle 2.6s ease-in-out infinite; transform-box: fill-box; }
+@keyframes mbjiggle { 0%, 100% { translate: 0 0; } 50% { translate: 1.5px -2.5px; } }
+.mb-marble.out { animation: none; transition: translate .8s var(--ease), scale .8s var(--ease); translate: 0 -118px; scale: 1.7; }
+.mb-edit { margin-top: .5rem; } .mb-edit summary { cursor: pointer; font-weight: 700; color: var(--accent); }
+.mb-inputs { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: .4rem; margin-top: .4rem; }
+.mb-in { display: flex; align-items: center; gap: .35rem; font-size: .88rem; } .mb-in i { width: 14px; height: 14px; border-radius: 50%; border: 1px solid rgba(0,0,0,.4); flex: none; } .mb-in .input { width: 4.2rem; min-height: 34px; padding: .15rem .4rem; }
+
+/* bonus bet explainer */
+.bl-flow { display: grid; grid-template-columns: 1fr auto 1fr auto 1fr; gap: .4rem; align-items: stretch; margin: .5rem 0; }
+.bl-box { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius-sm); padding: .5rem .6rem; display: grid; gap: .2rem; font-size: .9rem; } .bl-box b { color: var(--accent); }
+.bl-arrow { align-self: center; font-size: 1.4rem; color: var(--accent); }
+@media (max-width: 640px) { .bl-flow { grid-template-columns: 1fr; } .bl-arrow { transform: rotate(90deg); justify-self: center; } }
+
+/* ad gallery */
+.adgal-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: .6rem; margin-top: .4rem; }
+.adgal-card { margin: 0; background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius-sm); overflow: hidden; }
+.adgal-card figcaption { display: grid; gap: .1rem; padding: .4rem .6rem .5rem; font-size: .88rem; }
+.adfx { background: linear-gradient(160deg, color-mix(in srgb, var(--accent) 12%, var(--bg0)), var(--bg0)); }
+.adfx-svg { width: 100%; display: block; max-height: 190px; }
+.adfx-thumb { border-radius: 8px; overflow: hidden; margin-bottom: .35rem; } .adfx-thumb .adfx-svg { max-height: 80px; }
+.adfx-lab { border-radius: var(--radius-sm); overflow: hidden; border: 1px solid var(--line); margin-bottom: .6rem; } .adfx-lab .adfx-svg { max-height: 200px; }
+
+/* sportsbook look-alike (c1-ledger) */
+.skin { border-radius: var(--radius); overflow: hidden; border: 1px solid var(--line); margin: .8rem 0; background: #0f1a14; color: #eaf2ec; }
+.skin-head { display: flex; align-items: center; flex-wrap: wrap; gap: .5rem .9rem; padding: .55rem .8rem; background: #07100b; border-bottom: 3px solid #53d337; }
+.skin-logo { font: 800 1.05rem var(--font-ui); letter-spacing: .08em; display: inline-flex; gap: .35rem; align-items: center; color: #fff; } .skin-logo i { font-style: normal; color: #53d337; }
+.skin-tabs { display: flex; gap: .2rem; flex: 1; min-width: 0; flex-wrap: wrap; } .skin-tabs b { font-size: .8rem; padding: .2rem .6rem; border-radius: 999px; color: #9fb3a6; font-weight: 700; } .skin-tabs b.on { background: #53d337; color: #07100b; }
+.skin .chip { background: #1d2c22; color: #cfe3d5; border: 1px solid #2f4838; }
+.skin-body { padding: .6rem .8rem .8rem; }
+.skin .b-p, .skin .b-ul, .skin .b-note, .skin .muted { color: #cfe0d4; }
+.skin .b-tablewrap { border: 0; background: transparent; }
+.skin .b-table { color: #eaf2ec; border-collapse: separate; border-spacing: 0 6px; width: 100%; }
+.skin .b-table caption { color: #9fb3a6; text-align: left; font-size: .85rem; padding-bottom: .3rem; }
+.skin .b-table th, .skin .b-table td { background: #17261d; border: 0; padding: .5rem .6rem; color: #eaf2ec; }
+.skin .b-table thead th { background: transparent; color: #8aa094; font-size: .72rem; text-transform: uppercase; letter-spacing: .08em; padding-bottom: .1rem; }
+.skin .b-table tbody th { border-radius: 10px 0 0 10px; font-weight: 700; } .skin .b-table tbody td:last-child { border-radius: 0 10px 10px 0; }
+.odds-pill { display: inline-block; min-width: 3.6em; text-align: center; font-weight: 800; font-variant-numeric: tabular-nums; border-radius: 6px; padding: .12rem .45rem; background: #0b140f; border: 1px solid #2f4838; color: #53d337; }
+.odds-pill.neg { color: #eaf2ec; }
+.res-badge { display: inline-block; font-weight: 800; font-size: .78rem; border-radius: 4px; padding: .1rem .5rem; text-transform: uppercase; letter-spacing: .05em; }
+.res-won { background: #53d337; color: #07100b; } .res-lost { background: #5c1f1f; color: #ffb4aa; border: 1px solid #a33; } .res-push { background: #3b3f45; color: #e5e7eb; }
+.skin .money-pos { color: #53d337; font-weight: 800; } .skin .money-neg { color: #ff8a7a; font-weight: 800; }
+
+/* event-contract market look-alike (c1-market) */
+.skin-market { background: #f6f8fb; color: #14213d; border-color: #cdd6e4; }
+.skin-market .skin-head { background: #fff; border-bottom: 3px solid #1f6feb; }
+.skin-market .skin-logo { color: #14213d; } .skin-market .skin-logo i { color: #1f6feb; }
+.skin-market .skin-tabs b { color: #5b6a85; } .skin-market .skin-tabs b.on { background: #e6eefc; color: #1f4fb3; }
+.skin-market .chip { background: #eef2f8; color: #34425e; border-color: #cdd6e4; }
+.skin-market .b-p, .skin-market .b-ul, .skin-market .b-note, .skin-market .muted, .skin-market .b-note div { color: #26344f; }
+.skin-market .b-table { color: #14213d; border-collapse: separate; border-spacing: 0 6px; width: 100%; }
+.skin-market .b-table caption { color: #5b6a85; text-align: left; font-size: .85rem; padding-bottom: .3rem; }
+.skin-market .b-table th, .skin-market .b-table td { background: #fff; border: 0; padding: .5rem .6rem; color: #14213d; }
+.skin-market .b-table thead th { background: transparent; color: #5b6a85; font-size: .72rem; text-transform: uppercase; letter-spacing: .08em; padding-bottom: .1rem; }
+.skin-market .b-table tbody th { border-radius: 10px 0 0 10px; font-weight: 700; } .skin-market .b-table tbody td:last-child { border-radius: 0 10px 10px 0; }
+.skin-market .b-note { background: #fff; border-color: #cdd6e4; }
+.mk-btn { display: inline-block; font-weight: 800; border-radius: 8px; padding: .2rem .7rem; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.mk-btn.yes { background: #dcf5e6; color: #0b6b36; border: 2px solid #38b26b; } .mk-btn.no { background: #fde4e1; color: #a1231a; border: 2px solid #e46a5d; }
+.mk-price { font-weight: 800; font-variant-numeric: tabular-nums; }
+.mk-meter { position: relative; display: block; min-width: 110px; height: 1.6rem; background: #e6eefc; border-radius: 6px; overflow: hidden; } .mk-meter i { position: absolute; inset: 0 auto 0 0; background: #8db5f7; } .mk-meter b { position: relative; padding: 0 .5rem; line-height: 1.6rem; font-variant-numeric: tabular-nums; }
+
+/* ---------- ad animation keyframes (SVG, transform and opacity only) ---------- */
+.adfx-svg [class^="fx-"] { transform-box: fill-box; transform-origin: center; }
+.fx-pulse { animation: fxpulse 2.2s ease-in-out infinite; } @keyframes fxpulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.09); } }
+.fx-fall { animation: fxfall 2.6s linear infinite; } @keyframes fxfall { 0% { transform: translateY(0); opacity: 0; } 15% { opacity: 1; } 100% { transform: translateY(150px); opacity: 0; } }
+.fx-slide-up { animation: fxslide 3.2s ease-in-out infinite; } @keyframes fxslide { 0%, 30% { transform: translateY(14px); opacity: 0; } 55%, 100% { transform: none; opacity: 1; } }
+.fx-flicker { transform-origin: 50% 100% !important; animation: fxflick 1s ease-in-out infinite; } @keyframes fxflick { 0%, 100% { transform: scale(1, 1); } 50% { transform: scale(.92, 1.08); } }
+.fx-chain { animation: fxchain 3.2s ease-in-out infinite; } @keyframes fxchain { 0%, 12% { opacity: .15; transform: scale(.6); } 30%, 100% { opacity: 1; transform: scale(1); } }
+.fx-twinkle { animation: fxtwink 1.8s ease-in-out infinite; } @keyframes fxtwink { 0%, 100% { opacity: .25; transform: scale(.7); } 50% { opacity: 1; transform: scale(1.25); } }
+.fx-wave { animation: fxwave 1.2s ease-in-out infinite; transform-origin: 0 50% !important; } @keyframes fxwave { 0%, 100% { transform: rotate(-12deg); } 50% { transform: rotate(14deg); } }
+.fx-bounce { animation: fxbounce .9s ease-in-out infinite; } @keyframes fxbounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-16px); } }
+.fx-pop { animation: fxpop 3.4s ease-in-out infinite; } @keyframes fxpop { 0%, 10% { transform: scale(.2); opacity: 0; } 25%, 85% { transform: scale(1); opacity: 1; } 100% { opacity: 0; } }
+.fx-blink { animation: fxblink 1s steps(2, jump-none) infinite; } @keyframes fxblink { 0% { opacity: 1; } 100% { opacity: .15; } }
+.fx-swap-a { animation: fxswapa 3.2s ease-in-out infinite; transform-box: view-box !important; transform-origin: 0 0 !important; } @keyframes fxswapa { 0%, 100% { transform: translate(104px, 76px); } 50% { transform: translate(216px, 76px); } }
+.fx-swap-b { animation: fxswapb 3.2s ease-in-out infinite; transform-box: view-box !important; transform-origin: 0 0 !important; } @keyframes fxswapb { 0%, 100% { transform: translate(216px, 76px); } 50% { transform: translate(104px, 76px); } }
+.fx-odds-a { animation: fxoa 2.4s steps(1) infinite; } @keyframes fxoa { 0% { opacity: 1; } 50% { opacity: 0; } }
+.fx-odds-b { animation: fxob 2.4s steps(1) infinite; } @keyframes fxob { 0% { opacity: 0; } 50% { opacity: 1; } }
+.fx-fly-r { animation: fxflyr 2.8s ease-in-out infinite; transform-box: view-box !important; transform-origin: 0 0 !important; } @keyframes fxflyr { 0% { transform: translate(70px, 80px); opacity: 0; } 15%, 85% { opacity: 1; } 50% { transform: translate(160px, 36px); } 100% { transform: translate(250px, 80px); opacity: 0; } }
+.fx-fly-l { animation: fxflyl 2.8s ease-in-out 1.4s infinite; transform-box: view-box !important; transform-origin: 0 0 !important; } @keyframes fxflyl { 0% { transform: translate(250px, 80px); opacity: 0; } 15%, 85% { opacity: 1; } 50% { transform: translate(160px, 36px); } 100% { transform: translate(70px, 80px); opacity: 0; } }
+html[data-motion="reduced"] .adfx-svg [class^="fx-"], html[data-motion="reduced"] .mb-marble { animation: none !important; }
+@media (prefers-reduced-motion: reduce) { .adfx-svg [class^="fx-"], .mb-marble, .nd-list li, .wk-step { animation: none !important; } .fx-odds-b { opacity: 0; } .fx-swap-a { transform: translate(104px, 76px); } .fx-swap-b { transform: translate(216px, 76px); } .fx-fly-r, .fx-fly-l { transform: translate(160px, 36px); } }
+
+/* sports lab: start-here tab */
+.sh-bar { display: grid; grid-template-columns: 5.5rem 1fr; align-items: center; gap: .5rem; margin: .3rem 0; font-weight: 700; }
+.sh-bar i { display: block; font-style: normal; border-radius: 6px; padding: .25rem .6rem; min-width: 3.4rem; font-variant-numeric: tabular-nums; color: var(--on-accent); transition: width .5s var(--ease); }
+.sh-bar i.risk { background: #ffaea1; color: #3a0f0a; } .sh-bar i.win { background: var(--accent); }

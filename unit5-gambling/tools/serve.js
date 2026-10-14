@@ -45,7 +45,7 @@ const { engine, store } = boot();
 setInterval(() => { try { engine.sweepExpired(); } catch (e) { /* ignore */ } }, 5000).unref();
 
 const MIME = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.mjs': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8', '.json': 'application/json', '.svg': 'image/svg+xml', '.woff2': 'font/woff2', '.png': 'image/png', '.ico': 'image/x-icon', '.md': 'text/plain; charset=utf-8' };
-const BLOCKED = /^\/(authoring|private|\.devdata|server|tools|tests(?!\/e2e\/sim-harness\.html)|node_modules|\.git)(\/|$)/;
+const BLOCKED = /^\/(authoring|private|\.devdata|server|tools|tests(?!\/e2e\/(sim-harness|helpers-demo)\.html)|node_modules|\.git)(\/|$)/;
 
 const server = http.createServer((req, res) => {
   const url = new URL(req.url, 'http://x');

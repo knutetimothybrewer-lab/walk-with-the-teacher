@@ -3,6 +3,7 @@
 import { h, md, clear, fmt, money, announce } from '../util.js';
 import { barChart, lineChart } from '../charts.js';
 import { stat, tabs, note } from './kit.js';
+import { walkCalc } from '../helpers.js';
 
 const PLAYERS = [
   { n: 'Rowan Kiel', t: 'HCW', pts: 25.1, sd: 6.2, reb: 5.2, tp: 38.5 }, { n: 'Tobias Marlowe', t: 'MTF', pts: 22.4, sd: 5.8, reb: 7.9, tp: 34.1 },
@@ -19,6 +20,28 @@ export function mount(container, ctx) {
   const PROP = { id: 'prop', game: 'G1', label: 'Rowan Kiel (Waves) over 24.5 points', p: pOver, odds: D.price(pOver), player: true };
   const mark = (k) => { st.acts.add(k); ctx.report('sports', st.acts.size); };
   const live = h('div', { class: 'sr-only', 'aria-live': 'polite' });
+
+  // ---------- start here: a guided first pass for students new to sports betting
+  function startPane(pane) {
+    const g = slate[0], ex = [{ k: 'fav', odds: g.oddsHome, name: D.team(g.home).nick }, { k: 'dog', odds: g.oddsAway, name: D.team(g.away).nick }];
+    const bars = h('div', { class: 'sh-bars', 'aria-live': 'polite' });
+    function showOdds(e) {
+      clear(bars); const n = Math.abs(e.odds), neg = e.odds < 0, risk = neg ? n : 100, win = neg ? 100 : n, mx = Math.max(risk, win);
+      bars.append(h('p', null, h('b', null, `${e.name} at ${D.fmtAm(e.odds)}`), neg ? ': a favorite. The minus sign means you must risk more than you can win.' : ': an underdog. The plus sign means you can win more than you risk.'),
+        h('div', { class: 'sh-bar' }, h('span', null, 'You risk'), h('i', { class: 'risk', style: `width:${Math.round(risk / mx * 100)}%` }, '$' + risk)),
+        h('div', { class: 'sh-bar' }, h('span', null, 'You win'), h('i', { class: 'win', style: `width:${Math.round(win / mx * 100)}%` }, '$' + win)),
+        h('p', { class: 'muted small' }, 'Winning pays that much profit and you also get your stake back. Losing costs the whole stake.'));
+    }
+    const picks = ex.map((e, i) => h('button', { class: 'btn btn-sm' + (i ? '' : ' btn-primary'), type: 'button', onclick: () => showOdds(e) }, `${e.name} ${D.fmtAm(e.odds)}`));
+    pane.append(h('div', { class: 'panel' }, h('h3', null, 'Start here: a guided first pass'), h('p', { class: 'muted' }, 'New to sports betting? Work down these four steps. Nothing here is graded, and none of it gives you an answer: it shows you how to set the numbers up.')),
+      h('div', { class: 'panel' }, h('h3', null, '1. Read an odds line'), h('p', { class: 'muted small' }, 'Pick a side from today’s slate.'), h('div', { class: 'controls' }, picks), bars),
+      h('div', { class: 'panel' }, h('h3', null, '2. Find the break-even rate'), h('p', { class: 'muted small' }, `Try ${D.fmtAm(g.oddsHome)} (already filled in), then try the other side's odds, or any odds from a question.`), walkCalc('implied', { prefill: { odds: D.fmtAm(g.oddsHome) } })),
+      h('div', { class: 'panel' }, h('h3', null, '3. Chain two bets into a parlay'), h('p', null, md('A parlay ties several bets together: every leg must win to get paid. Go to the Parlay builder, pick **two** sides from different games, and read the “Chance ALL legs win” tile.')), h('p', { class: 'muted small' }, 'Then come back and type the two chances below to see how that number is built.'), walkCalc('parlay'),
+        h('div', { class: 'controls', style: 'margin-top:.6rem' }, h('button', { class: 'btn btn-primary', type: 'button', onclick: () => t.show(2) }, 'Open the Parlay builder'))),
+      h('div', { class: 'panel' }, h('h3', null, '4. See what happens over thousands of bets'), h('p', null, 'One slip can win. Run the same slip 10,000 times and compare the money paid out with the money staked.'), h('div', { class: 'controls' }, h('button', { class: 'btn btn-primary', type: 'button', onclick: () => t.show(3) }, 'Open the 10,000-slip test'))));
+    showOdds(ex[0]);
+    mark('slate');   // opening the lab used to land on the slate tab and count it; keep the progress gate unchanged
+  }
 
   // ---------- slate
   function slatePane(pane) {
@@ -97,7 +120,7 @@ export function mount(container, ctx) {
     }
     pane.append(h('div', { class: 'panel' }, h('h3', null, 'Run the slip many times'), h('p', { class: 'muted' }, 'Uses the slip from the Parlay builder (or a 3-leg slip of home teams if yours is empty).'), h('div', { class: 'controls' }, h('button', { class: 'btn btn-primary', type: 'button', onclick: run10k }, 'Run 10,000 slips'), h('button', { class: 'btn', type: 'button', onclick: oneBettor }, 'One bettor, 200 slips'))), out);
   }
-  const t = tabs([{ id: 'slate', label: 'Slate and stats', build: slatePane }, { id: 'parlay', label: 'Parlay builder', build: parlayPane }, { id: 'slips', label: '10,000-slip test', build: slipsPane }]);
+  const t = tabs([{ id: 'start', label: 'Start here', build: startPane }, { id: 'slate', label: 'Slate and stats', build: slatePane }, { id: 'parlay', label: 'Parlay builder', build: parlayPane }, { id: 'slips', label: '10,000-slip test', build: slipsPane }]);
   container.append(h('div', { class: 'sim' }, note('**FICTIONAL.** Teams, players, odds and the sportsbook are invented. Probabilities come from the disclosed model; legs in different games are treated as independent. Large possible payouts do **not** mean a bet is favorable.'), t.bar, t.body)); t.show(0);
   return { destroy() {} };
 }
