@@ -12,7 +12,7 @@ Added without touching the private question bank. `js/helpers.js` attaches helpe
 | c4-eval | Skill-or-luck walk-through |
 | c5-match | Gallery of the six animated ads (`js/fxads.js`); the same art also appears in the Ad Lab |
 | c5-riskfree | Bonus-bet explainer with a replay button |
-| most Chapter 1, 2, 4, 5 math items | "Stuck? Get a nudge": up to three concept hints, free, no attempt used (`NUDGES` in helpers.js) |
+| most Chapter 1, 2, 4, 5 math items | "Stuck? Get a nudge": three concept hints, then a worked example on different numbers to copy the steps from; free, no attempt used (`NUDGES` and `EXAMPLES` in helpers.js) |
 
 The Sports Analytics Desk lab has a new first tab, **Start here**, a four-step guided pass (read an odds line, break-even rate, parlay, 10,000 slips).
 
