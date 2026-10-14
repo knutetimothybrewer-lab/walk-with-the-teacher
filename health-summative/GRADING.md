@@ -47,6 +47,10 @@ Worked examples (a 4-card sort worth 2 points):
 | 3 of 4 right on every attempt, never finished | max(1.50, 1.35, 1.125) = **1.50** |
 | Select-all with 4 right options: picks 3 right + 1 wrong on attempt 1 | fraction (3 − 1) ÷ 4 = 0.5 → 2 × 0.5 = **1.00** (then fixes it on attempt 2 → **1.80**) |
 
+## 3b. Unscored checkpoints
+
+A question with `points: 0` is a **checkpoint**: practice that students must finish but that never changes a score. It uses the same tries, hints and explanations. It is left out of the points total, the per-station and per-topic percents, and the data sent to your Sheet, and it shows "practice, not scored" instead of a credit percentage.
+
 ## 4. Skipped questions
 
 Questions that involve scenarios some students may find uncomfortable have a **Skip this question** button (a "Skip this scene" button for the two conversation scenes). A skip earns **full credit** for the question (for a scene, all of its steps), is logged only as `skipped` (no answers, no attempts), and is excluded from the "first-attempt correct" statistics on the Items and Reteach tabs.

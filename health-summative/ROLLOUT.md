@@ -12,7 +12,7 @@ Send this (edit the brackets). Copy your administrator if your school expects th
 >
 > Hi [Counselor name],
 >
-> On [DATE], my [PERIOD(S)] Health classes will take an online summative assessment for our Mental Health Unit. It is an interactive, self-grading activity of about 45 minutes. I want you to know about it before students do, because it includes **scenarios about stress, sadness, and safety**.
+> On [DATE], my [PERIOD(S)] Health classes will take an online summative assessment for our Mental Health Unit. It is an interactive, self-grading activity of about an hour. I want you to know about it before students do, because it includes **scenarios about stress, sadness, and safety**.
 >
 > How it is designed: it follows safe-messaging guidelines (AFSP / SAMHSA / reportingonsuicide.org). There are no methods or graphic details of self-harm; the safety content is about *recognizing signs and getting an adult*, using calm language and "Are you safe right now?" and walking a friend to a counselor. Students are **never asked to share their own mental health information**; there are no free-text boxes about feelings. Every screen has a **"Need help? / Take a break"** button showing 988, Crisis Text Line (text HOME to 741741), 911, and "talk to your counselor or a trusted adult," and students can **skip any scenario** without penalty.
 >

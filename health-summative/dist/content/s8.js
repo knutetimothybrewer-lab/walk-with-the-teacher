@@ -2,8 +2,8 @@ import { mc, sort, match, order, tag, scene, chatStep } from './dsl.js';
 
 const D = 'D · Communication Mini-Lesson (slides)';
 
-const riley = { name: 'Riley', color: '#6c5fc7', scene: 'Scene 1 · A teammate who has gone quiet' };
-const sasha = { name: 'Sasha', color: '#2a8c8f', scene: 'Scene 2 · A friend says something worrying' };
+const riley = { name: 'Riley', color: '#6c5fc7', moods: ['sad', 'quiet', 'hopeful'], scene: 'Scene 1 · A teammate who has gone quiet' };
+const sasha = { name: 'Sasha', color: '#2a8c8f', moods: ['scared', 'worried', 'hopeful'], scene: 'Scene 2 · A friend says something worrying' };
 
 export default {
   id: 's8', title: 'Be a Bridge', short: 'Be a bridge', topic: 'COMM',
@@ -131,6 +131,30 @@ export default {
       ],
       hint: 'Think about what you can do, and what is not your job.',
       explain: 'You are a bridge, not the only support and not the counselor. You are responsible for not ignoring it, not for solving it.',
+    }),
+    mc('s8-k1', {
+      points: 0, person: { who: 'Sam', mood: 'quiet', says: 'I am fine, just tired.', after: 'hopeful' },
+      level: 'apply', topic: 'COMM', src: `${D} › Checkpoint: the Ask step`,
+      prompt: 'Sam says, "I am fine, just tired," but has seemed down for weeks. Which Ask is best?',
+      right: '"You have seemed a little down lately, and I care about you. How have things really been?"',
+      wrong: [
+        ['"You are not depressed, are you?"', 'That is a leading, yes-or-no question and it sounds like a label.'],
+        ['"Okay, good." Then change the subject.', 'Dropping it can tell Sam you do not want to hear more.'],
+        ['"Everyone gets tired. You should just try harder."', 'That minimizes how Sam feels and gives advice too fast.'],
+      ],
+      hint: 'A good Ask is caring, open, and does not label.',
+      explain: 'Name what you noticed, say you care, and ask an open question. You are checking in, not diagnosing or investigating.',
+    }),
+    match('s8-k2', {
+      points: 0, level: 'apply', topic: 'COMM', src: `${D} › Checkpoint: more language swaps`,
+      prompt: 'Language swap: match each unhelpful line to a better one.',
+      pairs: [
+        ['"You are overreacting."', '"I can see this really matters to you."'],
+        ['"At least it is not that bad."', '"That sounds really hard. I am here."'],
+        ['"Just stop worrying about it."', '"What is the hardest part right now?"'],
+      ],
+      hint: 'Which line would help you feel heard if you were the one struggling?',
+      explain: 'Better lines name the feeling and keep the door open. Lines that dismiss, compare, or order someone to stop feeling shut the conversation down.',
     }),
   ],
 };

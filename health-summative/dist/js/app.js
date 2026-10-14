@@ -185,6 +185,21 @@ export const app = {
     return this.go({ phase: 'end' });
   },
 
+  /** Go back one screen (previous question, the station intro, or the previous station's last question). */
+  back() {
+    const s = this.session; if (!s || s.status === 'final') return;
+    const { station, step, phase } = s.pos; const st = this.plan.stations[station];
+    if (phase === 'end') return this.go({ phase: 'item', step: st.steps.length - 1 });
+    if (phase === 'intro') {
+      if (station === 0) return;
+      const prev = this.plan.stations[station - 1];
+      return this.go({ station: station - 1, phase: 'item', step: prev.steps.length - 1 });
+    }
+    if (step > 0) return this.go({ step: step - 1 });
+    return this.go({ phase: 'intro' });
+  },
+  canBack() { const p = this.session && this.session.pos; return !!p && !(p.station === 0 && p.phase === 'intro'); },
+
   /** After skipping, move past the whole scene (or just the one question). */
   skipPast(rec) {
     const st = this.plan.stations[this.session.pos.station];
@@ -220,7 +235,7 @@ export const app = {
 
   payload() {
     const s = this.session; const t = s.result;
-    const items = this.plan.all.map(r => {
+    const items = this.plan.all.filter(r => r.points > 0).map(r => {
       const st = s.items[r.id] || { attempts: [], earned: 0 };
       return {
         id: r.id, station: r.station, topic: r.topic, label: plain(r.item.prompt).slice(0, 90),

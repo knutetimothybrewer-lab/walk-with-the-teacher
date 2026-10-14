@@ -25,6 +25,7 @@ export default {
       explain: 'Red flags include: talking about wanting to die or disappear; giving away belongings or saying goodbye; sudden calm after deep distress; signs of self-harm or talk of hurting self or others; and a drastic, rapid change in behavior or mood. Safety overrides uncertainty.',
     }),
     mc('s7-02', {
+      person: { who: 'Friend', mood: 'worried', says: 'I have not been okay lately.', after: 'calm' },
       level: 'apply', sensitive: true, alert: true, src: `${B} › You don't need the diagnosis before getting an adult involved`,
       prompt: 'You are not sure what is going on, but a friend said something that sounded like wanting to disappear. What should you do?',
       right: 'Get a trusted adult involved now; you do not need to know the cause first.',
@@ -37,6 +38,7 @@ export default {
       explain: 'You do not have to know the diagnosis or the cause. If there is a red flag, tell a trusted adult or the counselor, and stay with your friend if you can. Call or text 988 together, or call 911 if someone is in immediate danger.',
     }),
     mc('s7-04', {
+      person: { who: 'Friend', mood: 'scared', says: 'Promise you will not tell anyone.', after: 'calm' },
       level: 'apply', sensitive: true, alert: true, src: `${B} › Do not keep it a secret, even if asked`,
       prompt: 'A friend tells you something that makes you worry they might be unsafe, and says, "Promise you will not tell anyone." What is the best response?',
       right: '"I care too much to keep this secret. Let me go with you to talk to someone."',
@@ -59,6 +61,19 @@ export default {
       ],
       hint: 'Think about how much it changed and how fast.',
       explain: 'Drastic, rapid changes, including sudden calm after deep distress, are red flags. They are a reason to check in and bring in an adult.',
+    }),
+    mc('s7-k1', {
+      points: 0, sensitive: true, alert: true, person: { who: 'Friend', mood: 'worried', says: 'Everyone would be better off without me. (laughs)', after: 'calm' },
+      level: 'apply', src: `${B} › Checkpoint: a "joke" is still a red flag`,
+      prompt: 'A teammate says, "Everyone would be better off without me," and then laughs it off. What is the best response?',
+      right: 'Take it seriously: stay kind, and tell a trusted adult or counselor today.',
+      wrong: [
+        ['Treat it as a joke and ignore it, because they laughed.', 'Laughing it off does not make it safe. Safety overrides uncertainty.'],
+        ['Joke back so it feels less awkward.', 'Joking back can make them feel unheard.'],
+        ['Wait and see whether they say it again before telling anyone.', 'Waiting can be risky. You do not need to be sure before telling an adult.'],
+      ],
+      hint: 'When a comment could be about safety, do not wait to be sure.',
+      explain: 'You do not need proof or a diagnosis. If something sounds like a red flag, even as a joke, tell a trusted adult or counselor. The Need help? button is always at the top.',
     }),
   ],
 };

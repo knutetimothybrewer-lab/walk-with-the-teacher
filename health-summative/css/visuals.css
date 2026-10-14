@@ -76,3 +76,49 @@
 .revealed .tv-arrow.main { opacity: .35; }
 
 @media (max-width: 520px) { .gauges { grid-template-columns: 1fr 1fr; gap: 8px; } .bp-step { width: 34px; height: 34px; } }
+
+/* ---------- animated person (scenario questions and chat scenes) ---------- */
+.person { display: inline-block; line-height: 0; transform-origin: 50% 100%; }
+.person-svg { overflow: visible; }
+.person .p-head { transform-box: fill-box; transform-origin: 50% 100%; animation: p-bob 3.6s ease-in-out infinite; }
+.person .p-eye { transform-box: fill-box; transform-origin: center; transform: scaleY(var(--open, 1)); animation: p-blink 5s infinite; }
+.person .p-brow, .person .p-mouth { transition: d .4s ease; }
+.person .x-tear, .person .x-sweat, .person .x-cloud, .person .x-zzz, .person .x-spark { opacity: 0; transition: opacity .4s; }
+.person[data-mood="sad"] .x-tear { opacity: 1; animation: p-tear 2.6s ease-in infinite; }
+.person[data-mood="sad"] .p-head { animation: p-droop 4s ease-in-out infinite; }
+.person[data-mood="worried"] .x-sweat, .person[data-mood="stressed"] .x-sweat, .person[data-mood="scared"] .x-sweat { opacity: 1; animation: p-sweat 2.2s ease-in infinite; }
+.person[data-mood="worried"] .p-head { animation: p-fidget 2.4s ease-in-out infinite; }
+.person[data-mood="stressed"] .x-cloud { opacity: 1; animation: p-shake .5s linear infinite; }
+.person[data-mood="stressed"] .p-head { animation: p-shake .45s linear infinite; }
+.person[data-mood="scared"] .p-head, .person[data-mood="scared"] .p-extras { animation: p-shake .3s linear infinite; }
+.person[data-mood="tired"] .x-zzz { opacity: 1; animation: p-zzz 2.8s ease-in-out infinite; }
+.person[data-mood="tired"] .x-zzz.z2 { animation-delay: 1.2s; }
+.person[data-mood="tired"] .p-head { animation: p-nod 3.8s ease-in-out infinite; }
+.person[data-mood="quiet"] .p-head { animation-duration: 6s; }
+.person[data-mood="happy"] .x-spark, .person[data-mood="hopeful"] .x-spark { opacity: 1; animation: p-twinkle 1.8s ease-in-out infinite; }
+.person[data-mood="happy"] .x-spark.sp2, .person[data-mood="hopeful"] .x-spark.sp2 { animation-delay: .8s; }
+.person[data-mood="happy"] .p-head { animation: p-hop 1.6s ease-in-out infinite; }
+.person.hop { animation: p-hop-once .7s ease; }
+@keyframes p-bob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-2.5px); } }
+@keyframes p-blink { 0%,92%,100% { transform: scaleY(var(--open, 1)); } 95% { transform: scaleY(.08); } }
+@keyframes p-droop { 0%,100% { transform: rotate(-2deg) translateY(2px); } 50% { transform: rotate(3deg) translateY(4px); } }
+@keyframes p-fidget { 0%,100% { transform: rotate(-3deg); } 50% { transform: rotate(3deg); } }
+@keyframes p-nod { 0%,100% { transform: rotate(0); } 50% { transform: rotate(7deg) translateY(3px); } }
+@keyframes p-shake { 0%,100% { transform: translateX(0); } 25% { transform: translateX(-1.6px); } 75% { transform: translateX(1.6px); } }
+@keyframes p-tear { 0% { opacity: 0; transform: translateY(0); } 25% { opacity: 1; } 100% { opacity: 0; transform: translateY(16px); } }
+@keyframes p-sweat { 0% { opacity: 0; transform: translateY(-4px); } 30% { opacity: 1; } 100% { opacity: 0; transform: translateY(10px); } }
+@keyframes p-zzz { 0% { opacity: 0; transform: translateY(8px); } 40% { opacity: 1; } 100% { opacity: 0; transform: translateY(-8px); } }
+@keyframes p-twinkle { 0%,100% { opacity: .2; transform: scale(.7); } 50% { opacity: 1; transform: scale(1.1); } }
+@keyframes p-hop { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+@keyframes p-hop-once { 0% { transform: translateY(0); } 35% { transform: translateY(-12px); } 70% { transform: translateY(0); } 85% { transform: translateY(-4px); } 100% { transform: translateY(0); } }
+.person .x-spark, .person .x-zzz, .person .x-tear, .person .x-sweat, .person .x-cloud { transform-box: fill-box; transform-origin: center; }
+
+.scenario-people { display: flex; gap: 16px; align-items: flex-end; flex-wrap: wrap; margin: 0 0 12px; padding: 10px 14px 0; background: linear-gradient(180deg, #f3f5fc, #e9e6f8); border-radius: 16px; overflow: hidden; }
+.sp-one { display: flex; align-items: flex-end; gap: 10px; flex: 1 1 220px; min-width: 0; }
+.sp-name { align-self: flex-start; margin-top: 8px; font-size: .8rem; font-weight: 800; color: #3e2f86; background: #fff; border-radius: 99px; padding: 2px 10px; }
+.sp-says { align-self: center; position: relative; margin-bottom: 14px; background: #fff; border: 2px solid #d9d4f3; border-radius: 16px; padding: 8px 12px; font-size: .95rem; font-style: italic; color: var(--ink); }
+.sp-says::before { content: ''; position: absolute; left: -9px; bottom: 12px; width: 14px; height: 14px; background: #fff; border-left: 2px solid #d9d4f3; border-bottom: 2px solid #d9d4f3; transform: rotate(45deg); }
+.chat-head .person { flex: none; background: #e9e6f8; border-radius: 50%; overflow: hidden; width: 64px; height: 64px; display: grid; place-items: end center; }
+.chat-head .person svg { margin-top: 8px; }
+.reduce-motion .person *, .reduce-motion .person { animation: none !important; }
+@media (prefers-reduced-motion: reduce) { .person *, .person { animation: none !important; } }

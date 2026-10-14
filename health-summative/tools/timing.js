@@ -32,7 +32,7 @@ perStation.forEach((p, i) => {
   md += `| ${i + 1} | ${p.st.title} | ${n} | ${min(p.sec)} |\n`;
 });
 md += `| 11 | Final score + calm next-step card | — | ${min(fin)} |\n| | **Total** | **${perStation.reduce((s, p) => s + p.items.filter(x => x.type !== 'explore').length, 0)}** | **${min(grand)}** |\n\n`;
-md += `Target: 45 minutes ±5. ${grand / 60 <= 50 && grand / 60 >= 40 ? '✅ Within range.' : '⚠️ Outside range; adjust items.'}\n\n## Per-item estimates (seconds)\n\n`;
+md += `Target: about 60 minutes (55 to 65). ${grand / 60 <= 65 && grand / 60 >= 55 ? '✅ Within range.' : '⚠️ Outside range; adjust items.'}\n\n## Per-item estimates (seconds)\n\n`;
 perStation.forEach(p => {
   md += `### ${p.st.title}\n\n| Item | Type | Level | Seconds |\n|---|---|---|---|\n`;
   p.items.forEach(x => { md += `| ${x.id} | ${x.type} | ${x.level} | ${x.sec} |\n`; });

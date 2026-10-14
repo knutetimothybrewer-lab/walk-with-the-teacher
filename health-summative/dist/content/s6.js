@@ -76,5 +76,26 @@ export default {
       hint: 'Look for the answer that does not claim more certainty than the studies show.',
       explain: 'Studies link heavy social media use with lower well-being, and many researchers think phones and social media are part of the picture. How big the role is, and whether it is the cause, is still being studied and debated.',
     }),
+    mc('s6-k1', {
+      points: 0, person: { who: 'Eli', mood: 'worried', says: 'Phones near the bed cause anxiety. I bet.', after: 'quiet' },
+      level: 'analyze', src: `${B} › Checkpoint: what would test a causal claim`,
+      prompt: 'Eli says, "Students who keep their phone by the bed feel more anxious, so phones cause anxiety." Which question would best test that claim?',
+      right: 'What happens to anxiety when similar students change only where they keep the phone at night?',
+      wrong: [
+        ['How many students in the school own a phone?', 'Owning a phone does not test whether it changes anxiety.'],
+        ['Which phone brand do anxious students use?', 'Brand has nothing to do with whether the phone changes mood.'],
+        ['How many posts about phones did Eli see this week?', 'Posts are opinions. They are not evidence about cause.'],
+      ],
+      hint: 'To test cause, what should change and what should stay the same?',
+      explain: 'To test cause you change one thing and keep other things similar. Surveys can show a link, but a comparison like this gets closer to showing cause.',
+    }),
+    multi('s6-k2', {
+      points: 0, level: 'analyze', src: `${B} › Checkpoint: careful claims`,
+      prompt: 'A survey found that students who sleep less also report lower mood. Select all the statements that are careful (they do not overclaim).',
+      right: ['Less sleep and lower mood are linked in this survey.', 'This survey alone cannot show which one causes the other.', 'Other factors, like stress, could affect both sleep and mood.'],
+      wrong: ['Less sleep definitely causes low mood in every student.', 'Low mood is proven to be the only reason students sleep less.'],
+      hint: 'Careful claims say "linked" or "might," not "proves" or "always."',
+      explain: 'A survey can show a link. It cannot show the direction or rule out a third variable. Claims with "definitely" or "proven" go further than the evidence.',
+    }),
   ],
 };

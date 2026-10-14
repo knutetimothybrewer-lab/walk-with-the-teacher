@@ -11,8 +11,8 @@ export const YRBS = [
 ];
 
 export function mount(host) {
-  const W = 560, H = 270, L = 48, R = 20, T = 24, B = 40;
-  const x = (i) => L + (i * (W - L - R)) / (YRBS.length - 1);
+  const W = 560, H = 290, L = 52, R = 28, T = 44, B = 40, PAD = 24;   // PAD keeps the first/last points clear of the y labels and the edge
+  const x = (i) => L + PAD + (i * (W - L - R - 2 * PAD)) / (YRBS.length - 1);
   const y = (v) => T + (1 - (v - 20) / (50 - 20)) * (H - T - B);
   const svg = svgRoot(`0 0 ${W} ${H}`, 'Line chart of the percent of U.S. high school students with persistent feelings of sadness or hopelessness, 2013 to 2025: about 30, 30, 32, 37, 42, 40, 33 percent.', { interactive: true });
   [20, 30, 40, 50].forEach(v => {
@@ -34,7 +34,7 @@ export function mount(host) {
     return g;
   });
   dots.forEach(g => svg.append(g));
-  svg.append(s('text', { x: 14, y: T - 8, class: 'ax' }, 'Percent of students'));
+  svg.append(s('text', { x: 6, y: 16, class: 'ax' }, 'Percent of students'));
   const tableBtn = h('button', { type: 'button', class: 'btn-ghost', 'aria-expanded': 'false' }, 'Show data as a table');
   const table = h('table', { class: 'viz-table', hidden: true },
     h('caption', {}, 'Persistent feelings of sadness or hopelessness, U.S. high school students (CDC YRBS), rounded'),

@@ -52,7 +52,7 @@ function welcome(app, existing) {
   const node = h('section', { class: 'card hero' },
     h('p', { class: 'eyebrow' }, `${cfg.schoolName} ${cfg.mascot} · ${cfg.unitName}`),
     h('h1', {}, cfg.appTitle),
-    h('p', { class: 'lead' }, 'Walk the trail from storm to sunrise. Ten short stations, about 45 minutes. The sky gets brighter as you go.'),
+    h('p', { class: 'lead' }, 'Walk the trail from storm to sunrise. Ten short stations, about an hour. The sky gets brighter as you go.'),
     h('div', { class: 'note calm' }, h('strong', {}, 'A quick note. '), 'This assessment includes scenarios about stress, sadness, and safety. You can take a break or skip any scenario. The "Need help? / Take a break" button is always at the top of the screen.'),
     form,
     h('details', { class: 'how' }, h('summary', {}, 'How scoring works'),
@@ -121,14 +121,15 @@ function stationIntro(app, st) {
     st.callout ? h('div', { class: 'note calm' }, rich(st.callout)) : null,
     h('p', { class: 'meta' }, `${scored} questions · about ${mins} min`),
     trailStrip(app, st.index),
-    h('div', { class: 'item-foot' }, h('span'), h('button', { type: 'button', class: 'btn-primary big', id: 'btn-begin' }, 'Begin this station →')));
+    h('div', { class: 'item-foot' }, app.canBack() ? h('button', { type: 'button', class: 'btn-quiet', id: 'btn-back' }, '← Back') : h('span'), h('button', { type: 'button', class: 'btn-primary big', id: 'btn-begin' }, 'Begin this station →')));
   mount(node);
   $('#btn-begin').addEventListener('click', () => app.beginStation());
+  const bb = $('#btn-back'); if (bb) bb.addEventListener('click', () => app.back());
 }
 
 function stationEnd(app, st) {
   const s = app.session;
-  const rows = st.steps.filter(r => !r.explore);
+  const rows = st.steps.filter(r => !r.explore && r.points > 0);
   const earned = rows.reduce((t, r) => t + (s.items[r.id] ? s.items[r.id].earned : 0), 0);
   const possible = rows.reduce((t, r) => t + r.points, 0);
   const first = rows.filter(r => { const x = s.items[r.id]; return x && !x.skipped && x.attempts[0] && x.attempts[0].fraction >= 1; }).length;
@@ -140,11 +141,12 @@ function stationEnd(app, st) {
     h('p', { class: 'lead' }, h('span', { class: 'sparkle', 'aria-hidden': 'true' }, '✦ '), val, ` of ${fmtPts(possible)} wellness points earned here`),
     h('p', {}, `${first} of ${rows.length} questions right on the first try.`),
     st.farewell ? h('p', { class: 'note calm' }, rich(st.farewell)) : null,
-    h('div', { class: 'item-foot' }, h('button', { type: 'button', class: 'btn-quiet', id: 'btn-trail' }, 'See the trail'),
+    h('div', { class: 'item-foot' }, h('span', { class: 'foot-left' }, h('button', { type: 'button', class: 'btn-quiet', id: 'btn-back' }, '← Back'), h('button', { type: 'button', class: 'btn-quiet', id: 'btn-trail' }, 'See the trail')),
       h('button', { type: 'button', class: 'btn-primary big', id: 'btn-cont' }, last ? 'See my results →' : 'Continue to the next station →')));
   mount(node);
   animateNumber(val, 0, earned);
   $('#btn-cont').addEventListener('click', () => app.nextStation());
+  $('#btn-back').addEventListener('click', () => app.back());
   $('#btn-trail').addEventListener('click', (e) => { trailDialog(app); openDialog($('#trail'), e.currentTarget); });
 }
 

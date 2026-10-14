@@ -20,6 +20,8 @@ mc('s1-01', {                                   // a unique id (shown in CONTENT
 }),
 ```
 
+**Unscored checkpoint:** add `points: 0` to any question. It still has to be answered (or skipped) but is worth nothing and is not sent to the Sheet.
+
 ## The other types
 
 | Function | Use | Shape |

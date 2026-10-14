@@ -11,6 +11,7 @@ import * as gauges from '../visuals/gauges.js';
 import * as stressDays from '../visuals/stressDays.js';
 import * as thirdVar from '../visuals/thirdVar.js';
 import * as poster from '../visuals/poster.js';
+import { person, scenarioPerson } from '../visuals/person.js';
 
 const COMP = { mc, multi, place };
 const VIS = { yrbs, brain, gauges, stressDays, thirdVar, poster };
@@ -71,7 +72,14 @@ function trustMeter(initial) {
   set(initial);
   return { el: bar, set };
 }
+export const moodForTrust = (t, moods) => (t >= 70 ? moods[2] : t >= 40 ? moods[1] : moods[0]);
 const bubble = (who, text, cls = '') => h('div', { class: `bubble ${who} ${cls}` }, rich(text));
+
+export function backButton(app) {
+  const b = h('button', { type: 'button', class: 'btn-quiet back-btn' }, '← Back');
+  b.addEventListener('click', () => app.back());
+  return b;
+}
 
 /* ---------------- main ---------------- */
 export function renderItem(app, rec, host) {
@@ -88,14 +96,16 @@ export function renderItem(app, rec, host) {
   const listen = listenButton(() => [plain(item.friendSays || ''), plain(item.prompt), ...(item.options || []).map(o => plain(o.t))].join('. '), 'Listen');
   card.append(h('h1', { class: 'sr-only' }, `${stationTitle}, question ${rec.num} of ${total}`));
   card.append(h('div', { class: 'item-head' },
-    h('span', { class: 'chip' }, `Question ${rec.num} of ${total}`), attemptChip, listen));
+    h('span', { class: 'chip' }, `Question ${rec.num} of ${total}`), rec.points === 0 ? h('span', { class: 'chip soft' }, 'Checkpoint') : null, attemptChip, listen));
 
   /* chat header + transcript */
-  let trust = null, log = null;
+  let trust = null, log = null, chatPerson = null;
   if (item.chat) {
     trust = trustMeter(trustFor(app, rec));
+    const moods = item.chat.moods || ['sad', 'worried', 'hopeful'];
+    chatPerson = person({ who: item.chat.who, mood: moodForTrust(trustFor(app, rec), moods), size: 64 });
     card.append(h('div', { class: 'chat-head' },
-      h('span', { class: 'avatar', 'aria-hidden': 'true', style: `--av:${item.chat.color || '#7a6bd6'}` }, item.chat.who[0]),
+      h('span', { 'aria-hidden': 'true' }, chatPerson.el),
       h('div', {}, h('strong', {}, item.chat.who), h('small', {}, item.chat.scene)), trust.el));
     log = h('div', { class: 'chat-log', 'aria-label': 'Conversation so far', role: 'log' });
     blockRecs(app, rec).filter(r => r.blockIndex < rec.blockIndex).forEach(r => {
@@ -111,6 +121,8 @@ export function renderItem(app, rec, host) {
   if (item.note) card.append(h('p', { class: 'note calm' }, item.note));
   if (item.chat && item.friendSays) { log.append(bubble('friend', item.friendSays, 'new')); }
   else card.append(passageEl(app, item) || '');
+  let scen = null;
+  if (item.person && !item.chat) { scen = scenarioPerson(item.person); card.append(scen.el); }
   if (!item.chat) card.append(h('h2', { class: 'prompt', tabindex: '-1', id: 'prompt' }, rich(item.prompt)));
   else card.append(h('p', { class: 'chat-step' }, item.chat.step ? h('span', { class: 'step-tag' }, item.chat.step) : null, h('span', { class: 'prompt', id: 'prompt', tabindex: '-1' }, rich(item.prompt))));
   card.append(h('p', { class: 'instr' }, instructionFor(item)));
@@ -143,20 +155,21 @@ export function renderItem(app, rec, host) {
   const skip = item.sensitive || rec.sensitiveScene
     ? h('button', { type: 'button', class: 'btn-quiet', title: 'You can skip any scenario. It will not lower your score.' }, rec.sensitiveScene ? 'Skip this scene' : 'Skip this question')
     : null;
-  foot.append(skip || h('span'), h('span', { class: 'foot-right' }, check, next));
+  const back = backButton(app);
+  foot.append(h('span', { class: 'foot-left' }, back, skip), h('span', { class: 'foot-right' }, check, next));
 
   const attemptsLeft = () => attemptsMax - state.attempts.length;
   function refreshAttemptChip() {
     if (state.done) { attemptChip.textContent = ''; attemptChip.hidden = true; return; }
     const n = state.attempts.length + 1;
     attemptChip.hidden = false;
-    attemptChip.textContent = `Try ${n} of ${attemptsMax} · ${credit(n) === 100 ? 'full credit' : credit(n) + '% credit'}`;
+    attemptChip.textContent = rec.points === 0 ? `Try ${n} of ${attemptsMax} · practice, not scored` : `Try ${n} of ${attemptsMax} · ${credit(n) === 100 ? 'full credit' : credit(n) + '% credit'}`;
   }
 
   function feedback(kind, title, body, extra) {
     fb.className = `feedback ${kind}`;
     fb.replaceChildren(h('p', { class: 'fb-title' }, h('span', { 'aria-hidden': 'true', class: 'fb-ic' }, kind === 'good' ? '✓' : kind === 'try' ? '↺' : 'ℹ'), ' ', title),
-      body ? h('p', { class: 'fb-body' }, rich(body)) : null, extra || null);
+      ...[body ? h('p', { class: 'fb-body' }, rich(body)) : null, extra || null].filter(Boolean));
     announce(`${title}. ${plain(body || '')}`);
   }
 
@@ -173,14 +186,15 @@ export function renderItem(app, rec, host) {
     refreshAttemptChip();
     check.hidden = true; next.hidden = false;
     const earned = state.earned;
-    const frac = earned / rec.points;
+    const frac = rec.points ? earned / rec.points : 1;
     if (solved) {
       const n = state.attempts.length;
-      feedback('good', n === 1 ? 'Correct — full credit.' : `Correct on try ${n} — ${credit(n)}% credit.`, null, explainBlock(false));
+      feedback('good', rec.points === 0 ? 'Correct.' : n === 1 ? 'Correct — full credit.' : `Correct on try ${n} — ${credit(n)}% credit.`, null, explainBlock(false));
       sparkle(card);
+      if (scen) scen.relieve();
       card.classList.add('glow'); setTimeout(() => card.classList.remove('glow'), 900);
     } else {
-      const partial = frac > 0 ? ` You earned ${pct(frac)}% for the parts you got right.` : '';
+      const partial = rec.points && frac > 0 ? ` You earned ${pct(frac)}% for the parts you got right.` : '';
       feedback('info', 'Let\'s look at this one together.', 'The correct answer is now shown above.' + partial, explainBlock(true));
     }
     if (item.chat) chatAfter(true, res);
@@ -188,13 +202,21 @@ export function renderItem(app, rec, host) {
     next.focus();
   }
 
+  function setChatMood() {
+    if (!chatPerson) return;
+    const t = trustFor(app, rec);
+    chatPerson.setMood(moodForTrust(t, item.chat.moods || ['sad', 'worried', 'hopeful']));
+    if (t >= 70) chatPerson.hop();
+  }
+
   function chatAfter(done, res, pickedIdx) {
     const idx = pickedIdx !== undefined ? pickedIdx : null;
-    if (idx === null) { trust.set(trustFor(app, rec)); return; }
+    if (idx === null) { trust.set(trustFor(app, rec)); setChatMood(); return; }
     const o = item.options[idx];
     log.append(bubble('you', o.t, 'new'));
     if (o.react) log.append(bubble('friend', o.react, 'new'));
     trust.set(trustFor(app, rec));
+    setChatMood();
     log.scrollTop = log.scrollHeight;
   }
 
@@ -233,10 +255,16 @@ export function renderItem(app, rec, host) {
   });
 
   /* restore after refresh */
-  if (state.attempts.length) {
+  if (state.skipped) {
+    ctrl.showCorrect();
+    check.hidden = true; next.hidden = false;
+    feedback('info', 'You skipped this one.', 'It did not lower your score.', explainBlock(false));
+    refreshAttemptChip();
+  } else if (state.attempts.length) {
     const res = grade(item, state.resp || (item.type === 'mc' ? { pick: -1 } : item.type === 'multi' ? { picks: [] } : { map: {} }));
     if (item.type === 'mc' && !(state.resp && state.resp.pick >= 0)) { /* nothing */ }
     else ctrl.showResult(res, { final: state.done, solved: state.solved, restore: true });
+    if (state.done && state.solved && scen) scen.relieve();
     if (state.done) { check.hidden = true; next.hidden = false; feedback(state.solved ? 'good' : 'info', state.solved ? 'Already answered — nice work.' : 'Already answered.', null, explainBlock(!state.solved)); }
     else feedback('try', 'Welcome back.', 'Pick up where you left off. ' + (item.hint || ''));
     refreshAttemptChip();
@@ -258,7 +286,7 @@ export function renderExplore(app, rec, host) {
   mountVisual(vhost, item, { item, session: app.session, plan: app.plan, app });
   const go = h('button', { type: 'button', class: 'btn-primary' }, 'Continue →');
   go.addEventListener('click', () => app.next());
-  card.append(h('div', { class: 'item-foot' }, h('span'), go));
+  card.append(h('div', { class: 'item-foot' }, h('span', { class: 'foot-left' }, backButton(app)), go));
   host.append(card);
   return { focus: () => card.querySelector('#prompt').focus() };
 }
