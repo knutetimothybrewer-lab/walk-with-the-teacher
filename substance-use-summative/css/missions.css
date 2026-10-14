@@ -61,7 +61,7 @@ input[type="range"] { width: 100%; accent-color: var(--accent); min-height: 32px
 /* overdose scene */
 .od-scene { border-radius: 14px; overflow: hidden; border: 1px solid var(--line-strong); background: #060b19; position: relative; }
 .od-scene svg { width: 100%; height: auto; display: block; }
-.od-scene #odperson.shake { animation: odshake .6s ease-in-out 2; transform-box: fill-box; transform-origin: center; }
+.od-scene #fwrap.shake { animation: odshake .6s ease-in-out 2; }
 @keyframes odshake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-3px) rotate(-.6deg); } 75% { transform: translateX(3px) rotate(.6deg); } }
 .od-scene .shout-ring { fill: none; stroke: #ffe27a; stroke-width: 3; stroke-linecap: round; opacity: 0; animation: shout 1s ease-out forwards; }
 @keyframes shout { 0% { opacity: .9; transform: scale(.6); } 100% { opacity: 0; transform: scale(2.6); } }
@@ -267,3 +267,19 @@ input[type="range"] { width: 100%; accent-color: var(--accent); min-height: 32px
 .ecard .note { color: #4a3d1c; }
 .ecard th, .ecard td { border-color: rgba(0, 0, 0, .25); }
 .ecard .chartbox svg text { fill: #2b2410 !important; }
+
+/* overdose model controls and monitor */
+.od-ctrl { display: flex; flex-wrap: wrap; gap: .6rem 1rem; align-items: center; margin-top: .6rem; }
+.od-doses { display: flex; align-items: center; gap: .5rem; font-size: .88rem; color: var(--ink-dim); flex-wrap: wrap; }
+.od-doses .pills { display: inline-flex; gap: 4px; }
+.od-doses .pills i { width: 18px; height: 10px; border-radius: 5px; background: rgba(255,255,255,.15); transition: background .3s; }
+.od-doses .pills i.on { background: var(--accent); }
+.od-doses b { color: var(--ink); font-variant-numeric: tabular-nums; }
+.od-hint { margin: .4rem 0 0; min-height: 1.3em; }
+.od-monitor .hrw { display: flex; align-items: center; gap: .4rem; }
+.od-heart { width: 22px; height: 22px; flex: none; }
+.od-monitor .v.txt { font-size: 1.15rem; display: block; margin-top: .3rem; }
+.od-trace { height: 46px; }
+.od-trace .line.ecg { stroke: #7be3a8; stroke-width: 1.8; }
+.od-monitor .cell.wide span { margin-bottom: .1rem; }
+.od-dose:disabled { opacity: .5; }
