@@ -71,3 +71,13 @@ New discrepancies and gaps:
 7. **Escape-plan worksheet:** the slides call for a paper sketch (two routes from the bedroom, one outside spot); no worksheet exists. The floor-plan editor follows the slide.
 8. **Slide 2 of Day 4** has no extractable text (likely an image); content not reviewed.
 9. **Day 4 "Station 3" scenario cards** are not in the slides; the sorting items will be new, built from the slide 13 lists.
+
+## G. Decisions made (teacher approved the blueprint) and Mission 1 findings
+- **Approved:** teacher phrase `HEALTH-TEACHER`; blocks 1/2, 3/4, 8/9; 90-minute limit (about 70 expected); CPR 25 points, organ donation 15 points (other missions 20); helmet toggle is a cyclist crash; physics meters are an illustrative model.
+- **Verified by web search (page itself not opened):** NHTSA 2025 national front-seat belt use is 91.3% (NHTSA, Seat Belt Use in 2025); the 2024 figure was 91.2% and 2023 was 91.9%. CDC/NCHS Data Brief 565 (2024 data, released 2026) gives ages 15-19 rates of 12.0 (motor vehicle traffic), 3.8 (poisoning) and 1.0 (drowning) per 100,000, so the order **crashes, poisoning, drowning** is used everywhere. Male youth rate 16.3 vs female 6.7 (ages 10-19).
+- **NOT verified:** the 87% belt use for ages 16-24. Public search found no 2024 or 2025 front-seat figure for that age group (only rear-seat and "driven by 16-24" figures). The teacher's slides are the only source; Q2 and the data explorer use 87%. Please confirm against the table in NHTSA's 2025 research note.
+- **Helmet figures (51 / 69 / 65%)** are shown in no question yet; they come from a bicycle-helmet meta-analysis, so the sandbox helmet test is a bicycle crash.
+- **Q4 facts:** "airbags work with belts, not instead" and "belts work at any speed" are general knowledge used in a decoy/true statement; confirm they match your wording. The "short trips" myth from the summary is not used (no grounded fact for it).
+- **Egg-in-a-sheet:** the original activity details were not in the summary. The simulation shows an egg on a cart hitting a wall with and without a stretchy sheet, which is my reading of "egg-in-a-sheet" as a force-spreading analogy. Please tell me if your activity differs.
+- **Sign-in identity:** by first + last name only (as specified). Two students with the same name share one record. Documented in SETUP and SECURITY.
+- **Retries:** equivalent variants are not built yet. A retry reshuffles answer order; numeric items repeat the same numbers. This is a known gap against "equivalent variants where practical".

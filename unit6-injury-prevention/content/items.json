@@ -1,0 +1,411 @@
+{
+  "schema": 1,
+  "meta": {
+    "title": "Mission Safe",
+    "subtitle": "Unit 6: Injury Prevention and Safety",
+    "contentSet": "live",
+    "version": "u6-0.1",
+    "partial": true
+  },
+  "objectives": {
+    "M1-DATA": {
+      "text": "Read injury and belt-use data (NHES 3) to compare rates and explain that injury is predictable, not random.",
+      "basis": "standard"
+    },
+    "M1-MECH": {
+      "text": "Explain how seat belts and helmets reduce injury by spreading force and lengthening stopping time (NHES 1).",
+      "basis": "standard"
+    },
+    "M1-MYTH": {
+      "text": "Correct common seat belt myths with accurate facts (NHES 1).",
+      "basis": "standard"
+    }
+  },
+  "decisionModel": null,
+  "figures": {
+    "egg-cart": {
+      "src": "assets/fig-egg-cart.svg",
+      "w": 560,
+      "h": 300,
+      "alt": "A toy cart rolling toward a solid concrete block. An egg sits in a cloth that is stretched between two posts on the cart.",
+      "desc": "A blue toy cart with two wheels moves to the right toward a gray block. Two wooden posts stand on the cart with a cloth stretched between them, sagging in the middle. An egg rests in the sag. Marker 1 is above the oval object in the cloth. Marker 2 is at the left end of the cloth. Marker 3 is below the blue body of the cart. Marker 4 is on the gray block at the right.",
+      "markers": [
+        {
+          "id": "m1",
+          "n": 1,
+          "x": 240,
+          "y": 118
+        },
+        {
+          "id": "m2",
+          "n": 2,
+          "x": 190,
+          "y": 198
+        },
+        {
+          "id": "m3",
+          "n": 3,
+          "x": 240,
+          "y": 275
+        },
+        {
+          "id": "m4",
+          "n": 4,
+          "x": 505,
+          "y": 140
+        }
+      ]
+    }
+  },
+  "chapters": [
+    {
+      "id": "m1",
+      "n": 1,
+      "title": "Predictable, Not Random",
+      "theme": "lab",
+      "intro": "Injuries follow patterns, and patterns can be studied. Run the crash lab, explore the belt-use data, then show what you learned.",
+      "targetMinutes": 11,
+      "units": [
+        {
+          "id": "m1-u1",
+          "title": "Read the injury data",
+          "intro": null,
+          "stimulus": [
+            {
+              "t": "sim",
+              "id": "crash",
+              "title": "Crash lab",
+              "lead": "Crash the dummy, test the helmet, drop the egg, and open the belt-use data. Change one thing at a time and watch what changes.",
+              "chips": [
+                {
+                  "id": "belted",
+                  "label": "Crash a buckled dummy"
+                },
+                {
+                  "id": "unbelted",
+                  "label": "Crash an unbuckled dummy"
+                },
+                {
+                  "id": "helmet",
+                  "label": "Bike crash with and without a helmet"
+                },
+                {
+                  "id": "egg",
+                  "label": "Egg test with and without the sheet"
+                },
+                {
+                  "id": "data",
+                  "label": "Compare both belt-use groups"
+                }
+              ]
+            },
+            {
+              "t": "chart",
+              "kind": "groupedBar",
+              "id": "cdc565",
+              "title": "Unintentional injury death rates, ages 15 to 19, United States, 2024",
+              "note": "Source: CDC/NCHS Data Brief 565 (2024 data)",
+              "yLabel": "Deaths per 100,000 people",
+              "max": 14,
+              "decimals": 1,
+              "bottom": 60,
+              "catLabel": "Cause of death",
+              "categories": [
+                "Motor vehicle traffic",
+                "Poisoning",
+                "Drowning"
+              ],
+              "series": [
+                {
+                  "name": "Deaths per 100,000",
+                  "values": [
+                    12,
+                    3.8,
+                    1
+                  ]
+                }
+              ],
+              "alt": "Bar chart of death rates per 100,000 people ages 15 to 19 in 2024. Motor vehicle traffic 12.0. Poisoning 3.8. Drowning 1.0."
+            }
+          ],
+          "gate": [
+            "belted",
+            "unbelted",
+            "helmet",
+            "egg",
+            "data"
+          ],
+          "readSecs": 330,
+          "items": [
+            {
+              "id": "M1-01",
+              "type": "single",
+              "topic": "Reading injury data",
+              "prompt": "Which statement does the chart support?",
+              "points": 5,
+              "cog": "analyze",
+              "obj": [
+                "M1-DATA"
+              ],
+              "secs": 60,
+              "unlockAfter": null,
+              "options": [
+                {
+                  "id": "od2a87",
+                  "text": "Drowning ranked second among these three causes for this age group."
+                },
+                {
+                  "id": "o5547b",
+                  "text": "Drowning deaths happened at nearly the same rate as poisoning deaths."
+                },
+                {
+                  "id": "o9c692",
+                  "text": "Poisoning deaths happened at about twice the motor vehicle traffic rate."
+                },
+                {
+                  "id": "oe04c5",
+                  "text": "Motor vehicle traffic deaths happened at about six times the drowning rate."
+                },
+                {
+                  "id": "obfc73",
+                  "text": "Motor vehicle traffic deaths happened at about three times the poisoning rate."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "m1-u2",
+          "title": "Who buckles up?",
+          "intro": null,
+          "stimulus": [
+            {
+              "t": "table",
+              "title": "Front-seat belt use, United States, 2025",
+              "note": "Figures as shown in the Day 1 slides and handout. NHTSA reports 91.3% for all front-seat occupants in 2025.",
+              "head": [
+                "Group",
+                "Belt use"
+              ],
+              "rows": [
+                [
+                  "All front-seat occupants (national)",
+                  "91.3%"
+                ],
+                [
+                  "Ages 16 to 24",
+                  "87%"
+                ]
+              ]
+            }
+          ],
+          "gate": [
+            "belted",
+            "unbelted",
+            "helmet",
+            "egg",
+            "data"
+          ],
+          "readSecs": 0,
+          "items": [
+            {
+              "id": "M1-02",
+              "type": "numeric",
+              "topic": "Scaling a data gap",
+              "prompt": "Imagine 1,000 drivers aged 16 to 24. If their belt use matched the national rate in the table, how many MORE of them would buckle up?",
+              "points": 5,
+              "cog": "apply",
+              "obj": [
+                "M1-DATA"
+              ],
+              "secs": 70,
+              "unlockAfter": null,
+              "numeric": {
+                "unit": "more drivers",
+                "range": [
+                  0,
+                  1000
+                ],
+                "decimals": 0,
+                "label": "Extra drivers who buckle"
+              }
+            }
+          ]
+        },
+        {
+          "id": "m1-u3",
+          "title": "Model a crash",
+          "intro": null,
+          "stimulus": [
+            {
+              "t": "p",
+              "text": "A class models a crash with a toy cart, an egg and a stretched sheet. The egg rides in the sheet on the cart, and the cart is pushed toward a solid block."
+            },
+            {
+              "t": "note",
+              "tone": "info",
+              "text": "Model sensors are not shown here. Use the picture and what you know about crashes."
+            }
+          ],
+          "gate": [
+            "belted",
+            "unbelted",
+            "helmet",
+            "egg",
+            "data"
+          ],
+          "readSecs": 0,
+          "items": [
+            {
+              "id": "M1-03",
+              "type": "assign",
+              "topic": "Crash model analogy",
+              "prompt": "Match each part of the model to what it stands for in a real car crash. One choice is not used.",
+              "points": 5,
+              "cog": "understand",
+              "obj": [
+                "M1-MECH"
+              ],
+              "secs": 80,
+              "unlockAfter": null,
+              "assign": {
+                "mode": "label",
+                "fill": "targets",
+                "figure": "egg-cart",
+                "layout": null,
+                "pick": null,
+                "cards": [
+                  {
+                    "id": "cd24c7",
+                    "text": "The seat belt"
+                  },
+                  {
+                    "id": "cfeb7e",
+                    "text": "The car itself"
+                  },
+                  {
+                    "id": "ce7f40",
+                    "text": "The solid object the car hits"
+                  },
+                  {
+                    "id": "cfdd1e",
+                    "text": "The person riding in the car"
+                  },
+                  {
+                    "id": "c1df34",
+                    "text": "The airbag"
+                  }
+                ],
+                "targets": [
+                  {
+                    "id": "m1",
+                    "label": "Marker 1"
+                  },
+                  {
+                    "id": "m2",
+                    "label": "Marker 2"
+                  },
+                  {
+                    "id": "m3",
+                    "label": "Marker 3"
+                  },
+                  {
+                    "id": "m4",
+                    "label": "Marker 4"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "m1-u4",
+          "title": "Myth or fact?",
+          "intro": null,
+          "stimulus": [
+            {
+              "t": "p",
+              "text": "These are things people say about seat belts. Match each belief to the fact that answers it."
+            }
+          ],
+          "gate": [
+            "belted",
+            "unbelted",
+            "helmet",
+            "egg",
+            "data"
+          ],
+          "readSecs": 0,
+          "items": [
+            {
+              "id": "M1-04",
+              "type": "assign",
+              "topic": "Seat belt myths",
+              "prompt": "Match each belief to the fact that answers it. Two facts are not used.",
+              "points": 5,
+              "cog": "understand",
+              "obj": [
+                "M1-MYTH"
+              ],
+              "secs": 110,
+              "unlockAfter": null,
+              "assign": {
+                "mode": "match",
+                "fill": "targets",
+                "figure": null,
+                "layout": null,
+                "pick": null,
+                "cards": [
+                  {
+                    "id": "ceea22",
+                    "text": "Nearly every teen already buckles up on every trip, so reminders add little value."
+                  },
+                  {
+                    "id": "cbc56f",
+                    "text": "Belts only help when a vehicle is going faster than highway speed in a crash."
+                  },
+                  {
+                    "id": "c37aef",
+                    "text": "Crash forces do not depend on who is riding, and male youth die from unintentional injuries at higher rates."
+                  },
+                  {
+                    "id": "c57278",
+                    "text": "For front-seat riders, belts cut fatal-injury risk by about 60% in SUVs, trucks and vans."
+                  },
+                  {
+                    "id": "cb9b61",
+                    "text": "Airbags are built to work together with seat belts, not to replace them."
+                  },
+                  {
+                    "id": "cffb7c",
+                    "text": "Other drivers can cause a crash, and a belt protects you from mistakes your own skill cannot control."
+                  }
+                ],
+                "targets": [
+                  {
+                    "id": "g87948",
+                    "label": "“My vehicle is big, so a belt is not needed.”"
+                  },
+                  {
+                    "id": "g86aa9",
+                    "label": "“Airbags are enough to protect me.”"
+                  },
+                  {
+                    "id": "ga41ab",
+                    "label": "“Boys are tough enough to ride without a belt.”"
+                  },
+                  {
+                    "id": "g0ad21",
+                    "label": "“I’m a careful driver, so I don’t need a belt.”"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "structureHash": "eb5b0a3e291cfb1de9f4c627911cde31390afa46658653338a66cbce5934cd49",
+  "points": 20
+}

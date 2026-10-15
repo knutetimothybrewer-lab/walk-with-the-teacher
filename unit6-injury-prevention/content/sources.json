@@ -1,0 +1,17 @@
+{
+  "status": "Teacher-supplied materials are the primary source. Public sources were consulted through web search only (search result summaries); the agency pages themselves could not be opened from the build environment, so the 'confirmed' entries below are marked as such and every entry says what still needs a human look.",
+  "note": "This file is public, so it lists topics and statuses, not which answer option is correct in any question.",
+  "sources": [
+    { "id": "CDC565", "name": "CDC/NCHS Data Brief 565, Leading Mechanisms of Unintentional Injury Death Among Youth Ages 10-19, United States, 2024", "url": "https://www.cdc.gov/nchs/products/databriefs/db565.htm", "accessed": "search summary only (page not opened)" },
+    { "id": "NHTSA2025", "name": "NHTSA, Seat Belt Use in 2025 (DOT HS 813 799)", "url": "https://crashstats.nhtsa.dot.gov/Api/Public/Publication/813799", "accessed": "search summary only (page not opened)" }
+  ],
+  "claims": [
+    { "id": "U6-1", "topic": "Death rates by mechanism, ages 15-19, 2024 (chart in Mission 1)", "claim": "Rates per 100,000 for motor vehicle traffic, poisoning and drowning", "status": "CONFIRMED BY SEARCH SUMMARY, NEEDS VERIFICATION in the data brief itself", "check": "CDC/NCHS Data Brief 565 (source CDC565)" },
+    { "id": "U6-2", "topic": "National front-seat belt use, 2025", "claim": "91.3% for front-seat occupants", "status": "CONFIRMED BY SEARCH SUMMARY (NHTSA 2025 research note); matches the Day 1 slides", "check": "NHTSA Seat Belt Use in 2025 (source NHTSA2025)" },
+    { "id": "U6-3", "topic": "Belt use of 16 to 24 year olds", "claim": "87% as given in the Day 1 slides and handout", "status": "NEEDS VERIFICATION: not found in public search results; taken from the teacher's materials", "check": "Table of belt use by age in the NHTSA 2025 research note" },
+    { "id": "U6-4", "topic": "Belt effectiveness for front-seat occupants", "claim": "Fatal-injury risk reduction in cars and in SUVs, trucks and vans, as in the Day 1 slides", "status": "FROM TEACHER MATERIALS; NEEDS VERIFICATION", "check": "NHTSA occupant protection fact sheets" },
+    { "id": "U6-5", "topic": "Helmet effectiveness", "claim": "Figures from a meta-analysis of 40 studies, as in the Day 1 slides (bicycle helmets)", "status": "FROM TEACHER MATERIALS; NEEDS VERIFICATION", "check": "Olivier and Creighton, bicycle helmet meta-analysis" },
+    { "id": "U6-6", "topic": "Crash-lab model", "claim": "Force, chest load, head load and risk meters are an illustrative physics model, not quoted data", "status": "BY DESIGN: labelled on screen as a teaching model", "check": "Teacher to confirm the framing is acceptable" },
+    { "id": "U6-7", "topic": "Male vs. female injury death rates", "claim": "Male youth have higher unintentional-injury death rates than female youth (ages 10-19, 2024)", "status": "CONFIRMED BY SEARCH SUMMARY; NEEDS VERIFICATION in the data brief", "check": "CDC/NCHS Data Brief 565 (source CDC565)" }
+  ]
+}

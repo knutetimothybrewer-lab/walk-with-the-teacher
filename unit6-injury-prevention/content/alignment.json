@@ -1,0 +1,78 @@
+{
+  "objectives": {
+    "M1-DATA": {
+      "text": "Read injury and belt-use data (NHES 3) to compare rates and explain that injury is predictable, not random.",
+      "basis": "standard"
+    },
+    "M1-MECH": {
+      "text": "Explain how seat belts and helmets reduce injury by spreading force and lengthening stopping time (NHES 1).",
+      "basis": "standard"
+    },
+    "M1-MYTH": {
+      "text": "Correct common seat belt myths with accurate facts (NHES 1).",
+      "basis": "standard"
+    }
+  },
+  "items": [
+    {
+      "id": "M1-01",
+      "chapter": "m1",
+      "topic": "Reading injury data",
+      "type": "single",
+      "points": 5,
+      "cog": "analyze",
+      "obj": [
+        "M1-DATA"
+      ],
+      "secs": 60,
+      "basis": "standard"
+    },
+    {
+      "id": "M1-02",
+      "chapter": "m1",
+      "topic": "Scaling a data gap",
+      "type": "numeric",
+      "points": 5,
+      "cog": "apply",
+      "obj": [
+        "M1-DATA"
+      ],
+      "secs": 70,
+      "basis": "standard"
+    },
+    {
+      "id": "M1-03",
+      "chapter": "m1",
+      "topic": "Crash model analogy",
+      "type": "assign/label",
+      "points": 5,
+      "cog": "understand",
+      "obj": [
+        "M1-MECH"
+      ],
+      "secs": 80,
+      "basis": "standard"
+    },
+    {
+      "id": "M1-04",
+      "chapter": "m1",
+      "topic": "Seat belt myths",
+      "type": "assign/match",
+      "points": 5,
+      "cog": "understand",
+      "obj": [
+        "M1-MYTH"
+      ],
+      "secs": 110,
+      "basis": "standard"
+    }
+  ],
+  "chapters": [
+    {
+      "id": "m1",
+      "n": 1,
+      "title": "Predictable, Not Random",
+      "targetMinutes": 11
+    }
+  ]
+}

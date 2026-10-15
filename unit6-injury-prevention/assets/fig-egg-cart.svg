@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 300" width="560" height="300">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e8f3fb"/><stop offset="1" stop-color="#f7fbfe"/></linearGradient>
+    <linearGradient id="ground" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#b9c4cc"/><stop offset="1" stop-color="#8e9aa4"/></linearGradient>
+    <linearGradient id="wall" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#9aa3aa"/><stop offset="0.5" stop-color="#c3cacf"/><stop offset="1" stop-color="#8d969d"/></linearGradient>
+    <linearGradient id="cart" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2f7fc4"/><stop offset="1" stop-color="#1b4f86"/></linearGradient>
+    <linearGradient id="egg" x1="0.2" y1="0" x2="0.8" y2="1"><stop offset="0" stop-color="#fffdf5"/><stop offset="1" stop-color="#e5d7b8"/></linearGradient>
+    <linearGradient id="cloth" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f4f6f8"/><stop offset="1" stop-color="#cdd6dd"/></linearGradient>
+    <radialGradient id="wheel" cx="0.4" cy="0.35" r="0.8"><stop offset="0" stop-color="#555"/><stop offset="1" stop-color="#151515"/></radialGradient>
+    <pattern id="hatch" width="10" height="10" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="10" stroke="#7f8991" stroke-width="2"/></pattern>
+  </defs>
+  <rect width="560" height="300" fill="url(#sky)"/>
+  <rect x="0" y="252" width="560" height="48" fill="url(#ground)"/>
+  <rect x="0" y="252" width="560" height="3" fill="#6f7a84"/>
+  <ellipse cx="240" cy="258" rx="140" ry="6" fill="#000" opacity="0.18"/>
+  <rect x="470" y="40" width="70" height="212" fill="url(#wall)" stroke="#6f7a84" stroke-width="2"/>
+  <rect x="470" y="40" width="70" height="212" fill="url(#hatch)" opacity="0.28"/>
+  <g stroke="#6c86a3" stroke-width="3" stroke-linecap="round" opacity="0.8"><line x1="40" y1="170" x2="95" y2="170"/><line x1="55" y1="195" x2="105" y2="195"/><line x1="30" y1="220" x2="90" y2="220"/></g>
+  <path d="M398 120 L440 120" stroke="#1b4f86" stroke-width="4" stroke-linecap="round"/><path d="M432 110 L446 120 L432 130 Z" fill="#1b4f86"/>
+  <rect x="118" y="205" width="246" height="34" rx="7" fill="url(#cart)" stroke="#0f3560" stroke-width="2"/>
+  <rect x="124" y="209" width="234" height="6" rx="3" fill="#fff" opacity="0.25"/>
+  <circle cx="156" cy="243" r="17" fill="url(#wheel)"/><circle cx="156" cy="243" r="6" fill="#bbb"/>
+  <circle cx="326" cy="243" r="17" fill="url(#wheel)"/><circle cx="326" cy="243" r="6" fill="#bbb"/>
+  <rect x="146" y="140" width="9" height="66" rx="3" fill="#7a5a36" stroke="#4d371d" stroke-width="1.5"/>
+  <rect x="327" y="140" width="9" height="66" rx="3" fill="#7a5a36" stroke="#4d371d" stroke-width="1.5"/>
+  <path d="M150 146 C 190 196, 292 196, 331 146 L331 154 C 292 206, 190 206, 150 154 Z" fill="url(#cloth)" stroke="#8c9aa5" stroke-width="1.5"/>
+  <ellipse cx="240" cy="168" rx="16" ry="21" fill="url(#egg)" stroke="#a89468" stroke-width="1.8"/>
+  <ellipse cx="234" cy="160" rx="5" ry="8" fill="#fff" opacity="0.6"/>
+</svg>
