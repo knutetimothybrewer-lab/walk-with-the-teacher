@@ -112,9 +112,22 @@
 .timeline .t { display: inline-block; min-width: 3em; font-weight: 800; font-variant-numeric: tabular-nums; color: var(--ink); }
 .aed-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--s5); }
 @media (max-width: 760px) { .aed-grid { grid-template-columns: 1fr; } }
-.aed-body { background: linear-gradient(#f3d34a, #d9ae12); border: 3px solid #8a6a05; border-radius: 22px; padding: 14px; box-shadow: var(--shadow-2); }
-.aed-title { font-weight: 800; letter-spacing: 0.12em; font-size: var(--fs-sm); text-align: center; color: #3b2d00; margin-bottom: 8px; }
-.aed-screen { background: #0e1a14; border: 3px solid #3b2d00; border-radius: 10px; min-height: 68px; display: flex; align-items: center; justify-content: center; padding: 8px; }
+.aed-device { padding-top: 22px; }
+.aed-body { position: relative; background: linear-gradient(160deg, #f6dc5a, #d6aa10 70%, #b98f08); border: 3px solid #7a5d05; border-radius: 26px; padding: 14px 16px 18px; box-shadow: var(--shadow-2), inset 0 2px 0 rgba(255,255,255,0.45), inset 0 -6px 12px rgba(90,60,0,0.25); }
+.aed-body::before { content: ''; position: absolute; left: 22%; right: 22%; top: -24px; height: 30px; border: 6px solid #3a3d41; border-bottom: 0; border-radius: 22px 22px 0 0; background: transparent; }
+.aed-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 8px; }
+.aed-title { font-weight: 800; letter-spacing: 0.14em; font-size: var(--fs-sm); text-align: center; color: #3b2d00; margin: 0; flex: 1; }
+.aed-heart { color: #c62828; font-size: 20px; text-shadow: 0 1px 0 rgba(255,255,255,0.5); }
+.aed-led { width: 14px; height: 14px; border-radius: 50%; background: #555; border: 2px solid #2b2b2b; box-shadow: inset 0 1px 2px rgba(255,255,255,0.4); }
+.aed-led[data-state="idle"], .aed-led[data-state="idle2"], .aed-led[data-state="done"] { background: #2fbf71; box-shadow: 0 0 8px #2fbf71; }
+.aed-led[data-state="analyzing"] { background: #f0a30a; box-shadow: 0 0 8px #f0a30a; }
+.aed-led[data-state="advised"] { background: #e53935; box-shadow: 0 0 10px #e53935; }
+.aed-led[data-state="cpr"] { background: #3b82f6; box-shadow: 0 0 8px #3b82f6; }
+.aed-screen { background: linear-gradient(#0b1511, #12251c); border: 3px solid #3b2d00; border-radius: 10px; min-height: 68px; display: flex; align-items: center; justify-content: center; padding: 8px; box-shadow: inset 0 0 14px rgba(0,0,0,0.7); }
+.aed-grille { height: 22px; margin: 12px auto 0; width: 70%; border-radius: 8px; background: radial-gradient(circle, rgba(60,40,0,0.55) 1.4px, transparent 1.8px) 0 0 / 9px 9px; }
+.aed-port { display: flex; align-items: center; justify-content: center; margin: 12px auto 0; width: 110px; height: 22px; border-radius: 6px; background: #2a2c30; color: #c9ced3; font-size: 11px; font-weight: 800; letter-spacing: 0.2em; box-shadow: inset 0 2px 4px rgba(0,0,0,0.6); }
+.aed-torso .hands { transition: transform 0.12s ease-out; }
+.aed-torso[data-flash="1"] { filter: drop-shadow(0 0 14px rgba(255,235,120,0.95)) brightness(1.15); }
 .aed-state { color: #7dff9b; font-family: var(--font-mono); font-size: var(--fs-sm); text-align: center; font-weight: 700; }
 .aed-btns { display: flex; gap: var(--s3); justify-content: center; margin-top: 12px; }
 .btn.shock { background: #b3261e; border-color: #7d130d; color: #fff; min-width: 120px; }
