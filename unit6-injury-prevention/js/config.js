@@ -7,6 +7,6 @@
  *   - FILLED = LIVE MODE. Everything is graded and saved by your Apps Script web app.
  */
 window.W6_CONFIG = {
-  API_URL: "",
+  API_URL: "https://script.google.com/macros/s/AKfycbzok8UNQ1KRrJCopfVP95oxVRBhNgYyepXdCrt72jGDjSkCy0JLLKkQ-E7adeOq_Hlo/exec",
   APP_VERSION: "1.0.0"
 };
