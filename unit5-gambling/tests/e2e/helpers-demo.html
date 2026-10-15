@@ -11,11 +11,21 @@ import { renderBlocks } from '../../js/blocks.js';
 import { skinFor, helperFor } from '../../js/helpers.js';
 import { h } from '../../js/util.js';
 const app = document.getElementById('app'), q = new URLSearchParams(location.search).get('only');
+const am = (n) => (n < 0 ? '\u2212' : '+') + Math.abs(n), fld = (label) => ({ label });
 const items = [
-  { id: 'c1-ledger', stim: [{ k: 'table', cap: 'Your ledger (fictional)', cols: ['Bet', 'Odds', 'Stake', 'Result', 'Net'], rows: [['Waves to win', '−250', '$50', 'Won', '+$20'], ['Falcons to win', '−280', '$50', 'Lost', '−$50'], ['Raptors to win', '+130', '$20', 'Lost', '−$20']] }] },
-  { id: 'c1-market', stim: [{ k: 'table', cap: 'Contracts (fictional)', cols: ['Contract', 'Yes price', 'No price', 'Chance'], rows: [['Rain in Metro on Friday?', '62¢', '38¢', '62%'], ['Gas above $4 by June?', '25¢', '75¢', '25%']] }] },
-  { id: 'c2-basics', prompt: 'A bag holds 3 red marbles, 5 blue marbles and 2 green marbles.', stim: [] },
-  { id: 'c4-implied', stim: [] }, { id: 'c4-eval', stim: [] }, { id: 'c5-riskfree', stim: [] }, { id: 'c5-match', stim: [] }
+  // Stand-in questions with the same SHAPE as the real ones but different numbers and wording (the real bank is private).
+  { id: 'c1-ledger', prompt: 'The hold is the money kept as a percent of the amount wagered.', stim: [{ k: 'table', cap: 'Pine Hollow Sportsbook (fictional)', cols: ['Season ledger (3,000 bettors)', 'Amount'], rows: [['Total wagered', '$1,800,000'], ['Total paid back to bettors (winnings plus returned stakes)', '$1,656,000'], ['Bettors who finished the season ahead', '900 (30%)']] }], parts: [{ type: 'number', fields: [fld('Hold')] }] },
+  { id: 'c1-market', stim: [{ k: 'ad', brand: 'EventX', head: 'Trade on tomorrow.', body: 'Will Lake City get over 3 inches of snow on Sunday? A YES share costs 45¢ and pays $1.00 if YES happens, $0 if not. EventX keeps 2% of a winner’s profit.', cta: 'Buy YES' }], parts: [] },
+  { id: 'c2-basics', prompt: 'A bag holds **5 green** marbles and **9 yellow** marbles. One marble is drawn at random.', stim: [], parts: [] },
+  { id: 'c4-implied', stim: [], parts: [{ type: 'number', fields: [fld('Odds of \u2212140'), fld('Odds of +180')] }] },
+  { id: 'c4-parlay', stim: [{ k: 'table', cap: 'Legs', cols: ['Leg', 'Team to win', 'Model chance', 'Odds'], rows: [['1', 'Harbor City Waves', '0.64', am(-180)], ['2', 'Summit Storm', '0.58', am(-140)], ['3', 'Redwood Raptors', '0.41', am(135)]] }], parts: [] },
+  { id: 'c4-parlay-table', stim: [{ k: 'table', cols: ['Legs', 'Chance all win', 'Payout multiplier', 'Expected result per $1'], rows: [['1', '0.5', '1.91 ×', '-4.5%'], ['3', '0.125', '6.96 ×', '-12.9%'], ['5', '0.03125', '25.3 ×', '?'], ['7', '0.0078', '92 ×', '?']] }], parts: [] },
+  { id: 'c4-eval', stim: [{ k: 'note', tone: 'fiction', t: 'Ravi is imaginary. He placed 10 bets at \u2212110 and won 8 of them.' }], parts: [] },
+  { id: 'c4-lottery', stim: [{ k: 'note', tone: 'real', t: 'A game’s jackpot odds are 1 in 175,711,536. The chance of a given event is about 1 in 500,000.' }], parts: [{ type: 'number', fields: [fld('Chance if you buy one ticket a week for 50 years (2,600 tickets): tickets ÷ 175,711,536, as a percent')] }] },
+  { id: 'c2-house', prompt: 'Use the rules and your lab (class experiment: **High, 2 tokens, 150 rounds**).', stim: [{ k: 'table', cols: ['Rule', 'Value'], rows: [['If you win', '+1.7 tokens profit'], ['If you lose', '\u22122 tokens'], ['Start', '80 tokens']] }], parts: [] },
+  { id: 'c2-roulette', stim: [], parts: [{ type: 'number', fields: [fld('Casino’s expected profit if $750,000 is bet on red in one night')] }] },
+  { id: 'c5-riskfree', stim: [], parts: [{ type: 'number', prompt: 'Rae loses the first bet and gets the $300 bonus bet. Rae uses it on an even-money bet with a 45% chance: if it wins, Rae receives $300 cash; if it loses, nothing.', fields: [] }] },
+  { id: 'c5-match', stim: [], parts: [] }
 ].filter((i) => !q || i.id === q);
 for (const it of items) app.append(h('h2', null, it.id), skinFor(it, renderBlocks(it.stim)), helperFor(it) || '');
 window.__ready = true;
