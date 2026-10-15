@@ -107,3 +107,12 @@ New discrepancies and gaps:
 - **Cut order.** The bench follows your slide (cloth, then rinse). Some first-aid sources rinse first; no scored question tests the order.
 - **School.** The slides say "Home & School Safety" but cover only the home. No school-specific content was invented.
 - **Rate-limited realism.** The house is one story; the slides' "every level of the home" is mentioned only in the question explanation.
+
+## K. Mission 5 (Digital and Road Safety) findings
+- **Unverified claims are not used.** The Utah "distracted teen reacts like a non-distracted 70-year-old" finding, the "5 seconds per text equals a football field at 55 mph" line (55 mph for 5 seconds is about 400 ft, longer than a 360 ft field), the 3,208 distracted-driving deaths in 2024, and the AAOS pedestrian-injury figure appear in no question and no simulation. A test checks the road simulation for these phrases.
+- **Standards.** The Day 5 slides cite NHES 7 and 2 and the guided notes cite none. Questions are tagged 2 for the types of distraction and the distance calculation, and 7 for the reaction-time and habits items.
+- **The model is illustrative.** Baseline reaction times (1.5 s driving, 1.0 s biking, 0.9 s walking), the added delay for each phone choice, braking decelerations and hazard distances are teaching numbers, not data. At 35 mph a quick glance (about 0.7 s extra) is enough to hit the car ahead in this model; that is a deliberately strong example and the sim labels it as a model.
+- **Voice replies.** The sim treats dictating a reply as a smaller delay that still pulls the mind away. Your materials say nothing about voice use, and no question asks about it.
+- **No formal names on screen.** The scene says "eyes, hands, mind" instead of visual, manual and cognitive, so the vocabulary question (M5-01) is not answered by the simulation. Q M5-04's correct habits (Do Not Disturb, phone away at crossings, location settings, telling friends) come from your topic summary; only Do Not Disturb appears in the simulation.
+- **Ruler drop.** Real students' own results appear in the simulation, so results vary. The reference table in M5-03 is computed from free-fall physics; it is not a measured data set.
+- **Final report.** The completion page now lists every question with tries and points, and can be printed or saved as a PDF. It contains no answers.

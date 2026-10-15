@@ -4,8 +4,7 @@
     "title": "Mission Safe",
     "subtitle": "Unit 6: Injury Prevention and Safety",
     "contentSet": "live",
-    "version": "u6-0.1",
-    "partial": true
+    "version": "u6-1.0"
   },
   "objectives": {
     "M1-DATA": {
@@ -62,6 +61,22 @@
     },
     "M4-AID": {
       "text": "Decide between treating a minor cut or burn yourself and getting help (NHES 7).",
+      "basis": "standard"
+    },
+    "M5-TYPES": {
+      "text": "Name the three types of distraction and recognize each in an example (NHES 2).",
+      "basis": "standard"
+    },
+    "M5-DIST": {
+      "text": "Calculate how far a vehicle travels while a driver is distracted (NHES 2, 7).",
+      "basis": "standard"
+    },
+    "M5-REACT": {
+      "text": "Compare reaction times from ruler-drop results with and without distraction (NHES 7).",
+      "basis": "standard"
+    },
+    "M5-HABITS": {
+      "text": "Choose phone habits that keep you safe on the road and in control of notifications (NHES 7).",
       "basis": "standard"
     }
   },
@@ -1355,8 +1370,339 @@
           ]
         }
       ]
+    },
+    {
+      "id": "m5",
+      "n": 5,
+      "title": "Digital and Road Safety",
+      "theme": "case",
+      "intro": "A buzz on your phone can pull your attention off the road for far longer than it feels. Try driving, biking and walking with a phone, test your own reaction time, then show what you learned.",
+      "targetMinutes": 13,
+      "units": [
+        {
+          "id": "m5-u1",
+          "title": "Ways attention drifts",
+          "intro": null,
+          "stimulus": [
+            {
+              "t": "sim",
+              "id": "road",
+              "title": "Phone and road practice",
+              "lead": "Travel three ways with a buzzing phone, then test your own reaction time with a ruler drop.",
+              "chips": [
+                {
+                  "id": "drive",
+                  "label": "Make three driving trips"
+                },
+                {
+                  "id": "bike",
+                  "label": "Make three biking trips"
+                },
+                {
+                  "id": "walk",
+                  "label": "Make three walking trips"
+                },
+                {
+                  "id": "ruler",
+                  "label": "Do three ruler drops"
+                }
+              ]
+            },
+            {
+              "t": "p",
+              "text": "Drivers, riders and walkers can lose focus in three different ways. Here are some examples a safety poster might use."
+            }
+          ],
+          "gate": [
+            "drive",
+            "bike",
+            "walk",
+            "ruler"
+          ],
+          "readSecs": 450,
+          "items": [
+            {
+              "id": "M5-01",
+              "type": "assign",
+              "topic": "Types of distraction",
+              "prompt": "Match each type of distraction to the example that shows it. Two examples are not distractions.",
+              "points": 5,
+              "cog": "understand",
+              "obj": [
+                "M5-TYPES"
+              ],
+              "secs": 70,
+              "unlockAfter": null,
+              "assign": {
+                "mode": "match",
+                "fill": "targets",
+                "figure": null,
+                "layout": null,
+                "pick": null,
+                "cards": [
+                  {
+                    "id": "cc706a",
+                    "text": "Taking a hand off the wheel to dig through a bag"
+                  },
+                  {
+                    "id": "caacb6",
+                    "text": "Looking at a map on a phone screen"
+                  },
+                  {
+                    "id": "c89a97",
+                    "text": "Buckling a seat belt before the car moves"
+                  },
+                  {
+                    "id": "c743a6",
+                    "text": "Thinking hard about an argument while crossing the street"
+                  },
+                  {
+                    "id": "c7834d",
+                    "text": "Checking the mirrors before changing lanes"
+                  }
+                ],
+                "targets": [
+                  {
+                    "id": "ga0705",
+                    "label": "Manual distraction"
+                  },
+                  {
+                    "id": "g5a7ff",
+                    "label": "Cognitive distraction"
+                  },
+                  {
+                    "id": "g5c247",
+                    "label": "Visual distraction"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "m5-u2",
+          "title": "How far in four seconds?",
+          "intro": null,
+          "stimulus": [
+            {
+              "t": "note",
+              "tone": "info",
+              "text": "Conversion: 1 mile per hour is about 1.47 feet per second."
+            },
+            {
+              "t": "note",
+              "tone": "fiction",
+              "text": "Fictional scenario for practice."
+            }
+          ],
+          "gate": [
+            "drive",
+            "bike",
+            "walk",
+            "ruler"
+          ],
+          "readSecs": 0,
+          "items": [
+            {
+              "id": "M5-02",
+              "type": "numeric",
+              "topic": "Distance while distracted",
+              "prompt": "A driver going 45 miles per hour looks at a phone for 4 seconds. About how many feet does the car travel in those 4 seconds?",
+              "points": 5,
+              "cog": "apply",
+              "obj": [
+                "M5-DIST"
+              ],
+              "secs": 70,
+              "unlockAfter": null,
+              "numeric": {
+                "unit": "feet",
+                "range": [
+                  0,
+                  1000
+                ],
+                "decimals": 0,
+                "label": "Distance"
+              }
+            }
+          ]
+        },
+        {
+          "id": "m5-u3",
+          "title": "Reading the ruler drop",
+          "intro": null,
+          "stimulus": [
+            {
+              "t": "p",
+              "text": "Dana did the ruler drop test twice. First she watched the ruler. Then she read a text message while her partner held the ruler. This table converts how far the ruler fell into a reaction time."
+            },
+            {
+              "t": "table",
+              "title": "Ruler catch distance and reaction time",
+              "note": "The ruler falls faster the longer it drops, so equal steps in distance are not equal steps in time.",
+              "head": [
+                "Caught at",
+                "Reaction time"
+              ],
+              "rows": [
+                [
+                  "5 cm",
+                  "101 ms"
+                ],
+                [
+                  "10 cm",
+                  "143 ms"
+                ],
+                [
+                  "15 cm",
+                  "175 ms"
+                ],
+                [
+                  "20 cm",
+                  "202 ms"
+                ],
+                [
+                  "25 cm",
+                  "226 ms"
+                ],
+                [
+                  "30 cm",
+                  "247 ms"
+                ]
+              ]
+            },
+            {
+              "t": "table",
+              "title": "Dana’s results",
+              "head": [
+                "Condition",
+                "Caught at"
+              ],
+              "rows": [
+                [
+                  "Watching the ruler",
+                  "15 cm"
+                ],
+                [
+                  "Reading a text message",
+                  "30 cm"
+                ]
+              ]
+            }
+          ],
+          "gate": [
+            "drive",
+            "bike",
+            "walk",
+            "ruler"
+          ],
+          "readSecs": 0,
+          "items": [
+            {
+              "id": "M5-03",
+              "type": "slider",
+              "topic": "Reaction time with distraction",
+              "prompt": "By about how many milliseconds did reading the text slow Dana’s reaction time? Place the slider.",
+              "points": 5,
+              "cog": "analyze",
+              "obj": [
+                "M5-REACT"
+              ],
+              "secs": 90,
+              "unlockAfter": null,
+              "slider": {
+                "unit": "milliseconds",
+                "range": [
+                  0,
+                  200
+                ],
+                "step": 2,
+                "label": "Slower by",
+                "start": null,
+                "ticks": [
+                  0,
+                  50,
+                  100,
+                  150,
+                  200
+                ],
+                "leftLabel": "0 ms",
+                "rightLabel": "200 ms"
+              }
+            }
+          ]
+        },
+        {
+          "id": "m5-u4",
+          "title": "A plan for your phone",
+          "intro": null,
+          "stimulus": [
+            {
+              "t": "note",
+              "tone": "fiction",
+              "text": "Fictional scenario for practice."
+            },
+            {
+              "t": "p",
+              "text": "Jordan bikes to school and walks across two busy streets. Friends text a lot, and Jordan wants a plan."
+            }
+          ],
+          "gate": [
+            "drive",
+            "bike",
+            "walk",
+            "ruler"
+          ],
+          "readSecs": 0,
+          "items": [
+            {
+              "id": "M5-04",
+              "type": "multi",
+              "topic": "Safe phone habits",
+              "prompt": "Select every habit that belongs in Jordan’s plan to stay safe and in charge of the phone.",
+              "points": 5,
+              "cog": "evaluate",
+              "obj": [
+                "M5-HABITS"
+              ],
+              "secs": 100,
+              "unlockAfter": null,
+              "options": [
+                {
+                  "id": "o8bc4f",
+                  "text": "Look at the screen only when the road ahead looks clear."
+                },
+                {
+                  "id": "ofa47a",
+                  "text": "Turn on Do Not Disturb before setting off on a trip."
+                },
+                {
+                  "id": "oa35a8",
+                  "text": "Check location-sharing settings so strangers cannot see where Jordan is."
+                },
+                {
+                  "id": "oa9261",
+                  "text": "Put the phone away before crossing a street on foot."
+                },
+                {
+                  "id": "o468ff",
+                  "text": "Tell friends when replies will come so there is no pressure to answer right away."
+                },
+                {
+                  "id": "o7e5c8",
+                  "text": "Type short replies with one hand and steer the bike with the other."
+                },
+                {
+                  "id": "o3940a",
+                  "text": "Keep the phone in hand so messages can be read quickly at crossings."
+                }
+              ]
+            }
+          ]
+        }
+      ]
     }
   ],
-  "structureHash": "550a701479c629c2ef1fc7280519145b35f7c94f70f88b203c9c08dfc67eaed1",
-  "points": 80
+  "structureHash": "32ec7e3a771e85f60ef771ddabd7cfaa8205dc423cfb828bb562f4f8d108b395",
+  "points": 100
 }

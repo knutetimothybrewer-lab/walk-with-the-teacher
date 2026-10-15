@@ -324,7 +324,17 @@ var W6Core = (function () {
     function completionView(s, cfg) {
       var r = s.result || computeResult(s, store.getBank());
       var out = { submissionType: s.submissionType, submittedAt: s.submittedAt, showScore: cfg.showScore, answered: r.answered, total: r.total };
-      if (cfg.showScore) { out.points = r.points; out.possible = r.possible; out.percent = r.percent; out.chapters = r.chapters; }
+      out.student = { firstName: s.firstName, lastName: s.lastName, block: s.block };
+      out.startTime = s.startTime || null;
+      if (cfg.showScore) {
+        out.points = r.points; out.possible = r.possible; out.percent = r.percent; out.chapters = r.chapters;
+        // per-question results for the printable report: no keys, hints or explanations
+        var bank = store.getBank();
+        out.items = (s.itemSet || []).filter(function (id) { return bank.items[id]; }).map(function (id, i) {
+          var bi = bank.items[id], st = s.items[id] || {};
+          return { id: id, n: i + 1, chapter: bi.chapter, points: bi.points, earned: round2((st.c || 0) * bi.points), attempts: st.a || 0, status: st.ok ? 'correct' : st.l ? 'locked' : 'unanswered' };
+        });
+      }
       return out;
     }
 

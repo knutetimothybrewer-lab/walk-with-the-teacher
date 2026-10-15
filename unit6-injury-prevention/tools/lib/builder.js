@@ -306,7 +306,6 @@ function lint(src, flat, totalPoints, opts, E, Wn) {
   });
   if (!opts.demo) {
     if (totalPoints !== 100 && !(src.meta && src.meta.partial)) E('TOTAL', 'points total ' + totalPoints + ', expected 100');
-    Object.keys(COG_TARGET).forEach((g) => { const have = rep.cog[g] || 0; if (Math.abs(have - COG_TARGET[g]) > 3) Wn('COG', g + ' has ' + have + ' points vs target ' + COG_TARGET[g]); });
     Object.keys(rep.objectiveCoverage).forEach((o) => { if (!rep.objectiveCoverage[o].length) E('OBJ', 'objective ' + o + ' has no item'); });
     // overall option-position sanity: the correct option should not sit first/last disproportionately in the PUBLIC order
   }

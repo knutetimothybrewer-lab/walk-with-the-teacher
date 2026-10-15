@@ -54,3 +54,15 @@ Mix: 4 multiple choice, 3 multi-select-style (12, 20 + scenario), 2 sort, 3 matc
 5. ~~Day 4 wording~~ received (slides). Mission 4 now follows them; the Day 4 slides cite no NHES standard, so Standard 7 is assumed. OK?
 6. **Mission 3 facts:** the Day 3 plan names the myths but gives no corrective facts or supply-gap numbers. Please send the Day 3 slides/handout, or approve public HRSA/OPTN facts, cited in `DISCREPANCIES.md`.
 7. Still missing for exact wording: Day 1 slides/handout/stations, Day 2 notes + key, ABCs PDF, Day 5 notes/slides, Day 6. An attached Unit 8 deck was ignored.
+
+---
+## As built (all five missions)
+| Mission | Points | Questions | Simulation |
+|---|---|---|---|
+| 1 Predictable, Not Random | 20 | 4 | Crash lab: car, bike, egg, belt-use data |
+| 2 Chain of Survival | 25 | 5 | Rescue scene (adult, drowning, infant) and trainer AED |
+| 3 Myth vs. Fact: Organ Donation | 15 | 3 | Fictional social feed and practice registry screen |
+| 4 Home and School Safety | 20 | 4 | Escape-plan editor, two fire runs, first-aid bench |
+| 5 Digital and Road Safety | 20 | 4 | Phone-and-road scenes (drive, bike, walk) and ruler drop |
+
+Open questions 1 to 5 above were answered by the teacher (phrase `HEALTH-TEACHER`, 25/15 points, cyclist helmet, illustrative physics, Day 4 wording). Items still open are in `DISCREPANCIES.md`.

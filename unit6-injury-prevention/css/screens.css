@@ -27,3 +27,17 @@
 @keyframes spin { to { transform: rotate(360deg); } }
 .options-row { display: flex; gap: var(--s4); flex-wrap: wrap; align-items: center; padding: var(--s3) var(--s4); background: var(--surface-2); border: 1px solid var(--line); border-radius: var(--radius-sm); }
 .options-row label { display: inline-flex; gap: var(--s2); align-items: center; font-size: var(--fs-sm); font-weight: 600; cursor: pointer; }
+
+/* ---------- final report (screen and print) ---------- */
+.report { margin-top: var(--s5); }
+.results-table { font-size: var(--fs-sm); border: 1px solid var(--line); }
+.results-table th, .results-table td { padding: 6px 10px; border-bottom: 1px solid var(--line); text-align: left; }
+.results-table thead th { background: var(--accent-soft); }
+.results-table td.num { text-align: right; white-space: nowrap; }
+@media print {
+  body { background: #fff; }
+  .no-print, .topbar, .skip-link, .btn { display: none !important; }
+  .center-screen { display: block; padding: 0; min-height: 0; }
+  .big-card { box-shadow: none; border: 0; width: 100% !important; max-width: none !important; padding: 0; }
+  .results-table tr { break-inside: avoid; }
+}

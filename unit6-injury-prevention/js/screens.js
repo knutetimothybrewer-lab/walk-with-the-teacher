@@ -109,13 +109,24 @@ export function doneScreen(root, app, completion, content) {
       return h('div.chbar', { 'data-theme': ch ? ch.theme : 'lab' }, h('span', ch ? 'Mission ' + ch.n + ' ' + ch.title : id), h('div.track', i), h('span.num', c.earned + '/' + c.possible)); });
     scoreBlock = h('div.score-wrap', ring, h('div.chbars', h('h3', 'By mission'), bars));
   }
+  // locked, printable report: who, when, and every question with its attempts and points (no answers are shown)
+  const itemsById = {}; (content ? content.chapters : []).forEach((c) => c.units.forEach((u) => u.items.forEach((i) => { itemsById[i.id] = i; })));
+  const fmt = (ms) => (ms ? new Date(ms).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' }) : '');
+  const st = completion.student;
+  const report = completion.items ? h('section.report', { 'aria-label': 'Results by question' },
+    h('h3', 'Results by question'),
+    st ? h('p.small.muted', st.firstName + ' ' + st.lastName + ' · ' + st.block + ' · submitted ' + fmt(completion.submittedAt)) : null,
+    h('table.results-table', h('thead', h('tr', ['#', 'Mission', 'Topic', 'Tries', 'Result', 'Points'].map((x) => h('th', { scope: 'col' }, x)))),
+      h('tbody', completion.items.map((r) => h('tr', h('td.num', String(r.n)), h('td', missionsById[r.chapter] ? 'Mission ' + missionsById[r.chapter].n : r.chapter), h('td', (itemsById[r.id] || {}).topic || r.id), h('td.num', String(r.attempts)),
+        h('td', r.status === 'correct' ? 'Correct' : r.status === 'locked' ? 'Not correct after 3 tries' : 'Not answered'), h('td.num', r.earned + ' / ' + r.points)))))) : null;
   mount(root, h('div.center-screen', h('div.big-card', { style: { width: 'min(860px,100%)' }, role: 'status' },
     h('div.kicker.small.muted', auto ? 'Time expired' : 'Submitted'),
     h('h1', auto ? 'Time is up. Your work was submitted.' : 'Your assessment is submitted.'),
     h('p', auto ? 'The 90-minute limit ended, so everything you finished was saved and submitted automatically. Questions you did not finish score 0.' : 'Your answers are locked. Thank you for your careful work.'),
     completion.answered != null ? h('p.muted', completion.answered + ' of ' + completion.total + ' questions finished.') : null,
     scoreBlock || h('div.banner', h('div', 'Your teacher will share your results.')),
-    h('div.row', { style: { marginTop: '20px' } }, h('button.btn.secondary', { type: 'button', onclick: () => app.signOut() }, 'Sign out')))));
+    report,
+    h('div.row.no-print', { style: { marginTop: '20px' } }, completion.items ? h('button.btn', { type: 'button', id: 'print-report', onclick: () => window.print() }, 'Print or save as PDF') : null, h('button.btn.secondary', { type: 'button', onclick: () => app.signOut() }, 'Sign out')))));
   announce(auto ? 'Time is up. Your work was submitted.' : 'Your assessment is submitted.');
 }
 

@@ -55,6 +55,22 @@
     "M4-AID": {
       "text": "Decide between treating a minor cut or burn yourself and getting help (NHES 7).",
       "basis": "standard"
+    },
+    "M5-TYPES": {
+      "text": "Name the three types of distraction and recognize each in an example (NHES 2).",
+      "basis": "standard"
+    },
+    "M5-DIST": {
+      "text": "Calculate how far a vehicle travels while a driver is distracted (NHES 2, 7).",
+      "basis": "standard"
+    },
+    "M5-REACT": {
+      "text": "Compare reaction times from ruler-drop results with and without distraction (NHES 7).",
+      "basis": "standard"
+    },
+    "M5-HABITS": {
+      "text": "Choose phone habits that keep you safe on the road and in control of notifications (NHES 7).",
+      "basis": "standard"
     }
   },
   "items": [
@@ -265,6 +281,58 @@
       ],
       "secs": 100,
       "basis": "standard"
+    },
+    {
+      "id": "M5-01",
+      "chapter": "m5",
+      "topic": "Types of distraction",
+      "type": "assign/match",
+      "points": 5,
+      "cog": "understand",
+      "obj": [
+        "M5-TYPES"
+      ],
+      "secs": 70,
+      "basis": "standard"
+    },
+    {
+      "id": "M5-02",
+      "chapter": "m5",
+      "topic": "Distance while distracted",
+      "type": "numeric",
+      "points": 5,
+      "cog": "apply",
+      "obj": [
+        "M5-DIST"
+      ],
+      "secs": 70,
+      "basis": "standard"
+    },
+    {
+      "id": "M5-03",
+      "chapter": "m5",
+      "topic": "Reaction time with distraction",
+      "type": "slider",
+      "points": 5,
+      "cog": "analyze",
+      "obj": [
+        "M5-REACT"
+      ],
+      "secs": 90,
+      "basis": "standard"
+    },
+    {
+      "id": "M5-04",
+      "chapter": "m5",
+      "topic": "Safe phone habits",
+      "type": "multi",
+      "points": 5,
+      "cog": "evaluate",
+      "obj": [
+        "M5-HABITS"
+      ],
+      "secs": 100,
+      "basis": "standard"
     }
   ],
   "chapters": [
@@ -291,6 +359,12 @@
       "n": 4,
       "title": "Home and School Safety",
       "targetMinutes": 15
+    },
+    {
+      "id": "m5",
+      "n": 5,
+      "title": "Digital and Road Safety",
+      "targetMinutes": 13
     }
   ]
 }

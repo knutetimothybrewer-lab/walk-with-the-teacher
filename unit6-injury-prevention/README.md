@@ -2,7 +2,7 @@
 
 A mission-based, auto-graded summative for High School Health. Five missions, each with an interactive simulation that unlocks its scored questions. 100 points over 20 questions when finished, a 90-minute server-enforced limit (designed to take about 70), three attempts per question scoring 100% / 85% / 75%. A static front end (GitHub Pages) talks to a Google Apps Script web app bound to a Google Sheet you own.
 
-> **Build status: Missions 1 to 4 of 5 are built** (Predictable, Not Random: crash lab, 4 questions, 20 points; Chain of Survival: rescue scene and AED trainer, 5 questions, 25 points; Myth vs. Fact: a fictional feed and registry screen, 3 questions, 15 points; Home and School Safety: escape-plan editor, two fire runs and a first-aid bench, 4 questions, 20 points). Mission 5 follows, one at a time, each checked in a browser before it is reported done. Until all five exist the total is 80 points and `content/items.json` says `partial`. Everything is built from your topic summary plus the Day 3 plan and Day 4 slides; read `docs/DISCREPANCIES.md` first.
+> **Build status: all five missions are built** (20 questions, 100 points) (Predictable, Not Random: crash lab, 4 questions, 20 points; Chain of Survival: rescue scene and AED trainer, 5 questions, 25 points; Myth vs. Fact: a fictional feed and registry screen, 3 questions, 15 points; Home and School Safety: escape-plan editor, two fire runs and a first-aid bench, 4 questions, 20 points). Mission 5: Digital and Road Safety: phone-and-road scenes plus a ruler-drop test, 4 questions, 20 points. Each mission was checked in a headless browser. The live Google deployment has not been tested. Everything is built from your topic summary plus the Day 3 plan and Day 4 slides; read `docs/DISCREPANCIES.md` first.
 
 The hands-on CPR skills check (Day 6) stays in person. This test covers knowledge and decisions only.
 
@@ -29,7 +29,7 @@ Follow `docs/SETUP.md` (about 30 minutes): create the Sheet, paste `apps-script/
 ## Layout
 ```
 index.html, css/, js/          student and teacher front end (vanilla ES modules, strict CSP, no build step)
-js/sims/                       one simulation per mission (crash.js + crash-physics.js; rescue.js + rescue-model.js; feed.js; home.js + home-model.js)
+js/sims/                       one simulation per mission (crash.js + crash-physics.js; rescue.js + rescue-model.js; feed.js; home.js + home-model.js; road.js + road-model.js)
 server/core.js                 ALL grading, sessions, timer and teacher logic (runs in Node, the browser demo and Apps Script)
 server/gas/                    Google Sheets adapter
 apps-script/Code.gs            GENERATED: paste into Apps Script (node tools/build-apps-script.js)

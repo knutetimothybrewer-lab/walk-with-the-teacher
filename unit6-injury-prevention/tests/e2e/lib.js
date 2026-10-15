@@ -182,7 +182,27 @@ async function completeHomeLab(page) {
   await page.click('#case-infected'); await page.click('#dec-self'); await page.click('#dec-help');
   await page.waitForFunction(() => /Simulation complete/.test((document.querySelector('.sim-summary') || {}).textContent || ''), null, { timeout: 5000 });
 }
+/** Three trips in each mode (different phone choices) and three ruler drops, through the real controls. */
+async function completeRoadLab(page) {
+  await page.waitForSelector('#trip-go');
+  const trip = async (choice) => {
+    if (choice === 'dnd') await page.click('#rphone-dnd'); else await page.click('#rphone-on');
+    await page.click('#trip-go');
+    if (choice !== 'dnd') { await page.waitForSelector('#rc-' + choice, { timeout: 8000 }); await page.click('#rc-' + choice); }
+    await page.waitForFunction(() => !document.getElementById('trip-go').disabled, null, { timeout: 30000 });
+  };
+  for (const mode of ['drive', 'bike', 'walk']) { await page.click('#rmode-' + mode); await trip('ignore'); await trip('type'); await trip('dnd'); }
+  await page.click('#rdtab-ruler');
+  for (const cond of ['focus', 'dist', 'focus']) {
+    await page.click('#cond-' + cond); await page.click('#ruler-ready');
+    // catch the ruler from inside the page the moment it starts to fall (a polling wait from outside can miss a 0.8 s window)
+    await page.waitForFunction(() => { const s = document.getElementById('ruler-state'); if (s.dataset.state === 'falling') { document.getElementById('ruler-catch').click(); return true; } return false; }, null, { polling: 'raf', timeout: 10000 });
+    await page.waitForSelector('#ruler-state[data-state=done]');
+  }
+  await page.waitForFunction(() => /Simulation complete/.test((document.querySelector('.sim-summary') || {}).textContent || ''), null, { timeout: 5000 });
+}
 async function completeSim(page) {
+  if (await page.locator('.road-lab').count()) return completeRoadLab(page);
   if (await page.locator('.home-lab').count()) return completeHomeLab(page);
   if (await page.locator('.feed-lab').count()) return completeFeedLab(page);
   if (await page.locator('.crash-lab').count()) return completeCrashLab(page);
@@ -198,4 +218,4 @@ async function check(page, id) {
 }
 const feedback = (page, id) => page.locator('#item-' + id + ' .feedback').innerText();
 
-module.exports = { getJson, Ctl, CODES, signIn, open, beginAssessment, startChapter, goToUnit, itemsOf, answer, check, completeCrashLab, completeRescueLab, completeFeedLab, completeHomeLab, completeSim, feedback, assert };
+module.exports = { getJson, Ctl, CODES, signIn, open, beginAssessment, startChapter, goToUnit, itemsOf, answer, check, completeCrashLab, completeRescueLab, completeFeedLab, completeHomeLab, completeRoadLab, completeSim, feedback, assert };

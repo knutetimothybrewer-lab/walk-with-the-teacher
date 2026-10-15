@@ -217,3 +217,19 @@
 .sim-note[data-ok="false"] { border-left-color: var(--bad-ink); }
 .mode-btn[data-done="true"] { border-color: var(--ok-line); }
 .ctl-group .chk { display: flex; width: 100%; }
+
+/* ---------- Mission 5: phone and the road, ruler drop ---------- */
+.phone-note { max-width: 560px; margin: var(--s3) 0; padding: var(--s4); border: 2px solid var(--accent); border-radius: var(--radius); background: var(--surface); box-shadow: var(--shadow-2); }
+.notif { padding: 10px 14px; border-radius: 14px; background: #eef2f6; border: 1px solid var(--line); margin-bottom: var(--s2); }
+.notif .app { font-size: var(--fs-xs); font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+.row.lights { gap: var(--s2); margin: var(--s2) 0; }
+.light.type { padding: 6px 14px; }
+.light.type[data-on="true"] { background: var(--bad-bg); color: var(--bad-ink); border-color: var(--bad-line); }
+.light.type[data-on="true"]::before { content: '! '; font-weight: 900; }
+.road-meters { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: var(--s3); padding: var(--s3); border: 1.5px solid var(--line); border-radius: var(--radius); background: var(--surface-2); margin: var(--s3) 0; }
+.ruler-wrap { display: grid; grid-template-columns: minmax(180px, 240px) 1fr; gap: var(--s5); align-items: start; }
+@media (max-width: 700px) { .ruler-wrap { grid-template-columns: 1fr; } }
+.ruler-svg { width: 100%; max-width: 240px; height: auto; display: block; background: linear-gradient(#f4f9fd, #e3eef7); border: 1.5px solid var(--line-strong); border-radius: var(--radius); overflow: hidden; }
+.ruler-fig { display: flex; justify-content: center; }
+.dist-task { padding: var(--s3); background: var(--warn-bg); border: 1px solid var(--warn-line); color: var(--warn-ink); border-radius: var(--radius-sm); margin: var(--s3) 0; font-size: var(--fs-sm); }
+.sim-note[data-state="falling"] { border-left-color: var(--bad-ink); }

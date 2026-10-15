@@ -439,6 +439,7 @@ async function main() {
       await page.waitForSelector('main[data-page=review]'); assert.match(await page.locator('main').innerText(), /Every question is finished/);
       await page.click('text=Submit assessment'); await page.click('#confirm-submit'); await page.waitForSelector('text=Your assessment is submitted');
       assert.match(await page.locator('.big-card').innerText(), /100%/); assert.match(await page.locator('.big-card').innerText(), new RegExp(PTS + ' / ' + PTS + ' points'));
+      assert.equal(await page.locator('.results-table tbody tr').count(), N, 'the printable report lists every question'); assert.ok(await page.locator('#print-report').count(), 'there is a print button');
       const s = (await lctl.store()).sessions[0]; assert.equal(s.result.points, PTS); assert.equal(s.result.answered, N);
       results.push({ name: 'live bank: all ' + N + ' items solved through the UI, full score', ok: true, ms: Date.now() - t0 });
       console.log('  ok   live bank: all ' + N + ' items solved through the UI, full score (' + (Date.now() - t0) + ' ms)');

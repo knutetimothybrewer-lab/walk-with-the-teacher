@@ -184,6 +184,34 @@
       "claim": "Cut steps (wash hands, press clean cloth, rinse under running water, ointment and bandage), burn steps (cool under running water 10-20 minutes, never ice/butter/toothpaste, cover loosely, do not pop a blister), and the treat-yourself versus get-help lists",
       "status": "FROM TEACHER'S DAY 4 SLIDES 11 to 13",
       "check": "Day 4 slides; note that some first-aid guidance rinses a cut before applying pressure"
+    },
+    {
+      "id": "U6-20",
+      "topic": "Types of distraction",
+      "claim": "Visual, manual and cognitive; texting combines all three",
+      "status": "FROM TEACHER'S TOPIC SUMMARY (Day 5)",
+      "check": "Day 5 slides and guided notes"
+    },
+    {
+      "id": "U6-21",
+      "topic": "Reaction time and stopping distance model",
+      "claim": "Baseline reaction times, the added delay for each phone choice, braking decelerations and hazard distances in the road simulation",
+      "status": "ILLUSTRATIVE MODEL, not quoted data; labelled as a teaching model",
+      "check": "Teacher to confirm the framing"
+    },
+    {
+      "id": "U6-22",
+      "topic": "Ruler drop test",
+      "claim": "Reaction time from the distance a ruler falls, t = square root of (2 d / g)",
+      "status": "STANDARD PHYSICS (free fall); numbers in the reference table are computed, not measured",
+      "check": "Day 5 slides (ruler drop activity)"
+    },
+    {
+      "id": "U6-23",
+      "topic": "Claims deliberately NOT used in any scored question",
+      "claim": "The Utah study comparing distracted teen drivers with non-distracted 70-year-olds; about 5 seconds eyes-off-road per text equal to a football field at 55 mph; 3,208 deaths in distracted-driving crashes in 2024; pedestrian injuries more than doubling since 2004 (AAOS)",
+      "status": "UNVERIFIED. Per the teacher's instruction, none of these appears in a question or in a simulation. 55 mph for 5 seconds is about 400 ft, longer than a 360 ft football field",
+      "check": "NHTSA and AAOS sources; Day 5 slides"
     }
   ]
 }

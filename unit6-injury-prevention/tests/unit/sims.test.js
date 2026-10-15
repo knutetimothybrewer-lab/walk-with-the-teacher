@@ -32,7 +32,7 @@ test('simulations report only chips that the mission declares', () => {
   pub.chapters.forEach((c) => c.units.forEach((u) => (u.stimulus || []).filter((b) => b.t === 'sim').forEach((b) => {
     const file = read(b.id + '.js');
     const reported = Array.from(file.matchAll(/api\.report\('([a-z0-9]+)'\)/g)).map((m) => m[1]);
-    b.chips.forEach((chip) => assert.ok(reported.includes(chip.id) || file.includes("api.report(S.mode)") || file.includes("api.report(belted"), b.id + ' never reports chip ' + chip.id));
+    b.chips.forEach((chip) => assert.ok(reported.includes(chip.id) || (file.includes('api.report(') && file.includes("'" + chip.id + "'")) || file.includes('api.report(S.mode)') || file.includes('api.report(belted'), b.id + ' never reports chip ' + chip.id));
     assert.deepEqual((u.gate || []).slice().sort(), b.chips.map((x) => x.id).sort(), 'unit gate equals the sim chips for ' + b.id);
   })));
 });
@@ -40,4 +40,9 @@ test('simulations report only chips that the mission declares', () => {
 test('Mission 4 home lab never states the extinguisher classes or what each is for', () => {
   const src = (read('home.js') + read('home-model.js')).toLowerCase();
   ['class a', 'class c', 'wood, paper', 'live electrical', 'burning liquids', 'gasoline'].forEach((needle) => assert.ok(!src.includes(needle), 'home sim contains "' + needle + '"'));
+});
+
+test('Mission 5 road lab never uses the scored vocabulary (visual, manual, cognitive) or the unverified claims', () => {
+  const src = (read('road.js') + read('road-model.js')).toLowerCase();
+  ['visual', 'manual', 'cognitive', 'football', '3,208', 'utah', 'every 5 seconds', 'widely cited'].forEach((needle) => assert.ok(!src.includes(needle), 'road sim contains "' + needle + '"'));
 });
