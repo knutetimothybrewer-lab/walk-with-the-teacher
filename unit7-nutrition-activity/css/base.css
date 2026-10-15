@@ -86,7 +86,7 @@ html[data-motion="reduced"] .screen, html[data-motion="reduced"] * { animation-d
 .field { display: grid; gap: .3rem; margin-bottom: .9rem; }
 .field label { font-weight: 700; font-size: .95rem; }
 .field .hint { color: var(--ink-faint); font-size: .85rem; }
-.input { width: 100%; min-height: 46px; padding: .5rem .8rem; border-radius: 10px; border: 1px solid var(--line-strong); background: rgba(5, 10, 22, .7); color: var(--ink); }
+.input { width: 100%; min-height: 46px; padding: .5rem .8rem; border-radius: 10px; border: 1px solid var(--line-strong); background-color: var(--field); color: var(--ink); }
 .input::placeholder { color: var(--ink-faint); }
 select.input { appearance: none; background-image: linear-gradient(45deg, transparent 50%, var(--ink-dim) 50%), linear-gradient(135deg, var(--ink-dim) 50%, transparent 50%); background-position: calc(100% - 20px) 50%, calc(100% - 14px) 50%; background-size: 6px 6px; background-repeat: no-repeat; padding-right: 2.2rem; }
 .err { color: var(--bad); font-weight: 700; min-height: 1.4em; }
