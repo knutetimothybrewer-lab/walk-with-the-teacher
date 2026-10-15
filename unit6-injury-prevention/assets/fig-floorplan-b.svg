@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 340" width="560" height="340">
+  <defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d4ebc9"/><stop offset="1" stop-color="#b9dcab"/></linearGradient>
+  <pattern id="w" width="22" height="22" patternUnits="userSpaceOnUse"><rect width="22" height="22" fill="#eadfca"/><path d="M0 11h22" stroke="#d9cbb0"/></pattern>
+  <pattern id="r" width="14" height="14" patternUnits="userSpaceOnUse"><rect width="14" height="14" fill="#e8e1d4"/><circle cx="7" cy="7" r="1" fill="#d3c9b7"/></pattern></defs>
+  <rect width="560" height="340" fill="url(#g)"/>
+  <rect x="0" y="318" width="560" height="22" fill="#6f7a82"/>
+  <rect x="60" y="40" width="160" height="110" fill="url(#w)" stroke="#6b7580" stroke-width="3"/>
+  <rect x="220" y="40" width="160" height="110" fill="url(#w)" stroke="#6b7580" stroke-width="3"/>
+  <rect x="380" y="40" width="120" height="110" fill="#dbe9f1" stroke="#6b7580" stroke-width="3"/>
+  <rect x="60" y="150" width="440" height="50" fill="url(#r)" stroke="#6b7580" stroke-width="3"/>
+  <rect x="60" y="200" width="440" height="60" fill="url(#r)" stroke="#6b7580" stroke-width="3"/>
+  <rect x="80" y="56" width="70" height="46" rx="6" fill="#9fb8d6" stroke="#6b7580"/>
+  <rect x="240" y="56" width="70" height="46" rx="6" fill="#d6b8a0" stroke="#6b7580"/>
+  <rect x="100" y="222" width="130" height="30" rx="6" fill="#a7b7c9" stroke="#6b7580"/>
+  <rect x="140" y="146" width="40" height="8" fill="#8a5a2b"/><rect x="300" y="146" width="40" height="8" fill="#8a5a2b"/>
+  <rect x="272" y="36" width="56" height="8" rx="3" fill="#9fd3f0" stroke="#2b78a8" stroke-width="2"/>
+  <rect x="420" y="256" width="40" height="8" fill="#8a5a2b"/>
+  <circle cx="200" cy="175" r="11" fill="#fff" stroke="#b3261e" stroke-width="3"/><circle cx="200" cy="175" r="4" fill="#b3261e"/>
+  <circle cx="140" cy="95" r="11" fill="#fff" stroke="#b3261e" stroke-width="3"/><circle cx="140" cy="95" r="4" fill="#b3261e"/>
+  <rect x="76" y="296" width="8" height="22" fill="#5b3f1f"/><rect x="62" y="286" width="26" height="14" rx="3" fill="#2f6fb0"/><path d="M84 288h12v6h-12z" fill="#d2332b"/>
+  <ellipse cx="370" cy="292" rx="22" ry="8" fill="#9aa3a9" opacity="0.0"/>
+</svg>

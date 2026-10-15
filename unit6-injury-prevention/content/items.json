@@ -1,0 +1,1708 @@
+{
+  "schema": 1,
+  "meta": {
+    "title": "Mission Safe",
+    "subtitle": "Unit 6: Injury Prevention and Safety",
+    "contentSet": "live",
+    "version": "u6-1.0"
+  },
+  "objectives": {
+    "M1-DATA": {
+      "text": "Read injury and belt-use data (NHES 3) to compare rates and explain that injury is predictable, not random.",
+      "basis": "standard"
+    },
+    "M1-MECH": {
+      "text": "Explain how seat belts and helmets reduce injury by spreading force and lengthening stopping time (NHES 1).",
+      "basis": "standard"
+    },
+    "M1-MYTH": {
+      "text": "Correct common seat belt myths with accurate facts (NHES 1).",
+      "basis": "standard"
+    },
+    "M2-RECOG": {
+      "text": "Tell cardiac arrest from a heart attack and recognize the signs of cardiac arrest (NHES 1).",
+      "basis": "standard"
+    },
+    "M2-CHAIN": {
+      "text": "Put the Chain of Survival links in order (NHES 1).",
+      "basis": "standard"
+    },
+    "M2-TECH": {
+      "text": "Read compression rate from a trace and judge technique (NHES 7).",
+      "basis": "standard"
+    },
+    "M2-SCOPE": {
+      "text": "Choose hands-only CPR or CPR with breaths for the situation, and know the C-A-B order (NHES 1, 7).",
+      "basis": "standard"
+    },
+    "M2-AED": {
+      "text": "Put the steps of AED use in order (NHES 7).",
+      "basis": "standard"
+    },
+    "M3-MYTH": {
+      "text": "Match common organ-donation myths with accurate facts (NHES 8).",
+      "basis": "standard"
+    },
+    "M3-MSG": {
+      "text": "Choose an accurate, respectful message that corrects a myth (NHES 8).",
+      "basis": "standard"
+    },
+    "M3-CHECK": {
+      "text": "Judge which statements about donation are myths (NHES 8, 3).",
+      "basis": "standard"
+    },
+    "M4-PLAN": {
+      "text": "Plan a home fire escape: alarms, two ways out and an outside meeting spot (NHES 7).",
+      "basis": "standard"
+    },
+    "M4-FIRE": {
+      "text": "Respond to a fire: get low, close doors, never go back, and know the extinguisher classes and when to fight a fire (NHES 7).",
+      "basis": "standard"
+    },
+    "M4-AID": {
+      "text": "Decide between treating a minor cut or burn yourself and getting help (NHES 7).",
+      "basis": "standard"
+    },
+    "M5-TYPES": {
+      "text": "Name the three types of distraction and recognize each in an example (NHES 2).",
+      "basis": "standard"
+    },
+    "M5-DIST": {
+      "text": "Calculate how far a vehicle travels while a driver is distracted (NHES 2, 7).",
+      "basis": "standard"
+    },
+    "M5-REACT": {
+      "text": "Compare reaction times from ruler-drop results with and without distraction (NHES 7).",
+      "basis": "standard"
+    },
+    "M5-HABITS": {
+      "text": "Choose phone habits that keep you safe on the road and in control of notifications (NHES 7).",
+      "basis": "standard"
+    }
+  },
+  "decisionModel": null,
+  "figures": {
+    "egg-cart": {
+      "src": "assets/fig-egg-cart.svg",
+      "w": 560,
+      "h": 300,
+      "alt": "A toy cart rolling toward a solid concrete block. An egg sits in a cloth that is stretched between two posts on the cart.",
+      "desc": "A blue toy cart with two wheels moves to the right toward a gray block. Two wooden posts stand on the cart with a cloth stretched between them, sagging in the middle. An egg rests in the sag. Marker 1 is above the oval object in the cloth. Marker 2 is at the left end of the cloth. Marker 3 is below the blue body of the cart. Marker 4 is on the gray block at the right.",
+      "markers": [
+        {
+          "id": "m1",
+          "n": 1,
+          "x": 240,
+          "y": 118
+        },
+        {
+          "id": "m2",
+          "n": 2,
+          "x": 190,
+          "y": 198
+        },
+        {
+          "id": "m3",
+          "n": 3,
+          "x": 240,
+          "y": 275
+        },
+        {
+          "id": "m4",
+          "n": 4,
+          "x": 505,
+          "y": 140
+        }
+      ]
+    },
+    "tap-trace": {
+      "src": "assets/fig-tap-trace.svg",
+      "w": 600,
+      "h": 170,
+      "alt": "A 10-second timeline from 0 to 10 seconds. One vertical bar marks each compression a bystander gave.",
+      "desc": "The timeline runs from 0 to 10 seconds. Each bar is one compression, evenly spaced. The bars sit at these times in seconds: 0.20, 0.76, 1.31, 1.87, 2.42, 2.98, 3.53, 4.09, 4.64, 5.20, 5.76, 6.31, 6.87, 7.42, 7.98, 8.53, 9.09, 9.64.",
+      "markers": []
+    },
+    "floorplan-b": {
+      "src": "assets/fig-floorplan-b.svg",
+      "w": 560,
+      "h": 340,
+      "alt": "Floor plan of a small house with two bedrooms, a bathroom, a hall and a living room, set in a yard with a mailbox near the street.",
+      "desc": "A one-story house seen from above. Two bedrooms and a bathroom run along the top, a hall runs under them, and a living room is below the hall. Marker 1 is on the hall ceiling just below the two bedroom doors. Marker 2 is on the top wall of the second bedroom. Marker 3 is at the mailbox in the yard near the street. Marker 4 is on the ceiling of the first bedroom.",
+      "markers": [
+        {
+          "id": "m1",
+          "n": 1,
+          "x": 200,
+          "y": 175
+        },
+        {
+          "id": "m2",
+          "n": 2,
+          "x": 300,
+          "y": 40
+        },
+        {
+          "id": "m3",
+          "n": 3,
+          "x": 75,
+          "y": 292
+        },
+        {
+          "id": "m4",
+          "n": 4,
+          "x": 140,
+          "y": 95
+        }
+      ]
+    }
+  },
+  "chapters": [
+    {
+      "id": "m1",
+      "n": 1,
+      "title": "Predictable, Not Random",
+      "theme": "lab",
+      "intro": "Injuries follow patterns, and patterns can be studied. Run the crash lab, explore the belt-use data, then show what you learned.",
+      "targetMinutes": 11,
+      "units": [
+        {
+          "id": "m1-u1",
+          "title": "Read the injury data",
+          "intro": null,
+          "stimulus": [
+            {
+              "t": "sim",
+              "id": "crash",
+              "title": "Crash lab",
+              "lead": "Crash the dummy, test the helmet, drop the egg, and open the belt-use data. Change one thing at a time and watch what changes.",
+              "chips": [
+                {
+                  "id": "belted",
+                  "label": "Crash a buckled dummy"
+                },
+                {
+                  "id": "unbelted",
+                  "label": "Crash an unbuckled dummy"
+                },
+                {
+                  "id": "helmet",
+                  "label": "Bike crash with and without a helmet"
+                },
+                {
+                  "id": "egg",
+                  "label": "Egg test with and without the sheet"
+                },
+                {
+                  "id": "data",
+                  "label": "Compare both belt-use groups"
+                }
+              ]
+            },
+            {
+              "t": "chart",
+              "kind": "groupedBar",
+              "id": "cdc565",
+              "title": "Unintentional injury death rates, ages 15 to 19, United States, 2024",
+              "note": "Source: CDC/NCHS Data Brief 565 (2024 data)",
+              "yLabel": "Deaths per 100,000 people",
+              "max": 14,
+              "decimals": 1,
+              "bottom": 60,
+              "catLabel": "Cause of death",
+              "categories": [
+                "Motor vehicle traffic",
+                "Poisoning",
+                "Drowning"
+              ],
+              "series": [
+                {
+                  "name": "Deaths per 100,000",
+                  "values": [
+                    12,
+                    3.8,
+                    1
+                  ]
+                }
+              ],
+              "alt": "Bar chart of death rates per 100,000 people ages 15 to 19 in 2024. Motor vehicle traffic 12.0. Poisoning 3.8. Drowning 1.0."
+            }
+          ],
+          "gate": [
+            "belted",
+            "unbelted",
+            "helmet",
+            "egg",
+            "data"
+          ],
+          "readSecs": 330,
+          "items": [
+            {
+              "id": "M1-01",
+              "type": "single",
+              "topic": "Reading injury data",
+              "prompt": "Which statement does the chart support?",
+              "points": 5,
+              "cog": "analyze",
+              "obj": [
+                "M1-DATA"
+              ],
+              "secs": 60,
+              "unlockAfter": null,
+              "options": [
+                {
+                  "id": "od2a87",
+                  "text": "Drowning ranked second among these three causes for this age group."
+                },
+                {
+                  "id": "o5547b",
+                  "text": "Drowning deaths happened at nearly the same rate as poisoning deaths."
+                },
+                {
+                  "id": "o9c692",
+                  "text": "Poisoning deaths happened at about twice the motor vehicle traffic rate."
+                },
+                {
+                  "id": "oe04c5",
+                  "text": "Motor vehicle traffic deaths happened at about six times the drowning rate."
+                },
+                {
+                  "id": "obfc73",
+                  "text": "Motor vehicle traffic deaths happened at about three times the poisoning rate."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "m1-u2",
+          "title": "Who buckles up?",
+          "intro": null,
+          "stimulus": [
+            {
+              "t": "table",
+              "title": "Front-seat belt use, United States, 2025",
+              "note": "Figures as shown in the Day 1 slides and handout. NHTSA reports 91.3% for all front-seat occupants in 2025.",
+              "head": [
+                "Group",
+                "Belt use"
+              ],
+              "rows": [
+                [
+                  "All front-seat occupants (national)",
+                  "91.3%"
+                ],
+                [
+                  "Ages 16 to 24",
+                  "87%"
+                ]
+              ]
+            }
+          ],
+          "gate": [
+            "belted",
+            "unbelted",
+            "helmet",
+            "egg",
+            "data"
+          ],
+          "readSecs": 0,
+          "items": [
+            {
+              "id": "M1-02",
+              "type": "numeric",
+              "topic": "Scaling a data gap",
+              "prompt": "Imagine 1,000 drivers aged 16 to 24. If their belt use matched the national rate in the table, how many MORE of them would buckle up?",
+              "points": 5,
+              "cog": "apply",
+              "obj": [
+                "M1-DATA"
+              ],
+              "secs": 70,
+              "unlockAfter": null,
+              "numeric": {
+                "unit": "more drivers",
+                "range": [
+                  0,
+                  1000
+                ],
+                "decimals": 0,
+                "label": "Extra drivers who buckle"
+              }
+            }
+          ]
+        },
+        {
+          "id": "m1-u3",
+          "title": "Model a crash",
+          "intro": null,
+          "stimulus": [
+            {
+              "t": "p",
+              "text": "A class models a crash with a toy cart, an egg and a stretched sheet. The egg rides in the sheet on the cart, and the cart is pushed toward a solid block."
+            },
+            {
+              "t": "note",
+              "tone": "info",
+              "text": "Model sensors are not shown here. Use the picture and what you know about crashes."
+            }
+          ],
+          "gate": [
+            "belted",
+            "unbelted",
+            "helmet",
+            "egg",
+            "data"
+          ],
+          "readSecs": 0,
+          "items": [
+            {
+              "id": "M1-03",
+              "type": "assign",
+              "topic": "Crash model analogy",
+              "prompt": "Match each part of the model to what it stands for in a real car crash. One choice is not used.",
+              "points": 5,
+              "cog": "understand",
+              "obj": [
+                "M1-MECH"
+              ],
+              "secs": 80,
+              "unlockAfter": null,
+              "assign": {
+                "mode": "label",
+                "fill": "targets",
+                "figure": "egg-cart",
+                "layout": null,
+                "pick": null,
+                "cards": [
+                  {
+                    "id": "cd24c7",
+                    "text": "The seat belt"
+                  },
+                  {
+                    "id": "cfeb7e",
+                    "text": "The car itself"
+                  },
+                  {
+                    "id": "ce7f40",
+                    "text": "The solid object the car hits"
+                  },
+                  {
+                    "id": "cfdd1e",
+                    "text": "The person riding in the car"
+                  },
+                  {
+                    "id": "c1df34",
+                    "text": "The airbag"
+                  }
+                ],
+                "targets": [
+                  {
+                    "id": "m1",
+                    "label": "Marker 1"
+                  },
+                  {
+                    "id": "m2",
+                    "label": "Marker 2"
+                  },
+                  {
+                    "id": "m3",
+                    "label": "Marker 3"
+                  },
+                  {
+                    "id": "m4",
+                    "label": "Marker 4"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "m1-u4",
+          "title": "Myth or fact?",
+          "intro": null,
+          "stimulus": [
+            {
+              "t": "p",
+              "text": "These are things people say about seat belts. Match each belief to the fact that answers it."
+            }
+          ],
+          "gate": [
+            "belted",
+            "unbelted",
+            "helmet",
+            "egg",
+            "data"
+          ],
+          "readSecs": 0,
+          "items": [
+            {
+              "id": "M1-04",
+              "type": "assign",
+              "topic": "Seat belt myths",
+              "prompt": "Match each belief to the fact that answers it. Two facts are not used.",
+              "points": 5,
+              "cog": "understand",
+              "obj": [
+                "M1-MYTH"
+              ],
+              "secs": 110,
+              "unlockAfter": null,
+              "assign": {
+                "mode": "match",
+                "fill": "targets",
+                "figure": null,
+                "layout": null,
+                "pick": null,
+                "cards": [
+                  {
+                    "id": "ceea22",
+                    "text": "Nearly every teen already buckles up on every trip, so reminders add little value."
+                  },
+                  {
+                    "id": "cbc56f",
+                    "text": "Belts only help when a vehicle is going faster than highway speed in a crash."
+                  },
+                  {
+                    "id": "c37aef",
+                    "text": "Crash forces do not depend on who is riding, and male youth die from unintentional injuries at higher rates."
+                  },
+                  {
+                    "id": "c57278",
+                    "text": "For front-seat riders, belts cut fatal-injury risk by about 60% in SUVs, trucks and vans."
+                  },
+                  {
+                    "id": "cb9b61",
+                    "text": "Airbags are built to work together with seat belts, not to replace them."
+                  },
+                  {
+                    "id": "cffb7c",
+                    "text": "Other drivers can cause a crash, and a belt protects you from mistakes your own skill cannot control."
+                  }
+                ],
+                "targets": [
+                  {
+                    "id": "g87948",
+                    "label": "“My vehicle is big, so a belt is not needed.”"
+                  },
+                  {
+                    "id": "g86aa9",
+                    "label": "“Airbags are enough to protect me.”"
+                  },
+                  {
+                    "id": "ga41ab",
+                    "label": "“Boys are tough enough to ride without a belt.”"
+                  },
+                  {
+                    "id": "g0ad21",
+                    "label": "“I’m a careful driver, so I don’t need a belt.”"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "m2",
+      "n": 2,
+      "title": "Chain of Survival",
+      "theme": "medlab",
+      "intro": "Seconds matter when a heart stops. Practice a calm, correct response in three different emergencies and with an AED, then show what you know.",
+      "targetMinutes": 14,
+      "units": [
+        {
+          "id": "m2-u1",
+          "title": "Heart attack or cardiac arrest?",
+          "intro": null,
+          "stimulus": [
+            {
+              "t": "sim",
+              "id": "rescue",
+              "title": "Rescue practice",
+              "lead": "Handle three emergencies and one AED. You choose what to do and in what order. The scene reacts to what you do.",
+              "chips": [
+                {
+                  "id": "adult",
+                  "label": "Finish the adult collapse scene"
+                },
+                {
+                  "id": "drowning",
+                  "label": "Finish the drowning scene"
+                },
+                {
+                  "id": "infant",
+                  "label": "Finish the infant scene"
+                },
+                {
+                  "id": "aed",
+                  "label": "Complete one AED shock cycle"
+                }
+              ]
+            },
+            {
+              "t": "p",
+              "text": "Two different heart emergencies can look alike from far away. An emergency card at a school nurse’s office lists six descriptions."
+            }
+          ],
+          "gate": [
+            "adult",
+            "drowning",
+            "infant",
+            "aed"
+          ],
+          "readSecs": 480,
+          "items": [
+            {
+              "id": "M2-01",
+              "type": "assign",
+              "topic": "Cardiac arrest versus heart attack",
+              "prompt": "Sort each description under the problem it best describes.",
+              "points": 5,
+              "cog": "understand",
+              "obj": [
+                "M2-RECOG"
+              ],
+              "secs": 70,
+              "unlockAfter": null,
+              "assign": {
+                "mode": "classify",
+                "fill": "cards",
+                "figure": null,
+                "layout": null,
+                "pick": null,
+                "cards": [
+                  {
+                    "id": "c110fa",
+                    "text": "The heart’s electrical signal goes wrong and the heart stops pumping blood."
+                  },
+                  {
+                    "id": "c0ce50",
+                    "text": "The person suddenly collapses, does not respond and is not breathing normally."
+                  },
+                  {
+                    "id": "caf193",
+                    "text": "A blocked artery cuts blood flow to part of the heart muscle."
+                  },
+                  {
+                    "id": "cf51d3",
+                    "text": "The person is awake and says the chest feels tight or heavy."
+                  },
+                  {
+                    "id": "ca23b4",
+                    "text": "Rescuers need to start CPR and use an AED without waiting."
+                  },
+                  {
+                    "id": "cc48cb",
+                    "text": "Symptoms may build slowly while the person is still talking."
+                  }
+                ],
+                "targets": [
+                  {
+                    "id": "g794b2",
+                    "label": "Cardiac arrest"
+                  },
+                  {
+                    "id": "gb4a5e",
+                    "label": "Heart attack"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "m2-u2",
+          "title": "The Chain of Survival",
+          "intro": null,
+          "stimulus": [
+            {
+              "t": "p",
+              "text": "A first-aid poster shows the Chain of Survival, five links that save lives when they are done in the right order."
+            }
+          ],
+          "gate": [
+            "adult",
+            "drowning",
+            "infant",
+            "aed"
+          ],
+          "readSecs": 0,
+          "items": [
+            {
+              "id": "M2-02",
+              "type": "order",
+              "topic": "Chain of Survival links",
+              "prompt": "Put the five links of the Chain of Survival in order, from the first link to the last.",
+              "points": 5,
+              "cog": "remember",
+              "obj": [
+                "M2-CHAIN"
+              ],
+              "secs": 60,
+              "unlockAfter": null,
+              "steps": [
+                {
+                  "id": "sc0479",
+                  "text": "Call 911 so help is on the way"
+                },
+                {
+                  "id": "s70d30",
+                  "text": "Recognize that the person is in cardiac arrest"
+                },
+                {
+                  "id": "s7f6f6",
+                  "text": "Hand the person over to EMS when they arrive"
+                },
+                {
+                  "id": "sad258",
+                  "text": "Start chest compressions right away"
+                },
+                {
+                  "id": "sf5502",
+                  "text": "Use an AED as soon as one arrives"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "m2-u3",
+          "title": "How fast are the compressions?",
+          "intro": null,
+          "stimulus": [
+            {
+              "t": "p",
+              "text": "A coach timed a bystander giving compressions to a training manikin for 10 seconds."
+            },
+            {
+              "t": "figure",
+              "id": "tap-trace",
+              "caption": "Compressions during a 10-second timer."
+            }
+          ],
+          "gate": [
+            "adult",
+            "drowning",
+            "infant",
+            "aed"
+          ],
+          "readSecs": 0,
+          "items": [
+            {
+              "id": "M2-03",
+              "type": "numeric",
+              "topic": "Compression rate from a trace",
+              "prompt": "Each bar is one compression. What was the compression rate, in compressions per minute?",
+              "points": 5,
+              "cog": "apply",
+              "obj": [
+                "M2-TECH"
+              ],
+              "secs": 70,
+              "unlockAfter": null,
+              "numeric": {
+                "unit": "compressions per minute",
+                "range": [
+                  0,
+                  240
+                ],
+                "decimals": 0,
+                "label": "Rate"
+              }
+            }
+          ]
+        },
+        {
+          "id": "m2-u4",
+          "title": "A child at the pool",
+          "intro": null,
+          "stimulus": [
+            {
+              "t": "note",
+              "tone": "info",
+              "text": "Fictional scenario for practice."
+            }
+          ],
+          "gate": [
+            "adult",
+            "drowning",
+            "infant",
+            "aed"
+          ],
+          "readSecs": 0,
+          "items": [
+            {
+              "id": "M2-04",
+              "type": "single",
+              "topic": "Hands-only CPR or CPR with breaths",
+              "prompt": "Which plan fits this situation best?",
+              "points": 5,
+              "cog": "evaluate",
+              "obj": [
+                "M2-SCOPE"
+              ],
+              "secs": 80,
+              "unlockAfter": null,
+              "scene": [
+                "A lifeguard pulls a 3-year-old girl out of the pool. She does not respond and is not breathing. Another lifeguard calls 911 and sends someone for the AED. You are the next trained person to help."
+              ],
+              "sceneTitle": "At the community pool",
+              "options": [
+                {
+                  "id": "ob76fe",
+                  "text": "Wait for the AED to arrive before touching her so nothing is done out of order."
+                },
+                {
+                  "id": "obbd29",
+                  "text": "Give only rescue breaths and check her pulse every minute until EMS takes over."
+                },
+                {
+                  "id": "oe2269",
+                  "text": "Press on her belly to push the water out, then start compressions."
+                },
+                {
+                  "id": "o84359",
+                  "text": "Give CPR with rescue breaths and compressions, because her breathing stopped first."
+                },
+                {
+                  "id": "obad23",
+                  "text": "Give hands-only compressions at a steady pace and skip the breaths, as for a sudden adult collapse."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "m2-u5",
+          "title": "The AED arrives",
+          "intro": null,
+          "stimulus": [
+            {
+              "t": "p",
+              "text": "A teen collapsed at a track meet. A bystander has been giving compressions, and a coach just brought the school’s AED."
+            }
+          ],
+          "gate": [
+            "adult",
+            "drowning",
+            "infant",
+            "aed"
+          ],
+          "readSecs": 0,
+          "items": [
+            {
+              "id": "M2-05",
+              "type": "order",
+              "topic": "Steps of AED use",
+              "prompt": "Put these actions in the order you would do them once the AED is at the person’s side.",
+              "points": 5,
+              "cog": "apply",
+              "obj": [
+                "M2-AED"
+              ],
+              "secs": 60,
+              "unlockAfter": null,
+              "steps": [
+                {
+                  "id": "s0a809",
+                  "text": "Turn on the AED and follow its voice prompts"
+                },
+                {
+                  "id": "s7676a",
+                  "text": "Attach the pads to the bare chest as pictured"
+                },
+                {
+                  "id": "sf3229",
+                  "text": "Restart chest compressions right away when the AED says to"
+                },
+                {
+                  "id": "s8aa14",
+                  "text": "Stand clear and press the shock button only if the AED advises it"
+                },
+                {
+                  "id": "s63e0b",
+                  "text": "Make sure no one touches the person while the AED analyzes"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "m3",
+      "n": 3,
+      "title": "Myth vs. Fact: Organ Donation",
+      "theme": "studio",
+      "intro": "People share claims about organ donation all the time, and some are wrong. Practice checking claims in a fictional social feed, then show you can correct a myth accurately and respectfully.",
+      "targetMinutes": 9,
+      "units": [
+        {
+          "id": "m3-u1",
+          "title": "Three myths, three facts",
+          "intro": null,
+          "stimulus": [
+            {
+              "t": "sim",
+              "id": "feed",
+              "title": "Check the feed",
+              "lead": "Read the posts in a fictional app, tag each one, and see what the facts say. Then walk through a practice registry screen.",
+              "chips": [
+                {
+                  "id": "tag6",
+                  "label": "Tag at least six posts"
+                },
+                {
+                  "id": "register",
+                  "label": "Finish the registry walk-through"
+                }
+              ]
+            },
+            {
+              "t": "note",
+              "tone": "info",
+              "text": "Teacher note: this is information, not a request to register. Registration decisions belong to families."
+            }
+          ],
+          "gate": [
+            "tag6",
+            "register"
+          ],
+          "readSecs": 300,
+          "items": [
+            {
+              "id": "M3-01",
+              "type": "assign",
+              "topic": "Three donation myths",
+              "prompt": "Match each myth to the fact that corrects it. Two facts are not used.",
+              "points": 5,
+              "cog": "remember",
+              "obj": [
+                "M3-MYTH"
+              ],
+              "secs": 60,
+              "unlockAfter": null,
+              "assign": {
+                "mode": "match",
+                "fill": "targets",
+                "figure": null,
+                "layout": null,
+                "pick": null,
+                "cards": [
+                  {
+                    "id": "cc6db4",
+                    "text": "A donor’s family has to pay the hospital for the donation, which is why many people skip it."
+                  },
+                  {
+                    "id": "ce6469",
+                    "text": "Registered donors are matched to the first patient who asks, so the decision comes down to timing."
+                  },
+                  {
+                    "id": "ce05b4",
+                    "text": "Your doctors work to save your life first, and donation is only considered after death is declared."
+                  },
+                  {
+                    "id": "c4f8dc",
+                    "text": "Age and health conditions do not automatically rule you out; the transplant team decides what can be used."
+                  },
+                  {
+                    "id": "c83bf1",
+                    "text": "The body is treated with care and dressed for the service, so donation does not show at an open casket."
+                  }
+                ],
+                "targets": [
+                  {
+                    "id": "gd06f6",
+                    "label": "“I’m too old, or I have a health condition, so I can’t be a donor.”"
+                  },
+                  {
+                    "id": "g40894",
+                    "label": "“Donating organs means I can’t have an open-casket funeral.”"
+                  },
+                  {
+                    "id": "g16a2a",
+                    "label": "“Doctors won’t try as hard to save me if I’m a registered donor.”"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "m3-u2",
+          "title": "Reply with the facts",
+          "intro": null,
+          "stimulus": [
+            {
+              "t": "note",
+              "tone": "fiction",
+              "text": "Fictional post for practice."
+            }
+          ],
+          "gate": [
+            "tag6",
+            "register"
+          ],
+          "readSecs": 0,
+          "items": [
+            {
+              "id": "M3-02",
+              "type": "single",
+              "topic": "An accurate, respectful reply",
+              "prompt": "Which reply corrects the myth best?",
+              "points": 5,
+              "cog": "evaluate",
+              "obj": [
+                "M3-MSG"
+              ],
+              "secs": 80,
+              "unlockAfter": null,
+              "scene": [
+                "A classmate posts on the class group chat: “No way I’m signing up as a donor. Then I couldn’t even have an open casket.” You decide to reply."
+              ],
+              "sceneTitle": "A classmate’s post",
+              "options": [
+                {
+                  "id": "o63822",
+                  "text": "That’s false, and honestly it’s a pretty selfish way to think. You should register today so you can help people."
+                },
+                {
+                  "id": "obcad4",
+                  "text": "That’s true for organs, but if someone donates only their eyes they can still have an open casket at the funeral."
+                },
+                {
+                  "id": "ocaeb9",
+                  "text": "Funeral homes can fix almost anything, so it never really matters. Everyone should just register, no questions asked."
+                },
+                {
+                  "id": "oed8d0",
+                  "text": "Don’t worry about it. Registered donors always get to choose exactly how their funeral is done, whatever the family wants."
+                },
+                {
+                  "id": "o30550",
+                  "text": "Donation doesn’t rule that out. The body is dressed for the service, so it isn’t visible. It’s your family’s call, but those are the facts."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "m3-u3",
+          "title": "Spot the myths",
+          "intro": null,
+          "stimulus": [
+            {
+              "t": "note",
+              "tone": "fiction",
+              "text": "Fictional statements for practice. Each could appear in a social post."
+            }
+          ],
+          "gate": [
+            "tag6",
+            "register"
+          ],
+          "readSecs": 0,
+          "items": [
+            {
+              "id": "M3-03",
+              "type": "multi",
+              "topic": "Which statements are myths?",
+              "prompt": "Select every statement that is a myth.",
+              "points": 5,
+              "cog": "analyze",
+              "obj": [
+                "M3-CHECK"
+              ],
+              "secs": 90,
+              "unlockAfter": null,
+              "options": [
+                {
+                  "id": "o391fe",
+                  "text": "More than 100,000 people in the U.S. are waiting for an organ transplant."
+                },
+                {
+                  "id": "o47681",
+                  "text": "Corneas and heart valves cannot be donated, only whole organs like hearts."
+                },
+                {
+                  "id": "o2c580",
+                  "text": "A transplant patient can be matched with a donor who is not a relative."
+                },
+                {
+                  "id": "o5ee1d",
+                  "text": "Celebrities are moved to the top of the transplant list because of their fame."
+                },
+                {
+                  "id": "o599fc",
+                  "text": "Blood type is one of the medical factors used to match an organ."
+                },
+                {
+                  "id": "o4cbc1",
+                  "text": "A donor’s family has to pay the surgeon’s fee for removing the organs."
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "m4",
+      "n": 4,
+      "title": "Home and School Safety",
+      "theme": "ember",
+      "intro": "You may have only a minute or two to get out of a burning building, and a few simple steps make a big difference. Build an escape plan, run two fires, and treat some injuries, then show what you learned.",
+      "targetMinutes": 15,
+      "units": [
+        {
+          "id": "m4-u1",
+          "title": "Read the floor plan",
+          "intro": null,
+          "stimulus": [
+            {
+              "t": "sim",
+              "id": "home",
+              "title": "Home safety practice",
+              "lead": "Build an escape plan, run two fires with your plan, and treat four injuries at the first-aid bench.",
+              "chips": [
+                {
+                  "id": "plan",
+                  "label": "Finish an escape plan"
+                },
+                {
+                  "id": "fire",
+                  "label": "Get out safely in both fire runs"
+                },
+                {
+                  "id": "bench",
+                  "label": "Finish three first-aid cases"
+                }
+              ]
+            },
+            {
+              "t": "p",
+              "text": "A different family is planning its fire escape. Use the plan of their house."
+            }
+          ],
+          "gate": [
+            "plan",
+            "fire",
+            "bench"
+          ],
+          "readSecs": 570,
+          "items": [
+            {
+              "id": "M4-01",
+              "type": "assign",
+              "topic": "Reading an escape plan",
+              "prompt": "Match each numbered spot on the plan to what it is. One choice is not used.",
+              "points": 5,
+              "cog": "understand",
+              "obj": [
+                "M4-PLAN"
+              ],
+              "secs": 90,
+              "unlockAfter": null,
+              "assign": {
+                "mode": "label",
+                "fill": "targets",
+                "figure": "floorplan-b",
+                "layout": null,
+                "pick": null,
+                "cards": [
+                  {
+                    "id": "c64e00",
+                    "text": "A smoke alarm outside the sleeping rooms"
+                  },
+                  {
+                    "id": "c87dfe",
+                    "text": "The outside meeting spot"
+                  },
+                  {
+                    "id": "c984f0",
+                    "text": "A smoke alarm inside a bedroom"
+                  },
+                  {
+                    "id": "cccb1d",
+                    "text": "The second way out of a bedroom"
+                  },
+                  {
+                    "id": "cc32f7",
+                    "text": "The best place to hide from smoke"
+                  }
+                ],
+                "targets": [
+                  {
+                    "id": "m1",
+                    "label": "Marker 1"
+                  },
+                  {
+                    "id": "m2",
+                    "label": "Marker 2"
+                  },
+                  {
+                    "id": "m3",
+                    "label": "Marker 3"
+                  },
+                  {
+                    "id": "m4",
+                    "label": "Marker 4"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "m4-u2",
+          "title": "Smoke at a sleepover",
+          "intro": null,
+          "stimulus": [
+            {
+              "t": "note",
+              "tone": "fiction",
+              "text": "Fictional scenario for practice."
+            }
+          ],
+          "gate": [
+            "plan",
+            "fire",
+            "bench"
+          ],
+          "readSecs": 0,
+          "items": [
+            {
+              "id": "M4-02",
+              "type": "single",
+              "topic": "Responding to a fire",
+              "prompt": "What should you do?",
+              "points": 5,
+              "cog": "apply",
+              "obj": [
+                "M4-FIRE"
+              ],
+              "secs": 80,
+              "unlockAfter": null,
+              "scene": [
+                "You are sleeping over at a friend’s house, in a basement room with a door and one small window high on the wall. The smoke alarm goes off in the night. You smell smoke and see a gray haze near the ceiling."
+              ],
+              "sceneTitle": "A night away from home",
+              "options": [
+                {
+                  "id": "o50610",
+                  "text": "Stand up and gather your phone, shoes and bag so you have everything outside."
+                },
+                {
+                  "id": "o5626b",
+                  "text": "Hide under the bed until the fire department arrives to find you in the room."
+                },
+                {
+                  "id": "o6597c",
+                  "text": "Open each door on the way to check where the fire started before you decide."
+                },
+                {
+                  "id": "o50bce",
+                  "text": "Stay low under the smoke, head for the nearest clear way out and close doors behind you."
+                },
+                {
+                  "id": "od27d5",
+                  "text": "Go back in for your friend’s dog as soon as you are safely outside the house."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "m4-u3",
+          "title": "Which extinguisher?",
+          "intro": null,
+          "stimulus": [
+            {
+              "t": "p",
+              "text": "A school hallway has fire extinguishers on the wall. Each is marked with a class letter that says what kind of fire it is made for."
+            }
+          ],
+          "gate": [
+            "plan",
+            "fire",
+            "bench"
+          ],
+          "readSecs": 0,
+          "items": [
+            {
+              "id": "M4-03",
+              "type": "assign",
+              "topic": "Extinguisher classes",
+              "prompt": "Match each extinguisher class to the kind of fire it is made for. Two choices are not used.",
+              "points": 5,
+              "cog": "remember",
+              "obj": [
+                "M4-FIRE"
+              ],
+              "secs": 60,
+              "unlockAfter": null,
+              "assign": {
+                "mode": "match",
+                "fill": "targets",
+                "figure": null,
+                "layout": null,
+                "pick": null,
+                "cards": [
+                  {
+                    "id": "c97936",
+                    "text": "Any fire, even one spreading across the room"
+                  },
+                  {
+                    "id": "ca7b0a",
+                    "text": "A fire that is blocking the only way out"
+                  },
+                  {
+                    "id": "c4ecb3",
+                    "text": "Burning wood, paper, cloth or trash"
+                  },
+                  {
+                    "id": "cc9be2",
+                    "text": "Burning liquids such as gasoline, oil or paint"
+                  },
+                  {
+                    "id": "c84db6",
+                    "text": "Live electrical equipment that is plugged in"
+                  }
+                ],
+                "targets": [
+                  {
+                    "id": "gff7ef",
+                    "label": "Class B"
+                  },
+                  {
+                    "id": "g7f303",
+                    "label": "Class A"
+                  },
+                  {
+                    "id": "gf1419",
+                    "label": "Class C"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "m4-u4",
+          "title": "Treat it or get help?",
+          "intro": null,
+          "stimulus": [
+            {
+              "t": "p",
+              "text": "A school nurse sorts injuries into the ones students can treat themselves and the ones that need a professional."
+            }
+          ],
+          "gate": [
+            "plan",
+            "fire",
+            "bench"
+          ],
+          "readSecs": 0,
+          "items": [
+            {
+              "id": "M4-04",
+              "type": "assign",
+              "topic": "Treat yourself or get help",
+              "prompt": "Sort each injury into the group where it belongs.",
+              "points": 5,
+              "cog": "analyze",
+              "obj": [
+                "M4-AID"
+              ],
+              "secs": 100,
+              "unlockAfter": null,
+              "assign": {
+                "mode": "classify",
+                "fill": "cards",
+                "figure": null,
+                "layout": null,
+                "pick": null,
+                "cards": [
+                  {
+                    "id": "cd7beb",
+                    "text": "A deep cut across the palm that gapes open"
+                  },
+                  {
+                    "id": "ca25ec",
+                    "text": "Bleeding still going after 15 minutes of pressing with a clean cloth"
+                  },
+                  {
+                    "id": "cccc02",
+                    "text": "A burn on the hand from a chemical spill"
+                  },
+                  {
+                    "id": "c3dec5",
+                    "text": "A scrape from a bike fall with no signs of infection"
+                  },
+                  {
+                    "id": "cf64cc",
+                    "text": "A burn on the face from hot steam"
+                  },
+                  {
+                    "id": "c3c3f1",
+                    "text": "A paper cut that stops bleeding with light pressure"
+                  },
+                  {
+                    "id": "c6cd50",
+                    "text": "A burn on the forearm, smaller than your palm, from a curling iron"
+                  }
+                ],
+                "targets": [
+                  {
+                    "id": "g8547f",
+                    "label": "Treat it yourself"
+                  },
+                  {
+                    "id": "g35fd3",
+                    "label": "Get help (911 or urgent care)"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "m5",
+      "n": 5,
+      "title": "Digital and Road Safety",
+      "theme": "case",
+      "intro": "A buzz on your phone can pull your attention off the road for far longer than it feels. Try driving, biking and walking with a phone, test your own reaction time, then show what you learned.",
+      "targetMinutes": 13,
+      "units": [
+        {
+          "id": "m5-u1",
+          "title": "Ways attention drifts",
+          "intro": null,
+          "stimulus": [
+            {
+              "t": "sim",
+              "id": "road",
+              "title": "Phone and road practice",
+              "lead": "Travel three ways with a buzzing phone, then test your own reaction time with a ruler drop.",
+              "chips": [
+                {
+                  "id": "drive",
+                  "label": "Make three driving trips"
+                },
+                {
+                  "id": "bike",
+                  "label": "Make three biking trips"
+                },
+                {
+                  "id": "walk",
+                  "label": "Make three walking trips"
+                },
+                {
+                  "id": "ruler",
+                  "label": "Do three ruler drops"
+                }
+              ]
+            },
+            {
+              "t": "p",
+              "text": "Drivers, riders and walkers can lose focus in three different ways. Here are some examples a safety poster might use."
+            }
+          ],
+          "gate": [
+            "drive",
+            "bike",
+            "walk",
+            "ruler"
+          ],
+          "readSecs": 450,
+          "items": [
+            {
+              "id": "M5-01",
+              "type": "assign",
+              "topic": "Types of distraction",
+              "prompt": "Match each type of distraction to the example that shows it. Two examples are not distractions.",
+              "points": 5,
+              "cog": "understand",
+              "obj": [
+                "M5-TYPES"
+              ],
+              "secs": 70,
+              "unlockAfter": null,
+              "assign": {
+                "mode": "match",
+                "fill": "targets",
+                "figure": null,
+                "layout": null,
+                "pick": null,
+                "cards": [
+                  {
+                    "id": "cc706a",
+                    "text": "Taking a hand off the wheel to dig through a bag"
+                  },
+                  {
+                    "id": "caacb6",
+                    "text": "Looking at a map on a phone screen"
+                  },
+                  {
+                    "id": "c89a97",
+                    "text": "Buckling a seat belt before the car moves"
+                  },
+                  {
+                    "id": "c743a6",
+                    "text": "Thinking hard about an argument while crossing the street"
+                  },
+                  {
+                    "id": "c7834d",
+                    "text": "Checking the mirrors before changing lanes"
+                  }
+                ],
+                "targets": [
+                  {
+                    "id": "ga0705",
+                    "label": "Manual distraction"
+                  },
+                  {
+                    "id": "g5a7ff",
+                    "label": "Cognitive distraction"
+                  },
+                  {
+                    "id": "g5c247",
+                    "label": "Visual distraction"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "m5-u2",
+          "title": "How far in four seconds?",
+          "intro": null,
+          "stimulus": [
+            {
+              "t": "note",
+              "tone": "info",
+              "text": "Conversion: 1 mile per hour is about 1.47 feet per second."
+            },
+            {
+              "t": "note",
+              "tone": "fiction",
+              "text": "Fictional scenario for practice."
+            }
+          ],
+          "gate": [
+            "drive",
+            "bike",
+            "walk",
+            "ruler"
+          ],
+          "readSecs": 0,
+          "items": [
+            {
+              "id": "M5-02",
+              "type": "numeric",
+              "topic": "Distance while distracted",
+              "prompt": "A driver going 45 miles per hour looks at a phone for 4 seconds. About how many feet does the car travel in those 4 seconds?",
+              "points": 5,
+              "cog": "apply",
+              "obj": [
+                "M5-DIST"
+              ],
+              "secs": 70,
+              "unlockAfter": null,
+              "numeric": {
+                "unit": "feet",
+                "range": [
+                  0,
+                  1000
+                ],
+                "decimals": 0,
+                "label": "Distance"
+              }
+            }
+          ]
+        },
+        {
+          "id": "m5-u3",
+          "title": "Reading the ruler drop",
+          "intro": null,
+          "stimulus": [
+            {
+              "t": "p",
+              "text": "Dana did the ruler drop test twice. First she watched the ruler. Then she read a text message while her partner held the ruler. This table converts how far the ruler fell into a reaction time."
+            },
+            {
+              "t": "table",
+              "title": "Ruler catch distance and reaction time",
+              "note": "The ruler falls faster the longer it drops, so equal steps in distance are not equal steps in time.",
+              "head": [
+                "Caught at",
+                "Reaction time"
+              ],
+              "rows": [
+                [
+                  "5 cm",
+                  "101 ms"
+                ],
+                [
+                  "10 cm",
+                  "143 ms"
+                ],
+                [
+                  "15 cm",
+                  "175 ms"
+                ],
+                [
+                  "20 cm",
+                  "202 ms"
+                ],
+                [
+                  "25 cm",
+                  "226 ms"
+                ],
+                [
+                  "30 cm",
+                  "247 ms"
+                ]
+              ]
+            },
+            {
+              "t": "table",
+              "title": "Dana’s results",
+              "head": [
+                "Condition",
+                "Caught at"
+              ],
+              "rows": [
+                [
+                  "Watching the ruler",
+                  "15 cm"
+                ],
+                [
+                  "Reading a text message",
+                  "30 cm"
+                ]
+              ]
+            }
+          ],
+          "gate": [
+            "drive",
+            "bike",
+            "walk",
+            "ruler"
+          ],
+          "readSecs": 0,
+          "items": [
+            {
+              "id": "M5-03",
+              "type": "slider",
+              "topic": "Reaction time with distraction",
+              "prompt": "By about how many milliseconds did reading the text slow Dana’s reaction time? Place the slider.",
+              "points": 5,
+              "cog": "analyze",
+              "obj": [
+                "M5-REACT"
+              ],
+              "secs": 90,
+              "unlockAfter": null,
+              "slider": {
+                "unit": "milliseconds",
+                "range": [
+                  0,
+                  200
+                ],
+                "step": 2,
+                "label": "Slower by",
+                "start": null,
+                "ticks": [
+                  0,
+                  50,
+                  100,
+                  150,
+                  200
+                ],
+                "leftLabel": "0 ms",
+                "rightLabel": "200 ms"
+              }
+            }
+          ]
+        },
+        {
+          "id": "m5-u4",
+          "title": "A plan for your phone",
+          "intro": null,
+          "stimulus": [
+            {
+              "t": "note",
+              "tone": "fiction",
+              "text": "Fictional scenario for practice."
+            },
+            {
+              "t": "p",
+              "text": "Jordan bikes to school and walks across two busy streets. Friends text a lot, and Jordan wants a plan."
+            }
+          ],
+          "gate": [
+            "drive",
+            "bike",
+            "walk",
+            "ruler"
+          ],
+          "readSecs": 0,
+          "items": [
+            {
+              "id": "M5-04",
+              "type": "multi",
+              "topic": "Safe phone habits",
+              "prompt": "Select every habit that belongs in Jordan’s plan to stay safe and in charge of the phone.",
+              "points": 5,
+              "cog": "evaluate",
+              "obj": [
+                "M5-HABITS"
+              ],
+              "secs": 100,
+              "unlockAfter": null,
+              "options": [
+                {
+                  "id": "o8bc4f",
+                  "text": "Look at the screen only when the road ahead looks clear."
+                },
+                {
+                  "id": "ofa47a",
+                  "text": "Turn on Do Not Disturb before setting off on a trip."
+                },
+                {
+                  "id": "oa35a8",
+                  "text": "Check location-sharing settings so strangers cannot see where Jordan is."
+                },
+                {
+                  "id": "oa9261",
+                  "text": "Put the phone away before crossing a street on foot."
+                },
+                {
+                  "id": "o468ff",
+                  "text": "Tell friends when replies will come so there is no pressure to answer right away."
+                },
+                {
+                  "id": "o7e5c8",
+                  "text": "Type short replies with one hand and steer the bike with the other."
+                },
+                {
+                  "id": "o3940a",
+                  "text": "Keep the phone in hand so messages can be read quickly at crossings."
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "structureHash": "32ec7e3a771e85f60ef771ddabd7cfaa8205dc423cfb828bb562f4f8d108b395",
+  "points": 100
+}

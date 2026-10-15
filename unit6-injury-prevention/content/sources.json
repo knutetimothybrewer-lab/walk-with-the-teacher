@@ -1,0 +1,217 @@
+{
+  "status": "Teacher-supplied materials are the primary source. Public sources were consulted through web search only (search result summaries); the agency pages themselves could not be opened from the build environment, so the 'confirmed' entries below are marked as such and every entry says what still needs a human look.",
+  "note": "This file is public, so it lists topics and statuses, not which answer option is correct in any question.",
+  "sources": [
+    {
+      "id": "CDC565",
+      "name": "CDC/NCHS Data Brief 565, Leading Mechanisms of Unintentional Injury Death Among Youth Ages 10-19, United States, 2024",
+      "url": "https://www.cdc.gov/nchs/products/databriefs/db565.htm",
+      "accessed": "search summary only (page not opened)"
+    },
+    {
+      "id": "NHTSA2025",
+      "name": "NHTSA, Seat Belt Use in 2025 (DOT HS 813 799)",
+      "url": "https://crashstats.nhtsa.dot.gov/Api/Public/Publication/813799",
+      "accessed": "search summary only (page not opened)"
+    },
+    {
+      "id": "AHA2010",
+      "name": "American Heart Association, 2010 CPR guidelines: sequence changed from A-B-C to C-A-B for adults, children and infants (newborns excepted)",
+      "url": "https://www.sciencedaily.com/releases/2010/10/101018074028.htm",
+      "accessed": "search summary only (page not opened)"
+    },
+    {
+      "id": "AHA2020P",
+      "name": "AHA 2020 pediatric basic life support guidance (infant compressions with two fingers, about one third of chest depth; C-A-B retained)",
+      "url": "https://www.uspharmacist.com/article/key-updates-from-the-2020-aha-pediatric-basic-life-support-guidelines",
+      "accessed": "search summary only (page not opened)"
+    },
+    {
+      "id": "AHADROWN",
+      "name": "AAP/AHA 2024 update on resuscitation after drowning: CPR with rescue breaths, started before the AED is applied",
+      "url": "https://newsroom.heart.org/news/updated-guidance-reaffirms-cpr-with-breaths-essential-for-cardiac-arrest-following-drowning",
+      "accessed": "search summary only (page not opened)"
+    },
+    {
+      "id": "ORGANDONOR",
+      "name": "organdonor.gov (HRSA): donation statistics and who can donate",
+      "url": "https://www.organdonor.gov/learn/organ-donation-statistics",
+      "accessed": "search summary only (page not opened)"
+    },
+    {
+      "id": "MAYO",
+      "name": "Mayo Clinic, Organ donation: Don't let these myths confuse you",
+      "url": "https://www.mayoclinic.org/healthy-lifestyle/consumer-health/in-depth/organ-donation/art-20047529",
+      "accessed": "search summary only (page not opened)"
+    },
+    {
+      "id": "UNOS",
+      "name": "UNOS, Facts About Organ Donation",
+      "url": "https://unos.org/transplant/facts/",
+      "accessed": "search summary only (page not opened)"
+    }
+  ],
+  "claims": [
+    {
+      "id": "U6-1",
+      "topic": "Death rates by mechanism, ages 15-19, 2024 (chart in Mission 1)",
+      "claim": "Rates per 100,000 for motor vehicle traffic, poisoning and drowning",
+      "status": "CONFIRMED BY SEARCH SUMMARY, NEEDS VERIFICATION in the data brief itself",
+      "check": "CDC/NCHS Data Brief 565 (source CDC565)"
+    },
+    {
+      "id": "U6-2",
+      "topic": "National front-seat belt use, 2025",
+      "claim": "91.3% for front-seat occupants",
+      "status": "CONFIRMED BY SEARCH SUMMARY (NHTSA 2025 research note); matches the Day 1 slides",
+      "check": "NHTSA Seat Belt Use in 2025 (source NHTSA2025)"
+    },
+    {
+      "id": "U6-3",
+      "topic": "Belt use of 16 to 24 year olds",
+      "claim": "87% as given in the Day 1 slides and handout",
+      "status": "NEEDS VERIFICATION: not found in public search results; taken from the teacher's materials",
+      "check": "Table of belt use by age in the NHTSA 2025 research note"
+    },
+    {
+      "id": "U6-4",
+      "topic": "Belt effectiveness for front-seat occupants",
+      "claim": "Fatal-injury risk reduction in cars and in SUVs, trucks and vans, as in the Day 1 slides",
+      "status": "FROM TEACHER MATERIALS; NEEDS VERIFICATION",
+      "check": "NHTSA occupant protection fact sheets"
+    },
+    {
+      "id": "U6-5",
+      "topic": "Helmet effectiveness",
+      "claim": "Figures from a meta-analysis of 40 studies, as in the Day 1 slides (bicycle helmets)",
+      "status": "FROM TEACHER MATERIALS; NEEDS VERIFICATION",
+      "check": "Olivier and Creighton, bicycle helmet meta-analysis"
+    },
+    {
+      "id": "U6-6",
+      "topic": "Crash-lab model",
+      "claim": "Force, chest load, head load and risk meters are an illustrative physics model, not quoted data",
+      "status": "BY DESIGN: labelled on screen as a teaching model",
+      "check": "Teacher to confirm the framing is acceptable"
+    },
+    {
+      "id": "U6-7",
+      "topic": "Male vs. female injury death rates",
+      "claim": "Male youth have higher unintentional-injury death rates than female youth (ages 10-19, 2024)",
+      "status": "CONFIRMED BY SEARCH SUMMARY; NEEDS VERIFICATION in the data brief",
+      "check": "CDC/NCHS Data Brief 565 (source CDC565)"
+    },
+    {
+      "id": "U6-8",
+      "topic": "Cardiac arrest versus heart attack",
+      "claim": "Arrest is an electrical problem; a heart attack is a circulation problem (as in the topic summary)",
+      "status": "FROM TEACHER MATERIALS; consistent with AHA wording; NEEDS VERIFICATION against the Day 2 notes",
+      "check": "Day 2 CPR guided notes and the ABCs of Cardiac Arrest handout"
+    },
+    {
+      "id": "U6-9",
+      "topic": "Chain of Survival wording",
+      "claim": "Five links: recognize, call 911, compress, use an AED, hand off to EMS (teacher's answer key). The AHA's published adult chain is worded differently",
+      "status": "NEEDS TEACHER CONFIRMATION",
+      "check": "Day 2 answer key; AHA adult Chain of Survival"
+    },
+    {
+      "id": "U6-10",
+      "topic": "Compression targets",
+      "claim": "Rate and depth targets shown on the meters (taken from the topic summary)",
+      "status": "FROM TEACHER MATERIALS; consistent with AHA adult guidance",
+      "check": "Day 2 guided notes"
+    },
+    {
+      "id": "U6-11",
+      "topic": "Infant technique",
+      "claim": "Two fingers just below the nipple line, about 1.5 inches deep, 30 compressions to 2 breaths for one rescuer",
+      "status": "CONFIRMED BY SEARCH SUMMARY (AHA 2020 pediatric guidance); NOT in the teacher's summary",
+      "check": "Teacher to confirm infants should appear in the practice scene at this level of detail (source AHA2020P)"
+    },
+    {
+      "id": "U6-12",
+      "topic": "Hands-only scope and drowning",
+      "claim": "Hands-only CPR for sudden teen/adult collapse; rescue breaths still recommended for infants, children, drowning, choking and overdose; for drowning, CPR with breaths before AED",
+      "status": "FROM TEACHER MATERIALS; drowning detail CONFIRMED BY SEARCH SUMMARY (sources AHADROWN, AHA2010)",
+      "check": "Day 2 notes and the A-B-C / C-A-B handout (not received)"
+    },
+    {
+      "id": "U6-13",
+      "topic": "Waiting-list figures",
+      "claim": "More than 100,000 people on the national waiting list; about 13 deaths a day; a new person about every 8 minutes",
+      "status": "CONFIRMED BY SEARCH SUMMARY of organdonor.gov (September 2024 snapshot); NEEDS VERIFICATION that the page is current",
+      "check": "organdonor.gov/learn/organ-donation-statistics (source ORGANDONOR)"
+    },
+    {
+      "id": "U6-14",
+      "topic": "Corrective facts for the three Day 3 myths",
+      "claim": "Care comes first and donation is considered only after death; donation does not prevent an open-casket funeral; age and health conditions do not automatically disqualify",
+      "status": "MYTHS FROM TEACHER'S DAY 3 PLAN; FACTS CONFIRMED BY SEARCH SUMMARY (Mayo Clinic, UNOS); Day 3 slides not received",
+      "check": "Day 3 slides/handout; sources MAYO, UNOS"
+    },
+    {
+      "id": "U6-15",
+      "topic": "Feed facts: allocation, costs, organs and tissue, living donors, sale of organs",
+      "claim": "Matching uses medical factors, not wealth or fame; donor family is not charged; list of organs and tissues; living donors need not be related; buying or selling organs is illegal (National Organ Transplant Act)",
+      "status": "CONFIRMED BY SEARCH SUMMARY (organdonor.gov, UNOS) except the legal point, which is general knowledge",
+      "check": "organdonor.gov and OPTN pages"
+    },
+    {
+      "id": "U6-16",
+      "topic": "Home fire safety",
+      "claim": "Alarms in every bedroom, outside sleeping areas and on every level; two ways out of every room; about 1 to 2 minutes to escape; get low and go low; close doors; never go back in; stop, drop and roll; fight only a small, contained fire with a clear exit",
+      "status": "FROM TEACHER'S DAY 4 SLIDES (which cite U.S. Fire Administration / NFPA guidance); not re-checked against those pages",
+      "check": "Day 4 slides 6 to 8; USFA and NFPA home escape guidance"
+    },
+    {
+      "id": "U6-17",
+      "topic": "Extinguisher classes",
+      "claim": "Classes A, B and C and the kinds of fire each is made for",
+      "status": "FROM TEACHER'S DAY 4 SLIDES",
+      "check": "Day 4 slide 8"
+    },
+    {
+      "id": "U6-18",
+      "topic": "Meeting spot detail",
+      "claim": "A good outside meeting spot is a fixed place a safe distance from the house",
+      "status": "The slides ask for \"a designated outside meeting spot\"; the distance and fixed-place detail is general guidance, NOT in the slides",
+      "check": "Teacher to confirm"
+    },
+    {
+      "id": "U6-19",
+      "topic": "Cuts and burns",
+      "claim": "Cut steps (wash hands, press clean cloth, rinse under running water, ointment and bandage), burn steps (cool under running water 10-20 minutes, never ice/butter/toothpaste, cover loosely, do not pop a blister), and the treat-yourself versus get-help lists",
+      "status": "FROM TEACHER'S DAY 4 SLIDES 11 to 13",
+      "check": "Day 4 slides; note that some first-aid guidance rinses a cut before applying pressure"
+    },
+    {
+      "id": "U6-20",
+      "topic": "Types of distraction",
+      "claim": "Visual, manual and cognitive; texting combines all three",
+      "status": "FROM TEACHER'S TOPIC SUMMARY (Day 5)",
+      "check": "Day 5 slides and guided notes"
+    },
+    {
+      "id": "U6-21",
+      "topic": "Reaction time and stopping distance model",
+      "claim": "Baseline reaction times, the added delay for each phone choice, braking decelerations and hazard distances in the road simulation",
+      "status": "ILLUSTRATIVE MODEL, not quoted data; labelled as a teaching model",
+      "check": "Teacher to confirm the framing"
+    },
+    {
+      "id": "U6-22",
+      "topic": "Ruler drop test",
+      "claim": "Reaction time from the distance a ruler falls, t = square root of (2 d / g)",
+      "status": "STANDARD PHYSICS (free fall); numbers in the reference table are computed, not measured",
+      "check": "Day 5 slides (ruler drop activity)"
+    },
+    {
+      "id": "U6-23",
+      "topic": "Claims deliberately NOT used in any scored question",
+      "claim": "The Utah study comparing distracted teen drivers with non-distracted 70-year-olds; about 5 seconds eyes-off-road per text equal to a football field at 55 mph; 3,208 deaths in distracted-driving crashes in 2024; pedestrian injuries more than doubling since 2004 (AAOS)",
+      "status": "UNVERIFIED. Per the teacher's instruction, none of these appears in a question or in a simulation. 55 mph for 5 seconds is about 400 ft, longer than a 360 ft football field",
+      "check": "NHTSA and AAOS sources; Day 5 slides"
+    }
+  ]
+}
