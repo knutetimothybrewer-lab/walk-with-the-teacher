@@ -110,3 +110,24 @@ html[data-motion="reduced"] .adfx-svg [class^="fx-"], html[data-motion="reduced"
 .nd-example { border: 2px dashed var(--accent); border-radius: var(--radius-sm); background: var(--panel); padding: .55rem .75rem; }
 .nd-example > b { color: var(--accent); display: block; margin-bottom: .2rem; }
 .nd-example ol { margin: .2rem 0 .3rem; padding-left: 1.3rem; display: grid; gap: .25rem; }
+
+/* walk-through: chips from the question */
+.wk-chips { display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; margin: .3rem 0; }
+
+/* sportsbook account statement (c1-ledger) */
+.bk-statement { display: grid; gap: .4rem; margin: .4rem 0; }
+.bk-st-head { display: flex; justify-content: space-between; gap: 1rem; font-size: .72rem; text-transform: uppercase; letter-spacing: .08em; color: #8aa094; padding: 0 .7rem; }
+.bk-st-row { display: flex; justify-content: space-between; align-items: center; gap: 1rem; background: #17261d; border-left: 4px solid #53d337; border-radius: 10px; padding: .7rem .8rem; }
+.bk-st-k { color: #eaf2ec; font-weight: 600; min-width: 0; }
+.bk-st-v { font: 800 1.2rem var(--font-ui); font-variant-numeric: tabular-nums; color: #53d337; white-space: nowrap; }
+.bk-st-v.badge { background: #0b140f; border: 1px solid #2f4838; border-radius: 6px; padding: .12rem .5rem; font-size: 1rem; color: #eaf2ec; }
+
+/* event-contract card (c1-market) */
+.mk-card { background: #fff; border: 1px solid #cdd6e4; border-radius: 12px; padding: .9rem 1rem; color: #14213d; display: grid; gap: .6rem; }
+.mk-top { display: flex; justify-content: space-between; gap: .6rem; font-size: .8rem; color: #5b6a85; } .mk-brand { font-weight: 800; letter-spacing: .06em; color: #1f4fb3; }
+.skin-market .mk-q { margin: 0; font: 800 1.2rem var(--font-ui); color: #14213d; line-height: 1.25; }
+.mk-mid { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+.mk-big b { font: 800 2.4rem var(--font-ui); color: #1f6feb; font-variant-numeric: tabular-nums; } .mk-big span { margin-left: .35rem; color: #5b6a85; }
+.mk-spark { width: 160px; height: 48px; overflow: visible; } .mk-dot { animation: fxpulse 2s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+.mk-buy { display: flex; gap: .6rem; flex-wrap: wrap; } .mk-btn.big { flex: 1 1 8rem; text-align: center; font-size: 1.1rem; padding: .55rem .8rem; }
+.skin-market .mk-rules { margin: 0; font-size: .9rem; color: #26344f; border-top: 1px solid #e3e9f3; padding-top: .5rem; }
