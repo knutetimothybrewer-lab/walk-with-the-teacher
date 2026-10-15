@@ -155,7 +155,17 @@ async function completeRescueLab(page) {
   for (let i = 0; i < 10; i++) await page.click('#aed-pad');
   await page.waitForFunction(() => /Simulation complete/.test((document.querySelector('.sim-summary') || {}).textContent || ''), null, { timeout: 10000 });
 }
+/** Tag six posts in the feed and walk through the practice registry. */
+async function completeFeedLab(page) {
+  await page.waitForSelector('.feed-lab');
+  const tags = { p1: 'myth', p2: 'fact', p3: 'myth', p4: 'myth', p5: 'opinion', p6: 'fact' };
+  for (const [id, t] of Object.entries(tags)) await page.click('.tag-btn[data-post=' + id + '][data-tag=' + t + ']');
+  await page.click('#ftab-reg');
+  for (let i = 0; i < 3; i++) await page.click('#reg-next');
+  await page.waitForFunction(() => /Simulation complete/.test((document.querySelector('.sim-summary') || {}).textContent || ''), null, { timeout: 5000 });
+}
 async function completeSim(page) {
+  if (await page.locator('.feed-lab').count()) return completeFeedLab(page);
   if (await page.locator('.crash-lab').count()) return completeCrashLab(page);
   if (await page.locator('.rescue-lab').count()) return completeRescueLab(page);
   throw new Error('unknown simulation');
@@ -169,4 +179,4 @@ async function check(page, id) {
 }
 const feedback = (page, id) => page.locator('#item-' + id + ' .feedback').innerText();
 
-module.exports = { getJson, Ctl, CODES, signIn, open, beginAssessment, startChapter, goToUnit, itemsOf, answer, check, completeCrashLab, completeRescueLab, completeSim, feedback, assert };
+module.exports = { getJson, Ctl, CODES, signIn, open, beginAssessment, startChapter, goToUnit, itemsOf, answer, check, completeCrashLab, completeRescueLab, completeFeedLab, completeSim, feedback, assert };

@@ -31,6 +31,18 @@
     "M2-AED": {
       "text": "Put the steps of AED use in order (NHES 7).",
       "basis": "standard"
+    },
+    "M3-MYTH": {
+      "text": "Match common organ-donation myths with accurate facts (NHES 8).",
+      "basis": "standard"
+    },
+    "M3-MSG": {
+      "text": "Choose an accurate, respectful message that corrects a myth (NHES 8).",
+      "basis": "standard"
+    },
+    "M3-CHECK": {
+      "text": "Judge which statements about donation are myths (NHES 8, 3).",
+      "basis": "standard"
     }
   },
   "items": [
@@ -150,6 +162,45 @@
       ],
       "secs": 60,
       "basis": "standard"
+    },
+    {
+      "id": "M3-01",
+      "chapter": "m3",
+      "topic": "Three donation myths",
+      "type": "assign/match",
+      "points": 5,
+      "cog": "remember",
+      "obj": [
+        "M3-MYTH"
+      ],
+      "secs": 60,
+      "basis": "standard"
+    },
+    {
+      "id": "M3-02",
+      "chapter": "m3",
+      "topic": "An accurate, respectful reply",
+      "type": "single",
+      "points": 5,
+      "cog": "evaluate",
+      "obj": [
+        "M3-MSG"
+      ],
+      "secs": 80,
+      "basis": "standard"
+    },
+    {
+      "id": "M3-03",
+      "chapter": "m3",
+      "topic": "Which statements are myths?",
+      "type": "multi",
+      "points": 5,
+      "cog": "analyze",
+      "obj": [
+        "M3-CHECK"
+      ],
+      "secs": 90,
+      "basis": "standard"
     }
   ],
   "chapters": [
@@ -164,6 +215,12 @@
       "n": 2,
       "title": "Chain of Survival",
       "targetMinutes": 14
+    },
+    {
+      "id": "m3",
+      "n": 3,
+      "title": "Myth vs. Fact: Organ Donation",
+      "targetMinutes": 9
     }
   ]
 }

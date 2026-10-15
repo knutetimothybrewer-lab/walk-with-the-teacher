@@ -39,6 +39,18 @@
     "M2-AED": {
       "text": "Put the steps of AED use in order (NHES 7).",
       "basis": "standard"
+    },
+    "M3-MYTH": {
+      "text": "Match common organ-donation myths with accurate facts (NHES 8).",
+      "basis": "standard"
+    },
+    "M3-MSG": {
+      "text": "Choose an accurate, respectful message that corrects a myth (NHES 8).",
+      "basis": "standard"
+    },
+    "M3-CHECK": {
+      "text": "Judge which statements about donation are myths (NHES 8, 3).",
+      "basis": "standard"
     }
   },
   "decisionModel": null,
@@ -759,8 +771,225 @@
           ]
         }
       ]
+    },
+    {
+      "id": "m3",
+      "n": 3,
+      "title": "Myth vs. Fact: Organ Donation",
+      "theme": "studio",
+      "intro": "People share claims about organ donation all the time, and some are wrong. Practice checking claims in a fictional social feed, then show you can correct a myth accurately and respectfully.",
+      "targetMinutes": 9,
+      "units": [
+        {
+          "id": "m3-u1",
+          "title": "Three myths, three facts",
+          "intro": null,
+          "stimulus": [
+            {
+              "t": "sim",
+              "id": "feed",
+              "title": "Check the feed",
+              "lead": "Read the posts in a fictional app, tag each one, and see what the facts say. Then walk through a practice registry screen.",
+              "chips": [
+                {
+                  "id": "tag6",
+                  "label": "Tag at least six posts"
+                },
+                {
+                  "id": "register",
+                  "label": "Finish the registry walk-through"
+                }
+              ]
+            },
+            {
+              "t": "note",
+              "tone": "info",
+              "text": "Teacher note: this is information, not a request to register. Registration decisions belong to families."
+            }
+          ],
+          "gate": [
+            "tag6",
+            "register"
+          ],
+          "readSecs": 300,
+          "items": [
+            {
+              "id": "M3-01",
+              "type": "assign",
+              "topic": "Three donation myths",
+              "prompt": "Match each myth to the fact that corrects it. Two facts are not used.",
+              "points": 5,
+              "cog": "remember",
+              "obj": [
+                "M3-MYTH"
+              ],
+              "secs": 60,
+              "unlockAfter": null,
+              "assign": {
+                "mode": "match",
+                "fill": "targets",
+                "figure": null,
+                "layout": null,
+                "pick": null,
+                "cards": [
+                  {
+                    "id": "cc6db4",
+                    "text": "A donor’s family has to pay the hospital for the donation, which is why many people skip it."
+                  },
+                  {
+                    "id": "ce6469",
+                    "text": "Registered donors are matched to the first patient who asks, so the decision comes down to timing."
+                  },
+                  {
+                    "id": "ce05b4",
+                    "text": "Your doctors work to save your life first, and donation is only considered after death is declared."
+                  },
+                  {
+                    "id": "c4f8dc",
+                    "text": "Age and health conditions do not automatically rule you out; the transplant team decides what can be used."
+                  },
+                  {
+                    "id": "c83bf1",
+                    "text": "The body is treated with care and dressed for the service, so donation does not show at an open casket."
+                  }
+                ],
+                "targets": [
+                  {
+                    "id": "gd06f6",
+                    "label": "“I’m too old, or I have a health condition, so I can’t be a donor.”"
+                  },
+                  {
+                    "id": "g40894",
+                    "label": "“Donating organs means I can’t have an open-casket funeral.”"
+                  },
+                  {
+                    "id": "g16a2a",
+                    "label": "“Doctors won’t try as hard to save me if I’m a registered donor.”"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "m3-u2",
+          "title": "Reply with the facts",
+          "intro": null,
+          "stimulus": [
+            {
+              "t": "note",
+              "tone": "fiction",
+              "text": "Fictional post for practice."
+            }
+          ],
+          "gate": [
+            "tag6",
+            "register"
+          ],
+          "readSecs": 0,
+          "items": [
+            {
+              "id": "M3-02",
+              "type": "single",
+              "topic": "An accurate, respectful reply",
+              "prompt": "Which reply corrects the myth best?",
+              "points": 5,
+              "cog": "evaluate",
+              "obj": [
+                "M3-MSG"
+              ],
+              "secs": 80,
+              "unlockAfter": null,
+              "scene": [
+                "A classmate posts on the class group chat: “No way I’m signing up as a donor. Then I couldn’t even have an open casket.” You decide to reply."
+              ],
+              "sceneTitle": "A classmate’s post",
+              "options": [
+                {
+                  "id": "o63822",
+                  "text": "That’s false, and honestly it’s a pretty selfish way to think. You should register today so you can help people."
+                },
+                {
+                  "id": "obcad4",
+                  "text": "That’s true for organs, but if someone donates only their eyes they can still have an open casket at the funeral."
+                },
+                {
+                  "id": "ocaeb9",
+                  "text": "Funeral homes can fix almost anything, so it never really matters. Everyone should just register, no questions asked."
+                },
+                {
+                  "id": "oed8d0",
+                  "text": "Don’t worry about it. Registered donors always get to choose exactly how their funeral is done, whatever the family wants."
+                },
+                {
+                  "id": "o30550",
+                  "text": "Donation doesn’t rule that out. The body is dressed for the service, so it isn’t visible. It’s your family’s call, but those are the facts."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "m3-u3",
+          "title": "Spot the myths",
+          "intro": null,
+          "stimulus": [
+            {
+              "t": "note",
+              "tone": "fiction",
+              "text": "Fictional statements for practice. Each could appear in a social post."
+            }
+          ],
+          "gate": [
+            "tag6",
+            "register"
+          ],
+          "readSecs": 0,
+          "items": [
+            {
+              "id": "M3-03",
+              "type": "multi",
+              "topic": "Which statements are myths?",
+              "prompt": "Select every statement that is a myth.",
+              "points": 5,
+              "cog": "analyze",
+              "obj": [
+                "M3-CHECK"
+              ],
+              "secs": 90,
+              "unlockAfter": null,
+              "options": [
+                {
+                  "id": "o391fe",
+                  "text": "More than 100,000 people in the U.S. are waiting for an organ transplant."
+                },
+                {
+                  "id": "o47681",
+                  "text": "Corneas and heart valves cannot be donated, only whole organs like hearts."
+                },
+                {
+                  "id": "o2c580",
+                  "text": "A transplant patient can be matched with a donor who is not a relative."
+                },
+                {
+                  "id": "o5ee1d",
+                  "text": "Celebrities are moved to the top of the transplant list because of their fame."
+                },
+                {
+                  "id": "o599fc",
+                  "text": "Blood type is one of the medical factors used to match an organ."
+                },
+                {
+                  "id": "o4cbc1",
+                  "text": "A donor’s family has to pay the surgeon’s fee for removing the organs."
+                }
+              ]
+            }
+          ]
+        }
+      ]
     }
   ],
-  "structureHash": "0820263ff901ba3e9b3c7e5d788e63903dd2ef20b330b9d80077e60a009c3255",
-  "points": 45
+  "structureHash": "92b8f7288c64dc7f05b776a17d863042bad2e95ccef8e2df387c6b23de137c2c",
+  "points": 60
 }
