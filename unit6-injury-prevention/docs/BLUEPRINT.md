@@ -51,5 +51,6 @@ Mix: 4 multiple choice, 3 multi-select-style (12, 20 + scenario), 2 sort, 3 matc
 2. **Points per mission** – 25/15 for CPR vs. organ donation (reflects two days vs. part of one) instead of 20 each. Accept, or force 20 each (then CPR loses one item)?
 3. **Helmet in the sandbox** – the helmet figures (51/69/65%) are the bicycle-helmet meta-analysis. I'd make the helmet toggle a cyclist crash. OK?
 4. **Physics numbers** – force and risk meters will be a labeled *illustrative model*, not quoted data. Only the sourced percentages come from your files.
-5. Day 4 fire/first-aid specifics (escape-window length, burn "when to call 911" criteria) are only partly in the summary; I need the Day 4 notes' wording.
-6. Please send the original files if possible, or at least the Day 2 key, Day 3 and 4 notes. Anything I can't confirm stays in `DISCREPANCIES.md`.
+5. ~~Day 4 wording~~ received (slides). Mission 4 now follows them; the Day 4 slides cite no NHES standard, so Standard 7 is assumed. OK?
+6. **Mission 3 facts:** the Day 3 plan names the myths but gives no corrective facts or supply-gap numbers. Please send the Day 3 slides/handout, or approve public HRSA/OPTN facts, cited in `DISCREPANCIES.md`.
+7. Still missing for exact wording: Day 1 slides/handout/stations, Day 2 notes + key, ABCs PDF, Day 5 notes/slides, Day 6. An attached Unit 8 deck was ignored.

@@ -51,3 +51,23 @@ Additional items found in the summary (not yet resolved):
 - Utah study: still not scored.
 - Station 1 of the packet and the slides agree that crashes lead; only the ordering wording differs. I'll use crashes, poisoning, drowning.
 - Chain of Survival: five links, using the answer-key wording, pending confirmation.
+
+## F. Update: Day 3 lesson plan and Day 4 slides received
+**Received and read:** `U6_Day3_..._Organ_Donation_2.docx` (a lesson plan, not student-facing notes) and `Unit6_Day4_Home_School_Safety.pptx` (16 slides, no speaker notes).
+**Received but not used:** `Unit8_Day2_Healthy_Relationships.pptx` is a Unit 8 deck, apparently attached by mistake. Nothing from it is used.
+
+Resolved by the files:
+- Day 4 fire facts (alarms in every bedroom, outside sleeping areas, every level; two ways out of every room; 1-2 minutes to escape, cited to USFA/NFPA; stop-drop-roll; get low; close doors; never go back; extinguisher classes A/B/C with "small fire, clear exit").
+- Day 4 first-aid facts (cut steps, burn steps, 911/urgent-care criteria, "treat yourself" list). Used verbatim as the source for Mission 4.
+- Day 3 AED sequence and the three organ-donation myths.
+
+New discrepancies and gaps:
+1. **Standards:** the Day 4 slides cite no NHES standard at all. Mission 4 is tagged Standard 7 on the teacher's say-so; please confirm. Day 3 plan cites 8 and 7 (agrees with the request).
+2. **Chain of Survival wording:** the Day 3 plan describes the full response as "recognize, call 911, start CPR, retrieve/apply AED, follow prompts, resume CPR" and closes with "CPR + AED + calling 911". It never names the EMS hand-off. Day 4's review slide asks for the chain "in order" without listing it. Five-link answer-key wording is still assumed.
+3. **Organ-donation facts missing:** the Day 3 plan names the myths ("doctors won't try as hard", "rules out open casket", "age/health automatically disqualify") but states no corrective facts and no supply-gap numbers. Those live in the Day 3 slides/handout, which were not received. Until they arrive, Mission 3 facts can come only from public sources (HRSA / organdonor.gov, OPTN) and will be cited here instead of silently used.
+4. **Day 4 first-aid order:** the slide has "press a clean cloth to stop bleeding" before "rinse under running water". Some first-aid guidance rinses first. Following the slide; flag if the cut-order should be tested at all.
+5. **Burn rule overlap:** slide 12 says call 911 for electrical/chemical burns, face/hands, or bigger than a palm; slide 13 groups "Call 911 / Urgent Care" together. Treat-or-get-help items will use slide 13's two columns and avoid cases that straddle the 911 vs. urgent-care line.
+6. **Smoke alarm batteries "twice a year"** reflects older practice; sealed 10-year alarms are common. Not a scored item.
+7. **Escape-plan worksheet:** the slides call for a paper sketch (two routes from the bedroom, one outside spot); no worksheet exists. The floor-plan editor follows the slide.
+8. **Slide 2 of Day 4** has no extractable text (likely an image); content not reviewed.
+9. **Day 4 "Station 3" scenario cards** are not in the slides; the sorting items will be new, built from the slide 13 lists.
