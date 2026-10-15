@@ -97,3 +97,13 @@ New discrepancies and gaps:
 - **Waiting-list numbers** (over 100,000; about 13 deaths a day; one new person about every 8 minutes) are from the organdonor.gov snapshot of September 2024 as reported by search. Older materials say 17 deaths a day; the feed uses the newer figure.
 - **Registry screen.** A fictional state registry with a fictional person; nothing is typed or saved, to protect students. The line that families are asked about donation at the hospital is general practice, not from your materials.
 - **Teacher note** from your Day 3 plan (neutral, informational, decisions belong to families) is shown on the page.
+
+## J. Mission 4 (Home and School Safety) findings
+- **Standard.** The Day 4 slides cite no NHES standard; the mission is tagged Standard 7 as you proposed.
+- **Meeting spot.** The slides ask for "a designated outside meeting spot". The sim also checks that the spot is a fixed place a safe distance from the house (the front steps and the family car are marked too close). That detail is general guidance, not in your slides. Say so if you want it relaxed.
+- **Second way out.** The plan check requires two ways out of each bedroom, with at least one going straight outside (a window or an outside door). Bedroom 2 has two doors that both lead inside, so marking both gives a hint to add the window. The slides say "doors AND windows"; the "one must reach outside" rule is my reading of that.
+- **Fire runs.** The night fire uses your plan: with no marked window the "second way out" choice is refused and you are told to go back and mark one. Smoke depth, seconds and exposure numbers are an illustrative model. The 120-second limit comes from the slides' "1 to 2 minutes".
+- **Extinguisher practice.** In the kitchen run the student picks among extinguishers labelled only A, B and C; the right one for a pan of cooking oil works. Results do not say what each class is for, and the sim never lists the classes, so Q15 (matching class to fire) is not answered on screen. Practising still reveals that one class works on an oil fire.
+- **Cut order.** The bench follows your slide (cloth, then rinse). Some first-aid sources rinse first; no scored question tests the order.
+- **School.** The slides say "Home & School Safety" but cover only the home. No school-specific content was invented.
+- **Rate-limited realism.** The house is one story; the slides' "every level of the home" is mentioned only in the question explanation.

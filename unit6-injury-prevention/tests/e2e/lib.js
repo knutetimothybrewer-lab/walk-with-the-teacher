@@ -164,7 +164,26 @@ async function completeFeedLab(page) {
   for (let i = 0; i < 3; i++) await page.click('#reg-next');
   await page.waitForFunction(() => /Simulation complete/.test((document.querySelector('.sim-summary') || {}).textContent || ''), null, { timeout: 5000 });
 }
+/** Build the escape plan, get out of both fires with it, and treat three cases. */
+async function completeHomeLab(page) {
+  await page.waitForSelector('.home-lab');
+  for (const id of ['alarm-br1', 'alarm-br2', 'alarm-hall', 'route-br1-door', 'route-br1-window', 'route-br2-door', 'route-br2-window', 'spot-mailbox']) await page.locator('#' + id).check({ force: true });
+  await page.waitForFunction(() => /Plan complete/.test((document.getElementById('plan-summary') || {}).textContent || ''), null, { timeout: 5000 });
+  await page.click('#htab-fire');
+  for (const c of ['s0-low', 's1-window', 's2-close', 's3-meet']) await page.click('#choice-night-' + c);
+  await page.waitForSelector('#run-again');
+  await page.click('#scn-kitchen');
+  for (const c of ['k0-fight', 'k1-A', 'k1-B', 'k2-sdr', 'k3-report']) await page.click('#choice-kitchen-' + c);
+  await page.waitForSelector('.run-result[data-outcome=safe]');
+  await page.click('#htab-bench');
+  for (const id of ['wash', 'press', 'rinse', 'cover']) await page.click('#bi-scrape-' + id);
+  await page.click('#case-burn');
+  for (const id of ['ice', 'cool', 'cover', 'blister']) await page.click('#bi-burn-' + id);
+  await page.click('#case-infected'); await page.click('#dec-self'); await page.click('#dec-help');
+  await page.waitForFunction(() => /Simulation complete/.test((document.querySelector('.sim-summary') || {}).textContent || ''), null, { timeout: 5000 });
+}
 async function completeSim(page) {
+  if (await page.locator('.home-lab').count()) return completeHomeLab(page);
   if (await page.locator('.feed-lab').count()) return completeFeedLab(page);
   if (await page.locator('.crash-lab').count()) return completeCrashLab(page);
   if (await page.locator('.rescue-lab').count()) return completeRescueLab(page);
@@ -179,4 +198,4 @@ async function check(page, id) {
 }
 const feedback = (page, id) => page.locator('#item-' + id + ' .feedback').innerText();
 
-module.exports = { getJson, Ctl, CODES, signIn, open, beginAssessment, startChapter, goToUnit, itemsOf, answer, check, completeCrashLab, completeRescueLab, completeFeedLab, completeSim, feedback, assert };
+module.exports = { getJson, Ctl, CODES, signIn, open, beginAssessment, startChapter, goToUnit, itemsOf, answer, check, completeCrashLab, completeRescueLab, completeFeedLab, completeHomeLab, completeSim, feedback, assert };

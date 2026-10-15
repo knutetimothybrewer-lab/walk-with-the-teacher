@@ -51,6 +51,18 @@
     "M3-CHECK": {
       "text": "Judge which statements about donation are myths (NHES 8, 3).",
       "basis": "standard"
+    },
+    "M4-PLAN": {
+      "text": "Plan a home fire escape: alarms, two ways out and an outside meeting spot (NHES 7).",
+      "basis": "standard"
+    },
+    "M4-FIRE": {
+      "text": "Respond to a fire: get low, close doors, never go back, and know the extinguisher classes and when to fight a fire (NHES 7).",
+      "basis": "standard"
+    },
+    "M4-AID": {
+      "text": "Decide between treating a minor cut or burn yourself and getting help (NHES 7).",
+      "basis": "standard"
     }
   },
   "decisionModel": null,
@@ -95,6 +107,39 @@
       "alt": "A 10-second timeline from 0 to 10 seconds. One vertical bar marks each compression a bystander gave.",
       "desc": "The timeline runs from 0 to 10 seconds. Each bar is one compression, evenly spaced. The bars sit at these times in seconds: 0.20, 0.76, 1.31, 1.87, 2.42, 2.98, 3.53, 4.09, 4.64, 5.20, 5.76, 6.31, 6.87, 7.42, 7.98, 8.53, 9.09, 9.64.",
       "markers": []
+    },
+    "floorplan-b": {
+      "src": "assets/fig-floorplan-b.svg",
+      "w": 560,
+      "h": 340,
+      "alt": "Floor plan of a small house with two bedrooms, a bathroom, a hall and a living room, set in a yard with a mailbox near the street.",
+      "desc": "A one-story house seen from above. Two bedrooms and a bathroom run along the top, a hall runs under them, and a living room is below the hall. Marker 1 is on the hall ceiling just below the two bedroom doors. Marker 2 is on the top wall of the second bedroom. Marker 3 is at the mailbox in the yard near the street. Marker 4 is on the ceiling of the first bedroom.",
+      "markers": [
+        {
+          "id": "m1",
+          "n": 1,
+          "x": 200,
+          "y": 175
+        },
+        {
+          "id": "m2",
+          "n": 2,
+          "x": 300,
+          "y": 40
+        },
+        {
+          "id": "m3",
+          "n": 3,
+          "x": 75,
+          "y": 292
+        },
+        {
+          "id": "m4",
+          "n": 4,
+          "x": 140,
+          "y": 95
+        }
+      ]
     }
   },
   "chapters": [
@@ -988,8 +1033,330 @@
           ]
         }
       ]
+    },
+    {
+      "id": "m4",
+      "n": 4,
+      "title": "Home and School Safety",
+      "theme": "ember",
+      "intro": "You may have only a minute or two to get out of a burning building, and a few simple steps make a big difference. Build an escape plan, run two fires, and treat some injuries, then show what you learned.",
+      "targetMinutes": 15,
+      "units": [
+        {
+          "id": "m4-u1",
+          "title": "Read the floor plan",
+          "intro": null,
+          "stimulus": [
+            {
+              "t": "sim",
+              "id": "home",
+              "title": "Home safety practice",
+              "lead": "Build an escape plan, run two fires with your plan, and treat four injuries at the first-aid bench.",
+              "chips": [
+                {
+                  "id": "plan",
+                  "label": "Finish an escape plan"
+                },
+                {
+                  "id": "fire",
+                  "label": "Get out safely in both fire runs"
+                },
+                {
+                  "id": "bench",
+                  "label": "Finish three first-aid cases"
+                }
+              ]
+            },
+            {
+              "t": "p",
+              "text": "A different family is planning its fire escape. Use the plan of their house."
+            }
+          ],
+          "gate": [
+            "plan",
+            "fire",
+            "bench"
+          ],
+          "readSecs": 570,
+          "items": [
+            {
+              "id": "M4-01",
+              "type": "assign",
+              "topic": "Reading an escape plan",
+              "prompt": "Match each numbered spot on the plan to what it is. One choice is not used.",
+              "points": 5,
+              "cog": "understand",
+              "obj": [
+                "M4-PLAN"
+              ],
+              "secs": 90,
+              "unlockAfter": null,
+              "assign": {
+                "mode": "label",
+                "fill": "targets",
+                "figure": "floorplan-b",
+                "layout": null,
+                "pick": null,
+                "cards": [
+                  {
+                    "id": "c64e00",
+                    "text": "A smoke alarm outside the sleeping rooms"
+                  },
+                  {
+                    "id": "c87dfe",
+                    "text": "The outside meeting spot"
+                  },
+                  {
+                    "id": "c984f0",
+                    "text": "A smoke alarm inside a bedroom"
+                  },
+                  {
+                    "id": "cccb1d",
+                    "text": "The second way out of a bedroom"
+                  },
+                  {
+                    "id": "cc32f7",
+                    "text": "The best place to hide from smoke"
+                  }
+                ],
+                "targets": [
+                  {
+                    "id": "m1",
+                    "label": "Marker 1"
+                  },
+                  {
+                    "id": "m2",
+                    "label": "Marker 2"
+                  },
+                  {
+                    "id": "m3",
+                    "label": "Marker 3"
+                  },
+                  {
+                    "id": "m4",
+                    "label": "Marker 4"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "m4-u2",
+          "title": "Smoke at a sleepover",
+          "intro": null,
+          "stimulus": [
+            {
+              "t": "note",
+              "tone": "fiction",
+              "text": "Fictional scenario for practice."
+            }
+          ],
+          "gate": [
+            "plan",
+            "fire",
+            "bench"
+          ],
+          "readSecs": 0,
+          "items": [
+            {
+              "id": "M4-02",
+              "type": "single",
+              "topic": "Responding to a fire",
+              "prompt": "What should you do?",
+              "points": 5,
+              "cog": "apply",
+              "obj": [
+                "M4-FIRE"
+              ],
+              "secs": 80,
+              "unlockAfter": null,
+              "scene": [
+                "You are sleeping over at a friend’s house, in a basement room with a door and one small window high on the wall. The smoke alarm goes off in the night. You smell smoke and see a gray haze near the ceiling."
+              ],
+              "sceneTitle": "A night away from home",
+              "options": [
+                {
+                  "id": "o50610",
+                  "text": "Stand up and gather your phone, shoes and bag so you have everything outside."
+                },
+                {
+                  "id": "o5626b",
+                  "text": "Hide under the bed until the fire department arrives to find you in the room."
+                },
+                {
+                  "id": "o6597c",
+                  "text": "Open each door on the way to check where the fire started before you decide."
+                },
+                {
+                  "id": "o50bce",
+                  "text": "Stay low under the smoke, head for the nearest clear way out and close doors behind you."
+                },
+                {
+                  "id": "od27d5",
+                  "text": "Go back in for your friend’s dog as soon as you are safely outside the house."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "m4-u3",
+          "title": "Which extinguisher?",
+          "intro": null,
+          "stimulus": [
+            {
+              "t": "p",
+              "text": "A school hallway has fire extinguishers on the wall. Each is marked with a class letter that says what kind of fire it is made for."
+            }
+          ],
+          "gate": [
+            "plan",
+            "fire",
+            "bench"
+          ],
+          "readSecs": 0,
+          "items": [
+            {
+              "id": "M4-03",
+              "type": "assign",
+              "topic": "Extinguisher classes",
+              "prompt": "Match each extinguisher class to the kind of fire it is made for. Two choices are not used.",
+              "points": 5,
+              "cog": "remember",
+              "obj": [
+                "M4-FIRE"
+              ],
+              "secs": 60,
+              "unlockAfter": null,
+              "assign": {
+                "mode": "match",
+                "fill": "targets",
+                "figure": null,
+                "layout": null,
+                "pick": null,
+                "cards": [
+                  {
+                    "id": "c97936",
+                    "text": "Any fire, even one spreading across the room"
+                  },
+                  {
+                    "id": "ca7b0a",
+                    "text": "A fire that is blocking the only way out"
+                  },
+                  {
+                    "id": "c4ecb3",
+                    "text": "Burning wood, paper, cloth or trash"
+                  },
+                  {
+                    "id": "cc9be2",
+                    "text": "Burning liquids such as gasoline, oil or paint"
+                  },
+                  {
+                    "id": "c84db6",
+                    "text": "Live electrical equipment that is plugged in"
+                  }
+                ],
+                "targets": [
+                  {
+                    "id": "gff7ef",
+                    "label": "Class B"
+                  },
+                  {
+                    "id": "g7f303",
+                    "label": "Class A"
+                  },
+                  {
+                    "id": "gf1419",
+                    "label": "Class C"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "m4-u4",
+          "title": "Treat it or get help?",
+          "intro": null,
+          "stimulus": [
+            {
+              "t": "p",
+              "text": "A school nurse sorts injuries into the ones students can treat themselves and the ones that need a professional."
+            }
+          ],
+          "gate": [
+            "plan",
+            "fire",
+            "bench"
+          ],
+          "readSecs": 0,
+          "items": [
+            {
+              "id": "M4-04",
+              "type": "assign",
+              "topic": "Treat yourself or get help",
+              "prompt": "Sort each injury into the group where it belongs.",
+              "points": 5,
+              "cog": "analyze",
+              "obj": [
+                "M4-AID"
+              ],
+              "secs": 100,
+              "unlockAfter": null,
+              "assign": {
+                "mode": "classify",
+                "fill": "cards",
+                "figure": null,
+                "layout": null,
+                "pick": null,
+                "cards": [
+                  {
+                    "id": "cd7beb",
+                    "text": "A deep cut across the palm that gapes open"
+                  },
+                  {
+                    "id": "ca25ec",
+                    "text": "Bleeding still going after 15 minutes of pressing with a clean cloth"
+                  },
+                  {
+                    "id": "cccc02",
+                    "text": "A burn on the hand from a chemical spill"
+                  },
+                  {
+                    "id": "c3dec5",
+                    "text": "A scrape from a bike fall with no signs of infection"
+                  },
+                  {
+                    "id": "cf64cc",
+                    "text": "A burn on the face from hot steam"
+                  },
+                  {
+                    "id": "c3c3f1",
+                    "text": "A paper cut that stops bleeding with light pressure"
+                  },
+                  {
+                    "id": "c6cd50",
+                    "text": "A burn on the forearm, smaller than your palm, from a curling iron"
+                  }
+                ],
+                "targets": [
+                  {
+                    "id": "g8547f",
+                    "label": "Treat it yourself"
+                  },
+                  {
+                    "id": "g35fd3",
+                    "label": "Get help (911 or urgent care)"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ]
     }
   ],
-  "structureHash": "92b8f7288c64dc7f05b776a17d863042bad2e95ccef8e2df387c6b23de137c2c",
-  "points": 60
+  "structureHash": "550a701479c629c2ef1fc7280519145b35f7c94f70f88b203c9c08dfc67eaed1",
+  "points": 80
 }

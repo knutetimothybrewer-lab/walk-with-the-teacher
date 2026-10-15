@@ -36,3 +36,8 @@ test('simulations report only chips that the mission declares', () => {
     assert.deepEqual((u.gate || []).slice().sort(), b.chips.map((x) => x.id).sort(), 'unit gate equals the sim chips for ' + b.id);
   })));
 });
+
+test('Mission 4 home lab never states the extinguisher classes or what each is for', () => {
+  const src = (read('home.js') + read('home-model.js')).toLowerCase();
+  ['class a', 'class c', 'wood, paper', 'live electrical', 'burning liquids', 'gasoline'].forEach((needle) => assert.ok(!src.includes(needle), 'home sim contains "' + needle + '"'));
+});

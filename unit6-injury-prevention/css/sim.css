@@ -176,3 +176,44 @@
 .person { display: flex; align-items: center; gap: 12px; padding: 12px; border: 1px solid var(--line); border-radius: var(--radius-sm); background: var(--surface-2); }
 .reg-sum { display: grid; grid-template-columns: max-content 1fr; gap: 6px 16px; }
 .reg-sum dt { font-weight: 700; color: var(--ink-2); } .reg-sum dd { margin: 0; }
+
+/* ---------- Mission 4: escape plan, fire runs, first-aid bench ---------- */
+.sim-stage.pale { background: #eef6ea; }
+.house { display: block; width: 100%; height: auto; }
+.house .exit, .house .pin { cursor: pointer; }
+.house .exit:focus-visible, .house .pin:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+.house .exit[aria-pressed="true"] rect { stroke: #0a7458; stroke-width: 4; }
+.house [data-room] { cursor: crosshair; }
+.plan-grid { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(260px, 1fr); gap: var(--s5); align-items: start; }
+@media (max-width: 860px) { .plan-grid { grid-template-columns: 1fr; } }
+.plan-checks { list-style: none; margin: 0 0 var(--s3); padding: 0; display: grid; gap: 6px; }
+.plan-checks li { display: flex; gap: 8px; padding: 8px 10px; border-radius: var(--radius-sm); border: 1px solid var(--line); background: var(--surface-2); font-size: var(--fs-sm); }
+.plan-checks li[data-ok="true"] { background: var(--ok-bg); border-color: var(--ok-line); color: var(--ok-ink); }
+.plan-checks .ck { font-weight: 800; width: 1.1em; }
+.plan-checks .d { color: var(--muted); }
+.plan-checks li[data-ok="true"] .d { color: var(--ok-ink); }
+.ctl-group { border: 1.5px solid var(--line); border-radius: var(--radius-sm); padding: var(--s3); margin: 0 0 var(--s3); }
+.ctl-group legend { font-weight: 800; padding: 0 6px; }
+.route-room { margin-bottom: var(--s2); }
+.route-room b { display: block; margin-bottom: 2px; }
+.fire-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--s4); margin-bottom: var(--s3); }
+@media (max-width: 860px) { .fire-grid { grid-template-columns: 1fr; } }
+.fire-grid canvas { display: block; width: 100%; height: auto; background: #e9eef2; }
+.fire-meters { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: var(--s4); margin: var(--s3) 0; }
+.narr { padding: var(--s3) var(--s4); border-left: 4px solid #9a3412; background: #fdf3ea; border-radius: var(--radius-sm); min-height: 4em; margin-bottom: var(--s3); }
+.narr p { margin: 0 0 6px; } .narr .intro { color: var(--ink-2); }
+.choices { display: grid; gap: var(--s2); margin-bottom: var(--s3); }
+.choice { display: flex; flex-direction: column; align-items: flex-start; text-align: left; min-height: 48px; padding: 8px 14px; border-radius: var(--radius-sm); border: 1.5px solid var(--line-strong); background: var(--surface); font-weight: 650; color: var(--ink); cursor: pointer; }
+.choice:hover:not([disabled]) { border-color: var(--accent); background: var(--accent-soft); }
+.choice[disabled] { opacity: 0.6; cursor: not-allowed; }
+.choice .why { font-weight: 500; font-size: var(--fs-sm); color: var(--bad-ink); }
+.run-notes { font-size: var(--fs-sm); color: var(--ink-2); display: grid; gap: 4px; }
+.run-result { padding: var(--s3) var(--s4); border-radius: var(--radius-sm); margin: var(--s3) 0; border: 1.5px solid var(--line); }
+.run-result[data-outcome="safe"] { background: var(--ok-bg); border-color: var(--ok-line); color: var(--ok-ink); }
+.run-result[data-outcome="fail"] { background: var(--warn-bg); border-color: var(--warn-line); color: var(--warn-ink); }
+.tray-items { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: var(--s2); margin: var(--s3) 0; }
+.limb { width: 100%; max-width: 380px; display: block; margin: var(--s2) 0; }
+.decide { margin-top: var(--s3); }
+.sim-note[data-ok="false"] { border-left-color: var(--bad-ink); }
+.mode-btn[data-done="true"] { border-color: var(--ok-line); }
+.ctl-group .chk { display: flex; width: 100%; }

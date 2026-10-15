@@ -156,6 +156,34 @@
       "claim": "Matching uses medical factors, not wealth or fame; donor family is not charged; list of organs and tissues; living donors need not be related; buying or selling organs is illegal (National Organ Transplant Act)",
       "status": "CONFIRMED BY SEARCH SUMMARY (organdonor.gov, UNOS) except the legal point, which is general knowledge",
       "check": "organdonor.gov and OPTN pages"
+    },
+    {
+      "id": "U6-16",
+      "topic": "Home fire safety",
+      "claim": "Alarms in every bedroom, outside sleeping areas and on every level; two ways out of every room; about 1 to 2 minutes to escape; get low and go low; close doors; never go back in; stop, drop and roll; fight only a small, contained fire with a clear exit",
+      "status": "FROM TEACHER'S DAY 4 SLIDES (which cite U.S. Fire Administration / NFPA guidance); not re-checked against those pages",
+      "check": "Day 4 slides 6 to 8; USFA and NFPA home escape guidance"
+    },
+    {
+      "id": "U6-17",
+      "topic": "Extinguisher classes",
+      "claim": "Classes A, B and C and the kinds of fire each is made for",
+      "status": "FROM TEACHER'S DAY 4 SLIDES",
+      "check": "Day 4 slide 8"
+    },
+    {
+      "id": "U6-18",
+      "topic": "Meeting spot detail",
+      "claim": "A good outside meeting spot is a fixed place a safe distance from the house",
+      "status": "The slides ask for \"a designated outside meeting spot\"; the distance and fixed-place detail is general guidance, NOT in the slides",
+      "check": "Teacher to confirm"
+    },
+    {
+      "id": "U6-19",
+      "topic": "Cuts and burns",
+      "claim": "Cut steps (wash hands, press clean cloth, rinse under running water, ointment and bandage), burn steps (cool under running water 10-20 minutes, never ice/butter/toothpaste, cover loosely, do not pop a blister), and the treat-yourself versus get-help lists",
+      "status": "FROM TEACHER'S DAY 4 SLIDES 11 to 13",
+      "check": "Day 4 slides; note that some first-aid guidance rinses a cut before applying pressure"
     }
   ]
 }

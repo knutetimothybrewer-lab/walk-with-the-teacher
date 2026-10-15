@@ -43,6 +43,18 @@
     "M3-CHECK": {
       "text": "Judge which statements about donation are myths (NHES 8, 3).",
       "basis": "standard"
+    },
+    "M4-PLAN": {
+      "text": "Plan a home fire escape: alarms, two ways out and an outside meeting spot (NHES 7).",
+      "basis": "standard"
+    },
+    "M4-FIRE": {
+      "text": "Respond to a fire: get low, close doors, never go back, and know the extinguisher classes and when to fight a fire (NHES 7).",
+      "basis": "standard"
+    },
+    "M4-AID": {
+      "text": "Decide between treating a minor cut or burn yourself and getting help (NHES 7).",
+      "basis": "standard"
     }
   },
   "items": [
@@ -201,6 +213,58 @@
       ],
       "secs": 90,
       "basis": "standard"
+    },
+    {
+      "id": "M4-01",
+      "chapter": "m4",
+      "topic": "Reading an escape plan",
+      "type": "assign/label",
+      "points": 5,
+      "cog": "understand",
+      "obj": [
+        "M4-PLAN"
+      ],
+      "secs": 90,
+      "basis": "standard"
+    },
+    {
+      "id": "M4-02",
+      "chapter": "m4",
+      "topic": "Responding to a fire",
+      "type": "single",
+      "points": 5,
+      "cog": "apply",
+      "obj": [
+        "M4-FIRE"
+      ],
+      "secs": 80,
+      "basis": "standard"
+    },
+    {
+      "id": "M4-03",
+      "chapter": "m4",
+      "topic": "Extinguisher classes",
+      "type": "assign/match",
+      "points": 5,
+      "cog": "remember",
+      "obj": [
+        "M4-FIRE"
+      ],
+      "secs": 60,
+      "basis": "standard"
+    },
+    {
+      "id": "M4-04",
+      "chapter": "m4",
+      "topic": "Treat yourself or get help",
+      "type": "assign/classify",
+      "points": 5,
+      "cog": "analyze",
+      "obj": [
+        "M4-AID"
+      ],
+      "secs": 100,
+      "basis": "standard"
     }
   ],
   "chapters": [
@@ -221,6 +285,12 @@
       "n": 3,
       "title": "Myth vs. Fact: Organ Donation",
       "targetMinutes": 9
+    },
+    {
+      "id": "m4",
+      "n": 4,
+      "title": "Home and School Safety",
+      "targetMinutes": 15
     }
   ]
 }
