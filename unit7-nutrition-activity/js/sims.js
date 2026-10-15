@@ -110,12 +110,17 @@ export function grocery(host, ctx) {
 }
 
 // ================================================================================== Exercise Intensity Simulator
+// hr = heart rate (beats per minute), br = breaths per minute. Resting is about 70 beats and 12 to 16 breaths per minute.
 const PROFILES = [
-  { k: 'stroll', name: 'Easy stroll', rpe: 2, gait: 'walk', f: 0.75, A: 15, K: 26, arm: 12, elbow: 12, lean: 1, breath: 4.4, talk: '"I could sing this whole song!"', body: 'Breathing barely changes. Heart rate is only a little above resting.' },
-  { k: 'brisk', name: 'Brisk walk', rpe: 5, gait: 'walk', f: 1.05, A: 25, K: 40, arm: 24, elbow: 28, lean: 5, breath: 3.0, talk: '"I can talk in sentences, but I couldn\'t sing."', body: 'Breathing is deeper and faster. You feel warm.' },
-  { k: 'cycle', name: 'Steady cycling', rpe: 6, gait: 'bike', f: 1.15, breath: 2.5, talk: '"I can talk, but I pause for breath often."', body: 'Breathing is quick and noticeable. Legs feel the work.' },
-  { k: 'jog', name: 'Fast jog', rpe: 7, gait: 'run', f: 1.45, A: 36, K: 88, arm: 40, elbow: 82, lean: 9, breath: 1.7, talk: '"I can say... only a few words... at a time."', body: 'Breathing is fast and deep. Sweating starts.' },
-  { k: 'sprint', name: 'Sprint intervals', rpe: 9, gait: 'run', f: 2.0, A: 52, K: 108, arm: 58, elbow: 92, lean: 18, breath: 1.1, talk: '"I... can\'t... talk."', body: 'Breathing is very fast and hard. This level can only be kept up for a short time.' }
+  { k: 'dishes', name: 'Doing dishes', rpe: 1, gait: 'dishes', f: 1.3, hr: 88, br: 15, talk: '"I could sing along with the radio."', body: 'Light activity. Standing and moving your arms burns a little more energy than sitting, but breathing and heart rate barely change.' },
+  { k: 'stroll', name: 'Easy stroll', rpe: 2, gait: 'walk', f: 0.75, A: 15, K: 26, arm: 12, elbow: 12, lean: 1, hr: 100, br: 16, talk: '"I could sing this whole song!"', body: 'Breathing barely changes. Heart rate is only a little above resting.' },
+  { k: 'brisk', name: 'Brisk walk', rpe: 5, gait: 'walk', f: 1.05, A: 25, K: 40, arm: 24, elbow: 28, lean: 5, hr: 118, br: 20, talk: '"I can talk in sentences, but I couldn\'t sing."', body: 'Breathing is deeper and faster. You feel warm.' },
+  { k: 'cycle', name: 'Steady cycling', rpe: 6, gait: 'bike', f: 1.15, hr: 140, br: 22, talk: '"I can talk, but I pause for breath often."', body: 'Breathing is quick and noticeable. Legs feel the work.' },
+  { k: 'lift', name: 'Lifting weights', rpe: 7, gait: 'lift', f: 0.6, hr: 142, br: 24, talk: '"Hh... one... more... rep!"', body: 'Muscles work hard in short bursts, so breathing is forceful and heart rate climbs, but usually less than in nonstop running. This is muscle-strengthening activity.' },
+  { k: 'jog', name: 'Fast jog', rpe: 7, gait: 'run', f: 1.45, A: 36, K: 88, arm: 40, elbow: 82, lean: 9, hr: 160, br: 25, talk: '"I can say... only a few words... at a time."', body: 'Breathing is fast and deep. Sweating starts.' },
+  { k: 'soccer', name: 'Playing soccer', rpe: 8, gait: 'run', ball: true, f: 1.6, A: 40, K: 95, arm: 44, elbow: 85, lean: 12, hr: 172, br: 27, talk: '"Pass... here!"', body: 'Sprinting, stopping and changing direction keep heart rate and breathing high for the whole game.' },
+  { k: 'wrestle', name: 'Wrestling', rpe: 9, gait: 'wrestle', f: 0.9, hr: 180, br: 30, talk: '"I... can\'t... talk."', body: 'Whole-body effort with almost no rest. Heart rate is near its maximum and breathing is very fast. Matches are played in short rounds because this effort cannot be held for long.' },
+  { k: 'sprint', name: 'Sprint intervals', rpe: 9, gait: 'run', f: 2.0, A: 52, K: 108, arm: 58, elbow: 92, lean: 18, hr: 182, br: 30, talk: '"I... can\'t... talk."', body: 'Breathing is very fast and hard. This level can only be kept up for a short time.' }
 ];
 const BANDS = [[0, 4, 'Light 1–4', '#7ad7a0'], [5, 6, 'Moderate 5–6', '#f2c14e'], [7, 10, 'Vigorous 7–10', '#ff6b5b']];
 
@@ -166,6 +171,30 @@ function runner(profile) {
     crank = S('line', { stroke: 'var(--ink)', 'stroke-width': 4, 'stroke-linecap': 'round' }, bikeG);
     pedals = [S('line', { stroke: 'var(--ink)', 'stroke-width': 5, 'stroke-linecap': 'round' }, bikeG), S('line', { stroke: 'var(--ink)', 'stroke-width': 5, 'stroke-linecap': 'round' }, bikeG)];
   }
+  // ---- props for the non-running activities (drawn behind the figure unless noted) ----
+  const gait = profile.gait, still = gait === 'lift' || gait === 'dishes' || gait === 'wrestle';
+  const propF = S('g', {}, svg); // in front of the figure
+  let ball = null, plate = null, dummy = null, bubbles = [], suds = null;
+  if (still) dashes.forEach((d) => d.setAttribute('opacity', 0));
+  if (gait === 'wrestle') {
+    S('rect', { x: 0, y: GROUND + 2, width: 260, height: 12, fill: '#d94f4f', opacity: 0.45 }, ground);
+    dummy = S('g', { style: 'filter: drop-shadow(0 0 1px #0b1020)' }, bikeG);
+    S('rect', { x: 198, y: GROUND - 8, width: 38, height: 8, rx: 3, fill: '#4a5064' }, dummy);
+    S('rect', { x: 207, y: GROUND - 74, width: 20, height: 68, rx: 9, fill: '#8a93ad' }, dummy);
+    S('circle', { cx: 217, cy: GROUND - 84, r: 11, fill: '#8a93ad' }, dummy);
+    S('rect', { x: 205, y: GROUND - 56, width: 24, height: 6, fill: '#c24d4d' }, dummy);
+  }
+  if (gait === 'dishes') {
+    S('rect', { x: 152, y: GROUND - 82, width: 108, height: 82, fill: '#3b4258', stroke: 'var(--line-strong)', 'stroke-width': 2 }, bikeG);
+    S('rect', { x: 152, y: GROUND - 84, width: 108, height: 5, fill: '#8a93ad' }, bikeG);
+    S('rect', { x: 166, y: GROUND - 80, width: 62, height: 3, fill: '#6ec1ff', opacity: 0.8 }, bikeG);
+    S('path', { d: `M236 ${GROUND - 84} v-16 q0 -8 8 -8 h6`, fill: 'none', stroke: '#c8cfe2', 'stroke-width': 4, 'stroke-linecap': 'round' }, bikeG);
+    for (let i = 0; i < 4; i++) bubbles.push(S('circle', { r: 3 + (i % 2) * 2, fill: 'none', stroke: '#dff3ff', 'stroke-width': 1.5, opacity: 0.9 }, propF));
+  }
+  if (gait === 'lift') plate = S('g', {}, propF), S('circle', { r: 18, fill: '#2b2f3a', stroke: '#c8cfe2', 'stroke-width': 3 }, plate), S('circle', { r: 6, fill: '#c8cfe2' }, plate), S('line', { x1: -30, y1: 0, x2: 30, y2: 0, stroke: '#c8cfe2', 'stroke-width': 3, opacity: 0.45 }, plate);
+  if (profile.ball) { ball = S('g', {}, propF); S('circle', { r: 9, fill: '#fff', stroke: '#10131c', 'stroke-width': 2 }, ball); S('polygon', { points: '0,-4.5 4.3,-1.4 2.7,3.6 -2.7,3.6 -4.3,-1.4', fill: '#10131c' }, ball); }
+  // breathing: the chest swells and shrinks at the activity's own breaths per minute; harder breathing = bigger heave
+  const brHz = profile.br / 60, brAmp = 0.02 + (profile.br - 14) * 0.0035; let curT = 0;
   const foot = (ank, ang) => [ank[0] + 12 * Math.cos(ang), ank[1] + 12 * Math.sin(ang)];
   /** V-taper torso: tiny waist, enormous chest and shoulders, wide lats. hip = bottom of the spine, sh = top. */
   function drawTorso(hip, sh) {
@@ -175,6 +204,8 @@ function runner(profile) {
     torso.setAttribute('points', poly.map((q) => pt(...q)).join(' '));
     const c0 = P(0.74, 3), c1 = P(0.62, 19), c2 = P(0.58, 6); pecs.setAttribute('d', `M${pt(...c0)} Q${pt(...c1)} ${pt(...c2)}`);
     const a0 = P(0.18, 7), a1 = P(0.34, 9), b0 = P(0.26, 3), b1 = P(0.4, 4); abs.setAttribute('d', `M${pt(...a0)} L${pt(...a1)} M${pt(...b0)} L${pt(...b1)}`);
+    const mid = P(0.7, 0), k = brAmp * Math.sin(2 * Math.PI * brHz * curT), tf = `translate(${pt(...mid)}) scale(${(1 + k * 1.3).toFixed(4)} ${(1 + k).toFixed(4)}) translate(${pt(-mid[0], -mid[1])})`;
+    [torsoG, pecs, abs].forEach((e) => e.setAttribute('transform', tf));
     const neckTop = P(1.12, 6); setSeg(neck, P(1.0, 3), neckTop);
     return { neckTop, n, u };
   }
@@ -183,8 +214,36 @@ function runner(profile) {
     setSeg(band, [c[0] - 9, c[1] - 4], [c[0] + 9, c[1] - 4]); setSeg(shades, [c[0] + 1, c[1] - 0.5], [c[0] + 10, c[1] - 0.5]);
   }
 
+  const legIK = (L, hip, ank) => setLeg(L, hip, ik(hip, ank, L1, L2, -1), ank, [ank[0] + 12, ank[1]]);
+  const armIK = (A2, sh, wr, dir = 1) => { const dx = wr[0] - sh[0], dy = wr[1] - sh[1], d = Math.hypot(dx, dy), m = U1 + U2 - 1, w = d > m ? [sh[0] + dx * m / d, sh[1] + dy * m / d] : wr; setArm(A2, sh, ik(sh, w, U1, U2, dir), w); return w; };
+  const GY = GROUND - 5, up = (hip, deg, len = 46) => [hip[0] + len * Math.sin(deg * RAD), hip[1] - len * Math.cos(deg * RAD)];
+  function poseStill(phi) {
+    let hip, SH;
+    if (gait === 'lift') { // squat down, then drive up and press the bar overhead
+      const e = 0.5 - 0.5 * Math.cos(phi), dip = 1 - e;
+      hip = [126 - 6 * dip, GY - (78 - 20 * dip)]; SH = up(hip, 6 + 10 * dip);
+      legIK(nearLeg, hip, [142, GY]); legIK(farLeg, hip, [112, GY]);
+      const wr = [SH[0] + 8, SH[1] - 6 - 38 * e]; armIK(farArm, [SH[0] - 2, SH[1]], [wr[0] - 3, wr[1] + 2]); const w = armIK(nearArm, SH, wr);
+      plate.setAttribute('transform', `translate(${pt(...w)})`);
+    } else if (gait === 'dishes') { // lean at the sink and scrub a plate
+      const sway = 3 * Math.sin(phi * 0.5); hip = [112 + sway, GY - 78]; SH = up(hip, 24);
+      legIK(nearLeg, hip, [128, GY]); legIK(farLeg, hip, [100, GY]);
+      const sx = 168 + 9 * Math.sin(phi), wr = [sx, GROUND - 92 + 2 * Math.sin(phi * 2)];
+      armIK(farArm, [SH[0] - 2, SH[1]], [sx - 8, wr[1] + 1]); const w = armIK(nearArm, SH, wr);
+      bubbles.forEach((b, i) => { const q = ((phi / (2 * Math.PI) * 0.6 + i * 0.27) % 1); b.setAttribute('cx', 176 + i * 15 + 4 * Math.sin(q * 9 + i)); b.setAttribute('cy', GROUND - 88 - q * 34); b.setAttribute('opacity', (1 - q).toFixed(2)); });
+    } else { // wrestling: hand-fight in a low stance, then shoot in and drive the dummy back
+      const s = Math.pow(0.5 - 0.5 * Math.cos(phi), 1.6), jit = Math.sin(phi * 4);
+      hip = [112 + 24 * s, GY - (60 - 16 * s)]; SH = up(hip, 38 + 22 * s);
+      legIK(nearLeg, hip, [148 + 12 * s, GY]); legIK(farLeg, hip, [98 + 18 * s, GY]);
+      armIK(farArm, [SH[0] - 3, SH[1]], [SH[0] + 26 + 18 * s - jit * 3, SH[1] + 14 + 10 * s + jit * 4]);
+      armIK(nearArm, SH, [SH[0] + 32 + 18 * s + jit * 4, SH[1] + 6 + 12 * s - jit * 3]);
+      dummy.setAttribute('transform', `translate(${(10 * s).toFixed(1)} ${(-2 * Math.abs(jit)).toFixed(1)}) rotate(${(5 * s).toFixed(1)} 217 ${GROUND})`);
+    }
+    const tt = drawTorso(hip, SH); drawHead(tt.neckTop, tt.u, tt.n);
+  }
   function pose(t) {
-    const phi = 2 * Math.PI * profile.f * t;
+    curT = t; const phi = 2 * Math.PI * profile.f * t;
+    if (still) return poseStill(phi);
     if (isBike) {
       const HIP = [SEAT[0] - 6, SEAT[1] - 8], SH = [HIP[0] + 54 * Math.sin(40 * RAD), HIP[1] - 54 * Math.cos(40 * RAD) + 2];
       const al = phi, P = [[BB[0] + CR * Math.cos(al), BB[1] + CR * Math.sin(al)], [BB[0] - CR * Math.cos(al), BB[1] - CR * Math.sin(al)]];
@@ -210,6 +269,7 @@ function runner(profile) {
     drawArm(phi + Math.PI, nearArm); drawArm(phi, farArm);
     const tt = drawTorso(hip, SH); drawHead(tt.neckTop, tt.u, tt.n);
     const v = 2 * Math.PI * profile.f * (L1 + L2) * Ar * 0.95, spacing = 34, off = (t * v) % spacing; dashes.forEach((d, i) => { const x = 260 - ((i * spacing + off) % (9 * spacing)); d.setAttribute('x1', x); d.setAttribute('x2', x + 16); });
+    if (ball) { const x = 192 + 12 * Math.sin(phi * 2 - 1), y = GROUND - 9 - 7 * Math.abs(Math.sin(phi * 2 - 1)); ball.setAttribute('transform', `translate(${x.toFixed(1)} ${y.toFixed(1)}) rotate(${(phi * 170).toFixed(0)})`); }
   }
   let raf = 0, t0 = 0, frames = 0, alive = true;
   const calm = reducedMotion();
@@ -227,18 +287,20 @@ function runner(profile) {
 export function intensity(host, ctx) {
   const sim = ctx.sim; sim.tried = sim.tried || [];
   let cur = PROFILES[0];
+  const hrNum = h('b.vnum', '0'), brNum = h('b.vnum', '0'), hrFill = h('i'), brFill = h('i');
   const figBox = h('div.figbox'), lung = h('div.lungs'), talk = h('div.talk'), body = h('p.bodytxt'), name = h('h3');
   const meter = h('div.rpe', { role: 'img', 'aria-label': 'Effort scale from 0 to 10' }, h('div.bands', BANDS.map(([a, b, l, c]) => h('div.band', { style: { flex: b - a + 1, background: c } }, h('span', l)))), h('div.needle'), h('div.rpeval'));
   const lungSvg = S('svg', { viewBox: '0 0 80 70', class: 'lungsvg', 'aria-hidden': 'true' });
   S('path', { d: 'M40 6 V34 M40 22 C26 18 12 26 8 48 C6 62 20 66 30 56 C38 48 38 36 40 30 M40 22 C54 18 68 26 72 48 C74 62 60 66 50 56 C42 48 42 36 40 30', fill: 'rgba(255,120,120,.28)', stroke: 'var(--accent-2)', 'stroke-width': 3 }, lungSvg);
-  lung.append(lungSvg, h('div.lbl', h('small', 'Breathing')));
+  lung.append(lungSvg);
   const heart = h('div.heart', { 'aria-hidden': 'true' }, '♥');
   const chips = h('div');
   function show(p) {
     cur = p; if (!sim.tried.includes(p.k)) sim.tried.push(p.k);
     if (figBox.firstChild && figBox.firstChild._stop) figBox.firstChild._stop();
     figBox.replaceChildren(runner(p)); name.textContent = p.name; talk.replaceChildren(h('b', 'Talk test'), h('div.bubble.big', p.talk)); body.textContent = p.body;
-    lungSvg.style.animationDuration = p.breath + 's'; heart.style.animationDuration = Math.max(.35, p.breath / 3.2) + 's';
+    lungSvg.style.animationDuration = 60 / p.br + 's'; heart.style.animationDuration = 60 / p.hr + 's';
+    countUp(hrNum, p.hr); countUp(brNum, p.br); hrFill.style.width = Math.round((p.hr - 60) / 140 * 100) + '%'; brFill.style.width = Math.round((p.br - 10) / 25 * 100) + '%';
     meter.querySelector('.needle').style.left = (p.rpe / 10) * 100 + '%'; meter.querySelector('.rpeval').textContent = `Effort: ${p.rpe} / 10`;
     tabs.querySelectorAll('button').forEach((b) => { const on = b.dataset.k === p.k; b.setAttribute('aria-pressed', on); b.classList.toggle('on', on); b.classList.toggle('tried', sim.tried.includes(b.dataset.k)); });
     const ok = sim.tried.length >= 4;
@@ -247,7 +309,7 @@ export function intensity(host, ctx) {
   }
   const tabs = h('div.ptabs', { role: 'group', 'aria-label': 'Choose an activity' }, PROFILES.map((p) => h('button.btn.small', { type: 'button', 'data-k': p.k, 'aria-pressed': 'false', onclick: () => show(p) }, p.name)));
   host.append(h('div.sim.intensity', h('div.legend2', h('b', 'Effort scale (0 to 10):'), ' 0 = sitting, 10 = maximum effort. Light about 1 to 4, moderate about 5 to 6, vigorous about 7 to 8 and above.'), tabs,
-    h('div.simgrid', h('div.panel.flat.figpanel', name, figBox, h('div.vitals', lung, h('div.heartbox', heart, h('small', 'Heart'))), body), h('div.panel.flat', talk, meter, chips))));
+    h('div.simgrid', h('div.panel.flat.figpanel', name, figBox, h('div.vitals', h('div.vcard', { role: 'group', 'aria-label': 'Heart rate' }, heart, h('div.vread', hrNum, h('small', 'heart beats per minute')), h('div.vbar', hrFill)), h('div.vcard', { role: 'group', 'aria-label': 'Breathing rate' }, lung, h('div.vread', brNum, h('small', 'breaths per minute')), h('div.vbar.br', brFill))), h('p.vrest', 'Resting for comparison: about 70 heart beats and 12 to 16 breaths per minute.'), body), h('div.panel.flat', talk, meter, chips))));
   show(PROFILES[0]);
   return { destroy() { if (figBox.firstChild && figBox.firstChild._stop) figBox.firstChild._stop(); } };
 }

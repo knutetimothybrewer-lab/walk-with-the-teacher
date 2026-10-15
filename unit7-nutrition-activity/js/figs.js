@@ -63,45 +63,88 @@ export function packageFig({ name, claims = [], color = ['#f6b042', '#e0662b'], 
 }
 
 // ============================================================================ social post (explore + scored)
-const silhouette = (parent, x, tired, light) => {
-  const g = S('g', { transform: `translate(${x} 0)` }, parent);
-  S('rect', { x: 0, y: 0, width: 96, height: 120, fill: light ? '#ffeab8' : '#4c5160' }, g);
-  S('circle', { cx: 48, cy: tired ? 44 : 38, r: 13, fill: light ? '#d89b6a' : '#7a6a60' }, g);
-  S('path', { d: tired ? 'M48 57 C30 62 28 90 34 118 L62 118 C66 90 64 62 48 57 Z' : 'M48 52 C30 58 28 90 34 118 L62 118 C68 90 66 58 48 52 Z', fill: light ? '#ff7a3d' : '#5a6070' }, g);
-  if (!tired) { S('path', { d: 'M36 66 L18 36 M60 66 L78 36', stroke: '#d89b6a', 'stroke-width': 6, 'stroke-linecap': 'round' }, g); }
-  else S('path', { d: 'M38 70 L30 100 M58 70 L66 100', stroke: '#7a6a60', 'stroke-width': 6, 'stroke-linecap': 'round' }, g);
+const ICON = {
+  heart: 'M12 21s-7.5-4.6-9.6-9.2C.9 8.4 2.9 4.8 6.4 4.8c2 0 3.7 1.1 5.6 3.2 1.9-2.1 3.6-3.2 5.6-3.2 3.5 0 5.5 3.6 4 7C19.5 16.4 12 21 12 21z',
+  comment: 'M21 11.5a8.5 8.5 0 0 1-12.4 7.5L3 20.5l1.5-5.4A8.5 8.5 0 1 1 21 11.5z',
+  share: 'M22 3 2 10.5l7 3 3 7.5L22 3zM9 13.5 22 3',
+  save: 'M6 3h12v18l-6-4.5L6 21V3z'
+};
+const icon = (k, fill) => { const svg = S('svg', { viewBox: '0 0 24 24', width: 24, height: 24, fill: fill || 'none', stroke: 'currentColor', 'stroke-width': 1.9, 'stroke-linejoin': 'round', 'stroke-linecap': 'round', 'aria-hidden': 'true' }); S('path', { d: ICON[k] }, svg); return svg; };
+/** One gym photo: a lit background, shaded person, vignette and film grain. tired = dull/slouched, otherwise bright/flexing. */
+function gymPhoto(parent, x, tired, id) {
+  const g = S('g', { transform: `translate(${x} 0)`, 'clip-path': `url(#${id}c${tired ? 0 : 1})` }, parent);
+  const defs = S('defs', {}, parent), cp = S('clipPath', { id: `${id}c${tired ? 0 : 1}` }, defs); S('rect', { x: 0, y: 0, width: 100, height: 120 }, cp);
+  const grad = (n, stops, dir = [0, 0, 0, 1]) => { const lg = S('linearGradient', { id: `${id}${n}`, x1: dir[0], y1: dir[1], x2: dir[2], y2: dir[3] }, defs); stops.forEach(([o, c]) => S('stop', { offset: o, 'stop-color': c }, lg)); return `url(#${id}${n})`; };
+  const wall = grad(`w${+tired}`, tired ? [[0, '#6b7079'], [1, '#3d4048']] : [[0, '#ffd9a8'], [1, '#f08a4b']]);
+  const floor = grad(`f${+tired}`, tired ? [[0, '#34363c'], [1, '#202227']] : [[0, '#a8643a'], [1, '#6e3c20']]);
+  const skin = tired ? '#b08a74' : '#d9a073', skinD = tired ? '#8c6a58' : '#b57a4f', shirt = tired ? '#6b7385' : '#ff5a36', shirtD = tired ? '#4f566a' : '#c23b1c', hair = '#2a1d17';
+  S('rect', { width: 100, height: 120, fill: wall }, g); S('rect', { y: 88, width: 100, height: 32, fill: floor }, g);
+  // gym backdrop: windows / rack and a blurred barbell
+  for (let i = 0; i < 3; i++) S('rect', { x: 8 + i * 32, y: 10, width: 24, height: 38, rx: 2, fill: tired ? '#8a93a2' : '#fff2cf', opacity: tired ? 0.35 : 0.7 }, g);
+  S('rect', { x: 4, y: 62, width: 92, height: 3, fill: '#20232b', opacity: 0.5 }, g); S('circle', { cx: 10, cy: 63, r: 9, fill: '#20232b', opacity: 0.45 }, g); S('circle', { cx: 90, cy: 63, r: 9, fill: '#20232b', opacity: 0.45 }, g);
+  const p = S('g', { class: tired ? 'ph-tired' : 'ph-strong' }, g);
+  // legs + shorts
+  S('path', { d: 'M38 84 L36 116 L45 116 L50 94 L55 116 L64 116 L62 84 Z', fill: skin }, p); S('path', { d: 'M37 78 L63 78 L66 98 L52 98 L50 90 L48 98 L34 98 Z', fill: tired ? '#303541' : '#232a3c' }, p);
+  // torso
+  if (tired) { S('path', { d: 'M50 44 C33 46 31 66 35 80 L65 80 C69 66 67 46 50 44 Z', fill: shirt }, p); S('path', { d: 'M50 44 C41 47 38 62 40 80 L36 80 C32 66 34 47 50 44Z', fill: shirtD, opacity: 0.6 }, p); S('path', { d: 'M38 54 C33 66 34 80 37 92 M62 54 C67 66 66 80 63 92', stroke: skin, 'stroke-width': 7, 'stroke-linecap': 'round', fill: 'none' }, p); }
+  else { S('path', { d: 'M50 38 C28 40 24 58 34 80 L66 80 C76 58 72 40 50 38 Z', fill: shirt }, p); S('path', { d: 'M50 38 C38 40 32 56 38 80 L34 80 C24 58 28 40 50 38Z', fill: shirtD, opacity: 0.55 }, p); S('path', { d: 'M33 50 L18 30 M67 50 L82 30', stroke: skin, 'stroke-width': 8, 'stroke-linecap': 'round' }, p); S('circle', { cx: 18, cy: 28, r: 5.5, fill: skinD }, p); S('circle', { cx: 82, cy: 28, r: 5.5, fill: skinD }, p); }
+  // neck + head
+  const hy = tired ? 36 : 29; S('rect', { x: 46, y: hy + 8, width: 8, height: 9, fill: skinD }, p); S('ellipse', { cx: 50, cy: hy, rx: 10.5, ry: 12, fill: skin }, p);
+  S('path', { d: `M39 ${hy - 2} C38 ${hy - 14} 62 ${hy - 14} 61 ${hy - 2} C58 ${hy - 8} 42 ${hy - 8} 39 ${hy - 2} Z`, fill: hair }, p);
+  S('path', { d: `M45 ${hy + 3} q5 ${tired ? -3 : 4} 10 0`, stroke: tired ? '#6b4a3c' : '#7a2e22', 'stroke-width': 1.5, fill: 'none', 'stroke-linecap': 'round' }, p);
+  S('circle', { cx: 46, cy: hy - 1, r: 1.1, fill: '#1b1b1b' }, p); S('circle', { cx: 54, cy: hy - 1, r: 1.1, fill: '#1b1b1b' }, p);
+  if (tired) S('path', { d: `M43 ${hy + 9} q-4 5 0 8`, stroke: '#7fc6ff', 'stroke-width': 1.6, fill: 'none', opacity: 0.8 }, p);
+  // light, vignette
+  S('rect', { width: 100, height: 120, fill: `url(#${id}v${+tired})` }, g);
+  const rg = S('radialGradient', { id: `${id}v${+tired}`, cx: 0.5, cy: 0.45, r: 0.75 }, defs); S('stop', { offset: 0.55, 'stop-color': '#000', 'stop-opacity': 0 }, rg); S('stop', { offset: 1, 'stop-color': '#000', 'stop-opacity': tired ? 0.55 : 0.3 }, rg);
+  if (!tired) S('ellipse', { cx: 50, cy: 40, rx: 46, ry: 50, fill: '#fff3c4', opacity: 0.16, class: 'ph-glow' }, g);
+}
+const tubFig = (post) => {
+  const id = uid(), svg = S('svg', { viewBox: '0 0 90 120', preserveAspectRatio: 'xMidYMax meet', class: 'tub', role: 'img', 'aria-label': `Photo of ${post.tub} ${post.sub}` });
+  const defs = S('defs', {}, svg);
+  const bg = S('radialGradient', { id: id + 'b', cx: 0.5, cy: 0.35, r: 0.9 }, defs); S('stop', { offset: 0, 'stop-color': '#fff7ec' }, bg); S('stop', { offset: 1, 'stop-color': '#d9c9ee' }, bg);
+  const body = S('linearGradient', { id: id + 'u', x1: 0, y1: 0, x2: 1, y2: 0 }, defs); [[0, '#1b2766'], [0.35, '#3a4dc2'], [0.6, '#2b3a9a'], [1, '#141c4d']].forEach(([o, c]) => S('stop', { offset: o, 'stop-color': c }, body));
+  const lid = S('linearGradient', { id: id + 'l', x1: 0, y1: 0, x2: 1, y2: 0 }, defs); [[0, '#c93a68'], [0.4, '#ff7aa3'], [1, '#a82c55']].forEach(([o, c]) => S('stop', { offset: o, 'stop-color': c }, lid));
+  S('rect', { width: 90, height: 120, fill: `url(#${id}b)` }, svg); S('rect', { y: 98, width: 90, height: 22, fill: '#b9a7d6', opacity: 0.5 }, svg);
+  S('ellipse', { cx: 45, cy: 110, rx: 32, ry: 5, fill: '#000', opacity: 0.25 }, svg);
+  S('rect', { x: 14, y: 20, width: 62, height: 88, rx: 9, fill: `url(#${id}u)` }, svg); S('rect', { x: 16, y: 6, width: 58, height: 18, rx: 6, fill: `url(#${id}l)` }, svg);
+  for (let i = 0; i < 9; i++) S('line', { x1: 21 + i * 6, y1: 8, x2: 21 + i * 6, y2: 22, stroke: '#000', 'stroke-opacity': 0.12, 'stroke-width': 1 }, svg);
+  S('rect', { x: 20, y: 42, width: 50, height: 46, rx: 5, fill: '#fff' }, svg); S('rect', { x: 20, y: 42, width: 50, height: 9, rx: 4, fill: '#ff5e8a' }, svg);
+  const t1 = S('text', { x: 45, y: 67, 'text-anchor': 'middle', style: 'font:800 9px system-ui;fill:#2d3a8c' }, svg); t1.textContent = post.tub;
+  const t2 = S('text', { x: 45, y: 78, 'text-anchor': 'middle', style: 'font:600 6.5px system-ui;fill:#444' }, svg); t2.textContent = post.sub;
+  S('rect', { x: 20, y: 82, width: 50, height: 3, fill: '#ffd23f' }, svg);
+  S('path', { d: 'M20 22 C18 50 18 80 22 104', stroke: '#fff', 'stroke-opacity': 0.35, 'stroke-width': 3, fill: 'none', 'stroke-linecap': 'round' }, svg);
+  S('rect', { x: -30, y: 0, width: 18, height: 120, fill: '#fff', opacity: 0.28, transform: 'skewX(-18)', class: 'sheen' }, svg);
+  return svg;
 };
 /** post: {handle, followers, tub, sub, ba:[l,r], caption, testimonial, badge, code, tags, missing, likes}.  opts: {regions:true, onRegion(key), explore:true} */
 export function postFig(post, opts = {}) {
   const el = h('div.post', { role: 'group', 'aria-label': 'Fictional social media post' });
   const reg = (key, node) => { if (opts.regions) { node.dataset.region = key; node.classList.add('post-reg'); } return node; };
   const photo = (() => {
-    const svg = S('svg', { viewBox: '0 0 200 120', class: 'baphoto', role: 'img', 'aria-label': `Two photos side by side labeled ${post.ba[0]} and ${post.ba[1]}` });
-    silhouette(svg, 2, true, false); silhouette(svg, 102, false, true);
+    const id = uid(), svg = S('svg', { viewBox: '0 0 200 120', class: 'baphoto', role: 'img', 'aria-label': `Two photos side by side labeled ${post.ba[0]} and ${post.ba[1]}` });
+    const f = S('filter', { id: id + 'n' }, S('defs', {}, svg)); S('feTurbulence', { type: 'fractalNoise', baseFrequency: 0.9, numOctaves: 2, seed: 3 }, f); S('feColorMatrix', { values: '0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 .09 0' }, f);
+    const inner = S('g', { class: 'kenburns' }, svg); gymPhoto(inner, 0, true, id); gymPhoto(inner, 100, false, id);
+    S('rect', { width: 200, height: 120, filter: `url(#${id}n)` }, svg);
     S('line', { x1: 100, y1: 0, x2: 100, y2: 120, stroke: '#fff', 'stroke-width': 2 }, svg);
-    [[post.ba[0], 4], [post.ba[1], 104]].forEach(([t, x]) => { S('rect', { x, y: 4, width: 6 + t.length * 5.2, height: 14, rx: 7, fill: 'rgba(0,0,0,.65)' }, svg); const tx = S('text', { x: x + 6, y: 14, style: 'font:700 8.5px system-ui;fill:#fff' }, svg); tx.textContent = t; });
+    [[post.ba[0], 5], [post.ba[1], 105]].forEach(([t, x]) => { S('rect', { x, y: 5, width: 8 + t.length * 5.2, height: 14, rx: 7, fill: 'rgba(0,0,0,.6)' }, svg); const tx = S('text', { x: x + 6, y: 15, style: 'font:700 8.5px system-ui;fill:#fff' }, svg); tx.textContent = t; });
     return svg;
   })();
-  const tub = (() => {
-    const svg = S('svg', { viewBox: '0 0 90 120', class: 'tub', role: 'img', 'aria-label': `Photo of ${post.tub} ${post.sub}` });
-    S('rect', { x: 14, y: 20, width: 62, height: 88, rx: 9, fill: '#2d3a8c' }, svg); S('rect', { x: 18, y: 8, width: 54, height: 16, rx: 6, fill: '#ff5e8a' }, svg);
-    S('rect', { x: 20, y: 44, width: 50, height: 40, rx: 5, fill: '#fff' }, svg);
-    const t1 = S('text', { x: 45, y: 62, 'text-anchor': 'middle', style: 'font:800 9px system-ui;fill:#2d3a8c' }, svg); t1.textContent = post.tub;
-    const t2 = S('text', { x: 45, y: 74, 'text-anchor': 'middle', style: 'font:600 6.5px system-ui;fill:#444' }, svg); t2.textContent = post.sub;
-    return svg;
-  })();
-  let liked = false;
-  const likeBtn = h('button.heart', { type: 'button', 'aria-pressed': 'false', 'aria-label': 'Like this post (simulated)', onclick: () => { liked = !liked; likeBtn.setAttribute('aria-pressed', liked); likeBtn.classList.toggle('on', liked); likeBtn.classList.add('pop'); setTimeout(() => likeBtn.classList.remove('pop'), 350); } }, '♥');
+  const tub = tubFig(post);
+  let liked = false; const burst = h('span.burst', { 'aria-hidden': 'true' });
+  const likeBtn = h('button.heart', { type: 'button', 'aria-pressed': 'false', 'aria-label': 'Like this post (simulated)', onclick: () => { liked = !liked; likeBtn.setAttribute('aria-pressed', liked); likeBtn.classList.toggle('on', liked); likeBtn.classList.add('pop'); setTimeout(() => likeBtn.classList.remove('pop'), 350); } }, icon('heart'));
+  const [handle0, ...rest] = [post.handle]; void rest;
   el.append(
-    reg('handle', h('div.post-head', h('span.avatar', { 'aria-hidden': 'true' }, post.handle.replace('@', '')[0].toUpperCase()), h('div', h('b', post.handle), h('div.small.muted', post.followers)), h('span.follow', 'Follow'))),
-    h('div.post-media', reg('photo', h('div.mediaA', photo)), reg('product', h('div.mediaB', tub)), post.badge ? reg('badge', h('div.seal', post.badge)) : ''),
-    h('div.post-actions', likeBtn, h('span', '💬'), h('span', '↗'), h('span.small.muted.likes', post.likes)),
+    reg('handle', h('div.post-head', h('span.ring', h('span.avatar', { 'aria-hidden': 'true' }, handle0.replace('@', '')[0].toUpperCase())), h('div', h('b', post.handle), h('div.small.muted', post.followers)), h('span.follow', 'Follow'), h('span.dots', { 'aria-hidden': 'true' }, '•••'))),
+    h('div.post-media', reg('photo', h('div.mediaA', photo)), reg('product', h('div.mediaB', tub)), post.badge ? reg('badge', h('div.seal', post.badge)) : '', burst),
+    h('div.post-actions', likeBtn, h('span.ico', icon('comment')), h('span.ico', icon('share')), h('span.ico.save', icon('save')), h('span.small.muted.likes', post.likes)),
     h('div.post-body',
       reg('claim', h('p.claim', post.caption)),
       reg('testimonial', h('p.quote', post.testimonial)),
       reg('code', h('p.codepill', post.code)),
       reg('disclosure', h('p.tags', post.tags)),
-      reg('missing', h('p.missing', 'Ingredients: not shown  •  Serving size: not shown  •  Research: no link')))
+      reg('missing', h('p.missing', 'Ingredients: not shown  •  Serving size: not shown  •  Research: no link')),
+      h('p.meta', h('span', 'View all 2,341 comments'), h('span', '2 HOURS AGO')))
   );
   return el;
 }
