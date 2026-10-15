@@ -40,3 +40,14 @@ Outside sources (CDC, NHTSA, AHA, IIHS, AAOS) will be cited here only if a confl
 - Class blocks list.
 - Teacher access phrase.
 - Real Sheet/Apps Script details (the teacher will set up; build ships README steps).
+
+## E. Update: topic summary received (originals still missing)
+Settings given: blocks 1/2, 3/4, 8/9; limit 90 min server-side; designed length ≤70 min. Teacher phrase still unset.
+
+Additional items found in the summary (not yet resolved):
+- The helmet figures (51% any head injury, 69% serious, 65% fatal; Olivier & Creighton, 40 studies) are cited as bicycle-helmet data; the sandbox helmet toggle must match that context.
+- "~5 seconds / a football field at 55 mph": 55 mph x 5 s is about 400 ft, longer than a 360 ft field. Wording should be confirmed; Q18 will compute from speed and time, not use the analogy.
+- "3,208 killed in distracted-driving crashes in 2024" and "pedestrian injuries more than doubled since 2004 (AAOS)": unverified here; no scored question until checked.
+- Utah study: still not scored.
+- Station 1 of the packet and the slides agree that crashes lead; only the ordering wording differs. I'll use crashes, poisoning, drowning.
+- Chain of Survival: five links, using the answer-key wording, pending confirmation.
