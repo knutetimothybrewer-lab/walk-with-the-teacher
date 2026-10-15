@@ -7,6 +7,7 @@ function correctText(it) {
   if (it.type === 'multi') return it.options.filter((o) => o.ok).map((o) => '- ' + o.t).join('\n');
   if (it.type === 'order') return it.steps.map((s, i) => (i + 1) + '. ' + s).join('\n');
   if (it.type === 'numeric') return it.answer + (it.numeric && it.numeric.unit ? ' ' + it.numeric.unit : '') + (it.tolerance ? ' (+/- ' + it.tolerance + ')' : ' (exact)');
+  if (it.type === 'slider') return it.answer + (it.slider && it.slider.unit ? ' ' + it.slider.unit : '') + (it.tolerance ? ' (+/- ' + it.tolerance + ')' : ' (exact)');
   if (it.type === 'assign') {
     const cards = it.layout === 'thread' ? (it.thread || []).filter((m) => m.to).map((m) => ({ t: m.t, to: m.to })) : it.cards;
     if ((it.mode || 'classify') === 'classify') {
@@ -25,7 +26,7 @@ function render(src) {
   out.push('');
   out.push('**Do not commit, post, or share with students.** Generated from the authoring source by `tools/build-content.js`.');
   out.push('');
-  out.push('Status: PROVISIONAL. The Unit 6 slides were not available when this was built (see `docs/TEACHER_REVIEW.md`). Read each item against your own slides before using it.');
+  out.push('Status: checked against your Day 1 to Day 5 slides, notes and answer keys in Drive. Open items are listed in `docs/DISCREPANCIES.md`.');
   out.push('');
   src.chapters.forEach((ch) => {
     out.push('## Chapter ' + ch.n + ': ' + ch.title);
