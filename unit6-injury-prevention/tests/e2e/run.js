@@ -419,6 +419,7 @@ async function main() {
     const pubLive = L.itemsOf(await L.getJson(live.url + 'content/items.json'));
     const bankLive = (await L.getJson(live.url + '__test/bank')).items;
     const ctxs = await newPage({ viewport: { width: 1200, height: 900 } });
+    await ctxs.page.addInitScript(() => { window.__W6_SIM_SPEED = 8; });
     const N = Object.keys(pubLive).length, PTS = Object.values(bankLive).reduce((a, b) => a + b.points, 0);
     const t0 = Date.now();
     try {
@@ -428,7 +429,7 @@ async function main() {
         if (await page.locator('main[data-page=review]').count()) break;
         if (await page.locator('main[data-page=chapter]').count()) { await page.click('.hero .btn'); await page.waitForSelector('main[data-page=unit]'); continue; }
         const ids = await page.$$eval('section.item', (s) => s.map((x) => x.id.replace('item-', '')));
-        if (await page.locator('.sim').count()) await L.completeCrashLab(page);
+        if (await page.locator('.sim').count()) await L.completeSim(page);
         const heads = await page.locator('.doc-head').count();
         for (let i = 0; i < heads; i++) await page.locator('.doc-head').nth(i).click();
         for (const id of ids) { await L.answer(page, pubLive[id], bankLive[id], true); solved++; assert.match(await L.feedback(page, id), /Correct/, id + ' was not accepted through the UI'); }

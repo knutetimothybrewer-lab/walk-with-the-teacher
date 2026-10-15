@@ -19,6 +19,26 @@
     "M1-MYTH": {
       "text": "Correct common seat belt myths with accurate facts (NHES 1).",
       "basis": "standard"
+    },
+    "M2-RECOG": {
+      "text": "Tell cardiac arrest from a heart attack and recognize the signs of cardiac arrest (NHES 1).",
+      "basis": "standard"
+    },
+    "M2-CHAIN": {
+      "text": "Put the Chain of Survival links in order (NHES 1).",
+      "basis": "standard"
+    },
+    "M2-TECH": {
+      "text": "Read compression rate from a trace and judge technique (NHES 7).",
+      "basis": "standard"
+    },
+    "M2-SCOPE": {
+      "text": "Choose hands-only CPR or CPR with breaths for the situation, and know the C-A-B order (NHES 1, 7).",
+      "basis": "standard"
+    },
+    "M2-AED": {
+      "text": "Put the steps of AED use in order (NHES 7).",
+      "basis": "standard"
     }
   },
   "decisionModel": null,
@@ -55,6 +75,14 @@
           "y": 140
         }
       ]
+    },
+    "tap-trace": {
+      "src": "assets/fig-tap-trace.svg",
+      "w": 600,
+      "h": 170,
+      "alt": "A 10-second timeline from 0 to 10 seconds. One vertical bar marks each compression a bystander gave.",
+      "desc": "The timeline runs from 0 to 10 seconds. Each bar is one compression, evenly spaced. The bars sit at these times in seconds: 0.20, 0.76, 1.31, 1.87, 2.42, 2.98, 3.53, 4.09, 4.64, 5.20, 5.76, 6.31, 6.87, 7.42, 7.98, 8.53, 9.09, 9.64.",
+      "markers": []
     }
   },
   "chapters": [
@@ -404,8 +432,335 @@
           ]
         }
       ]
+    },
+    {
+      "id": "m2",
+      "n": 2,
+      "title": "Chain of Survival",
+      "theme": "medlab",
+      "intro": "Seconds matter when a heart stops. Practice a calm, correct response in three different emergencies and with an AED, then show what you know.",
+      "targetMinutes": 14,
+      "units": [
+        {
+          "id": "m2-u1",
+          "title": "Heart attack or cardiac arrest?",
+          "intro": null,
+          "stimulus": [
+            {
+              "t": "sim",
+              "id": "rescue",
+              "title": "Rescue practice",
+              "lead": "Handle three emergencies and one AED. You choose what to do and in what order. The scene reacts to what you do.",
+              "chips": [
+                {
+                  "id": "adult",
+                  "label": "Finish the adult collapse scene"
+                },
+                {
+                  "id": "drowning",
+                  "label": "Finish the drowning scene"
+                },
+                {
+                  "id": "infant",
+                  "label": "Finish the infant scene"
+                },
+                {
+                  "id": "aed",
+                  "label": "Complete one AED shock cycle"
+                }
+              ]
+            },
+            {
+              "t": "p",
+              "text": "Two different heart emergencies can look alike from far away. An emergency card at a school nurse’s office lists six descriptions."
+            }
+          ],
+          "gate": [
+            "adult",
+            "drowning",
+            "infant",
+            "aed"
+          ],
+          "readSecs": 480,
+          "items": [
+            {
+              "id": "M2-01",
+              "type": "assign",
+              "topic": "Cardiac arrest versus heart attack",
+              "prompt": "Sort each description under the problem it best describes.",
+              "points": 5,
+              "cog": "understand",
+              "obj": [
+                "M2-RECOG"
+              ],
+              "secs": 70,
+              "unlockAfter": null,
+              "assign": {
+                "mode": "classify",
+                "fill": "cards",
+                "figure": null,
+                "layout": null,
+                "pick": null,
+                "cards": [
+                  {
+                    "id": "c110fa",
+                    "text": "The heart’s electrical signal goes wrong and the heart stops pumping blood."
+                  },
+                  {
+                    "id": "c0ce50",
+                    "text": "The person suddenly collapses, does not respond and is not breathing normally."
+                  },
+                  {
+                    "id": "caf193",
+                    "text": "A blocked artery cuts blood flow to part of the heart muscle."
+                  },
+                  {
+                    "id": "cf51d3",
+                    "text": "The person is awake and says the chest feels tight or heavy."
+                  },
+                  {
+                    "id": "ca23b4",
+                    "text": "Rescuers need to start CPR and use an AED without waiting."
+                  },
+                  {
+                    "id": "cc48cb",
+                    "text": "Symptoms may build slowly while the person is still talking."
+                  }
+                ],
+                "targets": [
+                  {
+                    "id": "g794b2",
+                    "label": "Cardiac arrest"
+                  },
+                  {
+                    "id": "gb4a5e",
+                    "label": "Heart attack"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "m2-u2",
+          "title": "The Chain of Survival",
+          "intro": null,
+          "stimulus": [
+            {
+              "t": "p",
+              "text": "A first-aid poster shows the Chain of Survival, five links that save lives when they are done in the right order."
+            }
+          ],
+          "gate": [
+            "adult",
+            "drowning",
+            "infant",
+            "aed"
+          ],
+          "readSecs": 0,
+          "items": [
+            {
+              "id": "M2-02",
+              "type": "order",
+              "topic": "Chain of Survival links",
+              "prompt": "Put the five links of the Chain of Survival in order, from the first link to the last.",
+              "points": 5,
+              "cog": "remember",
+              "obj": [
+                "M2-CHAIN"
+              ],
+              "secs": 60,
+              "unlockAfter": null,
+              "steps": [
+                {
+                  "id": "sc0479",
+                  "text": "Call 911 so help is on the way"
+                },
+                {
+                  "id": "s70d30",
+                  "text": "Recognize that the person is in cardiac arrest"
+                },
+                {
+                  "id": "s7f6f6",
+                  "text": "Hand the person over to EMS when they arrive"
+                },
+                {
+                  "id": "sad258",
+                  "text": "Start chest compressions right away"
+                },
+                {
+                  "id": "sf5502",
+                  "text": "Use an AED as soon as one arrives"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "m2-u3",
+          "title": "How fast are the compressions?",
+          "intro": null,
+          "stimulus": [
+            {
+              "t": "p",
+              "text": "A coach timed a bystander giving compressions to a training manikin for 10 seconds."
+            },
+            {
+              "t": "figure",
+              "id": "tap-trace",
+              "caption": "Compressions during a 10-second timer."
+            }
+          ],
+          "gate": [
+            "adult",
+            "drowning",
+            "infant",
+            "aed"
+          ],
+          "readSecs": 0,
+          "items": [
+            {
+              "id": "M2-03",
+              "type": "numeric",
+              "topic": "Compression rate from a trace",
+              "prompt": "Each bar is one compression. What was the compression rate, in compressions per minute?",
+              "points": 5,
+              "cog": "apply",
+              "obj": [
+                "M2-TECH"
+              ],
+              "secs": 70,
+              "unlockAfter": null,
+              "numeric": {
+                "unit": "compressions per minute",
+                "range": [
+                  0,
+                  240
+                ],
+                "decimals": 0,
+                "label": "Rate"
+              }
+            }
+          ]
+        },
+        {
+          "id": "m2-u4",
+          "title": "A child at the pool",
+          "intro": null,
+          "stimulus": [
+            {
+              "t": "note",
+              "tone": "info",
+              "text": "Fictional scenario for practice."
+            }
+          ],
+          "gate": [
+            "adult",
+            "drowning",
+            "infant",
+            "aed"
+          ],
+          "readSecs": 0,
+          "items": [
+            {
+              "id": "M2-04",
+              "type": "single",
+              "topic": "Hands-only CPR or CPR with breaths",
+              "prompt": "Which plan fits this situation best?",
+              "points": 5,
+              "cog": "evaluate",
+              "obj": [
+                "M2-SCOPE"
+              ],
+              "secs": 80,
+              "unlockAfter": null,
+              "scene": [
+                "A lifeguard pulls a 3-year-old girl out of the pool. She does not respond and is not breathing. Another lifeguard calls 911 and sends someone for the AED. You are the next trained person to help."
+              ],
+              "sceneTitle": "At the community pool",
+              "options": [
+                {
+                  "id": "ob76fe",
+                  "text": "Wait for the AED to arrive before touching her so nothing is done out of order."
+                },
+                {
+                  "id": "obbd29",
+                  "text": "Give only rescue breaths and check her pulse every minute until EMS takes over."
+                },
+                {
+                  "id": "oe2269",
+                  "text": "Press on her belly to push the water out, then start compressions."
+                },
+                {
+                  "id": "o84359",
+                  "text": "Give CPR with rescue breaths and compressions, because her breathing stopped first."
+                },
+                {
+                  "id": "obad23",
+                  "text": "Give hands-only compressions at a steady pace and skip the breaths, as for a sudden adult collapse."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "m2-u5",
+          "title": "The AED arrives",
+          "intro": null,
+          "stimulus": [
+            {
+              "t": "p",
+              "text": "A teen collapsed at a track meet. A bystander has been giving compressions, and a coach just brought the school’s AED."
+            }
+          ],
+          "gate": [
+            "adult",
+            "drowning",
+            "infant",
+            "aed"
+          ],
+          "readSecs": 0,
+          "items": [
+            {
+              "id": "M2-05",
+              "type": "order",
+              "topic": "Steps of AED use",
+              "prompt": "Put these actions in the order you would do them once the AED is at the person’s side.",
+              "points": 5,
+              "cog": "apply",
+              "obj": [
+                "M2-AED"
+              ],
+              "secs": 60,
+              "unlockAfter": null,
+              "steps": [
+                {
+                  "id": "s0a809",
+                  "text": "Turn on the AED and follow its voice prompts"
+                },
+                {
+                  "id": "s7676a",
+                  "text": "Attach the pads to the bare chest as pictured"
+                },
+                {
+                  "id": "sf3229",
+                  "text": "Restart chest compressions right away when the AED says to"
+                },
+                {
+                  "id": "s8aa14",
+                  "text": "Stand clear and press the shock button only if the AED advises it"
+                },
+                {
+                  "id": "s63e0b",
+                  "text": "Make sure no one touches the person while the AED analyzes"
+                }
+              ]
+            }
+          ]
+        }
+      ]
     }
   ],
-  "structureHash": "eb5b0a3e291cfb1de9f4c627911cde31390afa46658653338a66cbce5934cd49",
-  "points": 20
+  "structureHash": "0820263ff901ba3e9b3c7e5d788e63903dd2ef20b330b9d80077e60a009c3255",
+  "points": 45
 }

@@ -125,6 +125,41 @@ async function completeCrashLab(page) {
   await page.click('#tab-data'); await page.click('text=Compare both');
   await page.waitForFunction(() => /Simulation complete/.test((document.querySelector('.sim-summary') || {}).textContent || ''), null, { timeout: 5000 });
 }
+/** Practice every part of the rescue lab through its real controls (hands-free compressions run fast via a test hook). */
+async function completeRescueLab(page) {
+  await page.waitForSelector('#chest-pad');
+  const place = async () => {
+    const svgEl = page.locator('.rescue-lab .torso').first(); const bb = await svgEl.boundingBox();
+    await page.mouse.click(bb.x + bb.width * 0.5, bb.y + bb.height * ((60 + 0.55 * 220) / 300));
+  };
+  const scene = async (mode, extra) => {
+    await page.click('#mode-' + mode);
+    await page.click('#act-response'); await page.click('#act-breathing'); await page.click('#act-call');
+    if (extra) { await page.click('#act-airway'); }
+    await place();
+    await page.locator('#auto-comp').check({ force: true });
+    if (extra) {
+      await page.waitForFunction(() => document.querySelector('#chest-pad').dataset.wait === 'true', null, { timeout: 15000 });
+      await page.click('#act-breaths');
+    }
+    await page.waitForFunction(() => /Scene complete/.test((document.getElementById('scene-prog') || {}).textContent || ''), null, { timeout: 20000 });
+    await page.locator('#auto-comp').uncheck({ force: true });
+  };
+  await scene('adult', false); await scene('drowning', true); await scene('infant', true);
+  await page.click('#rtab-aed');
+  await page.click('#aed-on'); await page.click('#aed-bare');
+  await page.click('.pad-chip[data-pad=right]'); await page.click('[data-target=right]');
+  await page.click('.pad-chip[data-pad=left]'); await page.click('[data-target=left]');
+  await page.waitForFunction(() => !document.querySelector('#aed-shock').disabled, null, { timeout: 8000 });
+  await page.click('#aed-shock');
+  for (let i = 0; i < 10; i++) await page.click('#aed-pad');
+  await page.waitForFunction(() => /Simulation complete/.test((document.querySelector('.sim-summary') || {}).textContent || ''), null, { timeout: 10000 });
+}
+async function completeSim(page) {
+  if (await page.locator('.crash-lab').count()) return completeCrashLab(page);
+  if (await page.locator('.rescue-lab').count()) return completeRescueLab(page);
+  throw new Error('unknown simulation');
+}
 async function check(page, id) {
   const item = '#item-' + id;
   await page.waitForFunction((sel) => { const b = document.querySelector(sel + ' .actions .btn'); return b && !b.disabled; }, item, { timeout: 8000 });
@@ -134,4 +169,4 @@ async function check(page, id) {
 }
 const feedback = (page, id) => page.locator('#item-' + id + ' .feedback').innerText();
 
-module.exports = { getJson, Ctl, CODES, signIn, open, beginAssessment, startChapter, goToUnit, itemsOf, answer, check, completeCrashLab, feedback, assert };
+module.exports = { getJson, Ctl, CODES, signIn, open, beginAssessment, startChapter, goToUnit, itemsOf, answer, check, completeCrashLab, completeRescueLab, completeSim, feedback, assert };

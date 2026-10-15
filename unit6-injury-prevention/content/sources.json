@@ -2,16 +2,121 @@
   "status": "Teacher-supplied materials are the primary source. Public sources were consulted through web search only (search result summaries); the agency pages themselves could not be opened from the build environment, so the 'confirmed' entries below are marked as such and every entry says what still needs a human look.",
   "note": "This file is public, so it lists topics and statuses, not which answer option is correct in any question.",
   "sources": [
-    { "id": "CDC565", "name": "CDC/NCHS Data Brief 565, Leading Mechanisms of Unintentional Injury Death Among Youth Ages 10-19, United States, 2024", "url": "https://www.cdc.gov/nchs/products/databriefs/db565.htm", "accessed": "search summary only (page not opened)" },
-    { "id": "NHTSA2025", "name": "NHTSA, Seat Belt Use in 2025 (DOT HS 813 799)", "url": "https://crashstats.nhtsa.dot.gov/Api/Public/Publication/813799", "accessed": "search summary only (page not opened)" }
+    {
+      "id": "CDC565",
+      "name": "CDC/NCHS Data Brief 565, Leading Mechanisms of Unintentional Injury Death Among Youth Ages 10-19, United States, 2024",
+      "url": "https://www.cdc.gov/nchs/products/databriefs/db565.htm",
+      "accessed": "search summary only (page not opened)"
+    },
+    {
+      "id": "NHTSA2025",
+      "name": "NHTSA, Seat Belt Use in 2025 (DOT HS 813 799)",
+      "url": "https://crashstats.nhtsa.dot.gov/Api/Public/Publication/813799",
+      "accessed": "search summary only (page not opened)"
+    },
+    {
+      "id": "AHA2010",
+      "name": "American Heart Association, 2010 CPR guidelines: sequence changed from A-B-C to C-A-B for adults, children and infants (newborns excepted)",
+      "url": "https://www.sciencedaily.com/releases/2010/10/101018074028.htm",
+      "accessed": "search summary only (page not opened)"
+    },
+    {
+      "id": "AHA2020P",
+      "name": "AHA 2020 pediatric basic life support guidance (infant compressions with two fingers, about one third of chest depth; C-A-B retained)",
+      "url": "https://www.uspharmacist.com/article/key-updates-from-the-2020-aha-pediatric-basic-life-support-guidelines",
+      "accessed": "search summary only (page not opened)"
+    },
+    {
+      "id": "AHADROWN",
+      "name": "AAP/AHA 2024 update on resuscitation after drowning: CPR with rescue breaths, started before the AED is applied",
+      "url": "https://newsroom.heart.org/news/updated-guidance-reaffirms-cpr-with-breaths-essential-for-cardiac-arrest-following-drowning",
+      "accessed": "search summary only (page not opened)"
+    }
   ],
   "claims": [
-    { "id": "U6-1", "topic": "Death rates by mechanism, ages 15-19, 2024 (chart in Mission 1)", "claim": "Rates per 100,000 for motor vehicle traffic, poisoning and drowning", "status": "CONFIRMED BY SEARCH SUMMARY, NEEDS VERIFICATION in the data brief itself", "check": "CDC/NCHS Data Brief 565 (source CDC565)" },
-    { "id": "U6-2", "topic": "National front-seat belt use, 2025", "claim": "91.3% for front-seat occupants", "status": "CONFIRMED BY SEARCH SUMMARY (NHTSA 2025 research note); matches the Day 1 slides", "check": "NHTSA Seat Belt Use in 2025 (source NHTSA2025)" },
-    { "id": "U6-3", "topic": "Belt use of 16 to 24 year olds", "claim": "87% as given in the Day 1 slides and handout", "status": "NEEDS VERIFICATION: not found in public search results; taken from the teacher's materials", "check": "Table of belt use by age in the NHTSA 2025 research note" },
-    { "id": "U6-4", "topic": "Belt effectiveness for front-seat occupants", "claim": "Fatal-injury risk reduction in cars and in SUVs, trucks and vans, as in the Day 1 slides", "status": "FROM TEACHER MATERIALS; NEEDS VERIFICATION", "check": "NHTSA occupant protection fact sheets" },
-    { "id": "U6-5", "topic": "Helmet effectiveness", "claim": "Figures from a meta-analysis of 40 studies, as in the Day 1 slides (bicycle helmets)", "status": "FROM TEACHER MATERIALS; NEEDS VERIFICATION", "check": "Olivier and Creighton, bicycle helmet meta-analysis" },
-    { "id": "U6-6", "topic": "Crash-lab model", "claim": "Force, chest load, head load and risk meters are an illustrative physics model, not quoted data", "status": "BY DESIGN: labelled on screen as a teaching model", "check": "Teacher to confirm the framing is acceptable" },
-    { "id": "U6-7", "topic": "Male vs. female injury death rates", "claim": "Male youth have higher unintentional-injury death rates than female youth (ages 10-19, 2024)", "status": "CONFIRMED BY SEARCH SUMMARY; NEEDS VERIFICATION in the data brief", "check": "CDC/NCHS Data Brief 565 (source CDC565)" }
+    {
+      "id": "U6-1",
+      "topic": "Death rates by mechanism, ages 15-19, 2024 (chart in Mission 1)",
+      "claim": "Rates per 100,000 for motor vehicle traffic, poisoning and drowning",
+      "status": "CONFIRMED BY SEARCH SUMMARY, NEEDS VERIFICATION in the data brief itself",
+      "check": "CDC/NCHS Data Brief 565 (source CDC565)"
+    },
+    {
+      "id": "U6-2",
+      "topic": "National front-seat belt use, 2025",
+      "claim": "91.3% for front-seat occupants",
+      "status": "CONFIRMED BY SEARCH SUMMARY (NHTSA 2025 research note); matches the Day 1 slides",
+      "check": "NHTSA Seat Belt Use in 2025 (source NHTSA2025)"
+    },
+    {
+      "id": "U6-3",
+      "topic": "Belt use of 16 to 24 year olds",
+      "claim": "87% as given in the Day 1 slides and handout",
+      "status": "NEEDS VERIFICATION: not found in public search results; taken from the teacher's materials",
+      "check": "Table of belt use by age in the NHTSA 2025 research note"
+    },
+    {
+      "id": "U6-4",
+      "topic": "Belt effectiveness for front-seat occupants",
+      "claim": "Fatal-injury risk reduction in cars and in SUVs, trucks and vans, as in the Day 1 slides",
+      "status": "FROM TEACHER MATERIALS; NEEDS VERIFICATION",
+      "check": "NHTSA occupant protection fact sheets"
+    },
+    {
+      "id": "U6-5",
+      "topic": "Helmet effectiveness",
+      "claim": "Figures from a meta-analysis of 40 studies, as in the Day 1 slides (bicycle helmets)",
+      "status": "FROM TEACHER MATERIALS; NEEDS VERIFICATION",
+      "check": "Olivier and Creighton, bicycle helmet meta-analysis"
+    },
+    {
+      "id": "U6-6",
+      "topic": "Crash-lab model",
+      "claim": "Force, chest load, head load and risk meters are an illustrative physics model, not quoted data",
+      "status": "BY DESIGN: labelled on screen as a teaching model",
+      "check": "Teacher to confirm the framing is acceptable"
+    },
+    {
+      "id": "U6-7",
+      "topic": "Male vs. female injury death rates",
+      "claim": "Male youth have higher unintentional-injury death rates than female youth (ages 10-19, 2024)",
+      "status": "CONFIRMED BY SEARCH SUMMARY; NEEDS VERIFICATION in the data brief",
+      "check": "CDC/NCHS Data Brief 565 (source CDC565)"
+    },
+    {
+      "id": "U6-8",
+      "topic": "Cardiac arrest versus heart attack",
+      "claim": "Arrest is an electrical problem; a heart attack is a circulation problem (as in the topic summary)",
+      "status": "FROM TEACHER MATERIALS; consistent with AHA wording; NEEDS VERIFICATION against the Day 2 notes",
+      "check": "Day 2 CPR guided notes and the ABCs of Cardiac Arrest handout"
+    },
+    {
+      "id": "U6-9",
+      "topic": "Chain of Survival wording",
+      "claim": "Five links: recognize, call 911, compress, use an AED, hand off to EMS (teacher's answer key). The AHA's published adult chain is worded differently",
+      "status": "NEEDS TEACHER CONFIRMATION",
+      "check": "Day 2 answer key; AHA adult Chain of Survival"
+    },
+    {
+      "id": "U6-10",
+      "topic": "Compression targets",
+      "claim": "Rate and depth targets shown on the meters (taken from the topic summary)",
+      "status": "FROM TEACHER MATERIALS; consistent with AHA adult guidance",
+      "check": "Day 2 guided notes"
+    },
+    {
+      "id": "U6-11",
+      "topic": "Infant technique",
+      "claim": "Two fingers just below the nipple line, about 1.5 inches deep, 30 compressions to 2 breaths for one rescuer",
+      "status": "CONFIRMED BY SEARCH SUMMARY (AHA 2020 pediatric guidance); NOT in the teacher's summary",
+      "check": "Teacher to confirm infants should appear in the practice scene at this level of detail (source AHA2020P)"
+    },
+    {
+      "id": "U6-12",
+      "topic": "Hands-only scope and drowning",
+      "claim": "Hands-only CPR for sudden teen/adult collapse; rescue breaths still recommended for infants, children, drowning, choking and overdose; for drowning, CPR with breaths before AED",
+      "status": "FROM TEACHER MATERIALS; drowning detail CONFIRMED BY SEARCH SUMMARY (sources AHADROWN, AHA2010)",
+      "check": "Day 2 notes and the A-B-C / C-A-B handout (not received)"
+    }
   ]
 }

@@ -11,6 +11,26 @@
     "M1-MYTH": {
       "text": "Correct common seat belt myths with accurate facts (NHES 1).",
       "basis": "standard"
+    },
+    "M2-RECOG": {
+      "text": "Tell cardiac arrest from a heart attack and recognize the signs of cardiac arrest (NHES 1).",
+      "basis": "standard"
+    },
+    "M2-CHAIN": {
+      "text": "Put the Chain of Survival links in order (NHES 1).",
+      "basis": "standard"
+    },
+    "M2-TECH": {
+      "text": "Read compression rate from a trace and judge technique (NHES 7).",
+      "basis": "standard"
+    },
+    "M2-SCOPE": {
+      "text": "Choose hands-only CPR or CPR with breaths for the situation, and know the C-A-B order (NHES 1, 7).",
+      "basis": "standard"
+    },
+    "M2-AED": {
+      "text": "Put the steps of AED use in order (NHES 7).",
+      "basis": "standard"
     }
   },
   "items": [
@@ -65,6 +85,71 @@
       ],
       "secs": 110,
       "basis": "standard"
+    },
+    {
+      "id": "M2-01",
+      "chapter": "m2",
+      "topic": "Cardiac arrest versus heart attack",
+      "type": "assign/classify",
+      "points": 5,
+      "cog": "understand",
+      "obj": [
+        "M2-RECOG"
+      ],
+      "secs": 70,
+      "basis": "standard"
+    },
+    {
+      "id": "M2-02",
+      "chapter": "m2",
+      "topic": "Chain of Survival links",
+      "type": "order",
+      "points": 5,
+      "cog": "remember",
+      "obj": [
+        "M2-CHAIN"
+      ],
+      "secs": 60,
+      "basis": "standard"
+    },
+    {
+      "id": "M2-03",
+      "chapter": "m2",
+      "topic": "Compression rate from a trace",
+      "type": "numeric",
+      "points": 5,
+      "cog": "apply",
+      "obj": [
+        "M2-TECH"
+      ],
+      "secs": 70,
+      "basis": "standard"
+    },
+    {
+      "id": "M2-04",
+      "chapter": "m2",
+      "topic": "Hands-only CPR or CPR with breaths",
+      "type": "single",
+      "points": 5,
+      "cog": "evaluate",
+      "obj": [
+        "M2-SCOPE"
+      ],
+      "secs": 80,
+      "basis": "standard"
+    },
+    {
+      "id": "M2-05",
+      "chapter": "m2",
+      "topic": "Steps of AED use",
+      "type": "order",
+      "points": 5,
+      "cog": "apply",
+      "obj": [
+        "M2-AED"
+      ],
+      "secs": 60,
+      "basis": "standard"
     }
   ],
   "chapters": [
@@ -73,6 +158,12 @@
       "n": 1,
       "title": "Predictable, Not Random",
       "targetMinutes": 11
+    },
+    {
+      "id": "m2",
+      "n": 2,
+      "title": "Chain of Survival",
+      "targetMinutes": 14
     }
   ]
 }
