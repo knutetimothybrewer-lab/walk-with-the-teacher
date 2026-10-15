@@ -3,163 +3,11 @@
 // The action tiles are listed alphabetically on purpose, so the layout does not suggest an order. The scene itself reacts to the order.
 import { h, svg } from '../util.js';
 import * as M from './rescue-model.js';
+import { drawScene } from './rescue-art.js';
 
-const W = 960, H = 420, FLOOR = 340;
+const W = 960, H = 420;
 const fmt1 = (x) => (Math.round(x * 10) / 10).toFixed(1);
 const clock = (ms) => { const s = Math.max(0, Math.floor(ms / 1000)); return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); };
-
-/* ====================================================================================== drawing */
-function capsule(ctx, a, b, wd, fill, stroke) {
-  const dx = b[0] - a[0], dy = b[1] - a[1], L = Math.hypot(dx, dy) || 1e-6, r = wd / 2;
-  ctx.save(); ctx.translate(a[0], a[1]); ctx.rotate(Math.atan2(dy, dx));
-  ctx.beginPath(); ctx.moveTo(0, -r); ctx.lineTo(L, -r); ctx.arc(L, 0, r, -Math.PI / 2, Math.PI / 2); ctx.lineTo(0, r); ctx.arc(0, 0, r, Math.PI / 2, -Math.PI / 2); ctx.closePath();
-  ctx.fillStyle = fill; ctx.fill(); if (stroke) { ctx.lineWidth = 1.5; ctx.strokeStyle = stroke; ctx.stroke(); } ctx.restore();
-}
-const gauss = (x) => Math.exp(-x * x);
-
-function background(ctx, mode) {
-  if (mode === 'drowning') {
-    const g = ctx.createLinearGradient(0, 0, 0, FLOOR); g.addColorStop(0, '#d9eef7'); g.addColorStop(1, '#f2fafd'); ctx.fillStyle = g; ctx.fillRect(0, 0, W, FLOOR);
-    // pool water at the back with light ripples
-    const w = ctx.createLinearGradient(0, 150, 0, 260); w.addColorStop(0, '#5ec4e6'); w.addColorStop(1, '#2d94c4'); ctx.fillStyle = w; ctx.fillRect(0, 150, W, 110);
-    ctx.strokeStyle = 'rgba(255,255,255,0.55)'; ctx.lineWidth = 2; for (let y = 170; y < 250; y += 22) { ctx.beginPath(); for (let x = 0; x <= W; x += 24) ctx.lineTo(x, y + Math.sin(x / 38 + y) * 3); ctx.stroke(); }
-    ctx.fillStyle = '#cfd8dc'; ctx.fillRect(0, 258, W, 8);
-    // lifeguard chair silhouette and ring buoy
-    ctx.fillStyle = '#e8edf0'; ctx.fillRect(800, 120, 8, 140); ctx.fillRect(860, 120, 8, 140); ctx.fillRect(792, 118, 84, 10);
-    ctx.strokeStyle = '#d2332b'; ctx.lineWidth = 9; ctx.beginPath(); ctx.arc(120, 215, 24, 0, Math.PI * 2); ctx.stroke(); ctx.strokeStyle = '#fff'; ctx.lineWidth = 4; ctx.beginPath(); ctx.arc(120, 215, 24, 0.4, 1.2); ctx.stroke();
-    const d = ctx.createLinearGradient(0, 266, 0, H); d.addColorStop(0, '#e4dccb'); d.addColorStop(1, '#cdc3ad'); ctx.fillStyle = d; ctx.fillRect(0, 266, W, H - 266);
-    ctx.strokeStyle = 'rgba(120,110,90,0.35)'; ctx.lineWidth = 1; for (let x = 0; x < W; x += 60) { ctx.beginPath(); ctx.moveTo(x, 266); ctx.lineTo(x - 30, H); ctx.stroke(); }
-  } else if (mode === 'infant') {
-    const g = ctx.createLinearGradient(0, 0, 0, FLOOR); g.addColorStop(0, '#f7ecd9'); g.addColorStop(1, '#fbf5ea'); ctx.fillStyle = g; ctx.fillRect(0, 0, W, FLOOR);
-    ctx.fillStyle = '#e3d3bd'; ctx.fillRect(0, 236, W, 6);                       // wall base
-    ctx.fillStyle = '#cfe0d4'; ctx.beginPath(); ctx.roundRect(70, 60, 130, 100, 8); ctx.fill(); ctx.strokeStyle = '#a8c0b0'; ctx.lineWidth = 5; ctx.stroke();  // picture frame
-    ctx.fillStyle = '#e8b9a0'; ctx.beginPath(); ctx.arc(135, 110, 22, 0, Math.PI * 2); ctx.fill();
-    const r = ctx.createLinearGradient(0, 242, 0, H); r.addColorStop(0, '#9fb7c9'); r.addColorStop(1, '#7f99ad'); ctx.fillStyle = r; ctx.fillRect(0, 242, W, H - 242);
-    ctx.strokeStyle = 'rgba(255,255,255,0.25)'; ctx.lineWidth = 3; for (let x = 20; x < W; x += 46) { ctx.beginPath(); ctx.moveTo(x, 250); ctx.lineTo(x, H); ctx.stroke(); }
-  } else {
-    const g = ctx.createLinearGradient(0, 0, 0, FLOOR); g.addColorStop(0, '#e6ecf1'); g.addColorStop(1, '#f6f8fa'); ctx.fillStyle = g; ctx.fillRect(0, 0, W, FLOOR);
-    // gym wall, bleachers and a basketball hoop
-    ctx.fillStyle = '#c9d3dc'; ctx.fillRect(0, 210, W, 56);
-    for (let i = 0; i < 4; i++) { ctx.fillStyle = i % 2 ? '#b7c3ce' : '#a9b7c4'; ctx.fillRect(560, 120 + i * 36, 400, 36); }
-    ctx.fillStyle = '#fff'; ctx.fillRect(90, 60, 110, 74); ctx.strokeStyle = '#d2332b'; ctx.lineWidth = 4; ctx.strokeRect(90, 60, 110, 74); ctx.strokeRect(122, 92, 46, 34);
-    ctx.strokeStyle = '#e07b1f'; ctx.lineWidth = 5; ctx.beginPath(); ctx.ellipse(145, 138, 22, 6, 0, 0, Math.PI * 2); ctx.stroke();
-    const f = ctx.createLinearGradient(0, 266, 0, H); f.addColorStop(0, '#d9a867'); f.addColorStop(1, '#b98544'); ctx.fillStyle = f; ctx.fillRect(0, 266, W, H - 266);
-    ctx.strokeStyle = 'rgba(120,80,30,0.28)'; ctx.lineWidth = 1; for (let y = 286; y < H; y += 22) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke(); }
-    ctx.strokeStyle = '#fff'; ctx.lineWidth = 4; ctx.beginPath(); ctx.moveTo(0, 300); ctx.lineTo(W, 300); ctx.stroke();
-  }
-  ctx.fillStyle = 'rgba(0,0,0,0.12)'; ctx.fillRect(0, FLOOR - 2, W, 3);
-}
-
-/** Victim lying on the back, seen from the side, head to the left. dep = chest compression in px, rise = chest lift in px. */
-function victim(ctx, mode, cx, dep, rise, st) {
-  const infant = mode === 'infant';
-  const top = infant ? FLOOR - 52 : FLOOR - 64, thick = infant ? 52 : 64;
-  const x0 = infant ? cx - 130 : cx - 120, x1 = infant ? cx + 90 : cx + 130;
-  const skin = infant ? '#f1c7a6' : mode === 'drowning' ? '#d9a47c' : '#b9805a';
-  const shirt = infant ? '#ffe28a' : mode === 'drowning' ? '#2b6fb0' : '#2f8f83';
-  const pants = infant ? '#ffe28a' : mode === 'drowning' ? '#e0524a' : '#39424d';
-  if (infant) { ctx.fillStyle = '#d7e4f0'; ctx.beginPath(); ctx.roundRect(cx - 280, FLOOR - 16, 560, 22, 10); ctx.fill(); ctx.strokeStyle = '#a9bdd0'; ctx.lineWidth = 2; ctx.stroke(); }
-  // legs
-  const legEnd = infant ? cx + 230 : cx + 470, legH = infant ? 30 : 52;
-  capsule(ctx, [x1 - 10, FLOOR - legH / 2 - 2], [legEnd, FLOOR - legH / 2 - 2], legH, pants, 'rgba(0,0,0,0.25)');
-  ctx.fillStyle = infant ? '#fff' : '#f4f4f4'; ctx.beginPath(); ctx.roundRect(legEnd - 6, FLOOR - (infant ? 26 : 34), infant ? 34 : 60, infant ? 22 : 30, 8); ctx.fill(); ctx.strokeStyle = '#999'; ctx.lineWidth = 1.5; ctx.stroke();
-  // head (face up) and neck
-  const hr = infant ? 46 : 31, hx = x0 - (infant ? 36 : 28), hy = FLOOR - hr + 2;
-  ctx.fillStyle = skin; ctx.fillRect(x0 - 10, FLOOR - 28, 30, 26);
-  ctx.beginPath(); ctx.arc(hx, hy, hr, 0, Math.PI * 2); ctx.fillStyle = skin; ctx.fill(); ctx.lineWidth = 2; ctx.strokeStyle = 'rgba(0,0,0,0.25)'; ctx.stroke();
-  ctx.fillStyle = mode === 'drowning' ? '#3b2a20' : infant ? '#7a5a3c' : '#231b16';
-  ctx.beginPath(); ctx.arc(hx, hy, hr + 1, Math.PI * 0.85, Math.PI * 1.55); ctx.lineTo(hx, hy); ctx.closePath(); ctx.fill();
-  ctx.fillStyle = skin; ctx.beginPath(); ctx.moveTo(hx + 4, hy - hr + 4); ctx.lineTo(hx + 12, hy - hr - 8); ctx.lineTo(hx + 20, hy - hr + 8); ctx.closePath(); ctx.fill(); // nose points up
-  ctx.strokeStyle = '#3a2a22'; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.arc(hx + 10, hy - hr * 0.4, hr * 0.14, 0.1, Math.PI - 0.1); ctx.stroke();                 // closed eye
-  ctx.beginPath(); ctx.moveTo(hx + hr * 0.45, hy + hr * 0.2); ctx.lineTo(hx + hr * 0.7, hy + hr * 0.22); ctx.stroke();                                          // mouth
-  if (mode === 'drowning') { ctx.fillStyle = 'rgba(70,170,220,0.7)'; [[hx - 8, hy + 14], [hx + 6, hy + 24], [hx + 18, hy + 8]].forEach(([x, y]) => { ctx.beginPath(); ctx.arc(x, y, 3, 0, Math.PI * 2); ctx.fill(); }); }
-  if (st.mask) { ctx.fillStyle = 'rgba(190,230,245,0.85)'; ctx.strokeStyle = '#4b8fb0'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(hx + hr * 0.2, hy + hr * 0.1); ctx.lineTo(hx + hr * 0.95, hy + hr * 0.1); ctx.lineTo(hx + hr * 0.78, hy + hr * 0.62); ctx.lineTo(hx + hr * 0.3, hy + hr * 0.62); ctx.closePath(); ctx.fill(); ctx.stroke(); }
-  // torso with a chest that dips under the hands and lifts with each breath
-  const pts = [];
-  for (let x = x0; x <= x1; x += 6) {
-    const bulge = 6 * gauss((x - (cx - 30)) / 90);
-    const y = top - bulge - rise * gauss((x - cx + 15) / 80) + dep * gauss((x - cx) / (infant ? 34 : 42));
-    pts.push([x, y]);
-  }
-  ctx.beginPath(); ctx.moveTo(x0, FLOOR); pts.forEach(([x, y]) => ctx.lineTo(x, y)); ctx.lineTo(x1, FLOOR); ctx.closePath();
-  const sg = ctx.createLinearGradient(0, top - 10, 0, FLOOR); sg.addColorStop(0, shade(shirt, 24)); sg.addColorStop(1, shade(shirt, -28));
-  ctx.fillStyle = sg; ctx.fill(); ctx.lineWidth = 2; ctx.strokeStyle = 'rgba(0,0,0,0.3)'; ctx.stroke();
-  if (st.bare) { // clothing pulled aside: skin on the chest
-    ctx.beginPath(); ctx.moveTo(cx - 50, FLOOR); pts.filter(([x]) => x >= cx - 50 && x <= cx + 50).forEach(([x, y]) => ctx.lineTo(x, y)); ctx.lineTo(cx + 50, FLOOR); ctx.closePath(); ctx.fillStyle = skin; ctx.fill();
-  }
-  // near arm resting along the side
-  if (!infant) capsule(ctx, [cx + 40, FLOOR - 24], [cx + 150, FLOOR - 18], 24, shade(shirt, 6), 'rgba(0,0,0,0.25)');
-  else capsule(ctx, [cx + 10, FLOOR - 20], [cx + 70, FLOOR - 16], 16, shade(shirt, 6), 'rgba(0,0,0,0.25)');
-  return { chestTop: top, hx, hy };
-}
-function shade(hex, amt) {
-  const n = parseInt(hex.slice(1), 16); const c = (v) => Math.max(0, Math.min(255, v + amt));
-  return '#' + [c(n >> 16), c((n >> 8) & 255), c(n & 255)].map((v) => v.toString(16).padStart(2, '0')).join('');
-}
-
-/** Rescuer in front view, kneeling beside the victim on the far side, arms straight to the hands on the chest. */
-function rescuer(ctx, mode, cx, dep, chestTop, st) {
-  const skin = '#8d5a3b', hoodie = '#2b3a67', pants = '#2d3340';
-  if (mode === 'infant') {
-    // an adult's forearm comes in from the right; two fingertips rest just below the nipple line
-    const tip = [cx, chestTop - 4 + dep];
-    capsule(ctx, [cx + 190, 130 + dep * 0.6], [cx + 40, chestTop - 70 + dep * 0.8], 46, hoodie, 'rgba(0,0,0,0.3)');
-    capsule(ctx, [cx + 40, chestTop - 70 + dep * 0.8], [cx + 8, tip[1] - 26], 28, skin, 'rgba(0,0,0,0.25)');
-    capsule(ctx, [cx + 4, tip[1] - 26], [cx - 2, tip[1]], 10, skin, 'rgba(0,0,0,0.25)');
-    capsule(ctx, [cx + 14, tip[1] - 26], [cx + 10, tip[1]], 10, skin, 'rgba(0,0,0,0.25)');
-    ctx.fillStyle = skin; ctx.beginPath(); ctx.arc(cx + 235, 80 + dep * 0.4, 36, 0, Math.PI * 2); ctx.fill(); ctx.fillStyle = '#1d1815'; ctx.beginPath(); ctx.arc(cx + 235, 74 + dep * 0.4, 37, Math.PI, Math.PI * 2); ctx.fill();
-    return;
-  }
-  const sy = 128 + dep, hy = chestTop - 6 + dep;
-  // legs and hips (behind the victim)
-  capsule(ctx, [cx - 38, 262], [cx - 78, FLOOR - 6], 58, pants, 'rgba(0,0,0,0.3)');
-  capsule(ctx, [cx + 38, 262], [cx + 78, FLOOR - 6], 58, pants, 'rgba(0,0,0,0.3)');
-  // torso
-  const tg = ctx.createLinearGradient(cx - 70, 0, cx + 70, 0); tg.addColorStop(0, shade(hoodie, 20)); tg.addColorStop(0.5, hoodie); tg.addColorStop(1, shade(hoodie, -20));
-  ctx.beginPath(); ctx.moveTo(cx - 62, sy); ctx.quadraticCurveTo(cx, sy - 16, cx + 62, sy); ctx.lineTo(cx + 46, 280); ctx.lineTo(cx - 46, 280); ctx.closePath(); ctx.fillStyle = tg; ctx.fill(); ctx.lineWidth = 2; ctx.strokeStyle = 'rgba(0,0,0,0.3)'; ctx.stroke();
-  // arms locked straight, shoulders over hands
-  capsule(ctx, [cx - 54, sy + 6], [cx - 6, hy], 30, shade(hoodie, 10), 'rgba(0,0,0,0.3)');
-  capsule(ctx, [cx + 54, sy + 6], [cx + 6, hy], 30, shade(hoodie, 10), 'rgba(0,0,0,0.3)');
-  // head
-  ctx.fillStyle = skin; ctx.fillRect(cx - 9, sy - 28, 18, 22);
-  ctx.beginPath(); ctx.arc(cx, sy - 52, 34, 0, Math.PI * 2); ctx.fill(); ctx.strokeStyle = 'rgba(0,0,0,0.25)'; ctx.lineWidth = 2; ctx.stroke();
-  ctx.fillStyle = '#1d1815'; ctx.beginPath(); ctx.arc(cx, sy - 56, 35, Math.PI, Math.PI * 2); ctx.fill();
-  ctx.fillStyle = '#1d1815'; [[-12, -52], [12, -52]].forEach(([dx, dy]) => { ctx.beginPath(); ctx.arc(cx + dx, sy + dy, 3, 0, Math.PI * 2); ctx.fill(); });
-  ctx.strokeStyle = '#4a2a1a'; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.arc(cx, sy - 40, 9, 0.15 * Math.PI, 0.85 * Math.PI); ctx.stroke();
-  // hands: heel of one hand with the other on top
-  ctx.fillStyle = skin; ctx.beginPath(); ctx.roundRect(cx - 18, hy - 7, 36, 16, 7); ctx.fill(); ctx.strokeStyle = 'rgba(0,0,0,0.35)'; ctx.lineWidth = 1.5; ctx.stroke();
-  void st;
-}
-
-function drawScene(ctx, st) {
-  ctx.clearRect(0, 0, W, H);
-  const mode = st.mode, infant = mode === 'infant';
-  background(ctx, mode);
-  const cx = 400;
-  const depPx = st.depthVisual * (infant ? 15 : 9);          // pixels of chest travel for the current depth in inches
-  const risePx = st.rise * (infant ? 12 : 9);
-  // the rescuer's legs sit behind the victim, the upper body in front
-  if (!infant) { const sy = 128 + depPx; void sy; }
-  const info = victimBehind(ctx, mode, cx, depPx, risePx, st);
-  rescuer(ctx, mode, cx, depPx, info.chestTop, st);
-  // beat cue ring (optional): a soft pulse at 110 per minute
-  if (st.cueOn) {
-    const phase = (st.now % (60000 / 110)) / (60000 / 110), k = Math.max(0, 1 - phase * 2.2);
-    ctx.strokeStyle = 'rgba(11,87,208,' + (0.15 + 0.6 * k) + ')'; ctx.lineWidth = 4 + 6 * k; ctx.beginPath(); ctx.arc(W - 70, 70, 26 + 8 * k, 0, Math.PI * 2); ctx.stroke();
-    ctx.fillStyle = 'rgba(11,87,208,0.9)'; ctx.font = '700 12px system-ui'; ctx.textAlign = 'center'; ctx.fillText('beat', W - 70, 74); ctx.textAlign = 'left';
-  }
-  ctx.fillStyle = 'rgba(18,32,43,0.85)'; ctx.font = '700 15px system-ui, sans-serif';
-  ctx.fillText(M.MODES[mode].who.charAt(0).toUpperCase() + M.MODES[mode].who.slice(1), 18, 28);
-  ctx.font = '600 14px system-ui, sans-serif'; ctx.fillStyle = 'rgba(18,32,43,0.7)'; ctx.fillText('Time since collapse ' + clock(st.elapsed), 18, 50);
-}
-function victimBehind(ctx, mode, cx, dep, rise, st) {
-  // rescuer legs first so the victim covers them, then the victim; the upper body is drawn after
-  if (mode !== 'infant') {
-    const pants = '#2d3340';
-    capsule(ctx, [cx - 38, 262], [cx - 78, FLOOR - 6], 58, pants, 'rgba(0,0,0,0.3)'); capsule(ctx, [cx + 38, 262], [cx + 78, FLOOR - 6], 58, pants, 'rgba(0,0,0,0.3)');
-  }
-  return victim(ctx, mode, cx, dep, rise, st);
-}
 
 /* ====================================================================================== placement inset (front of the torso) */
 function torsoInset(onPlace) {
@@ -391,7 +239,7 @@ export function mountSim(host, api) {
     if (down == null && !visual.residual && visual.depthVisual < 0.01) visual.depthVisual = 0;
     breathAnim = Math.max(0, breathAnim - dt * 0.5 / (1 / speed()));
     const rise = breathAnim > 0 ? Math.sin(Math.min(1, (1 - breathAnim) * 2) * Math.PI) * 1.1 : 0;
-    drawScene(cv.ctx, { mode: S.mode, depthVisual: visual.depthVisual || 0, rise, bare: sc.bare, mask: sc.mask, cueOn, now, elapsed: since(), m });
+    drawScene(cv.ctx, { mode: S.mode, depthVisual: visual.depthVisual || 0, rise, bare: sc.bare, mask: sc.mask, airway: sc.airwayOpened, called: sc.called, breathing: breathAnim, cueOn, now, clock: clock(since()), m });
     if (down != null) { const live = M.depthFromHold(performance.now() - down, S.mode); mDepth.textContent = fmt1(live); depthFill.style.width = Math.min(100, live / M.MAX_DEPTH_IN * 100) + '%'; }
     if (events.length) { const idle = M.pausedFor(events, performance.now()); if (idle > M.PAUSE_MS && down == null) { mPause.textContent = 'Paused for ' + Math.floor(idle / 1000) + ' s: keep going'; mPause.className = 'light warn'; } }
     const moving = down != null || (visual.depthVisual || 0) > 0.01 || breathAnim > 0 || cueOn || auto || sc.mask;
@@ -404,19 +252,52 @@ export function mountSim(host, api) {
   const resetBtn = h('button.btn.secondary.small', { type: 'button', onclick: () => fresh(S.mode) }, 'Start this scene over');
 
   /* ================= AED PANEL ================= */
-  const A = { on: false, bare: false, pads: { right: false, left: false }, stage: 'idle', shocked: false, resumed: 0, finished: false, selected: null };
+  const A = { on: false, bare: false, pads: { right: false, left: false }, stage: 'idle', shocked: false, resumed: 0, finished: false, selected: null, hands: false };
   const aedLog = h('ul.aed-log', { role: 'log', 'aria-live': 'polite', 'aria-label': 'Trainer AED messages (text only, no sound)' });
+  const aedLed = h('span.aed-led', { 'data-state': 'off', 'aria-hidden': 'true' });
   const aedScreen = h('div.aed-screen', { 'aria-hidden': 'false' }, h('div.aed-state', 'OFF'));
   const aedMsg = (t, kind) => { aedLog.prepend(h('li', { class: kind || '' }, h('span', { 'aria-hidden': 'true' }, '🔊 '), t)); aedScreen.firstChild.textContent = t.toUpperCase().slice(0, 60); };
   const aedOn = h('button.btn.secondary', { type: 'button', id: 'aed-on', onclick: () => { if (A.on) return; A.on = true; aedMsg('Attach pads to the patient’s bare chest.'); aedRender(); } }, 'ON');
   const aedBare = h('button.btn.secondary', { type: 'button', id: 'aed-bare', onclick: () => { A.bare = true; aedMsg('(You cut away the shirt. The chest is bare. It is dry.)', 'you'); aedRender(); } }, 'Cut or open the shirt');
-  const aedShock = h('button.btn.shock', { type: 'button', id: 'aed-shock', disabled: true, onclick: () => { if (A.stage !== 'advised') return; A.shocked = true; A.stage = 'cpr'; A.resumed = 0; aedMsg('Shock delivered. Start CPR now.'); aedRender(); } }, 'SHOCK');
+  const aedShock = h('button.btn.shock', { type: 'button', id: 'aed-shock', disabled: true, onclick: () => { if (A.stage !== 'advised') return; A.shocked = true; A.stage = 'cpr'; A.resumed = 0; A.hands = false; aedMsg('Shock delivered. Start CPR now.'); aedTorso.dataset.flash = '1'; setTimeout(() => { delete aedTorso.dataset.flash; }, 800); aedRender(); } }, 'SHOCK');
   const padChips = ['right', 'left'].map((id) => h('button.pad-chip', { type: 'button', 'data-pad': id, onclick: () => { A.selected = A.selected === id ? null : id; aedRender(); }, 'aria-pressed': 'false' }, id === 'right' ? 'Pad A (picture: upper right chest)' : 'Pad B (picture: lower left side)'));
+  const BODY = 'M82 6h56v34c0 8 6 12 18 15l36 12c10 4 15 12 15 24v215H13V91c0-12 5-20 15-24l36-12c12-3 18-7 18-15z';
+  const stop = (o, c, op) => svg('stop', { offset: o, 'stop-color': c, 'stop-opacity': op == null ? 1 : op });
+  const aedDefs = svg('defs',
+    svg('linearGradient', { id: 'aSkin', x1: 0, y1: 0, x2: 0, y2: 1 }, stop(0, '#e6bd9a'), stop(1, '#c58f69')),
+    svg('radialGradient', { id: 'aPec', cx: 0.5, cy: 0.4, r: 0.6 }, stop(0, '#f1cfb2', 0.9), stop(1, '#c58f69', 0)),
+    svg('linearGradient', { id: 'aShirt', x1: 0, y1: 0, x2: 0, y2: 1 }, stop(0, '#3aa397'), stop(1, '#256f66')),
+    svg('linearGradient', { id: 'aPad', x1: 0, y1: 0, x2: 0, y2: 1 }, stop(0, '#ffffff'), stop(1, '#d9dee2')));
+  const anatomy = svg('g', { class: 'anat', fill: 'none' },
+    svg('ellipse', { cx: 72, cy: 126, rx: 52, ry: 40, fill: 'url(#aPec)' }), svg('ellipse', { cx: 148, cy: 126, rx: 52, ry: 40, fill: 'url(#aPec)' }),
+    svg('path', { d: 'M110 58 Q88 54 62 66 M110 58 Q132 54 158 66', stroke: '#a97652', 'stroke-width': 2.2, 'stroke-linecap': 'round' }),
+    svg('path', { d: 'M104 54 Q110 66 116 54', stroke: '#a97652', 'stroke-width': 2 }),
+    svg('path', { d: 'M110 70v112', stroke: '#b98d6b', 'stroke-width': 11, 'stroke-linecap': 'round', opacity: 0.4 }),
+    svg('path', { d: 'M110 70v112', stroke: '#a97652', 'stroke-width': 1.4, 'stroke-dasharray': '3 4' }),
+    ...[0, 1, 2, 3].map((i) => svg('path', { d: 'M104 ' + (150 + i * 16) + ' Q70 ' + (156 + i * 16) + ' 30 ' + (146 + i * 16) + ' M116 ' + (150 + i * 16) + ' Q150 ' + (156 + i * 16) + ' 190 ' + (146 + i * 16), stroke: '#a97652', 'stroke-width': 1.3, opacity: 0.45 })),
+    svg('circle', { cx: 62, cy: 134, r: 4.5, fill: '#a77a5c' }), svg('circle', { cx: 158, cy: 134, r: 4.5, fill: '#a77a5c' }),
+    svg('ellipse', { cx: 110, cy: 266, rx: 4, ry: 5, fill: '#a97652', opacity: 0.7 }));
+  const shirtG = svg('g', { class: 'shirt' },
+    svg('path', { d: BODY, fill: 'url(#aShirt)', stroke: '#1b5851', 'stroke-width': 2 }),
+    svg('path', { d: 'M84 8 Q110 40 136 8', fill: '#d9ac8a', stroke: '#1b5851', 'stroke-width': 2 }),
+    svg('path', { d: 'M60 100 Q90 130 76 180 M160 100 Q130 130 144 180 M40 210 Q110 232 180 210 M30 250 Q110 270 190 250', fill: 'none', stroke: 'rgba(0,0,0,0.22)', 'stroke-width': 2, 'stroke-linecap': 'round' }),
+    svg('text', { x: 110, y: 160, 'text-anchor': 'middle', 'font-size': 20, 'font-weight': 800, fill: 'rgba(255,255,255,0.7)' }, 'RAMS'));
   const targets = { right: svg('ellipse', { class: 'tgt', cx: 66, cy: 92, rx: 30, ry: 22, fill: 'none', stroke: '#0b57d0', 'stroke-width': 3, 'stroke-dasharray': '6 5' }), left: svg('ellipse', { class: 'tgt', cx: 152, cy: 176, rx: 30, ry: 22, fill: 'none', stroke: '#0b57d0', 'stroke-width': 3, 'stroke-dasharray': '6 5' }) };
-  const aedTorso = svg('svg', { class: 'torso aed-torso', viewBox: '0 0 220 300', role: 'group', 'aria-label': 'Bare chest with two dashed outlines where the pads go' },
-    svg('path', { d: 'M82 6h56v34c0 8 6 12 18 15l36 12c10 4 15 12 15 24v215H13V91c0-12 5-20 15-24l36-12c12-3 18-7 18-15z', fill: '#d9ac8a', stroke: '#9d7254', 'stroke-width': 2 }), targets.right, targets.left);
-  const padImgs = { right: svg('g', { class: 'padimg', visibility: 'hidden' }, svg('rect', { x: 38, y: 74, width: 56, height: 36, rx: 8, fill: '#f4f4f4', stroke: '#555', 'stroke-width': 2 }), svg('path', { d: 'M48 96l12-14 12 14', stroke: '#d2332b', 'stroke-width': 3, fill: 'none' })), left: svg('g', { class: 'padimg', visibility: 'hidden' }, svg('rect', { x: 124, y: 158, width: 56, height: 36, rx: 8, fill: '#f4f4f4', stroke: '#555', 'stroke-width': 2 }), svg('path', { d: 'M134 180l12-14 12 14', stroke: '#d2332b', 'stroke-width': 3, fill: 'none' })) };
-  aedTorso.append(padImgs.right, padImgs.left);
+  const makePad = (cx, cy, rot, wire) => svg('g', { class: 'padimg', visibility: 'hidden' },
+    svg('path', { d: wire, fill: 'none', stroke: '#e0b40e', 'stroke-width': 3.2, 'stroke-linecap': 'round' }),
+    svg('g', { transform: 'translate(' + cx + ',' + cy + ') rotate(' + rot + ')' },
+      svg('rect', { x: -28, y: -19, width: 56, height: 38, rx: 10, fill: 'url(#aPad)', stroke: '#69737b', 'stroke-width': 2 }),
+      svg('rect', { x: -22, y: -13, width: 44, height: 26, rx: 6, fill: '#eaf6ee', stroke: '#2f9e6e', 'stroke-width': 1.6 }),
+      svg('path', { d: 'M-9 6 L0 -7 L9 6', stroke: '#d2332b', 'stroke-width': 2.6, fill: 'none', 'stroke-linecap': 'round' }),
+      svg('rect', { x: -6, y: -26, width: 12, height: 9, rx: 2, fill: '#3b82c4' })));
+  const padImgs = { right: makePad(66, 92, -24, 'M64 66 C50 40 30 24 20 -4'), left: makePad(152, 176, 28, 'M160 154 C186 120 200 60 196 -4') };
+  const handsG = svg('g', { class: 'hands', visibility: 'hidden' },
+    svg('rect', { x: 84, y: 100, width: 52, height: 24, rx: 10, fill: '#8f5b3c', stroke: '#3b2415', 'stroke-width': 2 }),
+    ...[0, 1, 2, 3].map((i) => svg('path', { d: 'M' + (94 + i * 11) + ' 104v14', stroke: '#5c3a24', 'stroke-width': 1.4 })),
+    svg('rect', { x: 100, y: 62, width: 20, height: 42, rx: 9, fill: '#8f5b3c', stroke: '#3b2415', 'stroke-width': 2 }));
+  const aedTorso = svg('svg', { class: 'torso aed-torso', viewBox: '0 0 220 300', role: 'group', 'aria-label': 'Patient’s chest with two dashed outlines where the pads go. The shirt covers the chest until you open it.' },
+    aedDefs, svg('path', { d: BODY, fill: 'url(#aSkin)', stroke: '#9d7254', 'stroke-width': 2 }), anatomy, targets.right, targets.left);
+  aedTorso.append(padImgs.right, padImgs.left, shirtG, handsG);
   Object.entries(targets).forEach(([id, el]) => { el.style.cursor = 'pointer'; el.addEventListener('click', () => attach(id, A.selected)); });
   const targetBtns = ['right', 'left'].map((id) => h('button.btn.secondary.small', { type: 'button', 'data-target': id, onclick: () => attach(id, A.selected) }, id === 'right' ? 'Place on the upper right chest' : 'Place on the lower left side'));
   function attach(where, padId) {
@@ -430,27 +311,31 @@ export function mountSim(host, api) {
   }
   let analysisTimer = null;
   function startAnalysis() {
-    A.stage = 'analyzing'; aedMsg('Analyzing heart rhythm. Do not touch the patient.');
+    A.stage = 'analyzing'; A.hands = false; aedMsg('Analyzing heart rhythm. Do not touch the patient.');
     clearTimeout(analysisTimer);
     analysisTimer = setTimeout(() => { if (A.stage !== 'analyzing') return; if (A.resumed >= 10 && A.shocked) { A.stage = 'done'; aedMsg('No shock advised. Continue CPR until EMS arrives.'); if (!A.finished) { A.finished = true; done.aed = true; api.report('aed'); } } else { A.stage = 'advised'; aedMsg('Shock advised. Stand clear. Press the flashing button.'); } aedRender(); }, 3200 / speed());
   }
   const aedPad = h('button.chest-pad.small', { type: 'button', id: 'aed-pad', onclick: () => aedCompress() }, h('span.pad-top', 'Press chest'), h('span.pad-sub', 'one compression per press'));
+  let handsT = 0;
+  function pressHands() { A.hands = true; handsG.style.transform = 'translateY(9px)'; clearTimeout(handsT); handsT = setTimeout(() => { handsG.style.transform = 'translateY(0)'; }, 150); }
   function aedCompress() {
     if (A.stage === 'analyzing') { aedMsg('Motion detected. Stop moving the patient.'); startAnalysis(); return; }
     if (A.stage === 'advised') { aedMsg('(You touched the patient while a shock was ready. The AED warns everyone to stand clear.)', 'you'); return; }
+    if (A.stage === 'cpr' || A.stage === 'idle2' || A.stage === 'idle' || A.stage === 'done') pressHands();
     if (A.stage === 'cpr') { A.resumed++; if (A.resumed === 1) aedMsg('(You resume compressions right away.)', 'you'); if (A.resumed >= 10) { A.stage = 'idle2'; aedMsg('Continue CPR. Analyzing again soon.'); setTimeout(() => { if (!A.finished) { A.stage = 'analyzing'; aedMsg('Analyzing heart rhythm. Do not touch the patient.'); setTimeout(() => { A.stage = 'done'; aedMsg('No shock advised. Continue CPR until EMS arrives.'); A.finished = true; done.aed = true; api.report('aed'); aedRender(); }, 2400 / speed()); aedRender(); } }, 500 / speed()); } aedRender(); return; }
     if (A.stage === 'idle' || A.stage === 'done') aedMsg('(You press the chest. Compressions can continue while the pads are being attached.)', 'you');
   }
   function aedRender() {
     aedOn.disabled = A.on; aedBare.disabled = A.bare;
     padChips.forEach((b) => { const id = b.dataset.pad; b.disabled = A.pads[id]; b.setAttribute('aria-pressed', String(A.selected === id)); b.dataset.on = A.pads[id] ? 'true' : 'false'; });
+    shirtG.setAttribute('visibility', A.bare ? 'hidden' : 'visible'); handsG.setAttribute('visibility', A.hands ? 'visible' : 'hidden'); aedLed.dataset.state = !A.on ? 'off' : A.stage;
     padImgs.right.setAttribute('visibility', A.pads.right ? 'visible' : 'hidden'); padImgs.left.setAttribute('visibility', A.pads.left ? 'visible' : 'hidden');
     aedShock.disabled = A.stage !== 'advised'; aedShock.dataset.ready = A.stage === 'advised' ? 'true' : 'false';
     aedStatus.textContent = A.finished ? 'AED practice complete: one shock cycle finished.' : 'AED practice: ' + ({ idle: 'work through the device.', analyzing: 'the AED is analyzing, so keep your hands off.', advised: 'a shock is advised.', cpr: 'resume CPR.', idle2: 'keep compressing.', done: 'finishing up.' }[A.stage] || '');
     aedScreen.firstChild.dataset.live = A.on ? 'true' : 'false';
   }
   const aedStatus = h('p.sim-note', { role: 'status', 'aria-live': 'polite' }, '');
-  const aedReset = h('button.btn.secondary.small', { type: 'button', onclick: () => { clearTimeout(analysisTimer); Object.assign(A, { on: false, bare: false, pads: { right: false, left: false }, stage: 'idle', shocked: false, resumed: 0, finished: false, selected: null }); aedLog.replaceChildren(); aedScreen.firstChild.textContent = 'OFF'; aedRender(); } }, 'Reset the AED');
+  const aedReset = h('button.btn.secondary.small', { type: 'button', onclick: () => { clearTimeout(analysisTimer); Object.assign(A, { on: false, bare: false, pads: { right: false, left: false }, stage: 'idle', shocked: false, resumed: 0, finished: false, selected: null, hands: false }); aedLog.replaceChildren(); aedScreen.firstChild.textContent = 'OFF'; aedRender(); } }, 'Reset the AED');
 
   /* ================= LAYOUT ================= */
   const tablist = h('div.sim-tabs', { role: 'tablist', 'aria-label': 'Rescue practice sections' });
@@ -479,7 +364,7 @@ export function mountSim(host, api) {
   panels.aed = h('div.sim-panel', { role: 'tabpanel', id: 'rpanel-aed', 'aria-labelledby': 'rtab-aed', hidden: true },
     h('p.sim-intro', 'Someone is doing CPR on an adult when the AED arrives. This trainer behaves like the real thing and gives text prompts only. Use it however you think is right; it will tell you if something is wrong.'),
     h('div.aed-grid',
-      h('div.aed-device', h('div.aed-body', h('div.aed-title', 'TRAINER AED'), aedScreen, h('div.aed-btns', aedOn, aedShock)), aedLog),
+      h('div.aed-device', h('div.aed-body', h('div.aed-head', aedLed, h('div.aed-title', 'TRAINER AED'), h('span.aed-heart', { 'aria-hidden': 'true' }, '♥')), aedScreen, h('div.aed-grille', { 'aria-hidden': 'true' }), h('div.aed-btns', aedOn, aedShock), h('div.aed-port', { 'aria-hidden': 'true' }, h('span', 'PADS'))), aedLog),
       h('div.aed-patient', h('h4', 'Patient'), aedBare, aedTorso, h('div.pad-pick', h('p.small.muted', 'Pick a pad, then choose where it goes (or click the outline).'), h('div.row', padChips), h('div.row', targetBtns)), aedPad)),
     aedStatus, h('div.row', aedReset));
 

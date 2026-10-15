@@ -71,9 +71,10 @@ function start(opts) {
       if (p === '/__test/reset') { store.setConfig({ classCodes: { 'Block 1/2': 'CODE12', 'Block 3/4': 'CODE34', 'Block 8/9': 'CODE89' }, defaultMinutes: 90, showScore: true, open: true, disabledItems: [] }); store.setTeacherHash({ salt, hash: W6.hashPassword('teacher-pass-1', salt) }); Object.keys(store._state.sessions).forEach((k) => delete store._state.sessions[k]); store._state.preview = null; store._state.teacherTokens = {}; store._state.history.length = 0; store._state.responses.length = 0; ctl.skew = 0; ctl.fail = { count: 0, mode: 'drop' }; ctl.delayMs = 0; ctl.calls = 0; return res.end('{}'); }
       res.statusCode = 404; return res.end('{}');
     }
-    if (p === '/js/config.js' && !opts.demoMode) {
+    if (p === '/js/config.js') {
+      // live mode points at this local server; demo mode must not pick up the real deployed URL from the repo's config.js
       res.writeHead(200, { 'content-type': MIME['.js'], 'cache-control': 'no-store' });
-      return res.end('window.W6_CONFIG = { API_URL: "/api", APP_VERSION: "dev" };');
+      return res.end('window.W6_CONFIG = { API_URL: "' + (opts.demoMode ? '' : '/api') + '", APP_VERSION: "dev" };');
     }
     // never serve secrets even locally
     if (/^\/(authoring|private|vault|tests|tools|docs|node_modules)(\/|$)/.test(p)) { res.statusCode = 404; return res.end('not found'); }

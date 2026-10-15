@@ -8,6 +8,30 @@ const W = 960, H = 420, S = 130; // canvas logical size and pixels per metre
 const GROUND = 345;
 const f1 = (x) => (Math.round(x * 10) / 10).toFixed(1);
 const f0 = (x) => String(Math.round(x));
+const clamp01 = (x) => Math.max(0, Math.min(1, x));
+// How hard the hit looks, 0 (gentle) to 1 (very hard). Purely visual: it never changes a reading or a scored answer.
+const carSeverity = (mph) => clamp01((mph - 10) / 50);
+const bikeSeverity = (mph) => clamp01((mph - 5) / 20);
+// The model's crush distance barely changes with speed, so the drawing scales the crumple to make fast and slow hits easy to tell apart.
+const crumpleScale = (mph) => 0.25 + 1.1 * carSeverity(mph);
+let SHAKE = true; // turned off for people who ask for reduced motion
+function rng(seed) { let x = seed * 9301 + 49297; return () => { x = (x * 9301 + 49297) % 233280; return x / 233280; }; }
+function shakeBy(ctx, tms, t0, sev, scale) {
+  if (!SHAKE || tms < t0) return;
+  const k = tms - t0, amp = (1 + 11 * sev * sev) * (scale || 1) * Math.exp(-k / 90);
+  ctx.translate(amp * Math.sin(k * 0.85), amp * 0.6 * Math.cos(k * 1.25));
+}
+function debris(ctx, ox, oy, k, sev, seed) {
+  if (k < 0 || k > 700) return;
+  const r = rng(seed), n = Math.round(3 + 38 * sev * sev), life = k / 1000;
+  for (let i = 0; i < n; i++) {
+    const ang = Math.PI * (0.55 + 0.9 * r()), sp = (90 + 520 * sev) * (0.35 + r()), size = 2 + 5 * r() * (0.5 + sev);
+    const x = ox + Math.cos(ang) * sp * life, y = oy - Math.sin(ang) * sp * life + 700 * life * life;
+    ctx.globalAlpha = Math.max(0, 1 - k / 700); ctx.fillStyle = i % 3 === 0 ? '#ffb43a' : i % 3 === 1 ? '#7d858c' : '#d93a35';
+    ctx.fillRect(x, Math.min(y, GROUND + 2), size, size);
+  }
+  ctx.globalAlpha = 1;
+}
 
 /* ====================================================================================== drawing helpers */
 function capsule(ctx, a, b, wm, fill, stroke) {
@@ -101,18 +125,27 @@ function drawCar(ctx, run, tms) {
   const i = Math.max(0, Math.min(fr.length - 1, tms));
   const f = fr[i];
   const t = tms / 1000;
-  const shift = tms < 0 ? v0 * t : f.car;                       // metres moved since the moment of impact
+  const mph = v0 / P.MPH, sev = carSeverity(mph);
+  const shift = tms < 0 ? v0 * t : f.car * crumpleScale(mph);   // metres moved since the moment of impact (crumple drawn larger at higher speed)
   const cab = CAB0 + shift;
   const gy = (y) => GROUND - (y + 0.30) * S;                    // car-frame y -> canvas y
   const T = (p) => [(cab + p[0]) * S, gy(p[1])];
   const pts = f.pts;
   ctx.clearRect(0, 0, W, H);
   skyGround(ctx);
+  ctx.save();
+  shakeBy(ctx, tms, 0, sev, 1);
   barrier(ctx, XB * S, 0.9, 1.6);
   const frontX = Math.min(XB, cab + 0.62 + 1.9);
   const crushFrac = Math.max(0, Math.min(1, (cab + 0.62 + 1.9 - XB) / 1.0));
   // car shadow
   ctx.fillStyle = 'rgba(0,0,0,0.22)'; ctx.beginPath(); ctx.ellipse((cab - 0.2) * S, GROUND + 4, 2.7 * S, 9, 0, 0, Math.PI * 2); ctx.fill();
+  // speed streaks behind the car before the hit: longer and more of them when it is going faster
+  if (tms < 0) {
+    ctx.strokeStyle = 'rgba(70,90,105,0.35)'; ctx.lineWidth = 2; ctx.lineCap = 'round';
+    const rs = rng(7), nS = Math.round(3 + 9 * sev);
+    for (let q = 0; q < nS; q++) { const yy = GROUND - (0.15 + 1.35 * rs()) * S, x1 = (cab - 2.4) * S - rs() * 40, len = (30 + 190 * sev) * (0.5 + rs()); ctx.beginPath(); ctx.moveTo(x1, yy); ctx.lineTo(x1 - len, yy); ctx.stroke(); }
+  }
   // body paint (back layer): lower body, hood with crumple, trunk
   const paint = ctx.createLinearGradient(0, gy(0.9), 0, gy(-0.1)); paint.addColorStop(0, '#d93a35'); paint.addColorStop(1, '#8e1f1c');
   const xs = (x) => (cab + x) * S;
@@ -123,7 +156,7 @@ function drawCar(ctx, run, tms) {
   // hood: buckles into an accordion as it crumples
   const hoodStart = xs(0.62), hoodEnd = frontX * S;
   const seg = 7;
-  for (let k = 1; k <= seg; k++) { const x = hoodStart + (hoodEnd - hoodStart) * k / seg; const up = (k < seg ? (k % 2 ? -1 : 0.4) : 0) * crushFrac * 20; ctx.lineTo(x, gy(0.9 - 0.14 * (k / seg)) + up); }
+  for (let k = 1; k <= seg; k++) { const x = hoodStart + (hoodEnd - hoodStart) * k / seg; const up = (k < seg ? (k % 2 ? -1 : 0.4) : 0) * crushFrac * 34; ctx.lineTo(x, gy(0.9 - 0.14 * (k / seg)) + up); }
   ctx.lineTo(hoodEnd, gy(0.62)); ctx.lineTo(hoodEnd - 6, gy(-0.05));
   ctx.closePath(); ctx.fillStyle = paint; ctx.fill(); ctx.lineWidth = 2; ctx.strokeStyle = '#5c1210'; ctx.stroke();
   // window pillars and roof: cutaway so the dummy stays visible
@@ -160,15 +193,27 @@ function drawCar(ctx, run, tms) {
   wheel(ctx, xs(0.62 + 0.5), GROUND - 0.31 * S, 0.33 * S);
   wheel(ctx, xs(-1.55), GROUND - 0.31 * S, 0.33 * S);
   ctx.fillStyle = '#9aa3aa'; ctx.fillRect(hoodEnd - 8, gy(0.16), 10, 0.2 * S);
-  // impact flash
-  if (tms >= 0 && tms < 45) { const k = 1 - tms / 45; ctx.save(); ctx.globalAlpha = 0.85 * k; ctx.fillStyle = '#ffe9a6'; ctx.translate(XB * S, GROUND - 0.55 * S); ctx.beginPath(); for (let a = 0; a < 16; a++) { const r = (a % 2 ? 22 : 62) * (0.6 + 0.4 * k); ctx.lineTo(Math.cos(a * Math.PI / 8) * r, Math.sin(a * Math.PI / 8) * r); } ctx.closePath(); ctx.fill(); ctx.restore(); }
+  // impact flash, debris, cracked glass and steam: all grow with speed
+  if (tms >= 0 && tms < 45) { const k = 1 - tms / 45, sz = 0.45 + 1.1 * sev; ctx.save(); ctx.globalAlpha = 0.85 * k; ctx.fillStyle = '#ffe9a6'; ctx.translate(XB * S, GROUND - 0.55 * S); ctx.beginPath(); for (let a = 0; a < 16; a++) { const r = (a % 2 ? 22 : 62) * sz * (0.6 + 0.4 * k); ctx.lineTo(Math.cos(a * Math.PI / 8) * r, Math.sin(a * Math.PI / 8) * r); } ctx.closePath(); ctx.fill(); ctx.restore(); }
+  debris(ctx, XB * S - 6, GROUND - 0.55 * S, tms, sev, 11);
+  if (tms >= 25 && sev > 0.4) {
+    const gx = xs(0.36), gyy = gy(1.18), arms = Math.round(4 + 8 * (sev - 0.4)), rr = rng(3);
+    ctx.strokeStyle = 'rgba(255,255,255,0.9)'; ctx.lineWidth = 1.5; ctx.beginPath();
+    for (let q = 0; q < arms; q++) { const a = (q / arms) * Math.PI * 2 + rr() * 0.4, l = (22 + 70 * (sev - 0.3)) * (0.6 + rr()); ctx.moveTo(gx, gyy); ctx.lineTo(gx + Math.cos(a) * l, gyy + Math.sin(a) * l); }
+    ctx.stroke();
+  }
+  if (tms >= 150 && sev > 0.7) {
+    const k = Math.min(1, (tms - 150) / 450); ctx.fillStyle = 'rgba(235,238,240,' + (0.55 * (1 - k)) + ')';
+    for (let q = 0; q < 4; q++) { ctx.beginPath(); ctx.arc(hoodEnd - 40 - q * 34, gy(0.95) - k * (50 + q * 16), 16 + k * 26 + q * 4, 0, Math.PI * 2); ctx.fill(); }
+  }
   // head impact ring
   if (f.headHit && run.headHitMs != null && tms >= run.headHitMs && tms < run.headHitMs + 80) {
     const k = (tms - run.headHitMs) / 80; ctx.strokeStyle = 'rgba(179,38,30,' + (1 - k) + ')'; ctx.lineWidth = 3; const hp = T(pts.H); ctx.beginPath(); ctx.arc(hp[0], hp[1], 24 + k * 34, 0, Math.PI * 2); ctx.stroke();
   }
+  ctx.restore();
   // clock
   ctx.fillStyle = 'rgba(18,32,43,0.85)'; ctx.font = '700 15px system-ui, sans-serif';
-  ctx.fillText(tms < 0 ? 'Before impact' : 'Impact + ' + String(tms).padStart(3, ' ') + ' ms', 18, 28);
+  ctx.fillText(Math.round(mph) + ' mph  ·  ' + (tms < 0 ? 'Before impact' : 'Impact + ' + String(tms).padStart(3, ' ') + ' ms'), 18, 28);
 }
 
 /* ====================================================================================== bike scene renderer */
@@ -177,8 +222,12 @@ function drawBike(ctx, run, tms) {
   const v0 = run.v0;
   // the camera follows the bike until the wheel hits the curb, then holds
   const camX = 4.2;           // metres: where the curb is on screen
+  const ox0 = (c) => c * S;
   const T = (p) => [(camX + p[0]) * S, GROUND - p[1] * S];
   ctx.clearRect(0, 0, W, H); skyGround(ctx);
+  const sevB = bikeSeverity(v0 / P.MPH);
+  ctx.save();
+  if (run.hitMs != null) { shakeBy(ctx, tms, run.hitMs, sevB, 0.8); debris(ctx, ox0(camX), GROUND - 0.4 * S, tms - run.hitMs, sevB * 0.7, 5); }
   // curb / obstacle: a parked car's rear bumper
   const ox = camX * S;
   const og = ctx.createLinearGradient(ox, 0, ox + 160, 0); og.addColorStop(0, '#2f6fb0'); og.addColorStop(1, '#1b4a7c');
@@ -196,7 +245,8 @@ function drawBike(ctx, run, tms) {
   ctx.beginPath(); ctx.moveTo(R[0], R[1]); ctx.lineTo(Sd[0], Sd[1]); ctx.lineTo(B[0], B[1]); ctx.lineTo(F[0], F[1]); ctx.moveTo(Sd[0], Sd[1]); ctx.lineTo(F[0], F[1]); ctx.moveTo(R[0], R[1]); ctx.lineTo(B[0], B[1]); ctx.stroke();
   ctx.lineWidth = 5; ctx.strokeStyle = '#2a2d30'; ctx.beginPath(); ctx.moveTo(B[0], B[1]); ctx.lineTo(B[0] - 4, B[1] - 20); ctx.stroke(); ctx.fillRect(Sd[0] - 16, Sd[1] - 6, 30, 8);
   dummy(ctx, p, T, { helmet: run.metrics.helmet });
-  if (f.headHit && tms >= run.hitMs && tms < run.hitMs + 90) { const k = (tms - run.hitMs) / 90; const hp = T(p.H); ctx.strokeStyle = 'rgba(179,38,30,' + (1 - k) + ')'; ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(hp[0], hp[1], 20 + k * 36, 0, Math.PI * 2); ctx.stroke(); }
+  if (f.headHit && tms >= run.hitMs && tms < run.hitMs + 90) { const k = (tms - run.hitMs) / 90; const hp = T(p.H); ctx.strokeStyle = 'rgba(179,38,30,' + (1 - k) + ')'; ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(hp[0], hp[1], (20 + k * 36) * (0.7 + 0.9 * sevB), 0, Math.PI * 2); ctx.stroke(); }
+  ctx.restore();
   ctx.fillStyle = 'rgba(18,32,43,0.85)'; ctx.font = '700 15px system-ui, sans-serif'; ctx.fillText(Math.round(v0 / P.MPH) + ' mph  ·  ' + String(tms).padStart(4, ' ') + ' ms', 18, 28);
 }
 
@@ -244,6 +294,7 @@ function drawEgg(ctx, run, tms) {
 
 /* ====================================================================================== the sim UI */
 export function mountSim(host, api) {
+  SHAKE = !api.reduced();
   const state = { tab: 'car', runs: [], seen: { belt: new Set(), helmet: new Set(), egg: new Set(), group: new Set() }, raf: 0, destroyed: false };
   const dpr = Math.min(2, window.devicePixelRatio || 1);
   const mkCanvas = (label) => {
