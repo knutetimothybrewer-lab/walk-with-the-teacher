@@ -24,7 +24,8 @@ async function newPage(opts = {}) {
   const page = await ctx.newPage(); const errs = []; page.errs = errs;
   page.on('console', (m) => { if (m.type() === 'error' && !/Failed to load resource/.test(m.text())) errs.push(m.text()); }); page.on('pageerror', (e) => errs.push('PAGEERR ' + e.message));
   page.reqs = []; page.on('request', (r) => page.reqs.push(r.url()));
-  if (opts.backend) await page.route('**/js/config.js', async (route) => { const r = await route.fetch(); let t = await r.text(); t = t.replace("backendUrl: ''", `backendUrl: 'http://localhost:${BPORT}/exec'`); if (opts.server) t = t.replace("gradingMode: 'local'", "gradingMode: 'server'"); await route.fulfill({ response: r, body: t }); });
+  // the shipped config points at the real Sheet, so tests always override it: the local mock when backend:true, otherwise no backend at all
+  await page.route('**/js/config.js', async (route) => { const r = await route.fetch(); let t = await r.text(); t = t.replace(/backendUrl: '[^']*'/, `backendUrl: '${opts.backend ? `http://localhost:${BPORT}/exec` : ''}'`); if (opts.server) t = t.replace("gradingMode: 'local'", "gradingMode: 'server'"); await route.fulfill({ response: r, body: t }); });
   return page;
 }
 async function signIn(page, first = 'Test', last = 'Student', block = 'Block 3/4', code = 'unit7') {
