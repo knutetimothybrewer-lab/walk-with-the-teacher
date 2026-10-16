@@ -113,8 +113,8 @@
 .hs .shape { transition: fill .2s, stroke .2s; }
 .hs:hover .shape, .hs:focus-visible .shape { stroke: var(--focus); stroke-width: 3; }
 .hs[aria-checked="true"] .shape { stroke: var(--focus); stroke-width: 4; fill-opacity: .95; }
-.hs .lab rect { fill: rgba(5, 10, 22, .88); stroke: var(--line-strong); }
-.hs[aria-checked="true"] .lab rect { stroke: var(--focus); fill: #2a2400; }
+.hs .lab rect { fill: var(--panel-solid); stroke: var(--line-strong); }
+.hs[aria-checked="true"] .lab rect { stroke: var(--focus); fill: var(--lab-sel, #2a2400); }
 .hs .lab text { fill: var(--ink); font-size: 13px; font-weight: 700; }
 .hs:focus-visible { outline: none; }
 

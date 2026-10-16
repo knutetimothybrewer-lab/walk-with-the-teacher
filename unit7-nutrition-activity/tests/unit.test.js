@@ -236,3 +236,16 @@ test('isComplete gates the Check button for each type', () => {
   assert.equal(isComplete({ type: 'slider' }, null), false); assert.equal(isComplete({ type: 'plan' }, { flags: 'x', touched: false }), false);
   assert.equal(isComplete({ type: 'match', items: [['a', 1], ['b', 2]] }, { a: 'x' }), false); assert.equal(isComplete({ type: 'seq', steps: [[1], [2]] }, [1, 2]), true);
 });
+
+test('text boxes and dropdowns stay readable in the light Mission 2 theme (no hardcoded dark field behind dark ink)', async () => {
+  const { readFileSync } = await import('node:fs');
+  const css = (f) => readFileSync(new URL('../css/' + f, import.meta.url), 'utf8');
+  const input = css('base.css').split('\n').find((l) => l.startsWith('.input {'));
+  assert.ok(/background-color:\s*var\(--field\)/.test(input), '.input must take its background from the theme token --field');
+  const tokens = css('tokens.css'), label = tokens.split('\n').find((l) => l.includes('body[data-theme="label"]'));
+  const lum = (hex) => { const n = parseInt(hex.slice(1), 16), c = [n >> 16, (n >> 8) & 255, n & 255].map((v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; }); return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2]; };
+  const field = /--field:\s*(#[0-9a-f]{6})/i.exec(label), ink = /--ink:\s*(#[0-9a-f]{6})/i.exec(label);
+  assert.ok(field && ink, 'label theme defines --field and --ink');
+  const ratio = (Math.max(lum(field[1]), lum(ink[1])) + 0.05) / (Math.min(lum(field[1]), lum(ink[1])) + 0.05);
+  assert.ok(ratio >= 7, 'typed text needs at least 7:1 contrast in the label theme, got ' + ratio.toFixed(1));
+});

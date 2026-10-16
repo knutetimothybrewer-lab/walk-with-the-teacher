@@ -1,0 +1,370 @@
+{
+  "objectives": {
+    "M1-DATA": {
+      "text": "Read injury and belt-use data (NHES 3) to compare rates and explain that injury is predictable, not random.",
+      "basis": "standard"
+    },
+    "M1-MECH": {
+      "text": "Explain how seat belts and helmets reduce injury by spreading force and lengthening stopping time (NHES 1).",
+      "basis": "standard"
+    },
+    "M1-MYTH": {
+      "text": "Correct common seat belt myths with accurate facts (NHES 1).",
+      "basis": "standard"
+    },
+    "M2-RECOG": {
+      "text": "Tell cardiac arrest from a heart attack and recognize the signs of cardiac arrest (NHES 1).",
+      "basis": "standard"
+    },
+    "M2-CHAIN": {
+      "text": "Put the Chain of Survival links in order (NHES 1).",
+      "basis": "standard"
+    },
+    "M2-TECH": {
+      "text": "Read compression rate from a trace and judge technique (NHES 7).",
+      "basis": "standard"
+    },
+    "M2-SCOPE": {
+      "text": "Choose hands-only CPR or CPR with breaths for the situation, and know the C-A-B order (NHES 1, 7).",
+      "basis": "standard"
+    },
+    "M2-AED": {
+      "text": "Put the steps of AED use in order (NHES 7).",
+      "basis": "standard"
+    },
+    "M3-MYTH": {
+      "text": "Match common organ-donation myths with accurate facts (NHES 8).",
+      "basis": "standard"
+    },
+    "M3-MSG": {
+      "text": "Choose an accurate, respectful message that corrects a myth (NHES 8).",
+      "basis": "standard"
+    },
+    "M3-CHECK": {
+      "text": "Judge which statements about donation are myths (NHES 8, 3).",
+      "basis": "standard"
+    },
+    "M4-PLAN": {
+      "text": "Plan a home fire escape: alarms, two ways out and an outside meeting spot (NHES 7).",
+      "basis": "standard"
+    },
+    "M4-FIRE": {
+      "text": "Respond to a fire: get low, close doors, never go back, and know the extinguisher classes and when to fight a fire (NHES 7).",
+      "basis": "standard"
+    },
+    "M4-AID": {
+      "text": "Decide between treating a minor cut or burn yourself and getting help (NHES 7).",
+      "basis": "standard"
+    },
+    "M5-TYPES": {
+      "text": "Name the three types of distraction and recognize each in an example (NHES 2).",
+      "basis": "standard"
+    },
+    "M5-DIST": {
+      "text": "Calculate how far a vehicle travels while a driver is distracted (NHES 2, 7).",
+      "basis": "standard"
+    },
+    "M5-REACT": {
+      "text": "Compare reaction times from ruler-drop results with and without distraction (NHES 7).",
+      "basis": "standard"
+    },
+    "M5-HABITS": {
+      "text": "Choose phone habits that keep you safe on the road and in control of notifications (NHES 7).",
+      "basis": "standard"
+    }
+  },
+  "items": [
+    {
+      "id": "M1-01",
+      "chapter": "m1",
+      "topic": "Reading injury data",
+      "type": "single",
+      "points": 5,
+      "cog": "analyze",
+      "obj": [
+        "M1-DATA"
+      ],
+      "secs": 60,
+      "basis": "standard"
+    },
+    {
+      "id": "M1-02",
+      "chapter": "m1",
+      "topic": "Scaling a data gap",
+      "type": "numeric",
+      "points": 5,
+      "cog": "apply",
+      "obj": [
+        "M1-DATA"
+      ],
+      "secs": 70,
+      "basis": "standard"
+    },
+    {
+      "id": "M1-03",
+      "chapter": "m1",
+      "topic": "Crash model analogy",
+      "type": "assign/label",
+      "points": 5,
+      "cog": "understand",
+      "obj": [
+        "M1-MECH"
+      ],
+      "secs": 80,
+      "basis": "standard"
+    },
+    {
+      "id": "M1-04",
+      "chapter": "m1",
+      "topic": "Seat belt myths",
+      "type": "assign/match",
+      "points": 5,
+      "cog": "understand",
+      "obj": [
+        "M1-MYTH"
+      ],
+      "secs": 110,
+      "basis": "standard"
+    },
+    {
+      "id": "M2-01",
+      "chapter": "m2",
+      "topic": "Cardiac arrest versus heart attack",
+      "type": "assign/classify",
+      "points": 5,
+      "cog": "understand",
+      "obj": [
+        "M2-RECOG"
+      ],
+      "secs": 70,
+      "basis": "standard"
+    },
+    {
+      "id": "M2-02",
+      "chapter": "m2",
+      "topic": "Chain of Survival links",
+      "type": "order",
+      "points": 5,
+      "cog": "remember",
+      "obj": [
+        "M2-CHAIN"
+      ],
+      "secs": 60,
+      "basis": "standard"
+    },
+    {
+      "id": "M2-03",
+      "chapter": "m2",
+      "topic": "Compression rate from a trace",
+      "type": "numeric",
+      "points": 5,
+      "cog": "apply",
+      "obj": [
+        "M2-TECH"
+      ],
+      "secs": 70,
+      "basis": "standard"
+    },
+    {
+      "id": "M2-04",
+      "chapter": "m2",
+      "topic": "Hands-only CPR or CPR with breaths",
+      "type": "single",
+      "points": 5,
+      "cog": "evaluate",
+      "obj": [
+        "M2-SCOPE"
+      ],
+      "secs": 80,
+      "basis": "standard"
+    },
+    {
+      "id": "M2-05",
+      "chapter": "m2",
+      "topic": "Steps of AED use",
+      "type": "order",
+      "points": 5,
+      "cog": "apply",
+      "obj": [
+        "M2-AED"
+      ],
+      "secs": 60,
+      "basis": "standard"
+    },
+    {
+      "id": "M3-01",
+      "chapter": "m3",
+      "topic": "Three donation myths",
+      "type": "assign/match",
+      "points": 5,
+      "cog": "remember",
+      "obj": [
+        "M3-MYTH"
+      ],
+      "secs": 60,
+      "basis": "standard"
+    },
+    {
+      "id": "M3-02",
+      "chapter": "m3",
+      "topic": "An accurate, respectful reply",
+      "type": "single",
+      "points": 5,
+      "cog": "evaluate",
+      "obj": [
+        "M3-MSG"
+      ],
+      "secs": 80,
+      "basis": "standard"
+    },
+    {
+      "id": "M3-03",
+      "chapter": "m3",
+      "topic": "Which statements are myths?",
+      "type": "multi",
+      "points": 5,
+      "cog": "analyze",
+      "obj": [
+        "M3-CHECK"
+      ],
+      "secs": 90,
+      "basis": "standard"
+    },
+    {
+      "id": "M4-01",
+      "chapter": "m4",
+      "topic": "Reading an escape plan",
+      "type": "assign/label",
+      "points": 5,
+      "cog": "understand",
+      "obj": [
+        "M4-PLAN"
+      ],
+      "secs": 90,
+      "basis": "standard"
+    },
+    {
+      "id": "M4-02",
+      "chapter": "m4",
+      "topic": "Responding to a fire",
+      "type": "single",
+      "points": 5,
+      "cog": "apply",
+      "obj": [
+        "M4-FIRE"
+      ],
+      "secs": 80,
+      "basis": "standard"
+    },
+    {
+      "id": "M4-03",
+      "chapter": "m4",
+      "topic": "Extinguisher classes",
+      "type": "assign/match",
+      "points": 5,
+      "cog": "remember",
+      "obj": [
+        "M4-FIRE"
+      ],
+      "secs": 60,
+      "basis": "standard"
+    },
+    {
+      "id": "M4-04",
+      "chapter": "m4",
+      "topic": "Treat yourself or get help",
+      "type": "assign/classify",
+      "points": 5,
+      "cog": "analyze",
+      "obj": [
+        "M4-AID"
+      ],
+      "secs": 100,
+      "basis": "standard"
+    },
+    {
+      "id": "M5-01",
+      "chapter": "m5",
+      "topic": "Types of distraction",
+      "type": "assign/match",
+      "points": 5,
+      "cog": "understand",
+      "obj": [
+        "M5-TYPES"
+      ],
+      "secs": 70,
+      "basis": "standard"
+    },
+    {
+      "id": "M5-02",
+      "chapter": "m5",
+      "topic": "Distance while distracted",
+      "type": "numeric",
+      "points": 5,
+      "cog": "apply",
+      "obj": [
+        "M5-DIST"
+      ],
+      "secs": 70,
+      "basis": "standard"
+    },
+    {
+      "id": "M5-03",
+      "chapter": "m5",
+      "topic": "Reaction time with distraction",
+      "type": "slider",
+      "points": 5,
+      "cog": "analyze",
+      "obj": [
+        "M5-REACT"
+      ],
+      "secs": 90,
+      "basis": "standard"
+    },
+    {
+      "id": "M5-04",
+      "chapter": "m5",
+      "topic": "Safe phone habits",
+      "type": "multi",
+      "points": 5,
+      "cog": "evaluate",
+      "obj": [
+        "M5-HABITS"
+      ],
+      "secs": 100,
+      "basis": "standard"
+    }
+  ],
+  "chapters": [
+    {
+      "id": "m1",
+      "n": 1,
+      "title": "Predictable, Not Random",
+      "targetMinutes": 11
+    },
+    {
+      "id": "m2",
+      "n": 2,
+      "title": "Chain of Survival",
+      "targetMinutes": 14
+    },
+    {
+      "id": "m3",
+      "n": 3,
+      "title": "Myth vs. Fact: Organ Donation",
+      "targetMinutes": 9
+    },
+    {
+      "id": "m4",
+      "n": 4,
+      "title": "Home and School Safety",
+      "targetMinutes": 15
+    },
+    {
+      "id": "m5",
+      "n": 5,
+      "title": "Digital and Road Safety",
+      "targetMinutes": 13
+    }
+  ]
+}

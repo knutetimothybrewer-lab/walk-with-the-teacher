@@ -24,7 +24,8 @@ async function newPage(opts = {}) {
   const page = await ctx.newPage(); const errs = []; page.errs = errs;
   page.on('console', (m) => { if (m.type() === 'error' && !/Failed to load resource/.test(m.text())) errs.push(m.text()); }); page.on('pageerror', (e) => errs.push('PAGEERR ' + e.message));
   page.reqs = []; page.on('request', (r) => page.reqs.push(r.url()));
-  if (opts.backend) await page.route('**/js/config.js', async (route) => { const r = await route.fetch(); let t = await r.text(); t = t.replace("backendUrl: ''", `backendUrl: 'http://localhost:${BPORT}/exec'`); if (opts.server) t = t.replace("gradingMode: 'local'", "gradingMode: 'server'"); await route.fulfill({ response: r, body: t }); });
+  // the shipped config points at the real Sheet, so tests always override it: the local mock when backend:true, otherwise no backend at all
+  await page.route('**/js/config.js', async (route) => { const r = await route.fetch(); let t = await r.text(); t = t.replace(/backendUrl: '[^']*'/, `backendUrl: '${opts.backend ? `http://localhost:${BPORT}/exec` : ''}'`); if (opts.server) t = t.replace("gradingMode: 'local'", "gradingMode: 'server'"); await route.fulfill({ response: r, body: t }); });
   return page;
 }
 async function signIn(page, first = 'Test', last = 'Student', block = 'Block 3/4', code = 'unit7') {
@@ -112,18 +113,26 @@ try {
     ok('dashboard rejects a wrong passcode', (await p.locator('.err').innerText()).includes('not correct'));
     await p.fill('input[type=password]', env.props.TEACHER_PASSCODE); await p.click('button[type=submit]'); await p.waitForSelector('.cards');
     p.on('dialog', (d) => d.accept());
-    await p.locator('#demo button.btn.primary').click(); await p.waitForFunction(() => document.querySelectorAll('.cards .card .cv').length > 0 && document.querySelector('.banner.demo'), null, { timeout: 30000 });
+    const tab = async (name) => { await p.locator('button.tm-tab', { hasText: name }).click(); await p.waitForTimeout(150); };
+    ok('dashboard opens on the Overview tab with the four sections available', (await p.locator('button.tm-tab').allInnerTexts()).join('|') === 'Overview|Students and resets|Analytics|Export' && (await p.locator('.tm-tiles').count()) === 1);
+    await tab('Export'); await p.locator('#demo button.btn.primary').click(); await p.waitForFunction(() => document.querySelector('.banner.demo') && document.querySelectorAll('#demo .pill.demo').length > 0, null, { timeout: 30000 });
     await p.waitForTimeout(800);
     ok('demo data generated, labelled DEMO DATA, spread across four blocks', env.book.get('MASTER RESULTS').slice(1).filter((x) => x[1] === 'DEMO DATA').length === 28);
+    await tab('Overview'); const tiles = (await p.locator('.tm-tiles').innerText()).replace(/\n/g, ' '), num = (label) => Number((new RegExp(label + '\\s+(\\d+)', 'i').exec(tiles) || [])[1]);
+    ok('overview tiles: 28 submitted, and registered = submitted + in progress', num('Submitted') === 28 && num('Registered') === num('Submitted') + num('In progress'), tiles);
     const cards = await p.locator('.cards').first().innerText(); ok('summary cards computed from data', /Students submitted\s+28|STUDENTS SUBMITTED\s+28/i.test(cards.replace(/\n/g, ' ')), cards.slice(0, 120));
-    await p.selectOption('select[aria-label=View]', 'Block 3/4'); await p.waitForTimeout(500);
+    await p.selectOption('select[aria-label=Block]', 'Block 3/4'); await p.waitForTimeout(500);
     ok('changing the class view updates the numbers', /7/.test((await p.locator('.cards').first().innerText()).split('\n')[1] || ''));
+    await tab('Analytics');
+    ok('domain mastery chart and the block comparison are shown', (await p.locator('#dom svg, #dom .chartbox').count()) > 0 && (await p.locator('#cmp').count()) === 1);
     ok('what-should-I-reteach lists 5 priorities', (await p.locator('.reteach > li').count()) === 5);
     ok('most-missed list shown', (await p.locator('.missed li').count()) === 8);
     await p.locator('.itemtable tbody tr').first().click(); ok('clicking a question reveals correct answer and incorrect-response detail', (await p.locator('#detail').innerText()).includes('Correct answer'));
+    await tab('Students and resets');
     await p.locator('#stu .linkish').first().click(); ok('clicking a student opens the individual report', (await p.locator('#dlg').innerText()).includes('Performance by domain')); await p.keyboard.press('Escape');
+    await tab('Export');
     const [dl] = await Promise.all([p.waitForEvent('download'), p.locator('#exp button', { hasText: 'Grade Export: all blocks' }).click()]); const csv = fs.readFileSync(await dl.path(), 'utf8');
-    ok('grade export CSV has Last | First | Block | Final Percentage', csv.replace('﻿', '').startsWith('"Student Last Name","Student First Name","Block","Final Percentage"'));
+    ok('grade export CSV has Last | First | Block | Final Percentage', csv.replace('\ufeff', '').startsWith('"Student Last Name","Student First Name","Block","Final Percentage"'));
     await p.locator('#demo button.btn.warn').click(); await p.waitForTimeout(1500);
     ok('delete demo data removes only DEMO rows', env.book.get('MASTER RESULTS').slice(1).filter((x) => x[1] === 'DEMO DATA').length === 0);
     ok('no console errors on the dashboard', p.errs.length === 0, p.errs.join('|')); await p.context().close(); }

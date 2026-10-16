@@ -281,7 +281,8 @@ function buildAnalytics_(sh) {
     for (var d = 0; d < 7; d++) line.push('=IFERROR(AVERAGEIFS(' + M(MC.d0 + d) + ',' + cntCrit + '),"")');
     out.push(line);
   });
-  sh.getRange(4, 1, out.length, head.length).setFormulas(out);
+  sh.getRange(4, 1, out.length, 1).setValues(out.map(function (r) { return [r[0]]; })); // class names are plain text; setFormulas would turn them into #ERROR!
+  sh.getRange(4, 2, out.length, head.length - 1).setFormulas(out.map(function (r) { return r.slice(1); }));
   sh.getRange(4, 3, out.length, 4).setNumberFormat('0.0%'); sh.getRange(4, 7, out.length, 1).setNumberFormat('0.0'); sh.getRange(4, 8, out.length, 1).setNumberFormat('0.0%'); sh.getRange(4, 11, out.length, 7).setNumberFormat('0.0%');
   var dr = sh.getRange(4, 11, out.length, 7);
   sh.setConditionalFormatRules([
@@ -305,7 +306,7 @@ function buildAnalytics_(sh) {
       '=IFERROR(SUMIFS(' + I(IC.earned) + ',' + base + ')/SUMIFS(' + I(IC.poss) + ',' + base + '),"")',
       '=IFERROR(AVERAGEIFS(' + I(IC.used) + ',' + base + '),"")']);
   });
-  if (f.length) { sh.getRange(startRow + 1, 1, f.length, qh.length).setFormulas(f); sh.getRange(startRow + 1, 6, f.length, 4).setNumberFormat('0.0%'); sh.getRange(startRow + 1, 10, f.length, 1).setNumberFormat('0.00'); }
+  if (f.length) { sh.getRange(startRow + 1, 1, f.length, 4).setValues(f.map(function (r) { return r.slice(0, 4); })); sh.getRange(startRow + 1, 5, f.length, qh.length - 4).setFormulas(f.map(function (r) { return r.slice(4); })); sh.getRange(startRow + 1, 6, f.length, 4).setNumberFormat('0.0%'); sh.getRange(startRow + 1, 10, f.length, 1).setNumberFormat('0.00'); }
   // most-missed list
   var mm = startRow + f.length + 3;
   sh.getRange(mm - 1, 1).setValue('MOST MISSED QUESTIONS: lowest first-attempt accuracy first (top 12, live)').setFontWeight('bold');
