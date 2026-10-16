@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Health Summatives: Start Here</title>
+<style>
+  :root { --bg:#f6f8fb; --card:#fff; --ink:#1b2430; --muted:#566274; --line:#d9e0ea; --brand:#1f5fbf; --ok:#17794a; --bad:#b3261e; --warn:#8a5a00; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#10151c; --card:#18202b; --ink:#e8edf4; --muted:#a3afbf; --line:#2b3645; --brand:#7fb0ff; --ok:#5fd39a; --bad:#ff8f86; --warn:#f2c36b; }
+  }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); font:17px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  main { max-width: 760px; margin: 0 auto; padding: 24px 16px 64px; }
+  h1 { font-size: 1.8rem; margin: 0 0 4px; }
+  h2 { font-size: 1.25rem; margin: 32px 0 10px; }
+  p { margin: 8px 0; }
+  .sub { color: var(--muted); margin-bottom: 18px; }
+  .panel { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:16px 18px; }
+  ol.steps, ul.rules { margin: 8px 0 0; padding-left: 22px; }
+  ol.steps li, ul.rules li { margin: 6px 0; }
+  .check { display:flex; flex-wrap:wrap; gap:10px; align-items:center; }
+  button { font: inherit; background:var(--brand); color:#fff; border:0; border-radius:8px; padding:10px 16px; cursor:pointer; }
+  @media (prefers-color-scheme: dark) { button { color:#0b1220; } }
+  button:disabled { opacity:.6; cursor:default; }
+  button:focus-visible, a:focus-visible { outline:3px solid var(--warn); outline-offset:2px; }
+  #results { list-style:none; padding:0; margin:12px 0 0; }
+  #results li { padding:6px 0; border-top:1px solid var(--line); }
+  .ok { color:var(--ok); font-weight:600; } .bad { color:var(--bad); font-weight:600; } .wait { color:var(--muted); }
+  #verdict { margin-top:10px; font-weight:600; }
+  .grid { display:grid; gap:14px; }
+  .card { display:flex; gap:14px; align-items:center; justify-content:space-between; background:var(--card); border:1px solid var(--line); border-radius:12px; padding:14px 16px; }
+  .card h3 { margin:0; font-size:1.1rem; }
+  .card p { margin:2px 0 0; color:var(--muted); font-size:.95rem; }
+  .card a.go { flex:none; background:var(--brand); color:#fff; text-decoration:none; border-radius:8px; padding:10px 18px; font-weight:600; }
+  @media (prefers-color-scheme: dark) { .card a.go { color:#0b1220; } }
+  .card.off { opacity:.65; } .card.off .go { background:var(--line); color:var(--muted); pointer-events:none; }
+  @media (max-width:520px) { .card { flex-direction:column; align-items:flex-start; } .card a.go { align-self:stretch; text-align:center; } }
+  .small { font-size:.92rem; color:var(--muted); }
+  noscript { display:block; padding:12px; border:1px solid var(--bad); border-radius:8px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Health Summatives: Start Here</h1>
+  <p class="sub">Use this page to check your Chromebook and open your assessment. Your teacher will tell you which one is yours today.</p>
+  <noscript>JavaScript is turned off, so the checker below cannot run. The assessment links still work.</noscript>
+
+  <h2>1. Before you begin</h2>
+  <div class="panel">
+    <ul class="rules">
+      <li>Use <strong>Chrome</strong> on your school Chromebook, in a <strong>normal window</strong> (not Incognito).</li>
+      <li>Your teacher will give you a <strong>class code</strong> out loud or on a slip. It is not on this page.</li>
+      <li>Do not clear your browsing data or sign out in the middle of the assessment. Refreshing the page is safe and your work is saved.</li>
+      <li>There is a <strong>90-minute limit</strong> for most assessments, counted from when you press start. Reopening the page does not add time.</li>
+      <li>Stay on the same Chromebook for the whole assessment.</li>
+      <li>If anything in an assessment upsets you, tell your teacher or go see your counselor. You can take a break.</li>
+    </ul>
+  </div>
+
+  <h2>2. Check your Chromebook (30 seconds)</h2>
+  <div class="panel">
+    <p>This tests whether your school network lets the assessment reach the place it saves your score. It does not send any of your information.</p>
+    <div class="check">
+      <button id="runCheck" type="button">Check my Chromebook</button>
+      <span class="small" id="status" role="status" aria-live="polite"></span>
+    </div>
+    <ul id="results"></ul>
+    <p id="verdict" aria-live="polite"></p>
+  </div>
+
+  <h2>3. Open your assessment</h2>
+  <p class="small">Open only the one your teacher assigned today.</p>
+  <div class="grid" id="cards"></div>
+
+  <h2>If something goes wrong</h2>
+  <div class="panel">
+    <ul class="rules">
+      <li><strong>Page will not load or says it cannot reach the server:</strong> raise your hand. Do not keep retrying. Your teacher can fix it.</li>
+      <li><strong>Your score does not send:</strong> take a screenshot of the score page and the completion code, then show your teacher. Later, reopen the same link on the same Chromebook and press "Try sending again".</li>
+      <li><strong>Class code rejected:</strong> check for typos and spaces. Codes are not case-sensitive.</li>
+    </ul>
+  </div>
+</main>
+
+<script>
+/* ===== TEACHER: edit only this block =====================================================
+   Links are relative, so they work wherever this repo is hosted (GitHub Pages).
+   show:false hides a card. For the Community Health Mission set url to its Apps Script
+   /exec link (it is not stored in the repo); it stays greyed out while url is ''.
+   Do NOT put class codes on this page. */
+var SUMMATIVES = [
+  { show:true,  name:'The Wildcat Wellness Trail',        unit:'Mental Health',                 url:'health-summative/' },
+  { show:true,  name:'SIGNAL: Substance Use',             unit:'Substance Use',                 url:'substance-use-summative/' },
+  { show:true,  name:'Gambling: Behind the Odds',         unit:'Gambling (Unit 5)',             url:'unit5-gambling/' },
+  { show:true,  name:'Mission Safe: Injury Prevention',   unit:'Unit 6',                        url:'unit6-injury-prevention/' },
+  { show:true,  name:'Nutrition & Physical Activity',     unit:'Unit 7',                        url:'unit7-nutrition-activity/' },
+  { show:true,  name:'Life Decisions: Family Life',       unit:'Unit 8',                        url:'unit8-family-life/' },
+  { show:true,  name:'Wildcats Wellness Quest',           unit:'Small Choices, Whole Health',   url:'wildcats-wellness-quest/' },
+  { show:true,  name:'Community Health Mission',          unit:'Community Health',              url:'https://script.google.com/macros/s/AKfycbxPrfGxDhagYP9x9Kz2JNsg3Q_W9DopvKeb2oZFJASRAo3_rfKIGEOt2Wf7_2_j9eaiww/exec' }
+];
+/* ========================================================================================= */
+
+(function () {
+  var cards = document.getElementById('cards');
+  SUMMATIVES.forEach(function (s) {
+    if (!s.show) return;
+    var d = document.createElement('div'); d.className = 'card' + (s.url ? '' : ' off');
+    var t = document.createElement('div');
+    var h = document.createElement('h3'); h.textContent = s.name;
+    var p = document.createElement('p'); p.textContent = s.url ? s.unit : s.unit + ' (your teacher will give you this link)';
+    t.appendChild(h); t.appendChild(p); d.appendChild(t);
+    var a = document.createElement('a'); a.className = 'go'; a.textContent = 'Open';
+    if (s.url) { a.href = s.url; } else { a.setAttribute('aria-disabled', 'true'); a.tabIndex = -1; }
+    a.setAttribute('aria-label', 'Open ' + s.name);
+    d.appendChild(a); cards.appendChild(d);
+  });
+
+  /* Reachability only: a no-cors fetch resolves if the host can be reached and rejects if the
+     filter or network blocks it. It never touches any assessment backend, so a whole class can
+     run it at once without using the Apps Script execution quota. */
+  var TESTS = [
+    { label: 'Assessment pages (this site)',          url: location.href.split('#')[0].split('?')[0] },
+    { label: 'Score saving (Google Apps Script)',     url: 'https://script.google.com/favicon.ico' },
+    { label: 'Score saving, second step',             url: 'https://script.googleusercontent.com/favicon.ico' }
+  ];
+  function reach(url) {
+    return new Promise(function (resolve) {
+      var c = new AbortController(), t = setTimeout(function () { c.abort(); }, 8000);
+      fetch(url + (url.indexOf('?') < 0 ? '?' : '&') + 'chk=' + Date.now(), { mode: 'no-cors', cache: 'no-store', signal: c.signal })
+        .then(function () { clearTimeout(t); resolve(true); }, function () { clearTimeout(t); resolve(false); });
+    });
+  }
+  var btn = document.getElementById('runCheck'), list = document.getElementById('results'),
+      verdict = document.getElementById('verdict'), status = document.getElementById('status');
+  btn.addEventListener('click', function () {
+    btn.disabled = true; list.innerHTML = ''; verdict.textContent = ''; verdict.className = '';
+    status.textContent = 'Checking...';
+    var rows = TESTS.map(function (t) {
+      var li = document.createElement('li'); li.innerHTML = '<span class="wait">Checking</span> ';
+      var name = document.createElement('span'); name.textContent = t.label; li.appendChild(name); list.appendChild(li); return li;
+    });
+    Promise.all(TESTS.map(function (t) { return reach(t.url); })).then(function (res) {
+      var all = true;
+      res.forEach(function (ok, i) {
+        all = all && ok;
+        rows[i].innerHTML = '<span class="' + (ok ? 'ok' : 'bad') + '">' + (ok ? 'OK' : 'BLOCKED') + '</span> ';
+        var n = document.createElement('span'); n.textContent = TESTS[i].label; rows[i].appendChild(n);
+      });
+      var online = navigator.onLine !== false;
+      if (all && online) { verdict.className = 'ok'; verdict.textContent = 'All good. You can open your assessment.'; }
+      else { verdict.className = 'bad'; verdict.textContent = 'Something is blocked. Raise your hand and show your teacher this screen. Do not start the assessment yet.'; }
+      status.textContent = ''; btn.disabled = false; btn.textContent = 'Check again';
+    });
+  });
+})();
+</script>
+</body>
+</html>
