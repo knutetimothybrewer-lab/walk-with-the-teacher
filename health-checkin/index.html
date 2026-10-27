@@ -1,0 +1,818 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Health Metrics Check-In</title>
+<meta name="description" content="A 15-minute classroom check-in on adolescent health numbers. Educational only, not medical advice.">
+<style>
+:root{
+  --bg:#eef4ff; --ink:#0b1220; --muted:#3b475c; --card:#ffffff; --line:#c3cedf;
+  --brand:#1d4ed8; --brand-d:#1e3a8a;
+  --good:#047857; --good-bg:#d1fae5; --good-ink:#064e3b;
+  --ok:#0e7490; --ok-bg:#cffafe; --ok-ink:#164e63;
+  --warn:#b45309; --warn-bg:#fef3c7; --warn-ink:#78350f;
+  --bad:#b91c1c; --bad-bg:#fee2e2; --bad-ink:#7f1d1d;
+  --radius:18px; --shadow:0 6px 22px rgba(15,23,42,.10);
+  font-family:system-ui,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:radial-gradient(1200px 600px at 10% -10%,#dbeafe 0,transparent 60%),radial-gradient(900px 500px at 100% 0,#fce7f3 0,transparent 55%),var(--bg);color:var(--ink);font-size:18px;line-height:1.45;min-height:100dvh}
+[hidden]{display:none!important}
+button,input{font:inherit;color:inherit}
+small{font-size:.7em}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* ---------- screens ---------- */
+.screen{min-height:100dvh}
+.screen.enter{animation:screenIn .5s cubic-bezier(.2,.8,.2,1) both}
+.screen.leave{animation:screenOut .22s ease-in both}
+@keyframes screenIn{from{opacity:0;transform:translateY(18px) scale(.985)}to{opacity:1;transform:none}}
+@keyframes screenOut{to{opacity:0;transform:translateY(-10px)}}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.5em;min-height:58px;padding:12px 28px;border:0;border-radius:16px;background:linear-gradient(180deg,#2563eb,#1d4ed8);color:#fff;font-weight:800;font-size:1.1rem;cursor:pointer;box-shadow:0 5px 0 #1e3a8a,0 10px 20px rgba(29,78,216,.25);transition:transform .12s,box-shadow .12s,opacity .2s}
+.btn:hover:not(:disabled){transform:translateY(-2px)}
+.btn:active:not(:disabled){transform:translateY(3px);box-shadow:0 2px 0 #1e3a8a}
+.btn:disabled{opacity:.45;cursor:not-allowed;box-shadow:none}
+.btn.go{background:linear-gradient(180deg,#059669,#047857);box-shadow:0 5px 0 #064e3b,0 10px 20px rgba(4,120,87,.25)}
+:focus-visible{outline:4px solid #f59e0b;outline-offset:3px}
+
+/* ---------- start ---------- */
+#screen-start{display:grid;place-items:center;padding:20px}
+.start-card{width:min(760px,100%);background:var(--card);border:2px solid var(--line);border-radius:28px;box-shadow:var(--shadow);padding:clamp(20px,4vw,40px);position:relative;overflow:hidden}
+.start-card h1{margin:.1em 0 .2em;font-size:clamp(1.9rem,5vw,2.9rem);line-height:1.1;letter-spacing:-.02em}
+.start-card h1 span{color:var(--brand)}
+.start-ecg{height:64px;margin:-6px -8px 6px}
+.lead{font-size:1.15rem;color:var(--muted);margin:.4em 0 1em}
+.pills{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 18px}
+.pill{background:#eff6ff;border:2px solid #bfdbfe;color:var(--brand-d);border-radius:999px;padding:4px 14px;font-weight:700;font-size:.95rem}
+.how{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:0 0 20px}
+.how div{border-radius:12px;padding:8px 6px;text-align:center;font-weight:800;font-size:.9rem;line-height:1.2}
+.how b{display:block;font-size:1.25rem}
+.h20{background:var(--good-bg);color:var(--good-ink)}.h15{background:var(--ok-bg);color:var(--ok-ink)}.h10{background:var(--warn-bg);color:var(--warn-ink)}.h0{background:var(--bad-bg);color:var(--bad-ink)}
+label.nm{display:block;font-weight:800;margin-bottom:6px}
+#name{width:100%;min-height:58px;padding:10px 16px;border:3px solid var(--line);border-radius:14px;background:#fff;font-size:1.2rem}
+#name:focus{border-color:var(--brand);outline:none;box-shadow:0 0 0 4px rgba(29,78,216,.2)}
+.nm-help{font-size:.9rem;color:var(--muted);margin:6px 0 16px;min-height:1.3em}
+.disc{margin-top:18px;font-size:.92rem;color:var(--muted);border-top:2px dashed var(--line);padding-top:12px}
+details.refs{margin-top:10px;font-size:.88rem;color:var(--muted)}
+details.refs summary{cursor:pointer;font-weight:700;color:var(--brand-d);min-height:32px}
+details.refs ul{margin:6px 0 0;padding-left:1.2em}
+
+/* ---------- quiz ---------- */
+.topbar{position:sticky;top:0;z-index:5;background:rgba(238,244,255,.92);backdrop-filter:blur(6px);border-bottom:2px solid var(--line);padding:10px 16px}
+.topin{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:auto 1fr auto;gap:14px;align-items:center}
+.brandmark{font-weight:900;color:var(--brand-d);white-space:nowrap}
+.track{height:16px;border-radius:99px;background:#dbe5f5;overflow:hidden;border:2px solid #b7c6df}
+.fill{height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,#2563eb,#06b6d4,#10b981);background-size:200% 100%;transition:width .7s cubic-bezier(.3,.9,.3,1);animation:shine 4s linear infinite}
+@keyframes shine{to{background-position:-200% 0}}
+.meta{font-weight:800;font-size:.95rem;text-align:right;white-space:nowrap}
+.meta span{color:var(--muted);font-weight:700}
+.qgrid{display:grid;gap:18px;grid-template-columns:1.1fr .9fr;grid-template-areas:"scen vis" "ans fb";align-items:start;max-width:1200px;margin:0 auto;padding:18px 16px 40px}
+.card{background:var(--card);border:2px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px 20px}
+#scen{grid-area:scen}#visc{grid-area:vis}#ans{grid-area:ans}#fb{grid-area:fb}
+.slide{animation:slideIn .5s cubic-bezier(.2,.8,.2,1) both}
+.rise{animation:rise .5s .12s cubic-bezier(.2,.8,.2,1) both}
+.rise2{animation:rise .5s .22s cubic-bezier(.2,.8,.2,1) both}
+@keyframes slideIn{from{opacity:0;transform:translateX(48px)}to{opacity:1;transform:none}}
+@keyframes rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+.who{display:flex;gap:14px;align-items:center;margin-bottom:10px}
+.avatar{position:relative;width:68px;height:68px;border-radius:50%;display:grid;place-items:center;font-size:40px;flex:none;border:3px solid #fff;box-shadow:0 0 0 2px var(--line)}
+.avatar i{position:absolute;right:-6px;bottom:-4px;font-style:normal;font-size:22px;background:#fff;border-radius:50%;width:32px;height:32px;display:grid;place-items:center;box-shadow:0 1px 4px rgba(0,0,0,.25)}
+.who h2{margin:0;font-size:1.25rem;line-height:1.2}
+.who p{margin:0;color:var(--muted);font-size:.95rem}
+.qnum{margin-left:auto;font-weight:800;color:var(--brand-d);background:#e0e9ff;border-radius:99px;padding:3px 12px;font-size:.9rem;white-space:nowrap}
+.stext{font-size:1.15rem;margin:.3em 0 .7em}
+.metric{display:inline-block;background:var(--ink);color:#fff;border-radius:14px;padding:8px 16px;font-weight:800;font-size:1.25rem;letter-spacing:.01em}
+.metric small{display:block;font-size:.7rem;font-weight:700;opacity:.8;text-transform:uppercase;letter-spacing:.08em}
+.ask{font-weight:800;margin:14px 0 0;color:var(--brand-d)}
+.attempt{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px;font-weight:800}
+.pips{display:flex;gap:6px}
+.pip{width:16px;height:16px;border-radius:50%;border:3px solid #94a3b8;background:#fff;transition:all .3s}
+.pip.cur{border-color:var(--brand);background:#dbeafe;transform:scale(1.15)}
+.pip.miss{border-color:var(--bad);background:var(--bad)}
+.pip.hit{border-color:var(--good);background:var(--good)}
+.worth{margin-left:auto;background:var(--warn-bg);color:var(--warn-ink);border-radius:99px;padding:2px 12px;font-size:.95rem}
+.worth.done{background:#e2e8f0;color:var(--muted)}
+
+.opts{display:grid;gap:10px}
+.opt{position:relative;min-height:58px;padding:10px 16px;border:3px solid var(--line);border-radius:16px;background:#fff;font-weight:700;text-align:left;cursor:pointer;transition:transform .12s,box-shadow .15s,border-color .15s,background .15s}
+.opt:hover:not(.locked){transform:translateY(-2px);border-color:#7c93bd}
+.opt.sel{border-color:var(--brand);background:#eff6ff;box-shadow:0 0 0 4px rgba(29,78,216,.2)}
+.opt.tried{opacity:.6;border-style:dashed;background:#f1f5f9}
+.opt.tried::after{content:"✗ tried";position:absolute;top:6px;right:10px;font-size:.75rem;font-weight:800;color:var(--bad)}
+.opt.right{border-color:var(--good);background:var(--good-bg);box-shadow:0 0 0 4px rgba(4,120,87,.2);opacity:1}
+.opt.reveal{border-color:var(--good);background:var(--good-bg);animation:pulseG 1.4s ease-in-out 2;opacity:1}
+.opt.locked{cursor:default}
+@keyframes pulseG{50%{box-shadow:0 0 0 8px rgba(4,120,87,.3)}}
+.opts.sort{grid-template-columns:repeat(3,1fr)}
+.bin{text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-height:96px;font-size:1.15rem}
+.bin-e{font-size:1.9rem}
+.bin-good{border-bottom-width:8px;border-bottom-color:#34d399}.bin-warn{border-bottom-width:8px;border-bottom-color:#fbbf24}.bin-bad{border-bottom-width:8px;border-bottom-color:#f87171}
+.opt.mc{display:flex;gap:12px;align-items:center}
+.letter{flex:none;width:34px;height:34px;border-radius:50%;background:#e0e9ff;color:var(--brand-d);display:grid;place-items:center;font-weight:900}
+.opts.gauge{grid-template-columns:repeat(var(--n),1fr)}
+.zone{text-align:center;min-height:104px;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:6px;padding-top:12px;font-size:.98rem;line-height:1.2}
+.z-sw{width:100%;height:12px;border-radius:99px;background:var(--zc)}
+.z-r{font-size:.8rem;font-weight:700;color:var(--muted);display:none}
+.zone .z-r.on{display:block}
+.zone.tried::after{top:auto;bottom:4px;right:50%;transform:translateX(50%)}
+.gtrack{height:18px;border-radius:99px;background:#e2e8f0;margin-top:12px;overflow:hidden;border:2px solid #cbd5e1}
+#gfill{display:block;height:100%;width:0;border-radius:99px;transition:width .5s cubic-bezier(.3,1.2,.4,1),background .3s}
+.gcap{font-size:.85rem;color:var(--muted);margin:6px 2px 0}
+.actions{margin-top:16px;display:flex;gap:10px;align-items:center}
+.shake{animation:shake .42s cubic-bezier(.36,.07,.19,.97)}
+@keyframes shake{10%,90%{transform:translateX(-2px)}20%,80%{transform:translateX(4px)}30%,50%,70%{transform:translateX(-6px)}40%,60%{transform:translateX(6px)}}
+.glow{animation:glow 1.1s ease-out}
+@keyframes glow{0%{box-shadow:0 0 0 0 rgba(16,185,129,0)}35%{box-shadow:0 0 0 10px rgba(16,185,129,.28),0 0 44px rgba(16,185,129,.55)}100%{box-shadow:var(--shadow)}}
+.cf{position:fixed;width:10px;height:14px;border-radius:2px;pointer-events:none;z-index:50}
+#fx{position:fixed;inset:0;pointer-events:none;z-index:50;overflow:hidden}
+
+.fb{animation:rise .4s cubic-bezier(.2,.8,.2,1) both}
+.fb-h{font-size:1.25rem;font-weight:900;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.fb.wrong{border-color:#f59e0b;background:#fffbeb}
+.fb.right{border-color:var(--good);background:#f0fdf9}
+.fb.rev{border-color:#6366f1;background:#f5f5ff}
+.fb p{margin:.5em 0}
+.pts-pop{background:var(--good);color:#fff;border-radius:99px;padding:0 14px;font-size:1.05rem;animation:pop .6s cubic-bezier(.3,1.6,.4,1) both}
+.pts-pop.zero{background:#64748b}
+@keyframes pop{from{transform:scale(.3);opacity:0}to{transform:none;opacity:1}}
+.verdict{display:inline-block;border-radius:99px;padding:3px 14px;font-weight:800;font-size:.95rem}
+.v-fine{background:var(--good-bg);color:var(--good-ink)}.v-monitor{background:var(--warn-bg);color:var(--warn-ink)}.v-provider{background:var(--bad-bg);color:var(--bad-ink)}
+.why b{color:var(--brand-d)}
+.note{font-size:.95rem;background:#f1f5f9;border-radius:10px;padding:8px 12px}
+.refline{font-size:.82rem;color:var(--muted)}
+.hint{font-size:1.05rem}
+
+/* ---------- visuals ---------- */
+.vis-box{text-align:center}
+.vis-cap{font-size:.85rem;color:var(--muted);margin:4px 0 0}
+.vis-box svg{max-width:100%;height:auto}
+.big{font-size:2.2rem;font-weight:900}
+.hr-top{display:flex;align-items:center;justify-content:center;gap:14px}
+.heart{font-size:2.6rem;display:inline-block;animation:beat var(--beat,1s) ease-in-out infinite}
+@keyframes beat{0%,100%{transform:scale(1)}14%{transform:scale(1.22)}28%{transform:scale(1)}}
+.ecg{width:100%;max-width:340px;background:#0f172a;border-radius:14px}
+.ecg path{fill:none;stroke:#34d399;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+.ecg-scroll{animation:ecg linear infinite}
+@keyframes ecg{to{transform:translateX(-300px)}}
+.dial{width:100%;max-width:300px}
+.dial-fill{stroke-dasharray:100;stroke-dashoffset:100;animation:fillArc 1.6s .2s ease-out forwards}
+@keyframes fillArc{to{stroke-dashoffset:var(--off)}}
+.needle{transform:rotate(-90deg);transform-origin:110px 112px;animation:needle 1.6s .2s cubic-bezier(.3,1.35,.5,1) forwards}
+@keyframes needle{to{transform:rotate(var(--a))}}
+.dial-num{font-size:1.6rem;font-weight:900;margin-top:-8px}
+.meter{display:inline-block;background:#1e293b;border-radius:26px;padding:14px 16px 18px;box-shadow:0 8px 0 #0f172a;width:210px}
+.meter-screen{background:#bbf7d0;color:#052e16;border-radius:14px;padding:8px 10px;font-weight:900;font-size:2.8rem;line-height:1.05;font-variant-numeric:tabular-nums}
+.meter-screen small{display:block;font-size:.8rem;letter-spacing:.06em}
+.strip{display:block;margin:12px auto 0;width:36px;height:10px;border-radius:3px;background:#e2e8f0;position:relative}
+.drop{position:absolute;left:50%;top:-26px;font-size:20px;transform:translateX(-50%);animation:drop 1.6s ease-in infinite}
+@keyframes drop{0%{transform:translate(-50%,-20px);opacity:0}30%{opacity:1}70%{transform:translate(-50%,18px);opacity:1}100%{transform:translate(-50%,24px);opacity:0}}
+.chips{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:12px}
+.chips span{background:#e0e9ff;color:var(--brand-d);border-radius:99px;padding:2px 12px;font-weight:700;font-size:.9rem}
+.lp{animation:flow linear infinite}
+.lp.ldl{fill:#f59e0b;stroke:#b45309;stroke-width:2}.lp.hdl{fill:#38bdf8;stroke:#0369a1;stroke-width:2}
+@keyframes flow{to{transform:translateX(330px)}}
+.legend{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;font-size:.85rem;font-weight:700;margin-top:6px}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:5px;vertical-align:-1px}
+.liq{animation:liqUp 1.6s .1s cubic-bezier(.3,.9,.3,1) both}
+@keyframes liqUp{from{transform:translateY(130px)}}
+.ox{display:inline-block;background:#1e293b;border-radius:24px;padding:14px 18px;min-width:230px;box-shadow:0 8px 0 #0f172a;position:relative}
+.ox-n{font-size:3.4rem;font-weight:900;color:#4ade80;font-variant-numeric:tabular-nums;line-height:1}
+.ox-l{color:#cbd5e1;font-weight:700;font-size:.85rem;letter-spacing:.06em}
+.led{position:absolute;top:14px;right:16px;width:14px;height:14px;border-radius:50%;background:#ef4444;animation:led 1s ease-in-out infinite}
+@keyframes led{50%{opacity:.25;box-shadow:0 0 12px 4px rgba(239,68,68,.7)}}
+.pleth{width:100%;height:36px;margin-top:6px}
+.pleth path{fill:none;stroke:#38bdf8;stroke-width:3}
+.merc{transform-origin:72px 158px;transform:scaleY(0);animation:merc 1.5s .2s cubic-bezier(.3,.9,.3,1) forwards}
+@keyframes merc{to{transform:scaleY(var(--lvl))}}
+.gline{stroke-dasharray:400;stroke-dashoffset:400;animation:draw 1.8s .2s ease-out forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+.ring-a{stroke-dashoffset:var(--c);animation:ringIn 1.5s .2s ease-out forwards}
+@keyframes ringIn{to{stroke-dashoffset:var(--o)}}
+.wave{animation:wave 2.2s linear infinite}
+@keyframes wave{to{transform:translateX(-80px)}}
+.breath{position:relative;width:200px;height:200px;margin:0 auto;display:grid;place-items:center}
+.breath i{position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle,#c7d2fe,#a5b4fc);opacity:.55;animation:breathe 6s ease-in-out infinite}
+.breath i:nth-child(2){inset:22px;animation-delay:.25s;background:radial-gradient(circle,#ddd6fe,#c4b5fd)}
+.breath i:nth-child(3){inset:48px;animation-delay:.5s;background:#e9d5ff}
+.breath b{position:relative;font-size:2.4rem}
+@keyframes breathe{0%,100%{transform:scale(.72)}50%{transform:scale(1)}}
+.sleep-fill{stroke-dasharray:100;stroke-dashoffset:100;animation:sleepIn 2s .2s ease-in-out forwards}
+@keyframes sleepIn{to{stroke-dashoffset:0}}
+.moon{animation:moonGo 2s .2s ease-in-out both}
+@keyframes moonGo{from{transform:rotate(0)}to{transform:rotate(var(--sw))}}
+.ghost{opacity:0;transition:opacity .6s}
+.revealed .ghost{opacity:1}
+
+/* ---------- animated explainers ---------- */
+.ex{margin-top:10px;background:#fff;border:2px dashed #94a3b8;border-radius:14px;padding:10px}
+.ex-scene{display:grid;place-items:center;min-height:110px;margin-bottom:8px;gap:6px}
+.ex-lad{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:6px}
+.ex-seg{border:2px solid var(--line);border-top:7px solid var(--zc,#94a3b8);border-radius:10px;padding:4px 6px;text-align:center;font-size:.8rem;line-height:1.2;opacity:.7;transition:transform .35s,background .35s,box-shadow .35s,opacity .35s}
+.ex-seg b{display:block;font-size:.85rem}
+.ex-seg.on{transform:translateY(-4px) scale(1.05);background:#fffbeb;box-shadow:0 4px 12px rgba(0,0,0,.18);opacity:1}
+.ex-steps{position:relative;min-height:3.4em;margin-top:10px;font-weight:700;font-size:1rem}
+.ex-steps p{margin:0;position:absolute;inset:0;opacity:0;transform:translateY(6px);transition:opacity .4s,transform .4s}
+.ex-steps p.on{opacity:1;transform:none}
+.ex.static .ex-steps{min-height:0}
+.ex.static .ex-steps p{position:static;opacity:1;transform:none;margin:.2em 0}
+.ex.static .ex-seg{opacity:1}
+details.ex-d{margin-top:10px}
+details.ex-d>summary{cursor:pointer;font-weight:800;color:var(--brand-d);min-height:40px;display:flex;align-items:center}
+.ex-t{font-weight:900;color:var(--brand-d);margin:10px 0 0}
+.bar{display:grid;grid-template-columns:140px 1fr;gap:8px;align-items:center;font-size:.85rem;font-weight:700;width:100%;margin:3px 0}
+.bt{height:14px;background:#e2e8f0;border-radius:99px;overflow:hidden}
+.bt i{display:block;height:100%;width:var(--f);border-radius:99px;animation:barGo 3.6s ease-in-out infinite alternate both}
+@keyframes barGo{to{width:var(--t)}}
+.hearts{display:flex;gap:28px;text-align:center;font-size:.8rem;font-weight:700}
+.hearts small{display:block;max-width:130px}
+.hh{display:inline-block;font-size:3rem}
+.hh.slow{animation:beatBig 1.4s ease-in-out infinite}.hh.fast{animation:beatSm .7s ease-in-out infinite}
+@keyframes beatBig{50%{transform:scale(1.45)}}@keyframes beatSm{50%{transform:scale(1.12)}}
+.wall{animation:wallT 3.2s ease-in-out infinite alternate both}
+@keyframes wallT{from{stroke-width:3px}to{stroke-width:16px}}
+.plq{transform-origin:150px 98px;animation:plqG 3.6s ease-in-out infinite alternate both}
+@keyframes plqG{from{transform:scaleY(.15)}to{transform:scaleY(1)}}
+.pl{display:flex;gap:16px;text-align:center;font-size:.78rem;font-weight:700}
+.pl svg{width:140px;height:50px;background:#0f172a;border-radius:10px;display:block;margin-bottom:2px}
+.pl path{fill:none;stroke:#38bdf8;stroke-width:3}
+.pl .sc{animation:plS .8s linear infinite}
+@keyframes plS{to{transform:translateX(-20px)}}
+.sw{text-align:center;font-weight:700;font-size:.85rem}
+.swc{display:block;width:120px;height:46px;border-radius:12px;margin:4px auto;border:2px solid #92400e;animation:swc 3.6s ease-in-out infinite alternate both}
+@keyframes swc{from{background:#fef9c3}to{background:#d97706}}
+@media (max-width:520px){.ex-lad{grid-auto-flow:row;grid-template-columns:1fr 1fr}.bar{grid-template-columns:100px 1fr}}
+
+/* ---------- results ---------- */
+#screen-results{height:100dvh;min-height:0;overflow:hidden;display:grid;grid-template-rows:auto auto minmax(0,1fr) auto auto;gap:1.2vh;padding:1.4vh 1.6vw}
+.banner{background:#facc15;color:#111;border:3px solid #111;border-radius:14px;text-align:center;font-weight:900;font-size:clamp(16px,3vh,30px);padding:.7vh 1.5vw;letter-spacing:.01em}
+.r-head{display:grid;grid-template-columns:auto 1fr auto;gap:2vw;align-items:center;background:#fff;border:2px solid var(--line);border-radius:18px;padding:1.2vh 1.6vw}
+.score-ring{position:relative;width:min(21vh,210px);aspect-ratio:1}
+.score-ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.score-ring .bg{stroke:#e2e8f0}
+.score-ring .fg{stroke-dasharray:339.3;stroke-dashoffset:339.3;transition:stroke-dashoffset 1.6s cubic-bezier(.3,.9,.3,1)}
+.ring-c{position:absolute;inset:0;display:grid;place-content:center;text-align:center}
+.ring-c b{font-size:clamp(28px,6.4vh,64px);line-height:1}
+.ring-c span{font-size:clamp(11px,1.9vh,17px);font-weight:800;color:var(--muted)}
+.r-info h1{margin:0;font-size:clamp(22px,4.6vh,44px);line-height:1.1}
+.r-info .sub{margin:.4vh 0;color:var(--muted);font-weight:700;font-size:clamp(13px,2.2vh,20px)}
+.r-info .tier{margin:.6vh 0 0;font-weight:900;color:var(--brand-d);font-size:clamp(15px,2.6vh,24px)}
+.tiles{display:grid;grid-template-columns:repeat(4,auto);gap:.8vw}
+.tile{border-radius:12px;padding:.8vh 1vw;text-align:center;font-weight:800;font-size:clamp(11px,1.8vh,16px);line-height:1.15;min-width:7vw}
+.tile b{display:block;font-size:clamp(20px,4vh,38px)}
+.cells{display:grid;grid-template-columns:repeat(4,1fr);grid-template-rows:repeat(3,minmax(0,1fr));gap:1vh 1vw;min-height:0}
+.cell{border-radius:14px;border:2px solid;border-left-width:10px;padding:.8vh .9vw;display:grid;grid-template-columns:1fr auto;grid-template-rows:1fr auto;align-items:center;min-height:0;overflow:hidden}
+.c-topic{font-weight:900;font-size:clamp(12px,2.1vh,19px);line-height:1.15}
+.c-topic i{font-style:normal;opacity:.7;margin-right:.4em}
+.c-pts{font-weight:900;font-size:clamp(20px,4.6vh,44px);line-height:1;text-align:right;white-space:nowrap}
+.c-pts small{font-size:.4em;opacity:.75}
+.c-att{grid-column:1/-1;font-weight:800;font-size:clamp(11px,1.8vh,16px)}
+.g20{background:var(--good-bg);border-color:var(--good);color:var(--good-ink)}
+.g15{background:var(--ok-bg);border-color:var(--ok);color:var(--ok-ink)}
+.g10{background:var(--warn-bg);border-color:var(--warn);color:var(--warn-ink)}
+.g0{background:var(--bad-bg);border-color:var(--bad);color:var(--bad-ink)}
+.r-lists{display:grid;grid-template-columns:1fr 1fr;gap:1vw}
+.lst{background:#fff;border:2px solid var(--line);border-radius:14px;padding:.9vh 1.1vw;min-width:0}
+.lst h3{margin:0 0 .5vh;font-size:clamp(13px,2.2vh,20px)}
+.lst .chips{justify-content:flex-start;margin-top:0;gap:.5vh .5vw}
+.lst .chips span{font-size:clamp(11px,1.8vh,16px);padding:.2vh .8vw}
+.lst.str{border-color:var(--good)}.lst.str .chips span{background:var(--good-bg);color:var(--good-ink)}
+.lst.rev{border-color:var(--warn)}.lst.rev .chips span{background:var(--warn-bg);color:var(--warn-ink)}
+.r-foot{font-size:clamp(10px,1.55vh,14px);color:var(--muted);line-height:1.3;text-align:center}
+
+/* ---------- responsive ---------- */
+@media (max-width:860px){
+  .qgrid{grid-template-columns:1fr;grid-template-areas:"scen" "vis" "ans" "fb";padding:12px 12px 40px}
+  .topin{grid-template-columns:1fr;gap:6px}.meta{text-align:left}.brandmark{display:none}
+  .opts.sort .bin{min-height:88px;font-size:1rem}
+  .opts.gauge{grid-template-columns:repeat(2,1fr)}
+  body{font-size:17px}
+}
+@media (max-width:760px),(max-height:520px){
+  #screen-results{height:auto;min-height:100dvh;overflow:auto;display:block;padding:12px}
+  #screen-results>*{margin-bottom:10px}
+  .r-head{grid-template-columns:1fr;justify-items:center;text-align:center}
+  .cells{grid-template-columns:1fr;grid-template-rows:none}
+  .cell{min-height:84px}
+  .r-lists{grid-template-columns:1fr}
+  .tiles .tile{min-width:0;padding:6px 10px}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.001ms!important;animation-delay:0s!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important}
+}
+</style>
+</head>
+<body>
+<noscript><p style="padding:20px">This check-in needs JavaScript turned on.</p></noscript>
+<div id="fx" aria-hidden="true"></div>
+
+<!-- ================= START ================= -->
+<section id="screen-start" class="screen enter">
+  <div class="start-card">
+    <div class="start-ecg" id="start-ecg" aria-hidden="true"></div>
+    <h1>Health Metrics <span>Check-In</span></h1>
+    <p class="lead">You’ll read 12 short stories about teens and their health numbers. For each one, decide what a clinician would do: is it <b>normal</b>, worth <b>monitoring</b>, or <b>concerning</b>? A number alone never tells the whole story!</p>
+    <div class="pills"><span class="pill">⏱ ~15 minutes</span><span class="pill">12 scenarios</span><span class="pill">3 attempts each</span><span class="pill">🔒 Nothing is saved</span></div>
+    <div class="how" aria-label="Scoring">
+      <div class="h20"><b>20</b>1st try</div><div class="h15"><b>15</b>2nd try</div><div class="h10"><b>10</b>3rd try</div><div class="h0"><b>0</b>answer shown</div>
+    </div>
+    <label class="nm" for="name">Your name (first name + last initial)</label>
+    <input id="name" type="text" autocomplete="off" autocapitalize="words" spellcheck="false" maxlength="30" placeholder="Example: Alex R." aria-describedby="nm-help">
+    <p class="nm-help" id="nm-help">Use your first name and last initial, like “Alex R.”</p>
+    <button id="start-btn" class="btn go" type="button" disabled>Start check-in →</button>
+    <p class="disc"><b>Educational only — not medical advice.</b> Talk to a doctor, nurse, or other healthcare provider about your own health.</p>
+    <details class="refs"><summary>Reference ranges used</summary>
+      <ul>
+        <li>Blood pressure: AAP 2017 Clinical Practice Guideline (teens 13+)</li>
+        <li>BMI-for-age percentiles: CDC growth charts (a screening tool only)</li>
+        <li>Cholesterol &amp; triglycerides: NHLBI 2011 pediatric Expert Panel cutoffs</li>
+        <li>Fasting glucose &amp; A1c: ADA Standards of Care</li>
+        <li>Sleep: AASM/AAP teen consensus · Activity: HHS Physical Activity Guidelines · Fever: AAP/CDC</li>
+      </ul>
+    </details>
+  </div>
+</section>
+
+<!-- ================= QUIZ ================= -->
+<section id="screen-quiz" class="screen" hidden>
+  <div class="topbar">
+    <div class="topin">
+      <div class="brandmark">❤️ Health Check-In</div>
+      <div class="track" role="progressbar" aria-label="Progress" aria-valuemin="0" aria-valuemax="12" aria-valuenow="0" id="pbar"><div class="fill" id="pfill"></div></div>
+      <div class="meta"><span id="pq">Question 1 of 12</span> · <span id="ptime">~15 min left</span> · ⭐ <b id="pscore">0</b> pts</div>
+    </div>
+  </div>
+  <div class="qgrid" id="qgrid">
+    <div class="card" id="scen"></div>
+    <div class="card" id="visc"><div id="vis"></div></div>
+    <div class="card" id="ans"></div>
+    <div id="fb" aria-live="polite"></div>
+  </div>
+</section>
+
+<!-- ================= RESULTS ================= -->
+<section id="screen-results" class="screen" hidden>
+  <div class="banner" data-block>📸 Take a screenshot of this page and submit it</div>
+  <div class="r-head" data-block>
+    <div class="score-ring" id="ring">
+      <svg viewBox="0 0 120 120" aria-hidden="true"><defs><linearGradient id="rg" x1="0" x2="1" y1="0" y2="1"><stop offset="0" stop-color="#2563eb"/><stop offset="1" stop-color="#10b981"/></linearGradient></defs>
+        <circle class="bg" cx="60" cy="60" r="54" fill="none" stroke-width="12"/>
+        <circle class="fg" id="ring-fg" cx="60" cy="60" r="54" fill="none" stroke="url(#rg)" stroke-width="12" stroke-linecap="round"/></svg>
+      <div class="ring-c"><b id="r-pct">0%</b><span id="r-pts">0 / 240 pts</span></div>
+    </div>
+    <div class="r-info">
+      <h1 id="r-name"></h1>
+      <p class="sub">Health Metrics Check-In · <span id="r-date"></span></p>
+      <p class="tier" id="r-tier"></p>
+    </div>
+    <div class="tiles" id="r-tiles"></div>
+  </div>
+  <div class="cells" id="r-grid" data-block></div>
+  <div class="r-lists" data-block>
+    <div class="lst str"><h3>💪 Strengths</h3><div class="chips" id="r-str"></div></div>
+    <div class="lst rev"><h3>🔁 Review these</h3><div class="chips" id="r-rev"></div></div>
+  </div>
+  <div class="r-foot" data-block>Reference ranges: AAP 2017 (blood pressure, teens 13+) · CDC BMI-for-age percentiles (screening tool only) · NHLBI 2011 pediatric lipids · ADA Standards of Care (glucose, A1c) · AASM/AAP sleep · HHS activity guidelines. <b>Educational only — not medical advice.</b> Nothing on this page was saved or sent anywhere.</div>
+</section>
+
+<script>
+(function(){
+'use strict';
+var RM = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+var PTS = [20,15,10], MAXQ = 20;
+var $ = function(s,r){return (r||document).querySelector(s)};
+var $$ = function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))};
+
+/* ---------- visuals (small inline SVG / CSS, no canvas) ---------- */
+var ECG = 'M0 60' + 'h20 q5 -8 10 0 h10 l4 6 l6 -50 l6 62 l4 -18 h14 q6 -12 12 0 h14'.repeat(6);
+function ecgSvg(bpm){
+  return '<svg viewBox="0 0 300 100" class="ecg" aria-hidden="true"><g class="ecg-scroll" style="animation-duration:'+(180/bpm).toFixed(2)+'s"><path d="'+ECG+'"/></g></svg>';
+}
+var V = {
+  hr:function(bpm){
+    return '<div class="vis-box" style="--beat:'+(60/bpm).toFixed(2)+'s"><div class="hr-top"><span class="heart" aria-hidden="true">❤️</span><span class="big">'+bpm+'<small> bpm</small></span></div>'+ecgSvg(bpm)+'<p class="vis-cap">Each green spike is one heartbeat</p></div>';
+  },
+  bp:function(s,d){
+    var a=((s-80)/100)*180-90, off=100-((s-80)/100)*100;
+    return '<div class="vis-box"><svg viewBox="0 0 220 135" class="dial" role="img" aria-label="Blood pressure dial"><defs><linearGradient id="bpg" x1="0" x2="1" y1="0" y2="0"><stop offset="0" stop-color="#16a34a"/><stop offset=".5" stop-color="#eab308"/><stop offset="1" stop-color="#dc2626"/></linearGradient></defs>'+
+    '<path d="M20 112 A90 90 0 0 1 200 112" pathLength="100" stroke="#e2e8f0" stroke-width="16" fill="none" stroke-linecap="round"/>'+
+    '<path class="dial-fill" d="M20 112 A90 90 0 0 1 200 112" pathLength="100" stroke="url(#bpg)" stroke-width="16" fill="none" stroke-linecap="round" style="--off:'+off+'"/>'+
+    '<g class="needle" style="--a:'+a+'deg"><line x1="110" y1="112" x2="110" y2="38" stroke="#0f172a" stroke-width="5" stroke-linecap="round"/><circle cx="110" cy="112" r="9" fill="#0f172a"/></g></svg>'+
+    '<div class="dial-num">'+s+'/'+d+' <small>mmHg</small></div><p class="vis-cap">Pressure in the arteries, measured by the cuff</p></div>';
+  },
+  meter:function(g,a){
+    return '<div class="vis-box"><div class="meter"><div class="meter-screen"><span data-count="'+g+'">0</span><small>mg/dL</small></div><span class="strip"><span class="drop" aria-hidden="true">💧</span></span></div><div class="chips"><span>Fasting 8+ hours</span><span>A1c '+a+'%</span></div><p class="vis-cap">Fasting glucose = blood sugar after hours without food</p></div>';
+  },
+  ldl:function(){
+    var dots='';
+    for(var i=0;i<9;i++){var h=i%3===2;dots+='<circle class="lp '+(h?'hdl':'ldl')+'" cx="-12" cy="'+(40+(i*13)%36)+'" r="'+(h?5:7)+'" style="animation-delay:'+(-i*0.9)+'s;animation-duration:'+(5+(i%3))+'s"/>';}
+    return '<div class="vis-box"><svg viewBox="0 0 300 120" role="img" aria-label="Particles flowing through an artery"><defs><clipPath id="tc"><rect x="4" y="22" width="292" height="76" rx="38"/></clipPath></defs><rect x="4" y="22" width="292" height="76" rx="38" fill="#fee2e2" stroke="#b91c1c" stroke-width="4"/><g clip-path="url(#tc)"><path d="M110 98 q22 -30 56 0z" fill="#f59e0b" opacity=".6"/>'+dots+'</g></svg>'+
+    '<div class="legend"><span><i style="background:#f59e0b"></i>LDL carries cholesterol out</span><span><i style="background:#38bdf8"></i>HDL carries it back</span></div></div>';
+  },
+  vial:function(v){
+    var d='M40 10 h40 v140 a20 20 0 0 1 -40 0 z';
+    return '<div class="vis-box"><svg viewBox="0 0 120 200" width="130" role="img" aria-label="Blood sample tube"><defs><clipPath id="vc"><path d="'+d+'"/></clipPath></defs><path d="'+d+'" fill="#f8fafc"/><g clip-path="url(#vc)"><rect class="liq" x="30" y="70" width="60" height="150" fill="#fbbf24"/></g><path d="'+d+'" fill="none" stroke="#334155" stroke-width="4"/><rect x="34" y="2" width="52" height="12" rx="4" fill="#475569"/></svg><div class="dial-num">'+v+' <small>mg/dL</small></div><p class="vis-cap">Triglycerides: fats carried in the blood</p></div>';
+  },
+  ox:function(v){
+    var w='M0 20'; for(var i=0;i<14;i++){w+=' q10 -26 20 0 t20 0';}
+    return '<div class="vis-box"><div class="ox"><span class="led" aria-hidden="true"></span><div class="ox-l">SpO₂ · pulse oximeter</div><div class="ox-n"><span data-count="'+v+'">0</span>%</div><svg class="pleth" viewBox="0 0 200 40" preserveAspectRatio="none" aria-hidden="true"><g class="ecg-scroll" style="animation-duration:2.4s"><path d="'+w+'" transform="scale(1,.7)"/></g></svg></div><p class="vis-cap">Red light shines through the fingertip</p></div>';
+  },
+  therm:function(t){
+    var f=function(v){return .15+.85*(v-96)/8;}, ticks='';
+    [96,98,100,102,104].forEach(function(v){var y=158-f(v)*140;ticks+='<line x1="92" x2="102" y1="'+y+'" y2="'+y+'" stroke="#334155" stroke-width="2"/><text x="106" y="'+(y+4)+'" font-size="12" fill="#334155">'+v+'°</text>';});
+    return '<div class="vis-box"><svg viewBox="0 0 160 190" width="170" role="img" aria-label="Thermometer"><rect x="58" y="14" width="28" height="144" rx="14" fill="#f8fafc" stroke="#334155" stroke-width="4"/><circle cx="72" cy="162" r="22" fill="#f8fafc" stroke="#334155" stroke-width="4"/><circle cx="72" cy="162" r="15" fill="#ef4444"/><rect class="merc" x="66" y="18" width="12" height="140" fill="#ef4444" style="--lvl:'+f(t)+'"/>'+ticks+'</svg><div class="dial-num">'+t.toFixed(1)+'°F <small>(37.4 °C)</small></div></div>';
+  },
+  growth:function(){
+    var C=[[130,120,100],[110,95,70],[95,78,52],[85,66,38]], cols=['#cbd5e1','#94a3b8','#7c8fb0','#64748b'], p='';
+    var yq=function(c,t){return (1-t)*(1-t)*c[0]+2*(1-t)*t*c[1]+t*t*c[2];}, pts=[];
+    C.forEach(function(c,i){p+='<path d="M20 '+c[0]+' Q150 '+c[1]+' 280 '+c[2]+'" fill="none" stroke="'+cols[i]+'" stroke-width="2.5"/>';});
+    [.12,.3,.5,.7,.88].forEach(function(t){pts.push([20+260*t, yq(C[2],t)-5]);});
+    var line='M'+pts.map(function(q){return q[0].toFixed(1)+' '+q[1].toFixed(1)}).join(' L');
+    return '<div class="vis-box"><svg viewBox="0 0 300 160" role="img" aria-label="Growth chart with one teen tracking along a steady curve"><line x1="20" y1="10" x2="20" y2="145" stroke="#475569" stroke-width="2"/><line x1="20" y1="145" x2="285" y2="145" stroke="#475569" stroke-width="2"/>'+p+'<path class="gline" d="'+line+'" fill="none" stroke="#7c3aed" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>'+pts.map(function(q,i){return '<circle cx="'+q[0]+'" cy="'+q[1]+'" r="5.5" fill="#7c3aed" stroke="#fff" stroke-width="2"/>'}).join('')+'<text x="150" y="158" text-anchor="middle" font-size="11" fill="#334155">Age 11 → 15</text></svg><p class="vis-cap">The growth curve over years matters more than one point</p></div>';
+  },
+  clock:function(m){
+    var R=62, C=2*Math.PI*R, tk='';
+    [['0',0],['15',90],['30',180],['45',270]].forEach(function(a){var r=(a[1]-90)*Math.PI/180;tk+='<text x="'+(100+Math.cos(r)*84).toFixed(1)+'" y="'+(100+Math.sin(r)*84+4).toFixed(1)+'" text-anchor="middle" font-size="11" fill="#475569" font-weight="700">'+a[0]+'</text>';});
+    return '<div class="vis-box"><svg viewBox="0 0 200 200" width="190" role="img" aria-label="Clock face showing '+m+' minutes shaded"><circle cx="100" cy="100" r="'+R+'" fill="none" stroke="#e2e8f0" stroke-width="16"/><circle class="ring-a" cx="100" cy="100" r="'+R+'" fill="none" stroke="#0891b2" stroke-width="16" stroke-linecap="round" stroke-dasharray="'+C+'" transform="rotate(-90 100 100)" style="--c:'+C+';--o:'+(C*(1-m/60))+'"/>'+tk+'<text x="100" y="104" text-anchor="middle" font-size="30" font-weight="900" fill="#0b1220">'+m+'</text><text x="100" y="124" text-anchor="middle" font-size="12" font-weight="700" fill="#475569">active min</text></svg><p class="vis-cap">Full circle = 1 hour</p></div>';
+  },
+  bottle:function(){
+    var w='M-80 150'; for(var i=0;i<8;i++){w+=' '+(i===0?'q20 -10 40 0':'t40 0');} w+=' V200 H-80z';
+    return '<div class="vis-box"><svg viewBox="0 0 140 200" width="150" role="img" aria-label="Water bottle that is almost empty"><defs><clipPath id="bc"><rect x="35" y="50" width="70" height="140" rx="20"/></clipPath></defs><rect x="35" y="50" width="70" height="140" rx="20" fill="#f0f9ff"/><g clip-path="url(#bc)"><path class="wave" d="'+w+'" fill="#38bdf8" opacity=".85"/></g><rect x="35" y="50" width="70" height="140" rx="20" fill="none" stroke="#0369a1" stroke-width="4"/><rect x="55" y="16" width="30" height="36" rx="6" fill="#94a3b8"/></svg><p class="vis-cap">After sweating for hours, water is running low</p></div>';
+  },
+  breath:function(){
+    return '<div class="vis-box"><div class="breath" aria-hidden="true"><i></i><i></i><i></i><b>🌿</b></div><p class="vis-cap">Slow breathing helps the body’s “alarm system” settle</p></div>';
+  },
+  moon:function(){
+    var cx=150,cy=130,r=105;
+    var P=function(t){var th=Math.PI*(1-t);return [cx+r*Math.cos(th),cy-r*Math.sin(th)];};
+    var t0=4/11,t1=9.25/11,tg=1/11, a=P(t0), b=P(t1), g=P(tg);
+    var arc=function(p,q){return 'M'+p[0].toFixed(1)+' '+p[1].toFixed(1)+' A'+r+' '+r+' 0 0 1 '+q[0].toFixed(1)+' '+q[1].toFixed(1);};
+    return '<div class="vis-box"><svg viewBox="0 0 300 175" role="img" aria-label="Night sky arc from 9 pm to 8 am with a moon marking about five hours of sleep">'+
+    '<path d="M'+(cx-r)+' '+cy+' A'+r+' '+r+' 0 0 1 '+(cx+r)+' '+cy+'" fill="none" stroke="#dbe5f5" stroke-width="16" stroke-linecap="round"/>'+
+    '<path class="ghost" d="'+arc(g,b)+'" fill="none" stroke="#818cf8" stroke-width="6" stroke-dasharray="3 7" stroke-linecap="round"/>'+
+    '<path class="sleep-fill" d="'+arc(a,b)+'" pathLength="100" fill="none" stroke="#4f46e5" stroke-width="16" stroke-linecap="round"/>'+
+    '<g class="moon" style="transform-origin:'+cx+'px '+cy+'px;--sw:'+(180*(t1-t0)).toFixed(1)+'deg"><text x="'+a[0].toFixed(1)+'" y="'+a[1].toFixed(1)+'" text-anchor="middle" dominant-baseline="central" font-size="26">🌙</text></g>'+
+    '<text x="'+(cx-r)+'" y="'+(cy+24)+'" text-anchor="middle" font-size="12" font-weight="700" fill="#334155">9 pm</text><text x="'+(cx+r)+'" y="'+(cy+24)+'" text-anchor="middle" font-size="12" font-weight="700" fill="#334155">8 am</text>'+
+    '<text x="'+cx+'" y="'+(cy-24)+'" text-anchor="middle" font-size="30" font-weight="900" fill="#0b1220">5 h 15 min</text><text x="'+cx+'" y="'+(cy-4)+'" text-anchor="middle" font-size="12" font-weight="700" fill="#475569">asleep 1:00 → 6:15 am</text></svg><p class="vis-cap">Filled arc = hours slept on a school night</p></div>';
+  }
+};
+
+/* ---------- question bank ---------- */
+var SORT = [{n:'Normal',e:'✅',c:'good'},{n:'Monitor',e:'👀',c:'warn'},{n:'Concerning',e:'⚠️',c:'bad'}];
+var VERDICT = {fine:'Probably fine — don’t panic',monitor:'Worth monitoring / follow-up',provider:'See a healthcare provider'};
+var QUIZ = [
+{id:'rhr',topic:'Resting heart rate',type:'sort',verdict:'fine',
+ who:{name:'Jordan',age:16,tag:'cross-country runner',p:'🧑🏽',b:'🏃',c:['#fde68a','#fdba74']},
+ text:'Jordan trains with the cross-country team five days a week. At a sports physical, Jordan’s resting heart rate is 48 beats per minute. Jordan feels great: no dizziness, fainting, or chest pain.',
+ metric:{k:'Resting heart rate',v:'48 bpm'}, ask:'Where does this number belong?', vis:function(){return V.hr(48)},
+ answer:0,
+ hints:['Think about what years of endurance training do to the heart. Does a low number always mean a problem?','Teens who are not athletes usually rest around 60–100 bpm, but trained athletes can run lower. What matters most is whether there are symptoms like fainting or dizziness.'],
+ explain:'Endurance training makes the heart muscle stronger, so each beat pushes out more blood and fewer beats are needed to supply the body, while higher “rest-and-digest” (vagal) tone slows the heart’s natural pacemaker. A clinician would only worry about a low rate if it came with symptoms such as fainting, dizziness, or chest pain.',
+ note:'A number alone doesn’t diagnose: the same 48 bpm in someone who is faint and tired would be a very different story.',
+ ref:'Teen resting HR ≈ 60–100 bpm; trained endurance athletes often 40–60 bpm (AHA/PALS pediatric ranges).'},
+{id:'bp',topic:'Blood pressure',type:'gauge',verdict:'provider',
+ who:{name:'Marcus',age:17,tag:'trombone in the marching band',p:'👦🏿',b:'🎺',c:['#bfdbfe','#a5b4fc']},
+ text:'At three separate clinic visits over several months, Marcus’s blood pressure was about 134/84 mmHg, measured seated and rested with the right-size cuff.',
+ metric:{k:'Blood pressure (3 visits)',v:'134/84 mmHg'}, ask:'Tap the zone where Marcus’s top (systolic) number falls.',
+ zones:[{n:'Normal',c:'#16a34a',r:'under 120/80'},{n:'Elevated',c:'#eab308',r:'120–129 and under 80'},{n:'Stage 1 high BP',c:'#f97316',r:'130–139 or 80–89'},{n:'Stage 2 high BP',c:'#dc2626',r:'140/90 or higher'}],
+ vis:function(){return V.bp(134,84)}, answer:2,
+ hints:['Teens 13 and older use the AAP 2017 cut points, which are lower than the old adult “140/90” rule.','For ages 13+, “Elevated” is 120–129 systolic, and Stage 1 begins at 130 (or a bottom number of 80). 134 is past that line but under 140.'],
+ explain:'When pressure inside the arteries stays high, the heart pumps against more resistance and artery walls gradually stiffen and thicken, so catching it early in the teen years protects the heart and kidneys. Nerves, caffeine, and the wrong cuff size can inflate a single reading, which is why clinicians confirm with repeat measurements across visits, as Marcus already had.',
+ note:'Next step: a healthcare provider checks for causes, reviews sleep, activity, salt, and family history, and plans follow-up.',
+ ref:'AAP 2017 (age ≥13): normal <120/<80; elevated 120–129/<80; stage 1 130–139/80–89; stage 2 ≥140/90.'},
+{id:'glu',topic:'Fasting glucose & A1c',type:'mc',verdict:'monitor',
+ who:{name:'Ava',age:16,tag:'school newspaper editor',p:'👩🏻',b:'📰',c:['#fbcfe8','#f9a8d4']},
+ text:'At an annual checkup, Ava has no symptoms but a parent has type 2 diabetes. After fasting 8+ hours, her blood glucose is 108 mg/dL and her A1c (her average blood sugar over about 3 months) is 5.8%.',
+ metric:{k:'Fasting glucose · A1c',v:'108 mg/dL · 5.8%'}, ask:'What would a clinician do next?',
+ opts:['Diagnose type 1 diabetes and start insulin today','Explain that both are in the prediabetes range, repeat testing, and talk through sleep, activity, and eating habits over time','Say any glucose above 100 is perfectly normal for teens','Send Ava to the emergency room right now'],
+ vis:function(){return V.meter(108,'5.8')}, answer:1,
+ hints:['Both numbers are above “normal” but below the diabetes cutoffs. Is this an emergency, or something to confirm and follow?','Fasting glucose 100–125 mg/dL and A1c 5.7–6.4% are the ADA “prediabetes” ranges. Clinicians repeat the test and work on habits together with the teen, not an ER visit.'],
+ explain:'In prediabetes the body’s cells respond less well to insulin, so glucose lingers in the blood; A1c reflects the share of hemoglobin coated with sugar over about 3 months, giving a longer view than one fasting reading. Because this is an early, often reversible range, a clinician repeats the tests and builds supportive habits with the teen rather than treating it as an emergency.',
+ note:'Not a diagnosis of diabetes: that needs fasting glucose ≥126 mg/dL or A1c ≥6.5% confirmed on repeat testing (or classic symptoms plus a high reading).',
+ ref:'ADA: fasting glucose normal <100, prediabetes 100–125, diabetes ≥126 mg/dL; A1c normal <5.7%, prediabetes 5.7–6.4%, diabetes ≥6.5%.'},
+{id:'ldl',topic:'Cholesterol (LDL)',type:'gauge',verdict:'provider',
+ who:{name:'Kai',age:17,tag:'drummer in the jazz band',p:'🧑🏼',b:'🥁',c:['#a7f3d0','#6ee7b7']},
+ text:'A routine screening cholesterol panel (after a 12-hour fast) shows total cholesterol 210, HDL 48, and LDL 142 mg/dL for Kai.',
+ metric:{k:'LDL · HDL · Total',v:'142 · 48 · 210 mg/dL'}, ask:'Tap the zone where Kai’s LDL (“bad”) cholesterol falls.',
+ zones:[{n:'Acceptable',c:'#16a34a',r:'under 110'},{n:'Borderline',c:'#eab308',r:'110–129'},{n:'High',c:'#dc2626',r:'130 or higher'}],
+ vis:function(){return V.ldl()}, answer:2,
+ hints:['NHLBI pediatric cutoffs for LDL are lower than the numbers you may hear for adults. “Acceptable” is under 110 mg/dL.','Borderline is 110–129 mg/dL, and 130 or higher is “high.” Where does 142 land?'],
+ explain:'LDL particles carry cholesterol out to tissues, and when too many circulate, some slip into artery walls, trigger inflammation, and start building the fatty streaks that can begin in adolescence. A clinician would repeat the fasting panel and look at family history and lifestyle before deciding on next steps.',
+ note:'Also noted: total cholesterol ≥200 is “high” and HDL under 40 is “low” for teens. Most teens with high LDL start with lifestyle changes plus follow-up with their provider.',
+ ref:'NHLBI 2011 (ages 2–19): LDL <110 acceptable, 110–129 borderline, ≥130 high; total <170 / 170–199 / ≥200; HDL <40 low.'},
+{id:'tg',topic:'Triglycerides',type:'sort',verdict:'monitor',
+ who:{name:'Zoe',age:16,tag:'swim team',p:'👧🏾',b:'🏊',c:['#99f6e4','#67e8f9']},
+ text:'Zoe swims six days a week. After a 12-hour fast, her lipid panel shows triglycerides of 105 mg/dL, and her HDL (“good”) cholesterol is 55 mg/dL.',
+ metric:{k:'Triglycerides (fasting)',v:'105 mg/dL'}, ask:'Where does this number belong?', vis:function(){return V.vial(105)},
+ answer:1,
+ hints:['Pediatric triglyceride cutoffs are stricter than adult ones. For ages 10–19, under 90 mg/dL is “acceptable.”','The “high” line for ages 10–19 is 130 mg/dL. 105 sits between acceptable (under 90) and high (130+).'],
+ explain:'Triglycerides are fats that the liver packages into particles to move stored energy around the body, and levels rise with extra sugar and refined carbohydrates, low activity, genetics, and not fasting before the draw. A borderline value is a reason to repeat the test and review habits, not a diagnosis.',
+ note:'Being an athlete doesn’t exempt anyone from checking: genetics matter a lot for blood fats.',
+ ref:'NHLBI 2011 (ages 10–19): triglycerides <90 acceptable, 90–129 borderline, ≥130 high (fasting).'},
+{id:'spo2',topic:'Oxygen saturation (SpO₂)',type:'mc',verdict:'fine',
+ who:{name:'Hana',age:14,tag:'rushing to class on a freezing morning',p:'👧🏻',b:'🧣',c:['#e0e7ff','#c7d2fe']},
+ text:'Hana runs up three flights of stairs on a freezing January morning and stops at the nurse’s office. A fingertip pulse oximeter on her icy finger reads 92%. She’s talking in full sentences, her lips are pink, and she isn’t wheezing.',
+ metric:{k:'SpO₂ (cold fingertip)',v:'92%'}, ask:'What would a clinician do next?',
+ opts:['Call 911 immediately, because any number under 95% is an emergency','Tell Hana it’s fine and never check oxygen again','Warm her hands, have her sit still, re-check the reading, and keep watching her breathing and color','Give Hana a friend’s asthma inhaler'],
+ vis:function(){return V.ox(92)}, answer:2,
+ hints:['A pulse oximeter is only as good as the blood flow reaching the sensor. What happens to blood flow in freezing fingers?','Look at the whole patient: she’s breathing comfortably and her lips are pink. Re-check with a warm finger before reacting to one number.'],
+ explain:'A pulse oximeter shines red and infrared light through the fingertip and compares how much each is absorbed by oxygen-rich versus oxygen-poor blood, but cold, constricted vessels weaken the signal and can read falsely low. A clinician treats the patient in front of them and re-measures properly before reacting to a single number.',
+ note:'Normal is about 95–100% at sea level. Readings that stay under about 92%, or trouble breathing, blue or gray lips, or confusion, need medical help right away.',
+ ref:'Normal SpO₂ ≈ 95–100% at sea level (AAP/AHA pediatric references); persistent <92% warrants evaluation.'},
+{id:'temp',topic:'Body temperature',type:'sort',verdict:'fine',
+ who:{name:'Rowan',age:14,tag:'midfielder on the soccer team',p:'🧒🏼',b:'⚽',c:['#bbf7d0','#fde68a']},
+ text:'Rowan finishes soccer practice on a hot afternoon. A quick oral reading says 99.4°F (37.4°C). Rowan feels fine: no sore throat, cough, or aches.',
+ metric:{k:'Body temperature',v:'99.4 °F'}, ask:'Where does this number belong?', vis:function(){return V.therm(99.4)},
+ answer:0,
+ hints:['Compare it to the usual fever line for teens: 100.4°F (38.0°C) or higher.','Exercise, hot weather, and time of day all push normal body temperature up a little. Does Rowan have any other signs of illness?'],
+ explain:'Working muscles generate heat, so body temperature runs a bit higher after exercise, in warm weather, and in the late afternoon, while the brain’s thermostat (the hypothalamus) stays at its usual setpoint. A true fever happens when immune chemicals raise that setpoint, usually with other symptoms and a reading of 100.4°F or higher.',
+ note:'Probably fine, so no need to panic. Re-check after resting 20–30 minutes if you’re curious.',
+ ref:'Fever ≥100.4°F (38.0°C) (AAP/CDC). Normal body temperature varies about 97–99.5°F through the day.'},
+{id:'bmi',topic:'BMI-for-age percentile',type:'gauge',verdict:'monitor',
+ who:{name:'Dev',age:15,tag:'middle blocker on the volleyball team',p:'👦🏽',b:'🏐',c:['#ddd6fe','#c4b5fd']},
+ text:'Dev feels strong, eats regular meals, and has no health concerns. At a checkup, Dev’s BMI-for-age is at the 88th percentile, and it has stayed close to that same curve since age 11.',
+ metric:{k:'BMI-for-age',v:'88th percentile'}, ask:'BMI is only a screening tool. Tap the zone where the 88th percentile falls.',
+ zones:[{n:'Lower range',c:'#93c5fd',r:'under 5th'},{n:'Typical range',c:'#5eead4',r:'5th to under 85th'},{n:'Above-typical range',c:'#a78bfa',r:'85th to under 95th'},{n:'Well-above-typical range',c:'#7c3aed',r:'95th or higher'}],
+ vis:function(){return V.growth()}, answer:2,
+ hints:['BMI-for-age compares a teen with other teens of the same age and sex, so adult cutoffs like 25 and 30 don’t apply.','The CDC lines are at the 5th, 85th, and 95th percentiles. 88 is past the 85th line but short of the 95th.'],
+ explain:'BMI is just weight divided by height squared, so it can’t tell muscle from fat or account for growth spurts and genetics; it only flags who might benefit from a closer look. A clinician looks at the growth curve over years, family history, blood pressure, labs, and daily habits, and a steady curve in an active teen often needs only routine follow-up.',
+ note:'This is a screening result, not a diagnosis, and it is never a reason for crash dieting. Anyone with questions about growth or food can talk with their provider.',
+ ref:'CDC growth charts: BMI-for-age <5th, 5th–<85th, 85th–<95th, ≥95th percentile (CDC names: underweight, healthy weight, overweight, obesity — screening only).'},
+{id:'sleep',topic:'Sleep & screen habits',type:'mc',verdict:'monitor',
+ who:{name:'Aisha',age:15,tag:'robotics club',p:'👩🏿',b:'🤖',c:['#fecdd3','#fda4af']},
+ text:'Aisha scrolls her phone in bed. She falls asleep around 1:00 a.m. and wakes at 6:15 a.m. on school days. She’s nodding off in first period and feeling irritable.',
+ metric:{k:'School-night sleep',v:'~5 hours'}, ask:'What would a clinician recommend first?',
+ opts:['Add coffee and energy drinks after school to push through','Keep the routine, because 5 hours is plenty for a 15-year-old','Take a friend’s sleeping pills so she falls asleep faster','Aim for 8–10 hours with steady bed and wake times, phone charging outside the bedroom, and screens off 30–60 minutes before bed'],
+ vis:function(){return V.moon()}, answer:3,
+ hints:['How many hours of sleep do 13–18-year-olds need? It’s more than most people think.','AASM and AAP recommend 8–10 hours for teens. Fix the cause (late bright light and a short sleep window) instead of masking the symptoms.'],
+ explain:'Teens’ body clocks naturally shift later, and bright screen light suppresses melatonin, so falling asleep gets even later while early school start times cut the night short. During sleep the brain consolidates memories and restores attention and mood circuits, so about 5 hours leaves teens foggy and irritable.',
+ note:'Caffeine only hides sleepiness for a while, and sleeping pills should only be used if a healthcare provider prescribes them.',
+ ref:'AASM consensus (endorsed by AAP): teens 13–18 should sleep 8–10 hours per 24 h on a regular basis.'},
+{id:'act',topic:'Daily activity',type:'sort',verdict:'monitor',
+ who:{name:'Theo',age:16,tag:'draws comics, doesn’t play a sport',p:'🧑🏻',b:'✏️',c:['#fed7aa','#fdba74']},
+ text:'Theo walks to school and back, which adds up to about 20 minutes of movement on a typical day. His resting heart rate is 84 bpm and his blood pressure is normal.',
+ metric:{k:'Daily activity',v:'~20 min/day'}, ask:'Where does this pattern belong?', vis:function(){return V.clock(20)},
+ answer:1,
+ hints:['Teens are encouraged to get 60 minutes of moderate-to-vigorous activity a day (HHS guidelines). How far is 20 from that?','It’s below the 60-minute target, but Theo’s vitals are normal and the fix is gradual and fun, so this is a “watch and build” item, not an emergency.'],
+ explain:'Muscles that work regularly pull more sugar out of the blood, the heart becomes more efficient, and bones laid down during the teen years set peak bone strength for life. A clinician would encourage building up gradually with activities Theo enjoys, since any movement counts and short chunks add up.',
+ note:'Compare with Jordan: 48 bpm and 84 bpm are both normal. Numbers need context, and different bodies have different baselines.',
+ ref:'HHS Physical Activity Guidelines (2nd ed.): ages 6–17 need ≥60 min/day moderate-to-vigorous activity, incl. vigorous and muscle/bone-strengthening ≥3 days/week. Teen resting HR ≈ 60–100.'},
+{id:'hyd',topic:'Hydration',type:'gauge',verdict:'monitor',
+ who:{name:'Priya',age:15,tag:'ultimate frisbee',p:'👧🏽',b:'🥏',c:['#bae6fd','#7dd3fc']},
+ text:'Priya just finished an all-day ultimate frisbee tournament in the sun. She has a mild headache and has only had a few sips of water. Her urine is the color of apple juice.',
+ metric:{k:'Urine color',v:'apple-juice color'}, ask:'Tap the zone on the urine-color scale that best matches.',
+ zones:[{n:'Pale straw',c:'#fef9c3',r:'Well hydrated'},{n:'Light yellow',c:'#fde047',r:'Okay · sip steadily'},{n:'Dark amber',c:'#d97706',r:'Low on fluids · drink and re-check'},{n:'Brown / tea-colored',c:'#78350f',r:'Get medical care'}],
+ vis:function(){return V.bottle()}, answer:2,
+ hints:['Well-hydrated urine is pale like lemonade; the darker it is, the more concentrated it is.','Apple-juice color is darker than yellow but not brown or tea-colored (those can signal something more serious).'],
+ explain:'When you lose water through sweat, the brain releases the hormone ADH, so the kidneys hold on to water and the yellow pigment in urine becomes more concentrated and darker. Dark amber after a hot day is a cue to drink fluids and re-check, not a cause for alarm by itself.',
+ note:'Brown or cola-colored urine, confusion, repeated vomiting, fainting, or no urination for 8+ hours needs medical care right away.',
+ ref:'Urine color chart (Armstrong); NATA 2017 and AAP guidance on hydration and exertional heat illness.'},
+{id:'stress',topic:'Stress & daily habits',type:'mc',verdict:'provider',
+ who:{name:'Elena',age:17,tag:'loves singing in choir',p:'👩🏼',b:'🎤',c:['#e9d5ff','#d8b4fe']},
+ text:'For three weeks Elena has felt constantly on edge, has trouble falling asleep, gets stomachaches before school, and has stopped going to the choir rehearsals she used to love. She’s been grabbing whatever is quickest to eat while studying.',
+ metric:{k:'Symptoms lasting',v:'3 weeks'}, ask:'What would a clinician do next?',
+ opts:['Ask open questions, use a validated screening questionnaire, and look at sleep, meals, and supports together','Tell her it’s normal teenage stuff and to wait until summer','Diagnose her from a social-media quiz','Give her a strict study schedule with no free time'],
+ vis:function(){return V.breath()}, answer:0,
+ hints:['Symptoms lasting weeks and changing things she loves are more than one rough day. What does a clinician do before deciding anything?','Clinicians ask open-ended questions and use validated screens (like the PHQ-A or GAD-7), then connect teens with support such as counseling. Waiting it out or self-diagnosing doesn’t help.'],
+ explain:'Ongoing stress keeps the body’s alarm system (the HPA axis and the hormone cortisol) switched on, which can disrupt sleep, upset the gut, and dim motivation and mood, and short sleep plus irregular meals can keep the cycle going. Anxiety and depression are common and treatable, and the earlier they’re noticed the better teens do, which is why the AAP recommends routine screening.',
+ note:'If you or a friend ever feels unsafe or hopeless, tell a trusted adult or call or text 988 (U.S. Suicide & Crisis Lifeline) any time.',
+ ref:'AAP 2018 (GLAD-PC) recommends annual depression screening for ages 12+; PHQ-A and GAD-7 are validated adolescent screens.'}
+];
+
+/* ---------- animated explainers ---------- */
+var G='#16a34a',Y='#eab308',O='#f97316',R='#dc2626';
+function bars(l){return '<div style="width:100%">'+l.map(function(b){return '<div class="bar"><span>'+b[0]+'</span><div class="bt"><i style="--f:'+b[1]+'%;--t:'+b[2]+'%;background:'+b[3]+'"></i></div></div>'}).join('')+'</div>';}
+function tube(inner,wall){return '<svg viewBox="0 0 300 120" width="280" aria-hidden="true"><defs><clipPath id="xt"><rect x="4" y="22" width="292" height="76" rx="38"/></clipPath></defs><rect x="4" y="22" width="292" height="76" rx="38" fill="#fee2e2" stroke="#b91c1c" stroke-width="4" '+(wall?'class="wall"':'')+'/><g clip-path="url(#xt)">'+inner+'</g></svg>';}
+function dots(){var d='';for(var i=0;i<8;i++){d+='<circle class="lp '+(i%3===2?'hdl':'ldl')+'" cx="-12" cy="'+(40+(i*13)%36)+'" r="6" style="animation-delay:'+(-i*.9)+'s;animation-duration:'+(5+(i%3))+'s"/>';}return d;}
+function pleth(h){var w='M0 25';for(var i=0;i<10;i++)w+=' q5 -22 10 0 t10 0';return '<svg viewBox="0 0 140 50" aria-hidden="true"><g class="sc"><path d="'+w+'" transform="translate(0,25) scale(1,'+h+') translate(0,-25)"/></g></svg>';}
+var SC={
+ hearts:'<div class="hearts"><div><span class="hh slow">❤️</span><small>Trained heart: big squeeze, slower beat</small></div><div><span class="hh fast">❤️</span><small>Smaller squeeze: faster beat</small></div></div>',
+ artery:tube(dots(),true)+'<small class="vis-cap">High pressure over time: artery walls thicken &amp; stiffen</small>',
+ plaque:tube('<ellipse class="plq" cx="150" cy="98" rx="46" ry="26" fill="#f59e0b" opacity=".8"/>'+dots(),false)+'<small class="vis-cap">Extra LDL slowly builds plaque in the wall</small>',
+ pleth:'<div class="pl"><div>'+pleth(1)+'Warm finger: strong signal</div><div>'+pleth(.25)+'Cold finger: weak signal, reads low</div></div>',
+ swatch:'<div class="sw">💦 Sweat → brain releases ADH<i class="swc"></i>Urine pigment gets concentrated</div>'
+};
+var EX={
+ rhr:{scene:SC.hearts,ladder:[{n:'Trained athlete',r:'often 40–60 bpm',c:G},{n:'Typical teen',r:'about 60–100 bpm',c:G},{n:'Fast at rest',r:'over 100: find out why',c:O}],
+  steps:['Training strengthens the heart muscle.','Each beat moves more blood, so fewer beats are needed.','Symptoms (fainting, dizziness, chest pain) matter more than the number.']},
+ bp:{scene:SC.artery,ladder:[{n:'Normal',r:'under 120/80',c:G},{n:'Elevated',r:'120–129 / under 80',c:Y},{n:'Stage 1',r:'130–139 or 80–89',c:O},{n:'Stage 2',r:'140/90 or higher',c:R}],
+  steps:['Teens 13+ use AAP 2017 cutoffs, lower than the old adult 140/90 rule.','Either the top or bottom number can place you in a higher stage.','One reading can be nerves or caffeine, so providers confirm across visits.']},
+ glu:{scene:bars([['Cell response to insulin',90,45,'#0e7490'],['Sugar left in blood',30,70,'#f59e0b']]),ladder:[{n:'Normal',r:'FPG &lt;100 · A1c &lt;5.7',c:G},{n:'Prediabetes',r:'FPG 100–125 · A1c 5.7–6.4',c:Y},{n:'Diabetes range',r:'FPG ≥126 · A1c ≥6.5',c:R}],
+  steps:['Prediabetes: cells respond less to insulin, so sugar lingers.','Fasting glucose is one moment; A1c averages about 3 months.','Next: repeat the test and build habits with a provider. Not an emergency.']},
+ ldl:{scene:SC.plaque,ladder:[{n:'Acceptable',r:'LDL under 110',c:G},{n:'Borderline',r:'110–129',c:Y},{n:'High',r:'130 or higher',c:R}],
+  steps:['LDL carries cholesterol out to the body’s tissues.','Extra LDL can slip into artery walls and build plaque slowly.','Teen cutoffs are lower than adult ones: 130+ is flagged.']},
+ tg:{scene:bars([['Extra sugar, low activity',20,80,'#f59e0b'],['Triglycerides in blood',25,75,'#ea580c']]),ladder:[{n:'Acceptable',r:'under 90',c:G},{n:'Borderline',r:'90–129',c:Y},{n:'High',r:'130 or higher',c:R}],
+  steps:['Triglycerides are fats the liver packages for energy.','They rise with extra sugar, low activity, genetics, and not fasting.','Borderline means repeat and review habits, not a diagnosis.']},
+ spo2:{scene:SC.pleth,ladder:[{n:'Usual',r:'95–100%',c:G},{n:'Lower reading',r:'re-measure properly first',c:Y},{n:'Stays low',r:'under ~92% or symptoms: get help',c:R}],
+  steps:['A pulse oximeter reads light passing through a pulsing fingertip.','Cold, narrow vessels weaken the signal and read falsely low.','Warm up, hold still, re-check, and watch how the person is breathing.']},
+ temp:{scene:bars([['Heat from muscles',15,85,'#f97316'],['Body temperature',50,60,'#ef4444'],['Brain’s thermostat setpoint',50,50,'#64748b']]),ladder:[{n:'Usual range',r:'about 97–99.5°F',c:G},{n:'Fever',r:'100.4°F (38.0°C) or higher',c:O},{n:'Very high / very sick',r:'get care promptly',c:R}],
+  steps:['Working muscles make heat, so temperature drifts up after exercise.','A fever means the brain’s thermostat itself was raised.','Fever line is 100.4°F (38.0°C), usually with other symptoms.']},
+ bmi:{scene:bars([['Muscle mass',40,80,'#7c3aed'],['BMI number',40,72,'#a78bfa']]),ladder:[{n:'Lower',r:'under 5th',c:'#93c5fd'},{n:'Typical',r:'5th to under 85th',c:'#5eead4'},{n:'Above typical',r:'85th to under 95th',c:'#a78bfa'},{n:'Well above',r:'95th or higher',c:'#7c3aed'}],
+  steps:['BMI is weight ÷ height², so muscle and fat look the same to it.','Percentiles compare you with teens of the same age and sex.','The trend on the growth curve matters more than one number.']},
+ sleep:{scene:bars([['Melatonin (sleep signal)',90,25,'#6366f1'],['📱 Bright screen light',10,90,'#f59e0b'],['Hours of sleep',80,40,'#0e7490']]),ladder:[{n:'Not enough',r:'under 8 hours',c:O},{n:'Recommended',r:'8–10 hours',c:G},{n:'Habits that help',r:'steady times · phone out of bed',c:'#6366f1'}],
+  steps:['Teen body clocks run later, so sleepiness comes later.','Bright screens suppress melatonin, the sleep signal.','Teens need 8–10 hours: steady times, phone away from the bed.']},
+ act:{scene:bars([['Blood sugar after a meal',80,40,'#f59e0b'],['Heart efficiency',30,75,'#16a34a']]),ladder:[{n:'Below target',r:'under 60 min/day: build up',c:Y},{n:'Target',r:'60+ min/day',c:G},{n:'Mix it up',r:'muscle &amp; bone work 3+ days/wk',c:'#0891b2'}],
+  steps:['Active muscles pull sugar out of the blood.','The heart gets more efficient with regular movement.','Aim for 60 minutes a day; any movement counts, build gradually.']},
+ hyd:{scene:SC.swatch,ladder:[{n:'Pale straw',r:'well hydrated',c:'#fde68a'},{n:'Light yellow',r:'okay',c:'#fde047'},{n:'Dark amber',r:'drink &amp; re-check',c:'#d97706'},{n:'Brown / tea',r:'get medical care',c:'#78350f'}],
+  steps:['Sweating loses water, so the brain releases ADH.','Kidneys hold water, so urine pigment is concentrated and darker.','Darker: drink and re-check. Brown or tea-colored: medical care.']},
+ stress:{scene:bars([['Stress hormone (cortisol)',20,90,'#dc2626'],['Sleep quality',85,25,'#6366f1'],['Mood &amp; motivation',80,35,'#0e7490']]),ladder:[{n:'A rough day',r:'usually passes',c:G},{n:'Weeks of symptoms',r:'ask, screen &amp; support',c:O},{n:'Feeling unsafe',r:'tell an adult / 988 now',c:R}],
+  steps:['Ongoing stress keeps the body’s alarm system (cortisol) switched on.','That disrupts sleep, digestion, mood, and motivation.','Weeks of symptoms: ask, screen, and connect to support.']}
+};
+var EX_TIMER=null;
+function stopEx(){if(EX_TIMER){clearInterval(EX_TIMER);EX_TIMER=null;}}
+function exHtml(q){var e=EX[q.id];return '<div class="ex"><div class="ex-scene">'+e.scene+'</div><div class="ex-lad">'+e.ladder.map(function(l){return '<div class="ex-seg" style="--zc:'+l.c+'"><b>'+l.n+'</b>'+l.r+'</div>'}).join('')+'</div><div class="ex-steps">'+e.steps.map(function(t){return '<p>'+t+'</p>'}).join('')+'</div></div>';}
+function startEx(root){
+  stopEx(); var ex=$('.ex',root); if(!ex) return;
+  if(RM){ex.classList.add('static');return;}
+  var L=$$('.ex-seg',ex),S=$$('.ex-steps p',ex),i=0;
+  function tick(){L.forEach(function(l,k){l.classList.toggle('on',k===i%L.length)});S.forEach(function(p,k){p.classList.toggle('on',k===i%S.length)});i++;}
+  tick(); EX_TIMER=setInterval(tick,2300);
+}
+
+/* ---------- state ---------- */
+var state = {name:'',idx:0,res:[],t0:0,sel:null,over:false};
+
+/* ---------- helpers ---------- */
+function show(id){
+  var cur=$$('.screen').filter(function(s){return !s.hidden})[0], nxt=$('#'+id);
+  function go(){ if(cur) cur.hidden=true; nxt.hidden=false; nxt.classList.remove('enter','leave'); void nxt.offsetWidth; if(!RM) nxt.classList.add('enter'); window.scrollTo(0,0); }
+  if(cur && cur!==nxt && !RM){ cur.classList.add('leave'); setTimeout(go,220); } else go();
+}
+function countUp(el,to,ms){
+  if(RM){el.textContent=to;return;}
+  var t0=performance.now();
+  (function f(t){var p=Math.min(1,(t-t0)/(ms||900)),e=1-Math.pow(1-p,3);el.textContent=Math.round(to*e);if(p<1)requestAnimationFrame(f);else el.textContent=to;})(t0);
+}
+function confetti(anchor){
+  if(RM) return;
+  var r=anchor.getBoundingClientRect(), cols=['#f59e0b','#10b981','#3b82f6','#ec4899','#8b5cf6','#ef4444'], fx=$('#fx');
+  for(var i=0;i<26;i++){
+    var s=document.createElement('i'); s.className='cf'; s.style.background=cols[i%cols.length];
+    s.style.left=(r.left+r.width/2)+'px'; s.style.top=(r.top+r.height*0.25)+'px'; fx.appendChild(s);
+    var a=Math.random()*Math.PI*2, d=70+Math.random()*190, dx=Math.cos(a)*d, dy=Math.sin(a)*d-50;
+    (function(el){ if(el.animate){ el.animate([{transform:'translate(0,0) rotate(0deg)',opacity:1},{transform:'translate('+dx+'px,'+(dy+140)+'px) rotate('+(Math.random()*720)+'deg)',opacity:0}],{duration:900+Math.random()*500,easing:'cubic-bezier(.15,.7,.3,1)'}).onfinish=function(){el.remove()}; } else el.remove(); })(s);
+  }
+}
+function restart(el,cls){ el.classList.remove(cls); void el.offsetWidth; el.classList.add(cls); }
+
+/* ---------- start ---------- */
+var NAME_RE = /^\p{L}[\p{L}'’\- ]*\s\p{L}\.?$/u;
+$('#start-ecg').innerHTML = ecgSvg(72).replace('class="ecg"','class="ecg" style="max-width:none"');
+var nameEl = $('#name'), startBtn = $('#start-btn');
+nameEl.addEventListener('input',function(){
+  var ok = NAME_RE.test(nameEl.value.trim());
+  startBtn.disabled = !ok;
+  $('#nm-help').textContent = (!ok && nameEl.value.trim().length>2) ? 'Almost! Add a space and your last initial, like “Alex R.”' : 'Use your first name and last initial, like “Alex R.”';
+});
+nameEl.addEventListener('keydown',function(e){ if(e.key==='Enter' && !startBtn.disabled) startBtn.click(); });
+startBtn.addEventListener('click',function(){
+  state.name = nameEl.value.trim().replace(/\s+/g,' ');
+  state.idx=0; state.res=QUIZ.map(function(){return {tried:[],attempts:0,points:0,done:false,revealed:false}});
+  state.t0=Date.now();
+  show('screen-quiz'); setTimeout(renderQuestion, RM?0:230);
+});
+
+/* ---------- quiz ---------- */
+function optList(q){
+  if(q.type==='sort') return SORT.map(function(o){return o.n});
+  if(q.type==='gauge') return q.zones.map(function(z){return z.n});
+  return q.opts;
+}
+function renderQuestion(){
+  var q=QUIZ[state.idx]; state.sel=null; stopEx();
+  var w=q.who;
+  $('#scen').innerHTML =
+    '<div class="who"><div class="avatar" style="background:linear-gradient(135deg,'+w.c[0]+','+w.c[1]+')" aria-hidden="true">'+w.p+'<i>'+w.b+'</i></div><div><h2>'+w.name+', '+w.age+'</h2><p>'+w.tag+'</p></div><span class="qnum">Q'+(state.idx+1)+' of '+QUIZ.length+'</span></div>'+
+    '<p class="stext">'+q.text+'</p><div class="metric"><small>'+q.metric.k+'</small>'+q.metric.v+'</div>';
+  var h='<div class="attempt" id="att"></div><p class="ask" style="margin:0 0 10px">'+q.ask+'</p>';
+  if(q.type==='sort'){
+    h+='<div class="opts sort" role="group" aria-label="Choose a category">'+SORT.map(function(o,i){return '<button type="button" class="opt bin bin-'+o.c+'" data-i="'+i+'" aria-pressed="false"><span class="bin-e" aria-hidden="true">'+o.e+'</span>'+o.n+'</button>'}).join('')+'</div>';
+  } else if(q.type==='gauge'){
+    h+='<div class="opts gauge" style="--n:'+q.zones.length+'" role="group" aria-label="Choose a zone on the gauge">'+q.zones.map(function(z,i){return '<button type="button" class="opt zone" data-i="'+i+'" aria-pressed="false" style="--zc:'+z.c+'"><span class="z-sw"></span>'+z.n+'<span class="z-r">'+z.r+'</span></button>'}).join('')+'</div><div class="gtrack" aria-hidden="true"><i id="gfill"></i></div>';
+  } else {
+    h+='<div class="opts" role="group" aria-label="Answer choices">'+q.opts.map(function(o,i){return '<button type="button" class="opt mc" data-i="'+i+'" aria-pressed="false"><span class="letter" aria-hidden="true">'+'ABCD'[i]+'</span><span>'+o+'</span></button>'}).join('')+'</div>';
+  }
+  h+='<div class="actions"><button type="button" class="btn" id="check" disabled>Check answer</button></div>';
+  $('#ans').innerHTML=h;
+  $('#vis').innerHTML=q.vis(); $('#vis').classList.remove('revealed');
+  $$('[data-count]').forEach(function(el){countUp(el,+el.getAttribute('data-count'),1200)});
+  $('#fb').innerHTML='';
+  ['scen','visc','ans'].forEach(function(id,i){var el=$('#'+id);el.classList.remove('slide','rise','rise2');void el.offsetWidth;el.classList.add(i===0?'slide':i===1?'rise':'rise2');});
+  updateAttempt(); updateTop();
+  $$('#ans .opt').forEach(function(b){b.addEventListener('click',function(){pick(+b.getAttribute('data-i'))})});
+  $('#check').addEventListener('click',check);
+  if(window.innerWidth<=860) window.scrollTo({top:0,behavior:RM?'auto':'smooth'});
+}
+function pick(i){
+  var r=state.res[state.idx]; if(r.done) return;
+  state.sel=i;
+  $$('#ans .opt').forEach(function(b){var on=+b.getAttribute('data-i')===i;b.classList.toggle('sel',on);b.setAttribute('aria-pressed',on)});
+  $('#check').disabled=false;
+  var q=QUIZ[state.idx];
+  if(q.type==='gauge'){var f=$('#gfill');f.style.width=((i+1)/q.zones.length*100)+'%';f.style.background=q.zones[i].c;}
+}
+function updateAttempt(){
+  var r=state.res[state.idx], el=$('#att'); if(!el) return;
+  var pips='';
+  for(var i=0;i<3;i++){
+    var c = i<r.tried.length ? 'miss' : (r.done && r.points>0 && i===r.attempts-1) ? 'hit' : (!r.done && i===r.attempts) ? 'cur' : '';
+    pips+='<span class="pip '+c+'"></span>';
+  }
+  el.innerHTML = r.done
+    ? '<span class="pips" aria-hidden="true">'+pips+'</span><span id="att-t">'+(r.revealed?'Answer revealed after 3 attempts':'Solved on attempt '+r.attempts+' of 3')+'</span><span class="worth done">'+r.points+' pts earned</span>'
+    : '<span class="pips" aria-hidden="true">'+pips+'</span><span id="att-t">Attempt '+(r.attempts+1)+' of 3</span><span class="worth" id="worth">Worth '+PTS[r.attempts]+' pts</span>';
+}
+function totalPts(){return state.res.reduce(function(a,r){return a+r.points},0)}
+function updateTop(){
+  var done=state.res.filter(function(r){return r.done}).length;
+  $('#pfill').style.width=(done/QUIZ.length*100)+'%';
+  $('#pbar').setAttribute('aria-valuenow',done);
+  $('#pq').textContent='Question '+(Math.min(state.idx+1,QUIZ.length))+' of '+QUIZ.length;
+  var left=QUIZ.length-done, avg = done>=2 ? (Date.now()-state.t0)/1000/done : 75, mins=Math.max(1,Math.round(left*avg/60));
+  $('#ptime').textContent = left===0 ? 'done!' : (left===1 ? '<1 min left' : '~'+mins+' min left');
+  $('#pscore').textContent=totalPts();
+}
+function check(){
+  var q=QUIZ[state.idx], r=state.res[state.idx];
+  if(state.sel==null||r.done) return;
+  r.attempts++;
+  var ok=state.sel===q.answer, btn=$('#ans .opt[data-i="'+state.sel+'"]');
+  if(ok){ r.points=PTS[r.attempts-1]; r.done=true; finishQ('right'); }
+  else {
+    r.tried.push(state.sel); btn.classList.remove('sel'); btn.classList.add('tried'); btn.setAttribute('aria-pressed','false'); state.sel=null;
+    if(q.type==='gauge'){$('#gfill').style.width='0%';}
+    $('#check').disabled=true;
+    if(r.attempts>=3){ r.points=0; r.done=true; r.revealed=true; finishQ('rev'); }
+    else { restart($('#ans'),'shake'); showHint(q,r); }
+  }
+  updateAttempt(); updateTop();
+}
+function showHint(q,r){
+  var fb=$('#fb');
+  fb.innerHTML='<div class="card fb wrong"><div class="fb-h">🤔 Not quite — here’s a hint</div><p class="hint"><b>Hint:</b> '+q.hints[r.attempts-1]+'</p><p><b>Try again:</b> attempt '+(r.attempts+1)+' of 3, now worth <b>'+PTS[r.attempts]+' pts</b>.</p><p class="ex-t">🎬 Watch this mini-explainer for more help:</p>'+exHtml(q)+'</div>';
+  startEx(fb);
+  if(window.innerWidth<=860) fb.scrollIntoView({block:'nearest',behavior:RM?'auto':'smooth'});
+}
+function finishQ(kind){
+  var q=QUIZ[state.idx], r=state.res[state.idx], last=state.idx===QUIZ.length-1, names=optList(q);
+  $$('#ans .opt').forEach(function(b){b.classList.add('locked');b.setAttribute('aria-disabled','true');b.classList.remove('sel')});
+  var cb=$('#ans .opt[data-i="'+q.answer+'"]'); cb.classList.add(kind==='right'?'right':'reveal'); cb.classList.remove('tried');
+  if(q.type==='gauge'){ $$('#ans .z-r').forEach(function(z){z.classList.add('on')}); var f=$('#gfill'); f.style.width=((q.answer+1)/q.zones.length*100)+'%'; f.style.background=q.zones[q.answer].c; }
+  $('#check').hidden=true;
+  $('#vis').classList.add('revealed');
+  var head = kind==='right'
+    ? '🎉 Correct! <span class="pts-pop">+'+r.points+' pts</span>'
+    : '📘 Here’s the answer <span class="pts-pop zero">0 pts</span>';
+  var ans = kind==='rev' ? '<p><b>Correct answer:</b> '+names[q.answer]+'</p>' : '';
+  $('#fb').innerHTML='<div class="card fb '+(kind==='right'?'right':'rev')+'"><div class="fb-h">'+head+'</div>'+
+    '<p style="margin:.3em 0"><span class="verdict v-'+q.verdict+'">'+VERDICT[q.verdict]+'</span></p>'+ans+
+    '<p class="why"><b>Why the range matters:</b> '+q.explain+'</p><p class="note">'+q.note+'</p><p class="refline">Reference: '+q.ref+'</p>'+
+    '<details class="ex-d"'+(kind==='rev'?' open':'')+'><summary>▶ Watch the animated explainer</summary>'+exHtml(q)+'</details>'+
+    '<div class="actions"><button type="button" class="btn go" id="next">'+(last?'See my results →':'Next question →')+'</button></div></div>';
+  $('#next').addEventListener('click',next);
+  var dd=$('#fb .ex-d'); dd.addEventListener('toggle',function(){ if(dd.open) startEx(dd); else stopEx(); }); if(dd.open) startEx(dd); else stopEx();
+  if(kind==='right'){ restart($('#ans'),'glow'); confetti($('#ans')); }
+  else restart($('#ans'),'shake');
+  setTimeout(function(){ var n=$('#next'); if(n){ n.focus({preventScroll:true}); if(window.innerWidth<=860) n.scrollIntoView({block:'nearest',behavior:RM?'auto':'smooth'}); } }, 60);
+}
+function next(){
+  if(state.idx>=QUIZ.length-1){ finish(); return; }
+  state.idx++; renderQuestion();
+}
+
+/* ---------- results ---------- */
+function finish(){
+  var total=totalPts(), max=QUIZ.length*MAXQ, pct=Math.round(total/max*100);
+  $('#r-name').textContent=state.name;
+  $('#r-date').textContent=new Date().toLocaleString([],{dateStyle:'medium',timeStyle:'short'});
+  var tier = pct>=90?'🏆 Clinical-literacy champion':pct>=75?'🌟 Strong clinical instincts':pct>=55?'👍 Solid start — keep building':'🌱 Great effort — review and try again';
+  $('#r-tier').textContent=tier;
+  var cnt={20:0,15:0,10:0,0:0};
+  var cells='', str=[], rev=[];
+  QUIZ.forEach(function(q,i){
+    var r=state.res[i]; cnt[r.points]++;
+    var att = r.revealed ? '3 attempts · answer shown' : (r.attempts+' attempt'+(r.attempts>1?'s':'')+' used');
+    cells+='<div class="cell g'+r.points+'" data-q="'+(i+1)+'" data-points="'+r.points+'" data-attempts="'+r.attempts+'" data-block><div class="c-topic"><i>'+(i+1)+'</i>'+q.topic+'</div><div class="c-pts">'+(r.points>0?'✓ ':'✗ ')+r.points+'<small>/'+MAXQ+'</small></div><div class="c-att">'+att+'</div></div>';
+    if(r.points>=15) str.push(q.topic); else if(r.points<=10) rev.push(q.topic);
+  });
+  $('#r-grid').innerHTML=cells;
+  var chips=function(a,empty){ if(!a.length) return '<span>'+empty+'</span>'; var s=a.slice(0,6).map(function(t){return '<span>'+t+'</span>'}).join(''); return s+(a.length>6?'<span>+'+(a.length-6)+' more</span>':''); };
+  $('#r-str').innerHTML=chips(str,'Every attempt builds your skills');
+  $('#r-rev').innerHTML=chips(rev,'Nothing to review — nice work!');
+  $('#r-tiles').innerHTML=[['g20','1st try',cnt[20]],['g15','2nd try',cnt[15]],['g10','3rd try',cnt[10]],['g0','Answer shown',cnt[0]]].map(function(t){return '<div class="tile '+t[0]+'"><b>'+t[2]+'</b>'+t[1]+'</div>'}).join('');
+  var rp=$('#r-pct'), rt=$('#r-pts');
+  rp.setAttribute('data-final',pct); rt.setAttribute('data-final',total);
+  show('screen-results');
+  setTimeout(function(){
+    $('#ring-fg').style.strokeDashoffset=339.3*(1-total/max);
+    countUpPct(rp,pct); countUpPts(rt,total,max);
+  }, RM?0:300);
+}
+function countUpPct(el,to){ if(RM){el.textContent=to+'%';return;} var t0=performance.now(); (function f(t){var p=Math.min(1,(t-t0)/1500),e=1-Math.pow(1-p,3);el.textContent=Math.round(to*e)+'%';if(p<1)requestAnimationFrame(f);else el.textContent=to+'%';})(t0); }
+function countUpPts(el,to,max){ if(RM){el.textContent=to+' / '+max+' pts';return;} var t0=performance.now(); (function f(t){var p=Math.min(1,(t-t0)/1500),e=1-Math.pow(1-p,3);el.textContent=Math.round(to*e)+' / '+max+' pts';if(p<1)requestAnimationFrame(f);else el.textContent=to+' / '+max+' pts';})(t0); }
+})();
+</script>
+</body>
+</html>
