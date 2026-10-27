@@ -1,9 +1,9 @@
 # Health Metrics Check-In
 
-A ~15-minute, 12-scenario classroom check-in where high school Health students decide whether a health number is normal, worth monitoring, or concerning, and learn why.
+A ~25-minute, 20-scenario classroom check-in where high school Health students decide whether a health number is normal, worth monitoring, or concerning, and learn why.
 
 - Single self-contained `index.html` (inline CSS/JS, no external requests)
-- 3 attempts per question: 20 / 15 / 10 points, 0 if the answer has to be revealed (max 240)
+- 3 attempts per question: 20 / 15 / 10 points, 0 if the answer has to be revealed (max 400)
 - Results page is designed to be screenshotted and submitted; **nothing is saved or sent anywhere**
 - Honors `prefers-reduced-motion`; works on Chromebooks and phones
 
