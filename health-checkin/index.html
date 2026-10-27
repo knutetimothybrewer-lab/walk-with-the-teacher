@@ -231,6 +231,8 @@ details.ex-d>summary{cursor:pointer;font-weight:800;color:var(--brand-d);min-hei
 .hh{display:inline-block;font-size:3rem}
 .hh.slow{animation:beatBig 1.4s ease-in-out infinite}.hh.fast{animation:beatSm .7s ease-in-out infinite}
 @keyframes beatBig{50%{transform:scale(1.45)}}@keyframes beatSm{50%{transform:scale(1.12)}}
+.plate{display:grid;grid-template-columns:repeat(2,84px);gap:10px;justify-content:center;font-size:2.8rem;background:#f0fdf4;border:4px solid #bbf7d0;border-radius:50%;width:210px;height:210px;margin:0 auto;align-content:center;justify-items:center}
+.plate span{animation:pop .6s both}.plate span:nth-child(2){animation-delay:.25s}.plate span:nth-child(3){animation-delay:.5s}.plate span:nth-child(4){animation-delay:.75s}
 .wall{animation:wallT 3.2s ease-in-out infinite alternate both}
 @keyframes wallT{from{stroke-width:3px}to{stroke-width:16px}}
 .plq{transform-origin:150px 98px;animation:plqG 3.6s ease-in-out infinite alternate both}
@@ -262,13 +264,13 @@ details.ex-d>summary{cursor:pointer;font-weight:800;color:var(--brand-d);min-hei
 .tiles{display:grid;grid-template-columns:repeat(4,auto);gap:.8vw}
 .tile{border-radius:12px;padding:.8vh 1vw;text-align:center;font-weight:800;font-size:clamp(11px,1.8vh,16px);line-height:1.15;min-width:7vw}
 .tile b{display:block;font-size:clamp(20px,4vh,38px)}
-.cells{display:grid;grid-template-columns:repeat(4,1fr);grid-template-rows:repeat(3,minmax(0,1fr));gap:1vh 1vw;min-height:0}
-.cell{border-radius:14px;border:2px solid;border-left-width:10px;padding:.8vh .9vw;display:grid;grid-template-columns:1fr auto;grid-template-rows:1fr auto;align-items:center;min-height:0;overflow:hidden}
-.c-topic{font-weight:900;font-size:clamp(12px,2.1vh,19px);line-height:1.15}
+.cells{display:grid;grid-template-columns:repeat(5,1fr);grid-template-rows:repeat(4,minmax(0,1fr));gap:.9vh .8vw;min-height:0}
+.cell{border-radius:12px;border:2px solid;border-left-width:8px;padding:.6vh .7vw;display:grid;grid-template-columns:1fr auto;grid-template-rows:1fr auto;align-items:center;min-height:0;overflow:hidden}
+.c-topic{font-weight:900;font-size:clamp(11px,1.9vh,17px);line-height:1.15}
 .c-topic i{font-style:normal;opacity:.7;margin-right:.4em}
-.c-pts{font-weight:900;font-size:clamp(20px,4.6vh,44px);line-height:1;text-align:right;white-space:nowrap}
+.c-pts{font-weight:900;font-size:clamp(18px,3.8vh,36px);line-height:1;text-align:right;white-space:nowrap}
 .c-pts small{font-size:.4em;opacity:.75}
-.c-att{grid-column:1/-1;font-weight:800;font-size:clamp(11px,1.8vh,16px)}
+.c-att{grid-column:1/-1;font-weight:800;font-size:clamp(10px,1.6vh,14px)}
 .g20{background:var(--good-bg);border-color:var(--good);color:var(--good-ink)}
 .g15{background:var(--ok-bg);border-color:var(--ok);color:var(--ok-ink)}
 .g10{background:var(--warn-bg);border-color:var(--warn);color:var(--warn-ink)}
@@ -313,8 +315,8 @@ details.ex-d>summary{cursor:pointer;font-weight:800;color:var(--brand-d);min-hei
   <div class="start-card">
     <div class="start-ecg" id="start-ecg" aria-hidden="true"></div>
     <h1>Health Metrics <span>Check-In</span></h1>
-    <p class="lead">You’ll read 12 short stories about teens and their health numbers. For each one, decide what a clinician would do: is it <b>normal</b>, worth <b>monitoring</b>, or <b>concerning</b>? A number alone never tells the whole story!</p>
-    <div class="pills"><span class="pill">⏱ ~15 minutes</span><span class="pill">12 scenarios</span><span class="pill">3 attempts each</span><span class="pill">🔒 Nothing is saved</span></div>
+    <p class="lead">You’ll read 20 short stories about teens and their health numbers. For each one, decide what a clinician would do: is it <b>normal</b>, worth <b>monitoring</b>, or <b>concerning</b>? A number alone never tells the whole story!</p>
+    <div class="pills"><span class="pill">⏱ ~25 minutes</span><span class="pill">20 scenarios</span><span class="pill">3 attempts each</span><span class="pill">🔒 Nothing is saved</span></div>
     <div class="how" aria-label="Scoring">
       <div class="h20"><b>20</b>1st try</div><div class="h15"><b>15</b>2nd try</div><div class="h10"><b>10</b>3rd try</div><div class="h0"><b>0</b>answer shown</div>
     </div>
@@ -340,8 +342,8 @@ details.ex-d>summary{cursor:pointer;font-weight:800;color:var(--brand-d);min-hei
   <div class="topbar">
     <div class="topin">
       <div class="brandmark">❤️ Health Check-In</div>
-      <div class="track" role="progressbar" aria-label="Progress" aria-valuemin="0" aria-valuemax="12" aria-valuenow="0" id="pbar"><div class="fill" id="pfill"></div></div>
-      <div class="meta"><span id="pq">Question 1 of 12</span> · <span id="ptime">~15 min left</span> · ⭐ <b id="pscore">0</b> pts</div>
+      <div class="track" role="progressbar" aria-label="Progress" aria-valuemin="0" aria-valuemax="20" aria-valuenow="0" id="pbar"><div class="fill" id="pfill"></div></div>
+      <div class="meta"><span id="pq">Question 1 of 20</span> · <span id="ptime">~25 min left</span> · ⭐ <b id="pscore">0</b> pts</div>
     </div>
   </div>
   <div class="qgrid" id="qgrid">
@@ -360,7 +362,7 @@ details.ex-d>summary{cursor:pointer;font-weight:800;color:var(--brand-d);min-hei
       <svg viewBox="0 0 120 120" aria-hidden="true"><defs><linearGradient id="rg" x1="0" x2="1" y1="0" y2="1"><stop offset="0" stop-color="#2563eb"/><stop offset="1" stop-color="#10b981"/></linearGradient></defs>
         <circle class="bg" cx="60" cy="60" r="54" fill="none" stroke-width="12"/>
         <circle class="fg" id="ring-fg" cx="60" cy="60" r="54" fill="none" stroke="url(#rg)" stroke-width="12" stroke-linecap="round"/></svg>
-      <div class="ring-c"><b id="r-pct">0%</b><span id="r-pts">0 / 240 pts</span></div>
+      <div class="ring-c"><b id="r-pct">0%</b><span id="r-pts">0 / 400 pts</span></div>
     </div>
     <div class="r-info">
       <h1 id="r-name"></h1>
@@ -402,8 +404,11 @@ var V = {
     '<g class="needle" style="--a:'+a+'deg"><line x1="110" y1="112" x2="110" y2="38" stroke="#0f172a" stroke-width="5" stroke-linecap="round"/><circle cx="110" cy="112" r="9" fill="#0f172a"/></g></svg>'+
     '<div class="dial-num">'+s+'/'+d+' <small>mmHg</small></div><p class="vis-cap">Pressure in the arteries, measured by the cuff</p></div>';
   },
-  meter:function(g,a){
-    return '<div class="vis-box"><div class="meter"><div class="meter-screen"><span data-count="'+g+'">0</span><small>mg/dL</small></div><span class="strip"><span class="drop" aria-hidden="true">💧</span></span></div><div class="chips"><span>Fasting 8+ hours</span><span>A1c '+a+'%</span></div><p class="vis-cap">Fasting glucose = blood sugar after hours without food</p></div>';
+  meter:function(g,a,fast){
+    return '<div class="vis-box"><div class="meter"><div class="meter-screen"><span data-count="'+g+'">0</span><small>mg/dL</small></div><span class="strip"><span class="drop" aria-hidden="true">💧</span></span></div><div class="chips"><span>'+(fast===false?'Meter reading':'Fasting 8+ hours')+'</span>'+(a?'<span>A1c '+a+'%</span>':'')+'</div><p class="vis-cap">'+(fast===false?'A glucose meter shows blood sugar right now':'Fasting glucose = blood sugar after hours without food')+'</p></div>';
+  },
+  plate:function(){
+    return '<div class="vis-box"><div class="plate" aria-hidden="true"><span>🥦</span><span>🍎</span><span>🍞</span><span>🥚</span></div><p class="vis-cap">A varied pattern over time, not one “perfect” meal</p></div>';
   },
   ldl:function(){
     var dots='';
@@ -422,7 +427,7 @@ var V = {
   therm:function(t){
     var f=function(v){return .15+.85*(v-96)/8;}, ticks='';
     [96,98,100,102,104].forEach(function(v){var y=158-f(v)*140;ticks+='<line x1="92" x2="102" y1="'+y+'" y2="'+y+'" stroke="#334155" stroke-width="2"/><text x="106" y="'+(y+4)+'" font-size="12" fill="#334155">'+v+'°</text>';});
-    return '<div class="vis-box"><svg viewBox="0 0 160 190" width="170" role="img" aria-label="Thermometer"><rect x="58" y="14" width="28" height="144" rx="14" fill="#f8fafc" stroke="#334155" stroke-width="4"/><circle cx="72" cy="162" r="22" fill="#f8fafc" stroke="#334155" stroke-width="4"/><circle cx="72" cy="162" r="15" fill="#ef4444"/><rect class="merc" x="66" y="18" width="12" height="140" fill="#ef4444" style="--lvl:'+f(t)+'"/>'+ticks+'</svg><div class="dial-num">'+t.toFixed(1)+'°F <small>(37.4 °C)</small></div></div>';
+    return '<div class="vis-box"><svg viewBox="0 0 160 190" width="170" role="img" aria-label="Thermometer"><rect x="58" y="14" width="28" height="144" rx="14" fill="#f8fafc" stroke="#334155" stroke-width="4"/><circle cx="72" cy="162" r="22" fill="#f8fafc" stroke="#334155" stroke-width="4"/><circle cx="72" cy="162" r="15" fill="#ef4444"/><rect class="merc" x="66" y="18" width="12" height="140" fill="#ef4444" style="--lvl:'+f(t)+'"/>'+ticks+'</svg><div class="dial-num">'+t.toFixed(1)+'°F <small>('+((t-32)*5/9).toFixed(1)+' °C)</small></div></div>';
   },
   growth:function(){
     var C=[[130,120,100],[110,95,70],[95,78,52],[85,66,38]], cols=['#cbd5e1','#94a3b8','#7c8fb0','#64748b'], p='';
@@ -578,7 +583,83 @@ var QUIZ = [
  hints:['Symptoms lasting weeks and changing things she loves are more than one rough day. What does a clinician do before deciding anything?','Clinicians ask open-ended questions and use validated screens (like the PHQ-A or GAD-7), then connect teens with support such as counseling. Waiting it out or self-diagnosing doesn’t help.'],
  explain:'Ongoing stress keeps the body’s alarm system (the HPA axis and the hormone cortisol) switched on, which can disrupt sleep, upset the gut, and dim motivation and mood, and short sleep plus irregular meals can keep the cycle going. Anxiety and depression are common and treatable, and the earlier they’re noticed the better teens do, which is why the AAP recommends routine screening.',
  note:'If you or a friend ever feels unsafe or hopeless, tell a trusted adult or call or text 988 (U.S. Suicide & Crisis Lifeline) any time.',
- ref:'AAP 2018 (GLAD-PC) recommends annual depression screening for ages 12+; PHQ-A and GAD-7 are validated adolescent screens.'}
+ ref:'AAP 2018 (GLAD-PC) recommends annual depression screening for ages 12+; PHQ-A and GAD-7 are validated adolescent screens.'},
+{id:'hrctx',topic:'Heart rate & context',type:'sort',verdict:'monitor',
+ who:{name:'Leo',age:15,tag:'chess club and clarinet',p:'🧑🏾',b:'♟️',c:['#fecaca','#fca5a5']},
+ text:'Leo jogged in from the parking lot to make his clinic appointment, after drinking an energy drink on the way, and he’s nervous about getting a shot. The nurse reads his heart rate right after he sits down.',
+ metric:{k:'Heart rate (just sat down)',v:'104 bpm'}, ask:'Where does this number belong right now?', vis:function(){return V.hr(104)},
+ answer:1,
+ hints:['Think about everything Leo did in the 10 minutes before this reading: jogging, caffeine, nerves. What do those do to heart rate?','Teens at rest usually sit around 60–100 bpm, so 104 is a little above, but a reading right after exertion, caffeine, and nerves isn’t a true resting rate. What would a clinician do before deciding?'],
+ explain:'Exercise, caffeine, and nerves all release adrenaline, which speeds up the heart’s natural pacemaker, so this number reflects the last few minutes rather than Leo’s true baseline. A clinician would have him rest quietly for about 5 minutes and re-measure, and only look further if it stays high or comes with symptoms like chest pain or fainting.',
+ note:'Not “concerning” yet, and not something to ignore: this is why clinicians re-check after resting. A resting rate that stays over 100 is worth a visit.',
+ ref:'Teen resting HR ≈ 60–100 bpm; measure after ~5 minutes seated and calm (AHA/PALS ranges).'},
+{id:'a1c',topic:'A1c & diabetes symptoms',type:'gauge',verdict:'provider',
+ who:{name:'Jade',age:15,tag:'violin in the youth orchestra',p:'🧒🏿',b:'🎻',c:['#fde68a','#fcd34d']},
+ text:'For a few weeks Jade has been very thirsty, waking at night to urinate, and feeling unusually tired. Her blood work shows a fasting glucose of 142 mg/dL and an A1c (her average blood sugar over about 3 months) of 6.8%.',
+ metric:{k:'A1c · fasting glucose',v:'6.8% · 142 mg/dL'}, ask:'Tap the zone on the A1c gauge where 6.8% falls.',
+ zones:[{n:'Normal',c:'#16a34a',r:'under 5.7%'},{n:'Prediabetes range',c:'#eab308',r:'5.7–6.4%'},{n:'Diabetes range',c:'#dc2626',r:'6.5% or higher'}],
+ vis:function(){return V.meter(142,'6.8')}, answer:2,
+ hints:['ADA A1c categories: under 5.7% is normal, then a middle “prediabetes” band, then a top band for diabetes.','The diabetes range starts at 6.5%. Jade’s 6.8% is above that line, and her symptoms point the same direction.'],
+ explain:'When blood glucose runs high enough that the kidneys can’t reabsorb all of it, sugar spills into the urine and pulls water along, which causes the thirst, frequent urination, and tiredness Jade feels. A1c reflects the share of hemoglobin coated with sugar over about 3 months, so 6.8% means her glucose has been running high for a while.',
+ note:'Only a healthcare provider can diagnose diabetes and decide on treatment. This needs prompt follow-up, not panic: diabetes is very manageable with good care.',
+ ref:'ADA: A1c ≥6.5% or fasting glucose ≥126 mg/dL (confirmed, or with classic symptoms) = diabetes; A1c 5.7–6.4% prediabetes; <5.7% normal.'},
+{id:'bpone',topic:'A single BP reading',type:'mc',verdict:'monitor',
+ who:{name:'Omar',age:16,tag:'part-time job at a bakery',p:'👦🏽',b:'🥖',c:['#fed7aa','#fdba74']},
+ text:'Omar drank a large coffee and hurried up a flight of stairs to his appointment. The nurse measures his blood pressure right away with a cuff that’s a little small for his arm: 138/88 mmHg. He has no symptoms and no history of high blood pressure.',
+ metric:{k:'Blood pressure (one reading)',v:'138/88 mmHg'}, ask:'What would a clinician do next?',
+ opts:['Diagnose Stage 2 hypertension today and start medication','Tell him to cut out all salt and never exercise again','Ignore it, because one reading never matters','Re-check after 5 quiet minutes with the right-size cuff, then confirm on repeat visits before deciding'],
+ vis:function(){return V.bp(138,88)}, answer:3,
+ hints:['One reading can be pushed up by caffeine, rushing, and a cuff that’s too small. What should happen before anyone labels it?','AAP guidance: measure after 5 minutes of quiet rest with a correct-size cuff, and confirm high readings over multiple visits before diagnosing.'],
+ explain:'Caffeine and hurrying tighten blood vessels, and a cuff that’s too small compresses the arm and reads falsely high, so one number reflects the situation as well as Omar’s true pressure. Repeating the measurement calmly, with the right cuff, across visits separates a real pattern from a one-time spike.',
+ note:'If readings stay in the elevated or Stage 1 range after repeats, his provider would plan next steps together with him.',
+ ref:'AAP 2017: confirm elevated BP with repeat measurements across ≥3 visits before diagnosing hypertension; use the correct cuff size.'},
+{id:'lipnorm',topic:'Full cholesterol panel',type:'sort',verdict:'fine',
+ who:{name:'Ben',age:16,tag:'sings in the school musical',p:'👦🏻',b:'🎭',c:['#bbf7d0','#86efac']},
+ text:'At his first routine cholesterol screening, Ben’s fasting panel shows total cholesterol 160, LDL 88, HDL 58, and triglycerides 70 mg/dL. He’s a little worried because he’s heard “cholesterol is bad.”',
+ metric:{k:'Total · LDL · HDL',v:'160 · 88 · 58 mg/dL'}, ask:'Where does this panel belong?', vis:function(){return V.ldl()},
+ answer:0,
+ hints:['Compare each number with the pediatric cutoffs: total under 170, LDL under 110, and HDL above 45 are all in the “acceptable” group.','Cholesterol itself isn’t bad: every cell needs it. The question is whether the amounts and balance are in range.'],
+ explain:'Cholesterol is a building block for cell membranes and hormones, and HDL particles carry extra cholesterol back to the liver, so a high HDL with a low LDL is the pattern linked to lower artery risk. Ben’s numbers all sit in the acceptable range, so routine re-screening at the usual interval is all that’s needed.',
+ note:'Probably fine, so no need to worry. Screening is recommended once at ages 9–11 and again at ages 17–21.',
+ ref:'NHLBI 2011: total <170, LDL <110, HDL >45, triglycerides <90 (ages 10–19) = acceptable; universal screening at 9–11 and 17–21.'},
+{id:'hypo',topic:'Low blood sugar',type:'mc',verdict:'provider',
+ who:{name:'Tessa',age:16,tag:'tennis player with type 1 diabetes',p:'👩🏽',b:'🎾',c:['#bae6fd','#7dd3fc']},
+ text:'During tennis practice, Tessa suddenly feels shaky, sweaty, and dizzy. She checks her glucose meter: 62 mg/dL.',
+ metric:{k:'Blood glucose',v:'62 mg/dL'}, ask:'What should Tessa and her coach do first?',
+ opts:['Stop, take 15 grams of fast-acting sugar (juice or glucose tablets), tell an adult, and re-check in 15 minutes','Keep playing, because it will pass on its own','Take extra insulin to bring the number up','Drink a large bottle of plain water only'],
+ vis:function(){return V.meter(62,null,false)}, answer:0,
+ hints:['Is 62 mg/dL high or low compared with the usual target of about 70–180? And are shakiness and sweating signs of too much sugar or too little?','Low blood sugar is treated quickly with fast sugar, then re-checked. The “rule of 15”: 15 grams, wait 15 minutes, re-check.'],
+ explain:'The brain runs almost entirely on glucose, so when levels fall the body releases adrenaline to push them back up, causing the shakiness, sweating, and fast heartbeat Tessa notices. Fast-acting sugar raises glucose within minutes, and re-checking after 15 minutes confirms that it worked.',
+ note:'Treat first, then tell the diabetes care team. If someone can’t swallow, is confused, or is unconscious, call 911.',
+ ref:'ADA: hypoglycemia is glucose <70 mg/dL (level 1; <54 is clinically significant); treat with 15 g fast-acting carbohydrate, re-check in 15 minutes.'},
+{id:'alt',topic:'SpO₂ at altitude',type:'sort',verdict:'fine',
+ who:{name:'Carmen',age:15,tag:'family ski trip',p:'👧🏽',b:'⛷️',c:['#e0f2fe','#bae6fd']},
+ text:'Carmen’s family is skiing in Colorado at about 9,500 feet. After a day on the slopes, her pulse oximeter reads 93%. She feels great: no headache, nausea, or shortness of breath.',
+ metric:{k:'SpO₂ at ~9,500 ft',v:'93%'}, ask:'Where does this number belong?', vis:function(){return V.ox(93)},
+ answer:0,
+ hints:['At sea level, normal is 95–100%. But what happens to the oxygen in each breath as you go higher?','Thin air carries less oxygen per breath, so healthy people at altitude often read a few points lower. What matters is symptoms like headache, nausea, or confusion.'],
+ explain:'Air pressure drops with elevation, so each breath delivers fewer oxygen molecules to the lungs and hemoglobin picks up slightly less, which lowers SpO₂ in healthy people; over days the body adapts by breathing faster and making more red blood cells. A mild dip with no symptoms is expected, while headache, vomiting, confusion, or breathlessness at rest would need prompt attention.',
+ note:'Probably fine. Altitude symptoms mean go to a lower elevation and get help.',
+ ref:'Normal ≈ 95–100% at sea level; healthy people often read a few points lower at 8,000–10,000 ft (CDC / Wilderness Medical Society altitude guidance).'},
+{id:'feverflag',topic:'Fever with warning signs',type:'sort',verdict:'provider',
+ who:{name:'Eli',age:14,tag:'builds model rockets',p:'🧒🏻',b:'🚀',c:['#ddd6fe','#c4b5fd']},
+ text:'Eli wakes up with a temperature of 103.1°F (39.5°C), a severe headache, a stiff neck that hurts to bend forward, and bright lights bother his eyes. He’s also unusually sleepy.',
+ metric:{k:'Temperature + symptoms',v:'103.1 °F + stiff neck'}, ask:'Where does this situation belong?', vis:function(){return V.therm(103.1)},
+ answer:2,
+ hints:['A fever alone is often fine to monitor at home. What other symptoms are in this story, and what do they have in common?','Fever plus a stiff neck, severe headache, light sensitivity, or unusual sleepiness are warning signs that call for urgent medical care.'],
+ explain:'A high fever with a stiff neck and light sensitivity can mean the membranes around the brain and spinal cord are inflamed (meningitis), which is why bending the neck hurts and bright light bothers the eyes. Because some causes need treatment within hours, clinicians evaluate these symptoms together right away rather than waiting.',
+ note:'Compare with Rowan: a number alone doesn’t decide it, the whole picture does. For warning signs like these, go to urgent care or the ER right away.',
+ ref:'Fever ≥100.4°F; fever with neck stiffness, severe headache, light sensitivity, confusion/lethargy, or a new rash needs urgent evaluation (AAP/CDC).'},
+{id:'nutr',topic:'Nutrition quality',type:'mc',verdict:'monitor',
+ who:{name:'Raj',age:15,tag:'school cricket club',p:'👦🏾',b:'🏏',c:['#fef08a','#fde047']},
+ text:'Raj eats breakfast most days, but lunches are usually fast food and he rarely eats vegetables or fruit. He feels fine and his checkup numbers are all normal. He asks, “Do I have to give up all my favorite foods to be healthy?”',
+ metric:{k:'Daily eating pattern',v:'few fruits and veggies'}, ask:'What would a clinician suggest?',
+ opts:['Cut out all fast food, fat, and carbs starting tomorrow','Count every calorie and weigh every meal','Add small, steady upgrades (a fruit or veggie at most meals, water, regular meals) and keep favorites in the mix','Do a one-week “detox” cleanse'],
+ vis:function(){return V.plate()}, answer:2,
+ hints:['Healthy eating is about the overall pattern, not “good” and “bad” foods. Which choice is realistic and sustainable?','Small additions (more fruit, veggies, whole grains, water) usually beat all-or-nothing rules, and extreme restriction or cleanses aren’t recommended for teens.'],
+ explain:'Fruits, vegetables, and whole grains supply fiber, vitamins, and minerals that slow how fast sugar enters the blood and feed healthy gut bacteria, so adding them improves the whole pattern without cutting everything out. Small, repeatable changes are the ones teens actually keep, which matters more for long-term health than any strict rule.',
+ note:'No foods are “banned,” and no weight or calorie goals are needed here. A registered dietitian or healthcare provider can help with personal questions.',
+ ref:'Dietary Guidelines for Americans 2020–2025 (USDA/HHS) and AAP: emphasize the overall pattern (fruits, vegetables, whole grains, water); avoid restrictive diets in teens.'}
 ];
 
 /* ---------- animated explainers ---------- */
@@ -618,7 +699,23 @@ var EX={
  hyd:{scene:SC.swatch,ladder:[{n:'Pale straw',r:'well hydrated',c:'#fde68a'},{n:'Light yellow',r:'okay',c:'#fde047'},{n:'Dark amber',r:'drink &amp; re-check',c:'#d97706'},{n:'Brown / tea',r:'get medical care',c:'#78350f'}],
   steps:['Sweating loses water, so the brain releases ADH.','Kidneys hold water, so urine pigment is concentrated and darker.','Darker: drink and re-check. Brown or tea-colored: medical care.']},
  stress:{scene:bars([['Stress hormone (cortisol)',20,90,'#dc2626'],['Sleep quality',85,25,'#6366f1'],['Mood &amp; motivation',80,35,'#0e7490']]),ladder:[{n:'A rough day',r:'usually passes',c:G},{n:'Weeks of symptoms',r:'ask, screen &amp; support',c:O},{n:'Feeling unsafe',r:'tell an adult / 988 now',c:R}],
-  steps:['Ongoing stress keeps the body’s alarm system (cortisol) switched on.','That disrupts sleep, digestion, mood, and motivation.','Weeks of symptoms: ask, screen, and connect to support.']}
+  steps:['Ongoing stress keeps the body’s alarm system (cortisol) switched on.','That disrupts sleep, digestion, mood, and motivation.','Weeks of symptoms: ask, screen, and connect to support.']},
+ hrctx:{scene:bars([['Adrenaline (rush, caffeine, nerves)',15,85,'#f97316'],['Heart rate',40,80,'#ef4444']]),ladder:[{n:'Calm &amp; rested',r:'about 60–100 bpm',c:G},{n:'Just moved / caffeine / nervous',r:'higher is expected: re-check',c:Y},{n:'Still over 100 after resting',r:'talk with a provider',c:O}],
+  steps:['Exercise, caffeine, and nerves release adrenaline.','Adrenaline speeds up the heart, so the reading shows the last few minutes.','Rest 5 quiet minutes and re-measure before deciding.']},
+ a1c:{scene:bars([['Sugar spilling into urine',10,85,'#f59e0b'],['Thirst &amp; tiredness',15,80,'#0e7490']]),ladder:[{n:'Normal',r:'under 5.7%',c:G},{n:'Prediabetes',r:'5.7–6.4%',c:Y},{n:'Diabetes range',r:'6.5% or higher',c:R}],
+  steps:['A1c is the average blood sugar over about 3 months.','Very high sugar spills into urine and pulls water along: thirst and frequent urination.','Only a provider can diagnose and plan care, and it is very manageable.']},
+ bpone:{scene:bars([['Caffeine + rushing',10,85,'#f97316'],['Cuff too small',10,70,'#a78bfa'],['BP reading',40,85,'#dc2626']]),ladder:[{n:'Rest first',r:'5 quiet minutes, seated',c:G},{n:'Right-size cuff',r:'too small reads high',c:Y},{n:'Repeat visits',r:'confirm before diagnosing',c:O}],
+  steps:['One reading reflects the moment as well as the person.','Caffeine, rushing, and a small cuff all push the number up.','Re-check calmly and confirm across visits.']},
+ lipnorm:{scene:bars([['HDL carries cholesterol back',30,80,'#38bdf8'],['LDL building up in walls',70,20,'#f59e0b']]),ladder:[{n:'Total',r:'under 170',c:G},{n:'LDL',r:'under 110',c:G},{n:'HDL',r:'above 45',c:G}],
+  steps:['Cells need cholesterol; it isn’t “bad” by itself.','HDL helps carry extra cholesterol back to the liver.','Check each number against the teen cutoffs.']},
+ hypo:{scene:bars([['Blood glucose',60,20,'#f59e0b'],['Adrenaline (shaky, sweaty)',15,85,'#ef4444']]),ladder:[{n:'Low',r:'under 70 mg/dL: treat now',c:R},{n:'Target range',r:'about 70–180',c:G},{n:'High',r:'over 180: follow care plan',c:O}],
+  steps:['The brain runs almost entirely on glucose.','When it drops, adrenaline surges: shaky, sweaty, fast heartbeat.','15 g fast sugar, wait 15 minutes, re-check, and tell an adult.']},
+ alt:{scene:bars([['Oxygen in each breath',90,55,'#38bdf8'],['SpO₂ reading',90,70,'#4ade80']]),ladder:[{n:'Sea level',r:'95–100% usual',c:G},{n:'High altitude',r:'a few points lower is common',c:Y},{n:'With symptoms',r:'headache, nausea, confusion: get help',c:R}],
+  steps:['Higher up, there is less oxygen in each breath.','Healthy people read a few points lower and adapt over days.','Symptoms matter more than the number.']},
+ feverflag:{scene:bars([['Fever',20,90,'#ef4444'],['Stiff neck &amp; light sensitivity',10,85,'#7c3aed']]),ladder:[{n:'Fever alone, feels okay',r:'rest, fluids, monitor',c:G},{n:'Fever with other signs',r:'call a provider',c:O},{n:'Stiff neck, severe headache, confusion',r:'urgent care / ER now',c:R}],
+  steps:['A fever alone is often fine to monitor.','Stiff neck, light sensitivity, and sleepiness are warning signs.','Warning signs together mean urgent evaluation.']},
+ nutr:{scene:bars([['Fiber, vitamins &amp; minerals',20,80,'#16a34a'],['Steady energy',30,75,'#0e7490']]),ladder:[{n:'Add',r:'fruit or veggie at most meals',c:G},{n:'Drink',r:'water through the day',c:'#0891b2'},{n:'Keep',r:'favorites in the mix',c:'#7c3aed'}],
+  steps:['The overall pattern matters more than any single food.','Fiber and nutrients steady blood sugar and feed healthy gut bacteria.','Small, repeatable changes beat strict rules.']}
 };
 var EX_TIMER=null;
 function stopEx(){if(EX_TIMER){clearInterval(EX_TIMER);EX_TIMER=null;}}
