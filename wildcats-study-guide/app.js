@@ -1,25 +1,29 @@
-/* Wildcats Wellness Quest study guide: landscape map, zone panels, labs, quizzes, summit review. No network, no libraries. */
+/* Wildcats Wellness Quest study guide: landscape map, zone panels, labs, quizzes, results page. No network, no libraries. */
 (function () {
   'use strict';
   var G = window.GUIDE;
-  var KEY = 'wwq-study-guide-v1';
+  var KEY = 'wwq-study-guide-v2';
   var Z = G.ZONES, ZBY = {};
   Z.forEach(function (z) { ZBY[z.id] = z; });
   var DIM = {}; G.DIMS.forEach(function (d) { DIM[d.id] = d; });
 
-  var SHORT = { hub: 'Hub', numbers: 'Numbers', habits: 'Habits', media: 'Media Lab', stop: 'STOP', sim: 'Simulator', final: 'Final Challenge', summit: 'Summit Review' };
+  var SHORT = { hub: 'Hub', numbers: 'Numbers', habits: 'Habits', media: 'Media Lab', stop: 'STOP', sim: 'Simulator', final: 'Final Challenge', summit: 'My Results' };
   var POS = { hub: [105, 440], numbers: [255, 380], habits: [405, 448], media: [555, 380], stop: [705, 448], sim: [855, 390], final: [985, 335], summit: [1105, 222] };
   var ORDER = Z.map(function (z) { return z.id; }).concat(['summit']);
 
   /* ---------------------------------------------------------------- state */
-  var S = { seen: {}, done: {}, first: {}, best: 0 };
-  try { var raw = localStorage.getItem(KEY); if (raw) { var p = JSON.parse(raw); if (p && typeof p === 'object') { S.seen = p.seen || {}; S.done = p.done || {}; S.first = p.first || {}; S.best = +p.best || 0; } } } catch (e) { /* storage unavailable: still works this session */ }
+  var S = { seen: {}, ans: {}, name: '' };
+  try { var raw = localStorage.getItem(KEY); if (raw) { var p = JSON.parse(raw); if (p && typeof p === 'object') { S.seen = p.seen || {}; S.ans = p.ans || {}; S.name = typeof p.name === 'string' ? p.name.slice(0, 40) : ''; } } } catch (e) { /* storage unavailable: still works this session */ }
   function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) { /* ignore */ } }
   function seenCount() { return Z.filter(function (z) { return S.seen[z.id]; }).length; }
-  function doneCount(id) { var d = S.done[id] || {}; return Object.keys(d).length; }
-  function zoneMastered(z) { return doneCount(z.id) >= z.quiz.length; }
-  function masteredCount() { return Z.filter(zoneMastered).length; }
-  function summitOpen() { return seenCount() === Z.length; }
+  function doneCount(id) { return Object.keys(S.ans[id] || {}).length; }
+  function zoneFinished(z) { return doneCount(z.id) >= z.quiz.length; }
+  function finishedCount() { return Z.filter(zoneFinished).length; }
+  function totalQ() { return Z.reduce(function (a, z) { return a + z.quiz.length; }, 0); }
+  function answeredQ() { return Z.reduce(function (a, z) { return a + doneCount(z.id); }, 0); }
+  function correctIn(z) { var n = 0; z.quiz.forEach(function (q, i) { if ((S.ans[z.id] || {})[i] === q.a) n++; }); return n; }
+  function resultsOpen() { return finishedCount() === Z.length; }
+  var TOTAL_MIN = Z.reduce(function (a, z) { return a + z.est; }, 0);
 
   /* ---------------------------------------------------------------- dom helpers */
   function h(tag, attrs) {
@@ -98,7 +102,7 @@
     /* landmarks */
     ORDER.forEach(function (id) {
       var x = POS[id][0], y = POS[id][1], z = ZBY[id], n = z ? z.n : '★';
-      var name = id === 'summit' ? 'Summit Review' : z.name;
+      var name = id === 'summit' ? 'My Results' : z.name;
       s += '<g class="spot" id="spot-' + id + '" data-id="' + id + '" role="button" tabindex="0" transform="translate(' + x + ',' + y + ')">';
       s += '<title>' + name + '</title><circle class="ring" cx="0" cy="-32" r="56"/><circle cx="0" cy="-32" r="56" fill="transparent"/>' + icon(id);
       s += '<g transform="translate(0,26)"><circle cx="-' + (SHORT[id].length * 4.3 + 14) + '" cy="-5" r="11" fill="' + (z ? z.color : '#d99a14') + '" stroke="#fff" stroke-width="2.5"/><text x="-' + (SHORT[id].length * 4.3 + 14) + '" y="0" text-anchor="middle" font-family="Arial" font-weight="800" font-size="13" fill="#fff">' + n + '</text><text class="lbl" x="4" y="0">' + SHORT[id] + '</text></g>';
@@ -119,10 +123,10 @@
   function refreshMap() {
     ORDER.forEach(function (id) {
       var b = $('badge-' + id), sp = $('spot-' + id); if (!b || !sp) return;
-      var z = ZBY[id], locked = id === 'summit' && !summitOpen();
-      var state = id === 'summit' ? (S.best >= 8 ? 'done' : (S.best > 0 ? 'seen' : '')) : (zoneMastered(z) ? 'done' : (S.seen[id] ? 'seen' : ''));
-      var label = id === 'summit' ? 'Summit Review' : z.name;
-      var status = locked ? 'locked until you have visited all seven landmarks' : (state === 'done' ? 'complete' : state === 'seen' ? 'visited' : 'not visited');
+      var z = ZBY[id], locked = id === 'summit' && !resultsOpen();
+      var state = id === 'summit' ? (resultsOpen() ? 'seen' : '') : (zoneFinished(z) ? 'done' : (S.seen[id] ? 'seen' : ''));
+      var label = id === 'summit' ? 'My Results' : z.name;
+      var status = locked ? 'locked until you finish all seven quizzes' : (id === 'summit' ? 'ready' : state === 'done' ? 'quiz finished' : state === 'seen' ? 'visited' : 'not visited');
       sp.setAttribute('aria-label', label + ', ' + status);
       sp.setAttribute('aria-disabled', locked ? 'true' : 'false');
       sp.classList.toggle('locked', locked);
@@ -134,12 +138,12 @@
     var tn = $('trailnav');
     if (tn) Array.prototype.forEach.call(tn.querySelectorAll('.tn'), function (btn) {
       var id = btn.getAttribute('data-id'), z = ZBY[id];
-      var st = id === 'summit' ? (summitOpen() ? (S.best ? 'best ' + S.best + '/10' : 'open') : 'locked') : (zoneMastered(z) ? '✓ ' + doneCount(id) + '/' + z.quiz.length : doneCount(id) + '/' + z.quiz.length);
-      btn.querySelector('.st').textContent = st; btn.disabled = (id === 'summit' && !summitOpen());
+      var st = id === 'summit' ? (resultsOpen() ? 'ready' : 'locked') : (zoneFinished(z) ? '✓ done' : doneCount(id) + '/' + z.quiz.length + ' · ~' + z.est + ' min');
+      btn.querySelector('.st').textContent = st; btn.disabled = (id === 'summit' && !resultsOpen());
     });
-    var sc = seenCount(), mc = masteredCount();
+    var sc = seenCount(), aq = answeredQ(), tq = totalQ();
     $('p1').style.width = (sc / Z.length * 100) + '%'; $('p1t').textContent = sc + ' of ' + Z.length;
-    $('p2').style.width = (mc / Z.length * 100) + '%'; $('p2t').textContent = mc + ' of ' + Z.length;
+    $('p2').style.width = (aq / tq * 100) + '%'; $('p2t').textContent = aq + ' of ' + tq;
   }
 
   /* ---------------------------------------------------------------- panel */
@@ -147,7 +151,7 @@
   var TABS = [['notes', 'Field notes'], ['lab', 'Try it'], ['quiz', 'Check yourself']];
 
   function openZone(id, tab) {
-    if (id === 'summit' && !summitOpen()) { announce('Visit all seven landmarks first to unlock the Summit Review.'); return; }
+    if (id === 'summit' && !resultsOpen()) { announce('Finish the quiz at all seven landmarks to unlock My Results.'); return; }
     cur.id = id; cur.tab = tab || 'notes';
     Array.prototype.forEach.call(document.querySelectorAll('.spot'), function (s) { s.classList.toggle('on', s.getAttribute('data-id') === id); });
     Array.prototype.forEach.call(document.querySelectorAll('.tn'), function (b) { b.setAttribute('aria-current', b.getAttribute('data-id') === id ? 'true' : 'false'); });
@@ -158,12 +162,12 @@
 
   function renderPanel(focus) {
     var host = $('panel'); host.innerHTML = ''; host.hidden = false;
-    if (cur.id === 'summit') { host.style.setProperty('--zc', '#d99a14'); host.appendChild(summitPanel()); }
+    if (cur.id === 'summit') { host.style.setProperty('--zc', '#d99a14'); host.appendChild(resultsPanel()); }
     else {
       var z = ZBY[cur.id]; host.style.setProperty('--zc', z.color);
       var head = h('div', { class: 'panel-h' },
         h('div', null, h('div', { class: 'kick' }, 'Landmark ' + z.n + ' · ' + z.mission), h('h2', { id: 'ph', tabindex: '-1' }, z.name), h('div', { class: 'muted' }, z.sub)),
-        h('div', { class: 'muted small' }, 'Quiz: ' + doneCount(z.id) + ' of ' + z.quiz.length + ' answered correctly'));
+        h('div', { class: 'muted small' }, 'About ' + z.est + ' min · Quiz: ' + doneCount(z.id) + ' of ' + z.quiz.length + ' answered'));
       host.appendChild(head);
       host.appendChild(h('p', { class: 'pounce-say' }, '🐾 Pounce says: ' + z.pounce));
       var tabs = h('div', { class: 'tabs', role: 'tablist', 'aria-label': z.name + ' sections' });
@@ -286,7 +290,7 @@
       fs.appendChild(row);
       fs.appendChild(h('button', { class: 'btn sm', onclick: function () {
         var wrong = []; Object.keys(g.has).forEach(function (k) { if (!!g.has[k] !== boxes[k].checked) wrong.push(k); });
-        res.innerHTML = ''; res.appendChild(h('div', { class: 'result' + (wrong.length ? ' warn' : '') }, h('b', null, wrong.length ? 'Not quite: look again at ' + wrong.join(', ') : 'Yes, all correct'), g.why));
+        res.innerHTML = ''; res.appendChild(h('div', { class: 'result' + (wrong.length ? ' warn' : '') }, h('b', null, wrong.length ? 'Take another look at ' + wrong.join(', ') : 'Yes, all correct'), g.why));
       } }, 'Check'));
       fs.appendChild(res); w.appendChild(fs); fs.style.marginBottom = '10px';
     });
@@ -315,7 +319,7 @@
       });
       [['cred', 'Credible'], ['quest', 'Questionable'], ['not', 'Not Credible']].forEach(function (r) {
         rate.appendChild(h('button', { class: 'chip', disabled: true, onclick: function () {
-          var ok = r[0] === p.answer; res.innerHTML = ''; res.appendChild(h('div', { class: 'result' + (ok ? '' : ' warn') }, h('b', null, ok ? 'Good call: ' + r[1] : 'Not quite. Review all four tabs again.'), p.why));
+          var ok = r[0] === p.answer; res.innerHTML = ''; res.appendChild(h('div', { class: 'result' + (ok ? '' : ' warn') }, h('b', null, ok ? 'Good call: ' + r[1] : 'Another view: the strongest rating here is “' + ({ cred: 'Credible', quest: 'Questionable', not: 'Not Credible' })[p.answer] + '”.'), p.why));
         } }, r[1]));
       });
       wrap.appendChild(h('div', { class: 'post', style: 'margin-bottom:12px' }, h('div', { class: 'hd' }, h('span', { class: 'av', 'aria-hidden': 'true' }, '👤'), p.handle + ' · ' + p.platform), h('q', null, p.text), tabs, content, h('div', { class: 'small', style: 'margin-top:8px' }, 'Rate it (unlocks after all four tabs):'), rate, res));
@@ -332,9 +336,9 @@
       var fb = h('div');
       s.o.forEach(function (t, oi) {
         var b = h('button', { class: 'qo', onclick: function () {
-          if (oi !== s.a) { b.classList.add('wrong'); b.disabled = true; fb.innerHTML = ''; fb.appendChild(h('div', { class: 'fb no' }, 'Not that one. Try another option.')); return; }
-          Array.prototype.forEach.call(box.querySelectorAll('.qo'), function (x) { x.disabled = true; }); b.classList.add('right'); fb.innerHTML = ''; fb.appendChild(h('div', { class: 'fb ok' }, s.why));
-          if (++i < c.steps.length) fb.appendChild(h('div', { style: 'margin-top:8px' }, h('button', { class: 'btn sm gold', onclick: function () { step(); } }, 'Next step →')));
+          var ok = oi === s.a; Array.prototype.forEach.call(box.querySelectorAll('.qo'), function (x) { x.disabled = true; }); box.querySelectorAll('.qo')[s.a].classList.add('right'); if (!ok) b.classList.add('review');
+          fb.innerHTML = ''; fb.appendChild(h('div', { class: 'fb ' + (ok ? 'ok' : 'rv') }, (ok ? '✓ ' : 'A stronger pick: “' + s.o[s.a] + '”. ') + s.why));
+          if (++i < c.steps.length) fb.appendChild(h('div', { style: 'margin-top:8px' }, h('button', { class: 'btn sm gold', onclick: function (e) { e.currentTarget.disabled = true; step(); } }, 'Next step →')));
           else fb.appendChild(h('div', { class: 'result', style: 'margin-top:8px' }, h('b', null, 'STOP complete'), 'More than one pick could be responsible. What matters is a safe, feasible choice with reasons that match the facts.'));
         } }, t); box.appendChild(b);
       });
@@ -385,84 +389,92 @@
       res.innerHTML = '';
       if (['claim', 'evidence', 'reasoning'].some(function (k) { return picks[k] == null; })) { res.appendChild(h('div', { class: 'result warn' }, h('b', null, 'Choose one from each part first.'))); return; }
       var bad = ['claim', 'evidence', 'reasoning'].filter(function (k) { return !picks[k]; });
-      res.appendChild(bad.length ? h('div', { class: 'result warn' }, h('b', null, 'Check your ' + bad.join(' and ') + '.'), 'Evidence must be a fact in the case, and reasoning must link it to your claim.')
+      res.appendChild(bad.length ? h('div', { class: 'result warn' }, h('b', null, 'Take another look at your ' + bad.join(' and ') + '.'), 'Evidence must be a fact in the case, and reasoning must link it to your claim.')
         : h('div', { class: 'result' }, h('b', null, 'Strong, matching C-E-R'), c.plan));
     } }, 'Check my argument'));
     w.appendChild(res);
   }
 
-  /* ---------------------------------------------------------------- quiz */
-  function quizQuestion(zid, qi, q, opts) {
-    var done = opts && opts.review ? null : (S.done[zid] || {})[qi];
-    var box = h('div', { class: 'q' + (done ? ' done' : ''), role: 'group', 'aria-labelledby': 'q-' + zid + qi }), fb = h('div', { 'aria-live': 'polite' }), btns = [];
-    box.appendChild(h('div', { class: 'qt', id: 'q-' + zid + qi }, (qi + 1) + '. ' + q.q));
-    q.o.forEach(function (t, oi) {
-      var b = h('button', { class: 'qo' + (done && oi === q.a ? ' right' : ''), disabled: !!done, onclick: function () { pick(oi, b); } }, t); btns.push(b); box.appendChild(b);
-    });
+  /* ---------------------------------------------------------------- quiz (one try, no wrong answers: it shows the best answer and why) */
+  function quizQuestion(z, qi) {
+    var q = z.quiz[qi], picked = (S.ans[z.id] || {})[qi], id = 'q-' + z.id + qi;
+    var box = h('div', { class: 'q', role: 'group', 'aria-labelledby': id }), fb = h('div', { 'aria-live': 'polite' }), btns = [];
+    box.appendChild(h('div', { class: 'qt', id: id }, (qi + 1) + '. ' + q.q));
+    q.o.forEach(function (t, oi) { var b = h('button', { class: 'qo', onclick: function () { choose(oi); } }, t); btns.push(b); box.appendChild(b); });
     box.appendChild(fb);
-    if (done) fb.appendChild(h('div', { class: 'fb ok' }, '✓ ' + q.why));
-    function pick(oi, b) {
-      if (oi === q.a) {
-        btns.forEach(function (x) { x.disabled = true; }); b.classList.add('right'); box.classList.add('done'); fb.innerHTML = ''; fb.appendChild(h('div', { class: 'fb ok' }, '✓ Correct. ' + q.why));
-        if (opts && opts.onRight) opts.onRight(oi === q.a, !b.dataset.miss);
-        else { S.done[zid] = S.done[zid] || {}; S.done[zid][qi] = true; S.first[zid] = S.first[zid] || {}; if (S.first[zid][qi] == null) S.first[zid][qi] = !box.dataset.miss; save(); refreshMap(); zoneProgress(); }
-      } else {
-        b.classList.add('wrong'); b.disabled = true; box.dataset.miss = '1'; fb.innerHTML = ''; fb.appendChild(h('div', { class: 'fb no' }, 'Not quite. Re-read the field notes and try another answer.'));
-        if (opts && opts.onWrong) opts.onWrong();
-      }
+    function show(oi) {
+      var ok = oi === q.a;
+      btns.forEach(function (b, i) { b.disabled = true; if (i === q.a) b.classList.add('right'); else if (i === oi) b.classList.add('review'); });
+      box.classList.add(ok ? 'done' : 'rev'); fb.innerHTML = '';
+      fb.appendChild(h('div', { class: 'fb ' + (ok ? 'ok' : 'rv') }, ok ? '✓ You got it. ' + q.why : 'Here is what to look at: the best answer is “' + q.o[q.a] + '”. ' + q.why));
     }
+    function choose(oi) { S.ans[z.id] = S.ans[z.id] || {}; S.ans[z.id][qi] = oi; save(); show(oi); refreshMap(); zoneProgress(); }
+    if (picked != null) show(picked);
     return box;
   }
   function zoneProgress() {
-    var z = ZBY[cur.id]; if (!z) return; var el = $('qscore'); if (!el) return;
-    var n = doneCount(z.id); el.textContent = n + ' of ' + z.quiz.length + ' correct';
-    var hd = document.querySelector('.panel-h .muted.small'); if (hd) hd.textContent = 'Quiz: ' + n + ' of ' + z.quiz.length + ' answered correctly';
-    var c = $('qdone'); if (n >= z.quiz.length) { c.hidden = false; }
+    var z = ZBY[cur.id]; if (!z) return;
+    var n = doneCount(z.id), el = $('qscore'); if (el) el.textContent = n + ' of ' + z.quiz.length + ' answered';
+    var hd = document.querySelector('.panel-h .muted.small'); if (hd) hd.textContent = 'About ' + z.est + ' min · Quiz: ' + n + ' of ' + z.quiz.length + ' answered';
+    var c = $('qdone'); if (c && n >= z.quiz.length) { c.hidden = false; $('qdonetxt').textContent = '✓ Quiz finished: ' + correctIn(z) + ' of ' + z.quiz.length + ' on the first try.'; c.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }
   }
   function quizView(z) {
     var w = h('div');
-    w.appendChild(h('p', null, 'Practice questions. Wrong answers do not cost anything: use the hint and try again. Answer all of them correctly to earn this landmark’s check mark.'));
-    w.appendChild(h('div', { class: 'score', id: 'qscore' }, doneCount(z.id) + ' of ' + z.quiz.length + ' correct'));
-    z.quiz.forEach(function (q, i) { w.appendChild(quizQuestion(z.id, i, q)); });
-    var idx = ORDER.indexOf(z.id), nxt = ORDER[idx + 1];
-    w.appendChild(h('div', { class: 'congrats', id: 'qdone', hidden: !zoneMastered(z) }, h('span', null, '🎉 Landmark complete! ' + z.name + ' mastered.'),
-      h('button', { class: 'btn primary', onclick: function () { if (nxt === 'summit' && !summitOpen()) { announce('Visit the remaining landmarks to unlock the Summit.'); return; } openZone(nxt); } }, nxt === 'summit' ? 'Go to the Summit →' : 'Next landmark: ' + SHORT[nxt] + ' →')));
+    w.appendChild(h('p', null, 'There are no wrong answers here. Pick the answer you think is best. You will see the best answer and why, and your results page shows what to review.'));
+    w.appendChild(h('div', { class: 'score', id: 'qscore' }, doneCount(z.id) + ' of ' + z.quiz.length + ' answered'));
+    z.quiz.forEach(function (q, i) { w.appendChild(quizQuestion(z, i)); });
+    var nxt = ORDER[ORDER.indexOf(z.id) + 1], fin = zoneFinished(z);
+    w.appendChild(h('div', { class: 'congrats', id: 'qdone', hidden: !fin },
+      h('span', { id: 'qdonetxt' }, fin ? '✓ Quiz finished: ' + correctIn(z) + ' of ' + z.quiz.length + ' on the first try.' : ''),
+      h('span', { class: 'chips' },
+        h('button', { class: 'btn sm', onclick: function () { delete S.ans[z.id]; save(); refreshMap(); renderPanel(false); } }, '↻ Retake this quiz'),
+        h('button', { class: 'btn primary', onclick: function () { if (nxt === 'summit' && !resultsOpen()) { announce('Finish the quiz at the other landmarks to unlock My Results.'); return; } openZone(nxt); } }, nxt === 'summit' ? 'See my results →' : 'Next landmark: ' + SHORT[nxt] + ' →'))));
     return w;
   }
 
-  /* ---------------------------------------------------------------- summit review */
-  var summit = null;
-  function newSummit() {
-    var pool = []; Z.forEach(function (z) { z.quiz.forEach(function (q, i) { pool.push({ z: z, q: q }); }); });
-    summit = { items: shuffle(pool).slice(0, 10), right: 0, answered: 0, missed: {} };
-  }
-  function summitPanel() {
-    if (!summit) newSummit();
-    var w = h('div'), head = h('div', { class: 'panel-h' }, h('div', null, h('div', { class: 'kick' }, 'Landmark ★'), h('h2', { id: 'sh', tabindex: '-1' }, 'Summit Review'), h('div', { class: 'muted' }, 'Ten mixed questions from every landmark')),
-      h('div', { class: 'muted small' }, 'Best score: ' + S.best + ' of 10'));
-    w.appendChild(head);
-    w.appendChild(h('p', { class: 'pounce-say' }, '🐾 Pounce says: Questions are drawn from all seven landmarks. Tap “New set” for a fresh mix.'));
-    var body = h('div', { class: 'tabpanel' }), score = h('div', { class: 'score', 'aria-live': 'polite' }, 'First-try correct: 0 of 0 answered');
-    body.appendChild(score);
-    var res = h('div');
-    summit.items.forEach(function (it, i) {
-      body.appendChild(quizQuestion('sm', i, it.q, { review: true,
-        onRight: function (ok, first) { summit.answered++; if (!summit.items[i].miss) summit.right++; progress(); },
-        onWrong: function () { summit.items[i].miss = true; summit.missed[it.z.id] = true; } }));
+  /* ---------------------------------------------------------------- results page (screenshot-friendly) */
+  function resultsPanel() {
+    var tot = totalQ(), got = Z.reduce(function (a, z) { return a + correctIn(z); }, 0), pct = Math.round(got / tot * 100);
+    var msg = pct >= 85 ? 'Strong work. You are well prepared for the quest. Skim anything flagged below.' : pct >= 65 ? 'A solid start. Review the flagged items below before you take the quest.' : 'A good first pass. Use the review notes below, then retake the landmarks marked “Review”.';
+    var w = h('div'), report = h('div', { class: 'report', id: 'report' });
+    w.appendChild(h('div', { class: 'panel-h' }, h('div', null, h('div', { class: 'kick' }, 'My Results'), h('h2', { id: 'sh', tabindex: '-1' }, 'Wildcats Study Landscape'), h('div', { class: 'muted' }, 'Unit 1 Personal Health · Small Choices, Whole Health'))));
+    var nameIn = h('input', { type: 'text', id: 'myname', maxlength: '40', value: S.name, placeholder: 'Type your name', autocomplete: 'off' });
+    nameIn.addEventListener('input', function () { S.name = nameIn.value.slice(0, 40); save(); });
+    report.appendChild(h('div', { class: 'namerow' }, h('label', { for: 'myname' }, 'Name: '), nameIn, h('span', { class: 'muted small' }, ' ' + new Date().toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' }))));
+    report.appendChild(h('div', { class: 'big-score', role: 'status' }, h('div', { class: 'num' }, got + ' of ' + tot), h('div', { class: 'pct' }, pct + '% right on the first try'), h('p', null, msg)));
+    report.appendChild(h('h3', null, 'Your landmarks'));
+    var rows = h('div', { class: 'zrows' }), missed = [];
+    Z.forEach(function (z) {
+      var c = correctIn(z), n = z.quiz.length, st = c === n ? ['✓ Got it', 'ok'] : c * 2 >= n ? ['◐ Almost there', 'mid'] : ['↻ Review this', 'rv'];
+      rows.appendChild(h('div', { class: 'zrow' }, h('span', { class: 'zn', style: 'background:' + z.color }, z.n), h('span', { class: 'zname' }, z.name), h('span', { class: 'rbar', 'aria-hidden': 'true' }, h('i', { style: 'width:' + (c / n * 100) + '%;background:' + z.color })), h('span', { class: 'zsc' }, c + '/' + n), h('span', { class: 'chipst ' + st[1] }, st[0])));
+      z.quiz.forEach(function (q, i) { var p = (S.ans[z.id] || {})[i]; if (p !== q.a) missed.push({ z: z, q: q, p: p }); });
     });
-    function progress() {
-      score.textContent = 'First-try correct: ' + summit.right + ' of ' + summit.answered + ' answered';
-      if (summit.answered === 10) {
-        if (summit.right > S.best) { S.best = summit.right; save(); refreshMap(); }
-        res.innerHTML = ''; var miss = Object.keys(summit.missed);
-        res.appendChild(h('div', { class: 'congrats' }, h('span', null, summit.right >= 8 ? '🏔️ You reached the summit! ' + summit.right + ' of 10 on the first try.' : 'You finished: ' + summit.right + ' of 10 on the first try. Review and try a new set.'),
-          h('span', { class: 'chips' }, miss.map(function (id) { return h('button', { class: 'btn sm', onclick: function () { openZone(id); } }, 'Review ' + SHORT[id]); }), h('button', { class: 'btn sm primary', onclick: function () { newSummit(); renderPanel(false); } }, 'New set'))));
-        res.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-      }
-    }
-    body.appendChild(res);
-    body.appendChild(h('div', { class: 'chips' }, h('button', { class: 'btn', onclick: function () { newSummit(); renderPanel(false); } }, '↻ New set')));
-    w.appendChild(body); return w;
+    report.appendChild(rows);
+    var rev = h('div', { class: 'review-list' }, h('h3', null, missed.length ? 'What to review (' + missed.length + ')' : 'Nothing to review'));
+    if (!missed.length) rev.appendChild(h('p', null, '🏔️ You got every question on the first try. Nice work!'));
+    missed.forEach(function (m) {
+      rev.appendChild(h('div', { class: 'rv-card', style: 'border-left-color:' + m.z.color },
+        h('div', { class: 'rv-tag', style: 'color:' + m.z.color }, m.z.n + '. ' + m.z.name),
+        h('div', { class: 'rv-q' }, m.q.q),
+        h('div', null, h('b', null, 'You chose: '), m.p != null ? m.q.o[m.p] : '(not answered)'),
+        h('div', null, h('b', null, 'Best answer: '), m.q.o[m.q.a]),
+        h('div', { class: 'rv-why' }, m.q.why),
+        h('button', { class: 'btn sm noprint', onclick: function () { openZone(m.z.id, 'notes'); } }, 'Reread ' + SHORT[m.z.id] + ' notes')));
+    });
+    report.appendChild(rev);
+    w.appendChild(h('div', { class: 'tabpanel' },
+      h('p', { class: 'muted small noprint' }, '📸 To share your results, take a screenshot of this page, starting at your name. Scroll for the review notes.'),
+      report,
+      h('div', { class: 'chips noprint', style: 'margin-top:12px' },
+        h('button', { class: 'btn primary', onclick: printResults }, '🖨 Print or save as PDF'),
+        h('button', { class: 'btn', onclick: function () { document.getElementById('mapTitle').scrollIntoView({ behavior: 'smooth' }); } }, 'Back to the map'))));
+    return w;
+  }
+  function printResults() {
+    var root = $('printRoot'), clone = $('report').cloneNode(true);
+    Array.prototype.forEach.call(clone.querySelectorAll('.noprint'), function (n) { n.remove(); });
+    var nr = clone.querySelector('.namerow'); if (nr) nr.replaceWith(h('div', { class: 'namerow' }, 'Name: ' + (S.name || '________________') + '   ' + new Date().toLocaleDateString()));
+    root.innerHTML = ''; root.appendChild(h('h1', null, 'Wildcats Study Landscape: My Results')); root.appendChild(clone); window.print();
   }
 
   /* ---------------------------------------------------------------- print sheet */
@@ -506,7 +518,7 @@
     $('printBtn').addEventListener('click', printSheet);
     $('resetBtn').addEventListener('click', function () {
       if (!confirm('Clear your progress on this device?')) return;
-      S = { seen: {}, done: {}, first: {}, best: 0 }; save(); summit = null; cur = { id: null, tab: 'notes' };
+      S = { seen: {}, ans: {}, name: '' }; save(); cur = { id: null, tab: 'notes' };
       $('panel').hidden = true; Array.prototype.forEach.call(document.querySelectorAll('.spot'), function (s) { s.classList.remove('on'); }); refreshMap(); movePounce('hub'); announce('Progress cleared.');
     });
     refreshMap(); movePounce('hub');

@@ -19,7 +19,7 @@
   G.ZONES = [
     /* ------------------------------------------------ 1 HUB */
     {
-      id: 'hub', n: 1, mission: 'Mission 1', name: 'Whole-Health Hub', sub: 'Five dimensions and ripple effects', color: '#0b8585',
+      id: 'hub', est: 2, n: 1, mission: 'Mission 1', name: 'Whole-Health Hub', sub: 'Five dimensions and ripple effects', color: '#0b8585',
       pounce: 'Wellness is active and ongoing, not just the absence of illness.',
       notes: [
         { h: 'Wellness is a process', p: 'Wellness means making choices, over and over, that move you toward a full, healthy life. It is more than “not being sick.”' },
@@ -31,15 +31,13 @@
       lab: { type: 'ripple' },
       quiz: [
         { q: 'Luis joins a study group to meet classmates and feel less alone at lunch. Which dimension is MOST directly involved?', o: ['Physical', 'Social', 'Environmental', 'Mental'], a: 1, why: 'Building connection with others is Social, even though it may help focus too.' },
-        { q: 'Priya sorts recycling and picks up litter at the park. Which dimension is MOST directly involved?', o: ['Emotional', 'Social', 'Environmental', 'Physical'], a: 2, why: 'Caring for surroundings and sustainable choices are Environmental.' },
-        { q: 'Which statement best describes wellness?', o: ['Having no illness', 'Active, ongoing choices that support a full, healthy life', 'Being strong in just one dimension', 'Something decided only by genetics'], a: 1, why: 'Wellness is active and ongoing, not just the absence of illness.' },
         { q: 'Marcus skips breakfast (Physical). By third period he cannot concentrate and he snaps at a friend. What does this show?', o: ['Dimensions are separate and never affect each other', 'A ripple effect: Physical change spread to Mental and Social', 'Only Environmental choices spread', 'Marcus has a weak Emotional dimension forever'], a: 1, why: 'A change in one dimension ripples into others, one link at a time.' },
         { q: 'A student is thriving socially but has little time outdoors and a cluttered study space. Which is true?', o: ['Wellness is perfect if one dimension is high', 'Strength in one dimension can coexist with difficulty in another', 'Social strength cancels Environmental problems', 'Nothing can be improved'], a: 1, why: 'Overall wellness needs attention across dimensions; a strong one can hide a weak one.' }
       ]
     },
     /* ------------------------------------------------ 2 NUMBERS */
     {
-      id: 'numbers', n: 2, mission: 'Mission 2', name: 'Know Your Numbers', sub: 'Health metrics and reference ranges', color: '#cc4a3a',
+      id: 'numbers', est: 4, n: 2, mission: 'Mission 2', name: 'Know Your Numbers', sub: 'Health metrics and reference ranges', color: '#cc4a3a',
       pounce: 'Lower is not always better. An unusual reading means follow up, not panic.',
       notes: [
         { h: 'Nine things a check-up can measure', p: 'Height, weight, temperature, pulse (resting heart rate), breathing, blood pressure, BMI, fasting blood glucose, total cholesterol. The quest focuses on the last five.' },
@@ -57,17 +55,15 @@
       keyTerms: [['Systolic / diastolic', 'Top / bottom blood-pressure number'], ['Fasting', 'No food for at least 8 hours before the test'], ['Screening', 'A starting point that suggests follow-up, not a diagnosis'], ['Percentile', 'How a teen’s BMI compares with others of the same age and sex']],
       lab: { type: 'dials' },
       quiz: [
-        { q: 'An adult’s blood pressure is 124/76. Which category fits?', o: ['Normal', 'Elevated', 'Stage 1 category', 'Stage 2 category'], a: 1, why: 'Top 120–129 AND bottom below 80 is Elevated.' },
         { q: 'An adult’s reading is 126/82. Which category fits?', o: ['Normal', 'Elevated', 'Stage 1 category', 'Stage 2 category'], a: 2, why: 'A bottom number of 80–89 means the Stage 1 category, even though the top is under 130. Use both numbers.' },
         { q: 'A calm, regularly active adult with no symptoms has a resting heart rate of 54. What is the best interpretation?', o: ['It is always dangerous', 'Lower is always healthier, so it is perfect', 'Context matters; fitness can lower heart rate, and any symptoms deserve follow-up', 'It cannot be measured'], a: 2, why: 'Lower is not automatically healthier or unhealthy. Consider fitness, symptoms and context.' },
         { q: 'How should a 15-year-old’s BMI be read?', o: ['With the adult 18.5–24.9 range', 'With sex-specific BMI-for-age percentiles', 'BMI cannot be used for anyone', 'With the adult cholesterol range'], a: 1, why: 'Teens use BMI-for-age percentiles. BMI is also only a limited screening tool.' },
-        { q: 'A fictional adult’s fasting glucose is 112 mg/dL. Best response?', o: ['Diagnosis of diabetes', 'In the prediabetes range, so follow up and confirm with a clinician', 'Normal, nothing to do', 'Panic and change everything today'], a: 1, why: '100–125 is the prediabetes range. One reading is a reason for follow-up, not a diagnosis.' },
-        { q: 'Which statement about habits and health measures is best supported?', o: ['Walking 3 days will lower your blood pressure by exactly 10 points', 'Regular physical activity is linked to healthier blood pressure over time', 'Sleep has no effect on health numbers', 'Only genetics matter'], a: 1, why: 'Use hedged, supported wording. Exact-number promises are not supported.' }
+        { q: 'A fictional adult’s fasting glucose is 112 mg/dL. Best response?', o: ['Diagnosis of diabetes', 'In the prediabetes range, so follow up and confirm with a clinician', 'Normal, nothing to do', 'Panic and change everything today'], a: 1, why: '100–125 is the prediabetes range. One reading is a reason for follow-up, not a diagnosis.' }
       ]
     },
     /* ------------------------------------------------ 3 HABITS */
     {
-      id: 'habits', n: 3, mission: 'Mission 3', name: 'Habit Workshop', sub: 'Habit loops, strategies and SMART goals', color: '#c98a0a',
+      id: 'habits', est: 4, n: 3, mission: 'Mission 3', name: 'Habit Workshop', sub: 'Habit loops, strategies and SMART goals', color: '#c98a0a',
       pounce: 'A missed day does not erase progress. Habit timing varies by person.',
       notes: [
         { h: 'Ratings are information', p: 'In a self-assessment (1 = needs attention, 5 = thriving) a high rating is a strength and a low rating is a growth area. A good next step uses the rating AND the notes, and is realistic. Ratings are never a judgment of the person.' },
@@ -81,16 +77,14 @@
       lab: { type: 'habitlab' },
       quiz: [
         { q: 'Every time the phone buzzes, Dani opens an app and gets a quick burst of fun. In the habit loop, the buzz is the…', o: ['Routine', 'Reward', 'Cue', 'Goal'], a: 2, why: 'The cue is the trigger that starts the routine.' },
-        { q: 'Which is an example of habit stacking?', o: ['“I will try harder.”', '“After I brush my teeth, I will do 5 stretches.”', '“I will stop all snacks forever.”', '“I will be healthier.”'], a: 1, why: 'Habit stacking links a new action to an existing routine.' },
         { q: 'Sam misses two days of a new routine and thinks, “I ruined it.” This is…', o: ['Environment design', 'All-or-nothing thinking', 'A SMART goal', 'A strong cue'], a: 1, why: 'A missed day does not erase progress. Return at the next cue.' },
         { q: 'A post says “habits take exactly 21 days.” The best response is…', o: ['It is proven for everyone', 'Research shows wide variation; an average is not a deadline', 'Habits can never form', 'Skip tracking'], a: 1, why: 'Habit timing varies by person and by behavior.' },
-        { q: '“I will drink more water” is missing which SMART parts?', o: ['Nothing, it is fully SMART', 'Measurable and Time-bound (and probably more specific)', 'Only Relevant', 'It is already measurable'], a: 1, why: 'It does not say how much, how it will be tracked, or for how long.' },
-        { q: 'Alex rates Social 2 of 5 and writes “I eat lunch alone and wish I knew people.” Best growth focus?', o: ['Physical, because it is rated highest', 'Social, with one realistic step such as joining one study group', 'Nothing; low ratings mean Alex did something wrong', 'Environmental for no reason'], a: 1, why: 'Use the rating AND the notes to pick a realistic step. Ratings are information, not judgments.' }
+        { q: '“I will drink more water” is missing which SMART parts?', o: ['Nothing, it is fully SMART', 'Measurable and Time-bound (and probably more specific)', 'Only Relevant', 'It is already measurable'], a: 1, why: 'It does not say how much, how it will be tracked, or for how long.' }
       ]
     },
     /* ------------------------------------------------ 4 MEDIA LAB */
     {
-      id: 'media', n: 4, mission: 'Mission 4', name: 'Fact or Fiction Media Lab', sub: 'Evaluating health claims', color: '#6a3fc0',
+      id: 'media', est: 3, n: 4, mission: 'Mission 4', name: 'Fact or Fiction Media Lab', sub: 'Evaluating health claims', color: '#6a3fc0',
       pounce: 'A sales motive deserves scrutiny but does not prove a claim false.',
       notes: [
         { h: 'Four questions for every claim', fourtabs: true, p: 'Open every tab before you rate a post.' },
@@ -104,15 +98,12 @@
       quiz: [
         { q: 'A post sells a product and says its claim is backed by a published trial of 120 people with limits explained. What is the best conclusion?', o: ['False, because it sells something', 'The sales motive deserves scrutiny, but checkable evidence can still make it credible', 'True, because it is polished', 'Ignore evidence'], a: 1, why: 'A sales motive alone does not decide credibility. Check the evidence.' },
         { q: 'Ten accounts repost the same miracle-cure ad word for word. Is that independent verification?', o: ['Yes, popularity proves it', 'No, copies of one post are not independent sources', 'Yes, if they are verified accounts', 'Only if it has photos'], a: 1, why: 'Independent means separate sources that can confirm the claim.' },
-        { q: 'Which wording is the biggest red flag?', o: ['“A trial found small improvements in sleep.”', '“Guaranteed to melt fat in 3 days. Today only!”', '“Talk with your clinician about your options.”', '“Results vary.”'], a: 1, why: 'Miracle, instant and guaranteed wording plus urgency are classic red flags.' },
-        { q: 'A video of a “doctor” gives health advice but names no research and no way to check credentials. Best response?', o: ['Trust it because of the title', 'A credential needs checkable proof and evidence for the claim', 'Trust it if it has many likes', 'It must be AI'], a: 1, why: 'Credentials need to be checkable AND the claim needs evidence.' },
-        { q: 'A realistic video looks AI-generated. What should you conclude?', o: ['It is automatically false', 'AI use alone does not decide truth; check who made it, the evidence and independent sources', 'It is automatically true', 'Share it quickly'], a: 1, why: 'Neither polish nor AI alone settles credibility.' },
-        { q: 'Which is a tab-by-tab way to evaluate a claim?', o: ['Likes, shares, color, length', 'Author, Evidence, Purpose, Independent verification', 'Price only', 'Platform only'], a: 1, why: 'Who is behind it, what evidence supports it, why it was posted, and whether independent sources agree.' }
+        { q: 'Which wording is the biggest red flag?', o: ['“A trial found small improvements in sleep.”', '“Guaranteed to melt fat in 3 days. Today only!”', '“Talk with your clinician about your options.”', '“Results vary.”'], a: 1, why: 'Miracle, instant and guaranteed wording plus urgency are classic red flags.' }
       ]
     },
     /* ------------------------------------------------ 5 STOP */
     {
-      id: 'stop', n: 5, mission: 'Mission 5', name: 'STOP Crossroads', sub: 'Personal responsibility and decision-making', color: '#2a8a4a',
+      id: 'stop', est: 3, n: 5, mission: 'Mission 5', name: 'STOP Crossroads', sub: 'Personal responsibility and decision-making', color: '#2a8a4a',
       pounce: 'Responsibility is not perfection. Asking for support is a responsible choice.',
       notes: [
         { h: 'The STOP model', stop: true },
@@ -124,15 +115,13 @@
       lab: { type: 'stoplab' },
       quiz: [
         { q: 'What does the “O” in STOP stand for?', o: ['Organize', 'Observe possible consequences', 'Object', 'Obey'], a: 1, why: 'State the problem, Think of options, Observe consequences, Pick a responsible choice.' },
-        { q: 'Which step is where you list at least two different options?', o: ['State', 'Think', 'Observe', 'Pick'], a: 1, why: 'T is Think of options.' },
         { q: 'A friend who has been drinking offers you a ride. Which pick is most responsible?', o: ['Accept to avoid awkwardness', 'Decline and arrange a safe ride, such as calling a parent or guardian', 'Drive yourself without a license', 'Say nothing'], a: 1, why: 'Riding with a driver who has been drinking has immediate serious risks. Choose a safe alternative and seek support.' },
-        { q: 'Is more than one choice ever “responsible”?', o: ['No, only one right answer exists', 'Yes, when each is safe, honest and feasible', 'Only if it is the easiest', 'Only if an adult chooses'], a: 1, why: 'Several choices can be responsible. The reasons must match the facts.' },
-        { q: 'Asking a counselor for help with overwhelming school stress is…', o: ['A failure of responsibility', 'Part of a responsible choice', 'Never helpful', 'Only for adults'], a: 1, why: 'Responsibility is not perfection or going it alone.' }
+        { q: 'Is more than one choice ever “responsible”?', o: ['No, only one right answer exists', 'Yes, when each is safe, honest and feasible', 'Only if it is the easiest', 'Only if an adult chooses'], a: 1, why: 'Several choices can be responsible. The reasons must match the facts.' }
       ]
     },
     /* ------------------------------------------------ 6 SIMULATOR */
     {
-      id: 'sim', n: 6, mission: 'Mission 6', name: 'Thousand Choices Simulator', sub: 'Small choices, big sums', color: '#3f4ec0',
+      id: 'sim', est: 4, n: 6, mission: 'Mission 6', name: 'Thousand Choices Simulator', sub: 'Small choices, big sums', color: '#3f4ec0',
       pounce: 'These points are fictional teaching weights, not a health score.',
       notes: [
         { h: 'Twenty categories in five domains', cats: true },
@@ -147,15 +136,13 @@
       quiz: [
         { q: 'Sleep has weight 3. A student earns a C. How many points?', o: ['+3', '0', '−3', '−1'], a: 2, why: 'C = −weight, so −3.' },
         { q: 'One day: Sleep A, Nutrition B, Hydration C, Movement A. (Weights 3, 2, 1, 2.) What is the Physical subtotal?', o: ['+4', '+5', '+8', '+2'], a: 0, why: '+3 + 0 − 1 + 2 = +4.' },
-        { q: 'What is the largest possible daily total across all five domains?', o: ['+20', '+28', '+35', '+245'], a: 2, why: '8 + 7 + 7 + 8 + 5 = 35 per day; 35 × 7 = 245 per week.' },
         { q: 'A student repeats a +1 choice on 5 days. What happens to the weekly total?', o: ['No change', '+5', '+1', '+35'], a: 1, why: 'Small repeated choices accumulate.' },
-        { q: 'Soc is −21 of a possible 56 for the week. Env is −14 of a possible 35. Which domain is weakest relative to its own maximum?', o: ['Social (−37.5%)', 'Environmental (−40%)', 'They are equal', 'Cannot compare'], a: 1, why: 'Normalize: −21/56 = −37.5%; −14/35 = −40%. The raw lowest (Social) is not the weakest relative to its maximum.' },
-        { q: 'Which is a strong STOP revision for Jordan, who has a noisy shared room and little money?', o: ['Rent a private study room across town daily', 'Use the free library quiet hour Mon–Wed', 'Just try harder', 'Ignore the problem'], a: 1, why: 'A strong revision fits the person’s constraints, targets a weak area and has a computable effect.' }
+        { q: 'Soc is −21 of a possible 56 for the week. Env is −14 of a possible 35. Which domain is weakest relative to its own maximum?', o: ['Social (−37.5%)', 'Environmental (−40%)', 'They are equal', 'Cannot compare'], a: 1, why: 'Normalize: −21/56 = −37.5%; −14/35 = −40%. The raw lowest (Social) is not the weakest relative to its maximum.' }
       ]
     },
     /* ------------------------------------------------ 7 FINAL */
     {
-      id: 'final', n: 7, mission: 'Mission 7', name: 'Final Transfer Challenge', sub: 'Put it all together', color: '#1f2b6b',
+      id: 'final', est: 3, n: 7, mission: 'Mission 7', name: 'Final Transfer Challenge', sub: 'Put it all together', color: '#1f2b6b',
       pounce: 'Use facts from the case. Your evidence and reasoning must match your claim.',
       notes: [
         { h: 'A new, integrated case', p: 'Expect a misleading post, conflicting responsibilities, a wellness pattern and a goal. Use what you know from all six earlier zones.' },
@@ -169,8 +156,7 @@
       quiz: [
         { q: 'In claim-evidence-reasoning, what is the “reasoning”?', o: ['A random fact', 'The explanation of why the evidence supports the claim', 'The final grade', 'A hashtag'], a: 1, why: 'Reasoning links the evidence to the claim.' },
         { q: 'Which is the best evidence for “skipping lunch is affecting Maya’s mood and focus” when the case says she had a headache and snapped at a friend?', o: ['“Everyone knows lunch matters.”', '“She had a headache and snapped at a friend after skipping lunch.”', '“She is probably failing math.”', '“Her phone is old.”'], a: 1, why: 'Evidence must be a fact actually in the case.' },
-        { q: 'Which makes a plan more than a wish?', o: ['“I will be healthier.”', '“I will walk 15 minutes after lunch on school days for 3 weeks and mark a calendar.”', '“I will try.”', '“Someday.”'], a: 1, why: 'Specific, measurable, achievable, relevant, time-bound.' },
-        { q: 'A response names a Physical claim but gives evidence about the study space. What is wrong?', o: ['Nothing', 'The evidence and reasoning do not match the claim', 'Environmental never matters', 'Claims need no evidence'], a: 1, why: 'Several claims are defensible, but the evidence and rationale must match the one you chose.' }
+        { q: 'Which makes a plan more than a wish?', o: ['“I will be healthier.”', '“I will walk 15 minutes after lunch on school days for 3 weeks and mark a calendar.”', '“I will try.”', '“Someday.”'], a: 1, why: 'Specific, measurable, achievable, relevant, time-bound.' }
       ]
     }
   ];

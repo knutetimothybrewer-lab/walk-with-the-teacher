@@ -160,7 +160,11 @@ Animated summative assessment for a high school health unit (five dimensions of 
 
 ## Wildcats Study Landscape (`wildcats-study-guide/`)
 
-An interactive study guide for the Wildcats Wellness Quest unit, drawn as an illustrated landscape. Pounce the wildcat walks a trail through seven landmarks that mirror the quest's seven missions (dimensions and ripple effects, health metrics, habits and SMART goals, media literacy, STOP, the Thousand Choices simulator, the final transfer challenge), plus a locked Summit Review of ten mixed questions. Each landmark has field notes, a hands-on lab (Ripple Maker, number dials, SMART checker, post inspector, STOP walkthrough, scoring calculator, CER builder) and an ungraded practice quiz with hints. It also has a print study sheet. Static and offline, progress is saved only in the student's own browser, nothing is sent anywhere, and the practice questions are new (not the graded quest items). Student link: `https://YOUR-USER.github.io/walk-with-the-teacher/wildcats-study-guide/`
+An interactive study guide for the Wildcats Wellness Quest unit, drawn as an illustrated landscape. Pounce the wildcat walks a trail through seven landmarks that mirror the quest's seven missions (dimensions and ripple effects, health metrics, habits and SMART goals, media literacy, STOP, the Thousand Choices simulator, the final transfer challenge). Each landmark has short field notes, an optional hands-on lab, and a 3-4 question quiz (24 in all). Built for about **20-25 minutes**.
+
+It is a study tool, so there are **no wrong answers and no retries**: each question is answered once and immediately shows the best answer and why. After all seven quizzes, **My Results** unlocks: a screenshot-friendly page with the student's name and date, a score (first-try correct out of 24), a per-landmark breakdown (Got it / Almost there / Review this), and a review list showing what they chose, the best answer and the explanation for every miss. It can also be printed or saved as PDF. Students can retake any landmark quiz.
+
+Static and offline. Progress is saved only in the student's own browser and nothing is sent anywhere. Practice questions are new, not the graded quest items. Student link: `https://YOUR-USER.github.io/walk-with-the-teacher/wildcats-study-guide/`
 
 ## Unit 7: Nutrition & Physical Activity digital summative (`unit7-nutrition-activity/`)
 
