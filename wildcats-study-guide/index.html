@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Wildcats Study Landscape</title>
+<meta name="description" content="An interactive landscape study guide for Unit 1 Personal Health: Wildcats Wellness Quest.">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<a class="skip" href="#panel">Skip to study panel</a>
+<header class="top">
+  <div class="top-in">
+    <div>
+      <h1>Wildcats Study Landscape</h1>
+      <p>Unit 1 Personal Health: Small Choices, Whole Health. About 20–25 minutes. Walk the trail with Pounce.</p>
+    </div>
+    <div class="prog" aria-label="Your progress">
+      <div class="prog-row"><span>Landmarks visited</span><span id="p1t">0 of 7</span></div>
+      <div class="bar"><i id="p1" style="width:0"></i></div>
+      <div class="prog-row" style="margin-top:6px"><span>Quiz questions answered</span><span id="p2t">0 of 24</span></div>
+      <div class="bar two"><i id="p2" style="width:0"></i></div>
+    </div>
+    <div class="tools">
+      <button class="btn" id="printBtn" type="button">🖨 Print study sheet</button>
+      <button class="btn" id="resetBtn" type="button">Reset progress</button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="land" aria-labelledby="mapTitle">
+    <div class="land-head">
+      <h2 id="mapTitle" style="margin:0;font-size:1.1rem">Trail map</h2>
+      <p>Click a landmark (or use the buttons below). Each one has field notes, a hands-on lab and a practice check. Finish the short quiz at all seven to unlock your results page. No wrong answers: it just shows you what to review.</p>
+    </div>
+    <div class="land-scroll" id="mapHost"></div>
+    <nav class="trailnav" id="trailnav" aria-label="Landmarks"></nav>
+  </section>
+
+  <section class="panel" id="panel" aria-live="off" hidden></section>
+  <div id="live" style="position:absolute;left:-999px;width:1px;height:1px;overflow:hidden" role="status" aria-live="polite"></div>
+</main>
+
+<p class="foot">Progress is saved only in this browser on this device. Nothing is sent anywhere. All people, posts and numbers are fictional teaching examples. Reference values are general adult examples for education, not medical advice. Practice questions here are new ones, not the graded quest questions. Your results stay on your device until you share a screenshot.</p>
+<div id="printRoot"></div>
+
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

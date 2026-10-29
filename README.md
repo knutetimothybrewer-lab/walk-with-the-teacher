@@ -158,6 +158,14 @@ On every summative, type the teacher code **`WALK-TEACHER`** in the sign-in **Cl
 
 Animated summative assessment for a high school health unit (five dimensions of wellness, health metrics, habits and SMART goals, media literacy, STOP decisions, and the Health by a Thousand Choices simulation). Static site with automatic scoring (100 points), strict 2-3 attempt policy with equivalent retry variants, a locked final report with JSON/print export, and a passcode-protected teacher reset. Optionally sends each student's result (with a class code) to your own Google Sheet via `apps-script/Code.gs`. See `wildcats-wellness-quest/README.md` for setup, GitHub Pages deployment, limits and teacher materials.
 
+## Wildcats Study Landscape (`wildcats-study-guide/`)
+
+An interactive study guide for the Wildcats Wellness Quest unit, drawn as an illustrated landscape. Pounce the wildcat walks a trail through seven landmarks that mirror the quest's seven missions (dimensions and ripple effects, health metrics, habits and SMART goals, media literacy, STOP, the Thousand Choices simulator, the final transfer challenge). Each landmark has short field notes, an optional hands-on lab, and a 3-4 question quiz (24 in all). Built for about **20-25 minutes**.
+
+It is a study tool, so there are **no wrong answers and no retries**: each question is answered once and immediately shows the best answer and why. After all seven quizzes, **My Results** unlocks: a screenshot-friendly page with the student's name and date, a score (first-try correct out of 24), a per-landmark breakdown (Got it / Almost there / Review this), and a review list showing what they chose, the best answer and the explanation for every miss. It can also be printed or saved as PDF. Students can retake any landmark quiz.
+
+Static and offline. Progress is saved only in the student's own browser and nothing is sent anywhere. Practice questions are new, not the graded quest items. Student link: `https://YOUR-USER.github.io/walk-with-the-teacher/wildcats-study-guide/`
+
 ## Unit 7: Nutrition & Physical Activity digital summative (`unit7-nutrition-activity/`)
 
 An interactive, self-grading, ~1-hour Grade 10 Health summative on nutrition, labels, physical activity and FITT, marketing literacy, SMART goals and food systems (Food, Inc. 2 concepts). Seven missions, five simulations, plan builder, clickable labels/maps/posts, interactive graphs, three attempts per question (100/85/75/0), required class-block dropdown (Block 1/2, 3/4, 6/7, 8/9), a Google Sheets gradebook that routes each submission to its block (with item analysis and live class analytics), a **teacher analytics dashboard** ("What should I reteach?", block comparison, individual reports, CSV and grade export), Preview Mode and demo data.
