@@ -1758,7 +1758,23 @@ BUILD.quiz = ctx => {
 BUILD.wrap = ctx => {
   const idxs = L.stops.map((s, i) => i).filter(i => L.stops[i].belt);
   const q = state.quiz;
+  const nameOut = h('b', { style: 'font-size:1.2rem' }, 'Name: (type your name above)');
+  const nameIn = h('input', { type: 'text', id: 'stuName', autocomplete: 'off', maxlength: '60', style: 'min-height:44px;font:inherit;padding:6px 10px;border:2px solid var(--line);border-radius:10px;background:var(--panel);color:var(--ink);width:100%;max-width:340px', oninput: () => { nameOut.textContent = 'Name: ' + (nameIn.value.trim() || '(type your name above)'); } });
+  const done = idxs.filter(i => state.belt.has(i)).length;
+  const completion = h('section', { class: 'card concept', id: 'completion', 'aria-label': 'Completion card' },
+    h('h3', null, '🎓 Completion card'),
+    h('div', { class: 'no-print' }, h('label', { for: 'stuName', style: 'font-weight:700;display:block' }, 'Type your name (stays on this screen only; nothing is sent or saved):'), nameIn),
+    nameOut,
+    h('p', { style: 'margin:.4em 0' }, h('b', null, 'Prompt Lab: How AI Reads, and How to Read It Back')),
+    h('ul', { style: 'list-style:none;padding:0;margin:.3em 0' },
+      h('li', null, '📅 Date: ' + new Date().toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' })),
+      h('li', null, '🧰 Toolbelt items unlocked: ' + done + ' of ' + idxs.length),
+      h('li', null, '🧪 Capstone Lab Score: ' + (state.lab.finished ? state.lab.total + ' / 100' : 'not completed')),
+      h('li', null, '✅ Practice quiz (first try): ' + (q.score == null ? 'not taken' : q.score + ' of ' + L.quiz.length)),
+      h('li', null, '📍 Stops visited: ' + state.visited.size + ' of ' + L.stops.length)),
+    h('p', { class: 'note no-print', style: 'margin-bottom:0' }, 'To submit: take a screenshot of this whole card (Windows: Win+Shift+S; Mac: Shift+Cmd+4; phone: power + volume), then submit the image as your instructor directs.'));
   return [
+    completion,
     h('section', { class: 'card' }, h('h3', null, '🧰 Your completed Toolbelt'),
       h('div', { class: 'summary' }, idxs.map(i => { const s = L.stops[i]; return h('div', null, h('b', null, s.belt.title), s.belt.text, state.belt.has(i) ? null : h('small', { style: 'display:block;color:var(--muted)' }, '(Not yet unlocked; revisit stop ' + i + ' to earn it.)')); })),
       h('p', { style: 'margin-top:12px' }, h('b', null, 'Practice quiz: '), q.score == null ? 'not taken yet. It is ungraded; try it any time.' : q.score + ' of ' + L.quiz.length + ' on the first try.'),
@@ -1790,8 +1806,8 @@ BUILD.wrap = ctx => {
   document.addEventListener('keydown', e => {
     if (e.ctrlKey || e.metaKey || e.altKey || help.open) return;
     const t = e.target, tag = t && t.tagName;
-    if (e.key === '?') { e.preventDefault(); openHelp(); return; }
-    if (tag === 'TEXTAREA' || tag === 'SELECT' || (tag === 'INPUT' && t.type === 'range')) return;
+    if (e.key === '?' && !(tag === 'INPUT' && t.type === 'text')) { e.preventDefault(); openHelp(); return; }
+    if (tag === 'TEXTAREA' || tag === 'SELECT' || (tag === 'INPUT' && t.type === 'text') || (tag === 'INPUT' && t.type === 'range')) return;
     if (e.key === 'ArrowRight') { e.preventDefault(); go(state.stop + 1); }
     else if (e.key === 'ArrowLeft') { e.preventDefault(); go(state.stop - 1); }
   });
