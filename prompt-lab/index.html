@@ -1,0 +1,1803 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Prompt Lab: How AI Reads, and How to Read It Back</title>
+<meta name="description" content="An interactive 30-minute lesson on context windows, prompting, debugging, evaluating AI output, lateral reading, and accessibility.">
+<style>
+:root{
+  --bg:#fbf7ef; --bg2:#f2ebdc; --panel:#ffffff; --ink:#1d2433; --muted:#4a5568; --line:#c9c1ad;
+  --pri:#0a6060; --pri-ink:#ffffff; --pri-soft:#d7efec;
+  --good:#1b6b3a; --good-bg:#e1f3e6; --bad:#a4262c; --bad-bg:#fbe5e4; --info:#1f4e8c; --info-bg:#e3edfa;
+  --hl:#ffe08a; --focus:#1a56db; --liquid:#2a9d8f; --shadow:0 2px 0 rgba(29,36,51,.12);
+  --p-R:#ffd9d2; --p-T:#d6e8ff; --p-C:#d9f2d0; --p-F:#fff0b3; --p-K:#e6d9ff;
+  --grid:rgba(10,96,96,.07);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#12161f; --bg2:#19202c; --panel:#1c2433; --ink:#eef1f7; --muted:#b8c1d1; --line:#3a4559;
+    --pri:#5fd0c9; --pri-ink:#06211f; --pri-soft:#17383a;
+    --good:#7fdc9c; --good-bg:#163322; --bad:#ff9a95; --bad-bg:#3d1b1c; --info:#9cc3ff; --info-bg:#172a47;
+    --hl:#6b5712; --focus:#ffd54a; --liquid:#3bb8a8; --shadow:0 2px 0 rgba(0,0,0,.4);
+    --p-R:#5a2a24; --p-T:#1f3b63; --p-C:#24502a; --p-F:#5c4a12; --p-K:#43306b; --grid:rgba(95,208,201,.07);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#12161f; --bg2:#19202c; --panel:#1c2433; --ink:#eef1f7; --muted:#b8c1d1; --line:#3a4559;
+  --pri:#5fd0c9; --pri-ink:#06211f; --pri-soft:#17383a;
+  --good:#7fdc9c; --good-bg:#163322; --bad:#ff9a95; --bad-bg:#3d1b1c; --info:#9cc3ff; --info-bg:#172a47;
+  --hl:#6b5712; --focus:#ffd54a; --liquid:#3bb8a8; --shadow:0 2px 0 rgba(0,0,0,.4);
+  --p-R:#5a2a24; --p-T:#1f3b63; --p-C:#24502a; --p-F:#5c4a12; --p-K:#43306b; --grid:rgba(95,208,201,.07);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font:17px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:var(--ink);background-color:var(--bg);
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:28px 28px}
+h1,h2,h3,h4{line-height:1.2;margin:0 0 .5em}
+h2{font-size:1.7rem} h3{font-size:1.2rem} p{margin:.5em 0}
+a{color:var(--pri)}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px;border-radius:6px}
+.sr{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.skip{position:absolute;left:8px;top:-60px;background:var(--pri);color:var(--pri-ink);padding:10px 14px;border-radius:8px;z-index:50}
+.skip:focus{top:8px}
+.wrap{max-width:1120px;margin:0 auto;padding:0 16px}
+/* header */
+.top{background:var(--panel);border-bottom:2px solid var(--line);position:sticky;top:0;z-index:20}
+.top .wrap{padding-top:8px;padding-bottom:8px}
+.brandrow{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.brand{font-weight:800;font-size:1.05rem;margin-right:auto}
+.brand small{display:block;font-weight:500;color:var(--muted);font-size:.78rem}
+.iconbtn{min-height:40px;min-width:40px;border:2px solid var(--line);background:var(--panel);color:var(--ink);border-radius:10px;font:inherit;font-weight:700;cursor:pointer;padding:0 10px}
+.iconbtn:hover{border-color:var(--pri)}
+.prog{display:flex;align-items:center;gap:10px;margin-top:6px}
+.bar{flex:1;height:12px;border-radius:99px;background:var(--bg2);border:1px solid var(--line);overflow:hidden}
+.bar>i{display:block;height:100%;width:0;background:var(--pri);transition:width .5s ease}
+.progtxt{font-size:.88rem;font-weight:700;white-space:nowrap}
+.dots{display:flex;gap:6px;margin-top:6px;flex-wrap:wrap}
+.dot{min-width:34px;height:34px;border-radius:10px;border:2px solid var(--line);background:var(--panel);color:var(--ink);font:inherit;font-weight:700;font-size:.85rem;cursor:pointer;padding:0 6px}
+.dot[aria-current="step"]{background:var(--pri);color:var(--pri-ink);border-color:var(--pri)}
+.dot.seen:not([aria-current]){border-style:solid;background:var(--pri-soft)}
+.dot:not(.seen){border-style:dashed}
+/* layout */
+.layout{display:grid;grid-template-columns:minmax(0,1fr);gap:18px;padding:18px 0 150px}
+@media (min-width:920px){.layout{grid-template-columns:minmax(0,1fr) 300px}.belt{position:sticky;top:130px;align-self:start}}
+main{min-width:0}
+.card{background:var(--panel);border:2px solid var(--line);border-radius:18px;padding:16px 18px;margin:16px 0;box-shadow:var(--shadow)}
+.card>h3{display:flex;gap:10px;align-items:center}
+.num{display:inline-grid;place-items:center;min-width:30px;height:30px;border-radius:50%;background:var(--pri);color:var(--pri-ink);font-size:.9rem}
+.kicker{font-weight:700;color:var(--muted);margin:0;font-size:.92rem}
+.callback{font-size:1.05rem;border-left:5px solid var(--pri);padding:6px 12px;background:var(--pri-soft);border-radius:0 10px 10px 0;margin:12px 0}
+.bridge{font-weight:600;border:2px dashed var(--line);padding:10px 14px;border-radius:12px;margin:16px 0}
+.note{font-size:.88rem;color:var(--muted);border:1px dashed var(--line);border-radius:10px;padding:6px 10px;margin:8px 0}
+.concept{border-color:var(--pri);background:linear-gradient(var(--pri-soft),var(--panel) 70%)}
+.concept[hidden]{display:none}
+.concept.pop{animation:fadeUp .5s ease both}
+/* buttons */
+.btn{min-height:44px;padding:8px 16px;border-radius:12px;border:2px solid var(--pri);background:var(--pri);color:var(--pri-ink);font:inherit;font-weight:700;cursor:pointer;box-shadow:var(--shadow)}
+.btn.ghost{background:var(--panel);color:var(--ink);border-color:var(--line)}
+.btn:hover{filter:brightness(1.07)} .btn:active{transform:translateY(1px)}
+.btn[aria-disabled="true"]{opacity:.55;cursor:not-allowed}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.opts{display:grid;gap:8px;margin:10px 0}
+.opt{display:flex;gap:10px;align-items:flex-start;text-align:left;min-height:44px;padding:10px 12px;border-radius:12px;border:2px solid var(--line);background:var(--panel);color:var(--ink);font:inherit;cursor:pointer;width:100%}
+.opt:hover{border-color:var(--pri)}
+.opt .mark{font-weight:800;min-width:92px;display:none;font-size:.85rem}
+.opt.right{border-color:var(--good);background:var(--good-bg)} .opt.right .mark{display:inline;color:var(--good)}
+.opt.wrong{border-color:var(--bad);background:var(--bad-bg);border-style:dashed} .opt.wrong .mark{display:inline;color:var(--bad)}
+.opt[aria-disabled="true"]{cursor:default}
+.q{font-weight:700;margin:6px 0}
+.fb{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border-radius:12px;margin:8px 0;font-size:.97rem;animation:fadeUp .35s ease both}
+.fb[hidden]{display:none}
+.fb.good{background:var(--good-bg);color:var(--good);border:2px solid var(--good)}
+.fb.bad{background:var(--bad-bg);color:var(--bad);border:2px dashed var(--bad)}
+.fb.info{background:var(--info-bg);color:var(--info);border:2px solid var(--info)}
+.fb .ficon{font-weight:900;font-size:1.1rem;line-height:1.3}
+.fb b{font-weight:800}
+.shake{animation:shake .4s}
+/* mascot */
+.mascot-wrap{position:fixed;left:10px;bottom:10px;z-index:30;display:flex;align-items:flex-end;gap:6px;pointer-events:none;max-width:calc(100vw - 20px)}
+.mascot{width:86px;height:100px;flex:none}
+.bubble{background:var(--panel);color:var(--ink);border:2px solid var(--line);border-radius:14px 14px 14px 2px;padding:6px 10px;font-size:.88rem;font-weight:600;max-width:230px;margin-bottom:60px;box-shadow:var(--shadow);transition:opacity .3s}
+.bubble:empty{opacity:0}
+.mascot .face>g{display:none}
+.mascot.mood-idle .f-idle,.mascot.mood-good .f-good,.mascot.mood-bad .f-bad,.mascot.mood-think .f-think{display:inline}
+.mascot .all{transform-box:fill-box;transform-origin:50% 100%}
+.mascot.mood-good .all{animation:hop .6s ease 2}
+.mascot.mood-bad .all{animation:wobble .5s ease 2}
+.mascot.mood-think .all{animation:tilt 1.6s ease infinite}
+.mascot .bulb{animation:glow 2.4s ease infinite}
+.mascot .arm{transform-box:fill-box;transform-origin:50% 0}
+.mascot.mood-good .arm.l{animation:wave .4s ease 4}
+.mascot.party .all{animation:hop .5s ease infinite}
+/* toolbelt */
+.belt{background:var(--panel);border:2px solid var(--line);border-radius:18px;padding:10px 14px;box-shadow:var(--shadow)}
+.belt>button{width:100%;text-align:left;background:none;border:0;color:var(--ink);font:inherit;font-weight:800;cursor:pointer;min-height:40px;display:flex;justify-content:space-between;gap:8px;align-items:center}
+.belt ul{list-style:none;margin:6px 0 0;padding:0;display:grid;gap:8px}
+.belt li{border:2px dashed var(--line);border-radius:12px;padding:8px 10px;font-size:.92rem;color:var(--muted)}
+.belt li b{display:block;color:var(--ink)}
+.belt li.got{border:2px solid var(--pri);background:var(--pri-soft);color:var(--ink)}
+.belt li.got.snap{animation:snap .5s ease}
+.belt[data-open="false"] ul{display:none}
+/* generic widgets */
+.two{display:grid;gap:14px;grid-template-columns:minmax(0,1fr)}
+@media (min-width:700px){.two{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.three{display:grid;gap:12px;grid-template-columns:minmax(0,1fr)}
+@media (min-width:760px){.three{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.out{border:2px solid var(--line);border-radius:12px;padding:10px 12px;background:var(--bg);white-space:pre-wrap;min-height:60px;font-size:.96rem}
+.out table{border-collapse:collapse;width:100%;font-size:.88rem;white-space:normal}
+.out td,.out th{border:1px solid var(--line);padding:3px 6px;text-align:left;vertical-align:top}
+.tag{display:inline-block;font-size:.78rem;font-weight:800;padding:1px 8px;border-radius:99px;border:2px solid currentColor}
+.hlflash{animation:flash 1.4s ease}
+.meter{height:20px;border-radius:99px;border:2px solid var(--line);background:var(--bg2);overflow:hidden}
+.meter>i{display:block;height:100%;background:repeating-linear-gradient(45deg,var(--bad) 0 8px,transparent 8px 14px),var(--bad-bg);width:0;transition:width .6s ease}
+.meter.green>i{background:var(--good);}
+.switch{display:flex;align-items:center;gap:10px;min-height:44px;width:100%;border:2px solid var(--line);border-radius:12px;background:var(--panel);color:var(--ink);font:inherit;cursor:pointer;padding:6px 10px;text-align:left}
+.switch .knob{width:46px;height:26px;border-radius:99px;border:2px solid var(--ink);position:relative;flex:none;background:var(--bg2);transition:background .2s}
+.switch .knob::after{content:"";position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;background:var(--ink);transition:transform .2s}
+.switch[aria-checked="true"]{border-color:var(--pri);background:var(--pri-soft)}
+.switch[aria-checked="true"] .knob{background:var(--pri)} .switch[aria-checked="true"] .knob::after{transform:translateX(20px);background:var(--pri-ink)}
+.switch .st{margin-left:auto;font-weight:800;font-size:.8rem}
+.badge{display:inline-grid;place-items:center;width:24px;height:24px;border-radius:6px;border:2px solid var(--ink);font-weight:900;font-size:.8rem;flex:none;color:var(--ink)}
+.pR{background:var(--p-R)}.pT{background:var(--p-T)}.pC{background:var(--p-C)}.pF{background:var(--p-F)}.pK{background:var(--p-K)}
+.seg{border-radius:6px;padding:1px 4px;color:var(--ink)}
+.oline{display:flex;gap:8px;align-items:flex-start;padding:6px 8px;border-radius:10px;margin:5px 0;border:2px solid var(--ink);color:var(--ink)}
+.oline.guess{border-style:dashed;border-color:var(--muted);background:var(--bg2);color:var(--ink)}
+.oline .why{font-size:.74rem;font-weight:800;display:block;color:var(--muted)}
+.oline.on .why{color:var(--ink)}
+/* beaker / chat */
+.beaker{width:130px;flex:none}
+.simrow{display:flex;gap:14px;flex-wrap:wrap;align-items:flex-start}
+.chatwin{flex:1;min-width:240px;height:290px;border:2px solid var(--line);border-radius:14px;background:var(--bg);display:flex;flex-direction:column;justify-content:flex-end;overflow:hidden;padding:8px;position:relative}
+.msg{padding:6px 10px;border-radius:12px;margin:4px 0;max-width:92%;font-size:.9rem;animation:fadeUp .3s ease both}
+.msg.user{align-self:flex-end;background:var(--p-T);color:var(--ink);border:2px solid var(--ink)}
+.msg.ai{align-self:flex-start;background:var(--panel);color:var(--ink);border:2px solid var(--line)}
+.msg.rule{border-style:dashed}
+.msg.broken{border-color:var(--bad);border-style:dashed}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.chips .btn{min-height:40px;font-size:.88rem;padding:4px 10px}
+/* sort */
+.pile{display:grid;gap:8px;margin:10px 0}
+.sitem{border:2px solid var(--line);border-radius:12px;padding:8px 10px;background:var(--panel);cursor:grab}
+.sitem .btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+.sitem .btns .btn{min-height:40px;font-size:.88rem;padding:4px 10px}
+.buckets{display:grid;gap:12px;grid-template-columns:minmax(0,1fr)}
+@media (min-width:640px){.buckets{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.bucket{border:3px dashed var(--line);border-radius:14px;padding:8px 10px;min-height:90px}
+.bucket.over{border-color:var(--pri);background:var(--pri-soft)}
+.bucket h4{margin:0 0 6px;font-size:1rem}
+.bucket ul{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.bucket li{border:2px solid var(--good);background:var(--good-bg);color:var(--ink);border-radius:10px;padding:5px 8px;font-size:.9rem;animation:snap .45s ease}
+.bucket li small{display:block;color:var(--muted)}
+/* pairs */
+.pairs{display:grid;gap:14px;grid-template-columns:minmax(0,1fr)}
+@media (min-width:760px){.pairs{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.pairs .opt[aria-pressed="true"]{border-color:var(--focus);box-shadow:0 0 0 3px var(--focus) inset}
+.pairs .opt.matched{border-color:var(--good);background:var(--good-bg)}
+.pairs .opt.matched .mark{display:inline;color:var(--good)}
+/* ladder */
+.ladder{display:flex;gap:14px;flex-wrap:wrap}
+.rungs{display:flex;flex-direction:column-reverse;gap:6px;min-width:150px;align-self:flex-start}
+.rung{min-height:44px;border-radius:10px;border:3px solid var(--line);background:var(--panel);color:var(--ink);font:inherit;font-weight:800;cursor:pointer;text-align:left;padding:6px 12px;position:relative}
+.rung[aria-current="step"]{background:var(--pri);color:var(--pri-ink);border-color:var(--pri);transform:translateX(8px)}
+.rung.reached{border-color:var(--pri)}
+.rung{transition:transform .3s}
+.ladderbody{flex:1;min-width:260px}
+.flashcard{display:inline-block;border:2px solid var(--ink);border-radius:10px;background:var(--p-F);color:var(--ink);padding:5px 9px;margin:3px;font-size:.86rem}
+/* browser */
+.browser{border:2px solid var(--ink);border-radius:12px;overflow:hidden;background:var(--panel)}
+.tabs{display:flex;gap:2px;background:var(--bg2);padding:6px 6px 0;border-bottom:2px solid var(--ink);flex-wrap:wrap}
+.tabs span{padding:4px 12px;border:2px solid var(--ink);border-bottom:0;border-radius:8px 8px 0 0;font-size:.82rem;font-weight:700;background:var(--panel);color:var(--ink)}
+.tabs span.cur{background:var(--pri);color:var(--pri-ink)}
+.tabs span.tabin{animation:fadeUp .4s ease}
+.page{padding:12px 14px;min-height:150px}
+.url{font-family:ui-monospace,Menlo,monospace;font-size:.8rem;color:var(--muted);margin:0 0 8px}
+.sres{border-left:4px solid var(--line);padding:4px 10px;margin:8px 0;opacity:0;animation:fadeUp .5s ease forwards;animation-delay:calc(var(--i)*.45s)}
+.sres b{display:block;color:var(--info)}
+/* radar etc */
+.radarwrap{display:flex;gap:16px;flex-wrap:wrap;align-items:center}
+.radarwrap svg{width:min(100%,320px);height:auto}
+.sliders{flex:1;min-width:240px;display:grid;gap:10px}
+.sliders label{display:block;font-weight:700;font-size:.92rem}
+.sliders input[type=range]{width:100%;height:32px;accent-color:var(--pri)}
+/* audit */
+.audit{list-style:none;padding:0;margin:0;display:grid;gap:10px}
+.audit li{border:2px solid var(--line);border-radius:12px;padding:8px 10px}
+.audit li.ok{border-color:var(--good)}
+.audit .tg{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.audit .tg button{min-height:40px;font-size:.84rem;padding:2px 10px;border-radius:10px;border:2px solid var(--line);background:var(--panel);color:var(--ink);font:inherit;font-size:.84rem;font-weight:700;cursor:pointer}
+.audit .tg button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.diffline{display:flex;gap:8px;align-items:flex-start;width:100%;text-align:left;border:2px solid var(--line);border-radius:10px;background:var(--panel);color:var(--ink);font:inherit;padding:6px 10px;margin:5px 0;cursor:pointer;min-height:44px}
+.diffline[aria-pressed="true"]{border-color:var(--focus);box-shadow:0 0 0 2px var(--focus) inset}
+.diffline.bad{border-color:var(--bad);background:var(--bad-bg);border-style:dashed}
+.diffline.fine{border-color:var(--good)}
+.diffline .lab{font-weight:800;font-size:.8rem;min-width:70px}
+.orig{background:var(--bg2);border-radius:10px;padding:8px 12px}
+.checks label{display:flex;gap:8px;align-items:center;min-height:40px}
+.checks input{width:22px;height:22px;accent-color:var(--pri)}
+.sug{animation:fadeUp .4s ease both;border-left:4px solid var(--pri);padding:2px 10px;margin:4px 0 8px}
+/* lab score */
+.scorebox{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.scorebox .meter{flex:1;min-width:140px}
+.stepcard{animation:fadeUp .5s ease both}
+.stepcard.locked{opacity:.6}
+/* fork svg */
+.fork path{stroke:var(--ink);stroke-width:3;fill:none;stroke-dasharray:300;stroke-dashoffset:300;animation:draw 1.2s ease forwards}
+.fork path:nth-of-type(2){animation-delay:.3s}.fork path:nth-of-type(3){animation-delay:.6s}
+.fork text{fill:var(--ink);font:700 12px system-ui}
+/* quiz result */
+.ring{width:170px;height:170px}
+.ring circle.bg{stroke:var(--bg2)} .ring circle.fg{stroke:var(--pri);transition:stroke-dashoffset 1.2s ease}
+.bigscore{font-size:2.4rem;font-weight:900}
+/* hero */
+.hero{display:flex;gap:18px;align-items:center;flex-wrap:wrap}
+.rulebox{display:flex;gap:14px;align-items:center;border:3px solid var(--ink);border-radius:16px;padding:12px 16px;background:var(--p-F);color:var(--ink);margin:14px 0}
+.outs{list-style:none;padding:0;margin:10px 0;display:grid;gap:8px}
+.outs li{display:flex;gap:10px;padding:8px 12px;border:2px solid var(--line);border-radius:12px;background:var(--panel);animation:fadeUp .6s ease both;animation-delay:calc(var(--i)*.25s)}
+.outs li::before{content:"✔";color:var(--pri);font-weight:900}
+.confetti{position:fixed;inset:0;pointer-events:none;z-index:40;overflow:hidden}
+.confetti i{position:absolute;top:-20px;width:10px;height:14px;animation:fall 2.8s linear forwards}
+dialog{border:3px solid var(--ink);border-radius:16px;background:var(--panel);color:var(--ink);max-width:460px;width:calc(100% - 32px);padding:18px}
+dialog::backdrop{background:rgba(0,0,0,.55)}
+kbd{border:2px solid var(--ink);border-bottom-width:4px;border-radius:6px;padding:0 7px;font:700 .9rem ui-monospace,monospace;background:var(--bg2)}
+details.src{background:var(--panel);border:2px solid var(--line);border-radius:14px;padding:8px 14px;margin:12px 0}
+details.src summary{cursor:pointer;font-weight:800;min-height:40px;display:flex;align-items:center}
+.summary{display:grid;gap:10px;grid-template-columns:minmax(0,1fr)}
+@media (min-width:700px){.summary{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.summary div{border:2px solid var(--pri);border-radius:12px;padding:8px 12px;background:var(--pri-soft)}
+.summary b{display:block}
+footer.foot{font-size:.82rem;color:var(--muted);padding:0 0 30px}
+.bottomnav{display:flex;justify-content:space-between;gap:10px;margin:20px 0}
+/* keyframes */
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@keyframes shake{20%{transform:translateX(-6px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
+@keyframes hop{50%{transform:translateY(-14px)}}
+@keyframes wobble{25%{transform:rotate(-7deg)}75%{transform:rotate(7deg)}}
+@keyframes tilt{50%{transform:rotate(5deg)}}
+@keyframes wave{50%{transform:rotate(-40deg)}}
+@keyframes glow{50%{opacity:.35}}
+@keyframes snap{0%{transform:scale(.85)}60%{transform:scale(1.06)}100%{transform:scale(1)}}
+@keyframes flash{0%{box-shadow:0 0 0 6px var(--hl)}100%{box-shadow:0 0 0 0 transparent}}
+@keyframes draw{to{stroke-dashoffset:0}}
+@keyframes fall{to{transform:translateY(110vh) rotate(540deg)}}
+@keyframes bub{from{transform:translateY(0)}to{transform:translateY(-12px)}}
+.bubbles circle{animation:bub 2s ease-in-out infinite alternate}
+.pulse{animation:snap 1.6s ease infinite}
+@media (max-width:560px){
+  body{font-size:16px} h2{font-size:1.4rem}
+  .mascot{width:60px;height:70px} .bubble{max-width:160px;font-size:.8rem;margin-bottom:40px}
+  .card{padding:12px}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+  .sres{opacity:1}
+  .fork path{stroke-dashoffset:0}
+}
+@media print{
+  body{background:#fff;color:#000;font-size:12pt}
+  .no-print,.top,.mascot-wrap,.bottomnav,.belt,.skip,.callback,.bridge{display:none!important}
+  .layout{display:block;padding:0}
+  .card{box-shadow:none;border:1px solid #000;break-inside:avoid;background:#fff}
+  .summary div{background:#fff;border:1px solid #000}
+  details.src{border:1px solid #000}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to lesson</a>
+<header class="top no-print">
+  <div class="wrap">
+    <div class="brandrow">
+      <div class="brand">Prompt Lab<small>How AI reads, and how to read it back</small></div>
+      <button class="iconbtn" id="themeBtn" type="button" aria-label="Switch color theme">Theme: auto</button>
+      <button class="iconbtn" id="helpBtn" type="button" aria-haspopup="dialog" aria-label="Keyboard shortcuts (question mark key)">?</button>
+    </div>
+    <div class="prog">
+      <div class="bar"><i id="barfill"></i></div>
+      <div class="progtxt" id="progtxt">Welcome</div>
+    </div>
+    <nav aria-label="Jump to a stop"><div class="dots" id="dots"></div></nav>
+  </div>
+</header>
+
+<div class="wrap layout">
+  <main id="main" tabindex="-1" aria-label="Lesson"></main>
+  <aside class="belt" id="belt" aria-label="Toolbelt"></aside>
+</div>
+<div class="wrap"><footer class="foot">
+  Nothing you do here is saved, sent, or collected. Close the tab and it is gone. Everything in this lab is for practice; sample outputs are invented for the lesson.
+</footer></div>
+
+<div class="mascot-wrap" aria-hidden="true">
+  <svg class="mascot mood-idle" id="mascot" viewBox="0 0 86 100" role="presentation">
+    <g class="all">
+      <line x1="43" y1="12" x2="43" y2="22" stroke="currentColor" stroke-width="3" style="color:var(--ink)"/>
+      <circle class="bulb" cx="43" cy="9" r="6" fill="#ffd54a" stroke="#1d2433" stroke-width="2"/>
+      <rect x="14" y="22" width="58" height="42" rx="14" fill="#8fd6cf" stroke="#1d2433" stroke-width="3"/>
+      <rect x="18" y="26" width="50" height="9" rx="4.5" fill="#1d2433" opacity=".85"/>
+      <circle cx="30" cy="42" r="9" fill="#fff" stroke="#1d2433" stroke-width="3"/>
+      <circle cx="56" cy="42" r="9" fill="#fff" stroke="#1d2433" stroke-width="3"/>
+      <path d="M21 33 Q43 28 65 33" stroke="#e76f51" stroke-width="3" fill="none"/>
+      <g class="face">
+        <g class="f-idle"><circle cx="30" cy="42" r="3.5" fill="#1d2433"/><circle cx="56" cy="42" r="3.5" fill="#1d2433"/><path d="M34 56 Q43 61 52 56" stroke="#1d2433" stroke-width="3" fill="none" stroke-linecap="round"/></g>
+        <g class="f-good"><path d="M25 44 Q30 36 35 44" stroke="#1d2433" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M51 44 Q56 36 61 44" stroke="#1d2433" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M32 54 Q43 66 54 54 Z" fill="#1d2433"/></g>
+        <g class="f-bad"><circle cx="30" cy="43" r="3.5" fill="#1d2433"/><circle cx="56" cy="43" r="3.5" fill="#1d2433"/><path d="M34 59 Q38 54 43 58 Q48 62 52 57" stroke="#1d2433" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M62 30 q3 6 0 9" stroke="#2a6fdb" stroke-width="3" fill="none"/></g>
+        <g class="f-think"><circle cx="32" cy="41" r="3.5" fill="#1d2433"/><circle cx="58" cy="41" r="3.5" fill="#1d2433"/><circle cx="43" cy="57" r="3" fill="none" stroke="#1d2433" stroke-width="3"/></g>
+      </g>
+      <rect x="22" y="66" width="42" height="28" rx="8" fill="#f4a261" stroke="#1d2433" stroke-width="3"/>
+      <rect x="32" y="74" width="22" height="12" rx="3" fill="#fff" stroke="#1d2433" stroke-width="2"/>
+      <path d="M37 80 h12" stroke="#1d2433" stroke-width="2"/>
+      <rect class="arm l" x="8" y="68" width="12" height="7" rx="3.5" fill="#8fd6cf" stroke="#1d2433" stroke-width="2.5"/>
+      <rect class="arm r" x="66" y="68" width="12" height="7" rx="3.5" fill="#8fd6cf" stroke="#1d2433" stroke-width="2.5"/>
+      <rect x="28" y="94" width="12" height="5" rx="2" fill="#1d2433"/><rect x="46" y="94" width="12" height="5" rx="2" fill="#1d2433"/>
+    </g>
+  </svg>
+  <div class="bubble" id="bubble"></div>
+</div>
+
+<div id="live" class="sr" role="status" aria-live="polite" aria-atomic="true"></div>
+
+<dialog id="help" aria-labelledby="helpTitle">
+  <h2 id="helpTitle" style="font-size:1.3rem">Keyboard shortcuts</h2>
+  <ul style="padding-left:1.2em">
+    <li><kbd>←</kbd> / <kbd>→</kbd> previous / next stop</li>
+    <li><kbd>?</kbd> open this list</li>
+    <li><kbd>Esc</kbd> close this list</li>
+    <li><kbd>Tab</kbd> / <kbd>Shift</kbd>+<kbd>Tab</kbd> move between controls</li>
+    <li><kbd>Enter</kbd> or <kbd>Space</kbd> press a button or switch</li>
+    <li>Sliders: <kbd>←</kbd> <kbd>→</kbd> adjust (arrow keys then change the value, not the stop)</li>
+  </ul>
+  <p class="note">Every stop can be revisited. Your work in a stop is kept while this tab is open.</p>
+  <button class="btn" id="helpClose" type="button">Close</button>
+</dialog>
+
+<script>
+'use strict';
+/* ==========================================================================
+   LESSON TEXT: edit wording here. Logic lives further down.
+   (HTML tags like <b> and <em> are allowed in fields that are inserted as html.)
+   ========================================================================== */
+const L = {
+  mascotName: 'Pip',
+  quips: {
+    good: ['Beaker-clean reasoning!', 'That is the one!', 'Hypothesis confirmed.', 'Tidy bench, tidy thinking.', 'Mechanism, not magic. Nice.', 'Bubbling with pride!'],
+    bad: ['Whoops. A useful spill.', 'Close! Check the mechanism.', 'Data point acquired.', 'Fizzled. Try another!', 'Not that one, but good try.'],
+    think: ['Predict first…', 'Hypothesis time.', 'Hmm, what would happen?'],
+    idle: ['', '']
+  },
+  outcomes: [
+    'Explain what a context window is and why the AI cannot know what is not in the conversation.',
+    'Build a five-part prompt, diagnose a weak one, and fix it by changing one thing at a time.',
+    'Judge AI output on five criteria: accuracy, credibility, bias, reliability, and educational value.',
+    'Check a source the AI cites by reading laterally.'
+  ],
+  dataRule: 'Use invented or de-identified information only. Never put IEP content, disability status, or evaluation results into a general AI tool.',
+  inventedNote: 'Invented for this lesson: the context window sizes, the sample outputs in the prompt ladder, the tides excerpt, the Global Institute for Learning Retention and National Ocean Education Council citations, and the three rewrites in the accessibility stop.',
+
+  stops: [
+    { id: 'welcome', nav: 'Welcome', title: 'Welcome to the Prompt Lab', min: 1 },
+    { id: 'context', nav: 'Context', title: 'The context window: the AI only knows what is on the page', min: 4,
+      callback: 'Welcome to the lab. Our first question: what does the AI actually have in front of it when it answers?',
+      disclosure: 'Window sizes and sample outputs here are invented for this lesson. Real windows are far larger and differ by tool, and tools differ in how they handle a full window.',
+      concept: `<p>A <b>context window</b> is the amount of text (measured in <em>tokens</em>, small chunks of words) a model can consider at one time. The AI has no access to anything outside the conversation: not your class, your students, your standards, or yesterday's chat.</p>
+        <p>When information is missing, the AI does not show an error. It fills the gap with a <b>likely guess</b>.</p>
+        <p>In long chats, early instructions can fall out of view or carry less weight. Research on long inputs ("Lost in the middle", Liu et al., 2024) found models often use information at the start and end of a long input better than information in the middle. So restate key rules, or start a new chat with your best prompt.</p>`,
+      bridge: 'Next: if the AI only knows what is on the page, what should you put on the page?',
+      belt: { title: 'Context window', text: 'If it is not on the page, the AI is guessing.' } },
+    { id: 'prompt', nav: 'Prompt', title: 'The five-part prompt: what to put on the page', min: 4,
+      callback: 'You just saw that the AI only knows what is on the page. Now: what should you put on the page?',
+      disclosure: 'All sample outputs here were written for this lesson to show the idea. A real AI would word things differently.',
+      concept: `<p>Five parts: <b>Role, Task, Context, Format, Constraints</b>. Each part removes a <em>category</em> of guessing: who is speaking, what to produce, who it is for, what shape it takes, and what is off limits.</p>
+        <p>Then climb the ladder as the job gets bigger or riskier: <b>Ask, Frame, Show, Decompose</b>. And remember: longer is not automatically better. Clear and specific beats long and tangled.</p>`,
+      bridge: 'Next: even a good prompt can miss. What do you do when the output is off?',
+      belt: { title: 'Five-part prompt', text: 'Five parts: role, task, context, format, constraints. Climb the ladder: ask, frame, show, decompose.' } },
+    { id: 'debug', nav: 'Debug', title: 'Debugging: change one thing at a time', min: 4,
+      callback: 'You can now build a prompt. When the output is wrong, treat it as data, not as failure. Let’s learn to read it.',
+      disclosure: 'The prompts and outputs on this bench are invented for the lesson.',
+      concept: `<p>The routine: <b>read the output as a stranger</b>, find the <b>first</b> thing that is wrong, ask <b>what in the prompt allowed it</b>, change <b>one</b> thing, re-run.</p>
+        <p>Changing several things at once means you cannot know which change helped. In science these are <em>confounded variables</em>, and you already know the fix: vary one thing at a time.</p>`,
+      bridge: 'Next: once the output is closer, how do you decide whether it is actually good, not just good-sounding?',
+      belt: { title: 'Debugging', text: 'Read like a stranger. Find the first wrong thing. Name the gap. Change one thing.' } },
+    { id: 'evaluate', nav: 'Evaluate', title: 'Evaluating output: five criteria', min: 4,
+      callback: 'You fixed the prompt. But a better prompt makes a better <em>draft</em>, not a verified one.',
+      disclosure: 'The tides excerpt and the "National Ocean Education Council" are invented for this lesson. The NOAA tide facts are real.',
+      concept: `<p>Judge output on five distinct criteria: <b>accuracy</b> (is it true?), <b>credibility</b> (are the sources real and trustworthy?), <b>bias</b> (does it stereotype or give unequal access?), <b>reliability</b> (can you trust its confidence?), and <b>educational value</b> (is it right for these learners and this goal, even if correct?).</p>
+        <p>Keep them apart. Some problems fit more than one; the skill is <em>naming why</em>. And <b>confidence is not evidence</b>: "I checked every fact" is just more generated text.</p>`,
+      bridge: 'Next: one criterion, credibility, needs a specific skill. How do you actually check a source the AI cites?',
+      belt: { title: 'Five criteria', text: 'Accuracy, credibility, bias, reliability, educational value. Confidence is not evidence.' } },
+    { id: 'lateral', nav: 'Lateral', title: 'Source credibility: read laterally', min: 3,
+      callback: 'In the audit you flagged a source because it looked suspicious. Now: how do you actually check one?',
+      disclosure: 'The "Global Institute for Learning Retention" is invented. The 90% claim is real, widely repeated, and traced to the "learning pyramid", which has been rebutted.',
+      concept: `<p>An AI's citations are <b>leads, not proof</b>, because models can generate plausible-looking sources that do not exist.</p>
+        <p>Professional fact-checkers do not stay on the page and judge it by its own description (which the organization controls). They <b>leave it</b>, open new tabs, and ask who is behind it and what others say. This is <em>lateral reading</em> (Wineburg &amp; McGrew, 2019). It is quick to learn: in a randomized study of about 500 high school students (Stanford, 2022), short lessons improved students' ability to spot misinformation.</p>
+        <p><b>Connection:</b> this is how you do the <em>credibility</em> check from the five criteria.</p>`,
+      bridge: 'Next: accurate, credible, and unbiased still is not enough if some learners cannot use it. One more lens: access.',
+      belt: { title: 'Lateral reading', text: 'A citation is a lead. Leave the page. Who publishes it? What do others say?' } },
+    { id: 'access', nav: 'Access', title: 'The accessibility lens: simplified is not the same as faithful', min: 3,
+      callback: 'Accurate, credible, unbiased. Yet when you ask AI to make something <em>more accessible</em>, it can quietly break the first item on that list.',
+      disclosure: 'The three rewrites below are invented for this lesson.',
+      concept: `<p>When you ask AI for plain language, chunks, or shorter text, it can silently <b>change the science or drop content</b>. Accessibility means more people can reach the <em>same</em> learning, not a diluted version.</p>
+        <p>So say it in the prompt: <b>keep every fact, and list anything you left out.</b> And ask of every prompt: would this still work for a learner with a reading disability, ADHD, a visual or hearing impairment, or complex communication needs? What would you add?</p>
+        <p class="note">This lesson was built to work with a keyboard and a screen reader, and it respects your reduced-motion setting. Try Tab, Enter, and the arrow keys.</p>`,
+      bridge: 'Next: the capstone. You will use every tool in the belt, in order.',
+      belt: { title: 'Accessibility', text: 'Simplify the wording, never the science. Ask what was left out.' } },
+    { id: 'capstone', nav: 'Capstone', title: 'Capstone: put it all together', min: 4,
+      callback: 'Six tools, one scenario. You are a teacher preparing a short lesson aid for grade 5 on tides. Reason it through; the Lab Score rewards good reasoning, not speed.',
+      disclosure: 'The scenario, chat, outputs and citation here are invented for the lesson.',
+      bridge: 'Next: a short practice check. It is ungraded, and you can retry until it clicks.',
+      belt: { title: 'Capstone', text: 'Fresh chat, five parts, one change, five criteria, lateral check, faithful access.' } },
+    { id: 'quiz', nav: 'Check', title: 'Check yourself: practice quiz', min: 3,
+      callback: 'Capstone done. Here is a quick, ungraded check. Pick an answer, read the why, and retry freely.',
+      bridge: 'Last stop: your Toolbelt, all in one place.' },
+    { id: 'wrap', nav: 'Wrap-up', title: 'Wrap-up: your completed Toolbelt', min: 1,
+      callback: 'You made it through the lab. Here is everything you collected.' }
+  ],
+
+  /* ---------- Stop 1 ---------- */
+  s1: {
+    pred: { q: 'Predict first. You tell the AI a rule in message one: "Write at a grade 5 reading level." After many more messages, will it still follow that rule?',
+      opts: [
+        { t: 'Yes. A rule given once is remembered for the whole chat, equally strongly.', ok: false, why: 'Not guaranteed. The model re-reads the whole conversation each turn, and in long chats early text can fall out of view or carry less weight.' },
+        { t: 'Not always. Early instructions can fade as the chat grows.', ok: true, why: 'Right. The model has a limited window of text it can consider, and attention to early text can weaken. Watch the beaker below.' },
+        { t: 'Only if I type the rule in capital letters.', ok: false, why: 'Capitals do not move text back into view. What helps is where the rule sits and how crowded the window is.' }
+      ] },
+    rule: 'Rule: Write at a grade 5 reading level. Short sentences.',
+    ruleReply: 'Got it! I will keep it at grade 5.',
+    cards: [
+      'Ask for 8 vocabulary words', 'Paste in your lesson notes', 'Ask for a quiz', 'Reword question 3',
+      'Paste a reading passage', 'Ask for an exit ticket', 'Ask for a note to families', 'Ask for a word wall'
+    ],
+    replies: [
+      'Plants make food from sunlight. Leaves catch the light.',
+      'Here are 8 words: leaf, sun, water, air, sugar, root, stem, seed.',
+      'Q1. What do plants need to make food?',
+      'New Q3. What makes a leaf green?',
+      'The passage says plants make sugar from light, water, and air.',
+      'Exit ticket: In your own words, how do plants get energy?',
+      'Dear families, photosynthesis is the biochemical process by which chloroplasts convert electromagnetic radiation, carbon dioxide, and water into glucose.',
+      'Word wall: chloroplast, stomata, thylakoid, electromagnetic spectrum, carbohydrate synthesis.'
+    ],
+    brokenFrom: 6,
+    brokenMsg: 'Rule 1 broken: long, advanced sentence',
+    brokenFb: 'There it is. The window filled up, and the grade-5 rule from message one now carries little weight (and has scrolled out of view). The AI did not "decide" to ignore you. The rule just stopped competing with all the newer text.',
+    restated: 'Reminder: keep it at grade 5.',
+    restatedReply: 'Thanks! Short words again: Plants use light to make sugar.',
+    fixRestate: 'Fix A: restate the rule',
+    fixFresh: 'Fix B: new chat with my best prompt',
+    fixRestateFb: 'Restating works for now: the rule is near the end, where it gets used well. But each reminder also adds more text to the window.',
+    fixFreshFb: 'The cleanest reset: a short window, with the rule up top at full strength. Carry over only your best prompt, not the whole messy history.',
+    sort: {
+      q: 'Sort each item: could the AI know this, or not? (Pick a bucket for each, or drag.)',
+      a: 'AI knows this', b: 'AI cannot know this',
+      items: [
+        { t: 'The text you pasted into this chat', to: 'a', why: 'It is on the page, so the model can use it.' },
+        { t: 'Your grade level (never stated)', to: 'b', why: 'If you did not say it, it is not on the page. The AI will guess a grade level.' },
+        { t: 'The lesson you taught this morning', to: 'b', why: 'Your classroom is outside the conversation. Describe it, or paste it.' },
+        { t: 'Your state standard (never stated)', to: 'b', why: 'It does not know which standard you mean unless you name it or paste it.' },
+        { t: 'The rule you gave in message one (in a short chat)', to: 'a', why: 'It is on the page and nothing has crowded it out yet. (In a very long chat this gets shakier.)' },
+        { t: 'Your students’ names', to: 'b', why: 'Not on the page. (Also: use invented or de-identified names, never real student data.)' },
+        { t: 'The attached lesson file', to: 'a', why: 'Attached text becomes part of what the model reads, so it can use it.' },
+        { t: 'What the AI "probably" assumed', to: 'b', why: 'An assumption is a guess, not knowledge. It fills gaps with whatever is most likely, and does not tell you it did.' }
+      ]
+    },
+    guess: {
+      q: 'Pick a request, then switch on invented class details and watch the guess change.',
+      reqs: [
+        { id: 'warm', t: 'Make me a warm-up for my class.',
+          generic: 'Warm-up: Write down three things you know about today’s topic. Share with a partner. (A generic activity that could be for any class, any grade, any subject.)',
+          bits: {
+            grade: 'Because your students are in grade 6, the prompt is a short, concrete picture task instead of an abstract one.',
+            subject: 'Because the lesson is on equivalent fractions, the warm-up shows 1/2 and 2/4 as shaded bars: "Same amount or different? Prove it."',
+            detail: 'Because 5 students are English learners and class starts in 5 minutes, it uses sentence frames ("I think ___ because ___") and takes 4 minutes.'
+          } },
+        { id: 'exit', t: 'Write an exit ticket.',
+          generic: 'Exit ticket: What did you learn today? What questions do you still have? (Could follow any lesson in any building.)',
+          bits: {
+            grade: 'For grade 6, it asks one question and one confidence rating in simple wording.',
+            subject: 'On equivalent fractions: "Write a fraction equal to 3/6 and show how you know."',
+            detail: 'With 5 English learners, it allows drawing or words, and gives a sentence frame.'
+          } },
+        { id: 'email', t: 'Draft a note to families.',
+          generic: 'Dear families, I hope this message finds you well. I am writing to share an update about our class. (Vague, because the AI has no idea what the update is.)',
+          bits: {
+            grade: 'It uses a friendly tone suited to families of 11 and 12 year olds.',
+            subject: 'It says the class is starting a fractions unit and names two ways to practice at home.',
+            detail: 'It offers a short version for translation and a phone-free practice idea, since several families have limited devices.'
+          } }
+      ],
+      toggles: [
+        { k: 'grade', t: 'Grade level: 6' },
+        { k: 'subject', t: 'Lesson: equivalent fractions' },
+        { k: 'detail', t: 'Class detail: 5 English learners, 5-minute window' }
+      ],
+      reveal: 'See the pattern? With nothing on the page, you got a perfectly fluent answer that fits nobody. That is the guess. Each detail you add replaces a guess with a fact.'
+    }
+  },
+
+  /* ---------- Stop 2 ---------- */
+  s2: {
+    pred: { q: 'Predict first. Which ONE part of a prompt do you think removes the most guessing?',
+      opts: [
+        { t: 'Role (who the AI is)', ok: false, why: 'Role helps with voice, but it removes the least guessing here. Keep going; you will see the meter.' },
+        { t: 'Format (the shape of the answer)', ok: false, why: 'Format matters a lot for usability, but it is not the biggest source of guessing.' },
+        { t: 'Context (who it is for and why)', ok: true, why: 'Right: the AI cannot see your classroom, so context removes the most guessing. Test it with the switches.' }
+      ] },
+    parts: [
+      { k: 'R', name: 'Role', guess: 10, prompt: 'You are a seventh-grade science teacher.',
+        on: 'Hi, scientists! Let’s break this down together.',
+        off: 'Photosynthesis is the biochemical process by which phototrophic organisms convert electromagnetic radiation into chemical energy.' },
+      { k: 'T', name: 'Task', guess: 25, prompt: 'Write a study guide on photosynthesis.',
+        on: 'Here is your photosynthesis study guide.',
+        off: 'Here are some general thoughts about plants and light. (No clear product.)' },
+      { k: 'C', name: 'Context', guess: 30, prompt: 'My students just finished the leaf lab and have read Chapter 4 only.',
+        on: 'Built from the Chapter 4 terms and the leaf lab.',
+        off: 'I assumed a general audience and mixed in ideas from several textbooks.' },
+      { k: 'F', name: 'Format', guess: 15, prompt: 'Use a table of 8 key terms, then 6 check questions.',
+        on: 'Table of 8 key terms, then 6 check questions.',
+        off: 'Three dense paragraphs, no questions.' },
+      { k: 'K', name: 'Constraints', guess: 20, prompt: 'Reading level grade 7. Use only Chapter 4 facts. If unsure, ask me.',
+        on: 'Grade-7 words. Only Chapter 4 facts. Anything uncertain is flagged for you.',
+        off: 'Includes the Calvin cycle, ATP synthase, and a statistic I could not source.' }
+    ],
+    ladder: [
+      { n: 1, name: 'Ask', prompt: 'Make a study guide on photosynthesis.',
+        adds: 'Adds: just a topic. The AI must guess the audience, length, format, reading level, and which facts to include.',
+        out: `<p><b>Photosynthesis Study Guide</b></p><p>Photosynthesis is how plants make food using sunlight. It happens in the leaves. Plants take in carbon dioxide and water and make sugar and oxygen. It is important for life on Earth. Key terms: chlorophyll, glucose, stomata, and more. Review these and practice.</p><p class="note">Bland, undifferentiated, could be for any class.</p>` },
+      { n: 2, name: 'Frame', prompt: 'You are a grade 7 science teacher. Make a study guide on photosynthesis for students who read only Chapter 4. Use only that chapter. Give a table of 8 key terms and 6 check questions. Reading level: grade 7. If you are unsure of anything, ask me instead of guessing.',
+        adds: 'Adds: role, grade, lesson, source limits, format, reading level, and permission to ask instead of guess.',
+        out: `<table><tr><th>Term</th><th>Meaning</th></tr>
+          <tr><td>chlorophyll</td><td>green pigment that captures light</td></tr>
+          <tr><td>chloroplast</td><td>cell part where photosynthesis happens</td></tr>
+          <tr><td>stomata</td><td>tiny leaf openings for gas exchange</td></tr>
+          <tr><td>glucose</td><td>sugar the plant makes for energy</td></tr>
+          <tr><td>carbon dioxide</td><td>gas plants take in</td></tr>
+          <tr><td>oxygen</td><td>gas released as a by-product</td></tr>
+          <tr><td>light energy</td><td>energy from the Sun that powers the process</td></tr>
+          <tr><td>reactant / product</td><td>what goes in / what comes out</td></tr></table>
+          <p><b>Check questions</b></p><ol><li>What does chlorophyll do?</li><li>Where does photosynthesis happen?</li><li>Name two reactants.</li><li>Name two products.</li><li>What do stomata do?</li><li>Why do plants need light?</li></ol>` },
+      { n: 3, name: 'Show', prompt: '[Everything in Rung 2]\n\nMatch this style.\nModel flashcard: Front: "stomata" / Back: "Tiny openings on a leaf that let gases in and out."\nModel quiz question: "Which gas do plants take in? (a) oxygen (b) carbon dioxide (c) nitrogen. Answer: b. Why: it is a reactant."',
+        adds: 'Adds: one model flashcard and one model question. The AI copies the pattern: tone, length, and question structure.',
+        out: `<p><b>Flashcards</b> (matching your model)</p><span class="flashcard">chloroplast ▸ Cell part where plants make sugar from light.</span><span class="flashcard">glucose ▸ The sugar a plant makes for energy.</span><span class="flashcard">chlorophyll ▸ Green pigment that captures light.</span><p><b>Quiz questions</b> (same shape as your model)</p><ol><li>Which product does a plant release? (a) oxygen (b) carbon dioxide (c) nitrogen. Answer: a. Why: it is a by-product.</li><li>What captures light? (a) stomata (b) chlorophyll (c) roots. Answer: b. Why: it is the green pigment.</li></ol>` },
+      { n: 4, name: 'Decompose', prompt: '[Everything in Rung 3]\n\nWork in steps and stop after step 1.\n1. List every fact from Chapter 4 you plan to use. STOP and wait for me to verify.\n2. Write questions from verified facts only.\n3. Build the study guide.\n4. List how I can test the guide with students.',
+        adds: 'Adds: steps with a checkpoint. You verify the facts before anything is built on them, so errors cannot hide in the final product.',
+        out: `<p><b>Step 1 of 4: facts I plan to use</b></p><ol><li>Chlorophyll captures light energy.</li><li>Photosynthesis takes place in chloroplasts.</li><li>Reactants: carbon dioxide and water.</li><li>Products: glucose and oxygen.</li><li>Stomata let gases enter and leave.</li></ol><p><b>I will stop here.</b> Please verify these facts against Chapter 4 before I continue.</p>`,
+        checkpoint: true,
+        after: `<p class="note">You verified the facts. Now the AI continues:</p><p><b>Step 2:</b> 6 questions, each built from one verified fact.<br><b>Step 3:</b> the guide (table + questions), using only the 5 verified facts plus terms from Chapter 4.<br><b>Step 4:</b> a 3-minute check: hand 3 students the guide and see which question confuses them.</p>` }
+    ],
+    poke: {
+      q: 'Quick poke. Two prompts for the same job. Predict which will give the better result.',
+      bloated: 'You are a world-class expert teacher and also a friendly coach and also a strict editor. Write a study guide, or maybe a quiz, but also a lesson plan. Make it short but include absolutely everything and be extremely detailed. Be fun but formal. Use grade 3 words and also advanced vocabulary. Don’t use lists, but format it as lists. Photosynthesis, or plants in general.',
+      tight: 'You are a grade 7 science teacher. Write a one-page study guide on photosynthesis for students who just read Chapter 4. Give a table of 8 key terms, then 6 check questions. Use grade 7 words.',
+      outBloated: 'Photosynthesis (short but detailed!) is fun yet very formal. Here is a quiz and a lesson plan and a guide: chlorophyll, which is a pigment, (see also: plants in general). The ATP synthase complex, but simply: plants like sun. Question: …',
+      outTight: '8-term table (chlorophyll, chloroplast, stomata, glucose, carbon dioxide, oxygen, light energy, reactant/product) + 6 check questions, all in grade-7 words, on one page.',
+      opts: [
+        { t: 'The long one. More detail means better results.', ok: false, why: 'Length is not the same as information. Many of these lines contradict each other, so the AI has to pick which to obey.' },
+        { t: 'The tight one. Clear and specific beats long and tangled.', ok: true, why: 'Right. Every sentence in the tight prompt removes a guess. The long one adds conflicts (short but everything, lists but no lists), which creates new guesses.' }
+      ],
+      lesson: 'Rule of thumb: add information, not words. If two instructions fight, the AI picks one for you.'
+    }
+  },
+
+  /* ---------- Stop 3 ---------- */
+  s3: {
+    match: {
+      q: 'Match each symptom to the most likely gap. Tap a symptom, then tap its fix. Wrong picks teach too.',
+      pairs: [
+        { s: 'Generic, bland, "could be for anyone"', f: 'Context about audience and purpose', why: 'The AI had nothing specific to aim at, so it aimed at "everyone".', hint: 'The AI did not know who it was writing for.' },
+        { s: 'Wrong length or shape', f: 'Format', why: 'Shape is something you must ask for: table, bullets, 5 questions, one page.', hint: 'The shape of the answer was never specified.' },
+        { s: 'Wrong reading level or tone', f: 'A constraint or an example', why: 'A stated level ("grade 5") or a sample of the tone pins it down much better than a hope.', hint: 'Voice and level were left open.' },
+        { s: 'Invented facts or sources', f: 'Grounding: attach the source, "use only the attached material," ask it to mark anything unsure', why: 'With nothing to stand on, the model writes what sounds likely. Give it the material, and permission to say "I don’t know."', hint: 'The AI had no material to stand on, so it made some.' },
+        { s: 'Ignores part of the request', f: 'Too many tasks in one prompt: number the steps or split them', why: 'Crowded requests drop items. Numbering makes each one visible.', hint: 'Something got lost because the request was crowded.' },
+        { s: 'Adds things you did not ask for', f: 'Limits: say what to leave out; "if you are unsure, ask me"', why: 'Without limits the AI helpfully fills space. Fence it in.', hint: 'Nothing told it where to stop.' },
+        { s: 'Close, but not right', f: 'Feedback that was too vague: quote the part and say the change', why: '"Make it better" gives no direction. "Change sentence 2 to use a real-world example" does.', hint: 'Your last correction was a hint, not a direction.' },
+        { s: 'Keeps going the wrong way after several tries', f: 'A conversation crowded with earlier misses: start a new chat with your best prompt plus what you learned', why: 'The earlier wrong tries are still on the page and keep pulling the AI back. A clean window plus a better prompt breaks the loop.', hint: 'Look at what is on the page after many attempts.' }
+      ]
+    },
+    bench: {
+      weak: 'Write a quiz about fractions.',
+      weakOut: '20 questions, long. Includes adding unlike denominators and a word problem about compound interest. Words like "numerator" and "denominator" are never explained. Some answers are wrong.',
+      q: 'Read the output as a stranger. What is the FIRST thing wrong? The quiz is clearly not aimed at any particular students. You have three candidate fixes, but you may only try ONE this round.',
+      fixes: [
+        { id: 'ctx', t: 'Add context: "for grade 4, after learning equivalent fractions"', changes: 'content', result: 'Now 20 questions on equivalent fractions at grade-4 difficulty. Still 20 questions, still no friendly tone.', changed: ['content'] },
+        { id: 'fmt', t: 'Add format: "5 multiple-choice questions, with answers"', changes: 'shape', result: 'Now 5 multiple-choice questions with answer key. Still about compound interest and unlike denominators.', changed: ['shape'] },
+        { id: 'con', t: 'Add a constraint: "warm tone, no word problems, explain terms"', changes: 'tone', result: 'Warmer wording, terms explained, no word problems. Still 20 questions, still pitched at no particular grade.', changed: ['tone'] }
+      ],
+      predQ: 'Predict: which part of the output do you expect to change?',
+      predOpts: [ { k: 'content', t: 'What the questions are about / how hard' }, { k: 'shape', t: 'How many questions and the layout' }, { k: 'tone', t: 'The wording and tone' } ],
+      matchFb: 'Your prediction matched what changed. That is the power of one change: cause and effect stay visible.',
+      missFb: 'The change showed up somewhere other than you predicted. That is a useful surprise, and you can only see it because you changed one thing.',
+      round2: 'Round 2. Now change all three at once.',
+      round2Out: 'Grade-4 equivalent fractions. 5 multiple-choice questions with answers. Warm, plain wording. Much better!',
+      which: 'The output is much better. Which change helped?',
+      whichOpts: [
+        { t: 'The context change', ok: false }, { t: 'The format change', ok: false }, { t: 'The constraint change', ok: false },
+        { t: 'I cannot tell', ok: true }
+      ],
+      whichFb: 'Exactly. Any one, any pair, or all three could be responsible, and the next time you would not know which to keep. That is a confounded experiment. Better: change one thing, re-run, keep what helps.',
+      whichFbWrong: 'It is tempting to pick one, but with three changes at once there is no way to know. The honest answer is "I cannot tell."'
+    },
+    crowded: {
+      q: 'Link back to Stop 1. A teacher has sent 30 messages trying to fix a lesson plan. The AI keeps repeating the same mistake (using gym equipment words in a science lesson), even after they correct it each time. What is the most likely real cause, and the best move?',
+      opts: [
+        { t: 'The prompt is too short. Add 300 more words to message 31.', ok: false, why: 'More words on top of a crowded window will probably crowd it further.' },
+        { t: 'The window is crowded with earlier misses, which keep pulling the AI back. Start a new chat with the best prompt plus what you learned.', ok: true, why: 'Yes. Those 30 earlier messages, wrong tries included, are all still on the page. A fresh window removes the pull. This is Stop 1 showing up inside debugging.' },
+        { t: 'The AI is stubborn. Repeat the correction in capital letters.', ok: false, why: 'Capital letters do not make the AI "listen" harder. It is not stubborn; it is following the text on the page, and the page is messy.' }
+      ]
+    }
+  },
+
+  /* ---------- Stop 4 ---------- */
+  s4: {
+    criteria: [ { k: 'acc', n: 'Accuracy' }, { k: 'cred', n: 'Credibility' }, { k: 'bias', n: 'Bias' }, { k: 'rel', n: 'Reliability' }, { k: 'edu', n: 'Educational value' } ],
+    intro: 'Here is a short excerpt from an AI-written grade 5 tides lesson guide. For each numbered line, mark it Fine or tag the criterion it fails.',
+    lines: [
+      { t: 'Tides are caused mainly by the Moon’s gravity.', best: 'fine', why: 'Fine. The Moon’s gravity is the main driver of tides (NOAA agrees). Marking true statements "fine" is part of the skill: do not hunt for problems that are not there.' },
+      { t: 'Every coast has exactly one high tide and one low tide each day.', best: 'acc', accept: [], why: 'Accuracy error. Most coasts have two highs and two lows in a cycle of about 24 hours 50 minutes; some have one. "Every" and "exactly" are the giveaways: AI states overreaches confidently. (The corrected claim aligns with NOAA.)' },
+      { t: 'A 2021 study by the "National Ocean Education Council" found students learn tides best by memorizing the chart.', best: 'cred', accept: ['rel'], why: 'Credibility. The organization and the study are invented for this exercise. A named source is a lead, not proof: search before trusting (Stop 5 shows how). It also touches reliability, but the specific failure is a source you cannot verify.' },
+      { t: 'Boys usually grasp this faster, so seat them at the main demo and give girls the review task.', best: 'bias', accept: ['edu'], why: 'Bias. It stereotypes by gender and gives unequal access to the hands-on learning. It also hurts educational value for some learners, but "bias" names the root cause.' },
+      { t: 'Students will derive the tidal force from the inverse-cube law and explain the Roche limit.', best: 'edu', accept: [], why: 'Educational value. It may be true physics, but it is far above grade 5. Correct is not the same as appropriate for these learners and this goal.' },
+      { t: '"I have checked every fact above, and all of it is accurate."', best: 'rel', accept: [], why: 'Reliability. The AI’s confidence is not evidence. It cannot "check" the way a person does, and lines 2 and 3 above show that its confident claims can be wrong.' },
+      { t: 'The Sun also raises tides, but they are somewhat smaller than the Moon’s.', best: 'fine', why: 'Fine. The Sun does raise tides, and the Moon’s effect is larger (NOAA agrees).' }
+    ],
+    radar: {
+      q: 'Scorecard: the shape shows how this excerpt scored. Drag each slider to "fix" the problem and watch the shape grow.',
+      fixes: [
+        { k: 'acc', t: 'Fix accuracy: replace line 2 with "Most coasts have two highs and two lows"' },
+        { k: 'cred', t: 'Fix credibility: delete the invented study (or replace with a verified one)' },
+        { k: 'bias', t: 'Fix bias: give every student access to the demo and the review task' },
+        { k: 'rel', t: 'Fix reliability: delete "I have checked every fact" and verify the facts yourself' },
+        { k: 'edu', t: 'Fix educational value: rewrite line 5 for grade 5 ("Students will observe and explain high and low tide")' }
+      ],
+      done: 'All five axes full. Notice you fixed five different things, with five different actions. That is why they are separate criteria.'
+    },
+    lens: {
+      q: 'Same output, different lens. This answer key is accurate. Which criterion is the MAIN problem for a grade 5 class?',
+      key: 'Q: Why do tides happen?\nA: Tides arise from the differential gravitational pull of the Moon across Earth, a gradient in the tidal force that scales with the inverse cube of distance, producing bulges on the near and far sides.',
+      opts: [
+        { t: 'Accuracy', ok: false, why: 'The physics is accurate. That is the point: accuracy alone is not enough.' },
+        { t: 'Bias', ok: false, why: 'Nothing here stereotypes anyone or limits access by group.' },
+        { t: 'Educational value', ok: true, why: 'Right. It is correct but far above grade 5, so it fails these learners and this goal.' },
+        { t: 'Reliability', ok: false, why: 'The answer does not claim to have been checked. The problem is its fit for students.' }
+      ]
+    }
+  },
+
+  /* ---------- Stop 5 ---------- */
+  s5: {
+    ai: 'AI answer: "Research shows people retain 90% of what they teach to others (Global Institute for Learning Retention, 2019). Use peer teaching in every lesson."',
+    d1: { q: 'Decision 1 of 3. The AI cited an organization you have never heard of. What is your first move?',
+      opts: [
+        { t: 'Open the organization’s About page to see who they are.', ok: false, id: 'about', why: 'That page is written by the organization, so it controls what you see. It can describe itself however it likes. Look at what happened when you opened it.' },
+        { t: 'Open a new tab and search for the organization and the claim.', ok: true, why: 'Yes. Leave the page. Ask who is behind it and what others say.' }
+      ],
+      aboutPage: 'About us: The Global Institute for Learning Retention is a leader in learning science. Trusted by educators worldwide. Our research proves it.' },
+    results: [
+      { t: 'Global Institute for Learning Retention: Home', d: 'The organization’s own site. (Describes itself.)' },
+      { t: 'The "learning pyramid": where the 90% figure comes from', d: 'Explainer: the pyramid claims people remember 10% of what they read and 90% of what they teach. No original research found for the numbers. (Simulated result written for this lesson.)' },
+      { t: 'A rebuttal of NTL Institute’s learning pyramid (Letrud, 2012)', d: 'Journal article that examines the pyramid and finds the percentages unsupported.' },
+      { t: 'No independent mentions of "Global Institute for Learning Retention"', d: 'No news, university, or journal pages describe this organization. (Simulated.)' }
+    ],
+    d2: { q: 'Decision 2 of 3. What do the new-tab results tell you?',
+      opts: [
+        { t: 'The organization is legitimate. It has a website.', ok: false, why: 'Anyone can make a website. The test is whether independent sources vouch for it, and none do.' },
+        { t: 'No independent source vouches for the institute, and the 90% figure traces to the learning pyramid, which researchers have rebutted.', ok: true, why: 'Exactly. Both findings came from outside the original page. The claim is widely repeated, and still unsupported.' },
+        { t: 'The results are mixed, so the AI is probably right.', ok: false, why: 'They are not mixed: the independent results point the same way. "Sounds confident" is not a tiebreaker.' }
+      ] },
+    d3: { q: 'Decision 3 of 3. What do you do with the claim in your materials?',
+      opts: [
+        { t: 'Keep it. The AI named a source.', ok: false, why: 'A named source is not a verified source. You just found it does not hold up.' },
+        { t: 'Cut the 90% claim and the citation. If you want to say something about learning by teaching, find a real study and run the same check.', ok: true, why: 'Yes. The goal is not to avoid peer teaching; it is to avoid unsupported numbers. Verified evidence only.' },
+        { t: 'Keep it but soften it to "many experts say".', ok: false, why: 'Vague attribution hides the missing source and does not make the claim true.' }
+      ] },
+    sort: {
+      q: 'Spot the move. Is each action lateral reading, or staying on the page?',
+      a: 'Lateral (leave the page)', b: 'Staying on the page',
+      items: [
+        { t: 'Read the About page', to: 'b', why: 'The organization wrote it. Staying on the page lets them describe themselves.' },
+        { t: 'Check the domain ending (.org, .edu…)', to: 'b', why: 'It is a signal from the page itself. Many people can register a ".org", so it vouches for little.' },
+        { t: 'Open a new tab and search the name', to: 'a', why: 'Leaves the page to ask who is behind it. This is the core lateral move.' },
+        { t: 'Check whether the site looks professional', to: 'b', why: 'Polish is cheap to fake and easy to buy.' },
+        { t: 'Look for what independent sources say', to: 'a', why: 'Independent voices are the evidence that matters.' },
+        { t: 'Trust it because the AI sounded confident', to: 'b', why: 'Confidence is generated text, not evidence. This never leaves the page at all.' }
+      ]
+    },
+    connect: 'Connection to Stop 4: this is how you do the <b>credibility</b> check from the five criteria. Accuracy asks "is it true?" Credibility asks "who says so, and would anyone independent agree?"'
+  },
+
+  /* ---------- Stop 6 ---------- */
+  s6: {
+    original: [
+      'Plants make their own food through photosynthesis.',
+      'Chloroplasts in leaf cells capture light energy.',
+      'Using that energy, the plant turns carbon dioxide and water into glucose, a sugar.',
+      'Oxygen is released as a by-product.'
+    ],
+    rewrites: [
+      { id: 'A', lines: ['Plants make their own food. This is called photosynthesis.', 'Chloroplasts are tiny parts inside leaf cells. They catch light energy.', 'The plant uses that energy to turn carbon dioxide and water into a sugar called glucose.', 'Oxygen is let out as a by-product.'], faithful: true },
+      { id: 'B', lines: ['Plants eat sunlight to get food.', 'Chloroplasts in leaf cells catch the light.', 'Plants take in oxygen and water and turn them into sugar.', 'Carbon dioxide is let out.'], faithful: false, bad: [0, 2, 3],
+        diff: [
+          'Changed: plants do not "eat" sunlight. They use light energy to make their own food.',
+          'Fine.',
+          'Changed: the reactants are carbon dioxide and water. Oxygen is a product.',
+          'Changed: the gases are swapped. Oxygen is released.'
+        ] },
+      { id: 'C', lines: ['Plants make food using light.', 'Chloroplasts in leaf cells catch light energy.', 'Plants turn carbon dioxide and water into glucose, a sugar.', 'Oxygen comes out as a by-product.'], faithful: true }
+    ],
+    pickQ: 'Three AI rewrites of a passage for struggling readers. One changed the science. Which?',
+    flagQ: 'Rewrite B changed the science. Tap each line you think changed the meaning (tap again to unflag), then reveal.',
+    prompts: {
+      q: 'Which prompt would have prevented this?',
+      opts: [
+        { t: 'Make this easier to read.', ok: false, why: 'Too vague. "Easier" can mean shorter, simpler, or different. The AI will trade away content to get there.' },
+        { t: 'Rewrite in plain language. Keep every fact and key term. Define terms instead of removing them. Then list anything you left out or changed.', ok: true, why: 'Yes. It protects the facts, keeps key terms (defined, not deleted), and makes any omission visible for you to catch.' },
+        { t: 'Make this much shorter and as simple as you can.', ok: false, why: 'Shorter means something has to go. Optimizing for short and simple is how ideas get dropped or distorted.' }
+      ],
+      fixed: ['Plants make their own food. This is called <b>photosynthesis</b>.', 'Chloroplasts are tiny parts inside leaf cells. They catch light energy.', 'The plant uses that energy to turn carbon dioxide and water into a sugar called <b>glucose</b>.', 'Oxygen is let out as a by-product.'],
+      left: 'What was left out: nothing. Changed: split long sentences; defined "chloroplasts"; added "called" before the two key terms.'
+    },
+    close: {
+      q: 'Reflect (not graded). Pick a prompt from earlier in this lab, then tick each learner need to see what you might add.',
+      prompts: ['The study-guide prompt (Stop 2)', 'The fractions quiz prompt (Stop 3)', 'The tides lesson-guide prompt (Stop 4)'],
+      needs: [
+        { k: 'read', t: 'A learner with a reading disability', sug: 'Short sentences and defined terms; clear headings; no important text inside images; allow text-to-speech.' },
+        { k: 'adhd', t: 'A learner with ADHD', sug: 'A clear structure with chunks; numbered steps; one task at a time; a visible checklist or progress cue.' },
+        { k: 'sense', t: 'A learner with a visual or hearing impairment', sug: 'Text alternatives for every visual; captions or transcripts for audio and video; do not rely on color alone.' },
+        { k: 'comm', t: 'A learner with complex communication needs', sug: 'Picture or choice supports; sentence starters; more than one way to respond (point, select, speak, write).' }
+      ]
+    }
+  },
+
+  /* ---------- Stop 7: capstone ---------- */
+  s7: {
+    steps: [
+      { max: 15, title: 'Notice the context window',
+        scene: 'You have been chatting with the AI for 40 messages to build a tides vocabulary aid. Your first message said "Use grade 5 words only." The latest draft says "gravitational gradient" and "tidal bulge dynamics."',
+        q: 'What is the best next move?',
+        opts: [
+          { t: 'Type the rule again in capital letters, and keep going in this chat.', ok: false, why: 'The chat is crowded, and more text on top keeps crowding it. Capitals do not move the rule back into focus.' },
+          { t: 'Start a fresh chat with my best prompt, with the grade-5 rule up top.', ok: true, why: 'Yes. A clean window, with the rule at full strength.' },
+          { t: 'Decide the AI is broken and give up on it.', ok: false, why: 'Nothing is broken. A long window is a known limit, and the fix is in your hands.' }
+        ] },
+      { max: 20, title: 'Build the prompt', scene: 'In the new chat, assemble your prompt. Switch on every part it needs, then choose how far up the ladder to climb.' },
+      { max: 20, title: 'Diagnose and change one thing',
+        scene: 'First output: "A tide is the cyclical alteration in ocean elevation attributable to gravitational forces exerted by the Moon and Sun, with a spring and neap differential…" (12 long terms in a row)',
+        q: 'What is the first thing wrong, and what is the single best edit?',
+        opts: [
+          { t: 'Rewrite the whole prompt: change the role, add a format, shorten it, and switch the topic.', ok: false, why: 'Four changes at once. If it improves, you will not know why (confounded variables).' },
+          { t: 'Re-send the same prompt and hope for a different result.', ok: false, why: 'No change means no information. You are rolling dice, not debugging.' },
+          { t: 'Add one constraint: "Use words a 5th grader knows. Define every science word in a short sentence."', ok: true, why: 'Yes. The symptom is the wrong reading level; the missing piece is a constraint. One change, one cause to track.' }
+        ] },
+      { max: 20, title: 'Audit the revised output',
+        scene: 'Revised draft. Tap the lines with a problem, then check. There are exactly two issues: one bias issue and one invented source.',
+        lines: [
+          'High tide is when the water rises up the shore, and low tide is when it falls.',
+          'The Moon’s gravity pulls on the ocean (Marine Learning Council, 2020 study).',
+          'Pair the English learners with a helper so they do not slow the group down.',
+          'Draw a tide chart showing two highs and two lows in about one day.'
+        ],
+        bad: [1, 2],
+        fbs: ['Fine: plain and accurate.', 'Credibility: the "Marine Learning Council" study is not something you can verify. Check it before using it.', 'Bias: it treats English learners as a burden. Rewrite so every student contributes.', 'Fine.'] },
+      { max: 10, title: 'Lateral reading check',
+        scene: 'You want to know whether the "Marine Learning Council, 2020 study" is real.',
+        q: 'What is your first move?',
+        opts: [
+          { t: 'Look for a "Contact us" link on the council’s site.', ok: false, why: 'That is on the council’s own page. They control what you see there.' },
+          { t: 'Open a new tab and search for the council and the study.', ok: true, why: 'Yes. Leave the page. Simulated result: no independent record of the council. Drop the citation and use a verified source such as NOAA.' },
+          { t: 'Trust it. It has a year and a name.', ok: false, why: 'A year and a name are easy to generate. Plausible is not proof.' }
+        ] },
+      { max: 15, title: 'Accessibility fidelity check',
+        scene: 'You ask for a simpler version for students who struggle with reading. Original: "Most coasts have two high tides and two low tides each day." The simplified version has three sentences.',
+        lines: [
+          'Tides are when ocean water rises and falls.',
+          'The Moon pulls on the ocean.',
+          'Most coasts have one high tide a day.'
+        ],
+        q: 'Which simplified sentence changed the science?',
+        bad: 2,
+        fixPrompt: 'Next time say: "Keep every fact. Then list anything you left out."',
+        fix: 'Sentence 3 turned "two high tides" into "one." Simplify the wording, never the science.' }
+    ],
+    ladderPick: { q: 'Which rung do you climb to? (This job is fact-heavy for 10-year-olds.)',
+      opts: [
+        { n: 1, t: 'Rung 1: Ask', ok: false, why: 'A bare ask leaves everything to guessing, which is risky for science facts and grade-level fit.' },
+        { n: 2, t: 'Rung 2: Frame', ok: true, partial: true, why: 'A solid choice.' },
+        { n: 3, t: 'Rung 3: Show', ok: true, partial: true, why: 'A solid choice.' },
+        { n: 4, t: 'Rung 4: Decompose, with a fact checkpoint', ok: true, why: 'The strongest choice for a fact-heavy aid: you verify the facts before anything is built on them.' }
+      ] },
+    end: 'You carried a real teacher problem through every tool in the belt. Celebrate!'
+  },
+
+  /* ---------- Stop 8: quiz ---------- */
+  quiz: [
+    { q: 'Sixty messages into a chat, the AI stops following the grade-level rule from your first message. Why, and what is the fix?',
+      opts: [
+        { t: 'The AI got tired. Wait a few minutes and try again.', ok: false, why: 'The model does not tire. It re-reads the text on the page every time, and more text on the page is the problem.' },
+        { t: 'Early instructions can fall out of view or carry less weight in a long conversation. Restate them, or start a new chat with your best prompt.', ok: true, why: 'Correct. The window is crowded, so early text can have less influence. Restate, or start fresh.' },
+        { t: 'The AI is ignoring you on purpose. Type the rule in capital letters.', ok: false, why: 'It is not defiance, and capital letters do not change how much weight the rule gets from where it sits.' },
+        { t: 'The rule was too short. Longer rules are always followed.', ok: false, why: 'Length does not guarantee obedience. A long rule can even take up window space.' }
+      ] },
+    { q: 'An output is generic and could be for any teacher. What is most likely missing?',
+      opts: [
+        { t: 'A friendlier tone setting.', ok: false, why: 'Tone is a style choice. Generic output is mostly about missing facts, not missing friendliness.' },
+        { t: 'A 500-word version of the same prompt.', ok: false, why: 'Length is not specificity. More words do not add information about your class.' },
+        { t: 'A different AI tool.', ok: false, why: 'Any tool will guess when it has nothing to go on. The gap is on the page, not in the tool.' },
+        { t: 'Context about the audience and purpose.', ok: true, why: 'Correct. Without who it is for and why, the AI aims at "everyone".' }
+      ] },
+    { q: 'You changed the role, the format, and the length at once, and the result improved. What is the problem?',
+      opts: [
+        { t: 'You cannot tell which change helped. Change one thing at a time.', ok: true, why: 'Correct. Several changes at once are confounded: any one of them, or a combination, could be responsible.' },
+        { t: 'There is no problem. It improved, so you are done.', ok: false, why: 'An improvement you cannot explain is hard to repeat. You do not know what to keep next time.' },
+        { t: 'The role change must be the one that helped, because roles matter most.', ok: false, why: 'That is an assumption, not evidence. Only a one-change test could show it.' },
+        { t: 'The AI got confused by too many changes.', ok: false, why: 'The AI is not confused. The trouble is your experiment, not its understanding.' }
+      ] },
+    { q: 'The AI cites a report from an organization you have never heard of. Best first move?',
+      opts: [
+        { t: 'Read the organization’s About page.', ok: false, why: 'The organization wrote that page. It tells you how they describe themselves, not whether others trust them.' },
+        { t: 'Check that the web address ends in ".org".', ok: false, why: 'That is a signal from the page itself, and many kinds of groups can register a ".org".' },
+        { t: 'Open a new tab and look up the organization and the claim in other sources.', ok: true, why: 'Correct. Leave the page and see who else vouches for them (lateral reading).' },
+        { t: 'Trust it. A formal citation means it is real.', ok: false, why: 'Models can generate formal, plausible citations that do not exist.' }
+      ] },
+    { q: 'An answer key is accurate but far above grade level. Which criterion is the main problem?',
+      opts: [
+        { t: 'Accuracy', ok: false, why: 'The content is accurate. That is why this is a good test: accuracy alone is not enough.' },
+        { t: 'Educational value', ok: true, why: 'Correct. It fails the learners and the learning goal, even though it is true.' },
+        { t: 'Bias', ok: false, why: 'Nothing here stereotypes or limits access. The issue is level, not group treatment.' },
+        { t: 'Reliability', ok: false, why: 'Reliability is about trusting the AI’s own confidence. The issue here is fit for students.' }
+      ] }
+  ],
+  quizRes: [
+    { min: 5, msg: 'Perfect bench work!' }, { min: 4, msg: 'Strong. Review the one you missed in the Toolbelt.' },
+    { min: 0, msg: 'Good start. Revisit the stops that tripped you, then retry here.' }
+  ],
+
+  sources: [
+    'IBM, "What is a context window?"',
+    'Liu, N. F., Lin, K., Hewitt, J., Paranjape, A., Bevilacqua, M., Petroni, F., and Liang, P. (2024). Lost in the middle: How language models use long contexts. Transactions of the Association for Computational Linguistics, 12, 157 to 173.',
+    'Sweller, J. (1988). Cognitive load during problem solving: Effects on learning. Cognitive Science, 12(2), 257 to 285.',
+    'Anthropic, "Prompting best practices."',
+    'OpenAI Help Center, "Best practices for prompt engineering with the OpenAI API."',
+    'NOAA, "What causes tides?"',
+    'Wineburg, S., and McGrew, S. (2019). Lateral reading and the nature of expertise. Teachers College Record, 121(11), 1 to 40.',
+    'Stanford Graduate School of Education (2022). "It doesn’t take long to learn how to spot misinformation online, Stanford study finds."',
+    'Letrud, K. (2012). A rebuttal of NTL Institute’s learning pyramid. Education, 133(1), 117 to 124.',
+    'Bowen, J. A., and Watson, C. E., Teaching with AI, 2nd ed., Johns Hopkins University Press, Chapters 3 and 6.'
+  ]
+};
+
+/* ==========================================================================
+   CORE: state, helpers, components, router
+   ========================================================================== */
+const RM = window.matchMedia('(prefers-reduced-motion: reduce)');
+const state = {
+  stop: 0,
+  visited: new Set([0]),
+  belt: new Set(),
+  beltOpen: window.innerWidth >= 920,
+  quiz: { first: [], done: false, score: null },
+  lab: { steps: {}, total: 0, finished: false },
+  theme: 'auto'
+};
+const NUM_STOPS = 8;               // numbered stops 1..8; 0 = welcome, 9 = wrap-up
+const LAST = L.stops.length - 1;
+const BUILD = {};
+const views = {};
+let uid = 0;
+
+const $ = (s, r = document) => r.querySelector(s);
+function h(tag, p, ...kids) {
+  const e = document.createElement(tag);
+  if (p) for (const k in p) {
+    const v = p[k];
+    if (v == null || v === false) continue;
+    if (k === 'class') e.className = v;
+    else if (k === 'html') e.innerHTML = v;
+    else if (k.slice(0, 2) === 'on') e.addEventListener(k.slice(2), v);
+    else e.setAttribute(k, v === true ? '' : v);
+  }
+  kids.flat(Infinity).forEach(c => { if (c == null || c === false) return; e.append(c.nodeType ? c : document.createTextNode(c)); });
+  return e;
+}
+function announce(t) {
+  const l = $('#live'); l.textContent = '';
+  setTimeout(() => { l.textContent = t; }, 40);
+}
+const mascot = {
+  el: $('#mascot'), bub: $('#bubble'), t: null, party: false,
+  react(kind, text) {
+    const arr = L.quips[kind] || [''];
+    const msg = text != null ? text : arr[Math.floor(Math.random() * arr.length)];
+    this.el.setAttribute('class', 'mascot mood-' + kind + (this.party ? ' party' : ''));
+    this.bub.textContent = msg;
+    clearTimeout(this.t);
+    if (!this.party) this.t = setTimeout(() => { this.el.setAttribute('class', 'mascot mood-idle'); this.bub.textContent = ''; }, 3800);
+  }
+};
+function fb(box, kind, html, lead) {
+  const icon = { good: '✓', bad: '✕', info: 'ℹ' }[kind];
+  const lab = lead != null ? lead : { good: 'Yes. ', bad: 'Not quite. ', info: '' }[kind];
+  box.className = 'fb ' + kind; box.hidden = false; box.textContent = '';
+  box.append(h('span', { class: 'ficon', 'aria-hidden': 'true' }, icon), h('div', { html: (lab ? '<b>' + lab + '</b>' : '') + html }));
+  announce((kind === 'good' ? 'Correct. ' : kind === 'bad' ? 'Not quite. ' : '') + box.textContent.replace(/^[✓✕ℹ]/, ''));
+  if (kind !== 'info') mascot.react(kind);
+}
+function tween(a, b, ms, fn, done) {
+  if (RM.matches || ms <= 0) { fn(b); if (done) done(); return; }
+  const t0 = performance.now();
+  (function f(t) {
+    const k = Math.min(1, (t - t0) / ms);
+    fn(a + (b - a) * (1 - Math.pow(1 - k, 3)));
+    if (k < 1) requestAnimationFrame(f); else if (done) done();
+  })(t0);
+}
+function typeInto(el, text, cb) {
+  const tk = (el._tk = (el._tk || 0) + 1);
+  if (RM.matches) { el.textContent = text; if (cb) cb(); return; }
+  const w = text.split(' '); let i = 0; el.textContent = '';
+  (function step() {
+    if (el._tk !== tk) return;
+    el.textContent = w.slice(0, ++i).join(' ');
+    if (i < w.length) setTimeout(step, 26); else if (cb) cb();
+  })();
+}
+function card(num, title, ...kids) {
+  return h('section', { class: 'card' }, h('h3', null, num ? h('span', { class: 'num', 'aria-hidden': 'true' }, num) : null, title), ...kids);
+}
+function pickList(options, onPick, label) {
+  const id = 'pl' + (++uid);
+  const list = h('div', { class: 'opts', role: 'group', 'aria-label': label || 'Choices' });
+  const btns = options.map((o, i) => {
+    const b = h('button', { class: 'opt', type: 'button', 'aria-pressed': 'false', onclick: () => {
+      btns.forEach(x => { x.setAttribute('aria-pressed', 'false'); x.classList.remove('right'); });
+      b.setAttribute('aria-pressed', 'true'); b.classList.add('right'); onPick(o, i, b);
+    } }, h('span', null, o.t));
+    return b;
+  });
+  list.append(...btns);
+  return list;
+}
+/* Multiple choice with feedback; retry allowed. */
+function choice({ q, options, onRight, onAny, label }) {
+  const id = 'q' + (++uid);
+  const root = h('div', { class: 'choice' });
+  const list = h('div', { class: 'opts', role: 'group', 'aria-labelledby': id });
+  const box = h('div', { class: 'fb', hidden: true });
+  let tries = 0, done = false;
+  const btns = options.map(o => {
+    const mark = h('span', { class: 'mark' });
+    const b = h('button', { class: 'opt', type: 'button', onclick: () => {
+      if (done || b.getAttribute('aria-disabled') === 'true') return;
+      tries++;
+      if (onAny) onAny(o, tries);
+      if (o.ok) {
+        done = true; b.classList.add('right'); mark.textContent = '✓ Yes';
+        btns.forEach(x => x.setAttribute('aria-disabled', 'true'));
+        fb(box, 'good', o.why);
+        if (onRight) onRight(tries, o);
+      } else {
+        b.classList.add('wrong'); mark.textContent = '✕ Not quite'; b.setAttribute('aria-disabled', 'true');
+        b.classList.remove('shake'); void b.offsetWidth; b.classList.add('shake');
+        fb(box, 'bad', o.why + ' Try another.');
+      }
+    } }, mark, h('span', null, o.t));
+    return b;
+  });
+  list.append(...btns);
+  root.append(h('p', { class: 'q', id }, q), list, box);
+  return root;
+}
+/* Sort items into two buckets: click buttons or drag. */
+function sortGame({ q, a, b, items, onDone }) {
+  const qid = 'sg' + (++uid);
+  const root = h('div');
+  const box = h('div', { class: 'fb', hidden: true });
+  const names = { a, b };
+  const ul = { a: h('ul', { 'aria-label': a + ' (sorted items)' }), b: h('ul', { 'aria-label': b + ' (sorted items)' }) };
+  const bucket = k => {
+    const el = h('div', { class: 'bucket' }, h('h4', null, names[k]), ul[k]);
+    el.addEventListener('dragover', e => { e.preventDefault(); el.classList.add('over'); });
+    el.addEventListener('dragleave', () => el.classList.remove('over'));
+    el.addEventListener('drop', e => { e.preventDefault(); el.classList.remove('over'); const i = +e.dataTransfer.getData('text/plain'); if (cards[i] && cards[i].parentNode) assign(i, k); });
+    return el;
+  };
+  const pile = h('div', { class: 'pile', role: 'list', 'aria-label': 'Items to sort' });
+  let left = items.length;
+  const cards = items.map((it, i) => {
+    const c = h('div', { class: 'sitem', role: 'listitem', draggable: 'true' },
+      h('div', null, it.t),
+      h('div', { class: 'btns' },
+        h('button', { class: 'btn ghost', type: 'button', onclick: () => assign(i, 'a') }, '→ ' + a),
+        h('button', { class: 'btn ghost', type: 'button', onclick: () => assign(i, 'b') }, '→ ' + b)));
+    c.addEventListener('dragstart', e => e.dataTransfer.setData('text/plain', String(i)));
+    return c;
+  });
+  pile.append(...cards);
+  function assign(i, k) {
+    const it = items[i], c = cards[i];
+    if (!c.parentNode) return;
+    if (k === it.to) {
+      const next = cards.find((x, j) => j !== i && x.parentNode);
+      c.remove(); left--;
+      ul[k].append(h('li', null, it.t, h('small', null, it.why)));
+      fb(box, 'good', it.why);
+      if (next) next.querySelector('button').focus({ preventScroll: true });
+      if (!left) { fb(box, 'good', 'All sorted. ' + it.why, 'Done. '); if (onDone) onDone(); }
+    } else {
+      c.classList.remove('shake'); void c.offsetWidth; c.classList.add('shake');
+      fb(box, 'bad', it.why + ' Try the other bucket.');
+    }
+  }
+  root.append(h('p', { class: 'q', id: qid }, q), pile, h('div', { class: 'buckets', role: 'group', 'aria-label': 'Buckets' }, bucket('a'), bucket('b')), box);
+  return root;
+}
+function confetti() {
+  if (RM.matches) return;
+  const w = h('div', { class: 'confetti', 'aria-hidden': 'true' });
+  const cols = ['#e76f51', '#f4a261', '#e9c46a', '#2a9d8f', '#4361ee', '#b5179e'];
+  for (let i = 0; i < 46; i++) {
+    const p = h('i'); p.style.left = Math.random() * 100 + '%'; p.style.background = cols[i % cols.length];
+    p.style.animationDelay = (Math.random() * 0.8) + 's'; p.style.animationDuration = (2 + Math.random() * 1.8) + 's';
+    w.append(p);
+  }
+  document.body.append(w); setTimeout(() => w.remove(), 4500);
+}
+/* Toolbelt */
+function renderBelt(newIdx) {
+  const belt = $('#belt');
+  const idxs = L.stops.map((s, i) => i).filter(i => L.stops[i].belt);
+  belt.dataset.open = String(state.beltOpen);
+  belt.textContent = '';
+  const btn = h('button', { type: 'button', id: 'beltBtn', 'aria-expanded': String(state.beltOpen), 'aria-controls': 'beltList', onclick: () => { state.beltOpen = !state.beltOpen; renderBelt(); $('#beltBtn').focus(); } },
+    h('span', null, '🧰 Toolbelt (' + state.belt.size + '/' + idxs.length + ')'), h('span', { 'aria-hidden': 'true' }, state.beltOpen ? '▲' : '▼'));
+  const ul = h('ul', { id: 'beltList' }, idxs.map(i => {
+    const got = state.belt.has(i), s = L.stops[i];
+    return h('li', { class: got ? 'got' + (i === newIdx ? ' snap' : '') : '' },
+      h('b', null, got ? '✔ ' + s.belt.title : '🔒 ' + s.belt.title),
+      got ? s.belt.text : 'Locked. Do the main activity in stop ' + i + ' to fill this in.');
+  }));
+  belt.append(btn, ul);
+}
+function unlock(i) {
+  const s = L.stops[i];
+  if (!s.belt || state.belt.has(i)) return;
+  state.belt.add(i); renderBelt(i);
+  announce('Toolbelt updated: ' + s.belt.title + '. ' + s.belt.text);
+}
+/* Router */
+const TOTALMIN = L.stops.reduce((a, s) => a + s.min, 0);
+function updateChrome() {
+  const i = state.stop, s = L.stops[i];
+  const left = L.stops.slice(i).reduce((a, x) => a + x.min, 0);
+  const label = i === 0 ? 'Welcome' : i === LAST ? 'Wrap-up' : 'Stop ' + i + ' of ' + NUM_STOPS;
+  const txt = label + ' · about ' + left + ' min left';
+  $('#progtxt').textContent = txt;
+  const bar = $('.bar'); bar.setAttribute('role', 'progressbar'); bar.setAttribute('aria-valuemin', '0'); bar.setAttribute('aria-valuemax', String(LAST));
+  bar.setAttribute('aria-valuenow', String(i)); bar.setAttribute('aria-valuetext', txt); bar.setAttribute('aria-label', 'Lesson progress');
+  $('#barfill').style.width = (i / LAST * 100) + '%';
+  document.querySelectorAll('.dot').forEach((d, j) => {
+    d.classList.toggle('seen', state.visited.has(j));
+    if (j === i) d.setAttribute('aria-current', 'step'); else d.removeAttribute('aria-current');
+  });
+  document.title = (i ? s.nav + ' – ' : '') + 'Prompt Lab';
+}
+function go(n) {
+  n = Math.max(0, Math.min(LAST, n));
+  state.stop = n; state.visited.add(n);
+  if (L.stops[n].id === 'wrap') delete views[n];
+  const v = views[n] || (views[n] = makeView(n));
+  $('#main').replaceChildren(v);
+  updateChrome();
+  const hd = v.querySelector('h2'); if (hd) hd.focus({ preventScroll: true });
+  window.scrollTo(0, 0);
+  mascot.react(n === 0 ? 'good' : 'idle', n === 0 ? 'Hi! I am Pip. Welcome to the lab!' : '');
+  announce(updateLabel(n));
+}
+function updateLabel(n) { return (n === 0 ? 'Welcome. ' : n === LAST ? 'Wrap-up. ' : 'Stop ' + n + ' of ' + NUM_STOPS + '. ') + L.stops[n].title + '. About ' + L.stops[n].min + ' minutes.'; }
+function makeView(i) {
+  const S = L.stops[i];
+  const root = h('article', { class: 'stop', 'aria-label': S.title });
+  const kick = i === 0 ? 'Welcome' : i === LAST ? 'Wrap-up' : 'Stop ' + i + ' of ' + NUM_STOPS;
+  root.append(h('p', { class: 'kicker' }, kick + ' · ⏱ about ' + S.min + ' min'), h('h2', { tabindex: '-1' }, S.title));
+  if (S.callback) root.append(h('p', { class: 'callback', html: S.callback }));
+  if (S.disclosure) root.append(h('p', { class: 'note', html: '<b>Invented for this lesson:</b> ' + S.disclosure }));
+  let concept = null, finished = false;
+  if (S.concept) concept = h('section', { class: 'card concept', hidden: true, 'aria-label': 'The concept' }, h('h3', null, '💡 The idea behind what you just did'), h('div', { html: S.concept }));
+  const ctx = {
+    i,
+    finish() {
+      if (finished) return; finished = true;
+      if (concept) { concept.hidden = false; concept.classList.add('pop'); }
+      unlock(i);
+      announce('Nice work. The idea behind this stop is now shown below, and your Toolbelt has a new item.');
+    }
+  };
+  root.append(...BUILD[S.id](ctx));
+  if (concept) root.append(concept);
+  if (S.bridge) root.append(h('p', { class: 'bridge', html: S.bridge }));
+  const nav = h('div', { class: 'bottomnav no-print' },
+    i > 0 ? h('button', { class: 'btn ghost', type: 'button', onclick: () => go(i - 1) }, '← Back') : h('span'),
+    i < LAST ? h('button', { class: 'btn', type: 'button', onclick: () => go(i + 1) }, (i === 0 ? 'Start the lab' : 'Next') + ' →') : h('span'));
+  root.append(nav);
+  return root;
+}
+/* Radar chart (SVG, built from a string) */
+function makeRadar(labels, vals0) {
+  const cx = 160, cy = 150, R = 95, n = labels.length;
+  const pt = (i, v) => { const a = -Math.PI / 2 + i * 2 * Math.PI / n; return [cx + R * v / 100 * Math.cos(a), cy + R * v / 100 * Math.sin(a)]; };
+  const poly = vals => vals.map((v, i) => pt(i, v).map(x => x.toFixed(1)).join(',')).join(' ');
+  let s = '<svg viewBox="-50 0 420 300" role="img" aria-label="Radar chart of five criteria">';
+  [25, 50, 75, 100].forEach(r => { s += '<polygon points="' + poly(labels.map(() => r)) + '" fill="none" stroke="var(--line)" stroke-width="1.5"/>'; });
+  labels.forEach((l, i) => {
+    const [x, y] = pt(i, 100), [lx, ly] = pt(i, 128);
+    s += '<line x1="' + cx + '" y1="' + cy + '" x2="' + x.toFixed(1) + '" y2="' + y.toFixed(1) + '" stroke="var(--line)"/>';
+    s += '<text x="' + lx.toFixed(1) + '" y="' + (ly + 4).toFixed(1) + '" text-anchor="' + (lx < cx - 8 ? 'end' : lx > cx + 8 ? 'start' : 'middle') + '" font-size="13" font-weight="700" fill="var(--ink)">' + l + '</text>';
+  });
+  s += '<polygon id="rshape" points="' + poly(vals0) + '" fill="var(--pri)" fill-opacity=".35" stroke="var(--pri)" stroke-width="3"/>';
+  vals0.forEach((v, i) => { s += '<circle class="rd" r="5" fill="var(--pri)" stroke="var(--bg)" stroke-width="2"/>'; });
+  s += '</svg>';
+  const wrap = h('div', { html: s });
+  const svg = wrap.firstChild, shape = svg.querySelector('#rshape'), dots = [...svg.querySelectorAll('.rd')];
+  const cur = vals0.slice();
+  function draw() { shape.setAttribute('points', poly(cur)); dots.forEach((d, i) => { const [x, y] = pt(i, cur[i]); d.setAttribute('cx', x.toFixed(1)); d.setAttribute('cy', y.toFixed(1)); }); svg.setAttribute('aria-label', 'Radar chart. ' + labels.map((l, i) => l + ' ' + Math.round(cur[i]) + ' out of 100').join(', ')); }
+  draw();
+  return { el: svg, set(i, v) { tween(cur[i], v, 350, x => { cur[i] = x; draw(); }); } };
+}
+
+/* ==========================================================================
+   STOP 0: Welcome
+   ========================================================================== */
+BUILD.welcome = ctx => {
+  const goggles = `<svg width="130" height="80" viewBox="0 0 130 80" role="img" aria-label="Safety goggles badge, animated">
+    <path d="M6 40 Q65 10 124 40" stroke="var(--ink)" stroke-width="7" fill="none"/>
+    <rect x="14" y="26" width="44" height="34" rx="14" fill="#8fd6cf" stroke="#1d2433" stroke-width="5"/>
+    <rect x="72" y="26" width="44" height="34" rx="14" fill="#8fd6cf" stroke="#1d2433" stroke-width="5"/>
+    <path d="M58 42 h14" stroke="#1d2433" stroke-width="5"/>
+    <path class="pulse" d="M22 36 l8 -4" stroke="#fff" stroke-width="4" stroke-linecap="round"/>
+    <path class="pulse" d="M80 36 l8 -4" stroke="#fff" stroke-width="4" stroke-linecap="round"/></svg>`;
+  return [
+    h('section', { class: 'card' },
+      h('div', { class: 'hero' }, h('div', { 'aria-hidden': 'false', html: goggles }),
+        h('div', { style: 'flex:1;min-width:230px' },
+          h('p', { style: 'font-size:1.15rem;margin:0' }, 'Pip the lab robot will be your guide. Predict first, then see what happens. You will break a few things on purpose, and that is the point.'),
+          h('p', { class: 'kicker' }, '⏱ About 30 minutes · 8 short stops · go back and forward whenever you like'))),
+      h('h3', { style: 'margin-top:16px' }, 'By the end you will be able to:'),
+      h('ul', { class: 'outs' }, L.outcomes.map((o, i) => h('li', { style: '--i:' + i }, o)))),
+    h('section', { class: 'rulebox', role: 'note', 'aria-label': 'Lab safety rule' },
+      h('div', { 'aria-hidden': 'true', style: 'font-size:2.2rem' }, '🥽'),
+      h('div', null, h('b', null, 'Lab safety rule #1'), h('p', { style: 'margin:.2em 0 0' }, L.dataRule))),
+    h('p', { class: 'note' }, 'Tip: use the ← → arrow keys to move between stops, and press ? for shortcuts. The Toolbelt fills in as you learn each idea.'),
+    h('div', { class: 'row' }, h('button', { class: 'btn', type: 'button', onclick: () => go(1) }, 'Start the lab →'))
+  ];
+};
+
+/* ==========================================================================
+   STOP 1: Context window
+   ========================================================================== */
+BUILD.context = ctx => {
+  const D = L.s1, MAX = 1000, PER = 115, START = 60;
+  /* 1. Fill the window */
+  const sim = h('div', { hidden: true });
+  let added = 0, broken = false;
+  const addedSet = new Set();
+  const liq = { y: 160 };
+  const beakerSvg = h('div', { class: 'beaker', html: `<svg viewBox="0 0 120 170" role="img" aria-label="Beaker showing how full the context window is">
+    <defs><clipPath id="bkclip"><path d="M20 10 H100 V140 Q100 160 80 160 H40 Q20 160 20 140 Z"/></clipPath></defs>
+    <g clip-path="url(#bkclip)"><rect id="liq" x="0" y="160" width="120" height="160" fill="var(--liquid)"/>
+    <g class="bubbles"><circle cx="40" cy="150" r="4" fill="#fff" opacity=".6"/><circle cx="70" cy="140" r="3" fill="#fff" opacity=".6" style="animation-delay:.5s"/><circle cx="88" cy="152" r="5" fill="#fff" opacity=".6" style="animation-delay:1s"/></g></g>
+    <path d="M20 10 V140 Q20 160 40 160 H80 Q100 160 100 140 V10" fill="none" stroke="var(--ink)" stroke-width="4"/>
+    <path d="M14 10 H106" stroke="var(--ink)" stroke-width="4" stroke-linecap="round"/>
+    <g stroke="var(--ink)" stroke-width="2"><path d="M20 35 h14 M20 60 h14 M20 85 h14 M20 110 h14"/></g></svg>` });
+  const liqEl = beakerSvg.querySelector('#liq');
+  const readout = h('p', { style: 'font-weight:700;margin:4px 0' });
+  const weightLine = h('p', { style: 'margin:4px 0;font-weight:700' });
+  const wMeter = h('div', { class: 'meter green', role: 'meter', 'aria-valuemin': '0', 'aria-valuemax': '100', 'aria-label': 'Weight of the rule from message 1' }, h('i'));
+  const chat = h('div', { class: 'chatwin', role: 'log', 'aria-label': 'Simulated chat. Oldest messages scroll out of view.' });
+  const ruleMsg = h('div', { class: 'msg user rule' }, D.rule);
+  const ruleAck = h('div', { class: 'msg ai' }, D.ruleReply);
+  chat.append(ruleMsg, ruleAck);
+  const box1 = h('div', { class: 'fb', hidden: true });
+  const fixes = h('div', { class: 'row', hidden: true, style: 'margin-top:8px' });
+  const chipsWrap = h('div', { class: 'chips', role: 'group', 'aria-label': 'Messages you can add' });
+  function setFill(tokens) {
+    const f = Math.min(1, tokens / MAX), w = Math.round(100 * (1 - 0.85 * f));
+    tween(liq.y, 160 - 150 * f, 700, y => { liq.y = y; liqEl.setAttribute('y', y.toFixed(1)); });
+    readout.textContent = 'Window: ' + Math.round(f * 100) + '% full (' + Math.round(Math.min(tokens, MAX)).toLocaleString() + ' of ' + MAX.toLocaleString() + ' tokens, invented)';
+    weightLine.textContent = 'Weight of the rule from message 1: ' + w + '%';
+    wMeter.firstChild.style.width = w + '%'; wMeter.setAttribute('aria-valuenow', String(w));
+    ruleMsg.style.opacity = String(Math.max(0.15, w / 100)); ruleAck.style.opacity = ruleMsg.style.opacity;
+    return w;
+  }
+  function tokensNow() { return START + PER * added; }
+  const chips = D.cards.map((c, i) => {
+    const b = h('button', { class: 'btn ghost', type: 'button', onclick: () => {
+      if (b.getAttribute('aria-disabled') === 'true') return;
+      b.setAttribute('aria-disabled', 'true'); b.textContent = '✓ ' + c;
+      const k = added++;
+      chat.append(h('div', { class: 'msg user' }, c));
+      const isBroken = k >= D.brokenFrom;
+      chat.append(h('div', { class: 'msg ai' + (isBroken ? ' broken' : '') }, D.replies[k], isBroken ? h('div', { class: 'tag', style: 'margin-top:4px;color:var(--bad)' }, '✕ ' + D.brokenMsg) : null));
+      const w = setFill(tokensNow());
+      announce('Message added. Window ' + Math.round(Math.min(1, tokensNow() / MAX) * 100) + ' percent full. Rule weight ' + w + ' percent.' + (isBroken ? ' The AI just broke the grade 5 rule.' : ''));
+      if (isBroken && !broken) { broken = true; fb(box1, 'bad', D.brokenFb, 'Rule broken. '); fixes.hidden = false; }
+      else if (isBroken) box1.hidden = true;
+    } }, c);
+    return b;
+  });
+  chipsWrap.append(...chips);
+  function resetChips() { chips.forEach((b, i) => { b.removeAttribute('aria-disabled'); b.textContent = D.cards[i]; }); added = 0; broken = false; }
+  const fixA = h('button', { class: 'btn', type: 'button', onclick: () => {
+    chat.append(h('div', { class: 'msg user' }, D.restated), h('div', { class: 'msg ai' }, D.restatedReply));
+    ruleMsg.style.opacity = '.15'; ruleAck.style.opacity = '.15';
+    weightLine.textContent = 'Weight of a fresh reminder near the end: 100%';
+    fb(box1, 'info', D.fixRestateFb, 'Works for now. '); ctx.finish();
+  } }, D.fixRestate);
+  const fixB = h('button', { class: 'btn', type: 'button', onclick: () => {
+    chat.textContent = ''; ruleMsg.style.opacity = '1'; ruleAck.style.opacity = '1';
+    chat.append(ruleMsg, ruleAck, h('div', { class: 'msg user' }, 'Fresh chat. Here is my best prompt, with the grade 5 rule first.'));
+    resetChips(); setFill(START + 30);
+    fb(box1, 'good', D.fixFreshFb, 'Clean window. '); ctx.finish();
+  } }, D.fixFresh);
+  fixes.append(fixA, fixB);
+  sim.append(h('div', { class: 'simrow' }, h('div', null, beakerSvg, readout, weightLine, wMeter),
+    h('div', { style: 'flex:1;min-width:250px' }, chat, h('p', { class: 'q', style: 'margin-top:10px' }, 'Add messages to the chat (any order):'), chipsWrap)), box1, fixes);
+  setFill(START);
+  const pred = choice({ q: D.pred.q, options: D.pred.opts, onAny: () => { sim.hidden = false; } });
+  const c1 = card(1, 'Fill the window', pred, sim);
+
+  /* 2. What does the AI know? */
+  const sort = sortGame({ q: D.sort.q, a: D.sort.a, b: D.sort.b, items: D.sort.items, onDone: () => { } });
+  const c2 = card(2, 'What does the AI know?', sort);
+
+  /* 3. The guess reveal */
+  const G = D.guess;
+  const on = { grade: false, subject: false, detail: false };
+  let req = null;
+  const out = h('div', { class: 'out', 'aria-label': 'Simulated AI answer' }, 'Pick a request first.');
+  const box3 = h('div', { class: 'fb', hidden: true });
+  function renderOut(flash) {
+    if (!req) return;
+    const any = Object.values(on).some(Boolean);
+    const lines = any ? ['Version using your details:'].concat(Object.keys(on).filter(k => on[k]).map(k => req.bits[k])).join('\n\n') : 'Generic guess:\n\n' + req.generic;
+    out.textContent = lines;
+    if (flash && !RM.matches) { out.classList.remove('hlflash'); void out.offsetWidth; out.classList.add('hlflash'); }
+    if (Object.values(on).every(Boolean)) { fb(box3, 'info', G.reveal, 'Pattern. '); ctx.finish(); }
+    else box3.hidden = true;
+  }
+  const reqBtns = pickList(G.reqs.map(r => ({ t: '“' + r.t + '”', r })), o => { req = o.r; renderOut(true); }, 'Choose a teacher request');
+  const tgl = h('div', { class: 'three', role: 'group', 'aria-label': 'Class details to put on the page' }, G.toggles.map(t => {
+    const b = h('button', { class: 'switch', type: 'button', role: 'switch', 'aria-checked': 'false', onclick: () => {
+      on[t.k] = !on[t.k]; b.setAttribute('aria-checked', String(on[t.k])); st.textContent = on[t.k] ? 'ON' : 'OFF';
+      if (!req) { out.textContent = 'Pick a request first.'; announce('Pick a request first.'); return; }
+      renderOut(true); announce('Output updated. ' + out.textContent.slice(0, 160));
+    } }, h('span', { class: 'knob', 'aria-hidden': 'true' }), t.t);
+    const st = h('span', { class: 'st' }, 'OFF'); b.append(st); return b;
+  }));
+  const c3 = card(3, 'The guess reveal', h('p', { class: 'q' }, G.q), reqBtns, h('p', { class: 'kicker' }, 'Details on the page:'), tgl, h('p', { class: 'kicker', style: 'margin-top:10px' }, 'What the AI wrote:'), out, box3);
+  return [c1, c2, c3];
+};
+
+/* ==========================================================================
+   STOP 2: Five-part prompt
+   ========================================================================== */
+BUILD.prompt = ctx => {
+  const D = L.s2;
+  /* 1. Switchboard */
+  const on = {}; D.parts.forEach(p => on[p.k] = false);
+  const promptBox = h('div', { class: 'out', 'aria-label': 'Your prompt so far' });
+  const outBox = h('div', { 'aria-label': 'Simulated AI answer' });
+  const mEl = h('div', { class: 'meter', role: 'meter', 'aria-valuemin': '0', 'aria-valuemax': '100', 'aria-label': 'Share of the answer the AI had to guess' }, h('i'));
+  const mTxt = h('p', { style: 'font-weight:800;margin:4px 0' });
+  let cur = 100;
+  const lineEls = {};
+  function paint(flashKey) {
+    const parts = D.parts.filter(p => on[p.k]);
+    promptBox.textContent = '';
+    if (!parts.length) promptBox.append(h('em', null, '(empty prompt: the AI gets nothing)'));
+    parts.forEach(p => promptBox.append(h('span', { class: 'seg p' + p.k }, h('b', null, p.k + ' '), p.prompt), ' '));
+    D.parts.forEach(p => {
+      const el = lineEls[p.k], isOn = on[p.k];
+      el.className = 'oline p' + p.k + (isOn ? ' on' : ' guess');
+      el.textContent = '';
+      el.append(h('span', { class: 'badge', 'aria-hidden': 'true' }, p.k), h('div', null, h('span', { class: 'why' }, isOn ? 'From your ' + p.name + ' part' : 'AI guess (no ' + p.name + ' given)'), isOn ? p.on : p.off));
+      if (flashKey === p.k && !RM.matches) { el.classList.add('hlflash'); }
+    });
+    const g = 100 - D.parts.reduce((a, p) => a + (on[p.k] ? p.guess : 0), 0);
+    tween(cur, g, 600, v => { cur = v; mEl.firstChild.style.width = v + '%'; });
+    mEl.setAttribute('aria-valuenow', String(g));
+    mTxt.textContent = 'What the AI had to guess: ' + g + '%';
+    return g;
+  }
+  D.parts.forEach(p => { lineEls[p.k] = h('div', { class: 'oline' }); outBox.append(lineEls[p.k]); });
+  const sw = h('div', { class: 'two', role: 'group', 'aria-label': 'Prompt parts' }, D.parts.map(p => {
+    const st = h('span', { class: 'st' }, 'OFF');
+    const b = h('button', { class: 'switch', type: 'button', role: 'switch', 'aria-checked': 'false', onclick: () => {
+      on[p.k] = !on[p.k]; b.setAttribute('aria-checked', String(on[p.k])); st.textContent = on[p.k] ? 'ON' : 'OFF';
+      const g = paint(p.k); announce(p.name + (on[p.k] ? ' on' : ' off') + '. The AI now has to guess ' + g + ' percent.');
+      if (g === 0) { fb(box1b, 'good', 'Zero guessing left. Five parts, five categories of guessing removed.', 'Full board. '); }
+      else box1b.hidden = true;
+    } }, h('span', { class: 'badge p' + p.k, 'aria-hidden': 'true' }, p.k), h('span', null, p.name), h('span', { class: 'knob', 'aria-hidden': 'true' }), st);
+    return b;
+  }));
+  const box1b = h('div', { class: 'fb', hidden: true });
+  const swWrap = h('div', { hidden: true }, sw, h('p', { class: 'kicker' }, 'Your prompt:'), promptBox, mTxt, mEl, h('p', { class: 'kicker', style: 'margin-top:10px' }, 'What the AI wrote (each line is tagged with the part it came from):'), outBox, box1b);
+  paint();
+  const pred = choice({ q: D.pred.q, options: D.pred.opts, onAny: () => { swWrap.hidden = false; } });
+  const c1 = card(1, 'Prompt switchboard', pred, swWrap);
+
+  /* 2. Ladder */
+  let rung = 0, reached = 0;
+  const lb = [];
+  const bodyEl = h('div', { class: 'ladderbody', 'aria-live': 'off' });
+  const climb = h('button', { class: 'btn', type: 'button', onclick: () => setRung(Math.min(reached + 1, 3)) });
+  const rungs = h('div', { class: 'rungs', role: 'group', 'aria-label': 'Prompt ladder rungs' }, D.ladder.map((r, i) => {
+    const b = h('button', { class: 'rung', type: 'button', onclick: () => { if (i > reached + 1) { announce('Climb one rung at a time.'); return; } setRung(i); } }, r.n + '. ' + r.name);
+    lb.push(b); return b;
+  }));
+  function setRung(i) {
+    rung = i; reached = Math.max(reached, i);
+    lb.forEach((b, j) => { if (j === i) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current'); b.classList.toggle('reached', j <= reached); });
+    const r = D.ladder[i];
+    bodyEl.textContent = '';
+    const outEl = h('div', { class: 'out', style: 'white-space:normal', html: r.out });
+    bodyEl.append(h('p', { class: 'kicker' }, 'Rung ' + r.n + ': ' + r.name),
+      h('div', { class: 'out', style: 'font-family:ui-monospace,Menlo,monospace;font-size:.88rem' }, r.prompt),
+      h('p', { class: 'fb info', style: 'margin:8px 0' }, h('span', { class: 'ficon', 'aria-hidden': 'true' }, 'ℹ'), h('span', null, r.adds)),
+      h('p', { class: 'kicker' }, 'Sample output (written for this lesson):'), outEl);
+    if (r.checkpoint) {
+      const after = h('div', { hidden: true, html: r.after });
+      bodyEl.append(h('div', { class: 'row', style: 'margin-top:8px' }, h('button', { class: 'btn', type: 'button', onclick: e => { after.hidden = false; e.currentTarget.setAttribute('aria-disabled', 'true'); announce('Facts verified. The AI continues with steps 2 to 4.'); mascot.react('good', 'Verified before building!'); } }, 'I verified the facts → continue')), after);
+    }
+    climb.textContent = i < 3 ? 'Climb to rung ' + (i + 2) + ': ' + D.ladder[i + 1].name + ' ↑' : 'You are at the top rung';
+    climb.setAttribute('aria-disabled', i >= 3 ? 'true' : 'false');
+    announce('Rung ' + r.n + ', ' + r.name + '. ' + r.adds);
+    if (i === 3) ctx.finish();
+  }
+  const c2 = card(2, 'The prompt ladder', h('p', null, 'Climb one rung at a time. Watch what each rung adds to the page, and how the output changes.'),
+    h('div', { class: 'ladder' }, rungs, bodyEl), h('div', { class: 'row', style: 'margin-top:10px' }, climb));
+  setRung(0);
+
+  /* 3. Quick poke */
+  const P = D.poke;
+  const oB = h('div', { class: 'out' }, 'Press "Run both" to see.'), oT = h('div', { class: 'out' }, 'Press "Run both" to see.');
+  const lesson = h('div', { class: 'fb', hidden: true });
+  const runBtn = h('button', { class: 'btn', type: 'button', hidden: true, onclick: () => { typeInto(oB, P.outBloated); typeInto(oT, P.outTight); announce('Long prompt result: ' + P.outBloated + ' Tight prompt result: ' + P.outTight); fb(lesson, 'info', P.lesson, 'Rule of thumb. '); } }, 'Run both prompts');
+  const pk = choice({ q: P.q, options: P.opts, onAny: () => { runBtn.hidden = false; } });
+  const c3 = card(3, 'Quick poke: is longer better?', h('div', { class: 'two' },
+    h('div', null, h('p', { class: 'kicker' }, 'Prompt A (long)'), h('div', { class: 'out', style: 'font-size:.85rem' }, P.bloated), oB),
+    h('div', null, h('p', { class: 'kicker' }, 'Prompt B (tight)'), h('div', { class: 'out', style: 'font-size:.85rem' }, P.tight), oT)), pk, h('div', { class: 'row' }, runBtn), lesson);
+  return [c1, c2, c3];
+};
+
+/* ==========================================================================
+   STOP 3: Debugging
+   ========================================================================== */
+BUILD.debug = ctx => {
+  const D = L.s3;
+  /* 1. Symptom matcher */
+  const pairs = D.match.pairs;
+  const order = pairs.map((p, i) => i);
+  const fixOrder = [3, 6, 0, 7, 2, 5, 1, 4];       // fixed shuffle so fixes do not line up with symptoms
+  let sel = null, matched = 0;
+  const box = h('div', { class: 'fb', hidden: true });
+  const symBtns = [], fixBtns = [];
+  const symCol = h('div', { class: 'opts', role: 'group', 'aria-label': 'Symptoms' });
+  const fixCol = h('div', { class: 'opts', role: 'group', 'aria-label': 'Likely missing pieces' });
+  pairs.forEach((p, i) => {
+    const mark = h('span', { class: 'mark' });
+    const b = h('button', { class: 'opt', type: 'button', 'aria-pressed': 'false', onclick: () => {
+      if (b.getAttribute('aria-disabled') === 'true') return;
+      symBtns.forEach(x => x.setAttribute('aria-pressed', 'false')); b.setAttribute('aria-pressed', 'true'); sel = i;
+      announce('Symptom selected: ' + p.s + '. Now choose its fix.'); mascot.react('think');
+    } }, mark, h('span', null, p.s));
+    b._mark = mark; symBtns[i] = b; symCol.append(b);
+  });
+  fixOrder.forEach(i => {
+    const p = pairs[i], mark = h('span', { class: 'mark' });
+    const b = h('button', { class: 'opt', type: 'button', onclick: () => {
+      if (b.getAttribute('aria-disabled') === 'true') return;
+      if (sel == null) { fb(box, 'info', 'Tap a symptom on the left first, then its fix.', ''); return; }
+      if (sel === i) {
+        matched++; b.classList.add('matched'); symBtns[i].classList.add('matched');
+        mark.textContent = '✓ Match'; symBtns[i]._mark.textContent = '✓ Match';
+        b.setAttribute('aria-disabled', 'true'); symBtns[i].setAttribute('aria-disabled', 'true'); symBtns[i].setAttribute('aria-pressed', 'false'); sel = null;
+        fb(box, 'good', p.why);
+        if (matched === pairs.length) { fb(box, 'good', 'All eight matched. ' + p.why, 'Bench cleared. '); }
+      } else {
+        b.classList.remove('shake'); void b.offsetWidth; b.classList.add('shake');
+        fb(box, 'bad', 'That fix targets "' + pairs[i].s + '". For "' + pairs[sel].s + '", ' + pairs[sel].hint.charAt(0).toLowerCase() + pairs[sel].hint.slice(1));
+      }
+    } }, mark, h('span', null, p.f));
+    fixBtns[i] = b; fixCol.append(b);
+  });
+  const c1 = card(1, 'Symptom matcher', h('p', { class: 'q' }, D.match.q), h('div', { class: 'pairs' }, h('div', null, h('h4', null, 'Symptoms'), symCol), h('div', null, h('h4', null, 'Likely missing piece'), fixCol)), box);
+
+  /* 2. One-variable experiment */
+  const B = D.bench;
+  const stage = h('div');
+  const weakOut = h('div', { class: 'out' }, B.weakOut);
+  let chosen = null, oneDone = false;
+  const resBox = h('div', { class: 'fb', hidden: true });
+  const resOut = h('div', { class: 'out', hidden: true });
+  const round2 = h('div', { hidden: true });
+  function afterPredict(pk) {
+    const f = chosen;
+    resOut.hidden = false;
+    resOut.textContent = '';
+    const chg = h('span', { class: 'tag', style: 'margin-right:6px' }, '▲ changed: ' + f.changes);
+    resOut.append(chg, f.result);
+    if (!RM.matches) { resOut.classList.remove('hlflash'); void resOut.offsetWidth; resOut.classList.add('hlflash'); }
+    if (pk.k === f.changes) fb(resBox, 'good', B.matchFb, 'Prediction matched. '); else fb(resBox, 'info', B.missFb, 'Surprise. ');
+    round2.hidden = false;
+  }
+  const predWrap = h('div', { hidden: true });
+  const fixList = pickList(B.fixes.map(f => ({ t: f.t, f })), o => {
+    chosen = o.f; predWrap.hidden = false; resOut.hidden = true; resBox.hidden = true; round2.hidden = true;
+    announce('You chose: ' + o.f.t + '. Now predict what will change.');
+  }, 'Candidate fixes (pick ONE)');
+  predWrap.append(h('p', { class: 'q' }, B.predQ), pickList(B.predOpts, o => afterPredict(o), 'Your prediction'));
+  /* round 2 */
+  const forkHost = h('div', { hidden: true });
+  const r2out = h('div', { class: 'out', hidden: true });
+  const whichHost = h('div', { hidden: true });
+  const runAll = h('button', { class: 'btn', type: 'button', onclick: () => {
+    r2out.hidden = false; r2out.textContent = B.round2Out; whichHost.hidden = false; runAll.setAttribute('aria-disabled', 'true');
+    announce('Result of all three changes: ' + B.round2Out);
+  } }, 'Apply all three fixes at once');
+  const forkSvg = `<svg class="fork" viewBox="0 0 360 160" role="img" aria-label="Fork in the road: three changes at once all lead to one improved output, so you cannot tell which road helped.">
+    <text x="4" y="82">3 changes</text>
+    <path d="M70 78 C130 78 130 28 200 28" style="stroke-dasharray:300"/><path d="M70 78 L200 78" style="stroke-dasharray:300"/><path d="M70 78 C130 78 130 128 200 128" style="stroke-dasharray:300"/>
+    <text x="205" y="24">context</text><text x="205" y="74">format</text><text x="205" y="124">constraint</text>
+    <path d="M270 28 C310 28 310 78 330 78" style="animation-delay:.9s;stroke-dasharray:300"/><path d="M270 78 L330 78" style="animation-delay:1s;stroke-dasharray:300"/><path d="M270 128 C310 128 310 78 330 78" style="animation-delay:1.1s;stroke-dasharray:300"/>
+    <text x="300" y="150" style="font-size:20px">better, but which road?</text><text x="334" y="82" style="font-size:22px">?</text></svg>`;
+  const which = choice({ q: B.which, options: B.whichOpts.map(o => ({ t: o.t, ok: o.ok, why: o.ok ? B.whichFb : B.whichFbWrong })),
+    onAny: () => { if (forkHost.hidden) { forkHost.hidden = false; forkHost.innerHTML = forkSvg; } }, onRight: () => ctx.finish() });
+  whichHost.append(which);
+  round2.append(h('div', { class: 'note' }, B.round2), h('div', { class: 'row' }, runAll), r2out, whichHost, forkHost);
+  const c2 = card(2, 'The one-variable experiment', h('p', { class: 'kicker' }, 'Weak prompt on the bench:'), h('div', { class: 'out', style: 'font-family:ui-monospace,monospace' }, B.weak), h('p', { class: 'kicker' }, 'What the AI produced:'), weakOut, h('p', { class: 'q' }, B.q), fixList, predWrap, resOut, resBox, round2);
+
+  /* 3. Link back to Stop 1 */
+  const c3 = card(3, 'Link back to Stop 1', choice({ q: D.crowded.q, options: D.crowded.opts, onRight: () => ctx.finish() }));
+  return [c1, c2, c3];
+};
+
+/* ==========================================================================
+   STOP 4: Evaluating output
+   ========================================================================== */
+BUILD.evaluate = ctx => {
+  const D = L.s4;
+  const names = { fine: 'Fine' }; D.criteria.forEach(c => names[c.k] = c.n);
+  /* 1. Audit */
+  let doneCount = 0;
+  const radarCard = card(2, 'Criteria radar', h('p', { class: 'q' }, D.radar.q));
+  radarCard.hidden = true;
+  const showRadar = () => { if (radarCard.hidden) { radarCard.hidden = false; radarCard.classList.add('stepcard'); announce('Scorecard shown below.'); } };
+  const rows = D.lines.map((ln, i) => {
+    const box = h('div', { class: 'fb', hidden: true });
+    let tries = 0, solved = false;
+    const li = h('li');
+    const btns = ['fine'].concat(D.criteria.map(c => c.k)).map(k => {
+      const b = h('button', { type: 'button', 'aria-pressed': 'false', 'aria-label': 'Line ' + (i + 1) + ': ' + (k === 'fine' ? 'mark as Fine' : 'problem of ' + names[k]), onclick: () => {
+        if (solved) return;
+        tries++;
+        btns.forEach(x => x.setAttribute('aria-pressed', 'false')); b.setAttribute('aria-pressed', 'true');
+        const ok = k === ln.best, alt = (ln.accept || []).indexOf(k) >= 0;
+        if (ok || alt) {
+          solved = true; doneCount++; li.classList.add('ok');
+          fb(box, ok ? 'good' : 'info', ln.why, ok ? (ln.best === 'fine' ? 'Fine, indeed. ' : 'Best fit: ' + names[ln.best] + '. ') : 'Also defensible. The best fit is ' + names[ln.best] + '. ');
+          if (doneCount === D.lines.length) { showRadar(); ctx.finish(); }
+        } else if (ln.best === 'fine') fb(box, 'bad', 'This line is actually fine, so no criterion fails. ' + (tries > 1 ? ln.why : 'Check it against what you know.'), 'Careful. ');
+        else if (k === 'fine') fb(box, 'bad', tries > 1 ? ln.why : 'Something here fails a criterion. Re-read the line: is it about truth, sources, fairness, confidence, or fit for learners?', 'Look again. ');
+        else fb(box, 'bad', tries > 1 ? ln.why : 'That criterion is not the best fit. Ask: is the problem the truth, the source, fairness, confidence, or fit for these learners?');
+      } }, k === 'fine' ? '✓ Fine' : '⚠ ' + names[k]);
+      return b;
+    });
+    li.append(h('p', { style: 'margin:0' }, h('b', null, (i + 1) + '. '), ln.t), h('div', { class: 'tg', role: 'group', 'aria-label': 'Tag line ' + (i + 1) }, btns), box);
+    return li;
+  });
+  const c1 = card(1, 'Audit the draft', h('p', null, D.intro), h('ol', { class: 'audit', style: 'padding:0;list-style:none' }, rows),
+    h('div', { class: 'row', style: 'margin-top:10px' }, h('button', { class: 'btn ghost', type: 'button', onclick: showRadar }, 'Show me the scorecard now')));
+
+  /* 2. Radar */
+  const labels = D.criteria.map(c => c.n);
+  const vals = D.criteria.map(() => 30);
+  const radar = makeRadar(labels, vals);
+  const outs = [];
+  const sliders = h('div', { class: 'sliders' }, D.radar.fixes.map((f, i) => {
+    const o = h('output', null, '30');
+    const id = 'rs' + (++uid);
+    const inp = h('input', { type: 'range', id, min: '30', max: '100', step: '1', value: '30', 'aria-valuetext': '30 out of 100', oninput: () => {
+      o.textContent = inp.value; inp.setAttribute('aria-valuetext', inp.value + ' out of 100'); vals[i] = +inp.value; radar.set(i, vals[i]);
+      if (vals.every(v => v >= 99)) { fb(doneBox, 'good', D.radar.done, 'Full shape. '); }
+    } });
+    outs.push(inp);
+    return h('div', null, h('label', { for: id }, f.t, ' ', h('span', { class: 'tag', style: 'margin-left:6px' }, o, '/100')), inp);
+  }));
+  const doneBox = h('div', { class: 'fb', hidden: true });
+  radarCard.append(h('div', { class: 'radarwrap' }, radar.el, sliders), doneBox);
+
+  /* 3. Same output, different lens */
+  const lens = D.lens;
+  const c3 = card(3, 'Same output, different lens', h('div', { class: 'out' }, lens.key), choice({ q: lens.q, options: lens.opts, onRight: () => ctx.finish() }));
+  return [c1, radarCard, c3];
+};
+
+/* ==========================================================================
+   STOP 5: Lateral reading
+   ========================================================================== */
+BUILD.lateral = ctx => {
+  const D = L.s5;
+  const tabsEl = h('div', { class: 'tabs', 'aria-hidden': 'true' });
+  const pageEl = h('div', { class: 'page', 'aria-live': 'off' });
+  const tabs = [];
+  function addTab(name) { const t = h('span', { class: 'tabin' }, name); tabs.push(t); tabsEl.append(t); return t; }
+  function show(i, node, url) {
+    tabs.forEach((t, j) => t.classList.toggle('cur', j === i));
+    pageEl.textContent = ''; pageEl.append(h('p', { class: 'url' }, url + '  (simulated browser)'), node);
+  }
+  addTab('AI chat');
+  show(0, h('div', { class: 'out', style: 'white-space:normal' }, D.ai), 'ai-assistant');
+  const b = h('div', { class: 'browser', role: 'group', 'aria-label': 'Simulated web browser' }, tabsEl, pageEl);
+  const sr = h('p', { class: 'sr' }, 'The simulated browser shows an AI answer that cites an organization.');
+  let aboutTab = null, searchTab = null;
+  const d3Host = h('div', { hidden: true }), d2Host = h('div', { hidden: true });
+  const callout = h('div', { class: 'fb info', hidden: true });
+  const d1 = choice({ q: D.d1.q, options: D.d1.opts.map(o => Object.assign({}, o, o.id === 'about' ? { why: o.why } : {})), onAny: o => {
+    if (o.id === 'about' && !aboutTab) { aboutTab = addTab('About – Global Institute'); show(tabs.indexOf(aboutTab), h('div', { class: 'out', style: 'white-space:normal' }, D.d1.aboutPage), 'globalinstitute-learning (the organization’s own page)'); }
+  }, onRight: () => {
+    searchTab = addTab('New tab: search');
+    const res = h('div', null, h('p', null, h('b', null, 'Search: '), '“Global Institute for Learning Retention” 90% teach others'), D.results.map((r, i) => h('div', { class: 'sres', style: '--i:' + i }, h('b', null, r.t), r.d)),
+      h('p', { class: 'note' }, 'Simulated results written for this lesson.'));
+    show(tabs.indexOf(searchTab), res, 'search (simulated)');
+    announce('New tab opened. Search results: ' + D.results.map(r => r.t + '. ' + r.d).join(' '));
+    d2Host.hidden = false;
+  } });
+  const d2 = choice({ q: D.d2.q, options: D.d2.opts, onRight: () => { d3Host.hidden = false; } });
+  const d3 = choice({ q: D.d3.q, options: D.d3.opts, onRight: () => { fb(callout, 'info', D.connect, 'Connect. '); ctx.finish(); } });
+  d2Host.append(d2); d3Host.append(d3);
+  const c1 = card(1, 'Branching scenario: three decisions', sr, b, h('div', { style: 'margin-top:12px' }, d1, d2Host, d3Host), callout);
+  const c2 = card(2, 'Spot the move', sortGame({ q: D.sort.q, a: D.sort.a, b: D.sort.b, items: D.sort.items, onDone: () => { } }));
+  const c3 = card(3, 'Connect to Stop 4', h('p', { html: D.connect }));
+  return [c1, c2, c3];
+};
+
+/* ==========================================================================
+   STOP 6: Accessibility lens
+   ========================================================================== */
+BUILD.access = ctx => {
+  const D = L.s6;
+  const ol = lines => h('ol', { style: 'margin:.3em 0;padding-left:1.3em' }, lines.map(l => h('li', { html: l })));
+  /* 1. Find the change */
+  const flagHost = h('div', { hidden: true }), promptHost = h('div', { hidden: true }), fixedHost = h('div', { hidden: true });
+  const B = D.rewrites.find(r => r.id === 'B');
+  const flagged = new Set();
+  const revBox = h('div', { class: 'fb', hidden: true });
+  const lineBtns = B.lines.map((t, i) => {
+    const lab = h('span', { class: 'lab' }, 'Line ' + (i + 1));
+    const bt = h('button', { class: 'diffline', type: 'button', 'aria-pressed': 'false', onclick: () => {
+      if (bt._revealed) return;
+      if (flagged.has(i)) flagged.delete(i); else flagged.add(i);
+      bt.setAttribute('aria-pressed', String(flagged.has(i)));
+    } }, lab, h('span', null, t));
+    bt._lab = lab; return bt;
+  });
+  const revealBtn = h('button', { class: 'btn', type: 'button', onclick: () => {
+    revealBtn.setAttribute('aria-disabled', 'true');
+    let hit = 0, missed = 0, extra = 0;
+    lineBtns.forEach((bt, i) => {
+      bt._revealed = true; const isBad = B.bad.indexOf(i) >= 0, fl = flagged.has(i);
+      bt.classList.add(isBad ? 'bad' : 'fine');
+      bt._lab.textContent = (isBad ? '✕ Changed' : '✓ Faithful');
+      bt.append(h('span', { style: 'display:block;font-size:.85rem' }, ' ' + B.diff[i] + (isBad ? (fl ? ' (You caught it.)' : ' (You missed this one.)') : (fl ? ' (You flagged this, but it matches the original.)' : ''))));
+      if (isBad && fl) hit++; else if (isBad) missed++; else if (fl) extra++;
+    });
+    fb(revBox, missed || extra ? 'info' : 'good', 'You caught ' + hit + ' of ' + B.bad.length + ' changed lines. A swap like this is easy to miss because it still sounds fluent and confident.', missed || extra ? 'Review. ' : 'Sharp eye. ');
+    promptHost.hidden = false;
+  } }, 'Reveal the differences');
+  flagHost.append(h('p', { class: 'q' }, D.flagQ), h('div', { role: 'group', 'aria-label': 'Lines of rewrite B' }, lineBtns), h('div', { class: 'row' }, revealBtn), revBox);
+  const pick = choice({ q: D.pickQ, options: D.rewrites.map(r => ({ t: 'Rewrite ' + r.id, ok: !r.faithful, why: r.faithful ? 'Rewrite ' + r.id + ' keeps the science: the same ideas and the same direction of every claim. Compare it with the original line by line.' : 'Yes: Rewrite B swaps the gases and says plants "eat" sunlight. It reads smoothly, which is exactly why it is dangerous.' })), onRight: () => { flagHost.hidden = false; } });
+  const pp = choice({ q: D.prompts.q, options: D.prompts.opts, onRight: () => {
+    fixedHost.hidden = false; announce('Corrected rewrite shown below.'); ctx.finish();
+  } });
+  promptHost.append(pp);
+  fixedHost.append(h('p', { class: 'kicker' }, 'The corrected rewrite (invented for this lesson):'), h('div', { class: 'out', style: 'white-space:normal' }, ol(D.prompts.fixed)), h('p', { class: 'fb info' }, h('span', { class: 'ficon', 'aria-hidden': 'true' }, 'ℹ'), h('span', null, D.prompts.left)));
+  const c1 = card(1, 'Find the change',
+    h('div', { class: 'orig' }, h('b', null, 'Original passage'), ol(D.original)),
+    h('div', { class: 'three', style: 'margin-top:10px' }, D.rewrites.map(r => h('div', { class: 'out', style: 'white-space:normal' }, h('b', null, 'Rewrite ' + r.id), ol(r.lines)))),
+    pick, flagHost, promptHost, fixedHost);
+
+  /* 2. Closing question */
+  const C = D.close;
+  const sugHost = h('div', { 'aria-live': 'polite' });
+  const sel = pickList(C.prompts.map(t => ({ t })), () => { }, 'Choose an earlier prompt');
+  const checks = h('div', { class: 'checks', role: 'group', 'aria-label': 'Learner needs' }, C.needs.map(n => {
+    const s = h('div', { class: 'sug', hidden: true }, h('b', null, 'You might add: '), n.sug);
+    const cb = h('input', { type: 'checkbox', id: 'nd' + n.k, onchange: () => { s.hidden = !cb.checked; if (cb.checked) { mascot.react('good', 'Access thinking!'); announce('Suggestion: ' + n.sug); } } });
+    return h('div', null, h('label', { for: 'nd' + n.k }, cb, n.t), s);
+  }));
+  const c2 = card(2, 'The closing question', h('p', { class: 'q' }, C.q), sel, checks, h('p', { class: 'note' }, 'Not graded, and nothing is saved. This one is for your own thinking.'));
+  const c3 = card(3, 'A note about this lesson', h('p', null, 'This lab was built to work with a keyboard and screen reader, shows meaning with text and icons (never color alone), and respects reduced-motion settings. Accessibility is not an add-on; it is part of whether the learning is reachable.'));
+  return [c1, c2, c3];
+};
+
+/* ==========================================================================
+   STOP 7: Capstone
+   ========================================================================== */
+BUILD.capstone = ctx => {
+  const S = L.s7.steps;
+  const scoreTxt = h('b', { id: 'labtxt' }, 'Lab Score: 0 / 100');
+  const mEl = h('div', { class: 'meter green', role: 'meter', 'aria-valuemin': '0', 'aria-valuemax': '100', 'aria-valuenow': '0', 'aria-label': 'Lab Score' }, h('i'));
+  const host = h('div');
+  const endHost = h('div');
+  let shown = 0, cur = 0;
+  function award(i, tries, base) {
+    const f = (tries === 1 ? 1 : tries === 2 ? 0.7 : 0.5) * (base == null ? 1 : base);
+    state.lab.steps[i] = Math.round(S[i].max * f);
+    const tot = Object.values(state.lab.steps).reduce((a, b) => a + b, 0);
+    tween(cur, tot, 700, v => { cur = v; mEl.firstChild.style.width = v + '%'; });
+    state.lab.total = tot;
+    scoreTxt.textContent = 'Lab Score: ' + tot + ' / 100';
+    mEl.setAttribute('aria-valuenow', String(tot));
+    announce('Lab Score is now ' + tot + ' out of 100.');
+  }
+  function next(i) {
+    if (i + 1 < S.length) { showStep(i + 1); return; }
+    state.lab.finished = true;
+    mascot.party = true; mascot.react('good', 'We did it! Lab complete!'); confetti();
+    endHost.append(h('section', { class: 'card concept stepcard' }, h('h3', null, '🎉 Lab complete'), h('p', null, L.s7.end), h('p', null, h('b', null, 'Final Lab Score: ' + state.lab.total + ' / 100.'), ' Retries still earn partial credit, because noticing and correcting is the skill.'),
+      h('p', { class: 'note' }, 'Pip is celebrating in the corner. Next up: a short practice check.')));
+    announce('Capstone complete. Final Lab Score ' + state.lab.total + ' out of 100.');
+    ctx.finish();
+  }
+  function stepCard(i, ...kids) {
+    return h('section', { class: 'card stepcard' }, h('h3', null, h('span', { class: 'num', 'aria-hidden': 'true' }, i + 1), S[i].title, h('span', { class: 'tag', style: 'margin-left:auto' }, 'up to ' + S[i].max + ' pts')), h('p', { class: 'out', style: 'white-space:normal' }, S[i].scene), ...kids);
+  }
+  function showStep(i) {
+    shown = i; const st = S[i]; let c;
+    if (i === 1) c = step2(i);
+    else if (i === 3) c = step4(i);
+    else if (i === 5) c = step6(i);
+    else c = stepCard(i, choice({ q: st.q, options: st.opts, onRight: tries => { award(i, tries); next(i); } }));
+    host.append(c);
+    if (i > 0) c.scrollIntoView({ block: 'nearest', behavior: RM.matches ? 'auto' : 'smooth' });
+  }
+  function step2(i) {
+    const D = L.s2, on = {}; D.parts.forEach(p => on[p.k] = false);
+    let rungPick = null, tries = 0, done = false;
+    const box = h('div', { class: 'fb', hidden: true });
+    const sw = h('div', { class: 'two', role: 'group', 'aria-label': 'Prompt parts' }, D.parts.map(p => {
+      const st = h('span', { class: 'st' }, 'OFF');
+      const b = h('button', { class: 'switch', type: 'button', role: 'switch', 'aria-checked': 'false', onclick: () => { if (done) return; on[p.k] = !on[p.k]; b.setAttribute('aria-checked', String(on[p.k])); st.textContent = on[p.k] ? 'ON' : 'OFF'; } },
+        h('span', { class: 'badge p' + p.k, 'aria-hidden': 'true' }, p.k), h('span', null, p.name), h('span', { class: 'knob', 'aria-hidden': 'true' }), st);
+      return b;
+    }));
+    const lp = L.s7.ladderPick;
+    const rl = pickList(lp.opts, o => { rungPick = o; }, 'Choose a ladder rung');
+    const chk = h('button', { class: 'btn', type: 'button', onclick: () => {
+      if (done) return;
+      tries++;
+      const miss = D.parts.filter(p => !on[p.k]).map(p => p.name);
+      if (miss.length) { fb(box, 'bad', 'Still missing: ' + miss.join(', ') + '. Each missing part is a category the AI will guess at.'); return; }
+      if (!rungPick) { fb(box, 'info', 'Now choose a ladder rung.', 'Almost. '); return; }
+      if (!rungPick.ok) { fb(box, 'bad', rungPick.why); return; }
+      done = true;
+      fb(box, 'good', rungPick.why + ' All five parts are on.', rungPick.partial ? 'Good build. ' : 'Strong build. ');
+      award(i, tries, rungPick.partial ? 0.8 : 1); next(i);
+    } }, 'Check my build');
+    return stepCard(i, sw, h('p', { class: 'q' }, lp.q), rl, h('div', { class: 'row' }, chk), box);
+  }
+  function step4(i) {
+    const st = S[i], flagged = new Set(); let tries = 0, done = false;
+    const box = h('div', { class: 'fb', hidden: true });
+    const btns = st.lines.map((t, j) => {
+      const b = h('button', { class: 'diffline', type: 'button', 'aria-pressed': 'false', onclick: () => { if (done) return; if (flagged.has(j)) flagged.delete(j); else flagged.add(j); b.setAttribute('aria-pressed', String(flagged.has(j))); } },
+        h('span', { class: 'lab' }, 'Line ' + (j + 1)), h('span', null, t));
+      return b;
+    });
+    const chk = h('button', { class: 'btn', type: 'button', onclick: () => {
+      if (done) return; tries++;
+      const missed = st.bad.filter(j => !flagged.has(j)), extra = [...flagged].filter(j => st.bad.indexOf(j) < 0);
+      if (!missed.length && !extra.length) {
+        done = true; btns.forEach((b, j) => { b.classList.add(st.bad.indexOf(j) >= 0 ? 'bad' : 'fine'); b.append(h('span', { style: 'display:block;font-size:.85rem' }, ' ' + st.fbs[j])); });
+        fb(box, 'good', 'You caught the bias issue (line 3) and the invented source (line 2), and left the fine lines alone.', 'Clean audit. ');
+        award(i, tries); next(i);
+      } else {
+        fb(box, 'bad', (missed.length ? 'You missed ' + missed.length + ' problem line' + (missed.length > 1 ? 's' : '') + '. ' : '') + (extra.length ? 'Line ' + extra.map(j => j + 1).join(', ') + ' is fine. ' : '') + 'Hint: one fails credibility and one fails bias.');
+      }
+    } }, 'Check my audit');
+    return stepCard(i, h('div', { role: 'group', 'aria-label': 'Lines of the revised draft' }, btns), h('div', { class: 'row' }, chk), box);
+  }
+  function step6(i) {
+    const st = S[i];
+    const opts = st.lines.map((t, j) => ({ t: (j + 1) + '. ' + t, ok: j === st.bad, why: j === st.bad ? st.fix + ' ' + st.fixPrompt : 'That sentence keeps the science. Compare it with the original.' }));
+    return stepCard(i, h('div', { class: 'out', style: 'white-space:normal' }, st.lines.map((t, j) => h('div', null, (j + 1) + '. ' + t))),
+      choice({ q: st.q, options: opts, onRight: tries => { award(i, tries); next(i); } }));
+  }
+  showStep(0);
+  return [h('div', { class: 'card' }, h('div', { class: 'scorebox' }, scoreTxt, mEl), h('p', { class: 'note', style: 'margin:6px 0 0' }, 'The Lab Score rewards good reasoning. Retries earn partial credit and there is no timer.')), host, endHost];
+};
+
+/* ==========================================================================
+   STOP 8: Practice quiz
+   ========================================================================== */
+BUILD.quiz = ctx => {
+  const Q = L.quiz, host = h('div'), q = state.quiz;
+  function run() {
+    q.first = []; q.done = false; q.score = null;
+    renderQ(0);
+  }
+  function renderQ(i) {
+    host.textContent = '';
+    const nextBtn = h('button', { class: 'btn', type: 'button', hidden: true, onclick: () => (i + 1 < Q.length ? renderQ(i + 1) : renderScore()) }, i + 1 < Q.length ? 'Next question →' : 'See my score →');
+    const ch = choice({ q: Q[i].q, options: Q[i].opts,
+      onAny: (o, tries) => { if (q.first[i] == null) q.first[i] = !!o.ok; },
+      onRight: () => { nextBtn.hidden = false; nextBtn.focus({ preventScroll: true }); } });
+    host.append(h('section', { class: 'card stepcard' }, h('p', { class: 'kicker' }, 'Question ' + (i + 1) + ' of ' + Q.length + ' · ungraded practice'),
+      h('div', { class: 'bar', 'aria-hidden': 'true' }, h('i', { style: 'width:' + (i / Q.length * 100) + '%' })), ch, h('div', { class: 'row' }, nextBtn)));
+  }
+  function renderScore() {
+    const score = q.first.filter(Boolean).length; q.score = score; q.done = true;
+    const R = 70, C = 2 * Math.PI * R;
+    const msg = L.quizRes.find(r => score >= r.min).msg;
+    const num = h('span', { class: 'bigscore' }, '0');
+    const ring = h('div', { html: `<svg class="ring" viewBox="0 0 170 170" role="img" aria-label="Score ring: ${score} out of ${Q.length}"><circle class="bg" cx="85" cy="85" r="${R}" fill="none" stroke-width="16"/><circle class="fg" cx="85" cy="85" r="${R}" fill="none" stroke-width="16" stroke-linecap="round" stroke-dasharray="${C}" stroke-dashoffset="${C}" transform="rotate(-90 85 85)"/></svg>` });
+    host.textContent = '';
+    host.append(h('section', { class: 'card stepcard', style: 'text-align:center' }, h('h3', { style: 'justify-content:center' }, 'Your practice result'), ring, h('p', null, num, h('span', { class: 'bigscore' }, ' / ' + Q.length)),
+      h('p', null, h('b', null, msg), ' Score counts questions you got right on the first try. This is not graded and is not saved anywhere.'),
+      h('div', { class: 'row', style: 'justify-content:center' }, h('button', { class: 'btn ghost', type: 'button', onclick: run }, 'Retry the quiz'), h('button', { class: 'btn', type: 'button', onclick: () => go(LAST) }, 'See my Toolbelt →'))));
+    const fg = ring.querySelector('.fg');
+    tween(0, score, 1000, v => { num.textContent = String(Math.round(v)); fg.setAttribute('stroke-dashoffset', String(C * (1 - v / Q.length))); });
+    announce('Practice score: ' + score + ' out of ' + Q.length + '. ' + msg);
+    if (score === Q.length) { mascot.react('good', 'Perfect!'); confetti(); } else mascot.react(score >= 3 ? 'good' : 'think');
+  }
+  run();
+  return [host];
+};
+
+/* ==========================================================================
+   Wrap-up
+   ========================================================================== */
+BUILD.wrap = ctx => {
+  const idxs = L.stops.map((s, i) => i).filter(i => L.stops[i].belt);
+  const q = state.quiz;
+  return [
+    h('section', { class: 'card' }, h('h3', null, '🧰 Your completed Toolbelt'),
+      h('div', { class: 'summary' }, idxs.map(i => { const s = L.stops[i]; return h('div', null, h('b', null, s.belt.title), s.belt.text, state.belt.has(i) ? null : h('small', { style: 'display:block;color:var(--muted)' }, '(Not yet unlocked; revisit stop ' + i + ' to earn it.)')); })),
+      h('p', { style: 'margin-top:12px' }, h('b', null, 'Practice quiz: '), q.score == null ? 'not taken yet. It is ungraded; try it any time.' : q.score + ' of ' + L.quiz.length + ' on the first try.'),
+      h('p', null, h('b', null, 'Capstone Lab Score: '), state.lab.finished ? state.lab.total + ' / 100' : 'not completed yet.'),
+      h('div', { class: 'row no-print' }, h('button', { class: 'btn', type: 'button', onclick: () => window.print() }, '🖨 Print this page'), h('button', { class: 'btn ghost', type: 'button', onclick: () => go(1) }, 'Revisit from the start'))),
+    h('p', { class: 'note', role: 'note' }, L.inventedNote),
+    h('details', { class: 'src' }, h('summary', null, 'Sources'), h('ul', null, L.sources.map(s => h('li', null, s))), h('p', { class: 'note' }, 'Listed for reference. Short factual items only; no long quotations.'))
+  ];
+};
+
+/* ==========================================================================
+   Boot
+   ========================================================================== */
+(function init() {
+  const dots = $('#dots');
+  L.stops.forEach((s, i) => dots.append(h('button', { class: 'dot', type: 'button', 'aria-label': (i === 0 ? 'Welcome' : i === LAST ? 'Wrap-up' : 'Stop ' + i) + ': ' + s.nav, title: s.nav, onclick: () => go(i) }, i === LAST ? '★' : String(i))));
+  renderBelt();
+  const help = $('#help');
+  const openHelp = () => { if (!help.open) help.showModal(); };
+  $('#helpBtn').addEventListener('click', openHelp);
+  $('#helpClose').addEventListener('click', () => help.close());
+  $('#themeBtn').addEventListener('click', () => {
+    const order = ['auto', 'light', 'dark'];
+    state.theme = order[(order.indexOf(state.theme) + 1) % 3];
+    if (state.theme === 'auto') document.documentElement.removeAttribute('data-theme'); else document.documentElement.setAttribute('data-theme', state.theme);
+    $('#themeBtn').textContent = 'Theme: ' + state.theme;
+    announce('Theme: ' + state.theme);
+  });
+  document.addEventListener('keydown', e => {
+    if (e.ctrlKey || e.metaKey || e.altKey || help.open) return;
+    const t = e.target, tag = t && t.tagName;
+    if (e.key === '?') { e.preventDefault(); openHelp(); return; }
+    if (tag === 'TEXTAREA' || tag === 'SELECT' || (tag === 'INPUT' && t.type === 'range')) return;
+    if (e.key === 'ArrowRight') { e.preventDefault(); go(state.stop + 1); }
+    else if (e.key === 'ArrowLeft') { e.preventDefault(); go(state.stop - 1); }
+  });
+  window.addEventListener('beforeprint', () => document.querySelectorAll('details').forEach(d => { d.open = true; }));
+  go(0);
+})();
+</script>
+</body>
+</html>
