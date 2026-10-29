@@ -1721,7 +1721,7 @@ BUILD.capstone = ctx => {
 BUILD.quiz = ctx => {
   const Q = L.quiz, host = h('div'), q = state.quiz;
   function run() {
-    q.first = []; q.done = false; q.score = null;
+    q.first = [];
     renderQ(0);
   }
   function renderQ(i) {
@@ -1773,8 +1773,16 @@ BUILD.wrap = ctx => {
       h('li', null, '✅ Practice quiz (first try): ' + (q.score == null ? 'not taken' : q.score + ' of ' + L.quiz.length)),
       h('li', null, '📍 Stops visited: ' + state.visited.size + ' of ' + L.stops.length)),
     h('p', { class: 'note no-print', style: 'margin-bottom:0' }, 'To submit: take a screenshot of this whole card (Windows: Win+Shift+S; Mac: Shift+Cmd+4; phone: power + volume), then submit the image as your instructor directs.'));
+  const missing = idxs.filter(i => !state.belt.has(i));
+  const ready = !missing.length && q.done;
+  const gate = h('section', { class: 'card', id: 'gate', 'aria-label': 'Finish these to unlock your completion card' },
+    h('h3', null, '🔒 Your completion card is locked'),
+    h('p', null, 'It unlocks when you have finished every stop\'s main activity, the capstone, and the practice quiz. Still to do:'),
+    h('ul', { style: 'list-style:none;padding:0;display:grid;gap:8px' },
+      missing.map(i => h('li', null, h('button', { class: 'btn ghost', type: 'button', onclick: () => go(i) }, 'Stop ' + i + ': ' + L.stops[i].belt.title + ' \u2192'))),
+      q.done ? null : h('li', null, h('button', { class: 'btn ghost', type: 'button', onclick: () => go(L.stops.findIndex(x => x.id === 'quiz')) }, 'Stop 8: finish the practice quiz \u2192'))));
   return [
-    completion,
+    ready ? completion : gate,
     h('section', { class: 'card' }, h('h3', null, '🧰 Your completed Toolbelt'),
       h('div', { class: 'summary' }, idxs.map(i => { const s = L.stops[i]; return h('div', null, h('b', null, s.belt.title), s.belt.text, state.belt.has(i) ? null : h('small', { style: 'display:block;color:var(--muted)' }, '(Not yet unlocked; revisit stop ' + i + ' to earn it.)')); })),
       h('p', { style: 'margin-top:12px' }, h('b', null, 'Practice quiz: '), q.score == null ? 'not taken yet. It is ungraded; try it any time.' : q.score + ' of ' + L.quiz.length + ' on the first try.'),
