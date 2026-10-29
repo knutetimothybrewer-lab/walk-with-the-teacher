@@ -240,7 +240,7 @@ label.opt.bad .mark::after{content:"✕"}
 .bin .bh{width:100%;min-height:44px;text-align:left;background:none;border:0;font:800 1rem var(--f-d);cursor:pointer;padding:2px 4px;color:var(--ink)}
 .bin .bh small{display:block;font:600 .75rem var(--f-b);color:var(--muted)}
 .bin .bi{display:flex;flex-direction:column;gap:6px;margin-top:4px;min-height:20px}
-.chip{display:block;text-align:left;min-height:44px;padding:8px 12px;border-radius:12px;border:1.5px solid rgba(255,255,255,.28);background:#1b2850;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;font-weight:600;font-size:.96rem;line-height:1.35;transition:transform .15s,border-color .2s,background .2s}
+.chip{display:block;text-align:left;min-height:44px;padding:8px 12px;border-radius:12px;border:1.5px solid rgba(255,255,255,.28);background:#1b2850;cursor:grab;touch-action:pan-y;user-select:none;-webkit-user-select:none;font-weight:600;font-size:.96rem;line-height:1.35;transition:transform .15s,border-color .2s,background .2s}
 .chip:hover{border-color:var(--accent)}
 .chip.sel{border-color:var(--accent);background:var(--accent-soft);box-shadow:0 0 0 3px var(--accent);transform:scale(1.03)}
 .chip.dragging{opacity:.3}
@@ -1352,9 +1352,13 @@ const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
 function live(msg) { const l = $('#live'); l.textContent = ''; setTimeout(() => l.textContent = msg, 30); }
 
 /* ---------- random helper (seeded per session so every student gets different numbers) ---------- */
-function makeRng() {
+function newSeed() {
   let seed = (Date.now() ^ (Math.random() * 4294967296)) >>> 0;
   try { const a = new Uint32Array(1); crypto.getRandomValues(a); seed ^= a[0]; } catch (e) { /* fine */ }
+  return seed >>> 0;
+}
+function makeRng(seedIn) {
+  let seed = seedIn === undefined ? newSeed() : seedIn >>> 0;
   const next = () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
   const R = {
     next, int: (a, b) => a + Math.floor(next() * (b - a + 1)), pick: arr => arr[Math.floor(next() * arr.length)],
@@ -1603,6 +1607,9 @@ QT.hotspot = {
   }
 };
 
+/* progress is saved (best effort) by the UI layer; tolerate it being unavailable */
+function persist() { try { saveProgress(); } catch (e) { /* storage is optional */ } }
+
 /* ---------- the question card: attempt pips, credit meter, feedback, scoring ---------- */
 function mountQuestion(q, host, onSolved) {
   const rec = REC[q.id]; const total = countQuestions();
@@ -1654,6 +1661,7 @@ function mountQuestion(q, host, onSolved) {
       const r = btn.getBoundingClientRect(); celebrate(r.left + 60, r.top, rec.attempts === 1 ? 1 : 0.5);
       sfx('ok'); live(`Correct. ${pct} credit earned.`);
       if (q.after) { fbhost.appendChild(el(`<div class="cons" style="margin-top:10px"><span class="ci" aria-hidden="true">${q.after[0]}</span><div>${q.after[1]}</div></div>`)); }
+      persist();
       onSolved(q);
     } else {
       const tier = Math.min(rec.attempts, 3) - 1;
@@ -1667,6 +1675,7 @@ function mountQuestion(q, host, onSolved) {
       showFb('bad', `<span aria-hidden="true">✕</span> ${head}`, body, true);
       card.classList.remove('shake'); void card.offsetWidth; card.classList.add('shake');
       sfx('bad'); live('Not correct yet. ' + head);
+      persist();
       cooling = true; btn.disabled = true; setTimeout(() => { cooling = false; btn.disabled = false; }, 700);
     }
   });
@@ -2321,13 +2330,33 @@ function reveal(node, focusSel = 'h3') {
 }
 
 /* ---- session ---- */
-function startSession(name) {
+/* Same seed → same questions, so a saved session can be rebuilt exactly. The order of R draws below must not change. */
+function initSession(name, seed) {
   for (const k of Object.keys(REC)) delete REC[k];
-  const R = makeRng();
+  const R = makeRng(seed);
   SESSION_PLAN = { D: R.pick([1000, 1500, 2000]), c: R.pick([20, 30]), oop: R.pick([5000, 6000]), copay: R.pick([25, 30, 40]) };
-  S = { name, qs: buildSessionQuestions(R), zone: 0, station: 0, screen: 'map', frac: 0, done: ZONES.map(z => z.stations.map(() => false)), badges: [false, false, false], startedAt: Date.now() };
+  S = { name, seed, qs: buildSessionQuestions(R), zone: 0, station: 0, screen: 'map', frac: 0, done: ZONES.map(z => z.stations.map(() => false)), badges: [false, false, false], startedAt: Date.now(), completedAt: 0 };
   Clock.reset();
-  showMap(0);
+}
+function startSession(name) { initSession(name, newSeed()); saveProgress(); showMap(0); }
+
+/* ---- optional progress saving: this browser only, wrapped in try/catch so the module works without it ---- */
+const SAVE_KEY = 'healthAnalyst.progress.v1';
+function storeGet() { try { const d = JSON.parse(localStorage.getItem(SAVE_KEY)); return d && d.v === 1 && d.name && typeof d.seed === 'number' ? d : null; } catch (e) { return null; } }
+function storeClear() { try { localStorage.removeItem(SAVE_KEY); } catch (e) { /* ignore */ } }
+function saveProgress() {
+  if (!S) return;
+  try { Clock.flush(); localStorage.setItem(SAVE_KEY, JSON.stringify({ v: 1, name: S.name, seed: S.seed, zone: S.zone, station: S.station, screen: S.screen, done: S.done, badges: S.badges, rec: REC, ms: Clock.ms, startedAt: S.startedAt, completedAt: S.completedAt, savedAt: Date.now() })); } catch (e) { /* storage blocked or full: keep going in memory */ }
+}
+function resumeSession(d) {
+  initSession(d.name, d.seed);
+  for (const id of Object.keys(REC)) if (d.rec && d.rec[id]) Object.assign(REC[id], d.rec[id]);
+  S.done = d.done; S.badges = d.badges; S.startedAt = d.startedAt; S.completedAt = d.completedAt || 0; Clock.ms = d.ms || [0, 0, 0];
+  if (S.completedAt) { showResults(); return; }
+  const z = d.zone;
+  if (d.screen === 'station') { Clock.start(z); showStation(z, d.station); }
+  else if (d.screen === 'recap') showRecap(z);
+  else showMap(z);
 }
 const zoneQ = zi => S.qs[zi].flat();
 const zoneEarned = zi => zoneQ(zi).reduce((a, q) => a + REC[q.id].points, 0);
@@ -2353,11 +2382,19 @@ function showWelcome() {
           <div class="field"><label for="nm">Your name (first name + last initial, like “Maria G”, or your full name)</label>
           <input type="text" id="nm" name="nm" autocomplete="off" maxlength="40" aria-describedby="nmerr" placeholder="First name + last initial"></div>
           <div class="err" id="nmerr" role="alert"></div>
-          <div class="privacy"><span aria-hidden="true">🔒</span><span><b>Nothing is stored or sent anywhere.</b> Everything stays in this browser tab. If you refresh or close the page, you’ll start over from this screen. At the end you’ll take a screenshot of your results page to submit.</span></div>
+          <div class="privacy"><span aria-hidden="true">🔒</span><span><b>Nothing is sent anywhere.</b> Your progress is saved only in this browser on this device, so a refresh or a closed tab won’t lose it. It is erased when you press “Start over.” On a shared device, press “Start over” when you’re done. At the end you’ll take a screenshot of your results page to submit.</span></div>
           <p style="margin-top:16px"><button class="btn" type="submit" style="width:100%;max-width:340px">Start my journey →</button></p>
         </form>
         <details><summary>Teacher: verify a completion code</summary><div id="ver" style="padding-top:8px"></div></details>
       </div></div>`);
+    const saved = storeGet();
+    if (saved) {
+      const answered = Object.values(saved.rec || {}).filter(r => r.solved).length;
+      const rc = el(`<div class="card" style="text-align:left;border-color:var(--accent)"><h3>👋 Welcome back, ${esc(saved.name)}</h3><p>${saved.completedAt ? 'You finished the module.' : `Your progress is saved: ${answered} of ${n} questions answered.`} </p><div class="qactions"><button class="btn" id="resume">${saved.completedAt ? 'Show my results' : 'Continue where I left off'}</button><button class="btn ghost sm" id="fresh">That’s not me — start fresh</button></div></div>`);
+      w.insertBefore(rc, w.children[1]);
+      $('#resume', rc).addEventListener('click', () => { try { resumeSession(saved); } catch (e) { storeClear(); showWelcome(); } });
+      $('#fresh', rc).addEventListener('click', () => { storeClear(); rc.remove(); });
+    }
     const f = $('#nameForm', w);
     f.addEventListener('submit', e => {
       e.preventDefault(); const v = $('#nm', w).value.trim().replace(/\s+/g, ' ');
@@ -2372,7 +2409,7 @@ function showWelcome() {
 
 /* ---- zone map ---- */
 function showMap(zi) {
-  S.zone = zi; S.station = 0; S.screen = 'map'; S.frac = 0; document.body.dataset.z = zi + 1; Clock.start(zi); renderHUD();
+  S.zone = zi; S.station = 0; S.screen = 'map'; S.frac = 0; document.body.dataset.z = zi + 1; Clock.start(zi); renderHUD(); saveProgress();
   const Z = ZONES[zi];
   go(() => {
     const nodes = ZONES.map((z, i) => `<div class="mnode ${i < zi ? 'done' : i === zi ? 'cur' : 'lock'}" style="--zc:${z.color}">${i === zi ? '<span class="avatar" aria-hidden="true">🧑‍⚕️</span>' : ''}<div class="disc" aria-hidden="true">${i < zi ? z.badge.emoji : i === zi ? z.emoji : '🔒'}</div><div class="nm">Zone ${z.id}</div><div class="st">${i < zi ? 'Complete ✓' : i === zi ? 'You are here' : 'Locked'}</div></div>`).join('');
@@ -2387,7 +2424,7 @@ function showMap(zi) {
 
 /* ---- a station ---- */
 function showStation(zi, si) {
-  S.zone = zi; S.station = si; S.screen = 'station'; S.frac = 0; document.body.dataset.z = zi + 1; renderHUD();
+  S.zone = zi; S.station = si; S.screen = 'station'; S.frac = 0; document.body.dataset.z = zi + 1; renderHUD(); saveProgress();
   const Z = ZONES[zi], st = Z.stations[si], qs = S.qs[zi][si];
   go(() => {
     const words = st.title.split(' ').map((w, i) => `<span class="w" style="animation-delay:${i * 90 + 150}ms">${esc(w)}</span>`).join('');
@@ -2414,7 +2451,9 @@ function showStation(zi, si) {
         hit(k) {
           if (stage !== 1 && stage !== 2) return; if (hits.has(k)) return; hits.add(k);
           $('.ec', inter).textContent = Math.min(hits.size, st.need);
-          if (hits.size >= st.need && stage === 1) { stage = 2; $('.status', inter).textContent = '✓ Great exploring — questions unlocked below.'; $('.ec', inter).parentNode.classList.add('on'); setFrac(.45); setTimeout(startQuestions, RM() ? 0 : 500); }
+          if (hits.size >= st.need && stage === 1) { stage = 2; $('.status', inter).textContent = '✓ Great exploring!'; $('.ec', inter).parentNode.classList.add('on'); setFrac(.45);
+            const gb = el('<div style="text-align:center;margin-top:14px"><button type="button" class="btn">Go to the questions ↓</button></div>'); $('.steps-left', inter).after(gb);
+            const b = $('button', gb); b.addEventListener('click', () => { gb.remove(); startQuestions(); }); live('Activity complete. A button to go to the questions has appeared.'); }
         }
       };
       INT[st.interactive]($('.ihost', inter), ctx);
@@ -2423,14 +2462,21 @@ function showStation(zi, si) {
     function startQuestions() {
       cfus.hidden = false; let k = 0;
       const next = () => {
+        while (k < qs.length && REC[qs[k].id].solved) k++;       // already solved before a refresh/resume
         if (k >= qs.length) { finish(); return; }
-        const q = qs[k++]; const card = mountQuestion(q, cfus, () => { setFrac(.45 + .55 * (k / qs.length) * (k === qs.length ? .9 : 1)); setTimeout(next, RM() ? 0 : 900); });
+        const q = qs[k++]; const card = mountQuestion(q, cfus, () => {
+          setFrac(.45 + .55 * (k / qs.length) * (k === qs.length ? .9 : 1));
+          const more = qs.slice(k).some(x => !REC[x.id].solved);
+          if (!more) { setTimeout(finish, RM() ? 0 : 700); return; }
+          const nq = el('<div style="text-align:center;margin-top:14px"><button type="button" class="btn">Next question →</button></div>'); card.appendChild(nq);
+          const b = $('button', nq); b.addEventListener('click', () => { nq.remove(); next(); }); b.focus({ preventScroll: true }); nq.scrollIntoView({ behavior: RM() ? 'auto' : 'smooth', block: 'nearest' });
+        });
         card.scrollIntoView({ behavior: RM() ? 'auto' : 'smooth', block: 'start' });
       };
       next();
     }
     function finish() {
-      stage = 3; S.done[zi][si] = true; S.frac = 0; renderHUD();
+      stage = 3; S.done[zi][si] = true; S.frac = 0; renderHUD(); saveProgress();
       const last = si === Z.stations.length - 1;
       nb.hidden = false; nb.innerHTML = `<p class="small muted">✓ Station complete</p><button class="btn" id="nextbtn">${last ? 'Finish zone & see recap →' : 'Next station →'}</button>`;
       $('#nextbtn', nb).addEventListener('click', () => last ? showRecap(zi) : showStation(zi, si + 1));
@@ -2443,7 +2489,7 @@ function showStation(zi, si) {
 
 /* ---- zone recap + badge ---- */
 function showRecap(zi) {
-  S.screen = 'recap'; S.badges[zi] = true; Clock.stop(); renderHUD();
+  S.screen = 'recap'; S.zone = zi; S.badges[zi] = true; Clock.stop(); renderHUD(); saveProgress();
   const Z = ZONES[zi], earned = zoneEarned(zi), poss = zonePossible(zi), pct = Math.round(earned / poss * 100);
   go(() => {
     const w = el(`<div style="text-align:center"><span class="tag">Zone ${Z.id} complete</span><h2 style="margin-top:10px">${Z.emoji} ${Z.name}</h2>
@@ -2486,9 +2532,9 @@ function buildVerifier(host) {
 
 /* ---- results (screenshot-ready) ---- */
 function showResults() {
-  S.screen = 'results'; Clock.stop(); document.body.dataset.z = 0; renderHUD();
+  S.screen = 'results'; Clock.stop(); document.body.dataset.z = 0; if (!S.completedAt) S.completedAt = Date.now(); renderHUD(); saveProgress();
   const recs = allRecs(); const earned = recs.reduce((a, r) => a + r.points, 0), poss = totalPossible(); const pct = earned / poss * 100; const tenths = Math.round(pct * 10);
-  const now = new Date(); const minutes = Math.floor(now.getTime() / 60000); const code = makeCode(S.name, tenths, minutes);
+  const now = new Date(S.completedAt); const minutes = Math.floor(now.getTime() / 60000); const code = makeCode(S.name, tenths, minutes);
   const when = now.toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' });
   const c1 = recs.filter(r => r.correctAttempt === 1).length, c2 = recs.filter(r => r.correctAttempt === 2).length, c3 = recs.filter(r => r.correctAttempt >= 3).length;
   const worst = recs.slice().sort((a, b) => b.attempts - a.attempts)[0];
@@ -2513,7 +2559,7 @@ function showResults() {
       <div class="card noprint" id="det" hidden><h3>Details</h3><div style="overflow:auto"><table class="det"><thead><tr><th>Q</th><th>Zone · Station</th><th>Topic</th><th>Attempts</th><th>Credit</th><th>Pts</th></tr></thead><tbody>${recs.map(r => `<tr><td>${r.id}</td><td>${r.zone + 1} · ${r.station + 1}</td><td>${esc(r.topic)}</td><td>${r.attempts}</td><td>${credit(r)}%</td><td>${r.points}</td></tr>`).join('')}</tbody></table></div></div></div>`);
     $('#detb', w).addEventListener('click', e => { const d = $('#det', w); d.hidden = !d.hidden; e.currentTarget.setAttribute('aria-expanded', !d.hidden); e.currentTarget.textContent = d.hidden ? 'View details' : 'Hide details'; });
     $('#prt', w).addEventListener('click', () => window.print());
-    $('#again', w).addEventListener('click', () => { if (confirm('Start over? Your current results will be cleared.')) showWelcome(); });
+    $('#again', w).addEventListener('click', () => { if (confirm('Start over? Your current results and saved progress will be cleared.')) { storeClear(); showWelcome(); } });
     setTimeout(() => {
       const rr = $('.rr', w); counter($('.sc', w), v => v.toFixed(1)).set(pct, 1800);
       tween(0, pct / 100, 1800, f => rr.setAttribute('stroke-dashoffset', 326.7 * (1 - f))); bigCelebrate(); sfx('badge');
