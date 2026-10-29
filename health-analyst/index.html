@@ -189,7 +189,7 @@ input[type=range]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;bac
 .meter{margin:8px 0}
 .meter .ml{display:flex;justify-content:space-between;font-weight:700;font-size:.92rem}
 .meter .mb{height:14px;border-radius:99px;background:rgba(255,255,255,.12);overflow:hidden;margin-top:3px}
-.meter .mb i{display:block;height:100%;width:0;border-radius:99px;background:repeating-linear-gradient(135deg,var(--accent) 0 10px,color-mix(in srgb,var(--accent) 70%,#fff) 10px 20px);transition:width .7s cubic-bezier(.2,.8,.2,1)}
+.meter .mb i{display:block;height:100%;width:0;border-radius:99px;background:var(--accent);background:repeating-linear-gradient(135deg,var(--accent) 0 10px,color-mix(in srgb,var(--accent) 70%,#fff) 10px 20px);transition:width .7s cubic-bezier(.2,.8,.2,1)}
 .delta{font-size:.8rem;margin-left:6px}
 
 /* ---- CFU ---- */
@@ -209,6 +209,9 @@ label.opt:hover{border-color:var(--accent);transform:translateX(3px)}
 label.opt input{position:absolute;opacity:0;width:1px;height:1px}
 label.opt .mark{flex:none;width:24px;height:24px;margin-top:1px;border:2px solid var(--muted);border-radius:50%;display:grid;place-items:center;font-size:.9rem;font-weight:900}
 .multi label.opt .mark{border-radius:7px}
+label.opt.on{border-color:var(--accent);background:var(--accent-soft)}
+label.opt.on .mark{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+label.opt.on .mark::after{content:"✓"}
 label.opt:has(input:checked){border-color:var(--accent);background:var(--accent-soft)}
 label.opt:has(input:checked) .mark{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
 label.opt:has(input:checked) .mark::after{content:"✓"}
@@ -271,6 +274,7 @@ label.opt.bad .mark::after{content:"✕"}
 /* numeric */
 .numrow{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:12px 0}
 .numrow input[type=number]{max-width:200px}
+.numhint{margin:-4px 0 6px}
 .unit{font-weight:800;color:var(--muted)}
 .slidebox{margin:10px 0}
 /* hotspot */
@@ -346,7 +350,8 @@ table.lab .ref{font-weight:600;color:#445}
 svg text{font-family:var(--f-b)}
 
 /* ---- recap ---- */
-.badge-big{width:150px;height:150px;border-radius:50%;margin:10px auto;display:grid;place-items:center;font-size:4.4rem;background:radial-gradient(circle at 30% 30%,var(--accent),color-mix(in srgb,var(--accent) 40%,#000));box-shadow:0 0 0 6px rgba(255,255,255,.08),0 0 60px -6px var(--accent);animation:pop .9s cubic-bezier(.3,1.6,.5,1) both,float 4s 1s infinite}
+.badge-big{width:150px;height:150px;border-radius:50%;margin:10px auto;display:grid;place-items:center;font-size:4.4rem;background:var(--accent);background:radial-gradient(circle at 30% 30%,var(--accent),color-mix(in srgb,var(--accent) 40%,#000));box-shadow:0 0 0 6px rgba(255,255,255,.08),0 0 60px -6px var(--accent);animation:pop .9s cubic-bezier(.3,1.6,.5,1) both,float 4s 1s infinite}
+
 .recap-list{list-style:none;padding:0;margin:14px 0;display:grid;gap:10px}
 .recap-list li{padding:12px 14px 12px 44px;position:relative;background:var(--panel);border:1px solid var(--line);border-radius:12px;opacity:0;animation:fadeUp .6s forwards;animation-delay:calc(var(--i)*500ms + 800ms)}
 .recap-list li::before{content:"✓";position:absolute;left:12px;top:10px;width:24px;height:24px;border-radius:50%;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;font-weight:900}
@@ -1259,7 +1264,7 @@ const ZONE3 = {
             'Having treatment explained clearly and asking questions before agreeing to it',
             'Getting a second opinion',
             'Demanding any prescription medicine you want',
-            'Being seen before other patients because you arrived first at a clinic you’ve never been to',
+            'Being seen ahead of patients with more serious needs just because you ask',
             'Skipping a bill because you disagreed with the treatment'
           ],
           correct: [0, 1, 2, 3],
@@ -1421,7 +1426,7 @@ QT.mcq = QT.scenario = QT.multi = {
     q.opts.forEach((o, i) => {
       const id = `q${q.id}o${i}`;
       const lab = el(`<label class="opt" for="${id}"><input type="${multi ? 'checkbox' : 'radio'}" name="q${q.id}" id="${id}"><span class="mark" aria-hidden="true"></span><span class="otxt">${o.t}</span></label>`);
-      const inp = lab.querySelector('input'); inp.addEventListener('change', () => ctl.changed());
+      const inp = lab.querySelector('input'); inp.addEventListener('change', () => { labels.forEach((l, k) => l.classList.toggle('on', inputs[k].checked)); ctl.changed(); });
       g.appendChild(lab); inputs.push(inp); labels.push(lab);
     });
     body.appendChild(g);
@@ -1438,11 +1443,11 @@ QT.mcq = QT.scenario = QT.multi = {
         return { ok, wrong, note, sel };
       },
       mark(res, tier) {
-        if (!multi) { res.wrong.forEach(i => { labels[i].classList.add('x'); inputs[i].checked = false; inputs[i].disabled = true; }); }
+        if (!multi) { res.wrong.forEach(i => { labels[i].classList.remove('on'); labels[i].classList.add('x'); inputs[i].checked = false; inputs[i].disabled = true; }); }
         else if (tier >= 1) { res.wrong.forEach(i => labels[i].classList.add('bad')); }
         if (multi && tier < 1) { /* first miss: no itemised marks */ }
       },
-      lock() { inputs.forEach((x, i) => { x.disabled = true; labels[i].classList.remove('bad', 'x'); if (q.opts[i].ok) labels[i].classList.add('good'); }); }
+      lock() { inputs.forEach((x, i) => { x.disabled = true; labels[i].classList.remove('bad', 'x', 'on'); if (q.opts[i].ok) labels[i].classList.add('good'); }); }
     };
   }
 };
@@ -1571,6 +1576,7 @@ QT.numeric = {
     const sl = q.slider;
     const box = el(`<div class="numrow"><label class="sr" for="n${q.id}">Your answer</label>${q.unit === '$' ? '<span class="unit">$</span>' : ''}<input type="number" id="n${q.id}" inputmode="decimal" step="${q.step || 'any'}" placeholder="Type a number" autocomplete="off">${q.unit && q.unit !== '$' ? `<span class="unit">${esc(q.unit)}</span>` : ''}</div>`);
     const inp = box.querySelector('input'); body.appendChild(box); let rng = null, touched = false;
+    if (!sl) body.appendChild(el('<div class="muted small numhint">Type just the number: no $, commas, or units.</div>'));
     if (sl) {
       const w = el(`<div class="slidebox"><input type="range" min="${sl.min}" max="${sl.max}" step="${sl.step}" value="${(sl.min + sl.max) / 2}" aria-label="Slide to your answer"><div class="muted small" style="display:flex;justify-content:space-between"><span>$${sl.min.toLocaleString()}</span><span>$${sl.max.toLocaleString()}</span></div></div>`);
       rng = w.querySelector('input'); body.appendChild(w);
@@ -1582,7 +1588,7 @@ QT.numeric = {
     inp.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); ctl.submit(); } });
     return {
       get() { const v = parseFloat(inp.value); return isNaN(v) ? null : v; },
-      emptyMsg: 'Enter a number first. This does not use an attempt.',
+      emptyMsg: sl ? 'Move the slider (or type an amount) first. This does not use an attempt.' : 'Enter a number first. This does not use an attempt.',
       eval(v) { const ok = Math.abs(v - q.answer) <= q.tol + 1e-9; return { ok, dir: v > q.answer ? 'high' : 'low', note: '' }; },
       mark(res, tier) { /* direction note added by the card at tier >= 1 */ },
       lock() { inp.disabled = true; if (rng) rng.disabled = true; }
@@ -2385,6 +2391,7 @@ function showWelcome() {
           <div class="privacy"><span aria-hidden="true">🔒</span><span><b>Nothing is sent anywhere.</b> Your progress is saved only in this browser on this device, so a refresh or a closed tab won’t lose it. It is erased when you press “Start over.” On a shared device, press “Start over” when you’re done. At the end you’ll take a screenshot of your results page to submit.</span></div>
           <p style="margin-top:16px"><button class="btn" type="submit" style="width:100%;max-width:340px">Start my journey →</button></p>
         </form>
+        <p class="fine" style="margin:12px 0 0">Your browser: ${esc(browserLabel())}</p>
         <details><summary>Teacher: verify a completion code</summary><div id="ver" style="padding-top:8px"></div></details>
       </div></div>`);
     const saved = storeGet();
@@ -2578,6 +2585,16 @@ function initTools() {
   mqReduce.addEventListener && mqReduce.addEventListener('change', syncM);
   syncM();
 }
+/* ---- friendly fault banner + browser label, so a stuck student can tell the teacher exactly what happened ---- */
+function browserLabel() { const m = /(Edg|Chrome|CriOS|Firefox|Version)\/(\d+)/.exec(navigator.userAgent); return m ? (m[1] === 'Version' ? 'Safari' : m[1] === 'CriOS' ? 'Chrome iOS' : m[1] === 'Edg' ? 'Edge' : m[1]) + ' ' + m[2] : 'unknown browser'; }
+function showFault(msg) {
+  let b = $('#fault');
+  if (!b) { b = el('<div id="fault" role="alert" style="position:fixed;left:8px;right:8px;bottom:8px;z-index:95;background:#fff;color:#111;border-radius:12px;padding:12px 14px;font-weight:700;box-shadow:0 8px 30px #000"></div>'); document.body.appendChild(b); }
+  b.innerHTML = `⚠️ Something didn’t work. Try refreshing the page — your progress is saved. If it keeps happening, tell your teacher: <code style="font-weight:600;word-break:break-word">${esc(String(msg).slice(0, 140))} · ${esc(browserLabel())}</code> <button type="button" class="btn sm" style="margin-left:8px">OK</button>`;
+  $('button', b).addEventListener('click', () => b.remove());
+}
+window.addEventListener('error', e => showFault(e.message || 'error'));
+window.addEventListener('unhandledrejection', e => showFault((e.reason && e.reason.message) || 'error'));
 initTools();
 showWelcome();
 </script>
