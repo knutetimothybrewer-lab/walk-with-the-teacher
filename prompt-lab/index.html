@@ -875,7 +875,8 @@ const state = {
   beltOpen: window.innerWidth >= 920,
   quiz: { first: [], done: false, score: null },
   lab: { steps: {}, total: 0, finished: false },
-  theme: 'auto'
+  theme: 'auto',
+  name: ''
 };
 const NUM_STOPS = 8;               // numbered stops 1..8; 0 = welcome, 9 = wrap-up
 const LAST = L.stops.length - 1;
@@ -1081,6 +1082,13 @@ function updateChrome() {
 }
 function go(n) {
   n = Math.max(0, Math.min(LAST, n));
+  if (n > 0 && !state.name) {
+    n = 0;
+    const ni = document.getElementById('nameStart');
+    if (ni) { ni.focus(); const m = document.getElementById('nameMsg'); if (m) m.hidden = false; }
+    announce('Please type your name first. Your name appears on your completion card.');
+    if (state.stop === 0 && ni) return;
+  }
   state.stop = n; state.visited.add(n);
   if (L.stops[n].id === 'wrap') delete views[n];
   const v = views[n] || (views[n] = makeView(n));
@@ -1165,6 +1173,13 @@ BUILD.welcome = ctx => {
       h('div', { 'aria-hidden': 'true', style: 'font-size:2.2rem' }, '🥽'),
       h('div', null, h('b', null, 'Lab safety rule #1'), h('p', { style: 'margin:.2em 0 0' }, L.dataRule))),
     h('p', { class: 'note' }, 'Tip: use the ← → arrow keys to move between stops, and press ? for shortcuts. The Toolbelt fills in as you learn each idea.'),
+    h('section', { class: 'card', 'aria-label': 'Your name' },
+      h('label', { for: 'nameStart', style: 'font-weight:800;display:block;margin-bottom:6px' }, 'First, type your name. It will appear on your completion card at the end.'),
+      h('input', { type: 'text', id: 'nameStart', autocomplete: 'off', maxlength: '60', value: state.name, placeholder: 'Your first and last name', 'aria-describedby': 'nameMsg',
+        style: 'min-height:44px;font:inherit;padding:6px 10px;border:2px solid var(--line);border-radius:10px;background:var(--panel);color:var(--ink);width:100%;max-width:340px',
+        oninput: e => { state.name = e.target.value.trim(); if (state.name) document.getElementById('nameMsg').hidden = true; },
+        onkeydown: e => { if (e.key === 'Enter') go(1); } }),
+      h('p', { id: 'nameMsg', class: 'note', hidden: true, role: 'alert', style: 'margin-bottom:0' }, 'Please enter your name to begin. Nothing is sent or saved; it only shows on your screen.')),
     h('div', { class: 'row' }, h('button', { class: 'btn', type: 'button', onclick: () => go(1) }, 'Start the lab →'))
   ];
 };
@@ -1758,12 +1773,10 @@ BUILD.quiz = ctx => {
 BUILD.wrap = ctx => {
   const idxs = L.stops.map((s, i) => i).filter(i => L.stops[i].belt);
   const q = state.quiz;
-  const nameOut = h('b', { style: 'font-size:1.2rem' }, 'Name: (type your name above)');
-  const nameIn = h('input', { type: 'text', id: 'stuName', autocomplete: 'off', maxlength: '60', style: 'min-height:44px;font:inherit;padding:6px 10px;border:2px solid var(--line);border-radius:10px;background:var(--panel);color:var(--ink);width:100%;max-width:340px', oninput: () => { nameOut.textContent = 'Name: ' + (nameIn.value.trim() || '(type your name above)'); } });
+  const nameOut = h('b', { style: 'font-size:1.4rem;display:block' }, 'Name: ' + state.name);
   const done = idxs.filter(i => state.belt.has(i)).length;
   const completion = h('section', { class: 'card concept', id: 'completion', 'aria-label': 'Completion card' },
     h('h3', null, '🎓 Completion card'),
-    h('div', { class: 'no-print' }, h('label', { for: 'stuName', style: 'font-weight:700;display:block' }, 'Type your name (stays on this screen only; nothing is sent or saved):'), nameIn),
     nameOut,
     h('p', { style: 'margin:.4em 0' }, h('b', null, 'Prompt Lab: How AI Reads, and How to Read It Back')),
     h('ul', { style: 'list-style:none;padding:0;margin:.3em 0' },

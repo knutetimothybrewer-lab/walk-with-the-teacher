@@ -4,6 +4,8 @@ A single-file interactive lesson (about 30 minutes) for educators on how AI read
 
 No build step, no libraries, no network calls, no accounts, and no data collected. Progress lives in memory only.
 
+Students type their name on the Welcome screen (required before they can continue). It is shown on the locked-until-complete Completion card in the Wrap-up, which students screenshot to submit.
+
 ## Open it locally
 
 Double-click `index.html` (it works from `file://`), or serve the folder:
