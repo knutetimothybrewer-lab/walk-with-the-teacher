@@ -6,6 +6,12 @@ Teacher walk through AI literacy (`index.html`).
 
 Every summative (`health-summative/`, `substance-use-summative/`, `unit7-nutrition-activity/`, `community-health-mission/`, `wildcats-wellness-quest/`) has a hard 90-minute limit counted from the moment the student starts. A countdown shows in the top bar (amber under 15 minutes, red under 5, with warnings at 15, 5 and 1), refreshing or reopening the page does not add time, and at zero the work so far is submitted and locked automatically; anything unanswered earns 0. Change or turn it off with `timeLimitMinutes` (`0` = off) in each app's `config.js` (`community-health-mission/server/grading.js` has `TIME_LIMIT_MIN`, enforced by the server; rebuild and redeploy `Code.gs` after changing it).
 
+## Wellness Dimensions Lab: extra credit (`wellness-dimensions-lab/`)
+
+A single self-contained HTML file (no server, no network needed) that takes about 25 minutes: a Wellness Wheel, a 20-card Metric Sort, five themed labs (physical, mental, emotional, social, environmental) where students manipulate sliders and diagrams and then identify the metrics for each dimension, and a final Integration Lab. Every item allows three tries and pays 100% / 75% / 50% (0 after a third miss, with the answer shown). Students enter their name first; the final report shows their score, a per-dimension breakdown, what they did well and what to review, and is built to be screenshotted and submitted. Previous/Next bar at the bottom; Next unlocks when a stop is finished. Progress is saved in the browser, so refreshing does not reset tries. Nothing is sent anywhere. To reset a student on a shared device, clear site data for the page.
+
+Student link once GitHub Pages is on: `https://YOUR-USER.github.io/walk-with-the-teacher/wellness-dimensions-lab/`
+
 ## Life Decisions: Unit 8 Family Life & Sexuality (`unit8-family-life/`)
 
 An auto-graded, interactive, about-an-hour Grade 10 Health summative on Family Life & Sexuality: six chapters, 40 questions worth 100 points, three attempts per question (100/85/75/0), a server-enforced 90-minute limit with per-student accommodations, a Google Sheets back end with a Master Dashboard and one tab per block (Block 1/2, 3/4, 6/7, 8/9), and a teacher mode opened by typing `WALK-TEACHER` in the class-code box. Answer keys stay on the server and are not in this repository. **Provisional:** the unit's slides were not available and the Google back end has not been run on Google; start with `unit8-family-life/README.md`, `docs/TEACHER_REVIEW.md` and `docs/SETUP.md`.

@@ -1,0 +1,1559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Wellness Dimensions Lab (Extra Credit)</title>
+<meta name="description" content="An interactive 25-minute extra-credit lab: identify, manipulate and integrate physical, mental, emotional, social and environmental wellness and the metrics that measure each one.">
+<style>
+@property --accent{syntax:'<color>';inherits:true;initial-value:#0f4c81}
+@property --soft{syntax:'<color>';inherits:true;initial-value:#e3effb}
+:root{
+  --ink:#1f2937; --muted:#4b5563; --panel:#ffffff; --line:#cfd6e2;
+  --good:#166534; --good-bg:#dcfce7; --bad:#b91c1c; --bad-bg:#fee2e2; --warn:#7c2d12; --warn-bg:#ffedd5;
+  --accent-ink:#ffffff; --focus:#1d4ed8; --nav-h:92px;
+  --c-physical:#c2410c; --c-mental:#4338ca; --c-emotional:#be185d; --c-social:#a16207; --c-environmental:#15803d; --c-integration:#0f4c81;
+  --s-physical:#ffedd5; --s-mental:#e0e7ff; --s-emotional:#fce7f3; --s-social:#fef3c7; --s-environmental:#dcfce7; --s-integration:#e3effb;
+  font-family:"Avenir Next","Trebuchet MS",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+}
+body{--accent:#0f4c81;--soft:#e3effb;--edge:#b7cbe3;transition:--accent .7s ease,--soft .7s ease}
+body[data-theme=physical]{--accent:#c2410c;--soft:#ffedd5;--edge:#f3c7a8}
+body[data-theme=mental]{--accent:#4338ca;--soft:#e0e7ff;--edge:#c3cbf5}
+body[data-theme=emotional]{--accent:#be185d;--soft:#fce7f3;--edge:#f5bcd7}
+body[data-theme=social]{--accent:#a16207;--soft:#fef3c7;--edge:#ecd28a}
+body[data-theme=environmental]{--accent:#15803d;--soft:#dcfce7;--edge:#a8dfb9}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;color:var(--ink);font-size:17px;line-height:1.5;background:#eef3f9;overflow-x:hidden;min-height:100vh}
+h1,h2,h3,h4{line-height:1.15;margin:0 0 .45em;letter-spacing:-.01em}
+p{margin:.5em 0}
+button{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px;border-radius:8px}
+.ic{fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none;vertical-align:middle}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* ---------- background ---------- */
+#bg{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none}
+.bg-layer{position:absolute;inset:0;opacity:0;transition:opacity .9s ease}
+.bg-layer.on{opacity:1}
+.bg-layer:not(.on) .fl{animation-play-state:paused}
+.fl{position:absolute;opacity:.16;animation:drift var(--d,30s) linear infinite;animation-delay:var(--dl,0s)}
+@keyframes drift{0%{transform:translate3d(0,30px,0) rotate(0deg)}50%{transform:translate3d(var(--dx,20px),-45vh,0) rotate(180deg)}100%{transform:translate3d(0,-95vh,0) rotate(360deg)}}
+
+/* ---------- header ---------- */
+.top{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.9);backdrop-filter:blur(8px);border-bottom:3px solid var(--accent);transition:border-color .7s}
+.top-in{max-width:1100px;margin:0 auto;padding:8px 16px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:10px;color:var(--accent)}
+.brand b{display:block;font-size:1.1rem;color:var(--ink)}
+.brand small{display:block;color:var(--muted);font-size:.8rem}
+.badges{display:flex;gap:6px;margin-left:auto}
+.badge{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:#e5e7eb;color:#6b7280;border:2px solid #cbd2dc;transition:all .5s}
+.badge.on{background:var(--bc);color:#fff;border-color:var(--bc);animation:pop .6s ease both}
+.score{display:flex;align-items:center;gap:10px;font-weight:700}
+.score .who{max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--muted);font-weight:600}
+.score .pts{background:var(--accent);color:#fff;border-radius:999px;padding:4px 14px;transition:background .7s}
+.progress{height:6px;background:#dfe5ee}
+.progress i{display:block;height:100%;width:0;background:var(--accent);transition:width .6s ease,background .7s}
+
+/* ---------- stage ---------- */
+main#stage{position:relative;z-index:1;max-width:1100px;margin:0 auto;padding:20px 16px calc(var(--nav-h) + 48px);outline:none}
+.page{animation:inFwd .5s cubic-bezier(.2,.8,.2,1) both}
+.page.enter-back{animation-name:inBack}
+@keyframes inFwd{from{opacity:0;transform:translateX(48px)}to{opacity:1;transform:none}}
+@keyframes inBack{from{opacity:0;transform:translateX(-48px)}to{opacity:1;transform:none}}
+@keyframes pop{0%{transform:scale(.4)}60%{transform:scale(1.25)}100%{transform:scale(1)}}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-9px)}40%{transform:translateX(8px)}60%{transform:translateX(-6px)}80%{transform:translateX(4px)}}
+@keyframes rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+@keyframes glow{0%,100%{box-shadow:0 0 0 0 color-mix(in srgb,var(--accent) 55%,transparent)}50%{box-shadow:0 0 0 10px transparent}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.shake{animation:shake .45s ease}
+.rise{animation:rise .5s ease both}
+
+.panel{background:var(--panel);border:2px solid var(--edge);border-radius:20px;padding:18px 20px;margin:16px 0;box-shadow:0 4px 0 rgba(31,41,55,.06);transition:border-color .7s}
+.panel h3{display:flex;align-items:center;gap:10px}
+.sec{display:flex;align-items:center;gap:10px;font-size:1.25rem;margin:26px 0 8px;color:var(--accent)}
+.sec .n{display:grid;place-items:center;width:32px;height:32px;border-radius:50%;background:var(--accent);color:#fff;font-size:1rem}
+.lead{font-size:1.1rem;color:var(--muted)}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:10px 22px;border-radius:14px;border:2px solid var(--accent);background:#fff;color:var(--accent);font-weight:700;cursor:pointer;transition:transform .15s,background .2s,color .2s,opacity .2s}
+.btn:hover:not(:disabled){transform:translateY(-2px)}
+.btn:active:not(:disabled){transform:translateY(1px)}
+.btn.primary{background:var(--accent);color:var(--accent-ink)}
+.btn.primary.ready{animation:glow 1.6s infinite}
+.btn:disabled,.btn[aria-disabled=true]{opacity:.45;cursor:not-allowed}
+
+/* ---------- bottom nav ---------- */
+.navbar{position:fixed;left:0;right:0;bottom:0;z-index:30;background:rgba(255,255,255,.95);backdrop-filter:blur(8px);border-top:3px solid var(--accent);padding:8px 12px calc(8px + env(safe-area-inset-bottom));transition:border-color .7s}
+.nav-in{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center}
+.dots{display:flex;align-items:center;justify-content:center;gap:clamp(4px,1.4vw,12px);position:relative}
+.dots::before{content:"";position:absolute;left:12px;right:12px;top:16px;height:4px;background:#dfe5ee;border-radius:2px;z-index:0}
+.dot{position:relative;z-index:1;width:32px;height:32px;border-radius:50%;border:3px solid #cbd2dc;background:#fff;display:grid;place-items:center;cursor:pointer;color:#6b7280;padding:0;transition:all .3s}
+.dot:disabled{cursor:not-allowed;opacity:.55}
+.dot.done{background:var(--dc);border-color:var(--dc);color:#fff}
+.dot.cur{border-color:var(--dc);box-shadow:0 0 0 4px color-mix(in srgb,var(--dc) 25%,transparent);transform:scale(1.18);color:var(--dc);background:#fff}
+.dot.cur.done{color:#fff;background:var(--dc)}
+.nav-msg{grid-column:1/-1;text-align:center;font-size:.9rem;color:var(--muted);min-height:1.3em;font-weight:600}
+.nav-msg.ready{color:var(--good)}
+@media(max-width:620px){.nav-in{grid-template-columns:1fr 1fr}.dots{grid-column:1/-1;grid-row:1}.btn{padding:8px 12px}.badges{margin-left:0}.score .who{display:none}}
+
+/* ---------- start ---------- */
+.hero{display:grid;grid-template-columns:1.2fr 1fr;gap:24px;align-items:center}
+@media(max-width:820px){.hero{grid-template-columns:1fr}}
+.hero h1{font-size:clamp(2rem,5vw,3.2rem);color:var(--accent)}
+.hero h1 span{display:block;color:var(--ink);font-size:.55em;font-weight:600;letter-spacing:0}
+.xc{display:inline-block;background:#fbbf24;color:#1f2937;font-weight:800;border-radius:999px;padding:3px 14px;font-size:.85rem;margin-bottom:10px;transform:rotate(-2deg)}
+.namebox{display:grid;grid-template-columns:2fr 1fr;gap:12px;margin:12px 0}
+@media(max-width:560px){.namebox{grid-template-columns:1fr}}
+.namebox label{display:block;font-weight:700;font-size:.9rem;margin-bottom:4px}
+.namebox input{width:100%;min-height:50px;font:inherit;padding:8px 14px;border:2px solid var(--edge);border-radius:12px;background:#fff}
+.namebox input:focus{border-color:var(--accent);outline:3px solid color-mix(in srgb,var(--accent) 35%,transparent)}
+.err{color:var(--bad);font-weight:700;min-height:1.4em}
+.rules{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:10px}
+@media(max-width:560px){.rules{grid-template-columns:1fr}}
+.rule{border-radius:16px;padding:12px;text-align:center;background:var(--soft);border:2px solid var(--edge)}
+.rule b{display:block;font-size:2rem;color:var(--accent)}
+.path{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-top:10px}
+.path div{display:flex;gap:10px;align-items:center;padding:10px 12px;border-radius:14px;background:#fff;border:2px solid var(--edge)}
+.path .pi{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;color:#fff;background:var(--pc)}
+.path small{display:block;color:var(--muted)}
+
+/* ---------- wheel ---------- */
+.wheel-grid{display:grid;grid-template-columns:minmax(300px,420px) 1fr;gap:22px;align-items:start}
+@media(max-width:860px){.wheel-grid{grid-template-columns:1fr}}
+.wheel{width:100%;max-width:420px;margin:0 auto;display:block}
+.wheel .orbit{transform-origin:180px 180px;animation:spin 70s linear infinite}
+.wheel .hub-ring{transform-origin:180px 180px;animation:hubpulse 3s ease-in-out infinite}
+@keyframes hubpulse{0%,100%{transform:scale(1)}50%{transform:scale(1.07)}}
+.wedge{cursor:pointer;transform-origin:180px 180px;transition:transform .3s cubic-bezier(.3,1.6,.5,1),filter .3s}
+.wedge:hover,.wedge:focus-visible{transform:scale(1.04);filter:brightness(1.08)}
+.wedge.sel{transform:scale(1.07)}
+.wedge:focus,.wedge:focus-visible{outline:none}
+.wedge .sm{opacity:0;transition:opacity .4s}
+.wedge.seen .sm{opacity:1}
+.wedge:focus-visible path{stroke:#111827;stroke-width:4}
+.wheel.spin{animation:spin 60s linear infinite}
+.detail{min-height:300px}
+.detail .dhead{display:flex;align-items:center;gap:12px;color:var(--dc)}
+.detail .dhead .big{width:56px;height:56px;border-radius:16px;background:var(--dc);color:#fff;display:grid;place-items:center;animation:pop .5s ease both}
+.detail h3{font-size:1.6rem;margin:0;color:var(--dc)}
+.detail h4{margin:14px 0 4px;font-size:.95rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.detail ul{margin:0;padding-left:0;list-style:none;display:flex;flex-wrap:wrap;gap:6px}
+.detail li{background:var(--ds);color:var(--ink);border:2px solid var(--de);border-radius:999px;padding:3px 12px;font-size:.92rem}
+.seen-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.seen-row span{display:flex;align-items:center;gap:6px;padding:3px 12px 3px 6px;border-radius:999px;border:2px solid #cbd2dc;color:#6b7280;font-size:.9rem;font-weight:700;background:#fff}
+.seen-row span.on{border-color:var(--dc);background:var(--dc);color:#fff}
+.locked-note{border:3px dashed var(--edge);border-radius:18px;padding:16px;text-align:center;color:var(--muted);font-weight:700}
+
+/* ---------- items ---------- */
+.item{background:var(--panel);border:2px solid var(--edge);border-radius:20px;padding:16px 18px;margin:14px 0;box-shadow:0 4px 0 rgba(31,41,55,.06);animation:rise .5s ease both;transition:border-color .4s,background .4s}
+.item.is-done{border-color:#86d3a0;background:#f7fdf9}
+.item.is-done.is-miss{border-color:#f0a8a8;background:#fffafa}
+.item-head{display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap}
+.qbadge{flex:none;width:34px;height:34px;border-radius:50%;background:var(--accent);color:#fff;display:grid;place-items:center;font-weight:800}
+.prompt{flex:1 1 280px;font-weight:700;font-size:1.05rem}
+.prompt small{display:block;font-weight:400;color:var(--muted)}
+.pips{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.pip{font-size:.78rem;font-weight:800;padding:2px 9px;border-radius:999px;border:2px solid #cbd2dc;color:#6b7280;background:#fff;transition:all .3s}
+.pip.next{border-color:var(--accent);color:var(--accent);background:var(--soft)}
+.pip.used{text-decoration:line-through;background:#f3f4f6;opacity:.7}
+.pip.won{background:var(--good);border-color:var(--good);color:#fff;animation:pop .5s ease both}
+.ptschip{font-size:.8rem;font-weight:800;padding:2px 10px;border-radius:999px;background:var(--soft);color:var(--ink)}
+.fb{margin-top:10px;border-radius:12px;padding:0;font-size:.97rem}
+.fb:not(:empty){padding:10px 14px;animation:rise .35s ease both}
+.fb.good{background:var(--good-bg);color:#14532d}
+.fb.bad{background:var(--bad-bg);color:#7f1d1d}
+.fb.miss{background:var(--warn-bg);color:var(--warn)}
+.opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px;margin-top:12px}
+.opts.dimopts{grid-template-columns:repeat(5,1fr)}
+@media(max-width:700px){.opts.dimopts{grid-template-columns:repeat(2,1fr)}}
+.opt{min-height:52px;border-radius:14px;border:2px solid var(--edge);background:#fff;padding:8px 12px;cursor:pointer;text-align:left;font-weight:600;display:flex;align-items:center;gap:8px;transition:transform .15s,background .2s,border-color .2s}
+.opt:hover:not(:disabled){transform:translateY(-2px);border-color:var(--accent);background:var(--soft)}
+.opt.dimopt{flex-direction:column;justify-content:center;text-align:center;color:var(--oc);border-color:var(--oc)}
+.opt:disabled{cursor:default}
+.opt.is-wrong{background:var(--bad-bg);border-color:#e08c8c;color:#7f1d1d;text-decoration:line-through;opacity:.75}
+.opt.is-right{background:var(--good-bg);border-color:#3d9b5f;color:#14532d;opacity:1;animation:pop .5s ease both}
+.opt.is-right::after{content:"✓";font-weight:900;margin-left:auto}
+.checks{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:8px;margin:12px 0}
+.chk{display:flex;align-items:center;gap:10px;min-height:48px;padding:8px 12px;border:2px solid var(--edge);border-radius:14px;background:#fff;cursor:pointer;font-weight:600}
+.chk input{width:22px;height:22px;accent-color:var(--accent)}
+.chk:has(input:checked){background:var(--soft);border-color:var(--accent)}
+.chk.rev-right{border-color:#3d9b5f;background:var(--good-bg)}
+.item.is-done .chk{cursor:default}
+.matchrow{display:grid;grid-template-columns:1fr 200px;gap:10px;align-items:center;padding:8px 0;border-top:1px solid var(--line)}
+@media(max-width:640px){.matchrow{grid-template-columns:1fr}}
+.matchrow select{min-height:46px;font:inherit;border:2px solid var(--edge);border-radius:12px;padding:6px 10px;background:#fff}
+.matchrow.bad select{border-color:#e08c8c;background:var(--bad-bg)}
+.matchrow.good select{border-color:#3d9b5f;background:var(--good-bg)}
+.check-row{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:10px}
+
+/* ---------- sort ---------- */
+.tray{display:flex;flex-wrap:wrap;gap:10px;min-height:96px;padding:14px;border:3px dashed var(--edge);border-radius:20px;background:rgba(255,255,255,.7);align-content:flex-start}
+.tray:empty::after{content:"All cards sorted! Great work.";color:var(--good);font-weight:800;margin:auto}
+.mcard{touch-action:none;user-select:none;-webkit-user-select:none;cursor:grab;min-height:60px;max-width:250px;padding:8px 12px;border-radius:14px;background:#fff;border:2px solid #9aa6b8;box-shadow:0 3px 0 rgba(31,41,55,.12);transition:transform .2s,box-shadow .2s,border-color .2s;animation:rise .4s ease both}
+.mcard b{display:block;font-size:.93rem;line-height:1.2}
+.mcard span{display:block;font-size:.85rem;color:var(--accent);font-weight:800}
+.mcard:hover{transform:translateY(-3px) rotate(-1deg)}
+.mcard.sel{border-color:var(--accent);background:var(--soft);transform:translateY(-6px) scale(1.05);box-shadow:0 8px 0 rgba(31,41,55,.12);animation:bob 1.2s ease-in-out infinite}
+.mcard .try{font-size:.72rem;color:var(--bad);font-weight:800}
+.mcard.ghost{position:fixed;z-index:100;pointer-events:none;transform:rotate(4deg) scale(1.08);box-shadow:0 14px 24px rgba(0,0,0,.3);animation:none}
+.buckets{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:14px}
+@media(max-width:860px){.buckets{grid-template-columns:repeat(2,1fr)}.buckets .bucket:last-child{grid-column:1/-1}}
+.bucket{border:3px solid var(--c);border-radius:20px;background:var(--cs);padding:10px;min-height:180px;cursor:pointer;text-align:center;display:flex;flex-direction:column;align-items:center;gap:4px;transition:transform .2s,box-shadow .2s,background .2s}
+.bucket .bi{width:46px;height:46px;border-radius:14px;background:var(--c);color:#fff;display:grid;place-items:center}
+.bucket b{color:var(--c);font-size:1.05rem}
+.bucket small{color:var(--muted);font-weight:700}
+.bucket.target{background:#fff;transform:scale(1.04);box-shadow:0 0 0 5px color-mix(in srgb,var(--c) 30%,transparent)}
+.bucket.armed{animation:glow 1.4s infinite;--accent:var(--c)}
+.placed{display:flex;flex-direction:column;gap:4px;width:100%;margin-top:4px}
+.chip{font-size:.78rem;line-height:1.2;text-align:left;background:#fff;border:2px solid var(--c);border-radius:10px;padding:3px 8px;animation:pop .45s ease both}
+.chip.miss{border-style:dashed;border-color:var(--bad);color:var(--bad)}
+.sortbar{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.meter{flex:1 1 200px;height:12px;border-radius:99px;background:#dfe5ee;overflow:hidden}
+.meter i{display:block;height:100%;background:var(--accent);width:0;transition:width .5s}
+
+/* ---------- labs ---------- */
+.lab-banner{display:flex;gap:18px;align-items:center;padding:20px;border-radius:24px;color:#fff;background:linear-gradient(120deg,var(--accent),color-mix(in srgb,var(--accent) 70%,#000));position:relative;overflow:hidden;box-shadow:0 6px 0 rgba(0,0,0,.15)}
+.lab-banner::after{content:"";position:absolute;right:-60px;top:-60px;width:220px;height:220px;border-radius:50%;background:rgba(255,255,255,.12);animation:hubpulse 4s ease-in-out infinite}
+.lab-banner .halo{flex:none;width:84px;height:84px;border-radius:50%;background:rgba(255,255,255,.2);display:grid;place-items:center;position:relative}
+.lab-banner .halo::before{content:"";position:absolute;inset:-6px;border-radius:50%;border:3px dashed rgba(255,255,255,.65);animation:spin 18s linear infinite}
+.lab-banner h2{margin:0 0 4px;font-size:clamp(1.5rem,4vw,2.2rem)}
+.lab-banner p{margin:0;max-width:60ch}
+.tag{display:inline-block;background:rgba(255,255,255,.25);border-radius:999px;padding:1px 12px;font-size:.8rem;font-weight:800;margin-bottom:6px}
+.skills{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.skills span{background:#fff;color:var(--accent);border-radius:999px;padding:1px 10px;font-size:.8rem;font-weight:800}
+.sim-grid{display:grid;grid-template-columns:1.1fr 1fr;gap:18px;align-items:start}
+@media(max-width:860px){.sim-grid{grid-template-columns:1fr}}
+.sim-view{background:linear-gradient(180deg,#fff,var(--soft));border:2px solid var(--edge);border-radius:18px;padding:12px;text-align:center;overflow:hidden}
+.ctl{margin:6px 0 14px}
+.ctl label{display:flex;justify-content:space-between;gap:10px;font-weight:800}
+.ctl output{color:var(--accent)}
+.ctl input[type=range]{width:100%;height:36px;accent-color:var(--accent);margin:2px 0 0;cursor:pointer}
+.zbar{position:relative;height:8px;border-radius:99px;background:#e5e7eb;margin:-2px 8px 2px}
+.zbar i{position:absolute;top:0;bottom:0;border-radius:99px;background:#4ade80;opacity:.85}
+.zlabel{display:flex;justify-content:space-between;font-size:.82rem;color:var(--muted);font-weight:700}
+.zlabel .okc{color:var(--good)}
+.switch{display:flex;align-items:center;gap:12px;min-height:48px;padding:6px 12px;border:2px solid var(--edge);border-radius:14px;background:#fff;cursor:pointer;font-weight:700;margin:6px 0}
+.switch input{width:24px;height:24px;accent-color:var(--accent)}
+.switch:has(input:checked){background:var(--soft);border-color:var(--accent)}
+.gauge{margin:8px 0 12px;padding:10px 12px;border-radius:14px;background:#fff;border:2px solid var(--edge);transition:border-color .3s,background .3s}
+.gauge.ok{border-color:#3d9b5f;background:#f2fcf5}
+.g-top{display:flex;justify-content:space-between;font-weight:800}
+.g-val b{font-size:1.4rem;color:var(--accent);font-variant-numeric:tabular-nums}
+.g-track{position:relative;height:14px;border-radius:99px;background:linear-gradient(90deg,#e5e7eb,#d1d5db);margin:8px 0 4px}
+.g-zone{position:absolute;top:0;bottom:0;background:#4ade80;opacity:.8;border-radius:99px}
+.g-mark{position:absolute;top:-6px;width:0;height:0;margin-left:-9px;border-left:9px solid transparent;border-right:9px solid transparent;border-top:14px solid var(--ink);transition:left .6s cubic-bezier(.3,1.4,.5,1)}
+.g-foot{display:flex;justify-content:space-between;gap:8px;font-size:.84rem;color:var(--muted);font-weight:700;flex-wrap:wrap}
+.g-status.ok{color:var(--good)}
+.g-status.off{color:var(--bad)}
+.note{display:flex;gap:10px;align-items:flex-start;padding:10px 14px;border-radius:14px;background:var(--soft);border:2px solid var(--edge);margin-top:14px;font-size:.95rem}
+.note svg{color:var(--accent);margin-top:2px}
+
+.heart-wrap{display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap}
+.heart{width:130px;height:130px;transform-origin:center;animation:beat var(--beat,.8s) ease-in-out infinite}
+@keyframes beat{0%,100%{transform:scale(1)}15%{transform:scale(1.16)}30%{transform:scale(1)}45%{transform:scale(1.1)}}
+.bpm b{font-size:3rem;color:var(--accent);font-variant-numeric:tabular-nums;line-height:1}
+.bpm small{display:block;color:var(--muted);font-weight:700}
+.ecg{width:100%;height:70px;display:block;overflow:hidden;background:#111827;border-radius:12px;margin-top:10px}
+.ecg path{fill:none;stroke:#4ade80;stroke-width:2.5;stroke-linejoin:round}
+.ecg-g{animation:ecgmove var(--beat,.8s) linear infinite}
+@keyframes ecgmove{to{transform:translateX(-80px)}}
+
+.brain{width:100%;max-width:380px}
+.brain .node{transition:fill .5s,r .5s}
+.brain .node.lit{animation:neuron var(--np,1.2s) ease-in-out infinite}
+@keyframes neuron{0%,100%{opacity:.75}50%{opacity:1;filter:drop-shadow(0 0 5px #a5b4fc)}}
+.brain .edge{stroke:#cbd2dc;stroke-width:1.5;transition:stroke .5s}
+.brain .edge.lit{stroke:#6366f1;stroke-width:2.2;stroke-dasharray:5 5;animation:flow 1s linear infinite}
+@keyframes flow{to{stroke-dashoffset:-20}}
+.brain .bolt{fill:#f59e0b;stroke:#92400e;stroke-width:1.5;transition:opacity .5s;animation:flicker .6s steps(2) infinite}
+@keyframes flicker{0%{transform:translateY(0)}50%{transform:translateY(-3px) rotate(4deg)}}
+
+.face-row{display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:center}
+.face{width:150px}
+.hbar{height:20px;border-radius:99px;background:#e5e7eb;border:2px solid #9aa6b8;overflow:hidden;margin-top:10px}
+.hbar i{display:block;height:100%;width:80%;background:linear-gradient(90deg,#16a34a,#f59e0b,#dc2626);background-size:100vw 100%;transition:width .15s linear}
+.strat{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px;margin:12px 0}
+.strat .opt{font-size:.92rem}
+.opt .sw{width:22px;height:6px;border-radius:3px;background:var(--sc);flex:none}
+.chart{width:100%;background:#fff;border-radius:14px;border:2px solid var(--edge)}
+.chart text{font-size:11px;fill:#4b5563;font-weight:700}
+.chart .curve{fill:none;stroke-width:3.5;stroke-linecap:round;stroke-linejoin:round}
+.legend{display:grid;gap:4px;font-size:.88rem;margin-top:8px}
+.legend div{display:flex;gap:8px;align-items:center}
+.legend .sw{width:26px;height:0;border-top:4px solid var(--sc)}
+
+.netsvg{width:100%;background:radial-gradient(circle at 50% 50%,#fff 0,var(--soft) 100%);border-radius:18px;border:2px solid var(--edge)}
+.nnode{cursor:pointer}
+.nnode circle.body{fill:#fff;stroke:#9aa6b8;stroke-width:3;transition:fill .4s,stroke .4s}
+.nnode.on circle.body{fill:var(--c-social);stroke:#7c4a03}
+.nnode.on.bad circle.body{fill:#6b7280;stroke:#b91c1c}
+.nnode:hover circle.body,.nnode:focus-visible circle.body{stroke:var(--accent);stroke-width:5}
+.nnode:focus,.nnode:focus-visible{outline:none}
+.nnode text{font-size:11.5px;font-weight:800;fill:var(--ink);text-anchor:middle;pointer-events:none;paint-order:stroke;stroke:#fff;stroke-width:4px;stroke-linejoin:round}
+.nnode .ico{color:#6b7280;pointer-events:none}
+.nnode.on .ico{color:#fff}
+.nline{stroke:var(--c-social);stroke-width:4;stroke-linecap:round;stroke-dasharray:1;stroke-dashoffset:1;transition:stroke-dashoffset .6s ease}
+.nline.bad{stroke:#b91c1c;stroke-dasharray:1;}
+.nline.on{stroke-dashoffset:0}
+.you{animation:hubpulse 2.4s ease-in-out infinite;transform-origin:300px 200px}
+.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}
+.tile{background:#fff;border:2px solid var(--edge);border-radius:14px;padding:8px;text-align:center;font-weight:700;font-size:.85rem;transition:all .3s}
+.tile b{display:block;font-size:1.5rem;color:var(--accent)}
+.tile.ok{border-color:#3d9b5f;background:var(--good-bg)}
+.tile.ok b{color:var(--good)}
+
+.scene{width:100%;border-radius:16px;border:2px solid var(--edge);display:block}
+.puff{transform-box:fill-box;transform-origin:center;animation:smoke var(--sd,4s) ease-out infinite;animation-delay:var(--dl,0s)}
+@keyframes smoke{0%{transform:translate(0,0) scale(.5);opacity:.85}100%{transform:translate(40px,-85px) scale(2.1);opacity:0}}
+.scene.scrub .puff{fill:#f3f4f6!important;--sd:6s}
+.car{animation:drive var(--cd,7s) linear infinite;animation-delay:var(--dl,0s)}
+@keyframes drive{from{transform:translateX(-90px)}to{transform:translateX(680px)}}
+.tree{transform-box:fill-box;transform-origin:50% 100%;transform:scale(0);transition:transform .7s cubic-bezier(.3,1.6,.5,1)}
+.tree.show{transform:scale(1);animation:sway 4s ease-in-out infinite}
+@keyframes sway{0%,100%{transform:scale(1) rotate(-2deg)}50%{transform:scale(1) rotate(2deg)}}
+.cyc{animation:drive 9s linear infinite}
+
+/* ---------- integration ---------- */
+.persona{display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:center}
+.avatar{width:84px;height:84px;border-radius:50%;background:linear-gradient(135deg,var(--c-mental),var(--c-emotional));color:#fff;font-size:2.4rem;font-weight:900;display:grid;place-items:center;animation:bob 3s ease-in-out infinite}
+.bars{display:grid;gap:8px}
+.bar{display:grid;grid-template-columns:130px 1fr 44px;gap:8px;align-items:center;font-weight:800;font-size:.92rem}
+@media(max-width:560px){.bar{grid-template-columns:96px 1fr 38px;font-size:.82rem}}
+.bar .nm{display:flex;align-items:center;gap:6px;color:var(--bc)}
+.btrack{position:relative;height:20px;border-radius:99px;background:#e5e7eb;overflow:hidden}
+.btrack .base,.btrack .prev{position:absolute;left:0;top:0;bottom:0;border-radius:99px;transition:width .7s cubic-bezier(.3,1.2,.5,1)}
+.btrack .prev{background:repeating-linear-gradient(45deg,var(--bc),var(--bc) 6px,color-mix(in srgb,var(--bc) 70%,#fff) 6px,color-mix(in srgb,var(--bc) 70%,#fff) 12px);opacity:.55}
+.btrack .base{background:var(--bc);z-index:1}
+.btrack .goal{position:absolute;left:60%;top:0;bottom:0;width:3px;background:#111827;z-index:2}
+.bar.met .val{color:var(--good)}
+.actions{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:10px;margin:12px 0}
+.act{border:2px solid var(--edge);border-radius:16px;background:#fff;padding:10px 12px;text-align:left;cursor:pointer;transition:transform .15s,border-color .2s,background .2s;min-height:96px}
+.act:hover:not(:disabled){transform:translateY(-2px);border-color:var(--accent)}
+.act.on{background:var(--soft);border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 25%,transparent)}
+.act:disabled{opacity:.5;cursor:not-allowed}
+.act b{display:block;margin-bottom:4px}
+.deltas{display:flex;gap:4px;flex-wrap:wrap}
+.dl{font-size:.75rem;font-weight:800;border-radius:999px;padding:1px 8px;color:#fff;background:var(--bc)}
+.dl.neg{background:#fff;color:var(--bad);border:2px solid var(--bad)}
+.sticky-bars{position:sticky;top:76px;z-index:5}
+
+/* ---------- results ---------- */
+.report{background:#fff;border:3px solid var(--accent);border-radius:24px;padding:20px;box-shadow:0 8px 0 rgba(31,41,55,.1)}
+.rep-head{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:flex-end;border-bottom:3px solid var(--accent);padding-bottom:10px;margin-bottom:14px}
+.rep-head h2{margin:0;font-size:clamp(1.3rem,3.5vw,1.9rem);color:var(--accent)}
+.rep-head .meta{text-align:right;font-weight:700}
+.rep-head .meta .nm{font-size:1.4rem;color:var(--ink)}
+.rep-top{display:grid;grid-template-columns:230px 1fr;gap:20px;align-items:center}
+@media(max-width:760px){.rep-top{grid-template-columns:1fr}}
+.ring{position:relative;width:210px;height:210px;margin:0 auto}
+.ring svg{transform:rotate(-90deg)}
+.ring .rt{position:absolute;inset:0;display:grid;place-items:center;text-align:center}
+.ring .rt b{font-size:3.2rem;line-height:1;color:var(--accent);font-variant-numeric:tabular-nums}
+.ring .rt small{display:block;font-weight:800;color:var(--muted)}
+.tally{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.tally span{border-radius:999px;padding:3px 12px;font-weight:800;font-size:.88rem;background:var(--soft);border:2px solid var(--edge)}
+.rep-cols{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:16px}
+@media(max-width:860px){.rep-cols{grid-template-columns:1fr}}
+.rep-cols h3{font-size:1.1rem;color:var(--accent);margin-bottom:6px}
+.good-list,.rev-list{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.good-list li{display:flex;gap:8px;align-items:flex-start;background:var(--good-bg);border-radius:10px;padding:6px 10px;font-size:.92rem;color:#14532d}
+.rev-list li{border-left:5px solid var(--bad);background:#fff7f7;border-radius:8px;padding:6px 10px;font-size:.9rem}
+.rev-list li.half{border-left-color:#d97706;background:#fffbf0}
+.rev-list b{display:block}
+.rev-list small{display:block;color:var(--muted)}
+.dimbars{display:grid;gap:8px}
+.dimbars .bar{grid-template-columns:150px 1fr 90px}
+@media(max-width:560px){.dimbars .bar{grid-template-columns:100px 1fr 70px}}
+.shot{display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:center}
+.celebrate{font-size:1.1rem;font-weight:800;color:var(--good)}
+
+/* ---------- fx ---------- */
+.conf{position:fixed;z-index:200;width:9px;height:14px;border-radius:2px;pointer-events:none;animation:confetti .95s cubic-bezier(.2,.7,.3,1) forwards}
+@keyframes confetti{0%{transform:translate(0,0) rotate(0);opacity:1}100%{transform:translate(var(--dx),calc(var(--dy) + 90px)) rotate(var(--r));opacity:0}}
+#toast{position:fixed;left:50%;bottom:calc(var(--nav-h) + 20px);transform:translate(-50%,30px);background:#111827;color:#fff;padding:10px 18px;border-radius:999px;font-weight:700;opacity:0;pointer-events:none;transition:all .4s;z-index:60;max-width:92vw;text-align:center}
+#toast.on{opacity:1;transform:translate(-50%,0)}
+noscript{display:block;position:relative;z-index:5;padding:20px;background:#fee2e2;color:#7f1d1d;font-weight:700;text-align:center}
+
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;animation-delay:0s!important;transition-duration:.001ms!important;scroll-behavior:auto!important}
+  .fl{display:none}
+}
+@media print{
+  body{background:#fff}
+  #bg,.top,.navbar,.noprint,#toast{display:none!important}
+  main#stage{padding:0;max-width:none}
+  .report{border-width:2px;box-shadow:none}
+  .page{animation:none}
+}
+</style>
+</head>
+<body data-theme="neutral">
+<noscript>This lab needs JavaScript. Please open it in Chrome or another current browser with JavaScript turned on.</noscript>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <symbol id="i-physical" viewBox="0 0 24 24"><path d="M12 21s-7-4.5-9.3-9.1C1.2 8.8 3 5 6.6 5c2 0 3.4 1.1 4.2 2.4L12 9l1.2-1.6C14 6.1 15.4 5 17.4 5 21 5 22.8 8.8 21.3 11.9 19 16.5 12 21 12 21z"/><path d="M6.5 12.5h3l1.5-3 2 6 1.5-3h3"/></symbol>
+    <symbol id="i-mental" viewBox="0 0 24 24"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/></symbol>
+    <symbol id="i-emotional" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="9" cy="10" r="1" fill="currentColor" stroke="none"/><circle cx="15" cy="10" r="1" fill="currentColor" stroke="none"/><path d="M8 14.5c1 1.6 2.6 2.5 4 2.5s3-.9 4-2.5"/></symbol>
+    <symbol id="i-social" viewBox="0 0 24 24"><circle cx="8" cy="8" r="3"/><path d="M2.5 20c0-3.3 2.5-5.5 5.5-5.5s5.5 2.2 5.5 5.5"/><circle cx="17" cy="9" r="2.5"/><path d="M16 14.2c3 0 5.5 2 5.5 5.3"/></symbol>
+    <symbol id="i-environmental" viewBox="0 0 24 24"><path d="M5 19c0-8 5-14 15-14 0 10-6 15-14 15"/><path d="M5 19c2-4 5-7 9-9"/></symbol>
+    <symbol id="i-integration" viewBox="0 0 24 24"><circle cx="6" cy="6" r="2.6"/><circle cx="18" cy="6" r="2.6"/><circle cx="12" cy="18" r="2.6"/><path d="M8.6 6h6.8M7.4 8.2l3.2 7.6M16.6 8.2l-3.2 7.6"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></symbol>
+    <symbol id="i-flag" viewBox="0 0 24 24"><path d="M5 21V4M5 4h11l-2 4 2 4H5"/></symbol>
+    <symbol id="i-person" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.5 3.5-7 8-7s8 2.5 8 7"/></symbol>
+    <symbol id="i-warn" viewBox="0 0 24 24"><path d="M12 3l10 18H2z"/><path d="M12 10v5M12 18v.5"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+  </defs>
+</svg>
+
+<div id="bg" aria-hidden="true"></div>
+
+<header class="top">
+  <div class="top-in">
+    <div class="brand">
+      <svg class="ic" width="34" height="34" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-integration"/></svg>
+      <span><b>Wellness Dimensions Lab</b><small>Extra credit &middot; about 25 minutes</small></span>
+    </div>
+    <div class="badges" id="badges" aria-label="Lab badges earned"></div>
+    <div class="score"><span class="who" id="who"></span><span class="pts"><span id="pts">0</span> / 100 pts</span></div>
+  </div>
+  <div class="progress" aria-hidden="true"><i id="bar"></i></div>
+</header>
+
+<main id="stage" tabindex="-1" aria-live="off"></main>
+
+<nav class="navbar" aria-label="Lab navigation">
+  <div class="nav-in">
+    <button class="btn" id="prev" type="button">&larr; Previous</button>
+    <div class="dots" id="dots" role="list"></div>
+    <button class="btn primary" id="next" type="button">Next &rarr;</button>
+    <div class="nav-msg" id="navmsg" role="status" aria-live="polite"></div>
+  </div>
+</nav>
+<div id="toast" role="status" aria-live="polite"></div>
+
+<script>
+'use strict';
+/* =====================================================================
+   Wellness Dimensions Lab. One self-contained file: no network needed.
+   Scoring: every item allows 3 tries (1st 100%, 2nd 75%, 3rd 50%, then 0).
+   ===================================================================== */
+
+/* ---------- utilities ---------- */
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+const fmt = n => String(Math.round(n * 10) / 10);
+const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const MULT = [1, 0.75, 0.5];
+const ORDER = ['physical', 'mental', 'emotional', 'social', 'environmental'];
+
+function h(tag, props, ...kids) {
+  const el = document.createElement(tag);
+  for (const [k, v] of Object.entries(props || {})) {
+    if (v == null || v === false) continue;
+    if (k === 'class') el.className = v;
+    else if (k === 'style' && typeof v === 'object') for (const [p, val] of Object.entries(v)) p.startsWith('--') ? el.style.setProperty(p, val) : (el.style[p] = val);
+    else if (k === 'html') el.innerHTML = v;
+    else if (k.startsWith('on')) el.addEventListener(k.slice(2), v);
+    else el.setAttribute(k, v === true ? '' : v);
+  }
+  kids.flat(Infinity).forEach(c => { if (c != null && c !== false) el.append(c.nodeType ? c : document.createTextNode(c)); });
+  return el;
+}
+const ic = (k, sz = 24) => `<svg class="ic" width="${sz}" height="${sz}" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-${k}"/></svg>`;
+function hash(s) { let x = 2166136261; for (const c of s) { x ^= c.charCodeAt(0); x = Math.imul(x, 16777619); } return x >>> 0; }
+function rng(seed) { let a = seed >>> 0; return () => { a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+function shuffled(arr, key) { const r = rng(S.seed ^ hash(key)); const a = [...arr]; for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(r() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+
+let cleanups = [];
+function tween(ms, fn, done) {
+  if (REDUCED) { fn(1); if (done) done(); return; }
+  let stopped = false, raf; const t0 = performance.now();
+  const f = t => { if (stopped) return; const p = Math.min(1, (t - t0) / ms); fn(p); if (p < 1) raf = requestAnimationFrame(f); else if (done) done(); };
+  raf = requestAnimationFrame(f);
+  cleanups.push(() => { stopped = true; cancelAnimationFrame(raf); });
+}
+const ease = p => 1 - Math.pow(1 - p, 3);
+
+function burst(x, y, colors, n = 18) {
+  if (REDUCED) return;
+  for (let i = 0; i < n; i++) {
+    const p = h('i', { class: 'conf' });
+    const a = Math.random() * Math.PI * 2, d = 40 + Math.random() * 90;
+    p.style.cssText = `left:${x}px;top:${y}px;background:${colors[i % colors.length]};--dx:${Math.cos(a) * d}px;--dy:${Math.sin(a) * d - 40}px;--r:${Math.random() * 720 - 360}deg`;
+    document.body.append(p);
+    setTimeout(() => p.remove(), 1000);
+  }
+}
+const themeColors = () => ['#fbbf24', '#ef4444', '#3b82f6', '#22c55e', '#a855f7', '#ec4899'];
+function burstAt(el, n) { const r = el.getBoundingClientRect(); burst(r.left + r.width / 2, r.top + Math.min(r.height / 2, 80), themeColors(), n); }
+let toastT;
+function toast(msg) { const t = $('#toast'); t.textContent = msg; t.classList.add('on'); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('on'), 3200); }
+
+const store = {
+  get() { try { return JSON.parse(localStorage.getItem('wdl-v1')); } catch { return null; } },
+  set(v) { try { localStorage.setItem('wdl-v1', JSON.stringify(v)); } catch { /* storage unavailable: progress lives only in this tab */ } }
+};
+
+/* ---------- content ---------- */
+const DIM = {
+  physical: { name: 'Physical', color: '#c2410c', soft: '#ffedd5', edge: '#f3c7a8', tag: 'Body & movement',
+    def: 'How well your body works and moves: fitness, sleep, nutrition, and staying away from harmful substances.',
+    metrics: ['Resting heart rate', 'Blood pressure', 'Hours of sleep', 'Steps per day', 'Minutes of exercise', 'Push-ups in a minute'],
+    habits: ['Sleep 8–10 hours', '60 minutes of activity', 'Drink water', 'Eat balanced meals'] },
+  mental: { name: 'Mental', color: '#4338ca', soft: '#e0e7ff', edge: '#c3cbf5', tag: 'Thinking & learning',
+    def: 'How you think, learn, focus, remember, solve problems and manage the demands on your mind.',
+    metrics: ['Minutes of focus', 'Memory-test score', 'Puzzle solving time', 'Problems solved correctly', 'Number of distractions'],
+    habits: ['Study with short breaks', 'Silence notifications', 'Learn something new', 'Practice mindfulness'] },
+  emotional: { name: 'Emotional', color: '#be185d', soft: '#fce7f3', edge: '#f5bcd7', tag: 'Feelings & coping',
+    def: 'Recognizing, expressing and managing your feelings in healthy ways, and bouncing back from setbacks.',
+    metrics: ['Daily mood rating', 'Minutes to calm down', 'Feelings you can name', 'Self-confidence rating'],
+    habits: ['Name your feeling', 'Breathe slowly', 'Journal', 'Talk to someone you trust'] },
+  social: { name: 'Social', color: '#a16207', soft: '#fef3c7', edge: '#ecd28a', tag: 'Relationships & belonging',
+    def: 'Building and keeping healthy, respectful relationships and feeling that you belong to a group or community.',
+    metrics: ['Trusted people you can turn to', 'Club or team meetings attended', 'Conflicts solved by talking', 'Kind acts or thank-yous'],
+    habits: ['Listen well', 'Join a team or club', 'Set healthy boundaries', 'Be kind and inclusive'] },
+  environmental: { name: 'Environmental', color: '#15803d', soft: '#dcfce7', edge: '#a8dfb9', tag: 'Places & planet',
+    def: 'How the places where you live, learn and play (air, water, noise, safety, nature) affect you, and how you affect them.',
+    metrics: ['Air Quality Index (AQI)', 'Noise level in decibels', 'Share of waste recycled', 'Working clean-water fountains'],
+    habits: ['Recycle and reuse', 'Cut idling cars', 'Plant trees', 'Report unsafe hazards'] },
+  integration: { name: 'Integration', color: '#0f4c81', soft: '#e3effb', edge: '#b7cbe3' }
+};
+
+const STOP_PTS = { wheel: 10, sort: 20, physical: 10, mental: 10, emotional: 10, social: 10, environmental: 10, integrate: 20 };
+const STOP_NAME = { wheel: 'Wellness Wheel', sort: 'Metric Sort', physical: 'Physical Lab', mental: 'Mental Lab', emotional: 'Emotional Lab', social: 'Social Lab', environmental: 'Environmental Lab', integrate: 'Integration Lab' };
+const ITEMS = {}, STOP_ITEMS = {};
+function reg(stop, id, dim, title, answer, why) {
+  ITEMS[id] = { id, stop, dim, title, answer, why };
+  (STOP_ITEMS[stop] = STOP_ITEMS[stop] || []).push(id);
+}
+
+const WHEEL_Q = {
+  physical: 'You sleep 9 hours, eat a balanced breakfast and play basketball after school.',
+  mental: 'You make a study schedule with short breaks, silence your notifications and learn from a quiz mistake.',
+  emotional: 'You notice you feel frustrated, name the feeling and take five slow breaths before replying.',
+  social: 'You listen to a friend, share fairly with your team and invite a new classmate to sit with you.',
+  environmental: 'Your school adds recycling bins, plants trees and checks the air filters.'
+};
+const WHEEL_WHY = {
+  physical: 'Sleep, food and exercise all build your body.',
+  mental: 'Planning, focus and learning from mistakes are how you care for your thinking.',
+  emotional: 'Naming a feeling and calming down is emotional skill.',
+  social: 'Listening, sharing and including others build relationships.',
+  environmental: 'Clean air, trees and recycling change the place you live and learn.'
+};
+ORDER.forEach(d => reg('wheel', 'w-' + d, d, 'Scenario: ' + WHEEL_Q[d].replace(/\.$/, ''), DIM[d].name, WHEEL_WHY[d]));
+
+const CARDS = [
+  { dim: 'physical', t: 'Resting heart rate', v: '68 beats per minute', why: 'Heart rate is measured from your body and shows cardiovascular fitness.' },
+  { dim: 'physical', t: 'Push-ups in one minute', v: '24 push-ups', why: 'Muscular endurance is a physical fitness test.' },
+  { dim: 'physical', t: 'Steps per day', v: '8,200 steps', why: 'Counting steps tracks physical activity.' },
+  { dim: 'physical', t: 'Minutes of exercise today', v: '45 minutes', why: 'Exercise time measures how much you move your body.' },
+  { dim: 'mental', t: 'Minutes of focus before getting distracted', v: '22 minutes', why: 'Attention span measures how well your mind stays on a task.' },
+  { dim: 'mental', t: 'Words remembered from a 12-word list', v: '9 of 12', why: 'Memory is a thinking skill, so it is a mental metric.' },
+  { dim: 'mental', t: 'Time to finish a logic puzzle', v: '4 minutes', why: 'Problem solving speed shows how your mind works through a challenge.' },
+  { dim: 'mental', t: 'Mental-math problems solved in 5 minutes', v: '7 problems', why: 'Calculating in your head exercises and measures your thinking.' },
+  { dim: 'emotional', t: 'Daily mood rating', v: '7 out of 10', why: 'Tracking mood measures how you feel from day to day.' },
+  { dim: 'emotional', t: 'Time to calm down after being upset', v: '10 minutes', why: 'Recovery time shows how well you manage strong feelings.' },
+  { dim: 'emotional', t: 'Different feelings named in a journal this week', v: '6 feelings', why: 'Putting names to feelings is emotional awareness.' },
+  { dim: 'emotional', t: 'Self-confidence before a presentation', v: '6 out of 10', why: 'How you feel about yourself is an emotional metric.' },
+  { dim: 'social', t: 'Trusted people you can go to for support', v: '4 people', why: 'A support network measures the strength of your relationships.' },
+  { dim: 'social', t: 'Club or team meetings attended this month', v: '3 meetings', why: 'Taking part in groups measures belonging and connection.' },
+  { dim: 'social', t: 'Disagreements solved by talking it out', v: '2 conflicts', why: 'Resolving conflict is a communication skill used with other people.' },
+  { dim: 'social', t: 'Thank-yous or compliments you gave this week', v: '9 times', why: 'Kindness toward others builds relationships.' },
+  { dim: 'environmental', t: 'Air Quality Index (AQI) at school', v: '42 (Good)', why: 'AQI measures the air around you, which is part of your environment.' },
+  { dim: 'environmental', t: 'Noise level in the cafeteria', v: '85 decibels', why: 'Noise is measured in the surroundings and can affect hearing and stress.' },
+  { dim: 'environmental', t: 'Share of school waste that is recycled', v: '35%', why: 'Recycling measures how your community treats the environment.' },
+  { dim: 'environmental', t: 'Working clean-water fountains at school', v: '6 of 8', why: 'Access to clean water is a feature of your surroundings.' }
+].map((c, i) => ({ ...c, id: 'c' + String(i + 1).padStart(2, '0') }));
+CARDS.forEach(c => reg('sort', c.id, c.dim, `${c.t} (${c.v})`, DIM[c.dim].name, c.why));
+
+const LAB = {
+  physical: { no: 1, title: 'Body Dashboard',
+    mission: 'Resting heart rate, sleep, activity and hydration are physical health metrics: numbers you can measure. Move the sliders and watch your heart respond.',
+    ripple: 'Too little sleep raises resting heart rate (physical), hurts focus (mental) and makes moods harder to manage (emotional).',
+    challenge: 'Set the sliders so Sleep, Activity and Water are all in their green target zones <b>and</b> your resting heart rate is in the fit range (70 bpm or lower). Then press Check.',
+    answer: 'Sleep 8–10 hours, at least 60 active minutes and at least 8 cups of water give a resting heart rate near 67 bpm.',
+    why: 'Healthy sleep, regular activity and good hydration lower resting heart rate. Each is a physical metric you can track.',
+    mcTitle: 'Metric check: two physical readings', mcQ: 'Which TWO readings are both <u>physical</u> health metrics?',
+    mc: [['a', 'Hours of sleep + blood pressure', 1], ['b', 'Daily mood rating + hours of sleep'], ['c', 'Blood pressure + Air Quality Index'], ['d', 'Steps per day + number of close friends']],
+    mcWhy: 'Sleep and blood pressure are both measured on your body. Mood is emotional, AQI is environmental and friends are social.' },
+  mental: { no: 2, title: 'Focus Lab',
+    mission: 'Mental wellness is about thinking, learning and handling pressure. Focus time and memory scores are mental metrics. Adjust your study conditions and watch the brain light up.',
+    ripple: 'Stress disrupts sleep and mood, and a calm mind makes it easier to focus in class and be present with friends.',
+    challenge: 'Find study conditions where your <b>Focus is 75 or higher</b> and your <b>Stress is 40 or lower</b>. Then press Check.',
+    answer: 'For example: 8 hours of sleep, 1 notification per 10 minutes, 30-minute study blocks and 5 minutes of mindfulness.',
+    why: 'Enough sleep, few distractions, regular breaks and a little mindfulness protect focus and lower stress.',
+    mcTitle: 'Metric check: two mental readings', mcQ: 'Which TWO readings are both <u>mental</u> health metrics?',
+    mc: [['a', 'Resting heart rate + steps per day'], ['b', 'Minutes of focus + memory-test score', 1], ['c', 'Mood rating + club meetings attended'], ['d', 'AQI + noise level']],
+    mcWhy: 'Focus time and memory scores measure how your mind works. The others measure body, feelings, relationships or surroundings.' },
+  emotional: { no: 3, title: 'Mood Weather Station',
+    mission: 'Emotional wellness is noticing your feelings and handling them in healthy ways. A key metric is recovery time: how many minutes it takes to calm down. Anger starts at 8 out of 10. Try each strategy and compare.',
+    ripple: 'Calming down quickly protects friendships (social) and clears your head so you can focus (mental).',
+    challenge: 'Anger starts at 8/10. Select <b>every strategy</b> that brought it down to <b>3 or below within 10 minutes</b>. Run each strategy first so you can compare. Then press Check.',
+    answer: 'Slow breathing, talking to a trusted person, journaling and taking a walk all got anger to 3 or below. Bottling it up and yelling did not.',
+    why: 'Healthy coping skills lower the intensity of a feeling. Bottling it up keeps it high inside and yelling makes it grow.',
+    mcTitle: 'Metric check: two emotional readings', mcQ: 'Which TWO readings are both <u>emotional</u> health metrics?',
+    mc: [['a', 'Memory-test score + steps per day'], ['b', 'Trusted people + club meetings'], ['c', 'Noise level + share of waste recycled'], ['d', 'Daily mood rating + minutes to calm down', 1]],
+    mcWhy: 'Mood and recovery time describe how you feel and cope. The others measure thinking, body, relationships or surroundings.' },
+  social: { no: 4, title: 'Support Network Map',
+    mission: 'Social wellness is about healthy relationships and belonging. Tap people to connect them to you and watch your support network grow. Not every connection is healthy, so look at the details.',
+    ripple: 'Supportive friends can lift your mood (emotional), invite you to be active (physical) and join you in helping your community (environmental).',
+    challenge: 'Build a healthy network: <b>at least 4 supportive people</b>, covering <b>all 3 settings</b> (home, school, community), with <b>no unhealthy connections</b>. Then press Check.',
+    answer: 'Connect four or more supportive people (for example a parent, best friend, teammate and teacher) across home, school and community, and leave the gossip chat and the secret-keeping stranger unconnected.',
+    why: 'Healthy social wellness means several trusted people in different parts of your life, not just a large number of contacts.',
+    mcTitle: 'Metric check: two social readings', mcQ: 'Which TWO readings are both <u>social</u> health metrics?',
+    mc: [['a', 'Mood rating + trusted people'], ['b', 'Hours of sleep + club meetings'], ['c', 'Trusted people + disagreements solved by talking', 1], ['d', 'Noise level + memory-test score']],
+    mcWhy: 'Trusted people and conflict resolution both describe relationships with others. The others mix in body, feelings, thinking or surroundings.' },
+  environmental: { no: 5, title: 'Clean Air Challenge',
+    mission: 'Environmental wellness is about the places around you. Air Quality Index (AQI) and noise in decibels are environmental metrics. Change the town and see the numbers move.',
+    ripple: 'Smoggy air makes exercise harder (physical) and constant noise makes it hard to concentrate (mental).',
+    challenge: 'Make the town healthy: <b>AQI of 50 or less</b> (Good), <b>noise under 60 dB</b> and <b>at least 50% recycled</b>. Then press Check.',
+    answer: 'For example: about 3–4 cars, 8 or more trees, a filter on the smokestack and 50% or more recycling.',
+    why: 'Fewer idling cars, cleaner factories and more trees lower pollution and noise. Recycling cuts waste.',
+    mcTitle: 'Metric check: two environmental readings', mcQ: 'Which TWO readings are both <u>environmental</u> health metrics?',
+    mc: [['a', 'AQI + resting heart rate'], ['b', 'Share of waste recycled + minutes of focus'], ['c', 'Noise level + daily mood rating'], ['d', 'AQI + noise level in decibels', 1]],
+    mcWhy: 'Air quality and noise are measured in your surroundings. The others pair a surroundings metric with something about you.' }
+};
+ORDER.forEach(d => {
+  reg(d, d + '-lab', d, 'Lab challenge: ' + LAB[d].title, LAB[d].answer, LAB[d].why);
+  const right = LAB[d].mc.find(o => o[2]);
+  reg(d, d + '-metrics', d, LAB[d].mcTitle, right[1], LAB[d].mcWhy);
+});
+
+const JORDAN = [
+  { k: 'physical', text: 'Sleeps about 5 hours on school nights' },
+  { k: 'mental', text: 'Can focus for only about 10 minutes before drifting' },
+  { k: 'emotional', text: 'Rates mood 3 out of 10 on most days' },
+  { k: 'social', text: 'Has only 1 person to turn to for support' },
+  { k: 'environmental', text: 'Neighborhood AQI is 135 on most days' }
+];
+const BASE = { physical: 40, mental: 45, emotional: 35, social: 30, environmental: 40 };
+const ACTIONS = [
+  { id: 'curfew', t: 'Set a 10 pm phone curfew so you sleep 8–9 hours', d: { physical: 20, mental: 12, emotional: 10 } },
+  { id: 'walk', t: 'Walk to school with a neighbor', d: { physical: 12, mental: 3, emotional: 8, social: 15, environmental: 10 } },
+  { id: 'club', t: 'Join a lunch club or team', d: { physical: 5, emotional: 10, social: 25 } },
+  { id: 'counsel', t: 'Talk with the school counselor about worries', d: { mental: 8, emotional: 25, social: 8 } },
+  { id: 'study', t: 'Study in a bright, quiet, green space', d: { mental: 15, emotional: 5, environmental: 20 } },
+  { id: 'air', t: 'Join the clean-air club and help fix school air filters', d: { physical: 8, mental: 3, social: 8, environmental: 25 } },
+  { id: 'allnight', t: 'Pull all-nighters to catch up on homework', d: { physical: -20, mental: 5, emotional: -15, social: -5 } },
+  { id: 'alone', t: 'Stay in your room gaming alone every weekend', d: { physical: -8, mental: -3, emotional: 3, social: -15, environmental: -10 } }
+];
+const PICKS = 4, GOAL = 60;
+reg('integrate', 'int-match', 'integration', "Match Jordan's five readings to their dimensions", 'Sleep → Physical; focus → Mental; mood → Emotional; support → Social; AQI → Environmental', 'Each reading measures a different part of wellness: body, thinking, feelings, relationships and surroundings.');
+reg('integrate', 'int-ripple', 'integration', 'Which dimensions does five hours of sleep ripple into?', 'Physical, Mental, Emotional and Social', 'Short sleep drains energy (physical), focus (mental), mood (emotional) and patience with others (social). Your neighborhood air does not change.');
+reg('integrate', 'int-plan', 'integration', 'Build a 4-action plan that lifts every dimension to 60 or higher', 'For example: phone curfew + lunch club + counselor + clean-air club', 'Strong plans use actions that pay off in several dimensions at once, and avoid actions that harm one dimension to help another.');
+reg('integrate', 'int-concept', 'integration', 'How the dimensions of wellness work together', 'They overlap, so a change in one often ripples into others', 'No dimension stands alone. Improving one often helps the rest, and neglecting one can drag the others down.');
+
+for (const [stop, ids] of Object.entries(STOP_ITEMS)) ids.forEach(id => { ITEMS[id].pts = STOP_PTS[stop] / ids.length; });
+
+/* ---------- state ---------- */
+const DEFAULT_SIM = () => ({
+  physical: { sleep: 5, active: 10, water: 2 },
+  mental: { sleep: 5, notif: 8, block: 90, mind: 0 },
+  emotional: { ran: [] },
+  social: { on: [] },
+  environmental: { traffic: 8, trees: 1, scrub: false, bike: false, recycle: 20 },
+  integrate: { picks: [], match: {}, ripple: [] }
+});
+const fresh = () => ({ v: 1, name: '', period: '', step: 0, seed: (Math.random() * 1e9) | 0, startedAt: 0, finishedAt: 0, items: {}, seen: [], sim: DEFAULT_SIM() });
+let S = (() => { const s = store.get(); return s && s.v === 1 ? { ...fresh(), ...s, sim: { ...DEFAULT_SIM(), ...s.sim } } : fresh(); })();
+const save = () => store.set(S);
+const st = id => (S.items[id] = S.items[id] || { a: 0, done: false, credit: 0, wrong: [] });
+const earned = id => ITEMS[id].pts * st(id).credit;
+const totalPts = () => Object.keys(ITEMS).reduce((s, id) => s + earned(id), 0);
+
+function judge(id, ok, wrongKey) {
+  const it = st(id);
+  if (it.done) return it;
+  it.a++;
+  if (ok) { it.done = true; it.credit = MULT[it.a - 1]; }
+  else {
+    if (wrongKey != null) it.wrong.push(wrongKey);
+    if (it.a >= 3) { it.done = true; it.credit = 0; it.missed = true; }
+  }
+  save();
+  updateChrome();
+  return it;
+}
+
+/* ---------- steps ---------- */
+const STEPS = [
+  { id: 'start', label: 'Start', theme: 'neutral', dim: 'integration', render: renderStart },
+  { id: 'wheel', label: 'Wellness Wheel', theme: 'neutral', dim: 'integration', render: renderWheel },
+  { id: 'sort', label: 'Metric Sort', theme: 'neutral', dim: 'integration', render: renderSort },
+  ...ORDER.map(d => ({ id: d, label: DIM[d].name + ' Lab', theme: d, dim: d, render: w => renderLab(w, d) })),
+  { id: 'integrate', label: 'Integration Lab', theme: 'neutral', dim: 'integration', render: renderIntegrate },
+  { id: 'results', label: 'Results', theme: 'neutral', dim: 'integration', render: renderResults }
+];
+const stepIdx = id => STEPS.findIndex(s => s.id === id);
+function remaining(i) {
+  const s = STEPS[i];
+  if (s.id === 'start') return S.startedAt ? 0 : 1;
+  if (s.id === 'results') return 0;
+  let n = STOP_ITEMS[s.id].filter(id => !st(id).done).length;
+  if (s.id === 'wheel') n += 5 - S.seen.length;
+  return n;
+}
+const stepDone = i => remaining(i) === 0;
+function maxReach() { for (let i = 0; i < STEPS.length; i++) if (!stepDone(i)) return i; return STEPS.length - 1; }
+let cur = 0, celebrated = new Set();
+const nameOk = () => { const v = ($('#f-name') ? $('#f-name').value : S.name).trim(); return v.length >= 2 && /[a-z]/i.test(v); };
+
+/* ---------- chrome (header, nav) ---------- */
+function buildChrome() {
+  const bg = $('#bg');
+  ['neutral', ...ORDER].forEach(t => {
+    const layer = h('div', { class: 'bg-layer', 'data-t': t });
+    const g = { neutral: 'linear-gradient(135deg,#eaf1fb,#f4efe6 55%,#e6f3ea)', physical: 'linear-gradient(135deg,#fff3e6,#ffd9bd)', mental: 'linear-gradient(135deg,#eef0ff,#d6dcff)', emotional: 'linear-gradient(135deg,#fff0f7,#ffd3e6)', social: 'linear-gradient(135deg,#fffae6,#fbe8a6)', environmental: 'linear-gradient(135deg,#effcf2,#bfeccb)' }[t];
+    layer.style.background = g;
+    const kinds = t === 'neutral' ? ORDER : [t];
+    const r = rng(hash(t));
+    for (let i = 0; i < 14; i++) {
+      const k = kinds[i % kinds.length], size = 30 + r() * 60;
+      const f = h('div', { class: 'fl', html: ic(k, size) });
+      f.style.cssText = `left:${r() * 96}%;top:${40 + r() * 70}%;color:${DIM[k].color};--d:${28 + r() * 30}s;--dl:-${r() * 40}s;--dx:${r() * 60 - 30}px`;
+      layer.append(f);
+    }
+    bg.append(layer);
+  });
+  ORDER.forEach(d => $('#badges').append(h('span', { class: 'badge', id: 'bd-' + d, title: DIM[d].name + ' lab badge', style: { '--bc': DIM[d].color }, html: ic(d, 20) })));
+  STEPS.forEach((s, i) => {
+    const b = h('button', { class: 'dot', type: 'button', role: 'listitem', 'aria-label': `Step ${i + 1}: ${s.label}`, title: s.label, style: { '--dc': DIM[s.dim].color }, onclick: () => { if (i !== cur && i <= maxReach() && (S.startedAt || i === 0)) go(i); } });
+    b.innerHTML = i === 0 ? ic('flag', 16) : i === STEPS.length - 1 ? ic('check', 16) : (ORDER.includes(s.id) ? ic(s.id, 16) : `<span aria-hidden="true">${i}</span>`);
+    $('#dots').append(b);
+  });
+  $('#prev').addEventListener('click', () => { if (cur > 0) go(cur - 1); });
+  $('#next').addEventListener('click', onNext);
+}
+
+function updateChrome() {
+  $('#pts').textContent = fmt(totalPts());
+  $('#who').textContent = S.name;
+  ORDER.forEach(d => $('#bd-' + d).classList.toggle('on', STOP_ITEMS[d].every(id => st(id).done)));
+  const doneCount = STEPS.filter((s, i) => i < STEPS.length - 1 && stepDone(i) && (i > 0 || S.startedAt)).length;
+  $('#bar').style.width = (doneCount / (STEPS.length - 1) * 100) + '%';
+  const reach = maxReach();
+  $$('#dots .dot').forEach((b, i) => {
+    b.classList.toggle('cur', i === cur);
+    b.classList.toggle('done', i < reach || (i === reach && stepDone(i) && i < STEPS.length - 1 && (i > 0 || !!S.startedAt)));
+    b.disabled = !(S.startedAt || i === 0) || i > reach;
+    if (i === cur) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
+  });
+  $('#prev').disabled = cur === 0;
+  const next = $('#next'), msg = $('#navmsg'), last = cur === STEPS.length - 1;
+  next.textContent = cur === 0 ? 'Start the lab →' : cur === STEPS.length - 2 ? 'See my results →' : 'Next →';
+  next.hidden = false;
+  let ok;
+  if (cur === 0) ok = S.startedAt ? true : nameOk();
+  else ok = stepDone(cur);
+  if (last) { next.hidden = true; msg.textContent = 'You finished! Scroll down for screenshot steps.'; msg.className = 'nav-msg ready'; return; }
+  next.disabled = !ok;
+  next.setAttribute('aria-disabled', String(!ok));
+  next.classList.toggle('ready', ok && cur > 0);
+  if (cur === 0) { msg.textContent = ok ? 'Ready when you are.' : 'Type your name to begin.'; msg.className = 'nav-msg' + (ok ? ' ready' : ''); }
+  else if (ok) { msg.textContent = 'Stop complete! Press Next to continue, or Previous to review.'; msg.className = 'nav-msg ready'; }
+  else { const n = remaining(cur); msg.textContent = cur === 1 && S.seen.length < 5 ? `Explore all 5 sections of the wheel (${5 - S.seen.length} to go).` : `Finish ${n} more ${n === 1 ? 'item' : 'items'} to unlock Next.`; msg.className = 'nav-msg'; }
+}
+
+function onNext() {
+  if (cur === 0 && !S.startedAt) {
+    if (!nameOk()) { const e = $('#f-err'); if (e) e.textContent = 'Please type your first and last name.'; const f = $('#f-name'); if (f) f.focus(); return; }
+    S.name = $('#f-name').value.trim().replace(/\s+/g, ' ');
+    S.period = ($('#f-period').value || '').trim();
+    S.startedAt = Date.now();
+    save();
+  }
+  if (cur < STEPS.length - 1 && stepDone(cur)) go(cur + 1);
+}
+
+function go(i) {
+  cleanups.forEach(f => f()); cleanups = [];
+  const dir = i >= cur ? 'fwd' : 'back';
+  cur = i; S.step = i; save();
+  const step = STEPS[i];
+  document.body.dataset.theme = step.theme;
+  $$('.bg-layer').forEach(l => l.classList.toggle('on', l.dataset.t === step.theme));
+  const stage = $('#stage'); stage.innerHTML = '';
+  const wrap = h('div', { class: 'page enter-' + dir });
+  step.render(wrap);
+  stage.append(wrap);
+  window.scrollTo(0, 0);
+  stage.focus({ preventScroll: true });
+  updateChrome();
+}
+
+function celebrateIfDone() {
+  const s = STEPS[cur];
+  if (cur > 0 && stepDone(cur) && !celebrated.has(s.id)) {
+    celebrated.add(s.id);
+    burstAt($('#next'), 30);
+    toast(cur === STEPS.length - 2 ? 'Integration complete! Your results are ready.' : `${s.label} complete! Press Next to continue.`);
+  }
+}
+
+/* ---------- reusable item pieces ---------- */
+function pipsHtml(it, id) {
+  const lab = ['1st try 100%', '2nd try 75%', '3rd try 50%'];
+  const p = lab.map((l, i) => {
+    let c = 'pip';
+    if (it.done && !it.missed && i === it.a - 1) c += ' won';
+    else if (i < it.a) c += ' used';
+    else if (!it.done && i === it.a) c += ' next';
+    return `<span class="${c}">${l}</span>`;
+  }).join('');
+  const pts = it.done ? `<span class="ptschip">${it.missed ? '0' : '+' + fmt(earned(id))} / ${fmt(ITEMS[id].pts)} pts</span>` : `<span class="ptschip">${fmt(ITEMS[id].pts)} pts</span>`;
+  return p + pts;
+}
+function itemShell(id, promptHtml, body, num) {
+  const el = h('section', { class: 'item', 'data-id': id },
+    h('div', { class: 'item-head' },
+      h('span', { class: 'qbadge', 'aria-hidden': 'true' }, num || '?'),
+      h('div', { class: 'prompt', html: promptHtml }),
+      h('div', { class: 'pips', 'aria-label': 'Attempts and credit' })),
+    body,
+    h('div', { class: 'fb', role: 'status', 'aria-live': 'polite' }));
+  el.refresh = () => {
+    const it = st(id);
+    $('.pips', el).innerHTML = pipsHtml(it, id);
+    el.classList.toggle('is-done', it.done);
+    el.classList.toggle('is-miss', !!it.missed);
+  };
+  el.refresh();
+  return el;
+}
+function setFb(el, id, hint) {
+  const it = st(id), m = ITEMS[id], fb = $('.fb', el);
+  fb.className = 'fb';
+  if (!it.a) { fb.innerHTML = ''; return; }
+  if (it.done && !it.missed) { fb.classList.add('good'); fb.innerHTML = `<b>✓ Correct${it.a > 1 ? ' on try ' + it.a : ''}!</b> +${fmt(earned(id))} pts. ${esc(m.why)}`; }
+  else if (it.done) { fb.classList.add('miss'); fb.innerHTML = `<b>Out of tries (0 pts).</b> Correct answer: <b>${esc(m.answer)}</b>. ${esc(m.why)}`; }
+  else { fb.classList.add('bad'); fb.innerHTML = `<b>✗ Not quite.</b> ${hint ? esc(hint) + ' ' : ''}Try again. Your next try is worth ${MULT[it.a] * 100}%.`; }
+}
+function afterJudge(el, id, ok, hint) {
+  const it = st(id);
+  el.refresh(); setFb(el, id, hint);
+  if (ok) burstAt(el, 14); else el.classList.remove('shake'), void el.offsetWidth, el.classList.add('shake');
+  if (it.done) celebrateIfDone();
+}
+
+function mcItem(id, { prompt, options, correct, dimStyle, num }) {
+  const it = st(id);
+  const grid = h('div', { class: 'opts' + (dimStyle ? ' dimopts' : '') });
+  const btns = {};
+  options.forEach(o => {
+    const b = h('button', { class: 'opt' + (dimStyle ? ' dimopt' : ''), type: 'button', style: { '--oc': o.color || 'inherit' }, onclick: () => pick(o.key) });
+    b.innerHTML = o.html; btns[o.key] = b; grid.append(b);
+  });
+  const el = itemShell(id, prompt, grid, num);
+  function paint() {
+    options.forEach(o => {
+      const b = btns[o.key], wrong = it.wrong.includes(o.key), right = it.done && o.key === correct;
+      b.disabled = it.done || wrong;
+      b.classList.toggle('is-wrong', wrong);
+      b.classList.toggle('is-right', right);
+    });
+  }
+  function pick(k) {
+    if (it.done) return;
+    const ok = k === correct;
+    judge(id, ok, k);
+    paint(); afterJudge(el, id, ok);
+  }
+  paint(); setFb(el, id);
+  return el;
+}
+
+function checkItem(id, { prompt, body, evaluate, lock, num }) {
+  const it = st(id);
+  const btn = h('button', { class: 'btn primary', type: 'button' }, 'Check my answer');
+  const wrap = h('div', { class: 'check-body' }, body, h('div', { class: 'check-row' }, btn));
+  const el = itemShell(id, prompt, wrap, num);
+  const applyLock = () => { btn.disabled = it.done; if (lock) lock(it.done); };
+  btn.addEventListener('click', () => {
+    if (it.done) return;
+    const r = evaluate();
+    if (r.skip) { setFbMsg(el, r.hint); return; }
+    judge(id, r.ok);
+    applyLock(); afterJudge(el, id, r.ok, r.hint);
+  });
+  applyLock(); setFb(el, id);
+  return el;
+}
+function setFbMsg(el, msg) { const fb = $('.fb', el); fb.className = 'fb bad'; fb.textContent = msg; }
+
+function dimButtons() {
+  return ORDER.map(d => ({ key: d, color: DIM[d].color, html: `${ic(d, 28)}<span>${DIM[d].name}</span>` }));
+}
+
+/* ---------- start ---------- */
+function wheelSVG(interactive, onPick) {
+  const cx = 180, cy = 180, R = 160, r = 60;
+  const P = (rad, deg) => { const a = deg * Math.PI / 180; return [cx + rad * Math.cos(a), cy + rad * Math.sin(a)]; };
+  let wedges = '';
+  ORDER.forEach((d, i) => {
+    const a0 = -90 - 36 + 72 * i + 1.5, a1 = a0 + 69, mid = (a0 + a1) / 2;
+    const [x0, y0] = P(R, a0), [x1, y1] = P(R, a1), [x2, y2] = P(r, a1), [x3, y3] = P(r, a0);
+    const [ix, iy] = P(104, mid), [tx, ty] = P(104, mid);
+    wedges += `<g class="wedge" data-d="${d}" ${interactive ? `tabindex="0" role="button" aria-label="${DIM[d].name} wellness. Select to explore."` : 'aria-hidden="true"'}>
+      <path d="M${x0} ${y0}A${R} ${R} 0 0 1 ${x1} ${y1}L${x2} ${y2}A${r} ${r} 0 0 0 ${x3} ${y3}Z" fill="${DIM[d].color}" stroke="#fff" stroke-width="3"/>
+      <svg x="${ix - 15}" y="${iy - 27}" width="30" height="30" viewBox="0 0 24 24" style="color:#fff" class="ic"><use href="#i-${d}"/></svg>
+      <text x="${tx}" y="${ty + 16}" text-anchor="middle" font-size="10.5" font-weight="800" fill="#fff" style="pointer-events:none">${DIM[d].name}</text>
+      <g class="sm"><circle cx="${P(R - 10, mid)[0]}" cy="${P(R - 10, mid)[1]}" r="10" fill="#fff"/><text x="${P(R - 10, mid)[0]}" y="${P(R - 10, mid)[1] + 5}" text-anchor="middle" font-size="14" font-weight="900" fill="${DIM[d].color}" style="pointer-events:none">✓</text></g>
+    </g>`;
+  });
+  const svg = h('div', { html: `<svg class="wheel" viewBox="0 0 360 360" role="${interactive ? 'group' : 'img'}" aria-label="Wellness wheel with five dimensions">
+    <g class="orbit"><circle cx="180" cy="180" r="174" fill="none" stroke="#94a3b8" stroke-width="2" stroke-dasharray="3 9" stroke-linecap="round"/></g>
+    ${wedges}
+    <g class="hub-ring"><circle cx="180" cy="180" r="54" fill="#fff" stroke="#0f4c81" stroke-width="4"/>
+    <text x="180" y="176" text-anchor="middle" font-size="14" font-weight="900" fill="#0f4c81">TOTAL</text>
+    <text x="180" y="194" text-anchor="middle" font-size="14" font-weight="900" fill="#0f4c81">WELLNESS</text></g>
+  </svg>` }).firstElementChild;
+  if (interactive) $$('.wedge', svg).forEach(w => {
+    const d = w.dataset.d;
+    w.addEventListener('click', () => onPick(d));
+    w.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onPick(d); } });
+  });
+  return svg;
+}
+
+function renderStart(w) {
+  const started = !!S.startedAt;
+  const hero = h('section', { class: 'hero' },
+    h('div', {},
+      h('span', { class: 'xc' }, 'EXTRA CREDIT'),
+      h('h1', { html: 'Wellness Dimensions Lab<span>Identify. Manipulate. Integrate.</span>' }),
+      h('p', { class: 'lead' }, 'Wellness is more than being "not sick." In about 25 minutes you will explore five dimensions of wellness (physical, mental, emotional, social and environmental), learn the metrics that measure each one, run mini-labs, and see how they all connect.'),
+      started
+        ? h('div', { class: 'panel' }, h('h3', {}, 'Welcome back, ' + S.name + '!'), h('p', {}, 'Your progress is saved in this browser. Press ', h('b', {}, 'Next'), ' below to pick up where you left off.'))
+        : h('div', { class: 'panel' },
+          h('div', { class: 'namebox' },
+            h('div', {}, h('label', { for: 'f-name' }, 'Your first and last name (shows on your results)'), h('input', { id: 'f-name', type: 'text', autocomplete: 'name', maxlength: '60', placeholder: 'e.g. Alex Rivera', oninput: () => { $('#f-err').textContent = ''; updateChrome(); }, onkeydown: e => { if (e.key === 'Enter') onNext(); } })),
+            h('div', {}, h('label', { for: 'f-period' }, 'Class period (optional)'), h('input', { id: 'f-period', type: 'text', maxlength: '20', placeholder: 'e.g. Period 3', onkeydown: e => { if (e.key === 'Enter') onNext(); } }))),
+          h('div', { class: 'err', id: 'f-err', role: 'alert' }),
+          h('button', { class: 'btn primary', type: 'button', onclick: onNext }, 'Begin the lab ', h('span', { html: ic('arrow', 20) })))),
+    h('div', {}, wheelSVG(false)));
+  w.append(hero);
+  w.append(h('section', { class: 'panel' },
+    h('h3', {}, 'How scoring works'),
+    h('p', {}, 'Everything in this lab can be tried up to ', h('b', {}, 'three times'), ', so mistakes are part of learning. Your credit depends on which try you get it right:'),
+    h('div', { class: 'rules' },
+      h('div', { class: 'rule' }, h('b', {}, '100%'), '1st try'),
+      h('div', { class: 'rule' }, h('b', {}, '75%'), '2nd try'),
+      h('div', { class: 'rule' }, h('b', {}, '50%'), '3rd try')),
+    h('p', {}, 'After a third miss, the answer is shown (0 credit for that item) so you can learn it and keep going. The lab is worth ', h('b', {}, '100 points'), '. Use the ', h('b', {}, 'Previous'), ' and ', h('b', {}, 'Next'), ' buttons at the bottom to move around. Next unlocks when a stop is finished.')));
+  w.append(h('section', { class: 'panel' },
+    h('h3', {}, 'Your path (about 25 minutes)'),
+    h('div', { class: 'path' },
+      ...[['integration', 'Wellness Wheel', '3 min'], ['integration', 'Metric Sort', '4 min'], ['physical', 'Physical Lab', '3 min'], ['mental', 'Mental Lab', '3 min'], ['emotional', 'Emotional Lab', '3 min'], ['social', 'Social Lab', '3 min'], ['environmental', 'Environmental Lab', '3 min'], ['integration', 'Integration Lab', '4 min']]
+        .map(([k, n, t]) => h('div', {}, h('span', { class: 'pi', style: { '--pc': DIM[k].color }, html: ic(k === 'integration' ? 'integration' : k, 22) }), h('span', {}, h('b', {}, n), h('small', {}, t))))),
+    h('p', { class: 'noprint' }, 'At the end you get a results report to screenshot and turn in. You cannot reset your scores, so take your time and think before you click.')));
+  setTimeout(() => { const f = $('#f-name'); if (f) f.focus({ preventScroll: true }); }, 50);
+}
+
+/* ---------- wheel ---------- */
+function renderWheel(w) {
+  w.append(h('div', { class: 'panel' }, h('h2', {}, 'Stop 1 · The Wellness Wheel'),
+    h('p', { class: 'lead' }, 'Health has five connected dimensions. Select each slice of the wheel to learn what it means and what you can measure. Open all five to unlock the warm-up questions.')));
+  const detail = h('div', { class: 'panel detail', 'aria-live': 'polite' }, h('p', { class: 'lead' }, 'Select a slice of the wheel to begin.'));
+  const seenRow = h('div', { class: 'seen-row' });
+  const items = h('div', { class: 'wheel-items' });
+  const svg = wheelSVG(true, pick);
+  const refreshSeen = () => {
+    seenRow.innerHTML = ORDER.map(d => `<span class="${S.seen.includes(d) ? 'on' : ''}" style="--dc:${DIM[d].color}">${ic(S.seen.includes(d) ? 'check' : d, 16)}${DIM[d].name}</span>`).join('');
+    $$('.wedge', svg).forEach(g => g.classList.toggle('seen', S.seen.includes(g.dataset.d)));
+  };
+  function pick(d) {
+    const D = DIM[d];
+    $$('.wedge', svg).forEach(g => g.classList.toggle('sel', g.dataset.d === d));
+    detail.style.cssText = `--dc:${D.color};--ds:${D.soft};--de:${D.edge};border-color:${D.color}`;
+    detail.innerHTML = `<div class="dhead"><span class="big">${ic(d, 32)}</span><div><h3>${D.name} wellness</h3><small>${D.tag}</small></div></div>
+      <p class="lead">${D.def}</p><h4>Metrics: things you can measure</h4><ul>${D.metrics.map(m => `<li>${m}</li>`).join('')}</ul>
+      <h4>Habits that build it</h4><ul>${D.habits.map(m => `<li>${m}</li>`).join('')}</ul>`;
+    if (!S.seen.includes(d)) { S.seen.push(d); save(); burstAt(detail, 8); updateChrome(); }
+    refreshSeen();
+    if (S.seen.length === 5) unlock();
+  }
+  let unlocked = false;
+  function unlock() {
+    if (unlocked) return; unlocked = true;
+    items.innerHTML = '';
+    items.append(h('h3', { class: 'sec' }, h('span', { class: 'n' }, '✓'), 'Warm-up: which dimension is it?'));
+    shuffled(ORDER, 'wheelq').forEach((d, i) => items.append(mcItem('w-' + d, { prompt: esc(WHEEL_Q[d]) + '<small>Which dimension of wellness is this mostly about?</small>', options: dimButtons(), correct: d, dimStyle: true, num: i + 1 })));
+  }
+  w.append(h('div', { class: 'wheel-grid' }, h('div', {}, svg, seenRow), detail));
+  items.append(h('div', { class: 'locked-note' }, 'Explore all five slices to unlock the warm-up questions.'));
+  w.append(items);
+  refreshSeen();
+  if (S.seen.length === 5) { unlock(); pick(S.seen[S.seen.length - 1]); }
+}
+
+/* ---------- metric sort ---------- */
+function renderSort(w) {
+  w.append(h('div', { class: 'panel' }, h('h2', {}, 'Stop 2 · Metric Sort Lab'),
+    h('p', { class: 'lead' }, 'A metric is a number or rating you can measure. Each card below is a real health metric. Decide which dimension it measures. ', h('b', {}, 'Drag'), ' a card onto a dimension, or ', h('b', {}, 'tap'), ' a card and then tap a dimension.')));
+  const tray = h('div', { class: 'tray', 'aria-label': 'Metric cards to sort' });
+  const fb = h('div', { class: 'fb', role: 'status', 'aria-live': 'polite' });
+  const meter = h('i'), count = h('b');
+  const bar = h('div', { class: 'sortbar' }, h('span', {}, 'Sorted: ', count, ' / ' + CARDS.length), h('div', { class: 'meter' }, meter));
+  const buckets = {}, lists = {}, counts = {};
+  const bk = h('div', { class: 'buckets' });
+  ORDER.forEach(d => {
+    lists[d] = h('div', { class: 'placed' }); counts[d] = h('small');
+    buckets[d] = h('button', { class: 'bucket', type: 'button', 'data-dim': d, style: { '--c': DIM[d].color, '--cs': DIM[d].soft }, 'aria-label': DIM[d].name + ' dimension', onclick: () => { if (selected) attempt(selected, d); else flash('Pick a card first, then tap a dimension.'); } },
+      h('span', { class: 'bi', html: ic(d, 28) }), h('b', {}, DIM[d].name), counts[d], lists[d]);
+    bk.append(buckets[d]);
+  });
+  let selected = null;
+  const cardEls = {};
+  const flash = m => { fb.className = 'fb bad'; fb.textContent = m; };
+  function updateProgress() {
+    const done = CARDS.filter(c => st(c.id).done).length;
+    count.textContent = done; meter.style.width = (done / CARDS.length * 100) + '%';
+    ORDER.forEach(d => { const tot = CARDS.filter(c => c.dim === d); counts[d].textContent = `${tot.filter(c => st(c.id).done).length} / ${tot.length}`; });
+  }
+  function select(c, on) {
+    if (selected) cardEls[selected.id].classList.remove('sel');
+    selected = on ? c : null;
+    if (on) cardEls[c.id].classList.add('sel');
+    ORDER.forEach(d => buckets[d].classList.toggle('armed', !!on));
+  }
+  function place(c, miss) {
+    const el = cardEls[c.id]; if (el) el.remove();
+    lists[c.dim].append(h('div', { class: 'chip' + (miss ? ' miss' : '') }, (miss ? '✗ ' : '✓ ') + c.t));
+  }
+  function attempt(c, d) {
+    const it = st(c.id); if (it.done) return;
+    const ok = d === c.dim;
+    judge(c.id, ok, d);
+    select(c, false);
+    if (it.done) {
+      place(c, !!it.missed);
+      fb.className = 'fb ' + (it.missed ? 'miss' : 'good');
+      fb.innerHTML = it.missed ? `<b>Out of tries (0 pts).</b> "${esc(c.t)}" is a <b>${DIM[c.dim].name}</b> metric. ${esc(c.why)}` : `<b>✓ ${it.a > 1 ? 'Got it on try ' + it.a : 'Correct'}! +${fmt(earned(c.id))} pt.</b> "${esc(c.t)}" is a <b>${DIM[c.dim].name}</b> metric. ${esc(c.why)}`;
+      if (ok) burstAt(buckets[d], 10);
+      celebrateIfDone();
+    } else {
+      const el = cardEls[c.id];
+      el.classList.remove('shake'); void el.offsetWidth; el.classList.add('shake');
+      let t = el.querySelector('.try'); if (!t) { t = h('div', { class: 'try' }); el.append(t); }
+      t.textContent = 'Next try: ' + MULT[it.a] * 100 + '%';
+      fb.className = 'fb bad';
+      fb.innerHTML = `<b>✗ Not ${DIM[d].name}.</b> Think about what the number actually measures. Your next try on this card is worth ${MULT[it.a] * 100}%.`;
+    }
+    updateProgress();
+  }
+  function makeCard(c) {
+    const el = h('div', { class: 'mcard', role: 'button', tabindex: '0', 'aria-label': `${c.t}: ${c.v}`, 'data-id': c.id }, h('b', {}, c.t), h('span', {}, c.v));
+    cardEls[c.id] = el;
+    const it = st(c.id);
+    if (it.a) el.append(h('div', { class: 'try' }, 'Next try: ' + MULT[it.a] * 100 + '%'));
+    let start = null, ghost = null, over = null;
+    const overBucket = (x, y) => { const e = document.elementFromPoint(x, y); return e && e.closest ? e.closest('.bucket') : null; };
+    el.addEventListener('pointerdown', e => { if (e.button > 0) return; start = { x: e.clientX, y: e.clientY }; el.setPointerCapture(e.pointerId); });
+    el.addEventListener('pointermove', e => {
+      if (!start) return;
+      if (!ghost && Math.hypot(e.clientX - start.x, e.clientY - start.y) > 8) {
+        const r = el.getBoundingClientRect();
+        ghost = el.cloneNode(true); ghost.classList.add('ghost'); ghost.classList.remove('sel'); ghost.style.width = r.width + 'px';
+        ghost.dataset.dx = start.x - r.left; ghost.dataset.dy = start.y - r.top;
+        document.body.append(ghost); el.style.opacity = '.35';
+      }
+      if (ghost) {
+        ghost.style.left = (e.clientX - ghost.dataset.dx) + 'px'; ghost.style.top = (e.clientY - ghost.dataset.dy) + 'px';
+        const b = overBucket(e.clientX, e.clientY);
+        if (b !== over) { if (over) over.classList.remove('target'); over = b; if (b) b.classList.add('target'); }
+      }
+    });
+    const end = e => {
+      if (!start) return;
+      const wasDrag = !!ghost;
+      if (ghost) { ghost.remove(); ghost = null; el.style.opacity = ''; }
+      if (over) { over.classList.remove('target'); }
+      const b = wasDrag && e.type === 'pointerup' ? overBucket(e.clientX, e.clientY) : null;
+      start = null; over = null;
+      if (wasDrag) { if (b) attempt(c, b.dataset.dim); }
+      else if (e.type === 'pointerup') select(c, selected !== c);
+    };
+    el.addEventListener('pointerup', end); el.addEventListener('pointercancel', end);
+    el.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); select(c, selected !== c); } });
+    return el;
+  }
+  shuffled(CARDS, 'sortcards').forEach(c => {
+    if (st(c.id).done) place(c, !!st(c.id).missed); else tray.append(makeCard(c));
+  });
+  w.append(bar, tray, fb, bk);
+  updateProgress();
+}
+
+/* ---------- lab scaffolding ---------- */
+function slider(host, sim, o, onChange) {
+  const id = 'sl-' + o.key, row = h('div', { class: 'ctl' });
+  const zl = o.zone ? (o.zone[0] - o.min) / (o.max - o.min) * 100 : 0, zw = o.zone ? (o.zone[1] - o.zone[0]) / (o.max - o.min) * 100 : 0;
+  row.innerHTML = `<label for="${id}"><span>${o.label}</span><output for="${id}"><b></b> ${o.unit}</output></label>
+    <input id="${id}" type="range" min="${o.min}" max="${o.max}" step="${o.step || 1}" value="${sim[o.key]}">
+    ${o.zone ? `<div class="zbar"><i style="left:${zl}%;width:${zw}%"></i></div><div class="zlabel"><span>Target: ${o.zone[0]}–${o.zone[1]} ${o.unit}</span><span class="zs"></span></div>` : ''}`;
+  const inp = $('input', row), out = $('output b', row), zs = $('.zs', row);
+  const paint = () => { const v = +inp.value; out.textContent = v; if (zs) { const ok = v >= o.zone[0] && v <= o.zone[1]; zs.className = 'zs ' + (ok ? 'okc' : ''); zs.textContent = ok ? '✓ in target zone' : v < o.zone[0] ? 'below target' : 'above target'; } };
+  inp.addEventListener('input', () => { sim[o.key] = +inp.value; paint(); save(); onChange(); });
+  paint(); host.append(row);
+}
+function toggle(host, sim, o, onChange) {
+  const lab = h('label', { class: 'switch' }, h('input', { type: 'checkbox' }), h('span', {}, o.label));
+  const inp = $('input', lab); inp.checked = !!sim[o.key];
+  inp.addEventListener('change', () => { sim[o.key] = inp.checked; save(); onChange(); });
+  host.append(lab);
+}
+function gauge(o) {
+  const { label, unit = '', min, max, zone, target, status } = o;
+  const el = h('div', { class: 'gauge' });
+  el.innerHTML = `<div class="g-top"><span>${label}</span><span class="g-val"><b>0</b> ${unit}</span></div>
+    <div class="g-track"><i class="g-zone" style="left:${(zone[0] - min) / (max - min) * 100}%;width:${(zone[1] - zone[0]) / (max - min) * 100}%"></i><i class="g-mark"></i></div>
+    <div class="g-foot"><span>Target: ${target}</span><span class="g-status"></span></div>`;
+  const mark = $('.g-mark', el), val = $('.g-val b', el), sEl = $('.g-status', el);
+  el.set = v => {
+    const rv = Math.round(v), ok = rv >= zone[0] && rv <= zone[1];
+    mark.style.left = clamp((v - min) / (max - min), 0, 1) * 100 + '%';
+    val.textContent = rv;
+    sEl.className = 'g-status ' + (ok ? 'ok' : 'off');
+    sEl.textContent = status ? status(rv, ok) : ok ? '✓ in target zone' : rv < zone[0] ? 'below target' : 'above target';
+    el.classList.toggle('ok', ok);
+  };
+  return el;
+}
+function labBanner(d) {
+  const L = LAB[d], D = DIM[d];
+  return h('section', { class: 'lab-banner' },
+    h('div', { class: 'halo', html: ic(d, 46) }),
+    h('div', {}, h('span', { class: 'tag' }, `LAB ${L.no} OF 5 · ${D.tag.toUpperCase()}`), h('h2', {}, `${D.name} Wellness: ${L.title}`), h('p', {}, L.mission),
+      h('div', { class: 'skills' }, h('span', {}, 'Identify'), h('span', {}, 'Manipulate'), h('span', {}, 'Integrate'))));
+}
+const secHead = (n, t) => h('h3', { class: 'sec' }, h('span', { class: 'n' }, n), t);
+const noteBox = txt => h('div', { class: 'note', html: ic('integration', 22) + `<span><b>Ripple effect:</b> ${txt}</span>` });
+
+function renderLab(w, d) {
+  const L = LAB[d];
+  w.append(labBanner(d));
+  w.append(secHead(1, 'Experiment'));
+  const host = h('div', { class: 'panel' });
+  w.append(host);
+  const getState = SIMS[d](host);
+  w.append(noteBox(L.ripple));
+  w.append(secHead(2, 'Challenge'));
+  const body = h('div', {}, h('p', { html: L.challenge, style: { margin: '0' } }), getState.extra);
+  const ci = checkItem(d + '-lab', {
+    prompt: 'Lab challenge', num: 'A', body,
+    evaluate: () => getState.check(),
+    lock: locked => getState.lock && getState.lock(locked)
+  });
+  w.append(ci);
+  w.append(secHead(3, 'Metric check'));
+  const opts = shuffled(L.mc, d + 'mc').map(o => ({ key: o[0], html: esc(o[1]) }));
+  w.append(mcItem(d + '-metrics', { prompt: L.mcQ, options: opts, correct: L.mc.find(o => o[2])[0], num: 'B' }));
+}
+
+/* ---------- simulators ---------- */
+const SIMS = {};
+
+SIMS.physical = host => {
+  const sim = S.sim.physical;
+  host.innerHTML = `<div class="sim-grid"><div class="sim-view" id="pv"><div class="heart-wrap">
+    <svg class="heart" viewBox="0 0 120 120" aria-hidden="true"><path d="M60 108C10 72 4 30 34 21c14-4 23 3 26 12 3-9 12-16 26-12 30 9 24 51-26 87z" fill="var(--accent)"/><path d="M30 58h16l7-14 11 28 8-14h16" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <div class="bpm"><b id="bpm">76</b> bpm<small>resting heart rate</small></div></div>
+    <svg class="ecg" viewBox="0 0 480 70" preserveAspectRatio="none" aria-hidden="true"><g class="ecg-g"><path d="${Array.from({ length: 10 }, (_, k) => `M${k * 80} 35H${k * 80 + 22}L${k * 80 + 28} 35L${k * 80 + 33} 10L${k * 80 + 40} 60L${k * 80 + 46} 35H${k * 80 + 80}`).join('')}"/></g></svg></div>
+    <div id="pc"></div></div>`;
+  const pc = $('#pc', host);
+  const hr = gauge({ label: 'Resting heart rate', unit: 'bpm', min: 50, max: 100, zone: [50, 70], target: '70 bpm or lower (fit)', status: (v, ok) => ok ? '✓ fit range' : 'higher than fit range' });
+  const calc = () => Math.round(76 - Math.min(sim.active, 60) * 0.15 + Math.max(0, 8 - sim.sleep) * 2 + Math.max(0, 8 - sim.water) * 0.6);
+  const onChange = () => { const v = calc(); hr.set(v); $('#bpm', host).textContent = v; $('#pv', host).style.setProperty('--beat', (60 / v).toFixed(3) + 's'); };
+  slider(pc, sim, { key: 'sleep', label: 'Sleep per night', unit: 'hours', min: 4, max: 10, zone: [8, 10] }, onChange);
+  slider(pc, sim, { key: 'active', label: 'Active time per day', unit: 'minutes', min: 0, max: 90, step: 5, zone: [60, 90] }, onChange);
+  slider(pc, sim, { key: 'water', label: 'Water per day', unit: 'cups', min: 0, max: 12, zone: [8, 12] }, onChange);
+  pc.append(hr); onChange();
+  return {
+    check: () => {
+      const ok = sim.sleep >= 8 && sim.sleep <= 10 && sim.active >= 60 && sim.water >= 8 && calc() <= 70;
+      const miss = [sim.sleep < 8 && 'sleep', sim.active < 60 && 'activity', sim.water < 8 && 'water', calc() > 70 && 'heart rate'].filter(Boolean);
+      return { ok, hint: ok ? '' : 'Still outside the target: ' + miss.join(', ') + '.' };
+    }
+  };
+};
+
+SIMS.mental = host => {
+  const sim = S.sim.mental;
+  const nodes = [[78, 92], [98, 68], [124, 56], [154, 62], [182, 82], [92, 112], [118, 90], [146, 92], [174, 108], [108, 134], [134, 126], [160, 136], [196, 100], [130, 148]];
+  const edges = [[0, 1], [1, 2], [2, 3], [3, 4], [0, 5], [5, 6], [6, 7], [7, 8], [1, 6], [2, 6], [3, 7], [4, 8], [5, 9], [6, 10], [7, 10], [8, 11], [9, 10], [10, 11], [8, 12], [4, 12], [10, 13], [9, 13]];
+  const rank = [6, 7, 2, 10, 1, 3, 5, 8, 9, 11, 0, 4, 12, 13];
+  host.innerHTML = `<div class="sim-grid"><div class="sim-view"><svg class="brain" viewBox="0 0 260 200" role="img" aria-label="Brain diagram: more glowing connections mean better focus">
+    <path d="M70 112C42 106 38 72 66 64 68 40 104 28 124 44 142 28 182 36 188 62 216 66 222 104 196 114 204 140 176 156 152 148 140 168 106 168 98 148 74 156 50 136 70 112Z" fill="#eef0ff" stroke="var(--accent)" stroke-width="4" id="brainline"/>
+    ${edges.map((e, i) => `<line class="edge" data-i="${i}" x1="${nodes[e[0]][0]}" y1="${nodes[e[0]][1]}" x2="${nodes[e[1]][0]}" y2="${nodes[e[1]][1]}"/>`).join('')}
+    ${nodes.map((n, i) => `<circle class="node" data-i="${i}" cx="${n[0]}" cy="${n[1]}" r="7" fill="#cbd2dc"/>`).join('')}
+    <path class="bolt" id="b1" d="M22 20l14 0-6 12 12 0-20 26 5-18-9 0z"/><path class="bolt" id="b2" d="M222 14l14 0-6 12 12 0-20 26 5-18-9 0z" style="animation-delay:-.3s"/><path class="bolt" id="b3" d="M16 120l12 0-5 10 10 0-17 22 4-15-8 0z" style="animation-delay:-.15s"/>
+  </svg><p class="lead" id="brainmsg" style="margin:0;font-weight:800"></p></div><div id="mc"></div></div>`;
+  const mc = $('#mc', host);
+  const focusG = gauge({ label: 'Focus', unit: '/ 100', min: 0, max: 100, zone: [75, 100], target: '75 or higher' });
+  const stressG = gauge({ label: 'Stress', unit: '/ 100', min: 0, max: 100, zone: [0, 40], target: '40 or lower', status: (v, ok) => ok ? '✓ manageable' : 'too high' });
+  const calc = () => {
+    const blk = sim.block > 45 ? (sim.block - 45) * 0.8 : sim.block < 20 ? 20 - sim.block : 0;
+    const focus = clamp(100 - Math.max(0, 8 - sim.sleep) * 8 - sim.notif * 4 - blk, 0, 100);
+    const stress = clamp(30 + Math.max(0, 8 - sim.sleep) * 7 + sim.notif * 3 + (sim.block > 45 ? (sim.block - 45) * 0.6 : 0) - sim.mind * 3, 0, 100);
+    return { focus: Math.round(focus), stress: Math.round(stress) };
+  };
+  const onChange = () => {
+    const { focus, stress } = calc();
+    focusG.set(focus); stressG.set(stress);
+    const lit = Math.round(focus / 100 * nodes.length);
+    $$('.node', host).forEach(n => { const on = rank.indexOf(+n.dataset.i) < lit; n.classList.toggle('lit', on); n.setAttribute('fill', on ? '#6366f1' : '#cbd2dc'); n.style.setProperty('--np', (0.6 + (100 - focus) / 60) + 's'); });
+    $$('.edge', host).forEach(e => { const [a, b] = edges[+e.dataset.i]; e.classList.toggle('lit', rank.indexOf(a) < lit && rank.indexOf(b) < lit); });
+    ['b1', 'b2', 'b3'].forEach((id, i) => { $('#' + id, host).style.opacity = clamp((stress - 25 - i * 12) / 40, 0, 1); });
+    $('#brainmsg', host).textContent = focus >= 75 ? 'Neurons firing together: strong focus!' : focus >= 40 ? 'Some connections are working. Keep adjusting.' : 'Few connections lit: your brain is overloaded.';
+  };
+  slider(mc, sim, { key: 'sleep', label: 'Sleep per night', unit: 'hours', min: 4, max: 10, zone: [8, 10] }, onChange);
+  slider(mc, sim, { key: 'notif', label: 'Phone notifications per 10 minutes', unit: 'alerts', min: 0, max: 10, zone: [0, 1] }, onChange);
+  slider(mc, sim, { key: 'block', label: 'Study block before a break', unit: 'min', min: 10, max: 90, step: 5, zone: [25, 45] }, onChange);
+  slider(mc, sim, { key: 'mind', label: 'Mindfulness / deep breathing per day', unit: 'min', min: 0, max: 15, zone: [5, 15] }, onChange);
+  mc.append(focusG, stressG); onChange();
+  return { check: () => { const c = calc(); const ok = c.focus >= 75 && c.stress <= 40; return { ok, hint: ok ? '' : `Focus is ${c.focus} (need 75+) and Stress is ${c.stress} (need 40 or less).` }; } };
+};
+
+const STRATS = [
+  { k: 'breathe', t: 'Slow, deep breathing', r: 0.82, c: '#0e7490', dash: '' },
+  { k: 'talk', t: 'Talk to a trusted person', r: 0.78, c: '#15803d', dash: '10 5' },
+  { k: 'journal', t: 'Write down what happened', r: 0.83, c: '#7c3aed', dash: '3 5' },
+  { k: 'walk', t: 'Take a short walk', r: 0.80, c: '#c2410c', dash: '14 4 3 4' },
+  { k: 'bottle', t: 'Pretend nothing is wrong', r: 0.96, c: '#6b7280', dash: '' },
+  { k: 'yell', t: 'Yell or slam something', r: 1.04, c: '#b91c1c', dash: '6 4' }
+];
+const intensity = (s, t) => Math.min(10, 8 * Math.pow(s.r, t));
+const recovery = s => { for (let t = 0; t <= 10; t++) if (intensity(s, t) <= 3) return t; return null; };
+
+SIMS.emotional = host => {
+  const sim = S.sim.emotional;
+  const X = m => 36 + m * 31, Y = v => 196 - v * 17.5;
+  host.innerHTML = `<div class="sim-grid"><div class="sim-view"><div class="face-row">
+    <svg class="face" viewBox="0 0 120 120" role="img" aria-label="Face showing current anger level"><circle id="fh" cx="60" cy="60" r="52" stroke="#1f2937" stroke-width="4" fill="#fecaca"/>
+      <path id="bl" stroke="#1f2937" stroke-width="5" stroke-linecap="round"/><path id="br" stroke="#1f2937" stroke-width="5" stroke-linecap="round"/>
+      <circle cx="42" cy="54" r="5" fill="#1f2937"/><circle cx="78" cy="54" r="5" fill="#1f2937"/><path id="fm" stroke="#1f2937" stroke-width="5" stroke-linecap="round" fill="none"/></svg>
+    <div><div class="bpm"><b id="lvl">8.0</b> / 10<small>anger intensity · minute <span id="min">0</span></small></div></div></div>
+    <div class="hbar" aria-hidden="true"><i id="th"></i></div></div>
+    <div><p style="margin-top:0;font-weight:700">Anger starts at 8 out of 10. Pick a strategy to run 10 minutes:</p><div class="strat" id="st"></div></div></div>
+    <svg class="chart" id="chart" viewBox="0 0 360 220" role="img" aria-label="Line chart of anger intensity over 10 minutes for each strategy you run"></svg><div class="legend" id="lg"></div>`;
+  const chart = $('#chart', host);
+  let grid = '';
+  for (let v = 0; v <= 10; v += 2) grid += `<line x1="36" x2="346" y1="${Y(v)}" y2="${Y(v)}" stroke="#e5e7eb"/><text x="30" y="${Y(v) + 4}" text-anchor="end">${v}</text>`;
+  for (let m = 0; m <= 10; m += 2) grid += `<text x="${X(m)}" y="212" text-anchor="middle">${m}</text>`;
+  chart.innerHTML = `${grid}<rect x="36" y="${Y(3)}" width="310" height="${Y(0) - Y(3)}" fill="#4ade80" opacity=".28"/><text x="342" y="${Y(3) - 4}" text-anchor="end" style="fill:#166534">calm zone (3 or below)</text>
+    <text x="6" y="14">Intensity (0–10)</text><text x="346" y="14" text-anchor="end">Minutes →</text><g id="curves"></g>`;
+  const face = v => {
+    const i = clamp(v, 0, 10);
+    const g = Math.round(220 - i * 6), b = Math.round(220 - i * 14), rr = Math.round(240 - (10 - i) * 2);
+    $('#fh', host).setAttribute('fill', `rgb(${rr},${g + (10 - i) * 3},${b + (10 - i) * 3})`);
+    $('#bl', host).setAttribute('d', `M26 ${40 - (10 - i) * 0.2} L50 ${40 + i * 1.5}`);
+    $('#br', host).setAttribute('d', `M94 ${40 - (10 - i) * 0.2} L70 ${40 + i * 1.5}`);
+    $('#fm', host).setAttribute('d', `M40 86 Q60 ${100 - i * 3} 80 86`);
+    $('#lvl', host).textContent = i.toFixed(1);
+    $('#th', host).style.width = i * 10 + '%';
+  };
+  const drawn = {};
+  const legend = () => {
+    $('#lg', host).innerHTML = sim.ran.map(k => { const s = STRATS.find(x => x.k === k), rc = recovery(s); return `<div style="--sc:${s.c}"><span class="sw"></span><b>${s.t}:</b> ${rc === null ? 'not calm after 10 minutes (ends at ' + intensity(s, 10).toFixed(1) + ')' : 'calm in ' + rc + ' minutes'}</div>`; }).join('') || '<div style="color:var(--muted)">Run a strategy to see its curve and recovery time.</div>';
+  };
+  function addCurve(s, animate) {
+    if (!drawn[s.k]) {
+      const pts = Array.from({ length: 11 }, (_, t) => `${t ? 'L' : 'M'}${X(t)} ${Y(intensity(s, t))}`).join('');
+      const p = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      p.setAttribute('class', 'curve'); p.setAttribute('d', pts); p.setAttribute('stroke', s.c); p.setAttribute('pathLength', '1');
+      if (s.dash) p.setAttribute('stroke-dasharray', s.dash);
+      $('#curves', host).append(p); drawn[s.k] = p;
+      if (animate && !REDUCED) { p.style.strokeDasharray = '1'; p.style.strokeDashoffset = '1'; p.getBoundingClientRect(); p.style.transition = 'stroke-dashoffset 2.2s linear'; p.style.strokeDashoffset = '0'; setTimeout(() => { p.style.strokeDasharray = s.dash; p.style.transition = ''; }, 2300); }
+    }
+  }
+  let playing = false;
+  function run(s) {
+    if (playing) return; playing = true;
+    if (!sim.ran.includes(s.k)) { sim.ran.push(s.k); save(); }
+    addCurve(s, true); legend();
+    tween(2200, p => { const t = p * 10; face(intensity(s, t)); $('#min', host).textContent = Math.round(t); }, () => { playing = false; });
+    if (REDUCED) playing = false;
+  }
+  STRATS.forEach(s => {
+    const b = h('button', { class: 'opt', type: 'button', style: { '--sc': s.c }, onclick: () => run(s) }, h('span', { class: 'sw' }), s.t);
+    $('#st', host).append(b);
+  });
+  sim.ran.forEach(k => addCurve(STRATS.find(s => s.k === k), false));
+  legend(); face(8);
+  const correct = STRATS.filter(s => recovery(s) !== null).map(s => s.k);
+  const boxes = h('div', { class: 'checks' });
+  STRATS.forEach(s => boxes.append(h('label', { class: 'chk' }, h('input', { type: 'checkbox', value: s.k }), s.t)));
+  return {
+    extra: boxes,
+    check: () => {
+      const sel = $$('input:checked', boxes).map(i => i.value);
+      if (!sel.length) return { skip: true, hint: 'Select the strategies you think worked first.' };
+      const wrong = sel.filter(k => !correct.includes(k)).length + correct.filter(k => !sel.includes(k)).length;
+      return { ok: wrong === 0, hint: wrong ? `${wrong} of your choices are off. Compare each curve to the green calm zone.` : '' };
+    },
+    lock: locked => {
+      $$('input', boxes).forEach(i => { i.disabled = locked; });
+      if (locked) $$('.chk', boxes).forEach(l => { const i = $('input', l); i.checked = correct.includes(i.value); l.classList.toggle('rev-right', i.checked); });
+    }
+  };
+};
+
+SIMS.social = host => {
+  const sim = S.sim.social;
+  const PEOPLE = [
+    { k: 'parent', l: ['Parent /', 'guardian'], set: 'home', good: true }, { k: 'sibling', l: ['Older', 'sibling'], set: 'home', good: true },
+    { k: 'friend', l: ['Best', 'friend'], set: 'school', good: true }, { k: 'teacher', l: ['Teacher', 'or coach'], set: 'school', good: true },
+    { k: 'teammate', l: ['Team', 'mate'], set: 'community', good: true }, { k: 'neighbor', l: ['Caring', 'neighbor'], set: 'community', good: true },
+    { k: 'gossip', l: ['Gossip', 'group chat'], set: 'school', good: false }, { k: 'stranger', l: ['Online stranger', 'wants secrets'], set: 'online', good: false }
+  ];
+  const cx = 300, cy = 200, pos = PEOPLE.map((p, i) => { const a = (-90 + i * 45) * Math.PI / 180; return [cx + 215 * Math.cos(a), cy + 138 * Math.sin(a)]; });
+  host.innerHTML = `<div class="sim-grid" style="grid-template-columns:1.5fr 1fr"><div><svg class="netsvg" viewBox="0 0 600 400" role="group" aria-label="Support network map. Select people to connect them to you.">
+    ${PEOPLE.map((p, i) => `<line class="nline ${p.good ? '' : 'bad'}" data-k="${p.k}" x1="${cx}" y1="${cy}" x2="${pos[i][0]}" y2="${pos[i][1]}" pathLength="1"/>`).join('')}
+    <g class="you"><circle cx="${cx}" cy="${cy}" r="46" fill="var(--c-social)" stroke="#7c4a03" stroke-width="4"/><svg x="${cx - 18}" y="${cy - 30}" width="36" height="36" viewBox="0 0 24 24" class="ic" style="color:#fff"><use href="#i-person"/></svg><text x="${cx}" y="${cy + 24}" text-anchor="middle" font-weight="900" font-size="15" fill="#fff">YOU</text></g>
+    ${PEOPLE.map((p, i) => `<g class="nnode" data-k="${p.k}" tabindex="0" role="button" aria-pressed="false" aria-label="${p.l.join(' ')}">
+      <circle class="body" cx="${pos[i][0]}" cy="${pos[i][1]}" r="32"/>
+      <svg class="ic ico" x="${pos[i][0] - 14}" y="${pos[i][1] - 20}" width="28" height="28" viewBox="0 0 24 24"><use href="#i-${p.good ? 'person' : 'warn'}"/></svg>
+      <text x="${pos[i][0]}" y="${pos[i][1] + 46}">${p.l[0]}</text><text x="${pos[i][0]}" y="${pos[i][1] + 59}">${p.l[1]}</text></g>`).join('')}
+  </svg></div><div id="sc"></div></div>`;
+  const sc = $('#sc', host);
+  const strength = gauge({ label: 'Network strength', unit: '%', min: 0, max: 100, zone: [70, 100], target: '70% or higher' });
+  const tiles = h('div', { class: 'tiles' });
+  sc.append(tiles, strength, h('p', { id: 'info', class: 'lead', style: { fontSize: '.95rem' } }, 'Select a person to connect or disconnect them. Settings: home, school, community.'));
+  const stats = () => {
+    const on = PEOPLE.filter(p => sim.on.includes(p.k)), good = on.filter(p => p.good);
+    const sets = new Set(good.map(p => p.set));
+    const bad = on.length - good.length;
+    return { good: good.length, sets: sets.size, bad, str: clamp(good.length * 18 + sets.size * 10 - bad * 25, 0, 100) };
+  };
+  const paint = () => {
+    const s = stats();
+    tiles.innerHTML = `<div class="tile ${s.good >= 4 ? 'ok' : ''}"><b>${s.good}</b>supportive people (need 4+)</div><div class="tile ${s.sets === 3 ? 'ok' : ''}"><b>${s.sets} / 3</b>settings covered</div><div class="tile ${s.bad === 0 ? 'ok' : ''}"><b>${s.bad}</b>unhealthy links (need 0)</div>`;
+    strength.set(s.str);
+    $$('.nnode', host).forEach(n => { const on = sim.on.includes(n.dataset.k); n.classList.toggle('on', on); n.classList.toggle('bad', !PEOPLE.find(p => p.k === n.dataset.k).good); n.setAttribute('aria-pressed', String(on)); });
+    $$('.nline', host).forEach(l => l.classList.toggle('on', sim.on.includes(l.dataset.k)));
+  };
+  const flip = k => {
+    const p = PEOPLE.find(x => x.k === k), i = sim.on.indexOf(k);
+    if (i >= 0) sim.on.splice(i, 1); else sim.on.push(k);
+    save(); paint();
+    $('#info', host).textContent = i >= 0 ? `${p.l.join(' ')} disconnected.` : p.good ? `${p.l.join(' ')}: a supportive person in your ${p.set} life.` : k === 'gossip' ? 'A gossip chat spreads drama and rumors. That lowers your wellness.' : 'A stranger who asks you to keep secrets is unsafe. Do not connect: tell a trusted adult.';
+  };
+  $$('.nnode', host).forEach(n => { n.addEventListener('click', () => flip(n.dataset.k)); n.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); flip(n.dataset.k); } }); });
+  paint();
+  return { check: () => { const s = stats(), ok = s.good >= 4 && s.sets === 3 && s.bad === 0; return { ok, hint: ok ? '' : `You have ${s.good} supportive people, ${s.sets} of 3 settings and ${s.bad} unhealthy links.` }; } };
+};
+
+SIMS.environmental = host => {
+  const sim = S.sim.environmental;
+  const treeX = [196, 232, 268, 304, 340, 376, 412, 448, 484, 520];
+  host.innerHTML = `<div class="sim-grid"><div><svg class="scene" id="scene" viewBox="0 0 640 300" role="img" aria-label="Town scene showing a factory, cars and trees. Haze increases with pollution.">
+    <defs><linearGradient id="skyg" x1="0" y1="0" x2="0" y2="1"><stop id="sk1" offset="0" stop-color="#7cc4f5"/><stop id="sk2" offset="1" stop-color="#dff3ff"/></linearGradient></defs>
+    <rect width="640" height="300" fill="url(#skyg)"/><circle id="sun" cx="560" cy="52" r="26" fill="#fde047"/>
+    <path d="M0 190Q120 140 250 182T500 172T640 186V300H0Z" fill="#8bd29a"/>
+    <rect x="30" y="140" width="120" height="82" fill="#6b7280"/><rect x="52" y="96" width="20" height="48" fill="#4b5563"/><rect x="104" y="108" width="20" height="36" fill="#4b5563"/>
+    <rect x="42" y="158" width="14" height="14" fill="#fde68a"/><rect x="70" y="158" width="14" height="14" fill="#fde68a"/><rect x="98" y="158" width="14" height="14" fill="#fde68a"/>
+    ${[0, 1, 2].map(i => `<circle class="puff" cx="62" cy="94" r="10" fill="#374151" style="--dl:-${i * 1.4}s"/>`).join('')}${[0, 1].map(i => `<circle class="puff" cx="114" cy="106" r="9" fill="#374151" style="--dl:-${i * 2 + .7}s"/>`).join('')}
+    ${treeX.map((x, i) => `<g class="tree" data-i="${i}"><rect x="${x - 3}" y="196" width="6" height="26" fill="#78350f"/><circle cx="${x}" cy="186" r="17" fill="#15803d"/><circle cx="${x - 9}" cy="196" r="12" fill="#16a34a"/><circle cx="${x + 9}" cy="196" r="12" fill="#16a34a"/></g>`).join('')}
+    <rect y="226" width="640" height="46" fill="#4b5563"/><path d="M0 249H640" stroke="#fde68a" stroke-width="3" stroke-dasharray="22 16"/>
+    <rect id="lane" y="272" width="640" height="14" fill="#34d399" style="display:none"/>
+    <g id="cyc" style="display:none"><g class="cyc"><circle cx="0" cy="279" r="5" fill="#1f2937"/><path d="M-6 285a5 5 0 1 0 .1 0M6 285a5 5 0 1 0 .1 0M-6 285L0 276L6 285" fill="none" stroke="#1f2937" stroke-width="2"/></g></g>
+    ${Array.from({ length: 10 }, (_, i) => `<g class="car" data-i="${i}" style="--cd:${5.5 + (i % 4) * 0.8}s;--dl:-${(i * 0.67).toFixed(2)}s"><g transform="translate(0,${i % 2 ? 247 : 231})"><rect width="46" height="14" rx="5" fill="${['#ef4444', '#3b82f6', '#f59e0b', '#8b5cf6', '#f3f4f6'][i % 5]}"/><rect x="11" y="-9" width="23" height="11" rx="4" fill="${['#ef4444', '#3b82f6', '#f59e0b', '#8b5cf6', '#f3f4f6'][i % 5]}"/><circle cx="11" cy="15" r="5" fill="#111827"/><circle cx="35" cy="15" r="5" fill="#111827"/></g></g>`).join('')}
+    <rect id="haze" width="640" height="300" fill="#a16207" opacity="0" style="pointer-events:none"/>
+  </svg><div id="bins" class="legend" style="grid-template-columns:repeat(5,1fr);display:grid;gap:6px;margin-top:8px"></div></div><div id="ec"></div></div>`;
+  const ec = $('#ec', host), scene = $('#scene', host);
+  const aqiG = gauge({ label: 'Air Quality Index (AQI)', unit: '', min: 0, max: 200, zone: [0, 50], target: '0–50 (Good)', status: v => v <= 50 ? '✓ Good' : v <= 100 ? 'Moderate' : v <= 150 ? 'Unhealthy for sensitive groups' : 'Unhealthy' });
+  const noiseG = gauge({ label: 'Noise level', unit: 'dB', min: 30, max: 90, zone: [30, 59], target: 'under 60 dB', status: (v, ok) => ok ? '✓ comfortable' : v < 70 ? 'getting loud' : 'harmful over time' });
+  const recG = gauge({ label: 'Waste recycled', unit: '%', min: 0, max: 100, zone: [50, 100], target: '50% or more' });
+  const calc = () => {
+    const eff = Math.max(0, sim.traffic - (sim.bike ? 3 : 0));
+    return { eff, aqi: clamp(Math.round(30 + eff * 9 + (sim.scrub ? 0 : 35) - sim.trees * 3.5), 15, 200), noise: Math.round(45 + eff * 3 - sim.trees * 0.8) };
+  };
+  const onChange = () => {
+    const c = calc();
+    aqiG.set(c.aqi); noiseG.set(c.noise); recG.set(sim.recycle);
+    const k = clamp((c.aqi - 30) / 150, 0, 1);
+    $('#haze', host).setAttribute('opacity', (k * 0.55).toFixed(2));
+    $('#sk1', host).setAttribute('stop-color', k < .5 ? '#7cc4f5' : '#b8a27a'); $('#sk2', host).setAttribute('stop-color', k < .5 ? '#dff3ff' : '#e6d3a8');
+    scene.classList.toggle('scrub', sim.scrub);
+    $$('.car', host).forEach(g => { g.style.display = +g.dataset.i < c.eff ? '' : 'none'; });
+    $$('.tree', host).forEach(t => t.classList.toggle('show', +t.dataset.i < sim.trees));
+    $('#lane', host).style.display = $('#cyc', host).style.display = sim.bike ? '' : 'none';
+    const n = Math.round(sim.recycle / 20);
+    $('#bins', host).innerHTML = Array.from({ length: 5 }, (_, i) => `<div style="text-align:center;color:${i < n ? '#15803d' : '#9ca3af'};font-weight:800;font-size:.8rem">${ic('environmental', 26)}<br>${i < n ? 'recycled' : 'landfill'}</div>`).join('');
+  };
+  slider(ec, sim, { key: 'traffic', label: 'Cars on the road', unit: 'cars', min: 0, max: 10 }, onChange);
+  slider(ec, sim, { key: 'trees', label: 'Trees planted', unit: 'trees', min: 0, max: 10 }, onChange);
+  slider(ec, sim, { key: 'recycle', label: 'Waste recycled', unit: '%', min: 0, max: 100, step: 10 }, onChange);
+  toggle(ec, sim, { key: 'scrub', label: 'Install a filter on the factory smokestack' }, onChange);
+  toggle(ec, sim, { key: 'bike', label: 'Build safe bike lanes (3 fewer cars)' }, onChange);
+  ec.append(aqiG, noiseG, recG);
+  onChange();
+  return { check: () => { const c = calc(), ok = c.aqi <= 50 && c.noise < 60 && sim.recycle >= 50; return { ok, hint: ok ? '' : `AQI is ${c.aqi} (need 50 or less), noise is ${c.noise} dB (need under 60) and recycling is ${sim.recycle}% (need 50+).` }; } };
+};
+
+/* ---------- integration ---------- */
+function renderIntegrate(w) {
+  const sim = S.sim.integrate;
+  w.append(h('section', { class: 'lab-banner' },
+    h('div', { class: 'halo', html: ic('integration', 46) }),
+    h('div', {}, h('span', { class: 'tag' }, 'FINAL LAB · PUT IT ALL TOGETHER'), h('h2', {}, 'Integration Lab: Help Jordan'),
+      h('p', {}, 'Real people are never just one dimension. Use everything you learned to read Jordan\'s situation, trace the ripple effects and build a plan that lifts every part of wellness.'),
+      h('div', { class: 'skills' }, h('span', {}, 'Identify'), h('span', {}, 'Manipulate'), h('span', {}, 'Integrate')))));
+  w.append(h('section', { class: 'panel persona' }, h('div', { class: 'avatar' }, 'J'),
+    h('div', {}, h('h3', {}, 'Meet Jordan, 16'), h('p', {}, 'Jordan just moved to a new town. Lately Jordan has been staying up late, skipping lunch with others, feeling anxious before class and noticing the smog outside most days. Jordan\'s grades are slipping.'))));
+
+  // Item 1: match
+  const rows = shuffled(JORDAN, 'jmatch');
+  const sels = {};
+  const mBody = h('div', {});
+  rows.forEach(r => {
+    const sel = h('select', { 'aria-label': r.text }, h('option', { value: '' }, 'Choose a dimension…'), ...ORDER.map(d => h('option', { value: d }, DIM[d].name)));
+    sel.value = sim.match[r.k] || ''; sels[r.k] = sel;
+    sel.addEventListener('change', () => { sim.match[r.k] = sel.value; save(); });
+    mBody.append(h('div', { class: 'matchrow', 'data-k': r.k }, h('span', {}, r.text), sel));
+  });
+  w.append(secHead(1, 'Identify: read the metrics'));
+  w.append(checkItem('int-match', {
+    prompt: 'Match each of Jordan\'s readings to the dimension it measures.', num: 1, body: mBody,
+    evaluate: () => {
+      if (rows.some(r => !sels[r.k].value)) return { skip: true, hint: 'Choose a dimension for every reading first.' };
+      let bad = 0;
+      rows.forEach(r => { const ok = sels[r.k].value === r.k; const row = $(`.matchrow[data-k="${r.k}"]`, mBody); row.classList.toggle('good', ok); row.classList.toggle('bad', !ok); if (!ok) bad++; });
+      return { ok: bad === 0, hint: bad ? bad + ' of the 5 are in the wrong dimension (highlighted in red).' : '' };
+    },
+    lock: locked => { if (locked) rows.forEach(r => { sels[r.k].value = r.k; sels[r.k].disabled = true; $(`.matchrow[data-k="${r.k}"]`, mBody).className = 'matchrow good'; }); }
+  }));
+
+  // Item 2: ripple
+  const rBody = h('div', { class: 'checks' });
+  ORDER.forEach(d => { const cb = h('input', { type: 'checkbox', value: d }); cb.checked = sim.ripple.includes(d); cb.addEventListener('change', () => { sim.ripple = $$('input:checked', rBody).map(i => i.value); save(); }); rBody.append(h('label', { class: 'chk', style: { borderColor: DIM[d].color } }, cb, h('span', { html: ic(d, 22) }), DIM[d].name)); });
+  const rightSet = ['physical', 'mental', 'emotional', 'social'];
+  w.append(secHead(2, 'Integrate: trace the ripple'));
+  w.append(checkItem('int-ripple', {
+    prompt: 'Jordan sleeps only 5 hours a night. Select <b>every</b> dimension this is likely to affect.', num: 2, body: rBody,
+    evaluate: () => {
+      const sel = $$('input:checked', rBody).map(i => i.value);
+      if (!sel.length) return { skip: true, hint: 'Select at least one dimension.' };
+      const ok = sel.length === 4 && rightSet.every(d => sel.includes(d));
+      return { ok, hint: ok ? '' : sel.length < 4 ? 'Think about more ways short sleep shows up in Jordan\'s life.' : 'One of your picks is not directly changed by how long Jordan sleeps.' };
+    },
+    lock: locked => { $$('input', rBody).forEach(i => { i.disabled = locked; }); if (locked) $$('.chk', rBody).forEach(l => { const i = $('input', l); i.checked = rightSet.includes(i.value); l.classList.toggle('rev-right', i.checked); }); }
+  }));
+
+  // Item 3: plan
+  w.append(secHead(3, 'Manipulate: build a plan'));
+  const barsPanel = h('div', { class: 'panel sticky-bars' });
+  const bars = {};
+  const barWrap = h('div', { class: 'bars' });
+  ORDER.forEach(d => {
+    const row = h('div', { class: 'bar', style: { '--bc': DIM[d].color } });
+    row.innerHTML = `<span class="nm">${ic(d, 18)}${DIM[d].name}</span><div class="btrack"><i class="prev"></i><i class="base"></i><i class="goal" title="Goal: ${GOAL}"></i></div><span class="val"></span>`;
+    bars[d] = row; barWrap.append(row);
+  });
+  barsPanel.append(h('div', { class: 'sortbar', style: { marginBottom: '8px' } }, h('b', {}, 'Jordan\'s wellness'), h('span', { class: 'ptschip', id: 'used' }), h('small', {}, 'Black line = goal of ' + GOAL)), barWrap);
+  w.append(barsPanel);
+  const preview = () => {
+    const v = { ...BASE };
+    sim.picks.forEach(id => { const a = ACTIONS.find(x => x.id === id); for (const [k, n] of Object.entries(a.d)) v[k] = clamp(v[k] + n, 0, 100); });
+    ORDER.forEach(d => { const r = bars[d]; $('.base', r).style.width = BASE[d] + '%'; $('.prev', r).style.width = v[d] + '%'; $('.val', r).textContent = v[d]; r.classList.toggle('met', v[d] >= GOAL); });
+    $('#used', barsPanel).textContent = `${sim.picks.length} of ${PICKS} action points used`;
+    return v;
+  };
+  const actBtns = {};
+  const grid = h('div', { class: 'actions' });
+  const planDone = () => st('int-plan').done;
+  const syncActs = () => ACTIONS.forEach(a => { const b = actBtns[a.id], on = sim.picks.includes(a.id); b.classList.toggle('on', on); b.setAttribute('aria-pressed', String(on)); b.disabled = planDone() || (!on && sim.picks.length >= PICKS); });
+  ACTIONS.forEach(a => {
+    const b = h('button', { class: 'act', type: 'button', onclick: () => { const i = sim.picks.indexOf(a.id); if (i >= 0) sim.picks.splice(i, 1); else if (sim.picks.length < PICKS) sim.picks.push(a.id); save(); preview(); syncActs(); } },
+      h('b', {}, a.t), h('div', { class: 'deltas', html: Object.entries(a.d).map(([k, n]) => `<span class="dl ${n < 0 ? 'neg' : ''}" style="--bc:${DIM[k].color}">${DIM[k].name.slice(0, 4)} ${n > 0 ? '+' : '−'}${Math.abs(n)}</span>`).join('') }));
+    actBtns[a.id] = b; grid.append(b);
+  });
+  const pBody = h('div', {}, h('p', { class: 'lead', style: { fontSize: '.97rem', margin: '0 0 4px' } }, `Choose up to ${PICKS} actions. Each one changes several dimensions, and some choices backfire. Striped bars show Jordan's future wellness. Get every bar past the goal line, then check.`), grid);
+  w.append(checkItem('int-plan', {
+    prompt: `Build a ${PICKS}-action plan that lifts <b>every</b> dimension to ${GOAL} or higher.`, num: 3, body: pBody,
+    evaluate: () => { const v = preview(); const low = ORDER.filter(d => v[d] < GOAL); return { ok: low.length === 0, hint: low.length ? 'Still below the goal: ' + low.map(d => DIM[d].name).join(', ') + '.' : '' }; },
+    lock: locked => { if (locked) syncActs(); }
+  }));
+  preview(); syncActs();
+
+  // Item 4: concept
+  w.append(secHead(4, 'Reflect'));
+  w.append(mcItem('int-concept', {
+    prompt: 'Which statement best describes how the dimensions of wellness work together?', num: 4, correct: 'b',
+    options: shuffled([
+      { key: 'a', html: 'They are separate, so improving one never affects the others.' },
+      { key: 'b', html: 'They overlap, so a change in one often ripples into others.' },
+      { key: 'c', html: 'Only physical health can be measured, so it is the only one that matters.' },
+      { key: 'd', html: 'Social and environmental wellness are really the same thing.' }], 'concept')
+  }));
+}
+
+/* ---------- results ---------- */
+function renderResults(w) {
+  if (!S.finishedAt) { S.finishedAt = Date.now(); save(); setTimeout(() => burst(innerWidth / 2, innerHeight / 3, themeColors(), 60), 600); }
+  const total = totalPts();
+  const mins = Math.max(1, Math.round((S.finishedAt - S.startedAt) / 60000));
+  const when = new Date(S.finishedAt).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' });
+  const byDim = {};
+  [...ORDER, 'integration'].forEach(d => { byDim[d] = { got: 0, max: 0 }; });
+  const tally = { first: 0, second: 0, third: 0, miss: 0 };
+  const ids = Object.keys(ITEMS);
+  ids.forEach(id => {
+    const m = ITEMS[id], it = st(id);
+    byDim[m.dim].got += earned(id); byDim[m.dim].max += m.pts;
+    if (it.missed) tally.miss++; else if (it.a === 1) tally.first++; else if (it.a === 2) tally.second++; else tally.third++;
+  });
+  const ranked = Object.entries(byDim).map(([d, v]) => [d, v.got / v.max]).sort((a, b) => b[1] - a[1]);
+  const stops = Object.keys(STOP_ITEMS).map(s => {
+    const list = STOP_ITEMS[s], first = list.filter(id => st(id).credit === 1 && st(id).a === 1).length;
+    return { s, got: list.reduce((n, id) => n + earned(id), 0), max: STOP_PTS[s], first, n: list.length };
+  });
+  const good = stops.filter(x => x.first > 0).map(x => `<li><span>${ic('check', 18)}</span><span><b>${STOP_NAME[x.s]}:</b> ${x.first} of ${x.n} correct on the first try (${fmt(x.got)} / ${x.max} pts)</span></li>`).join('');
+  const review = ids.filter(id => st(id).credit < 1).map(id => {
+    const m = ITEMS[id], it = st(id), half = !it.missed;
+    return `<li class="${half ? 'half' : ''}"><b>${esc(m.title)}</b><small>${it.missed ? 'Missed after 3 tries (0 pts)' : 'Correct on try ' + it.a + ' (' + fmt(earned(id)) + ' of ' + fmt(m.pts) + ' pts)'} · ${esc(STOP_NAME[m.stop])}</small><small><b style="display:inline">Answer:</b> ${esc(m.answer)}</small></li>`;
+  }).join('');
+  const C = 2 * Math.PI * 86;
+  w.append(h('section', { class: 'report', id: 'report' },
+    h('div', { class: 'rep-head' }, h('h2', {}, 'Wellness Dimensions Lab · Extra Credit Report'),
+      h('div', { class: 'meta' }, h('div', { class: 'nm' }, S.name + (S.period ? ' · ' + S.period : '')), h('div', {}, 'Completed ' + when + ' · ' + mins + ' min'))),
+    h('div', { class: 'rep-top' },
+      h('div', { class: 'ring', html: `<svg width="210" height="210" viewBox="0 0 200 200" aria-hidden="true"><circle cx="100" cy="100" r="86" fill="none" stroke="#e5e7eb" stroke-width="16"/><circle id="rg" cx="100" cy="100" r="86" fill="none" stroke="var(--accent)" stroke-width="16" stroke-linecap="round" stroke-dasharray="${C}" stroke-dashoffset="${C}"/></svg><div class="rt"><div><b id="rs">0</b><small>out of 100 points</small></div></div>` }),
+      h('div', {},
+        h('div', { class: 'celebrate' }, total >= 90 ? 'Outstanding work!' : total >= 75 ? 'Great job!' : total >= 50 ? 'Solid effort. Review the notes below.' : 'You finished. Use the review notes to learn from each miss.'),
+        h('div', { class: 'dimbars', id: 'db', style: { marginTop: '8px' } }),
+        h('div', { class: 'tally', html: `<span>1st try (100%): ${tally.first}</span><span>2nd try (75%): ${tally.second}</span><span>3rd try (50%): ${tally.third}</span><span>Missed (0%): ${tally.miss}</span>` }))),
+    h('div', { class: 'rep-cols' },
+      h('div', {}, h('h3', {}, '✓ What you did well'), h('ul', { class: 'good-list', html: (good || '<li>Keep practicing: every try builds understanding.</li>') + `<li><span>${ic('flag', 18)}</span><span><b>Strongest area:</b> ${DIM[ranked[0][0]].name} (${Math.round(ranked[0][1] * 100)}%)</span></li>` })),
+      h('div', {}, h('h3', {}, '↻ What to review'), h('ul', { class: 'rev-list', html: review || '<li class="half" style="border-color:#16a34a;background:#f0fdf4">Nothing to review. Every item was correct on the first try!</li>' })))));
+  const db = $('#db', w);
+  Object.entries(byDim).forEach(([d, v]) => {
+    const row = h('div', { class: 'bar', style: { '--bc': DIM[d].color } });
+    row.innerHTML = `<span class="nm">${ic(d, 18)}${DIM[d].name}</span><div class="btrack"><i class="base"></i></div><span class="val">${fmt(v.got)}/${fmt(v.max)}</span>`;
+    db.append(row);
+  });
+  w.append(h('section', { class: 'panel noprint shot' }, h('div', { html: ic('flag', 40) }),
+    h('div', {}, h('h3', {}, 'Turn it in'), h('p', {}, 'Take a screenshot of the whole report above (your name, score, and review notes must be visible) and submit it in your assignment. Chromebook: press ', h('b', {}, 'Ctrl + Shift + Show Windows'), ' (the rectangle key), then drag over the report. If it is too tall, press ', h('b', {}, 'Ctrl and −'), ' to zoom out first, or take two screenshots. Windows/Mac: Snipping Tool or ', h('b', {}, 'Shift + Cmd + 4'), '.'),
+      h('div', { class: 'check-row' }, h('button', { class: 'btn primary', type: 'button', onclick: () => window.print() }, 'Print / save as PDF'), h('button', { class: 'btn', type: 'button', onclick: () => go(2) }, 'Review the labs')))));
+  tween(1600, p => {
+    const e = ease(p);
+    $('#rs', w).textContent = fmt(total * e);
+    $('#rg', w).setAttribute('stroke-dashoffset', C * (1 - total / 100 * e));
+    $$('.btrack .base', db).forEach((b, i) => { const v = Object.values(byDim)[i]; b.style.width = (v.got / v.max * 100 * e) + '%'; });
+  });
+}
+
+/* ---------- boot ---------- */
+buildChrome();
+(function boot() {
+  let i = S.startedAt ? clamp(S.step, 0, maxReach()) : 0;
+  go(i);
+})();
+</script>
+</body>
+</html>
