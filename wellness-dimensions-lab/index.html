@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Wellness Dimensions Lab (Extra Credit)</title>
-<meta name="description" content="An interactive 25-minute extra-credit lab: identify, manipulate and integrate physical, mental, emotional, social and environmental wellness and the metrics that measure each one.">
+<meta name="description" content="An interactive 35-minute extra-credit lab: identify, manipulate and integrate physical, mental, emotional, social and environmental wellness and the metrics that measure each one.">
 <style>
 @property --accent{syntax:'<color>';inherits:true;initial-value:#0f4c81}
 @property --soft{syntax:'<color>';inherits:true;initial-value:#e3effb}
@@ -375,6 +375,39 @@ main#stage{position:relative;z-index:1;max-width:1100px;margin:0 auto;padding:20
 #toast.on{opacity:1;transform:translate(-50%,0)}
 noscript{display:block;position:relative;z-index:5;padding:20px;background:#fee2e2;color:#7f1d1d;font-weight:700;text-align:center}
 
+
+.dot{width:28px;height:28px}
+.dot span{font-size:.72rem;font-weight:800}
+.dots{gap:clamp(3px,1vw,9px)}
+.dots::before{top:14px}
+@media(max-width:620px){.dot{width:22px;height:22px;border-width:2px}.dot .ic{width:12px;height:12px}.dot span{font-size:.62rem}.dots::before{top:11px}}
+.tscroll{overflow-x:auto}
+.dtable{width:100%;border-collapse:collapse;font-size:.93rem;min-width:520px}
+.dtable th,.dtable td{border:1px solid var(--line);padding:6px 8px;text-align:center}
+.dtable th[scope=row]{text-align:left}
+.dtable thead th{background:var(--soft)}
+.dtable tbody tr:nth-child(odd){background:#f8fafc}
+.scale{margin:10px 0;padding:8px 12px;border-radius:12px;background:var(--soft);font-size:.92rem}
+.dchart{width:100%;max-width:640px;display:block;margin:6px auto 0}
+.dchart text{font-size:12px;font-weight:700;fill:#374151}
+.dbar{transform-box:fill-box;transform-origin:bottom;animation:grow .8s cubic-bezier(.3,1.2,.5,1) both}
+@keyframes grow{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+.legend2{display:flex;gap:18px;justify-content:center;flex-wrap:wrap;font-weight:700;font-size:.88rem;margin-top:4px}
+.legend2 i{display:inline-block;width:14px;height:14px;border-radius:3px;vertical-align:-2px;margin-right:4px}
+.legend2 i.dm{background:#fff;border:3px solid;transform:rotate(45deg) scale(.85)}
+.case{border-left:8px solid var(--accent)}
+.planbox label{display:flex;align-items:center;gap:8px;font-size:1.05rem;color:var(--bc);margin-bottom:6px}
+.planbox label small{color:var(--muted);font-weight:600}
+.planbox textarea{width:100%;font:inherit;padding:10px 12px;border:2px solid var(--edge);border-radius:12px;resize:vertical;min-height:84px}
+.planbox textarea:focus{border-color:var(--bc);outline:3px solid color-mix(in srgb,var(--bc) 30%,transparent)}
+.cnt{display:block;text-align:right;font-weight:800;font-size:.85rem;color:var(--muted);margin-top:4px}
+.cnt.ok{color:var(--good)}
+.plan-out{margin-top:16px;border-top:3px solid var(--accent);padding-top:10px}
+.plan-out h3{color:var(--accent);font-size:1.1rem}
+.plan-row{display:grid;grid-template-columns:140px 1fr;gap:8px;padding:5px 0;border-bottom:1px solid var(--line);font-size:.9rem}
+.plan-row b{color:var(--bc)}
+@media(max-width:560px){.plan-row{grid-template-columns:1fr}}
+
 @media(prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;animation-delay:0s!important;transition-duration:.001ms!important;scroll-behavior:auto!important}
   .fl{display:none}
@@ -413,7 +446,7 @@ noscript{display:block;position:relative;z-index:5;padding:20px;background:#fee2
   <div class="top-in">
     <div class="brand">
       <svg class="ic" width="34" height="34" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-integration"/></svg>
-      <span><b>Wellness Dimensions Lab</b><small>Extra credit &middot; about 25 minutes</small></span>
+      <span><b>Wellness Dimensions Lab</b><small>Extra credit &middot; about 35 minutes</small></span>
     </div>
     <div class="badges" id="badges" aria-label="Lab badges earned"></div>
     <div class="score"><span class="who" id="who"></span><span class="pts"><span id="pts">0</span> / 100 pts</span></div>
@@ -445,7 +478,7 @@ const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
 const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
-const fmt = n => String(Math.round(n * 10) / 10);
+const fmt = n => String(Math.round(n * 100) / 100);
 const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const MULT = [1, 0.75, 0.5];
 const ORDER = ['physical', 'mental', 'emotional', 'social', 'environmental'];
@@ -523,11 +556,12 @@ const DIM = {
   integration: { name: 'Integration', color: '#0f4c81', soft: '#e3effb', edge: '#b7cbe3' }
 };
 
-const STOP_PTS = { wheel: 10, sort: 20, physical: 10, mental: 10, emotional: 10, social: 10, environmental: 10, integrate: 20 };
-const STOP_NAME = { wheel: 'Wellness Wheel', sort: 'Metric Sort', physical: 'Physical Lab', mental: 'Mental Lab', emotional: 'Emotional Lab', social: 'Social Lab', environmental: 'Environmental Lab', integrate: 'Integration Lab' };
+const STOP_PTS = {};
+const STOP_NAME = { wheel: 'Wellness Wheel', sort: 'Metric Sort', physical: 'Physical Lab', mental: 'Mental Lab', emotional: 'Emotional Lab', social: 'Social Lab', environmental: 'Environmental Lab', detective: 'Data Detective', cases: 'Case Files', integrate: 'Integration Lab' };
 const ITEMS = {}, STOP_ITEMS = {};
-function reg(stop, id, dim, title, answer, why) {
-  ITEMS[id] = { id, stop, dim, title, answer, why };
+function reg(stop, id, dim, title, answer, why, pts) {
+  ITEMS[id] = { id, stop, dim, title, answer, why, pts };
+  STOP_PTS[stop] = (STOP_PTS[stop] || 0) + pts;
   (STOP_ITEMS[stop] = STOP_ITEMS[stop] || []).push(id);
 }
 
@@ -545,7 +579,7 @@ const WHEEL_WHY = {
   social: 'Listening, sharing and including others build relationships.',
   environmental: 'Clean air, trees and recycling change the place you live and learn.'
 };
-ORDER.forEach(d => reg('wheel', 'w-' + d, d, 'Scenario: ' + WHEEL_Q[d].replace(/\.$/, ''), DIM[d].name, WHEEL_WHY[d]));
+ORDER.forEach(d => reg('wheel', 'w-' + d, d, 'Scenario: ' + WHEEL_Q[d].replace(/\.$/, ''), DIM[d].name, WHEEL_WHY[d], 1));
 
 const CARDS = [
   { dim: 'physical', t: 'Resting heart rate', v: '68 beats per minute', why: 'Heart rate is measured from your body and shows cardiovascular fitness.' },
@@ -569,7 +603,7 @@ const CARDS = [
   { dim: 'environmental', t: 'Share of school waste that is recycled', v: '35%', why: 'Recycling measures how your community treats the environment.' },
   { dim: 'environmental', t: 'Working clean-water fountains at school', v: '6 of 8', why: 'Access to clean water is a feature of your surroundings.' }
 ].map((c, i) => ({ ...c, id: 'c' + String(i + 1).padStart(2, '0') }));
-CARDS.forEach(c => reg('sort', c.id, c.dim, `${c.t} (${c.v})`, DIM[c.dim].name, c.why));
+CARDS.forEach(c => reg('sort', c.id, c.dim, `${c.t} (${c.v})`, DIM[c.dim].name, c.why, 1));
 
 const LAB = {
   physical: { no: 1, title: 'Body Dashboard',
@@ -618,10 +652,27 @@ const LAB = {
     mc: [['a', 'AQI + resting heart rate'], ['b', 'Share of waste recycled + minutes of focus'], ['c', 'Noise level + daily mood rating'], ['d', 'AQI + noise level in decibels', 1]],
     mcWhy: 'Air quality and noise are measured in your surroundings. The others pair a surroundings metric with something about you.' }
 };
+const EXP = {
+  physical: { q: 'Press <b>Reset</b>, then change <b>one slider at a time</b> to its target zone and watch the heart rate. Which single change lowers resting heart rate the most?',
+    opts: [['a', 'Sleep up to 8 hours'], ['b', 'Active time up to 60 minutes', 1], ['c', 'Water up to 8 cups'], ['d', 'All three change it by the same amount']],
+    why: 'From 84 bpm, 60 active minutes lowers it to 77, sleep to 78, and water only to 81. Activity matters most here.' },
+  mental: { q: 'Press <b>Reset</b> (Focus starts at 8). Change <b>one slider at a time</b>. Which single change raises Focus the most?',
+    opts: [['a', 'Sleep up to 8 hours'], ['b', 'Notifications down to 1 per 10 minutes'], ['c', 'Study blocks of 30 minutes instead of 90', 1], ['d', '10 minutes of mindfulness']],
+    why: 'Focus rises from 8 to 44 with shorter study blocks, 36 with fewer notifications and 32 with more sleep. Mindfulness lowers stress but does not change focus.' },
+  emotional: { q: 'Run every strategy and read the legend under the chart. Which strategy brought anger to 3 or below in the <b>fewest minutes</b>?',
+    opts: [['a', 'Slow, deep breathing'], ['b', 'Talk to a trusted person', 1], ['c', 'Write down what happened'], ['d', 'Take a short walk']],
+    why: 'Talking got anger to 3 in 4 minutes. Breathing and walking took 5 minutes and writing took 6.' },
+  social: { q: 'Press <b>Reset</b>, then connect <b>only</b> Parent / guardian, Best friend, Teacher or coach and the Gossip group chat. What is the Network strength?',
+    opts: [['a', '49%', 1], ['b', '74%'], ['c', '54%'], ['d', '24%']],
+    why: 'Three supportive people give 54, two settings (home and school) add 20, and the unhealthy gossip chat subtracts 25: 54 + 20 − 25 = 49%.' },
+  environmental: { q: 'Press <b>Reset</b> (8 cars, 1 tree, no filter, no bike lanes: AQI 134). Change <b>one thing at a time</b>. Which single change lowers AQI the most?',
+    opts: [['a', 'Install the smokestack filter', 1], ['b', 'Build bike lanes'], ['c', 'Plant 9 more trees'], ['d', 'Raise recycling to 100%']],
+    why: 'The filter removes 35 AQI points, 9 more trees remove about 32, bike lanes (3 fewer cars) remove 27, and recycling does not change air quality.' }
+};
 ORDER.forEach(d => {
-  reg(d, d + '-lab', d, 'Lab challenge: ' + LAB[d].title, LAB[d].answer, LAB[d].why);
-  const right = LAB[d].mc.find(o => o[2]);
-  reg(d, d + '-metrics', d, LAB[d].mcTitle, right[1], LAB[d].mcWhy);
+  reg(d, d + '-lab', d, 'Lab challenge: ' + LAB[d].title, LAB[d].answer, LAB[d].why, 4);
+  reg(d, d + '-exp', d, 'Experiment question: ' + LAB[d].title, EXP[d].opts.find(o => o[2])[1], EXP[d].why, 3);
+  reg(d, d + '-metrics', d, LAB[d].mcTitle, LAB[d].mc.find(o => o[2])[1], LAB[d].mcWhy, 3);
 });
 
 const JORDAN = [
@@ -643,12 +694,72 @@ const ACTIONS = [
   { id: 'alone', t: 'Stay in your room gaming alone every weekend', d: { physical: -8, mental: -3, emotional: 3, social: -15, environmental: -10 } }
 ];
 const PICKS = 4, GOAL = 60;
-reg('integrate', 'int-match', 'integration', "Match Jordan's five readings to their dimensions", 'Sleep → Physical; focus → Mental; mood → Emotional; support → Social; AQI → Environmental', 'Each reading measures a different part of wellness: body, thinking, feelings, relationships and surroundings.');
-reg('integrate', 'int-ripple', 'integration', 'Which dimensions does five hours of sleep ripple into?', 'Physical, Mental, Emotional and Social', 'Short sleep drains energy (physical), focus (mental), mood (emotional) and patience with others (social). Your neighborhood air does not change.');
-reg('integrate', 'int-plan', 'integration', 'Build a 4-action plan that lifts every dimension to 60 or higher', 'For example: phone curfew + lunch club + counselor + clean-air club', 'Strong plans use actions that pay off in several dimensions at once, and avoid actions that harm one dimension to help another.');
-reg('integrate', 'int-concept', 'integration', 'How the dimensions of wellness work together', 'They overlap, so a change in one often ripples into others', 'No dimension stands alone. Improving one often helps the rest, and neglecting one can drag the others down.');
+reg('integrate', 'int-match', 'integration', "Match Jordan's five readings to their dimensions", 'Sleep → Physical; focus → Mental; mood → Emotional; support → Social; AQI → Environmental', 'Each reading measures a different part of wellness: body, thinking, feelings, relationships and surroundings.', 3);
+reg('integrate', 'int-ripple', 'integration', 'Which dimensions does five hours of sleep ripple into?', 'Physical, Mental, Emotional and Social', 'Short sleep drains energy (physical), focus (mental), mood (emotional) and patience with others (social). Your neighborhood air does not change.', 3);
+reg('integrate', 'int-plan', 'integration', 'Build a 4-action plan that lifts every dimension to 60 or higher', 'For example: phone curfew + lunch club + counselor + clean-air club', 'Strong plans use actions that pay off in several dimensions at once, and avoid actions that harm one dimension to help another.', 4);
+reg('integrate', 'int-concept', 'integration', 'How the dimensions of wellness work together', 'They overlap, so a change in one often ripples into others', 'No dimension stands alone. Improving one often helps the rest, and neglecting one can drag the others down.', 3);
 
-for (const [stop, ids] of Object.entries(STOP_ITEMS)) ids.forEach(id => { ITEMS[id].pts = STOP_PTS[stop] / ids.length; });
+
+
+const DET = {
+  days: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+  rows: [
+    ['Hours of sleep', [8, 7, 6, 5, 5, 9, 9]],
+    ['Steps (thousands)', [9, 8, 6, 4, 3, 7, 10]],
+    ['Minutes of focus', [30, 28, 20, 12, 10, 25, 32]],
+    ['Mood rating (1–10)', [8, 7, 6, 4, 3, 7, 8]],
+    ['Trusted-person chats', [3, 2, 2, 1, 0, 4, 3]],
+    ['Air Quality Index', [40, 45, 70, 110, 130, 60, 35]]
+  ]
+};
+const DET_Q = [
+  { id: 'det-1', q: 'Sam\'s mood fell from Monday to Friday. Which <u>physical</u> metric fell over the same days?', title: 'Data Detective: the physical metric that fell with mood',
+    opts: [['a', 'Hours of sleep', 1], ['b', 'Air Quality Index'], ['c', 'Minutes of focus'], ['d', 'Trusted-person chats']],
+    why: 'Sleep dropped from 8 to 5 hours. Focus and chats fell too, but those are mental and social metrics, and the AQI rose.' },
+  { id: 'det-2', q: 'On Friday the AQI was 130. Using the scale above the table, which category is that?', title: 'Data Detective: AQI category on Friday',
+    opts: [['a', 'Good'], ['b', 'Moderate'], ['c', 'Unhealthy for sensitive groups', 1], ['d', 'Unhealthy']],
+    why: 'An AQI from 101 to 150 is “unhealthy for sensitive groups.”' },
+  { id: 'det-3', q: 'How many more minutes of focus did Sam have on Sunday than on Friday?', title: 'Data Detective: change in focus minutes',
+    opts: [['a', '12 minutes'], ['b', '22 minutes', 1], ['c', '32 minutes'], ['d', '42 minutes']],
+    why: 'Sunday was 32 minutes and Friday was 10 minutes: 32 − 10 = 22.' },
+  { id: 'det-4', q: 'Which conclusion is best supported by this week of data?', title: 'Data Detective: the best-supported conclusion',
+    opts: [['a', 'Days with less sleep also had lower focus and mood, which suggests the dimensions are connected.', 1], ['b', 'The smog caused Sam\'s low mood, so air quality is the only cause.'], ['c', 'Steps per day have no relationship with anything else.'], ['d', 'Sam\'s low mood proves Sam has a mental illness.']],
+    why: 'Sleep, focus and mood moved together, so “connected” is fair. One week of numbers cannot prove a single cause or diagnose anyone.' }
+];
+DET_Q.forEach(d => reg('detective', d.id, 'integration', d.title, d.opts.find(o => o[2])[1], d.why, 1));
+
+const CASES = [
+  { id: 'dre', name: 'Dre, varsity swimmer', story: 'Dre wakes at 5 a.m. for practice and has been sleeping about 6 hours a night. Dre\'s resting heart rate has crept up from 62 to 74 beats per minute. Lately Dre snaps at teammates and has skipped the last two team dinners.',
+    correct: ['physical', 'emotional', 'social'], dimsWhy: 'Sleep and heart rate are physical, snapping at teammates is an emotional signal, and skipping team dinners is social. Nothing was said about focus or surroundings.',
+    opts: [['a', 'Talk with the coach and a parent about adjusting the sleep and practice schedule', 1], ['b', 'Quit the team right away'], ['c', 'Drink energy drinks to push through'], ['d', 'Ignore it, because resting heart rate always changes']],
+    stepWhy: 'A small, specific change to sleep and schedule, with trusted adults, addresses the physical cause that is spilling into mood and friendships.' },
+  { id: 'maya', name: 'Maya, new student', story: 'Maya moved to a new town last month. She eats lunch alone, feels nervous and sad before first period, and says she cannot concentrate on her work. Her sleep, meals and activity are all normal.',
+    correct: ['social', 'emotional', 'mental'], dimsWhy: 'Eating alone is social, feeling nervous and sad is emotional, and trouble concentrating is mental. Her sleep and eating are normal, so physical is not the problem.',
+    opts: [['a', 'Join a club that meets at lunch and talk with the school counselor about feeling nervous', 1], ['b', 'Stay home from school until the feelings pass'], ['c', 'Wait and tell no one'], ['d', 'Tell her to stop being so sensitive']],
+    stepWhy: 'Building connection and getting support helps the social and emotional parts, and that usually eases concentration too.' },
+  { id: 'room214', name: 'Room 214', story: 'Several students in Room 214 report headaches and trouble focusing after lunch. The windows stay shut because the outdoor AQI has been 140, the old fans hum at 78 decibels, and the air feels stuffy.',
+    correct: ['environmental', 'physical', 'mental'], dimsWhy: 'Smog, stuffy air and noise are environmental, headaches are physical, and trouble focusing is mental. Nobody mentioned friendships or moods.',
+    opts: [['a', 'Ask the school to check ventilation, add air filters and replace the noisy fans', 1], ['b', 'Tell students to tough it out'], ['c', 'Open every window even though the AQI is 140'], ['d', 'Cancel lunch']],
+    stepWhy: 'Fixing the surroundings (air and noise) treats the cause of the headaches and the poor focus instead of the symptoms.' },
+  { id: 'jamal', name: 'Jamal, gamer', story: 'Jamal rates his mood 8 out of 10 and his grades are fine. He plays online games with friends until 1 a.m., sleeps about 5 hours and averages 1,500 steps a day. He has not seen a friend in person in a month.',
+    correct: ['physical', 'social'], dimsWhy: 'Little sleep and few steps are physical, and no in-person time is a social concern. His mood and grades are good, so emotional and mental are fine for now.',
+    opts: [['a', 'Keep the online friends but add a bedtime, daily movement and some in-person time', 1], ['b', 'Delete every game and friend immediately'], ['c', 'Do nothing, because his mood is 8 out of 10'], ['d', 'Sleep in all weekend to make up for it']],
+    stepWhy: 'Balanced changes keep what is working (online friends, good mood) while fixing sleep, movement and face-to-face connection.' }
+];
+CASES.forEach(c => {
+  reg('cases', c.id + '-dims', 'integration', 'Case file: ' + c.name + ', which dimensions?', c.correct.map(d => DIM[d].name).join(', '), c.dimsWhy, 1);
+  reg('cases', c.id + '-step', 'integration', 'Case file: ' + c.name + ', best first step', c.opts.find(o => o[2])[1], c.stepWhy, 1);
+});
+
+const PLAN_MIN = 8;
+const PLAN_HINT = {
+  physical: 'Example: I will track my hours of sleep and be in bed by 10 pm on school nights.',
+  mental: 'Example: I will track my minutes of focus and study in 25-minute blocks with my phone in another room.',
+  emotional: 'Example: I will rate my mood every day and use slow breathing when I feel frustrated.',
+  social: 'Example: I will count my trusted people and join one club that meets every week.',
+  environmental: 'Example: I will track how much I recycle and walk to school two days a week.'
+};
+const words = t => (t || '').trim().split(/\s+/).filter(Boolean).length;
 
 /* ---------- state ---------- */
 const DEFAULT_SIM = () => ({
@@ -657,9 +768,10 @@ const DEFAULT_SIM = () => ({
   emotional: { ran: [] },
   social: { on: [] },
   environmental: { traffic: 8, trees: 1, scrub: false, bike: false, recycle: 20 },
-  integrate: { picks: [], match: {}, ripple: [] }
+  integrate: { picks: [], match: {}, ripple: [] },
+  cases: {}
 });
-const fresh = () => ({ v: 1, name: '', period: '', step: 0, seed: (Math.random() * 1e9) | 0, startedAt: 0, finishedAt: 0, items: {}, seen: [], sim: DEFAULT_SIM() });
+const fresh = () => ({ v: 1, name: '', period: '', step: 0, seed: (Math.random() * 1e9) | 0, startedAt: 0, finishedAt: 0, items: {}, seen: [], plan: {}, sim: DEFAULT_SIM() });
 let S = (() => { const s = store.get(); return s && s.v === 1 ? { ...fresh(), ...s, sim: { ...DEFAULT_SIM(), ...s.sim } } : fresh(); })();
 const save = () => store.set(S);
 const st = id => (S.items[id] = S.items[id] || { a: 0, done: false, credit: 0, wrong: [] });
@@ -686,7 +798,10 @@ const STEPS = [
   { id: 'wheel', label: 'Wellness Wheel', theme: 'neutral', dim: 'integration', render: renderWheel },
   { id: 'sort', label: 'Metric Sort', theme: 'neutral', dim: 'integration', render: renderSort },
   ...ORDER.map(d => ({ id: d, label: DIM[d].name + ' Lab', theme: d, dim: d, render: w => renderLab(w, d) })),
+  { id: 'detective', label: 'Data Detective', theme: 'neutral', dim: 'integration', render: renderDetective },
+  { id: 'cases', label: 'Case Files', theme: 'neutral', dim: 'integration', render: renderCases },
   { id: 'integrate', label: 'Integration Lab', theme: 'neutral', dim: 'integration', render: renderIntegrate },
+  { id: 'plan', label: 'Action Plan', theme: 'neutral', dim: 'integration', render: renderPlan },
   { id: 'results', label: 'Results', theme: 'neutral', dim: 'integration', render: renderResults }
 ];
 const stepIdx = id => STEPS.findIndex(s => s.id === id);
@@ -694,6 +809,7 @@ function remaining(i) {
   const s = STEPS[i];
   if (s.id === 'start') return S.startedAt ? 0 : 1;
   if (s.id === 'results') return 0;
+  if (s.id === 'plan') return ORDER.filter(d => words(S.plan[d]) < PLAN_MIN).length;
   let n = STOP_ITEMS[s.id].filter(id => !st(id).done).length;
   if (s.id === 'wheel') n += 5 - S.seen.length;
   return n;
@@ -756,7 +872,7 @@ function updateChrome() {
   next.classList.toggle('ready', ok && cur > 0);
   if (cur === 0) { msg.textContent = ok ? 'Ready when you are.' : 'Type your name to begin.'; msg.className = 'nav-msg' + (ok ? ' ready' : ''); }
   else if (ok) { msg.textContent = 'Stop complete! Press Next to continue, or Previous to review.'; msg.className = 'nav-msg ready'; }
-  else { const n = remaining(cur); msg.textContent = cur === 1 && S.seen.length < 5 ? `Explore all 5 sections of the wheel (${5 - S.seen.length} to go).` : `Finish ${n} more ${n === 1 ? 'item' : 'items'} to unlock Next.`; msg.className = 'nav-msg'; }
+  else { const n = remaining(cur); msg.textContent = STEPS[cur].id === 'plan' ? `Write at least ${PLAN_MIN} words for each dimension (${n} to go).` : cur === 1 && S.seen.length < 5 ? `Explore all 5 sections of the wheel (${5 - S.seen.length} to go).` : `Finish ${n} more ${n === 1 ? 'item' : 'items'} to unlock Next.`; msg.className = 'nav-msg'; }
 }
 
 function onNext() {
@@ -791,7 +907,7 @@ function celebrateIfDone() {
   if (cur > 0 && stepDone(cur) && !celebrated.has(s.id)) {
     celebrated.add(s.id);
     burstAt($('#next'), 30);
-    toast(cur === STEPS.length - 2 ? 'Integration complete! Your results are ready.' : `${s.label} complete! Press Next to continue.`);
+    toast(cur === STEPS.length - 2 ? 'All done! Your results are ready.' : `${s.label} complete! Press Next to continue.`);
   }
 }
 
@@ -805,7 +921,8 @@ function pipsHtml(it, id) {
     else if (!it.done && i === it.a) c += ' next';
     return `<span class="${c}">${l}</span>`;
   }).join('');
-  const pts = it.done ? `<span class="ptschip">${it.missed ? '0' : '+' + fmt(earned(id))} / ${fmt(ITEMS[id].pts)} pts</span>` : `<span class="ptschip">${fmt(ITEMS[id].pts)} pts</span>`;
+  const unit = ITEMS[id].pts === 1 ? 'pt' : 'pts';
+  const pts = it.done ? `<span class="ptschip">${it.missed ? '0' : '+' + fmt(earned(id))} / ${fmt(ITEMS[id].pts)} ${unit}</span>` : `<span class="ptschip">${fmt(ITEMS[id].pts)} ${unit}</span>`;
   return p + pts;
 }
 function itemShell(id, promptHtml, body, num) {
@@ -926,7 +1043,7 @@ function renderStart(w) {
     h('div', {},
       h('span', { class: 'xc' }, 'EXTRA CREDIT'),
       h('h1', { html: 'Wellness Dimensions Lab<span>Identify. Manipulate. Integrate.</span>' }),
-      h('p', { class: 'lead' }, 'Wellness is more than being "not sick." In about 25 minutes you will explore five dimensions of wellness (physical, mental, emotional, social and environmental), learn the metrics that measure each one, run mini-labs, and see how they all connect.'),
+      h('p', { class: 'lead' }, 'Wellness is more than being "not sick." In about 35 minutes you will explore five dimensions of wellness (physical, mental, emotional, social and environmental), learn the metrics that measure each one, run mini-labs, and see how they all connect.'),
       started
         ? h('div', { class: 'panel' }, h('h3', {}, 'Welcome back, ' + S.name + '!'), h('p', {}, 'Your progress is saved in this browser. Press ', h('b', {}, 'Next'), ' below to pick up where you left off.'))
         : h('div', { class: 'panel' },
@@ -944,11 +1061,11 @@ function renderStart(w) {
       h('div', { class: 'rule' }, h('b', {}, '100%'), '1st try'),
       h('div', { class: 'rule' }, h('b', {}, '75%'), '2nd try'),
       h('div', { class: 'rule' }, h('b', {}, '50%'), '3rd try')),
-    h('p', {}, 'After a third miss, the answer is shown (0 credit for that item) so you can learn it and keep going. The lab is worth ', h('b', {}, '100 points'), '. Use the ', h('b', {}, 'Previous'), ' and ', h('b', {}, 'Next'), ' buttons at the bottom to move around. Next unlocks when a stop is finished.')));
+    h('p', {}, 'After a third miss, the answer is shown (0 credit for that item) so you can learn it and keep going. The lab is worth ', h('b', {}, '100 points'), '. The last stop is a short written action plan that your teacher reads (it is not auto-scored). Use the ', h('b', {}, 'Previous'), ' and ', h('b', {}, 'Next'), ' buttons at the bottom to move around. Next unlocks when a stop is finished.')));
   w.append(h('section', { class: 'panel' },
-    h('h3', {}, 'Your path (about 25 minutes)'),
+    h('h3', {}, 'Your path (about 35 minutes)'),
     h('div', { class: 'path' },
-      ...[['integration', 'Wellness Wheel', '3 min'], ['integration', 'Metric Sort', '4 min'], ['physical', 'Physical Lab', '3 min'], ['mental', 'Mental Lab', '3 min'], ['emotional', 'Emotional Lab', '3 min'], ['social', 'Social Lab', '3 min'], ['environmental', 'Environmental Lab', '3 min'], ['integration', 'Integration Lab', '4 min']]
+      ...[['integration', 'Wellness Wheel', '2 min'], ['integration', 'Metric Sort', '3 min'], ['physical', 'Physical Lab', '4 min'], ['mental', 'Mental Lab', '4 min'], ['emotional', 'Emotional Lab', '4 min'], ['social', 'Social Lab', '4 min'], ['environmental', 'Environmental Lab', '4 min'], ['integration', 'Data Detective', '2 min'], ['integration', 'Case Files', '3 min'], ['integration', 'Integration Lab', '3 min'], ['integration', 'Action Plan', '3 min']]
         .map(([k, n, t]) => h('div', {}, h('span', { class: 'pi', style: { '--pc': DIM[k].color }, html: ic(k === 'integration' ? 'integration' : k, 22) }), h('span', {}, h('b', {}, n), h('small', {}, t))))),
     h('p', { class: 'noprint' }, 'At the end you get a results report to screenshot and turn in. You cannot reset your scores, so take your time and think before you click.')));
   setTimeout(() => { const f = $('#f-name'); if (f) f.focus({ preventScroll: true }); }, 50);
@@ -1090,6 +1207,15 @@ function renderSort(w) {
 }
 
 /* ---------- lab scaffolding ---------- */
+let labCtl = [];
+const touch = (sim, k) => { sim.touched = sim.touched || []; if (!sim.touched.includes(k)) sim.touched.push(k); };
+function exploreGap(d) {
+  const sim = S.sim[d], seen = sim.touched || [];
+  const need = { physical: [['sleep', 'Sleep'], ['active', 'Active time'], ['water', 'Water']], mental: [['sleep', 'Sleep'], ['notif', 'Notifications'], ['block', 'Study block'], ['mind', 'Mindfulness']], environmental: [['traffic', 'Cars'], ['trees', 'Trees'], ['recycle', 'Recycling'], ['scrub', 'Smokestack filter'], ['bike', 'Bike lanes']] }[d];
+  if (need) { const miss = need.filter(([k]) => !seen.includes(k)).map(([, n]) => n); return miss.length ? 'Experiment first! Try every control at least once. Still untouched: ' + miss.join(', ') + '.' : ''; }
+  if (d === 'emotional') return sim.ran.length >= 4 ? '' : `Experiment first! Run at least 4 strategies and compare the curves (${sim.ran.length} so far).`;
+  return (sim.flips || 0) >= 4 ? '' : `Experiment first! Connect and disconnect at least 4 people to see what happens (${sim.flips || 0} so far).`;
+}
 function slider(host, sim, o, onChange) {
   const id = 'sl-' + o.key, row = h('div', { class: 'ctl' });
   const zl = o.zone ? (o.zone[0] - o.min) / (o.max - o.min) * 100 : 0, zw = o.zone ? (o.zone[1] - o.zone[0]) / (o.max - o.min) * 100 : 0;
@@ -1098,13 +1224,15 @@ function slider(host, sim, o, onChange) {
     ${o.zone ? `<div class="zbar"><i style="left:${zl}%;width:${zw}%"></i></div><div class="zlabel"><span>Target: ${o.zone[0]}–${o.zone[1]} ${o.unit}</span><span class="zs"></span></div>` : ''}`;
   const inp = $('input', row), out = $('output b', row), zs = $('.zs', row);
   const paint = () => { const v = +inp.value; out.textContent = v; if (zs) { const ok = v >= o.zone[0] && v <= o.zone[1]; zs.className = 'zs ' + (ok ? 'okc' : ''); zs.textContent = ok ? '✓ in target zone' : v < o.zone[0] ? 'below target' : 'above target'; } };
-  inp.addEventListener('input', () => { sim[o.key] = +inp.value; paint(); save(); onChange(); });
+  inp.addEventListener('input', () => { sim[o.key] = +inp.value; touch(sim, o.key); paint(); save(); onChange(); });
+  labCtl.push({ key: o.key, set: v => { inp.value = v; sim[o.key] = v; paint(); }, fire: onChange });
   paint(); host.append(row);
 }
 function toggle(host, sim, o, onChange) {
   const lab = h('label', { class: 'switch' }, h('input', { type: 'checkbox' }), h('span', {}, o.label));
   const inp = $('input', lab); inp.checked = !!sim[o.key];
-  inp.addEventListener('change', () => { sim[o.key] = inp.checked; save(); onChange(); });
+  inp.addEventListener('change', () => { sim[o.key] = inp.checked; touch(sim, o.key); save(); onChange(); });
+  labCtl.push({ key: o.key, set: v => { inp.checked = v; sim[o.key] = v; }, fire: onChange });
   host.append(lab);
 }
 function gauge(o) {
@@ -1135,24 +1263,30 @@ const secHead = (n, t) => h('h3', { class: 'sec' }, h('span', { class: 'n' }, n)
 const noteBox = txt => h('div', { class: 'note', html: ic('integration', 22) + `<span><b>Ripple effect:</b> ${txt}</span>` });
 
 function renderLab(w, d) {
-  const L = LAB[d];
+  const L = LAB[d], X = EXP[d];
   w.append(labBanner(d));
   w.append(secHead(1, 'Experiment'));
   const host = h('div', { class: 'panel' });
   w.append(host);
+  labCtl = [];
   const getState = SIMS[d](host);
+  if (getState.reset || labCtl.length) {
+    const def = DEFAULT_SIM()[d];
+    host.append(h('div', { class: 'check-row' }, h('button', { class: 'btn', type: 'button', onclick: () => { if (getState.reset) getState.reset(); else { labCtl.forEach(c => c.set(def[c.key])); labCtl[0].fire(); } } }, '↺ Reset to starting settings')));
+  }
   w.append(noteBox(L.ripple));
-  w.append(secHead(2, 'Challenge'));
+  w.append(secHead(2, 'Experiment question'));
+  w.append(mcItem(d + '-exp', { prompt: X.q, num: 'A', correct: X.opts.find(o => o[2])[0], options: shuffled(X.opts, d + 'exp').map(o => ({ key: o[0], html: esc(o[1]) })) }));
+  w.append(secHead(3, 'Challenge'));
   const body = h('div', {}, h('p', { html: L.challenge, style: { margin: '0' } }), getState.extra);
-  const ci = checkItem(d + '-lab', {
-    prompt: 'Lab challenge', num: 'A', body,
-    evaluate: () => getState.check(),
+  w.append(checkItem(d + '-lab', {
+    prompt: 'Lab challenge', num: 'B', body,
+    evaluate: () => { const g = exploreGap(d); return g ? { skip: true, hint: g } : getState.check(); },
     lock: locked => getState.lock && getState.lock(locked)
-  });
-  w.append(ci);
-  w.append(secHead(3, 'Metric check'));
+  }));
+  w.append(secHead(4, 'Metric check'));
   const opts = shuffled(L.mc, d + 'mc').map(o => ({ key: o[0], html: esc(o[1]) }));
-  w.append(mcItem(d + '-metrics', { prompt: L.mcQ, options: opts, correct: L.mc.find(o => o[2])[0], num: 'B' }));
+  w.append(mcItem(d + '-metrics', { prompt: L.mcQ, options: opts, correct: L.mc.find(o => o[2])[0], num: 'C' }));
 }
 
 /* ---------- simulators ---------- */
@@ -1340,12 +1474,13 @@ SIMS.social = host => {
   const flip = k => {
     const p = PEOPLE.find(x => x.k === k), i = sim.on.indexOf(k);
     if (i >= 0) sim.on.splice(i, 1); else sim.on.push(k);
+    sim.flips = (sim.flips || 0) + 1;
     save(); paint();
     $('#info', host).textContent = i >= 0 ? `${p.l.join(' ')} disconnected.` : p.good ? `${p.l.join(' ')}: a supportive person in your ${p.set} life.` : k === 'gossip' ? 'A gossip chat spreads drama and rumors. That lowers your wellness.' : 'A stranger who asks you to keep secrets is unsafe. Do not connect: tell a trusted adult.';
   };
   $$('.nnode', host).forEach(n => { n.addEventListener('click', () => flip(n.dataset.k)); n.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); flip(n.dataset.k); } }); });
   paint();
-  return { check: () => { const s = stats(), ok = s.good >= 4 && s.sets === 3 && s.bad === 0; return { ok, hint: ok ? '' : `You have ${s.good} supportive people, ${s.sets} of 3 settings and ${s.bad} unhealthy links.` }; } };
+  return { reset: () => { sim.on.length = 0; save(); paint(); $('#info', host).textContent = 'Everyone disconnected. Build your network again.'; }, check: () => { const s = stats(), ok = s.good >= 4 && s.sets === 3 && s.bad === 0; return { ok, hint: ok ? '' : `You have ${s.good} supportive people, ${s.sets} of 3 settings and ${s.bad} unhealthy links.` }; } };
 };
 
 SIMS.environmental = host => {
@@ -1493,6 +1628,70 @@ function renderIntegrate(w) {
   }));
 }
 
+/* ---------- data detective, case files, action plan ---------- */
+function dimMulti(id, { prompt, correct, num, store }) {
+  const body = h('div', { class: 'checks' });
+  ORDER.forEach(d => {
+    const cb = h('input', { type: 'checkbox', value: d }); cb.checked = store.includes(d);
+    cb.addEventListener('change', () => { store.length = 0; $$('input:checked', body).forEach(i => store.push(i.value)); save(); });
+    body.append(h('label', { class: 'chk', style: { borderColor: DIM[d].color } }, cb, h('span', { html: ic(d, 22) }), DIM[d].name));
+  });
+  return checkItem(id, {
+    prompt, num, body,
+    evaluate: () => {
+      const sel = $$('input:checked', body).map(i => i.value);
+      if (!sel.length) return { skip: true, hint: 'Select at least one dimension.' };
+      const missing = correct.filter(d => !sel.includes(d)).length, extra = sel.filter(d => !correct.includes(d)).length;
+      return { ok: !missing && !extra, hint: [missing && 'You are missing at least one involved dimension.', extra && 'One of your picks is not clearly involved.'].filter(Boolean).join(' ') };
+    },
+    lock: locked => { $$('input', body).forEach(i => { i.disabled = locked; }); if (locked) $$('.chk', body).forEach(l => { const i = $('input', l); i.checked = correct.includes(i.value); l.classList.toggle('rev-right', i.checked); }); }
+  });
+}
+
+function renderDetective(w) {
+  w.append(h('div', { class: 'panel' }, h('h2', {}, 'Data Detective: A Week in the Life of Sam'),
+    h('p', { class: 'lead' }, 'Metrics only help if you can read them. Study Sam\'s week of numbers and the chart, then answer the questions. Look for patterns, but remember that a pattern is not proof of a cause.')));
+  const X = i => 70 + i * 68, Y = v => 200 - v * 16;
+  const sleep = DET.rows[0][1], mood = DET.rows[3][1];
+  const grid = [0, 2, 4, 6, 8, 10].map(v => `<line x1="40" x2="540" y1="${Y(v)}" y2="${Y(v)}" stroke="#e5e7eb"/><text x="34" y="${Y(v) + 4}" text-anchor="end">${v}</text>`).join('');
+  const bars = sleep.map((v, i) => `<rect class="dbar" x="${X(i) - 18}" y="${Y(v)}" width="36" height="${v * 16}" rx="5" fill="${DIM.physical.color}" style="animation-delay:${i * 0.08}s"/>`).join('');
+  const line = mood.map((v, i) => `${i ? 'L' : 'M'}${X(i)} ${Y(v)}`).join('');
+  const dots = mood.map((v, i) => `<rect x="${X(i) - 6}" y="${Y(v) - 6}" width="12" height="12" transform="rotate(45 ${X(i)} ${Y(v)})" fill="#fff" stroke="${DIM.emotional.color}" stroke-width="3"/>`).join('');
+  const days = DET.days.map((d, i) => `<text x="${X(i)}" y="220" text-anchor="middle">${d}</text>`).join('');
+  w.append(h('div', { class: 'panel', html: `<div class="tscroll"><table class="dtable"><caption class="sr">Sam's week of metrics</caption><thead><tr><th scope="col">Metric</th>${DET.days.map(d => `<th scope="col">${d}</th>`).join('')}</tr></thead><tbody>${DET.rows.map(([n, v]) => `<tr><th scope="row">${n}</th>${v.map(x => `<td>${x}</td>`).join('')}</tr>`).join('')}</tbody></table></div>
+    <p class="scale"><b>AQI scale:</b> 0–50 Good · 51–100 Moderate · 101–150 Unhealthy for sensitive groups · 151+ Unhealthy</p>
+    <svg class="dchart" viewBox="0 0 560 232" role="img" aria-label="Chart of Sam's hours of sleep as bars and mood rating as a line, Monday to Sunday. Both dip together from Wednesday to Friday.">${grid}${bars}<path d="${line}" fill="none" stroke="${DIM.emotional.color}" stroke-width="3.5" stroke-linejoin="round"/>${dots}${days}</svg>
+    <div class="legend2"><span><i style="background:${DIM.physical.color}"></i> Hours of sleep (bars)</span><span><i class="dm" style="border-color:${DIM.emotional.color}"></i> Mood rating (line)</span></div>` }));
+  DET_Q.forEach((d, i) => w.append(mcItem(d.id, { prompt: d.q, num: i + 1, correct: d.opts.find(o => o[2])[0], options: shuffled(d.opts, d.id).map(o => ({ key: o[0], html: esc(o[1]) })) })));
+}
+
+function renderCases(w) {
+  w.append(h('div', { class: 'panel' }, h('h2', {}, 'Case Files'),
+    h('p', { class: 'lead' }, 'Four people, four stories. For each case, work out which dimensions are clearly involved (not every dimension is in every story), then choose the best first step.')));
+  CASES.forEach((c, n) => {
+    w.append(secHead(n + 1, c.name));
+    w.append(h('div', { class: 'panel case' }, h('p', { style: { margin: '0', fontSize: '1.05rem' } }, c.story)));
+    S.sim.cases[c.id] = S.sim.cases[c.id] || [];
+    w.append(dimMulti(c.id + '-dims', { prompt: 'Select <b>every</b> dimension that is clearly involved in this story.', correct: c.correct, num: 'A', store: S.sim.cases[c.id] }));
+    w.append(mcItem(c.id + '-step', { prompt: 'What is the best first step?', num: 'B', correct: c.opts.find(o => o[2])[0], options: shuffled(c.opts, c.id).map(o => ({ key: o[0], html: esc(o[1]) })) }));
+  });
+}
+
+function renderPlan(w) {
+  w.append(h('div', { class: 'panel' }, h('h2', {}, 'Your Wellness Action Plan'),
+    h('p', { class: 'lead' }, `Last stop. For each dimension, write at least ${PLAN_MIN} words: name one metric you could track and one action you will take to improve it. Your teacher reads this, and it appears on your results report.`)));
+  ORDER.forEach(d => {
+    const D = DIM[d];
+    const ta = h('textarea', { id: 'plan-' + d, rows: '3', maxlength: '300', placeholder: PLAN_HINT[d], 'aria-label': D.name + ' metric and action' });
+    ta.value = S.plan[d] || '';
+    const cnt = h('span', { class: 'cnt' });
+    const paint = () => { const n = words(ta.value); cnt.textContent = n >= PLAN_MIN ? `✓ ${n} words` : `${n} / ${PLAN_MIN} words`; cnt.classList.toggle('ok', n >= PLAN_MIN); };
+    ta.addEventListener('input', () => { S.plan[d] = ta.value; save(); paint(); updateChrome(); });
+    paint();
+    w.append(h('div', { class: 'panel planbox', style: { '--bc': D.color } }, h('label', { for: 'plan-' + d, html: ic(d, 24) + ' <b>' + D.name + '</b> <small>' + D.tag + '</small>' }), ta, cnt));
+  });
+}
+
 /* ---------- results ---------- */
 function renderResults(w) {
   if (!S.finishedAt) { S.finishedAt = Date.now(); save(); setTimeout(() => burst(innerWidth / 2, innerHeight / 3, themeColors(), 60), 600); }
@@ -1531,6 +1730,8 @@ function renderResults(w) {
     h('div', { class: 'rep-cols' },
       h('div', {}, h('h3', {}, '✓ What you did well'), h('ul', { class: 'good-list', html: (good || '<li>Keep practicing: every try builds understanding.</li>') + `<li><span>${ic('flag', 18)}</span><span><b>Strongest area:</b> ${DIM[ranked[0][0]].name} (${Math.round(ranked[0][1] * 100)}%)</span></li>` })),
       h('div', {}, h('h3', {}, '↻ What to review'), h('ul', { class: 'rev-list', html: review || '<li class="half" style="border-color:#16a34a;background:#f0fdf4">Nothing to review. Every item was correct on the first try!</li>' })))));
+  $('#report', w).append(h('div', { class: 'plan-out' }, h('h3', {}, '★ My wellness action plan'),
+    ...ORDER.map(d => h('div', { class: 'plan-row', style: { '--bc': DIM[d].color } }, h('b', { html: ic(d, 16) + ' ' + DIM[d].name }), h('span', {}, S.plan[d] || '')))));
   const db = $('#db', w);
   Object.entries(byDim).forEach(([d, v]) => {
     const row = h('div', { class: 'bar', style: { '--bc': DIM[d].color } });
