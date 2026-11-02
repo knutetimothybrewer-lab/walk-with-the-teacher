@@ -1,0 +1,1442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Build Your Plan: Motivation and Goal-Setting Lesson</title>
+<style>
+:root{--bg:#f4f7fb;--surface:#fff;--surface2:#eaf0f7;--text:#13202e;--muted:#43546a;--border:#aebccc;--accent:#1d5bbf;--onaccent:#fff;--focus:#0a3d91;--ok:#14633a;--okbg:#e2f3e8;--bad:#a1252b;--badbg:#fbe6e8;--warn:#7a4a00;--warnbg:#fff0d0;--infobg:#e4edfb;--scale:1}
+html[data-theme=dark]{--bg:#0f1620;--surface:#18222f;--surface2:#223044;--text:#eef3f8;--muted:#b6c3d2;--border:#4a5b70;--accent:#8dbcff;--onaccent:#0a1a30;--focus:#ffd479;--ok:#7fdca8;--okbg:#12301f;--bad:#ff9ea2;--badbg:#3d1b1e;--warn:#f5c26b;--warnbg:#3a2c10;--infobg:#1b2b42}
+*{box-sizing:border-box}
+html{font-size:calc(18px*var(--scale));-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;line-height:1.5;min-height:100vh;display:flex;flex-direction:column}
+h1{font-size:1.6rem;line-height:1.2;margin:.2rem 0 .8rem}
+h2{font-size:1.2rem;margin:1.1rem 0 .4rem}
+h3{font-size:1.05rem;margin:.9rem 0 .3rem}
+p{margin:.5rem 0}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.skip{position:absolute;left:-999px;top:0;background:var(--accent);color:var(--onaccent);padding:.5rem 1rem;z-index:50}
+.skip:focus{left:0}
+header#top{background:var(--surface);border-bottom:2px solid var(--border);padding:.45rem 1rem .55rem}
+.row1,.row2{display:flex;flex-wrap:wrap;gap:.4rem .9rem;align-items:center;justify-content:space-between}
+.brand{font-weight:700;display:flex;gap:.8rem;flex-wrap:wrap;align-items:baseline}
+.brand #who{font-weight:500;color:var(--muted);font-size:.85rem}
+.tools{display:flex;gap:.35rem;flex-wrap:wrap;align-items:center}
+#saved{font-size:.8rem;color:var(--ok);min-width:4.5rem;text-align:right;opacity:0;transition:opacity .3s}
+#saved.on{opacity:1}
+.row2{margin-top:.35rem;font-size:.9rem}
+.row2 .mod{flex:0 1 auto}
+#segs{display:flex;gap:3px;flex:1 1 220px;min-width:180px;max-width:520px}
+#segs i{flex:1;height:12px;border-radius:3px;background:var(--surface2);border:1px solid var(--border);overflow:hidden;position:relative}
+#segs i b{position:absolute;left:0;top:0;bottom:0;background:var(--accent)}
+#segs i.cur{outline:2px solid var(--text);outline-offset:1px}
+.btn{min-height:44px;min-width:44px;padding:.4rem .9rem;border-radius:8px;border:2px solid var(--border);background:var(--surface);cursor:pointer;font-weight:600}
+.btn:hover{border-color:var(--accent)}
+.btn.primary{background:var(--accent);color:var(--onaccent);border-color:var(--accent)}
+.btn.sm{min-height:44px;padding:.2rem .6rem;font-size:.85rem}
+.btn[disabled],.btn[aria-disabled=true]{opacity:.55;cursor:not-allowed}
+.btn.big{font-size:1.1rem;padding:.55rem 1.6rem}
+.btn.on{background:var(--infobg);border-color:var(--accent)}
+main#main{flex:1;width:100%;max-width:980px;margin:0 auto;padding:1rem 1rem 2rem}
+main:focus,h1:focus{outline:none}
+.eyebrow{font-size:.85rem;color:var(--muted);font-weight:600;letter-spacing:.02em}
+.card{background:var(--surface);border:2px solid var(--border);border-radius:12px;padding:1rem 1.1rem;margin:.8rem 0}
+.callout{background:var(--infobg);border-left:6px solid var(--accent);padding:.6rem .9rem;border-radius:6px;margin:.8rem 0}
+.callout.warn{background:var(--warnbg);border-color:var(--warn)}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:.8rem}
+.row{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center}
+.muted{color:var(--muted)}
+.small{font-size:.85rem}
+.tag{display:inline-block;font-size:.78rem;border:1px solid var(--border);border-radius:999px;padding:.05rem .55rem;color:var(--muted);background:var(--surface2)}
+fieldset{border:0;padding:0;margin:.6rem 0}
+legend{font-weight:700;padding:0;margin-bottom:.35rem}
+.opt{display:flex;gap:.6rem;align-items:flex-start;border:2px solid var(--border);border-radius:10px;padding:.5rem .75rem;margin:.35rem 0;cursor:pointer;background:var(--surface);min-height:44px}
+.opt input{width:1.3rem;height:1.3rem;margin-top:.15rem;flex:none;accent-color:var(--accent)}
+.opt.sel{border-color:var(--accent);background:var(--infobg)}
+.opt.good{border-color:var(--ok)}
+.opt.lock{cursor:default}
+.fb{border-radius:8px;padding:.55rem .8rem;margin:.6rem 0;border:2px solid;font-size:.95rem}
+.fb.ok{background:var(--okbg);border-color:var(--ok)}
+.fb.bad{background:var(--badbg);border-color:var(--bad)}
+.fb.info{background:var(--infobg);border-color:var(--accent)}
+.fb.warn{background:var(--warnbg);border-color:var(--warn)}
+.fb b.ico{margin-right:.3rem}
+label.f{display:block;font-weight:600;margin:.7rem 0 .15rem}
+.help{font-size:.85rem;color:var(--muted);margin:.1rem 0 .25rem}
+input[type=text],input[type=number],select,textarea{width:100%;max-width:640px;min-height:44px;padding:.4rem .6rem;border:2px solid var(--border);border-radius:8px;background:var(--surface)}
+textarea{min-height:5rem;resize:vertical}
+input[type=range]{width:100%;max-width:560px;min-height:44px;accent-color:var(--accent)}
+.bins{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:.6rem;margin:.7rem 0}
+.bin{min-height:64px;text-align:left;border:2px dashed var(--border);border-radius:10px;background:var(--surface);padding:.5rem .7rem;cursor:pointer}
+.bin:hover,.bin.over{border-color:var(--accent);background:var(--infobg)}
+.bin b{display:block}
+.bin span{font-size:.82rem;color:var(--muted)}
+.sortcard{border:2px solid var(--text);border-radius:12px;background:var(--surface);padding:1rem;font-size:1.15rem;font-weight:600;cursor:grab;margin:.6rem 0}
+.sortcard[draggable=true]:active{cursor:grabbing}
+.bar{height:22px;border-radius:5px;background:var(--surface2);border:1px solid var(--border);overflow:hidden;max-width:420px}
+.bar i{display:block;height:100%;background:var(--accent)}
+.crit{list-style:none;padding:0;margin:.4rem 0}
+.crit li{display:flex;gap:.5rem;padding:.35rem .5rem;border-radius:6px;margin:.2rem 0;border:1px solid var(--border)}
+.crit li.ok{background:var(--okbg);border-color:var(--ok)}
+.crit li.no{background:var(--warnbg);border-color:var(--warn)}
+.crit .ic{font-weight:800;width:1.2rem;flex:none}
+table.t{border-collapse:collapse;width:100%;font-size:.92rem}
+table.t th,table.t td{border:1px solid var(--border);padding:.35rem .5rem;text-align:left;vertical-align:top}
+table.t th{background:var(--surface2)}
+.week{display:grid;grid-template-columns:repeat(4,1fr);gap:.5rem;margin:.6rem 0}
+.week>div{border:2px solid var(--border);border-radius:8px;padding:.4rem;min-height:72px;background:var(--surface);font-size:.85rem}
+.week>div.cur{border-color:var(--accent)}
+.zone{border:2px dashed var(--border);border-radius:8px;min-height:64px;padding:.4rem;background:var(--surface);cursor:pointer;text-align:left;width:100%}
+.zone.over,.zone:hover{border-color:var(--accent);background:var(--infobg)}
+.chip{display:inline-block;border:2px solid var(--border);border-radius:999px;padding:.25rem .8rem;margin:.2rem;background:var(--surface);cursor:grab;min-height:44px;font-weight:600}
+.chip.picked{border-color:var(--accent);background:var(--infobg)}
+.svgwrap{background:var(--surface);border:2px solid var(--border);border-radius:12px;padding:.4rem;margin:.6rem 0}
+.svgwrap svg{width:100%;height:auto;max-height:46vh;display:block}
+svg text{fill:var(--text);font-family:inherit}
+svg .m{fill:var(--muted)}
+.grow{transform-box:fill-box;transform-origin:bottom;animation:grow .8s ease-out both}
+.grow.dn{transform-origin:top}
+.sc{transform-box:fill-box;transform-origin:left;transition:transform .9s ease}
+@keyframes grow{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+html[data-motion=reduce] *{animation:none!important;transition:none!important}
+#gate{flex:1;text-align:center;font-size:.92rem;color:var(--muted);padding:0 .5rem}
+footer#bottom{position:sticky;bottom:0;background:var(--surface);border-top:2px solid var(--border);padding:.5rem 1rem;display:flex;align-items:center;gap:.6rem;z-index:20}
+footer#bottom .btn{min-width:7rem}
+#bNext{margin-left:auto}
+.foot{margin-top:2rem;font-size:.82rem;color:var(--muted)}
+.foot button{background:none;border:0;text-decoration:underline;cursor:pointer;color:var(--muted);min-height:44px;padding:0 .3rem}
+#notice{background:var(--warnbg);border-bottom:2px solid var(--warn);padding:.5rem 1rem;font-size:.9rem}
+dialog{border:3px solid var(--accent);border-radius:14px;background:var(--surface);color:var(--text);max-width:min(640px,94vw);width:100%;padding:1.1rem 1.3rem;max-height:92vh;overflow:auto}
+dialog::backdrop{background:rgba(0,0,0,.55)}
+dialog h1{font-size:1.3rem}
+.mlist{list-style:none;padding:0;margin:.5rem 0}
+.mlist li{margin:.3rem 0}
+.mlist .btn{width:100%;text-align:left;display:flex;justify-content:space-between;gap:.5rem}
+.kbd{border:1px solid var(--border);border-bottom-width:3px;border-radius:5px;padding:0 .4rem;background:var(--surface2);font-size:.85rem}
+.res h2{border-bottom:2px solid var(--border);padding-bottom:.2rem}
+.plan-sec{break-inside:avoid;margin:.5rem 0}
+.plan-sec dt{font-weight:700;margin-top:.5rem}
+.plan-sec dd{margin:0 0 .2rem;overflow-wrap:anywhere;white-space:pre-wrap}
+.wrapany{overflow-wrap:anywhere}
+#printHeader{display:none}
+@media (max-width:640px){html{font-size:calc(17px*var(--scale))}footer#bottom .btn{min-width:5rem}#gate{font-size:.8rem}.row1{gap:.3rem}}
+@media print{
+ html{font-size:12pt!important}
+ body{background:#fff!important;color:#000!important;display:block}
+ header#top,footer#bottom,#notice,.noprint,.skip,dialog,.foot{display:none!important}
+ main#main{max-width:none;padding:0}
+ #printHeader{display:block;position:fixed;top:0;left:0;right:0;font-weight:700;border-bottom:1px solid #000;padding:.2rem 0;background:#fff;color:#000}
+ body{padding-top:2rem}
+ *{color:#000!important;background:transparent!important;border-color:#000!important;box-shadow:none!important}
+ .card{border:1px solid #000;break-inside:avoid}
+ .bar{border:1px solid #000}.bar i{background:#555!important}
+ a{text-decoration:none}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to the lesson</a>
+<header id="top">
+ <div class="row1">
+  <div class="brand"><span id="lessonTitle"></span><span id="who"></span></div>
+  <div class="tools">
+   <span id="saved" role="status"></span>
+   <button class="btn sm" id="bMenu" type="button" aria-haspopup="dialog">Menu (M)</button>
+   <button class="btn sm" id="bHelp" type="button" aria-label="Help and keyboard shortcuts" aria-haspopup="dialog">?</button>
+   <button class="btn sm" id="bTheme" type="button"></button>
+   <button class="btn sm" id="bSm" type="button" aria-label="Smaller text">A−</button>
+   <button class="btn sm" id="bLg" type="button" aria-label="Larger text">A+</button>
+   <button class="btn sm" id="bMotion" type="button" aria-pressed="false">Reduce motion</button>
+  </div>
+ </div>
+ <div class="row2">
+  <div class="mod"><strong id="modName"></strong> <span class="muted" id="stepCount"></span></div>
+  <div id="segs" role="progressbar" aria-valuemin="0" aria-valuemax="100"></div>
+  <div id="minLeft" class="muted"></div>
+ </div>
+</header>
+<div id="notice" hidden></div>
+<main id="main" tabindex="-1"></main>
+<div id="live" class="sr" aria-live="polite"></div>
+<footer id="bottom">
+ <button class="btn" id="bBack" type="button">← Back</button>
+ <div id="gate" role="status"></div>
+ <button class="btn primary big" id="bNext" type="button">Next →</button>
+</footer>
+<dialog id="dlg"></dialog>
+<dialog id="cdlg"></dialog>
+<div id="printHeader"></div>
+<noscript><p style="padding:1rem">This lesson needs JavaScript. Please turn it on in your browser.</p></noscript>
+<script>
+/* =====================================================================
+ ARCHITECTURE (read me first)
+ 1. CONFIG + CONTENT constants      : edit text here without touching logic.
+ 2. Helpers                         : h() / s() build DOM safely with textContent (no innerHTML).
+ 3. State + storage                 : one object S, save() after every change, localStorage in try/catch,
+                                      falls back to memory. Completion is DERIVED from S by each step's need().
+ 4. Components                      : mcq (quiz), cardSort, frameAnim (accessible animation), fields.
+ 5. Pure rule functions             : evalGoal, ifThenCheck, planQuality, scoring. No DOM.
+ 6. Modules: MODS = [{id,title,minutes,steps:[{t,build(root),need()}]}].
+ 7. Shell: hash router (#/m3/s2), top bar, bottom bar, Menu/Help dialogs, keyboard shortcuts.
+ 8. Results page, print and .txt export.
+ No network calls, no external files, no service worker.
+===================================================================== */
+
+/* ================= 1. CONFIG ================= */
+const CONFIG = {
+  title: "Build Your Plan",
+  periodMinutes: 65,
+  showAnswerAfterWrong: true,
+  standards: "Goal setting, decision-making, self-management, evidence evaluation. (Add your own standard codes here.)",
+  freeMinutesDefault: 45,
+  minPurposeWords: 8,
+  reflectionMinChars: 25,
+  storageKey: "build-your-plan-v1"
+};
+
+/* ================= 1b. CONTENT (edit text here) ================= */
+const AREAS = [
+  { id: "study", t: "Study habits" },
+  { id: "sleep", t: "Sleep routine" },
+  { id: "move", t: "Movement / exercise" },
+  { id: "skill", t: "Learning a skill (music, language, art, coding)" },
+  { id: "phone", t: "Managing phone / screen distractions" },
+  { id: "sport", t: "A sports skill" },
+  { id: "kind", t: "A social / kindness habit" },
+  { id: "other", t: "Other (non-sensitive)" }
+];
+const PRIVACY_NOTE = "Pick something you're comfortable keeping private from classmates. Your teacher won't grade what you choose, only how you plan it.";
+const COUNSELOR_LINE = "If you're feeling stuck or overwhelmed in a way that's lasting, talking with a counselor, school nurse, or trusted adult is a strength.";
+
+const NEEDS = [
+  { id: "autonomy", t: "Autonomy", d: "Having some choice" },
+  { id: "competence", t: "Competence", d: "Feeling capable, getting better" },
+  { id: "connection", t: "Connection", d: "Belonging, working with others" }
+];
+const NEEDS_ITEMS = [
+  { id: "n1", text: "Mr. Lee lets students pick their own project topic. Almost everyone gets more into it.", a: "autonomy", why: "Choice supports autonomy: the sense that your actions are your own." },
+  { id: "n2", text: "Dana gets specific feedback: “Your main idea is clear. Add one example.” She keeps revising.", a: "competence", why: "Specific feedback shows you how to improve, which builds competence." },
+  { id: "n3", text: "Ravi starts practicing guitar with a friend after school and sticks with it for weeks.", a: "connection", why: "Doing something with someone supports connection, the feeling of belonging." },
+  { id: "n4", text: "Sam's teacher says, “Do it exactly this way. No changes.” Sam stops caring about the project.", a: "autonomy", why: "No room for choice blocks autonomy, and interest often drops." },
+  { id: "n5", text: "Lena keeps getting problems far too hard, with no hints. She stops trying.", a: "competence", why: "Tasks with no path to success block competence." },
+  { id: "n6", text: "Jo does a group-style task alone, never hears from anyone, and drifts away from it.", a: "connection", why: "Feeling disconnected blocks the need for connection." }
+];
+
+const OA_ITEMS = [
+  { id: "o1", text: "Get a B in science", a: "outcome" },
+  { id: "o2", text: "Do 5 practice questions after dinner", a: "action" },
+  { id: "o3", text: "Make varsity", a: "outcome" },
+  { id: "o4", text: "Shoot 30 free throws on Tuesday", a: "action" },
+  { id: "o5", text: "Win the debate tournament", a: "outcome" },
+  { id: "o6", text: "Practice scales for 10 minutes before school", a: "action" },
+  { id: "o7", text: "Be fluent in Spanish", a: "outcome" },
+  { id: "o8", text: "Text a friend to study together on Wednesday", a: "action" }
+];
+const OA_FIX = [
+  { id: "f1", outcome: "Get a B in science", opts: ["Review my notes for 15 minutes after school, Monday to Thursday", "Try harder in science class", "Be a better science student"], c: 0 },
+  { id: "f2", outcome: "Make varsity", opts: ["Be more athletic", "Take 30 practice shots after team practice on Tuesday and Thursday", "Impress the coach"], c: 1 },
+  { id: "f3", outcome: "Be fluent in Spanish", opts: ["Do 10 vocabulary cards before dinner on weekdays", "Know a lot of Spanish soon", "Get really good at Spanish"], c: 0 }
+];
+const PRESSURE_CARDS = [
+  { id: "p1", text: "“I want to learn this song because it sounds fun to play.”", a: "mine", why: "“I want to” language points to a goal that comes from you." },
+  { id: "p2", text: "“I have to finish this or I'll be in trouble.”", a: "pressure", why: "“I have to” language usually points to pressure from outside." },
+  { id: "p3", text: "“I'm only doing this because everyone else is.”", a: "pressure", why: "Following the crowd is outside pressure. You can still look for a part of it you care about." }
+];
+
+const SVH_BINS = [
+  { id: "S", t: "Supported", d: "Good evidence" },
+  { id: "P", t: "Partly true / it's complicated", d: "True in some cases" },
+  { id: "H", t: "Hype / not supported", d: "Evidence points the other way" },
+  { id: "N", t: "Not enough evidence yet", d: "Not established" }
+];
+const SVH_CARDS = [
+  { id: "c1", text: "“It takes 21 days to build a habit.”", a: "H", why: "One study of 96 adults found it took anywhere from 18 to 254 days to feel automatic. The median was about 66. It depends on the person and the habit.", src: "Lally et al., 2010" },
+  { id: "c2", text: "“Missing one day ruins your habit.”", a: "H", why: "In that same study, missing a single day did not meaningfully derail habit formation. What hurts more is the “I blew it, so why bother” reaction.", src: "Lally et al., 2010" },
+  { id: "c3", text: "“Every time you do something fun, you get a ‘dopamine hit.’”", a: "H", why: "Oversimplified. Dopamine is involved in wanting, learning, effort, and movement. It does not work like a simple pleasure meter. Surprise matters more than the activity itself.", src: "Schultz; Berridge & Robinson (animal and human research)" },
+  { id: "c4", text: "“Rewards always destroy motivation.”", a: "P", why: "Expected, tangible rewards for something you already enjoy can undermine interest. Rewards for dull tasks, and specific feedback or praise, often do not.", src: "Lepper et al., 1973; Deci et al., 1999" },
+  { id: "c5", text: "“Making an ‘if–then’ plan helps you follow through.”", a: "S", why: "Across about 94 studies, implementation intentions (if–then plans) had a medium-to-large effect on reaching goals. They work best when they are specific and linked to the goal.", src: "Gollwitzer & Sheeran, 2006" },
+  { id: "c6", text: "“Just imagine your success as vividly as possible and you'll get there.”", a: "P", why: "Purely positive daydreaming can lower effort. Imagining the goal and the obstacle, then planning a response (mental contrasting with if–then plans), worked better, including in a study of high-school students.", src: "Oettingen; Duckworth et al., 2011" },
+  { id: "c7", text: "“Writing about why a topic matters to your own life can raise interest and performance.”", a: "S", why: "In studies with high school students, those who wrote about the personal relevance of what they were learning showed more interest and better grades, especially students who started out less confident. Effects vary.", src: "Hulleman & Harackiewicz, 2009" },
+  { id: "c8", text: "“The hardest tasks should always be done in the first 8 hours after you wake up.”", a: "N", why: "This is not established. People differ, and teens' body clocks tend to run later. Find your own high-energy window by experimenting. Sleep (8 to 10 hours is recommended for teens) matters more than clock tricks.", src: "American Academy of Sleep Medicine consensus" },
+  { id: "c9", text: "“Being kind to yourself after a setback makes you less likely to try again.”", a: "H", why: "In one study, self-compassion after a failure led to more effort to improve, not less.", src: "Breines & Chen, 2012" },
+  { id: "c10", text: "“Energy drinks and supplements are a good shortcut for motivation.”", a: "H", why: "No product replaces sleep, food, planning, and support. Caffeine and stimulant products carry real risks for teens. Talk with a doctor or school nurse about any product.", src: "General health guidance" }
+];
+const RED_FLAGS = [
+  "It's based on just one study",
+  "It was only tested on animals",
+  "It uses a number that sounds too neat",
+  "Someone is selling something",
+  "It says “always” or “never”"
+];
+
+const OBST_EVENTS = [
+  { day: "Monday", ev: "Friends invite Jordan to hang out right after school.", opts: [
+    { t: "Say no and study anyway: “I never miss.”", st: "full", fb: "That can work on some days. But “never miss” plans snap easily, and one slip can feel like the whole plan broke." },
+    { t: "Say “I'll join at 5:00, after 25 minutes at the library.”", st: "full", best: true, fb: "Flexible and specific. Jordan keeps the plan and the friendship by moving the time, not dropping the goal." },
+    { t: "Go out and think, “This week is already ruined.”", st: "miss", fb: "One missed day turns into a missed week when the thought is all-or-nothing. The plan needed a backup, not a verdict." } ] },
+  { day: "Tuesday", ev: "Practice runs late. Jordan gets home tired at 6:00.", opts: [
+    { t: "Do a 10-minute version after a snack, then rest.", st: "short", best: true, fb: "A smaller version keeps the habit alive on a hard day. Short sessions still count." },
+    { t: "Skip it and promise to do double tomorrow.", st: "miss", fb: "Doubling up sounds responsible but tends to make tomorrow harder. Making up missed days often leads to quitting." },
+    { t: "Force the full 25 minutes while exhausted.", st: "full", fb: "This may work today, but it is costly. If every tired day needs full effort, the plan gets hard to repeat." } ] },
+  { day: "Wednesday", ev: "Jordan's phone buzzes with the group chat during study time.", opts: [
+    { t: "Put the phone in the backpack across the room, then start.", st: "full", best: true, fb: "Adding friction between you and the distraction is a system change. It beats relying on willpower." },
+    { t: "Take a quick peek, then go back to work.", st: "miss", fb: "A “quick peek” often turns into twenty minutes. The cue is strong and the phone is easy to reach." },
+    { t: "Keep the phone face-down on the desk.", st: "short", fb: "Better than nothing, but it is still within reach. Jordan got through part of the session." } ] },
+  { day: "Thursday", ev: "A family event takes the whole evening.", opts: [
+    { t: "Do a 10-minute version before leaving.", st: "short", best: true, fb: "A small version keeps the chain going. It does not need to be perfect." },
+    { t: "Skip tonight with no guilt and restart tomorrow at the usual time.", st: "rest", best: true, fb: "A planned skip with a clear restart is a flexible choice. Notice, don't make it up, and restart small." },
+    { t: "Decide the whole plan is pointless.", st: "miss", fb: "Thinking “what's the point” turns one busy evening into quitting. The evidence says one miss barely matters." } ] }
+];
+const ST_LABEL = { full: ["✓", "Full 25 minutes"], short: ["◐", "Short version"], rest: ["○", "Skipped, restart planned"], miss: ["✗", "Missed, no plan"] };
+const CUE_OPTS = ["it's 4:30 and I'm home from school", "my phone buzzes during study time", "I feel too tired to start", "a friend invites me out during my planned time", "practice runs late", "I sit down at my desk", "I finish dinner", "my alarm goes off"];
+const RESP_OPTS = ["put my phone in my backpack and do one practice question", "do the 10-minute version of my plan", "tell my friend I'll join after my 25 minutes", "do just the first step for two minutes", "set a timer for 10 minutes and begin", "write down what got in the way and restart tomorrow", "stand up, take 5 breaths, then start", "lay out my materials before bed"];
+const REPLACE_HABITS = ["Phone scrolling during homework", "Hitting snooze on my alarm", "Scrolling in bed at night", "Checking my phone every few minutes", "Other (non-sensitive)"];
+
+const LAPSE_OPTS = [
+  { id: "aon", t: "“I missed three days. I'm done. I always quit.”", kind: "All-or-nothing", strip: ["Day 4: Alex doesn't try. It feels pointless.", "Day 10: The goal is forgotten.", "Result: One slip became the end."], rank: 3 },
+  { id: "harsh", t: "“I'm so lazy. What is wrong with me?”", kind: "Harsh self-criticism", strip: ["Day 4: Alex feels bad and avoids the topic.", "Day 10: Starting feels heavy, so Alex puts it off again.", "Result: Feeling bad made restarting harder, not easier."], rank: 2 },
+  { id: "comp", t: "“I'll do triple tomorrow to make up for it.”", kind: "Compensation", strip: ["Day 4: The triple session is huge and tiring.", "Day 5: Alex dreads it and skips again.", "Result: Making up missed days raised the cost of restarting."], rank: 1 },
+  { id: "kind", t: "“I slipped. My phone was on my desk. Tomorrow I'll do the 5-minute version with the phone in my bag.”", kind: "Reset kindly", strip: ["Day 4: Alex does 5 minutes with the phone away.", "Day 5: It feels doable, so Alex adds a little time.", "Result: Back on track, with a smarter plan."], rank: 0 }
+];
+
+const TRACK = [
+  { who: "Noor", goal: "Practice violin 15 minutes after dinner, every day", rows: [["Mon", "Yes", "Yes", "Felt good"], ["Tue", "Yes", "Yes", "Quick one"], ["Wed", "Yes", "No", "Family event"], ["Thu", "Yes", "Yes", "Did it right after dinner"], ["Fri", "Yes", "Yes", "Easy"], ["Sat", "Yes", "No", "Slept in and forgot"], ["Sun", "Yes", "Yes", "Good"]],
+    diag: 3, move: 3, evid: ["5 of the 7 days are marked Done", "Saturday's note says “Slept in and forgot”", "Wednesday's note says “Family event”", "The planned column says Yes every day"], evc: 0,
+    diagWhy: "She did it 5 of 7 days, and the two misses have ordinary reasons. This is working.", moveWhy: "Changing the goal now would be premature. Keep going, and use the notes to plan for sleepy weekend mornings.", evWhy: "The 5 of 7 completion count is the strongest data point. A couple of misses are normal." },
+  { who: "Eli", goal: "Study 25 minutes right after school, every day", rows: [["Mon", "Yes", "No", "Practice ran late, got home at 6"], ["Tue", "Yes", "Yes", "No practice today, started at 3:45"], ["Wed", "Yes", "No", "Practice again, too tired"], ["Thu", "Yes", "No", "Practice ran late"], ["Fri", "Yes", "No", "Went straight out with friends"], ["Sat", "Yes", "Yes", "Did it in the morning"], ["Sun", "Yes", "No", "Forgot"]],
+    diag: 1, move: 1, evid: ["Mon, Wed and Thu notes all say practice ran late or he was tired", "Tuesday was done", "Only 2 of 7 days are marked Done", "Sunday's note says “Forgot”"], evc: 0,
+    diagWhy: "The days Eli did it had no practice. The cue “right after school” collides with practice, so the time is the problem, not the goal size.", moveWhy: "Change the cue. Try a time that doesn't collide with practice, such as after dinner or before school.", evWhy: "The pattern in the notes points at the cause. The 2 of 7 count says it isn't working, but the notes say why." }
+];
+
+const KC = [
+  { id: "k1", tag: "habits", q: "Which statement about how long habits take is best supported?", opts: ["Every habit takes exactly 21 days.", "In one study of 96 adults, it took from about 18 to 254 days, with a median near 66.", "Habits form in one week if you are motivated enough.", "Habits can't form after age 15."], c: [1], why: "That is what one study of 96 adults found. The range is wide, so treat “21 days” as a myth." },
+  { id: "k2", tag: "goals", q: "Which one is an action goal, something you control?", opts: ["Get an A on the chemistry test", "Do five practice problems after dinner on Monday, Wednesday and Thursday", "Be the best in the class", "Make the team"], c: [1], why: "Actions are things you can do. The other three are outcomes, which depend on other things too." },
+  { id: "k3", tag: "planning", q: "What is an implementation intention?", opts: ["A wish about how things will turn out", "An if–then plan linking a specific situation to a specific action", "A reward you get after finishing", "A promise to never miss a day"], c: [1], why: "An implementation intention is an if–then plan: “If [situation], then I will [action].”" },
+  { id: "k4", tag: "planning", q: "What does mental contrasting add to positive visualization?", opts: ["It replaces the goal with the obstacle", "It pairs imagining the goal with the main obstacle, then planning a response", "It makes you imagine failing", "It removes the need for a plan"], c: [1], why: "Imagining the goal and the obstacle, then making an if–then plan, tended to work better than positive daydreaming alone." },
+  { id: "k5", tag: "habits", q: "In the habit-curve model, what happens after a single missed day?", opts: ["Progress resets to zero", "There is a small dent, then the curve keeps rising", "The habit is ruined", "You must practice double to recover"], c: [1], why: "In the study and in our model, one miss barely changes the curve. Quitting after a miss is what flattens it." },
+  { id: "k6", tag: "motivation", q: "Sam loves sketching. A relative starts paying Sam for each sketch, then stops. What might happen, and what's a better strategy?", opts: ["Interest will always go up. Pay more.", "Interest may drop. Focus on specific feedback and keep some choice.", "Nothing can change interest. Ignore it.", "Interest will drop for sure. Never use praise."], c: [1], why: "Expected, contingent rewards for something you already enjoy can reduce interest. Specific feedback, choice, and personal purpose tend to protect it." },
+  { id: "k7", tag: "motivation", q: "A teacher lets students choose between three project formats. Which need is mainly supported?", opts: ["Autonomy", "Competence", "Connection", "None of them"], c: [0], why: "Choice supports autonomy." },
+  { id: "k8", tag: "evidence-literacy", multi: true, q: "Select ALL the red flags in how a claim is presented.", opts: ["“Works for everyone, always, guaranteed.”", "A result from a study of mice, presented as proof about teens", "“Results varied, and more studies are needed.”", "The person sharing it is selling a product"], c: [0, 1, 3], why: "Absolute words, animal-only evidence shown as proof for people, and someone selling something are red flags. Saying results vary is honest." },
+  { id: "k9", tag: "goals", q: "Dev followed the plan 5 of 7 days, and the misses had ordinary reasons. What's the best next move?", opts: ["Make the goal much harder", "Keep going and check in again later", "Drop the goal", "Switch to a brand new goal"], c: [1], why: "5 of 7 is working. Changing things now would be premature." },
+  { id: "k10", tag: "planning", q: "Which if–then plan is best?", opts: ["I'll try to study more.", "If it's 4:30 and I'm home, then I will start my math sheet at the kitchen table.", "Whenever I can, I'll do homework.", "If I feel lazy, then I'll be better."], c: [1], why: "It has a specific cue (4:30 at home) and a specific action (start the math sheet at the table)." }
+];
+const TAGS = {
+  "habits": { t: "Habits", mod: 6, tip: "Review Module 6: habits take a range of time, and one miss barely matters." },
+  "goals": { t: "Goals", mod: 4, tip: "Review Modules 3 and 4: write actions you control, with a cue and a check-in." },
+  "planning": { t: "Planning", mod: 5, tip: "Review Module 5: write if–then plans with a specific situation and a specific action." },
+  "motivation": { t: "Motivation", mod: 1, tip: "Review Module 1: choice, feedback, and connection support motivation. Expected rewards can backfire." },
+  "evidence-literacy": { t: "Evidence literacy", mod: 2, tip: "Review Module 2: watch for one-study claims, animal-only results, neat numbers, and “always/never.”" }
+};
+
+const REFLECT = [
+  "What's one thing you learned that changes how you'll plan?",
+  "What's the most likely obstacle for you, and what's your plan?",
+  "What's one question you still have?"
+];
+const WHEN_OPTS = ["right after I wake up", "before first class", "during lunch", "right after school", "after dinner", "just before bed"];
+const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+const START_OPTS = ["tomorrow", "this Monday", "this weekend", "next Monday"];
+const TRACK_OPTS = ["A checkbox on paper", "A calendar note", "A notes app", "A habit-tracker app", "A sticky note on my desk"];
+const GOAL_LAB = [
+  { id: "g1", text: "Get in shape", free: 45 },
+  { id: "g2", text: "Study more", free: 40 },
+  { id: "g3", text: "Be less on my phone", free: 50 }
+];
+
+/* ================= 2. HELPERS ================= */
+const $ = (q, r) => (r || document).querySelector(q);
+const words = (t) => (t || "").trim().split(/\s+/).filter(Boolean).length;
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+function add(e, kids) { for (const k of kids) { if (k == null || k === false) continue; if (Array.isArray(k)) add(e, k); else e.appendChild(k.nodeType ? k : document.createTextNode(String(k))); } }
+function h(tag, attrs, ...kids) {
+  const e = document.createElement(tag);
+  if (attrs) for (const k in attrs) {
+    const v = attrs[k]; if (v == null || v === false) continue;
+    if (k === "class") e.className = v;
+    else if (k === "on") { for (const ev in v) e.addEventListener(ev, v[ev]); }
+    else if (k === "value" || k === "checked" || k === "disabled" || k === "hidden") e[k] = v;
+    else e.setAttribute(k, v === true ? "" : v);
+  }
+  add(e, kids); return e;
+}
+const NS = "http://www.w3.org/2000/svg";
+function s(tag, attrs, ...kids) {
+  const e = document.createElementNS(NS, tag);
+  if (attrs) for (const k in attrs) { if (attrs[k] != null) e.setAttribute(k, attrs[k]); }
+  add(e, kids); return e;
+}
+/* append()/replaceChildren() would print "null" or "[object ...]"; route them through add() */
+const _rc = Element.prototype.replaceChildren;
+Element.prototype.replaceChildren = function (...k) { return _rc.apply(this, k.filter((x) => x != null && x !== false)); };
+Element.prototype.append = function (...k) { add(this, k); };
+const P = (t, c) => h("p", c ? { class: c } : null, t);
+function say(msg) { const l = $("#live"); l.textContent = ""; setTimeout(() => { l.textContent = msg; }, 30); }
+function shuffle(a) { const r = a.slice(); for (let i = r.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [r[i], r[j]] = [r[j], r[i]]; } return r; }
+function fmt(n) { return Math.round(n * 10) / 10; }
+const timers = [];
+function addTimer(id) { timers.push(id); }
+function clearTimers() { while (timers.length) clearInterval(timers.pop()); }
+
+/* ================= 3. STATE + STORAGE ================= */
+const FRESH = () => ({ v: 1, name: { first: "", last: "" }, set: { theme: null, scale: 0, reduce: null }, d: {}, pos: { m: 0, s: 0 }, ret: null, seenHelp: false, finished: null });
+let S = FRESH();
+const store = { ok: true };
+let savedTimer = 0;
+function loadSaved() {
+  try { const r = localStorage.getItem(CONFIG.storageKey); if (!r) return null; const o = JSON.parse(r); return o && o.v === 1 ? o : null; }
+  catch (e) { store.ok = false; return null; }
+}
+function probeStorage() { try { localStorage.setItem("byp-probe", "1"); localStorage.removeItem("byp-probe"); } catch (e) { store.ok = false; } }
+function save() {
+  if (store.ok) { try { localStorage.setItem(CONFIG.storageKey, JSON.stringify(S)); } catch (e) { store.ok = false; showNotice(); } }
+  const el = $("#saved");
+  if (store.ok) { el.textContent = "Saved ✓"; el.classList.add("on"); clearTimeout(savedTimer); savedTimer = setTimeout(() => el.classList.remove("on"), 1500); }
+}
+function showNotice() {
+  const n = $("#notice");
+  if (!store.ok) { n.hidden = false; n.textContent = "Heads up: this browser is blocking saving, so your work is kept only while this tab stays open. Don't close the tab until you've downloaded or printed your plan."; }
+}
+function D(key, def) { if (S.d[key] === undefined) S.d[key] = def; return S.d[key]; }
+function changed() { save(); updateNav(); }
+function fullName() { return (S.name.first.trim() + " " + S.name.last.trim()).trim(); }
+function hasTypedText() { return Object.keys(S.d).length > 0 || S.name.first.length > 0; }
+function reduced() { return S.set.reduce === null ? window.matchMedia("(prefers-reduced-motion: reduce)").matches : S.set.reduce; }
+function applySettings() {
+  const dark = S.set.theme ? S.set.theme === "dark" : window.matchMedia("(prefers-color-scheme: dark)").matches;
+  const r = document.documentElement;
+  r.setAttribute("data-theme", dark ? "dark" : "light");
+  r.setAttribute("data-motion", reduced() ? "reduce" : "full");
+  const SC = [1, 1.15, 1.3, 1.5];
+  r.style.setProperty("--scale", SC[S.set.scale] || 1);
+  $("#bTheme").textContent = dark ? "Light mode" : "Dark mode";
+  const bm = $("#bMotion"); bm.setAttribute("aria-pressed", reduced() ? "true" : "false"); bm.classList.toggle("on", reduced());
+  $("#bSm").disabled = S.set.scale === 0; $("#bLg").disabled = S.set.scale === SC.length - 1;
+}
+
+/* ================= 4. COMPONENTS ================= */
+/* --- bind a text-like control to obj[key] --- */
+function field(label, obj, key, o) {
+  o = o || {};
+  const id = "f_" + key + "_" + Math.random().toString(36).slice(2, 7);
+  let el;
+  if (o.options) {
+    el = h("select", { id }, h("option", { value: "" }, o.ph || "(choose)"), o.options.map((x) => h("option", { value: x }, x)));
+  } else if (o.area) el = h("textarea", { id, rows: o.rows || 3, placeholder: o.ph || "" });
+  else el = h("input", { id, type: o.num ? "number" : "text", placeholder: o.ph || "", min: o.num ? 0 : null, max: o.max || null, inputmode: o.num ? "numeric" : null, autocomplete: "off" });
+  el.value = obj[key] == null ? "" : obj[key];
+  el.addEventListener("input", () => { obj[key] = el.value; if (o.onInput) o.onInput(); changed(); });
+  el.addEventListener("change", () => { obj[key] = el.value; if (o.onInput) o.onInput(); changed(); });
+  const hid = id + "h";
+  if (o.help || o.ex) el.setAttribute("aria-describedby", hid);
+  return h("div", null, h("label", { class: "f", for: id }, label), (o.help || o.ex) ? h("div", { class: "help", id: hid }, o.help || "", o.ex ? (o.help ? " " : "") + "Example: " + o.ex : "") : null, el);
+}
+function fb(kind, head, body) {
+  const ic = { ok: "✓", bad: "✗", info: "ℹ", warn: "!" }[kind];
+  return h("div", { class: "fb " + kind }, h("b", { class: "ico", "aria-hidden": "true" }, ic), h("b", null, head ? head + " " : ""), body || "");
+}
+
+/* --- multiple choice / select-all with feedback; state in S.d.q[id] --- */
+function qstate(id) { const q = D("q", {}); if (!q[id]) q[id] = { sel: [], checked: false, ok: false, first: null, tries: 0 }; return q[id]; }
+function qDone(id) { const q = S.d.q && S.d.q[id]; return !!(q && q.checked); }
+function mcq(id, o) {
+  const st = qstate(id);
+  const multi = !!o.multi;
+  let order = o.opts.map((_, i) => i);
+  if (o.shuffle) { const so = D("ord", {}); if (!so[id]) so[id] = shuffle(order); order = so[id]; }
+  const box = h("fieldset", { class: "card" });
+  const out = h("div", { role: "status", "aria-live": "polite" });
+  const btns = h("div", { class: "row" });
+  const draw = () => {
+    box.replaceChildren(h("legend", null, o.q));
+    if (multi) box.appendChild(h("div", { class: "help" }, o.hint || "Select all that apply."));
+    const locked = st.checked && (o.once || st.ok);
+    order.forEach((oi) => {
+      const inp = h("input", { type: multi ? "checkbox" : "radio", name: "q_" + id, value: oi, disabled: locked });
+      inp.checked = st.sel.includes(oi);
+      const lab = h("label", { class: "opt" + (inp.checked ? " sel" : "") + (locked ? " lock" : "") }, inp, h("span", null, o.opts[oi]));
+      inp.addEventListener("change", () => {
+        if (multi) st.sel = st.sel.filter((x) => x !== oi).concat(inp.checked ? [oi] : []);
+        else st.sel = [oi];
+        box.querySelectorAll("label.opt").forEach((l) => l.classList.toggle("sel", l.querySelector("input").checked));
+        chk.disabled = !st.sel.length; changed();
+      });
+      box.appendChild(lab);
+    });
+    box.appendChild(btns); box.appendChild(out);
+    btns.replaceChildren(chk);
+    chk.disabled = !st.sel.length || locked;
+    out.replaceChildren();
+    if (st.checked) showFb();
+  };
+  const chk = h("button", { class: "btn primary", type: "button", "data-act": "1", on: { click: () => {
+    st.tries++; const sel = st.sel.slice().sort();
+    st.ok = o.ok ? o.ok(sel) : (sel.length === o.c.length && sel.every((v, i) => v === o.c.slice().sort()[i]));
+    if (st.first === null) st.first = st.ok;
+    st.checked = true; changed(); draw(); say(st.ok ? "Correct." : "Not quite."); if (o.onCheck) o.onCheck(); } } }, "Check my answer");
+  function showFb() {
+    const parts = [];
+    if (o.optFb) st.sel.forEach((i) => { if (o.optFb[i]) parts.push(o.optFb[i] + " "); });
+    parts.push(o.why || "");
+    if (!st.ok && CONFIG.showAnswerAfterWrong && !o.noReveal) parts.push(" Best answer: " + o.c.map((i) => o.opts[i].replace(/[.]$/, "")).join("; ") + ".");
+    out.replaceChildren(fb(st.ok ? "ok" : "bad", st.ok ? "Right." : "Not quite.", parts.join("")));
+    if (!st.ok && !o.once) out.appendChild(h("button", { class: "btn", type: "button", on: { click: () => { st.sel = []; st.checked = false; changed(); draw(); const f = box.querySelector("input"); if (f) f.focus(); } } }, "Try again"));
+  }
+  draw(); return box;
+}
+
+/* --- card sort: one card at a time, 4 buttons or drag. state S.d[key].att --- */
+function cardSort(key, o) {
+  const st = D(key, { att: [{}] });
+  const root = h("div");
+  let pending = null;
+  const cur = () => st.att[st.att.length - 1];
+  const pts = (it, b) => o.points ? o.points(it, b) : (it.a === b ? 1 : 0);
+  function answer(it, bin) { cur()[it.id] = bin; pending = it.id; changed(); draw(); const nb = $("#sortNext"); if (nb) nb.focus(); }
+  function draw() {
+    root.replaceChildren();
+    const a = cur(); const left = o.items.filter((i) => !a[i.id]);
+    const showId = pending || (left[0] && left[0].id);
+    if (!showId) { summary(); return; }
+    const it = o.items.find((i) => i.id === showId); const idx = o.items.indexOf(it);
+    root.appendChild(h("p", { class: "muted small" }, "Card " + (idx + 1) + " of " + o.items.length));
+    const card = h("div", { class: "sortcard", tabindex: "-1", draggable: pending ? null : "true", id: "sortcard" }, it.text);
+    card.addEventListener("dragstart", (e) => { e.dataTransfer.setData("text/plain", it.id); });
+    root.appendChild(card);
+    if (!pending) {
+      root.appendChild(h("p", { class: "help" }, "Choose a button below, or drag the card onto one."));
+      root.appendChild(h("div", { class: "bins", role: "group", "aria-label": "Choose a category" }, o.bins.map((b) => {
+        const bt = h("button", { class: "bin", type: "button", "data-act": "1", on: { click: () => answer(it, b.id) } }, h("b", null, b.t), h("span", null, b.d || ""));
+        bt.addEventListener("dragover", (e) => { e.preventDefault(); bt.classList.add("over"); });
+        bt.addEventListener("dragleave", () => bt.classList.remove("over"));
+        bt.addEventListener("drop", (e) => { e.preventDefault(); answer(it, b.id); });
+        return bt;
+      })));
+    } else {
+      const bin = a[it.id]; const p = pts(it, bin);
+      const bname = (id) => o.bins.find((b) => b.id === id).t;
+      const body = o.reveal(it, bin, p);
+      const box = fb(p >= 1 ? "ok" : (p > 0 ? "warn" : "bad"), p >= 1 ? "Match." : (p > 0 ? "Close (half credit)." : "Not this time."), "You chose “" + bname(bin) + "”. " + (o.verdict ? o.verdict(it, bname) : ""));
+      root.appendChild(box); root.appendChild(body);
+      root.appendChild(h("button", { id: "sortNext", class: "btn primary", type: "button", "data-act": "1", on: { click: () => { pending = null; draw(); const c = $("#sortcard"); if (c) c.focus(); } } }, o.items.every((i) => cur()[i.id]) ? "See my results" : "Next card →"));
+    }
+  }
+  function summary() {
+    const first = st.att[0]; const score = (att) => o.items.reduce((t, i) => t + pts(i, att[i.id]), 0);
+    root.appendChild(h("h2", null, "Your results"));
+    root.appendChild(h("p", null, "First try: ", h("b", null, fmt(score(first)) + " out of " + o.items.length), st.att[1] && o.items.every((i) => st.att[1][i.id]) ? ["   |   Second try: ", h("b", null, fmt(score(st.att[1])) + " out of " + o.items.length)] : "", ". The first try is the one that counts."));
+    if (o.review) root.appendChild(o.review(first));
+    if (o.retry) root.appendChild(h("button", { class: "btn", type: "button", "data-act": "1", on: { click: () => { if (st.att.length >= 2) st.att[1] = {}; else st.att.push({}); pending = null; changed(); draw(); } } }, "Try the deck again (for practice)"));
+  }
+  draw(); return root;
+}
+const cardsLeft = (key, items) => { const st = S.d[key]; return items.length - (st ? items.filter((i) => st.att[0][i.id]).length : 0); };
+const cardScore = (key, items, pts) => { const st = S.d[key]; if (!st) return 0; return items.reduce((t, i) => t + (st.att[0][i.id] ? pts(i, st.att[0][i.id]) : 0), 0); };
+
+/* --- frame animation: auto-plays (unless reduced), always has play/pause/replay/step --- */
+function frameAnim(o) {
+  const trackKey = o.key; const tr = D(trackKey, { seen: [] });
+  const built = o.build(); const wrap = h("div");
+  const cap = h("p", { class: "callout" });
+  const lab = h("span", { class: "small muted" });
+  let i = 0, playing = false, tid = null;
+  const show = (n) => { i = (n + o.frames.length) % o.frames.length; built.apply(i); cap.textContent = o.frames[i].text; lab.textContent = "Frame " + (i + 1) + " of " + o.frames.length; if (!tr.seen.includes(i)) { tr.seen.push(i); changed(); } };
+  const stop = () => { playing = false; clearInterval(tid); pb.textContent = "▶ Play"; pb.setAttribute("aria-pressed", "false"); };
+  const play = () => { playing = true; pb.textContent = "❚❚ Pause"; pb.setAttribute("aria-pressed", "true"); clearInterval(tid); tid = setInterval(() => { if (!wrap.isConnected) { clearInterval(tid); return; } show(i + 1); }, o.ms || 1800); addTimer(tid); };
+  const pb = h("button", { class: "btn sm", type: "button", "aria-pressed": "false", on: { click: () => (playing ? stop() : play()) } }, "▶ Play");
+  const controls = h("div", { class: "row" }, pb,
+    h("button", { class: "btn sm", type: "button", on: { click: () => { stop(); show(0); play(); } } }, "↻ Replay"),
+    h("button", { class: "btn sm", type: "button", on: { click: () => { stop(); show(i - 1); } } }, "◀ Previous frame"),
+    h("button", { class: "btn sm", type: "button", on: { click: () => { stop(); show(i + 1); } } }, "Next frame ▶"), lab);
+  wrap.append(h("div", { class: "svgwrap", role: "img", "aria-label": o.label }, built.svg), cap, controls);
+  show(0); if (!reduced()) play();
+  return wrap;
+}
+
+/* ================= 5. PURE RULE FUNCTIONS ================= */
+const VAGUE = /\b(more|less|better|best|good|well|some|stuff|things?|try|trying|healthier|in shape|improve|enough|regularly|often|sometimes|whenever|a lot|a bit|happier|focused)\b/i;
+const OUTCOMEY = /^\s*(get|be|become|win|lose|gain|make (the|varsity)|improve my|raise my|have)\b|\b(in shape|fluent|a b\b|an a\b|better grades?)\b/i;
+function evalGoal(g, free) {
+  const a = (g.action || "").trim(), min = +g.min || 0, per = +g.per || 0, vague = a.match(VAGUE);
+  const weekly = min * per;
+  const res = [];
+  res.push({ id: "spec", label: "Specific", ok: words(a) >= 2 && !vague && min > 0 && per > 0,
+    tip: !a ? "Write the action you will do." : vague ? "“" + vague[0] + "” is hard to measure. Swap it for a concrete action plus a number." : (words(a) < 2 ? "Add a few more words: what exactly will you do?" : "Add how many minutes and how many times a week.") });
+  res.push({ id: "act", label: "Action-based (within my control)", ok: !!a && !OUTCOMEY.test(a),
+    tip: !a ? "Write an action." : "This sounds like a result you hope for. Start with a verb you control, like “walk,” “review,” or “practice.”" });
+  res.push({ id: "real", label: "Challenging but realistic", ok: min > 0 && per > 0 && min <= free && weekly <= free * 5,
+    tip: !min || !per ? "Fill in minutes and times per week to check the time budget." : min > free ? "That is " + min + " minutes at once, but you only have about " + free + " free minutes on a school day. Try a smaller chunk." : "That adds up to " + weekly + " minutes a week. Try fewer sessions or shorter ones so it fits your time budget." });
+  res.push({ id: "cue", label: "Has a start cue (when and where)", ok: !!g.when && (g.where || "").trim().length >= 3,
+    tip: "Pick a time and write a place, so the plan has a built-in trigger." });
+  res.push({ id: "chk", label: "Has a check-in day", ok: !!g.start && !!g.check,
+    tip: "Choose a start date and a day to check how it's going." });
+  return res;
+}
+function ifThenCheck(t) {
+  t = (t || "").trim(); const flags = [];
+  const m = t.match(/^(?:if|when)\b(.+?)\bthen\b(.+)$/i);
+  let structure = false;
+  if (!t) flags.push("Write your plan as “If [specific situation], then I will [specific action].”");
+  else if (!m) flags.push("Use the shape “If [situation], then I will [action].” Start with If and include the word then.");
+  else {
+    const cue = m[1].replace(/^[\s,]+|[\s,]+$/g, ""), resp = m[2].replace(/^[\s,]+/, "");
+    if (!/^(i will|i'll|i am going to|i can|i'm going to)\b/i.test(resp)) flags.push("After “then,” say what you will do, like “then I will …”.");
+    else if (words(cue) < 3) flags.push("The “if” part is too short. Describe the situation (time, place, or trigger).");
+    else if (words(resp) < 5) flags.push("The action is too short. Say exactly what you will do.");
+    else structure = true;
+  }
+  const v = t.match(/\b(try|be better|do better|stay focused|focus more|do my best|whenever|sometimes|something|stuff|more|less|motivated|lazy)\b/i);
+  if (structure && v) flags.push("“" + v[0] + "” is vague. Replace it with something you could see or count.");
+  return { structure, flags, ok: structure && flags.length === 0 };
+}
+function planQuality(p) {
+  p = p || {}; const fa = (p.first || "").trim(), g = (p.goal || "").trim(), min = +p.min || 0, dpw = +p.dpw || 0;
+  const r = [];
+  r.push({ id: "spec", label: "Specific", ok: words(g) >= 4 && words(fa) >= 3 && !VAGUE.test(g + " " + fa) && min > 0,
+    tip: "Make the goal and first action concrete: say what, how long, and avoid words like “more” or “better.”" });
+  r.push({ id: "act", label: "Action-based", ok: words(fa) >= 3 && !OUTCOMEY.test(fa),
+    tip: "Your first action should be something you do, not a result you hope for." });
+  r.push({ id: "real", label: "Realistic", ok: min > 0 && min <= 60 && dpw >= 1 && dpw <= 6,
+    tip: "Aim for 60 minutes or less per session and leave at least one flexible day a week." });
+  r.push({ id: "cue", label: "Start cue", ok: !!p.when && (p.where || "").trim().length >= 3 && words(p.after) >= 3,
+    tip: "Add when, where, and what you do right before (the existing routine)." });
+  const it = ifThenCheck(p.ifthen);
+  r.push({ id: "obs", label: "Obstacle plan", ok: words(p.obstacle) >= 3 && it.ok,
+    tip: words(p.obstacle) < 3 ? "Name your main obstacle in a few words." : it.flags[0] || "Check your if–then plan." });
+  const ms = (p.missed || "").trim();
+  r.push({ id: "restart", label: "Restart plan", ok: /^if\b/i.test(ms) && /\b(i will|i'll)\b/i.test(ms) && words(ms) >= 6 && !/\b(double|make up|catch up|extra)\b/i.test(ms),
+    tip: "Write “If I miss a day, I will …” with a small restart step. Skip the “make it up” part." });
+  return r;
+}
+const PLAN_REQ = [["goal", "your goal"], ["why", "why it matters"], ["first", "your first action"], ["when", "your start time"], ["where", "where"], ["after", "what you do right before"], ["dpw", "days per week"], ["min", "minutes"], ["w1", "Week 1 milestone"], ["w2", "Week 2 milestone"], ["w4", "Week 4 milestone"], ["wish", "your wish"], ["best", "best outcome"], ["obstacle", "main obstacle"], ["ifthen", "if–then plan"], ["easier", "something to make easier"], ["harder", "something to make harder"], ["support", "support (or tick “None yet”)"], ["missed", "missed-day plan"], ["checkDay", "check-in day"], ["track", "how you'll track"]];
+function planMissing() {
+  const p = S.d.plan || {}; const out = [];
+  for (const [k, l] of PLAN_REQ) {
+    let v = p[k]; if (k === "support" && p.noSupport) continue;
+    if (k === "dpw" || k === "min") { if (!(+v > 0)) out.push(l); }
+    else if (!v || !String(v).trim() || (["goal", "why", "first", "w1", "w2", "w4", "wish", "best", "obstacle", "ifthen", "easier", "harder", "missed"].includes(k) && String(v).trim().length < 4)) out.push(l);
+  }
+  if (!S.d.area) out.push("goal area");
+  return out;
+}
+function kcResult() {
+  const q = S.d.q || {}; const per = {}; let total = 0;
+  KC.forEach((k) => {
+    const st = q["kc_" + k.id]; const ok = !!(st && st.ok);
+    (per[k.tag] = per[k.tag] || { n: 0, c: 0 }); per[k.tag].n++; if (ok) { per[k.tag].c++; total++; }
+  });
+  return { total, per };
+}
+const svhPts = (it, b) => (it.a === b ? 1 : (b === "P" && (it.a === "S" || it.a === "H") ? 0.5 : 0));
+function svhScore() { return cardScore("svh", SVH_CARDS, svhPts); }
+function labBest() { const l = S.d.lab || {}; return GOAL_LAB.reduce((t, g) => t + ((l[g.id] && l[g.id].best) || 0), 0); }
+function itBest() { const b = S.d.itBest || {}; return [0, 1, 2].filter((i) => b[i]).length; }
+function planScore() { return planQuality(S.d.plan).filter((x) => x.ok).length; }
+function band(pct) { return pct >= 80 ? ["Strong", "ok"] : pct >= 60 ? ["Solid. Review these areas", "warn"] : ["Revisit these ideas", "bad"]; }
+
+/* ================= 6. MODULES 0-3 ================= */
+function sectionIntro(...kids) { return h("div", null, kids); }
+function areaPicker() {
+  const wrap = h("fieldset", null, h("legend", null, "Pick a goal area"), h("div", { class: "help" }, PRIVACY_NOTE));
+  AREAS.forEach((a) => {
+    const inp = h("input", { type: "radio", name: "area", value: a.id }); inp.checked = S.d.area === a.id;
+    inp.addEventListener("change", () => { S.d.area = a.id; wrap.querySelectorAll("label.opt").forEach((l) => l.classList.toggle("sel", l.querySelector("input").checked)); if (other) other.hidden = a.id !== "other"; changed(); });
+    wrap.appendChild(h("label", { class: "opt" + (inp.checked ? " sel" : "") }, inp, h("span", null, a.t)));
+  });
+  const other = h("div", { hidden: S.d.area !== "other" }, field("Name your area in a few words (keep it non-sensitive)", S.d, "areaOther", {}));
+  wrap.appendChild(other); return wrap;
+}
+const areaName = () => { const a = AREAS.find((x) => x.id === S.d.area); return !a ? "" : (a.id === "other" && S.d.areaOther ? S.d.areaOther : a.t); };
+
+function settingsRow() {
+  const row = h("div", { class: "row" });
+  const draw = () => row.replaceChildren(
+    h("button", { class: "btn", type: "button", on: { click: () => { toggleTheme(); draw(); } } }, "Theme: " + (document.documentElement.getAttribute("data-theme") === "dark" ? "Dark" : "Light") + " (switch)"),
+    h("button", { class: "btn", type: "button", on: { click: () => { bumpScale(-1); draw(); } } }, "Text smaller (A−)"),
+    h("button", { class: "btn", type: "button", on: { click: () => { bumpScale(1); draw(); } } }, "Text larger (A+)"),
+    h("button", { class: "btn", type: "button", on: { click: () => { toggleMotion(); draw(); } } }, "Reduce motion: " + (reduced() ? "On" : "Off") + " (switch)"));
+  draw(); return row;
+}
+
+const MODS = [];
+
+MODS.push({ id: "start", title: "Start", minutes: 2, steps: [
+  { t: "What's your name?", next: "Start", need: () => (S.name.first.trim() && S.name.last.trim() ? null : "Enter your first and last name to begin"),
+    build(r) {
+      r.append(P("Your teacher needs to know whose work this is. Your name stays on this computer and is printed on your summary."),
+        h("div", { class: "card" }, field("First name", S.name, "first", { onInput: updateWho }), field("Last name", S.name, "last", { onInput: updateWho })),
+        P("You can fix a typo any time from the Menu (“Change my name”).", "muted small"));
+    } },
+  { t: "How this works", next: "Start the lesson", need: () => null,
+    build(r) {
+      r.append(h("ul", null,
+        h("li", null, "About 65 minutes, in short steps. One idea or one activity per screen."),
+        h("li", null, "Press Next (bottom right) when you finish a step. If Next is gray, the message beside it tells you what's left."),
+        h("li", null, "You can close the tab and come back; your progress is saved on this computer.")),
+        h("div", { class: "callout" }, "This lesson is about planning skills and spotting good science. It is not a test of how motivated you are."),
+        h("h2", null, "Your display settings"), settingsRow(),
+        h("details", { class: "card" }, h("summary", null, h("b", null, "For teachers")),
+          h("ul", null,
+            h("li", null, "Estimated time: 60 to 70 minutes. Students can pause and resume on the same device and browser."),
+            h("li", null, "Progress and entries are saved only in that browser. Nothing is shared or uploaded. Clearing site data erases them."),
+            h("li", null, "Students submit by printing or saving the results page as a PDF, or by downloading the .txt file."),
+            h("li", null, "Skills: " + CONFIG.standards))));
+    } }
+] });
+
+MODS.push({ id: "m1", title: "Why Motivation Changes", minutes: 7, steps: [
+  { t: "Motivation is not a fixed trait", need: () => null,
+    build(r) {
+      const svg = s("svg", { viewBox: "0 0 600 200", "aria-hidden": "true" },
+        s("line", { x1: 40, y1: 160, x2: 580, y2: 160, style: "stroke:var(--muted);stroke-width:2" }),
+        s("path", { d: "M40 120 C90 40 130 150 190 90 S280 40 330 110 S430 170 480 70 S550 60 580 100", style: "fill:none;stroke:var(--accent);stroke-width:4" }),
+        s("text", { x: 40, y: 185, "font-size": 14, class: "m" }, "Mon"), s("text", { x: 300, y: 185, "font-size": 14, class: "m" }, "Wed"), s("text", { x: 540, y: 185, "font-size": 14, class: "m" }, "Fri"),
+        s("text", { x: 44, y: 24, "font-size": 14, class: "m" }, "How motivated you feel (made-up example)"));
+      r.append(P("Motivation is not something you either have or don't have. For everyone it goes up and down."),
+        h("div", { class: "svgwrap", role: "img", "aria-label": "A wavy line showing a made-up example of one person's motivation going up and down across a week." }, svg),
+        P("Text version: the line rises and falls several times between Monday and Friday. No day stays high all the time."),
+        h("h2", null, "What moves it?"),
+        h("ul", null, h("li", null, h("b", null, "Context: "), "where you are and who's around."), h("li", null, h("b", null, "Effort cost: "), "how hard it is to start."),
+          h("li", null, h("b", null, "Rewards: "), "what you get, and how you expect it."), h("li", null, h("b", null, "Environment: "), "what's easy to reach and what's in the way.")),
+        h("div", { class: "callout" }, "Big idea: since motivation moves, plan around it. Systems (cues, friction, environment, plans, support) matter more than willpower."));
+    } },
+  { t: "Wanting vs. liking", anim: true, need: () => { const t = S.d.wl; return t && t.seen.length >= 4 ? null : "Watch or step through all 4 frames (" + (4 - (t ? t.seen.length : 0)) + " left)"; },
+    build(r) {
+      const FR = [{ sc: "Scrolling a feed: minute 1", w: 0.6, l: 0.55, wt: "Medium", lt: "Medium", text: "Minute 1 of scrolling. The feed pulls you in (wanting is medium) and it's fairly fun (liking is medium)." },
+        { sc: "Scrolling a feed: minute 10", w: 0.85, l: 0.4, wt: "High", lt: "Medium-low", text: "Minute 10. Wanting is high. Liking has started to drop." },
+        { sc: "Scrolling a feed: minute 30", w: 0.95, l: 0.25, wt: "Very high", lt: "Low", text: "Minute 30. Wanting is still very high, but liking is low. You keep going without enjoying it much." },
+        { sc: "Finishing a task you chose", w: 0.4, l: 0.85, wt: "Medium", lt: "High", text: "A different scene: you finish a task you chose. The pull was lower, but enjoyment and satisfaction are high." }];
+      const build = () => {
+        const svg = s("svg", { viewBox: "0 0 600 250", "aria-hidden": "true" });
+        svg.append(s("rect", { x: 30, y: 20, width: 120, height: 210, rx: 16, style: "fill:var(--surface2);stroke:var(--text);stroke-width:3" }),
+          s("rect", { x: 45, y: 50, width: 90, height: 30, rx: 6, style: "fill:var(--border)" }), s("rect", { x: 45, y: 95, width: 90, height: 30, rx: 6, style: "fill:var(--border)" }), s("rect", { x: 45, y: 140, width: 90, height: 30, rx: 6, style: "fill:var(--border)" }));
+        const scn = s("text", { x: 180, y: 40, "font-size": 20, "font-weight": 700 }, "");
+        const mk = (y, name, col) => { svg.append(s("text", { x: 180, y: y - 8, "font-size": 16 }, name), s("rect", { x: 180, y, width: 300, height: 28, rx: 5, style: "fill:var(--surface2);stroke:var(--border);stroke-width:2" }));
+          const bar = s("rect", { class: "sc", x: 180, y, width: 300, height: 28, rx: 5, style: "fill:" + col + ";transform:scaleX(.5)" }); svg.append(bar);
+          const val = s("text", { x: 492, y: y + 20, "font-size": 16, "font-weight": 700 }, ""); svg.append(val); return [bar, val]; };
+        svg.append(scn);
+        const [wb, wv] = mk(95, "Wanting (the pull toward it)", "var(--accent)");
+        const [lb, lv] = mk(165, "Liking (enjoying it)", "var(--ok)");
+        return { svg, apply(i) { const f = FR[i]; scn.textContent = f.sc; wb.style.transform = "scaleX(" + f.w + ")"; lb.style.transform = "scaleX(" + f.l + ")"; wv.textContent = f.wt; lv.textContent = f.lt; } };
+      };
+      r.append(P("Researchers separate two things: wanting (the pull toward something) and liking (actually enjoying it). Something can pull you in a lot without feeling good afterward."),
+        frameAnim({ key: "wl", label: "Animation with 4 frames. Two bars, wanting and liking, change as a student scrolls a feed and then finishes a task.", frames: FR, build, ms: 1800 }),
+        P("Source: Berridge & Robinson (wanting vs. liking research).", "small muted"));
+    } },
+  { t: "Quick check: wanting and liking", need: () => (qDone("wl1") && qDone("wl2") ? null : "Answer both questions (" + (2 - qDone("wl1") - qDone("wl2")) + " left)"),
+    build(r) {
+      r.append(mcq("wl1", { q: "Maya keeps scrolling even though she's not enjoying it much. In these terms, that is mostly…", opts: ["Low wanting, high liking", "High wanting, low liking", "High liking, high wanting", "No wanting at all"], c: [1], why: "A strong pull with low enjoyment is wanting without much liking." }),
+        mcq("wl2", { q: "Finishing a project you chose and feeling satisfied is closer to…", opts: ["Liking and satisfaction", "Only wanting", "Neither one", "A trick of the feed"], c: [0], why: "Satisfaction after doing something you chose is a good example of liking." }));
+    } },
+  { t: "Surprise and learning (animal research)", need: () => { const n = (S.d.pe && S.d.pe.done.length) || 0; return n >= 3 ? null : "Try all 3 buttons (" + (3 - n) + " left)"; },
+    build(r) {
+      const st = D("pe", { done: [] });
+      const CON = [{ id: "sur", t: "Surprise reward", v: 90, lab: "+90 (large)", x: 110, say: "A reward nobody expected gave a large learning signal." },
+        { id: "exp", t: "Expected reward", v: 15, lab: "+15 (small)", x: 300, say: "A reward that was fully expected gave only a small signal." },
+        { id: "mis", t: "Reward missing", v: -60, lab: "−60 (dip)", x: 490, say: "An expected reward that didn't show up gave a dip below baseline." }];
+      const svg = s("svg", { viewBox: "0 0 600 270", "aria-hidden": "true" }, s("line", { x1: 30, y1: 135, x2: 580, y2: 135, style: "stroke:var(--muted);stroke-width:2" }), s("text", { x: 34, y: 20, "font-size": 14, class: "m" }, "Learning signal (simplified model)"), s("text", { x: 34, y: 130, "font-size": 12, class: "m" }, "baseline"));
+      CON.forEach((c) => svg.append(s("text", { x: c.x, y: 262, "font-size": 15, "text-anchor": "middle" }, c.t)));
+      const drawBar = (c) => { const h0 = Math.abs(c.v), y = c.v > 0 ? 135 - h0 : 135;
+        svg.append(s("rect", { class: "grow" + (c.v < 0 ? " dn" : ""), x: c.x - 45, y, width: 90, height: h0, style: "fill:" + (c.v < 0 ? "var(--bad)" : "var(--accent)") }), s("text", { x: c.x, y: c.v > 0 ? y - 8 : y + h0 + 20, "font-size": 16, "font-weight": 700, "text-anchor": "middle" }, c.lab)); };
+      st.done.forEach((id) => drawBar(CON.find((c) => c.id === id)));
+      const out = h("div", { role: "status", "aria-live": "polite", class: "callout" }, "Click a button to see what happens.");
+      const tx = h("ul", null);
+      const showTx = () => tx.replaceChildren(...st.done.map((id) => h("li", null, CON.find((c) => c.id === id).say)));
+      showTx();
+      r.append(P("This comes from animal studies on reward prediction error (Schultz and colleagues). Click each case and watch the bar."),
+        h("div", { class: "row" }, CON.map((c) => h("button", { class: "btn", type: "button", "data-act": "1", on: { click: (e) => { if (!st.done.includes(c.id)) { st.done.push(c.id); drawBar(c); changed(); showTx(); } out.textContent = c.say; } } }, c.id === "mis" ? "Reward is missing" : "Reward arrives: " + (c.id === "sur" ? "surprise" : "expected")))),
+        h("div", { class: "svgwrap", role: "img", "aria-label": "Bar chart: surprise reward is a large positive bar, expected reward a small positive bar, missing reward a negative bar." }, svg), out, tx,
+        h("div", { class: "callout warn" }, "This comes from animal studies and is a simplified model. Brains are much more complicated. The useful lesson: apps and games are designed around surprise rewards."));
+    } },
+  { t: "Three needs", need: () => { const n = cardsLeft("needs", NEEDS_ITEMS); return n ? "Match all " + NEEDS_ITEMS.length + " scenarios to continue (" + n + " left)" : null; },
+    build(r) {
+      r.append(P("Self-determination theory (Ryan & Deci, 2000) says motivation tends to grow when three needs are supported, and to shrink when they're blocked. Match each scenario to the need involved."),
+        cardSort("needs", { items: NEEDS_ITEMS, bins: NEEDS, verdict: (it, bn) => "This one is about " + bn(it.a) + ".", reveal: (it) => P(it.why) }));
+    } },
+  { t: "The Reward Trap", need: () => (qDone("rt1") && qDone("rt2") && qDone("rt3") ? null : "Answer all 3 decisions (" + (3 - qDone("rt1") - qDone("rt2") - qDone("rt3")) + " left)"),
+    build(r) {
+      const nuance = h("div");
+      const show = () => { nuance.replaceChildren(qDone("rt1") && qDone("rt2") && qDone("rt3") ? h("div", { class: "callout" }, h("b", null, "The nuance: "), "In classic studies, expected, contingent rewards for something people already enjoyed could reduce later interest (the overjustification effect). It's weaker for boring tasks, and for sincere, specific praise or feedback. It's a tendency, not a law. ", h("span", { class: "tag" }, "Lepper, Greene & Nisbett, 1973; Deci, Koestner & Ryan, 1999")) : null); };
+      r.append(P("Maya loves drawing. She draws all the time, just because. Then a relative starts paying her for every drawing."),
+        mcq("rt1", { q: "Decision 1. A month into the payments, what's most likely to happen to Maya's reason for drawing?", opts: ["Nothing changes. Money has no effect on why she draws.", "She draws more for the money, and the money starts to feel like the reason.", "She stops drawing right away."], c: [1], why: "Payments can shift the reason from “I like it” to “I get paid.”", onCheck: show }),
+        mcq("rt2", { q: "Decision 2. The payments stop. Compared with before the payments, her interest is…", opts: ["Exactly back to where it started", "Often lower, since drawing may now feel like a paid job", "Higher than ever"], c: [1], why: "That's the pattern in the classic studies, though it varies by person and situation.", onCheck: show }),
+        mcq("rt3", { q: "Decision 3. Which is least likely to lower her interest?", opts: ["Cash per drawing, promised in advance", "Specific praise: “Your shading makes this look 3-D”", "A prize for whoever draws the most"], c: [1], why: "Sincere, specific feedback supports competence instead of turning drawing into a deal.", onCheck: show }), nuance);
+      show();
+    } },
+  { t: "Protect your interest", need: () => (qDone("strat") ? null : "Pick 2 strategies, then check your answer"),
+    build(r) {
+      r.append(P("You're Maya's friend. Which 2 strategies would best protect her interest in drawing?"),
+        mcq("strat", { multi: true, hint: "Select exactly 2.", q: "Choose the best 2 strategies.", noReveal: true, opts: ["Focus on specific feedback about her work, not payment", "Let her keep some choice about what and when she draws", "Connect drawing to something personal, like making art for someone she cares about", "Raise the payment per drawing"], c: [0, 1],
+          ok: (sel) => sel.length === 2 && !sel.includes(3),
+          optFb: ["Feedback builds competence without making drawing a deal.", "Choice supports autonomy.", "A personal purpose keeps the reason inside Maya.", "Bigger payments make payment the main reason, which is the trap."],
+          why: "Any two of the first three are strong. Avoid making the payment the main reason." }));
+    } }
+] });
+
+MODS.push({ id: "m2", title: "Science vs. Hype", minutes: 7, steps: [
+  { t: "How the game works", need: () => null,
+    build(r) {
+      r.append(P("You'll see 10 claims you may have heard. Sort each into one of four bins:"),
+        h("ul", null, SVH_BINS.map((b) => h("li", null, h("b", null, b.t), ": " + b.d))),
+        P("After each card you'll see what the research says. Scoring: 1 point for a match, half a point for choosing “Partly true” when the real answer is Supported or Hype. Only your first time through counts, but you can try the deck again for practice."),
+        h("div", { class: "callout" }, "A good scientist says “it depends” and “we don't know yet” a lot. Those are real answers."));
+    } },
+  { t: "Claim sort", need: () => { const n = cardsLeft("svh", SVH_CARDS); return n ? "Sort all 10 cards to continue (" + n + " left)" : null; },
+    build(r) {
+      const nm = (id) => SVH_BINS.find((b) => b.id === id).t;
+      r.append(cardSort("svh", { items: SVH_CARDS, bins: SVH_BINS, points: svhPts, retry: true,
+        verdict: (it) => "Research says: " + nm(it.a) + ".",
+        reveal: (it) => h("div", null, h("h2", null, "What the research says"), P(it.why), h("span", { class: "tag" }, "Source: " + it.src)),
+        review: (first) => h("table", { class: "t" }, h("thead", null, h("tr", null, h("th", null, "Claim"), h("th", null, "You chose"), h("th", null, "Research says"))),
+          h("tbody", null, SVH_CARDS.map((c) => h("tr", null, h("td", null, c.text), h("td", null, nm(first[c.id])), h("td", null, nm(c.a)))))) }));
+    } },
+  { t: "How to spot hype", need: () => (qDone("flags") ? null : "Pick exactly 2 red flags, then check"),
+    build(r) {
+      r.append(P("Before you trust a claim, ask:"),
+        h("ul", null, h("li", null, "Is it one study?"), h("li", null, "Was it only animals?"), h("li", null, "Is there a number that sounds too neat?"), h("li", null, "Is someone selling something?"), h("li", null, "Does it say “always” or “never”?")),
+        mcq("flags", { multi: true, hint: "Select exactly 2.", q: "Which 2 red flags will you watch for most?", noReveal: true, opts: RED_FLAGS, c: [0, 1], ok: (sel) => sel.length === 2, why: "Good picks. Any of these is a reason to slow down and check." }));
+    } }
+] });
+
+MODS.push({ id: "m3", title: "From Intention to Action", minutes: 6, steps: [
+  { t: "Outcome or action?", need: () => { const n = cardsLeft("oa", OA_ITEMS); return n ? "Sort all 8 cards to continue (" + n + " left)" : null; },
+    build(r) {
+      r.append(P("An outcome is a result you want. An action is something you do and control. Sort each one."),
+        cardSort("oa", { items: OA_ITEMS, bins: [{ id: "outcome", t: "Outcome", d: "A result you want" }, { id: "action", t: "Action", d: "Something you control" }],
+          verdict: (it) => "This is an " + it.a + ".", reveal: (it) => P(it.a === "action" ? "You decide whether to do it, so it's a good base for a plan." : "Other things affect this, like other people, tests, or luck. Aim your plan at actions that lead toward it.") }));
+    } },
+  { t: "Turn outcomes into actions", need: () => { const n = OA_FIX.filter((f) => !qDone("fix_" + f.id)).length; return n ? "Answer all 3 (" + n + " left)" : null; },
+    build(r) {
+      r.append(P("For each outcome, choose the version that is an action you control."),
+        OA_FIX.map((f) => mcq("fix_" + f.id, { q: "Outcome: “" + f.outcome + "”", opts: f.opts, c: [f.c], shuffle: true, why: "The best choice names something you do, with a time or amount." })));
+    } },
+  { t: "Why does it matter to you?", need: () => {
+      if (!S.d.area) return "Pick a goal area to continue";
+      const a = words(S.d.why1), b = words(S.d.why2), m = CONFIG.minPurposeWords;
+      return a >= m && b >= m ? null : "Finish both sentences (" + m + "+ words each; now " + a + " and " + b + ")"; },
+    build(r) {
+      const hint1 = h("div", { class: "help", role: "status", "aria-live": "polite" }), hint2 = h("div", { class: "help", role: "status", "aria-live": "polite" });
+      const upd = () => { const m = CONFIG.minPurposeWords; hint1.textContent = words(S.d.why1) >= m ? "Nice." : "A little more detail helps (" + words(S.d.why1) + " of " + m + " words)."; hint2.textContent = words(S.d.why2) >= m ? "Nice." : "A little more detail helps (" + words(S.d.why2) + " of " + m + " words)."; };
+      r.append(P("Students who write about why something matters in their own life tend to show more interest (Hulleman & Harackiewicz, 2009). Pick an area, then finish two sentences."),
+        areaPicker(),
+        field("This matters to me because…", S.d, "why1", { area: true, onInput: upd, ex: "I want to feel less stressed before tests, and being ready helps me relax." }), hint1,
+        field("One way this could help me in real life is…", S.d, "why2", { area: true, onInput: upd, ex: "It would help me manage my time in college or at a job." }), hint2);
+      upd();
+    } },
+  { t: "Mine or pressure?", need: () => { const n = cardsLeft("press", PRESSURE_CARDS); if (n) return "Sort all 3 cards (" + n + " left)"; return S.d.own ? null : "Choose which feels most like yours"; },
+    build(r) {
+      const tip = h("div", { role: "status", "aria-live": "polite" });
+      const showTip = () => { tip.replaceChildren(S.d.own ? fb("info", "", S.d.own === "have" ? "That's okay. Try finding one part of it you get to choose, like when, where, or how." : S.d.own === "want" ? "Great. Goals that feel like “I want to” tend to be easier to keep going." : "A mix is normal. Look for the “want” part and build on it.") : null); };
+      r.append(P("Goals can come from you (“I want to…”) or from pressure (“I have to…”). Which does each sound like?"),
+        cardSort("press", { items: PRESSURE_CARDS, bins: [{ id: "mine", t: "Sounds like it's from me", d: "“I want to…”" }, { id: "pressure", t: "Sounds like pressure", d: "“I have to…”" }], verdict: () => "", reveal: (it) => P(it.why) }),
+        h("h2", null, "Your own goal"),
+        h("fieldset", null, h("legend", null, "Thinking about the goal area you picked, which is yours? (not scored)"),
+          [["want", "Mostly “I want to…”"], ["mix", "A mix of both"], ["have", "Mostly “I have to…”"]].map(([v, t]) => { const i = h("input", { type: "radio", name: "own", value: v }); i.checked = S.d.own === v; i.addEventListener("change", () => { S.d.own = v; changed(); showTip(); }); return h("label", { class: "opt" }, i, h("span", null, t)); })), tip);
+      showTip();
+    } }
+] });
+
+/* ================= 7. MODULES 4-6 ================= */
+const numOpts = (a, b) => { const r = []; for (let i = a; i <= b; i++) r.push(String(i)); return r; };
+
+function critList(res) {
+  return h("ul", { class: "crit" }, res.map((c) => h("li", { class: c.ok ? "ok" : "no" }, h("span", { class: "ic", "aria-hidden": "true" }, c.ok ? "✓" : "!"),
+    h("span", null, h("b", null, c.label), c.ok ? h("span", { class: "sr" }, " met") : h("span", { class: "sr" }, " not yet"), c.ok ? "" : h("span", null, h("br"), c.tip)))));
+}
+function goalStep(g, idx) {
+  const lab = () => D("lab", {});
+  const cur = () => lab()[g.id];
+  return { t: "Repair goal " + (idx + 1) + " of 3: “" + g.text + "”",
+    need: () => { const L = cur(); const b = L ? L.best : 0; return b >= 4 ? null : "Repair this goal until 4 of 5 checks show ✓ (best so far: " + b + ")"; },
+    build(r) {
+      if (!lab()[g.id]) lab()[g.id] = { action: g.text, min: "", per: "", when: "", where: "", start: "", check: "", best: 0 };
+      const L = cur();
+      const panel = h("div"), prev = h("p", { class: "wrapany" }), budget = h("div"), count = h("p", { role: "status", "aria-live": "polite" });
+      const refresh = () => {
+        const res = evalGoal(L, g.free), n = res.filter((x) => x.ok).length; L.best = Math.max(L.best, n);
+        count.replaceChildren(h("b", null, n + " of 5 checks met"), n >= 4 ? "  ✓ You can move on (more is fine too)." : "");
+        panel.replaceChildren(critList(res));
+        const min = +L.min || 0; const pct = Math.min(100, Math.round(min / g.free * 100));
+        budget.replaceChildren(h("b", null, "Time budget: "), "you have about " + g.free + " free minutes on a school day.",
+          h("div", { class: "bar", role: "img", "aria-label": min + " of " + g.free + " free minutes used by one session" }, h("i", { style: "width:" + pct + "%;" + (min > g.free ? "background:var(--bad)" : "") })),
+          h("span", { class: "small" }, min ? (min > g.free ? "! One session is " + min + " minutes: over budget." : "✓ One session is " + min + " minutes: fits.") : "Enter minutes to see the bar."));
+        prev.textContent = "Your plan: I will " + (L.action || "…") + " for " + (L.min || "…") + " minutes, " + (L.per || "…") + " times a week, " + (L.when || "…") + " at " + (L.where || "…") + ", starting " + (L.start || "…") + ", and check in on " + (L.check || "…") + ".";
+      };
+      r.append(P("This goal is too vague to act on. Fix it with the builder. The checks on the right update as you type. (Checks are rules in the page, not a person or AI.)"),
+        h("div", { class: "grid2" },
+          h("div", { class: "card" }, h("h2", null, "Builder"),
+            field("I will… (the action)", L, "action", { onInput: refresh, ex: "walk briskly around the block" }),
+            field("For how many minutes?", L, "min", { num: true, onInput: refresh, max: 300 }),
+            field("How many times a week?", L, "per", { options: numOpts(1, 7), onInput: refresh }),
+            field("When?", L, "when", { options: WHEN_OPTS, onInput: refresh }),
+            field("Where?", L, "where", { onInput: refresh, ex: "at the library table" }),
+            field("Starting…", L, "start", { options: START_OPTS, onInput: refresh }),
+            field("Check in on…", L, "check", { options: DAYS, onInput: refresh })),
+          h("div", { class: "card" }, h("h2", null, "Checks"), count, panel, budget, prev)));
+      refresh();
+    } };
+}
+function curveF(x) { return x <= 0.65 ? 0.3 + 0.7 * Math.sin(Math.PI / 2 * x / 0.65) : 1 - 0.85 * Math.pow((x - 0.65) / 0.35, 1.6); }
+function zoneName(v) { return v < 20 ? "Too easy" : v < 45 ? "Easy" : v < 78 ? "Challenging but realistic" : v < 90 ? "A big stretch" : "Out of reach"; }
+
+MODS.push({ id: "m4", title: "Build a Workable Goal", minutes: 9, steps: [
+  { t: "Welcome to the Goal Repair Lab", need: () => null,
+    build(r) {
+      r.append(P("Vague goals are hard to follow. In this lab you'll repair three of them. Each good goal tends to have five things:"),
+        critList([{ ok: true, label: "Specific", tip: "" }, { ok: true, label: "Action-based (within my control)", tip: "" }, { ok: true, label: "Challenging but realistic (given your time, skill, resources)", tip: "" }, { ok: true, label: "Has a start cue (when and where)", tip: "" }, { ok: true, label: "Has a check-in or milestone", tip: "" }]),
+        P("The builder sentence: “I will [action] for [amount] at [time/place], starting [date], and check in on [day].”"),
+        h("div", { class: "callout" }, "You need 4 of 5 checks on each goal, and you can try as many times as you like. Wording like “more” or “better” will get flagged because it's hard to measure."));
+    } },
+  goalStep(GOAL_LAB[0], 0), goalStep(GOAL_LAB[1], 1), goalStep(GOAL_LAB[2], 2),
+  { t: "Challenge calibrator", need: () => { const c = S.d.calib; if (!c || !c.touched) return "Move the slider to choose a difficulty"; return qDone("calj") ? null : "Choose the reason that fits, then check"; },
+    build(r) {
+      const c = D("calib", { v: 50, touched: false });
+      const svg = s("svg", { viewBox: "0 0 600 270", "aria-hidden": "true" });
+      const L = 50, W = 530, T = 15, H = 200, X = (x) => L + x * W, Y = (y) => T + H * (1 - y);
+      svg.append(s("line", { x1: L, y1: T + H, x2: L + W, y2: T + H, style: "stroke:var(--muted);stroke-width:2" }), s("line", { x1: L, y1: T, x2: L, y2: T + H, style: "stroke:var(--muted);stroke-width:2" }));
+      let d = ""; for (let i = 0; i <= 50; i++) { const x = i / 50; d += (i ? "L" : "M") + X(x).toFixed(1) + " " + Y(curveF(x)).toFixed(1); }
+      svg.append(s("path", { d, style: "fill:none;stroke:var(--accent);stroke-width:4" }));
+      [["Too easy", 0.08], ["Easy", 0.3], ["Challenging but realistic", 0.62], ["Big stretch", 0.84], ["Out of reach", 0.97]].forEach(([t, x], i) => svg.append(s("text", { x: X(x), y: 238 + (i % 2) * 16, "font-size": 12, "text-anchor": i === 0 ? "start" : (i === 4 ? "end" : "middle") }, t)));
+      svg.append(s("text", { x: 14, y: 130, "font-size": 13, class: "m", transform: "rotate(-90 14 130)", "text-anchor": "middle" }, "Likely effort and follow-through"));
+      const mk = s("circle", { r: 9, style: "fill:var(--bad);stroke:var(--text);stroke-width:2" }), mt = s("text", { "font-size": 14, "font-weight": 700, "text-anchor": "middle" }, "");
+      svg.append(mk, mt);
+      const out = h("p", { role: "status", "aria-live": "polite", class: "callout" });
+      const upd = () => { const x = c.v / 100; mk.setAttribute("cx", X(x)); mk.setAttribute("cy", Y(curveF(x))); mt.setAttribute("x", X(x)); mt.setAttribute("y", Y(curveF(x)) - 16); mt.textContent = "You are here"; const f = curveF(x); out.textContent = "Setting: " + zoneName(c.v) + ". Likely follow-through (illustrative): " + (f > 0.85 ? "high" : f > 0.55 ? "medium" : "low") + "."; };
+      const sl = h("input", { type: "range", min: 0, max: 100, step: 1, id: "calib", "aria-label": "Goal difficulty from too easy to too hard" }); sl.value = c.v;
+      sl.addEventListener("input", () => { c.v = +sl.value; c.touched = true; upd(); changed(); });
+      r.append(P("Imagine your repaired “Study more” goal. Slide it from too easy to too hard and watch the curve."),
+        h("div", { class: "svgwrap", role: "img", "aria-label": "Curve: follow-through rises as goals get more challenging, peaks near challenging-but-realistic, and drops when goals are out of reach. A marker shows your slider setting." }, svg),
+        h("div", { class: "row" }, h("span", { class: "small" }, "Too easy"), sl, h("span", { class: "small" }, "Too hard")), out,
+        h("div", { class: "callout" }, "Specific and challenging goals tend to produce better results than vague or too-easy ones, as long as you have the skill, resources, and commitment to try. Goals too far out of reach tend to backfire. ", h("span", { class: "tag" }, "Locke & Latham, 2002 (illustrative curve, not real data)")),
+        mcq("calj", { q: "Choose the reason that best fits a setting you'd pick.", opts: ["It's a stretch, but I have the time and skill, and I'll check in and adjust.", "I picked the hardest so I'd look impressive.", "I picked the easiest so I can't fall short."], c: [0], why: "A challenge you can actually support, with a check-in to adjust, matches what goal-setting research describes." }));
+      upd();
+    } },
+  { t: "Place your milestones", need: () => { const m = S.d.ms || {}; const v = [0, 1, 2].map((i) => m["m" + i]).filter(Boolean); if (v.length < 3) return "Place all 3 milestones (" + (3 - v.length) + " left)"; return new Set(v).size === 3 ? null : "Put each milestone in a different week"; },
+    build(r) {
+      const MS = ["Do my first action 3 times", "Hit my weekly target for a full week", "Look at my notes and adjust the plan"];
+      const ms = D("ms", {});
+      const tip = h("div", { role: "status", "aria-live": "polite" });
+      const draw = () => {
+        list.replaceChildren(...MS.map((t, i) => {
+          const k = "m" + i;
+          const row = h("div", { class: "card", draggable: "true" }, h("b", null, t), h("div", { class: "row", role: "group", "aria-label": "Place in a week: " + t }, [1, 2, 3, 4].map((w) => h("button", { class: "btn sm" + (ms[k] === w ? " on" : ""), type: "button", "aria-pressed": ms[k] === w ? "true" : "false", "data-act": "1", on: { click: () => { ms[k] = w; changed(); draw(); } } }, "Week " + w))));
+          row.addEventListener("dragstart", (e) => { e.dataTransfer.setData("text/plain", k); });
+          return row;
+        }));
+        grid.replaceChildren(...[1, 2, 3, 4].map((w) => { const z = h("div", { class: "zone", style: "cursor:default" }, h("b", null, "Week " + w), MS.map((t, i) => (ms["m" + i] === w ? h("div", null, "• " + t) : null)));
+          z.addEventListener("dragover", (e) => { e.preventDefault(); z.classList.add("over"); }); z.addEventListener("dragleave", () => z.classList.remove("over"));
+          z.addEventListener("drop", (e) => { e.preventDefault(); const k = e.dataTransfer.getData("text/plain"); if (/^m[0-2]$/.test(k)) { ms[k] = w; changed(); draw(); } }); return z; }));
+        tip.replaceChildren(ms.m2 === 1 ? fb("info", "", "A check-in works better after you have a few days of data, so week 2 or later often fits.") : (ms.m0 > 2 ? fb("info", "", "Starting small early helps. Your first action may fit in week 1 or 2.") : null));
+      };
+      const list = h("div"), grid = h("div", { class: "week" });
+      r.append(P("Put 3 milestones on a 4-week timeline. Use the Week buttons, or drag a card onto a week. Each goes in a different week."), list, grid, tip);
+      draw();
+    } }
+] });
+
+/* ---- Module 5 ---- */
+MODS.push({ id: "m5", title: "Plan for Obstacles", minutes: 9, steps: [
+  { t: "Obstacle Simulator: Jordan's week", need: () => { const n = 4 - ((S.d.obst && S.d.obst.ch.filter((x) => x != null).length) || 0); return n ? "Decide what Jordan does on each day (" + n + " left)" : null; },
+    build(r) {
+      const st = D("obst", { ch: [] }); let pend = false;
+      const cal = h("div", { class: "week" }); const area = h("div");
+      const stat = (i) => (st.ch[i] != null ? OBST_EVENTS[i].opts[st.ch[i]].st : null);
+      const drawCal = (cur) => cal.replaceChildren(...OBST_EVENTS.map((e, i) => { const k = stat(i); return h("div", { class: i === cur ? "cur" : "" }, h("b", null, e.day.slice(0, 3)), h("div", null, k ? h("span", null, ST_LABEL[k][0] + " " + ST_LABEL[k][1]) : "?")); }));
+      const draw = () => {
+        const i = pend ? st.ch.length - 1 : st.ch.length;
+        drawCal(Math.min(i, 3)); area.replaceChildren();
+        if (i >= 4) { const good = [0, 1, 2, 3].filter((j) => stat(j) !== "miss").length; area.append(fb("info", "Jordan's week:", good + " of 4 days kept the habit going (full, short, or a planned restart). Notice that flexible choices, like a shorter version or a moved time, beat “perfect or nothing.”")); return; }
+        const e = OBST_EVENTS[i]; area.append(h("h2", null, e.day + ": " + e.ev), P("What does Jordan do?"));
+        if (!pend) e.opts.forEach((o, oi) => area.append(h("button", { class: "bin", style: "width:100%;margin:.3rem 0", type: "button", "data-act": "1", on: { click: () => { st.ch[i] = oi; pend = true; changed(); draw(); const b = $("#obNext"); if (b) b.focus(); } } }, o.t)));
+        else { const o = e.opts[st.ch[i]]; area.append(fb(o.best ? "ok" : (o.st === "miss" ? "bad" : "info"), ST_LABEL[o.st][0] + " " + ST_LABEL[o.st][1] + ".", o.fb), h("button", { id: "obNext", class: "btn primary", type: "button", "data-act": "1", on: { click: () => { pend = false; draw(); } } }, i === 3 ? "See Jordan's week" : "Next day →")); }
+      };
+      r.append(P("Jordan's goal: study 25 minutes after school, Monday to Thursday. Something happens each day. Pick what Jordan does. There's no single right answer, but some choices hold up better."), cal, area);
+      if (st.ch.length < 4 || st.ch.some((x) => x == null)) pend = false; draw();
+    } },
+  { t: "Mental contrasting for Jordan", need: () => { const j = S.d.jb || {}; if (!(words(j.wish) >= 3 && words(j.best) >= 3 && words(j.obs) >= 3)) return "Fill in Wish, Best outcome, and Main obstacle (3+ words each)"; return ifThenCheck(j.ifthen).structure ? null : "Write the last box as “If …, then I will …”"; },
+    build(r) {
+      const j = D("jb", {}); const chk = h("div", { role: "status", "aria-live": "polite" });
+      const upd = () => { const c = ifThenCheck(j.ifthen); chk.replaceChildren(j.ifthen ? (c.ok ? fb("ok", "Strong if–then.", "") : fb("warn", "Tip:", c.flags[0])) : null); };
+      r.append(P("Mental contrasting: picture what you want, then the real obstacle, then plan for it. Picturing only success can lower effort (Oettingen; Duckworth et al., 2011)."),
+        h("div", { class: "callout" }, h("b", null, "Worked example. "), "Wish: I want to feel prepared for Friday's quiz. Best outcome: I walk in calm because I've practiced. Obstacle: getting distracted after school. Plan: “If I reach for my phone during my planned study time, then I'll put it in my backpack and complete one practice question.”"),
+        P("Now do it for Jordan's goal: study 25 minutes after school."),
+        field("1. Wish", j, "wish", { ex: "I want to be ready for the science test." }), field("2. Best outcome", j, "best", { ex: "I feel calm and know the material." }),
+        field("3. Main obstacle", j, "obs", { ex: "I'm tired after practice." }), field("4. If–then plan", j, "ifthen", { area: true, rows: 2, onInput: upd, ex: "If I get home tired, then I will set a timer for 10 minutes and start with one question." }), chk);
+      upd();
+    } },
+  { t: "If–then builder", need: () => { const b = D("itb", [{}, {}, {}]); const n = b.filter((p) => ifThenCheck(p.text).structure).length; return n >= 3 ? null : "Build 3 if–then plans (" + (3 - n) + " left)"; },
+    build(r) {
+      const b = D("itb", [{}, {}, {}]); const best = D("itBest", {});
+      r.append(P("Pick a cue and a response from the lists, press “Use these,” then rewrite it in your own words. Aim for a specific situation and a specific action."));
+      b.forEach((p, i) => {
+        const chk = h("div", { role: "status", "aria-live": "polite" });
+        const upd = () => { const c = ifThenCheck(p.text); if (c.ok) best[i] = true; chk.replaceChildren(p.text ? (c.ok ? fb("ok", "Looks good.", "Specific cue, specific action.") : fb("warn", "Tip:", c.flags.join(" "))) : null); };
+        const ta = field("Your plan " + (i + 1) + " (edit freely)", p, "text", { area: true, rows: 2, onInput: upd });
+        const t = ta.querySelector("textarea");
+        r.append(h("div", { class: "card" }, h("h2", null, "Plan " + (i + 1)), h("div", { class: "grid2" }, field("Cue (the “if”)", p, "cue", { options: CUE_OPTS }), field("Response (the “then”)", p, "resp", { options: RESP_OPTS })),
+          h("button", { class: "btn", type: "button", "data-act": "1", on: { click: () => { if (p.cue && p.resp) { p.text = "If " + p.cue + ", then I will " + p.resp + "."; t.value = p.text; upd(); changed(); t.focus(); } } } }, "Use these"), ta, chk));
+        upd();
+      });
+    } },
+  { t: "Replacement routine", need: () => { const x = S.d.repl || {}; return x.habit && words(x.notice) >= 3 && words(x.instead) >= 3 ? null : "Fill in all three parts (3+ words in each box)"; },
+    build(r) {
+      const x = D("repl", {}); const out = h("p", { class: "callout wrapany", role: "status", "aria-live": "polite" });
+      const upd = () => { out.textContent = "When I notice " + (x.notice || "…") + ", I will " + (x.instead || "…") + " instead."; };
+      r.append(P("Sometimes you don't want to punish a habit; you want to redirect it. Pick a habit you'd like to cut back on and plan something easy and available to do instead."),
+        field("Habit to redirect", x, "habit", { options: REPLACE_HABITS }),
+        field("When I notice…", x, "notice", { onInput: upd, ex: "my thumb is opening the app during homework" }),
+        field("I will… (something easy and available)", x, "instead", { onInput: upd, ex: "flip the phone over and read one page of my book" }), out);
+      upd();
+    } }
+] });
+
+/* ---- Module 6 ---- */
+const HT = { easy: { n: "Very easy (like hanging up your jacket)", t95: 40, A: 95, sm: 1.1 }, medium: { n: "Medium (like 15 minutes of review after school)", t95: 66, A: 90, sm: 1.3 }, hard: { n: "Hard (like a 45-minute practice session)", t95: 110, A: 80, sm: 1.8 } };
+function habitY(t, p, mode, kMul) {
+  const T = HT[p.type]; const k = Math.log(20) / T.t95 * (p.cons / 7) * (kMul || 1) * (p.small ? T.sm : 1); const base = (x) => T.A * (1 - Math.exp(-k * x)); const D0 = 45;
+  if (mode === "steady" || t < D0) return base(t);
+  if (mode === "miss") return Math.max(0, base(t) - 4 * Math.exp(-(t - D0) / 6));
+  return base(D0) * Math.exp(-(t - D0) / 250);
+}
+function restartOk(t) { t = (t || "").trim(); return /^if\b/i.test(t) && /\b(i will|i'll)\b/i.test(t) && words(t) >= 6; }
+
+MODS.push({ id: "m6", title: "Habits & Missed Days", minutes: 9, steps: [
+  { t: "How long do habits take?", need: () => null,
+    build(r) {
+      r.append(P("A habit is a behavior that starts to feel automatic after repeating it in the same situation."),
+        h("div", { class: "callout" }, "In one study of 96 adults, it took anywhere from 18 to 254 days for a new habit to feel automatic. The median was about 66 days. Missing a single opportunity did not meaningfully derail progress. ", h("span", { class: "tag" }, "Lally et al., 2010")),
+        P("Next you'll play with a model of this. The curve rises quickly at first, then levels off. Every number in the lab is illustrative, not a prediction about you."));
+    } },
+  { t: "Habit Curve Lab", need: () => { const x = S.d.hab; const n = 2 - (x && x.usedMiss ? 1 : 0) - (x && x.usedQuit ? 1 : 0); return n ? "Try “Miss a day” and “Quit after a miss” (" + n + " left)" : null; },
+    build(r) {
+      const x = D("hab", { type: "medium", cons: 5, mode: "steady", small: false, usedMiss: false, usedQuit: false });
+      const L = 50, Rr = 15, T = 15, B = 45, W = 600 - L - Rr, H = 320 - T - B, X = (t) => L + t / 120 * W, Y = (v) => T + H * (1 - v / 100);
+      const chart = h("div", { class: "svgwrap", role: "img", "aria-label": "Line chart of how automatic a habit feels, from 0 to 100 percent, over 120 days. A text summary is available below." });
+      const summary = h("details", { class: "card" }, h("summary", null, h("b", null, "Text summary of the chart")), h("div", { id: "habsum", role: "status", "aria-live": "polite" }));
+      const path = (fn) => { let d = ""; for (let t = 0; t <= 120; t += 2) d += (t ? "L" : "M") + X(t).toFixed(1) + " " + Y(fn(t)).toFixed(1); return d; };
+      const draw = () => {
+        const svg = s("svg", { viewBox: "0 0 600 320", "aria-hidden": "true" });
+        [0, 25, 50, 75, 100].forEach((v) => svg.append(s("line", { x1: L, x2: L + W, y1: Y(v), y2: Y(v), style: "stroke:var(--border);stroke-width:1" }), s("text", { x: L - 6, y: Y(v) + 4, "font-size": 12, "text-anchor": "end", class: "m" }, v + "%")));
+        [0, 20, 40, 60, 80, 100, 120].forEach((t) => svg.append(s("text", { x: X(t), y: T + H + 16, "font-size": 12, "text-anchor": "middle", class: "m" }, t)));
+        svg.append(s("text", { x: L + W / 2, y: 312, "font-size": 13, "text-anchor": "middle" }, "Days"), s("text", { x: 12, y: T + H / 2, "font-size": 13, "text-anchor": "middle", transform: "rotate(-90 12 " + (T + H / 2) + ")" }, "How automatic it feels"));
+        const up = (t) => habitY(t, x, "steady", 2), lo = (t) => habitY(t, x, "steady", 0.45);
+        let bd = path(up); for (let t = 120; t >= 0; t -= 2) bd += "L" + X(t).toFixed(1) + " " + Y(lo(t)).toFixed(1); svg.append(s("path", { d: bd + "Z", style: "fill:var(--accent);opacity:.2" }));
+        if (x.mode !== "steady") { svg.append(s("path", { d: path((t) => habitY(t, x, "steady")), style: "fill:none;stroke:var(--muted);stroke-width:2;stroke-dasharray:6 5" }), s("line", { x1: X(45), x2: X(45), y1: T, y2: T + H, style: "stroke:var(--bad);stroke-width:2;stroke-dasharray:3 4" }), s("text", { x: X(45) + 4, y: T + 14, "font-size": 12 }, "Day 45: missed")); }
+        svg.append(s("path", { d: path((t) => habitY(t, x, x.mode)), style: "fill:none;stroke:var(--accent);stroke-width:4" }));
+        svg.append(s("text", { x: L + W - 4, y: T + H - 8, "font-size": 12, "text-anchor": "end", class: "m" }, "Shaded band: faster and slower examples (illustrative)"));
+        chart.replaceChildren(svg);
+        const v = (t, m) => Math.round(habitY(t, x, m || x.mode));
+        const sum = ["Model line: day 30 about " + v(30) + "%, day 60 about " + v(60) + "%, day 120 about " + v(120) + "%.",
+          "Band at day 60: about " + Math.round(habitY(60, x, "steady", 0.45)) + "% (slower) to " + Math.round(habitY(60, x, "steady", 2)) + "% (faster).",
+          x.mode === "steady" ? "You practice every planned day: the line rises quickly, then levels off." : x.mode === "miss" ? "A single missed day at day 45 makes a small dent, then the line keeps rising." : "After the miss at day 45 the person quits: the line goes flat and stops rising.",
+          "In one study of 96 adults, real habits took 18 to 254 days (median about 66). These numbers are illustrative."];
+        $("#habsum").replaceChildren(h("ul", null, sum.map((t) => h("li", null, t))));
+      };
+      const modeBtn = (m, t) => h("button", { class: "btn" + (x.mode === m ? " on" : ""), type: "button", "aria-pressed": x.mode === m ? "true" : "false", "data-act": "1", on: { click: () => { x.mode = m; if (m === "miss") x.usedMiss = true; if (m === "quit") x.usedQuit = true; changed(); ctl(); draw(); } } }, t);
+      const ctl = () => {
+        controls.replaceChildren(
+          h("fieldset", null, h("legend", null, "Habit type"), Object.keys(HT).map((k) => { const i = h("input", { type: "radio", name: "htype", value: k }); i.checked = x.type === k; i.addEventListener("change", () => { x.type = k; changed(); draw(); controls.querySelectorAll("label.opt").forEach((l) => l.classList.toggle("sel", l.querySelector("input").checked)); }); return h("label", { class: "opt" + (i.checked ? " sel" : "") }, i, h("span", null, HT[k].n)); })),
+          h("label", { class: "f", for: "cons" }, "Starting consistency: ", h("b", null, x.cons + (x.cons === 1 ? " day" : " days") + " out of 7")),
+          (() => { const sl = h("input", { type: "range", id: "cons", min: 1, max: 7, step: 1 }); sl.value = x.cons; sl.addEventListener("input", () => { x.cons = +sl.value; changed(); draw(); sl.previousSibling.lastChild.textContent = x.cons + (x.cons === 1 ? " day" : " days") + " out of 7"; }); return sl; })(),
+          h("div", { class: "row" }, modeBtn("steady", "Keep going every day"), modeBtn("miss", "Miss a day"), modeBtn("quit", "Quit after a miss")),
+          h("label", { class: "opt" + (x.small ? " sel" : "") }, (() => { const c = h("input", { type: "checkbox" }); c.checked = x.small; c.addEventListener("change", () => { x.small = c.checked; changed(); draw(); c.parentNode.classList.toggle("sel", c.checked); }); return c; })(), h("span", null, "Start smaller (a tiny version of the habit). Biggest effect on hard habits.")));
+      };
+      const controls = h("div", { class: "card" });
+      r.append(P("This is a simplified model, not a prediction. Change the settings and watch the line."), h("div", { class: "grid2" }, chart, controls), summary);
+      ctl(); draw();
+    } },
+  { t: "Predict, then check", need: () => { const n = ["hp1", "hp2", "hp3"].filter((k) => !qDone(k)).length; return n ? "Answer all 3 (" + n + " left)" : null; },
+    build(r) {
+      r.append(P("Use what you saw in the lab. (You can go back to the lab with the Back button to check.)"),
+        mcq("hp1", { q: "Same habit: practicing 3 days a week vs. 6 days a week. In the model, which feels automatic sooner?", shuffle: true, opts: ["3 days a week", "6 days a week", "They're the same", "There's no way to tell"], c: [1], why: "More repetitions in the same situation move the curve up faster in this model." }),
+        mcq("hp2", { q: "Around day 45 the person misses a single day, then keeps going. What does the curve do?", shuffle: true, opts: ["Resets to zero", "Makes a small dent, then keeps rising", "Flattens forever", "Drops by half"], c: [1], why: "One miss barely changes the curve. Quitting after the miss is what flattens it." }),
+        mcq("hp3", { q: "For a hard habit, what does “start smaller” do in the model?", shuffle: true, opts: ["Nothing", "Shifts the curve up and earlier", "Makes the habit take longer", "Removes the plateau"], c: [1], why: "A smaller version is easier to repeat, so the curve rises sooner." }));
+    } },
+  { t: "Lapse Recovery: Alex misses 3 days", need: () => { const n = 4 - ((S.d.lapse && S.d.lapse.seen.length) || 0); return n ? "Click each of the 4 responses to see what it leads to (" + n + " left)" : null; },
+    build(r) {
+      const st = D("lapse", { seen: [] }); const strip = h("div", { role: "status", "aria-live": "polite" });
+      const list = h("div");
+      const draw = (sel) => {
+        list.replaceChildren(...LAPSE_OPTS.map((o) => h("button", { class: "bin", style: "width:100%;margin:.3rem 0", type: "button", "data-act": "1", "aria-pressed": sel === o.id ? "true" : "false", on: { click: () => { if (!st.seen.includes(o.id)) st.seen.push(o.id); changed(); draw(o.id); } } }, h("b", null, o.kind + (st.seen.includes(o.id) ? "  ✓ viewed" : "")), h("span", null, o.t))));
+        const o = LAPSE_OPTS.find((x) => x.id === sel);
+        strip.replaceChildren(o ? h("div", { class: "card" }, h("b", null, "What happens next (" + o.kind + ")"), h("ol", null, o.strip.map((t) => h("li", null, t)))) : null);
+      };
+      r.append(P("Alex has been practicing guitar for 20 minutes after school. Then Alex misses 3 days in a row. What does Alex say to themself? Click each response to see where it leads."), list, strip);
+      draw(null);
+    } },
+  { t: "Rank the responses", need: () => (S.d.rank && S.d.rank.checked ? null : "Put the responses in order, then press “Check my ranking”"),
+    build(r) {
+      const st = D("rank", { order: ["comp", "aon", "kind", "harsh"], checked: false }); const list = h("ol"), out = h("div", { role: "status", "aria-live": "polite" });
+      const name = (id) => LAPSE_OPTS.find((o) => o.id === id);
+      const draw = () => {
+        list.replaceChildren(...st.order.map((id, i) => h("li", { style: "margin:.4rem 0" }, h("div", { class: "row" }, h("span", { style: "flex:1;min-width:200px" }, h("b", null, name(id).kind + ": "), name(id).t),
+          h("button", { class: "btn sm", type: "button", "aria-label": "Move up: " + name(id).kind, disabled: i === 0, on: { click: () => mv(i, -1) } }, "▲ Up"), h("button", { class: "btn sm", type: "button", "aria-label": "Move down: " + name(id).kind, disabled: i === 3, on: { click: () => mv(i, 1) } }, "▼ Down")))));
+        out.replaceChildren(st.checked ? fb(st.order[0] === "kind" ? "ok" : "info", st.order[0] === "kind" ? "Nice, you put “Reset kindly” first." : "Here's the strongest path:", " Notice the slip, name the obstacle, restart with the smallest version, and don't try to “make up” the missed days. Self-compassion after a setback was linked to more effort to improve, not less (Breines & Chen, 2012).") : null);
+      };
+      const mv = (i, d) => { const a = st.order; [a[i], a[i + d]] = [a[i + d], a[i]]; st.checked = false; changed(); draw(); const b = list.querySelectorAll("li")[i + d].querySelectorAll("button")[d < 0 ? 0 : 1]; if (b && !b.disabled) b.focus(); else list.querySelectorAll("li")[i + d].querySelector("button:not([disabled])").focus(); };
+      r.append(P("Rank from most helpful (top) to least helpful (bottom). Use the Up and Down buttons."), list,
+        h("button", { class: "btn primary", type: "button", "data-act": "1", on: { click: () => { st.checked = true; changed(); draw(); } } }, "Check my ranking"), out);
+      draw();
+    } },
+  { t: "Your restart sentence", need: () => (restartOk(S.d.restart) ? null : "Write a sentence starting “If I miss a day, I will…” (6+ words)"),
+    build(r) {
+      const tip = h("div", { role: "status", "aria-live": "polite" });
+      const upd = () => { tip.replaceChildren(/\b(double|make up|catch up)\b/i.test(S.d.restart || "") ? fb("warn", "Tip:", "Making up missed days tends to make restarting harder. Try the smallest version instead.") : (restartOk(S.d.restart) ? fb("ok", "Good.", "Small, clear, and kind.") : null)); };
+      r.append(P("Write a restart sentence for yourself. Keep it small and kind."),
+        field("If I miss a day, I will…", S.d, "restart", { area: true, rows: 2, onInput: upd, ex: "If I miss a day, I will do the 5-minute version the next day and write down what got in the way." }), tip);
+      upd();
+    } }
+] });
+
+/* ================= 8. MODULES 7-8 ================= */
+function detectiveStep(i) {
+  const T = TRACK[i];
+  return { t: "Case " + (i + 1) + ": " + T.who, need: () => { const k = ["dg", "dm", "de"].map((x) => x + i); const n = k.filter((x) => !qDone(x)).length; return n ? "Answer all 3 questions (" + n + " left)" : null; },
+    build(r) {
+      r.append(h("p", null, h("b", null, T.who + "'s goal: "), T.goal),
+        h("table", { class: "t" }, h("caption", { class: "sr" }, "Seven-day tracking table for " + T.who), h("thead", null, h("tr", null, ["Day", "Planned", "Done", "Note"].map((x) => h("th", null, x)))),
+          h("tbody", null, T.rows.map((x) => h("tr", null, x.map((c, j) => h("td", null, j === 2 ? (c === "Yes" ? "✓ Yes" : "✗ No") : c)))))),
+        mcq("dg" + i, { q: "Best diagnosis?", opts: ["The goal is too big", "Wrong time or cue", "Missing support", "The plan is working: keep going"], c: [T.diag], why: T.diagWhy }),
+        mcq("dm" + i, { q: "Best next move?", opts: ["Adjust the goal", "Change the cue", "Ask for help", "Keep going"], c: [T.move], why: T.moveWhy }),
+        mcq("de" + i, { q: "What's one data point that convinced you?", opts: T.evid, c: [T.evc], shuffle: true, why: T.evWhy }));
+    } };
+}
+MODS.push({ id: "m7", title: "Progress Detective", minutes: 4, steps: [
+  { t: "Be the detective", need: () => null,
+    build(r) { r.append(P("Two students tracked a week of their plan. Look at the data, not at a feeling. For each one you'll pick a diagnosis, a next move, and the data point that convinced you."), h("div", { class: "callout" }, "Tip: planned vs. done, and the notes, tell the story together.")); } },
+  detectiveStep(0), detectiveStep(1)
+] });
+
+/* ---- Module 8 ---- */
+function planFields(r, part) {
+  const p = D("plan", {});
+  if (p.why == null) p.why = [S.d.why1, S.d.why2].filter(Boolean).join(" ");
+  if (p.missed == null && S.d.restart) p.missed = S.d.restart;
+  if (p.ifthen == null && S.d.itb && S.d.itb[0] && S.d.itb[0].text) p.ifthen = S.d.itb[0].text;
+  const f = (l, k, o) => field(l, p, k, o);
+  if (part === 1) {
+    r.append(areaPicker(),
+      f("Your goal, in your own words", "goal", { area: true, rows: 2, ex: "Review my science notes four afternoons a week." }),
+      f("Why it matters to you (from Module 3; edit if you like)", "why", { area: true, rows: 3 }),
+      f("Your first action: the tiniest version you could do even on a bad day", "first", { help: "Think two minutes, not twenty.", ex: "Open my notes and read the first page." }),
+      h("div", { class: "grid2" }, f("Start cue: when", "when", { options: WHEN_OPTS }), f("Where", "where", { ex: "at the kitchen table" })),
+      f("…right after what existing routine?", "after", { ex: "after I put my bag down and get a snack" }));
+  } else if (part === 2) {
+    r.append(h("div", { class: "grid2" }, f("Weekly target: days per week", "dpw", { options: numOpts(1, 7) }), f("Minutes per session", "min", { num: true, max: 300, ex: "20" })),
+      h("h2", null, "Milestones"), f("Week 1", "w1", { ex: "Do the first action 3 times." }), f("Week 2", "w2", { ex: "Hit my weekly target once." }), f("Week 4", "w4", { ex: "Look at my notes and adjust." }),
+      h("h2", null, "Mental contrasting"), f("Wish", "wish", { ex: "I want to feel prepared for Friday's quiz." }), f("Best outcome", "best", { ex: "I walk in calm because I practiced." }),
+      f("Main obstacle", "obstacle", { ex: "Getting distracted after school." }), f("If–then plan", "ifthen", { area: true, rows: 2, ex: "If I reach for my phone during study time, then I will put it in my backpack and do one practice question." }));
+  } else {
+    const sup = f("Support: one person or tool that can help", "support", { ex: "My brother checks in with me on Sunday." });
+    const none = h("label", { class: "opt" }, (() => { const c = h("input", { type: "checkbox" }); c.checked = !!p.noSupport; c.addEventListener("change", () => { p.noSupport = c.checked; changed(); }); return c; })(), h("span", null, "None yet (that's okay)"));
+    r.append(h("h2", null, "Friction audit"), f("One thing to make EASIER", "easier", { ex: "Leave my notebook open on my desk." }), f("One thing to make HARDER", "harder", { ex: "Charge my phone in another room." }),
+      sup, none, f("Missed-day plan: If I miss a day, I will…", "missed", { area: true, rows: 2, ex: "If I miss a day, I will do the 5-minute version the next day." }),
+      h("div", { class: "grid2" }, f("Check-in day", "checkDay", { options: DAYS }), f("How I'll track it", "track", { options: TRACK_OPTS })));
+  }
+}
+const planStepNeed = (keys) => () => { const m = planMissing(); const part = PLAN_REQ.filter(([k]) => keys.includes(k)).map(([, l]) => l); const miss = part.filter((l) => m.includes(l)).concat(keys.includes("goal") && m.includes("goal area") ? ["goal area"] : []); return miss.length ? "Still needed: " + miss.slice(0, 4).join(", ") + (miss.length > 4 ? " (+" + (miss.length - 4) + " more)" : "") : null; };
+
+function qualityBox(res) { return h("div", null, critList(res)); }
+
+MODS.push({ id: "m8", title: "Make Your Plan", minutes: 12, steps: [
+  { t: "Your plan, part 1: goal and first step", need: planStepNeed(["goal", "why", "first", "when", "where", "after"]),
+    build(r) { r.append(P("This is your real plan. Make it small enough to actually do. " + PRIVACY_NOTE, "callout")); planFields(r, 1); } },
+  { t: "Your plan, part 2: target, milestones, obstacle", need: planStepNeed(["dpw", "min", "w1", "w2", "w4", "wish", "best", "obstacle", "ifthen"]), build(r) { planFields(r, 2); } },
+  { t: "Your plan, part 3: environment, support, restart", need: planStepNeed(["easier", "harder", "support", "missed", "checkDay", "track"]), build(r) { planFields(r, 3); } },
+  { t: "Plan quality check", need: () => (planMissing().length ? "Finish the fields on the earlier plan screens (" + planMissing().length + " left)" : null),
+    build(r) {
+      const res = planQuality(S.d.plan); const n = res.filter((x) => x.ok).length;
+      r.append(h("p", { role: "status" }, h("b", null, n + " of 6 plan checks met."), n === 6 ? " Strong plan." : " Use Back to revise whenever you like. The tips show what to adjust."), qualityBox(res),
+        h("div", { class: "callout" }, "These are rule-based checks run by this page. They look at structure (specific, cue, plan for obstacles), not at your choices or feelings."));
+    } },
+  { t: "Knowledge check", need: () => { const n = KC.filter((k) => !qDone("kc_" + k.id)).length; return n ? "Answer all 10 questions (" + n + " left)" : null; },
+    build(r) {
+      const order = D("kcOrder", shuffle(KC.map((k) => k.id)));
+      const area = h("div"); let pend = null;
+      const draw = () => {
+        area.replaceChildren();
+        const left = order.filter((id) => !qDone("kc_" + id)); const idShow = pend || left[0];
+        if (!idShow) { const kr = kcResult(); area.append(h("h2", null, "You finished the knowledge check"), h("p", null, h("b", null, kr.total + " out of 10"), " correct. See your full breakdown on the results page.")); return; }
+        const k = KC.find((x) => x.id === idShow); const n = order.indexOf(idShow) + 1;
+        area.append(h("p", { class: "muted small" }, "Question " + n + " of 10"), mcq("kc_" + k.id, { q: k.q, opts: k.opts, c: k.c, multi: k.multi, shuffle: true, once: true, why: k.why, onCheck: () => { pend = k.id; draw(); const b = $("#kcNext"); if (b) b.focus(); } }));
+        if (pend) area.append(h("button", { id: "kcNext", class: "btn primary", type: "button", "data-act": "1", on: { click: () => { pend = null; draw(); const f = area.querySelector("input"); if (f) f.focus(); } } }, order.filter((id) => !qDone("kc_" + id)).length ? "Next question →" : "Finish"));
+      };
+      r.append(P("10 questions. You get one try on each, and you'll see an explanation after every answer."), area); draw();
+    } },
+  { t: "Reflection", need: () => { const n = REFLECT.filter((_, i) => (S.d["ref" + i] || "").trim().length < CONFIG.reflectionMinChars).length; return n ? "Write at least " + CONFIG.reflectionMinChars + " characters in each box (" + n + " left)" : null; },
+    build(r) {
+      r.append(P("Three short prompts. These aren't graded or judged; they just need your honest thought."));
+      REFLECT.forEach((q, i) => {
+        const cnt = h("div", { class: "help", role: "status" });
+        const upd = () => { const n = (S.d["ref" + i] || "").trim().length; cnt.textContent = n >= CONFIG.reflectionMinChars ? "Thanks ✓" : n + " of " + CONFIG.reflectionMinChars + " characters"; };
+        r.append(field((i + 1) + ". " + q, S.d, "ref" + i, { area: true, onInput: upd }), cnt); upd();
+      });
+      r.append(h("div", { class: "callout" }, COUNSELOR_LINE));
+    } }
+] });
+
+/* ================= 9. RESULTS ================= */
+function planLines() {
+  const p = S.d.plan || {};
+  const dayTxt = (+p.dpw || "?") + " days a week, " + (+p.min || "?") + " minutes each";
+  return [
+    ["Goal area", areaName()], ["Goal", p.goal], ["Why it matters to me", p.why], ["First action (tiniest version)", p.first],
+    ["Start cue", "When: " + (p.when || "") + ". Where: " + (p.where || "") + ". Right after: " + (p.after || "")], ["Weekly target", dayTxt],
+    ["Milestones", "Week 1: " + (p.w1 || "") + "\nWeek 2: " + (p.w2 || "") + "\nWeek 4: " + (p.w4 || "")],
+    ["Wish", p.wish], ["Best outcome", p.best], ["Main obstacle", p.obstacle], ["If–then plan", p.ifthen],
+    ["Make easier", p.easier], ["Make harder", p.harder], ["Support", p.noSupport && !p.support ? "None yet" : p.support],
+    ["Missed-day plan", p.missed], ["Check-in", (p.checkDay || "") + " | tracking: " + (p.track || "")]
+  ];
+}
+function allResults() {
+  const kc = kcResult(), svh = svhScore(), lab = labBest(), itb = itBest(), pq = planScore();
+  const rows = MODS.slice(0, 9).map((m) => ({ m, done: m.steps.every((st) => !st.need()) }));
+  const doneSteps = MODS.slice(0, 9).reduce((t, m) => t + m.steps.filter((st) => !st.need()).length, 0), allSteps = MODS.slice(0, 9).reduce((t, m) => t + m.steps.length, 0);
+  const appPct = Math.round(((lab / 15) + (itb / 3) + (pq / 6)) / 3 * 100);
+  const tagRes = Object.keys(TAGS).map((t) => { let c = kc.per[t] ? kc.per[t].c : 0, n = kc.per[t] ? kc.per[t].n : 0; if (t === "evidence-literacy") { c += svh; n += 10; } return { t, c, n, pct: n ? Math.round(c / n * 100) : 0 }; });
+  return { kc, svh, lab, itb, pq, rows, compPct: Math.round(doneSteps / allSteps * 100), appPct, tagRes };
+}
+function safeName() { return (S.name.last + "-" + S.name.first).trim().replace(/[^A-Za-z0-9]+/g, "-").replace(/^-+|-+$/g, "") || "Student"; }
+function dateStr() { return new Date().toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" }); }
+function exportText() {
+  const R = allResults(); const L = [];
+  L.push("BUILD YOUR PLAN: " + fullName(), "Date: " + dateStr(), "");
+  L.push("COMPLETION: " + R.compPct + "%", "KNOWLEDGE", "  Knowledge check: " + R.kc.total + "/10", "  Science vs. Hype (first try): " + fmt(R.svh) + "/10",
+    "APPLICATION", "  Goal Repair Lab (best): " + R.lab + "/15", "  If-then builder: " + R.itb + "/3", "  Action plan quality: " + R.pq + "/6", "REFLECTION: Completed", "");
+  L.push("MY ACTION PLAN"); planLines().forEach(([k, v]) => L.push(k + ": " + (v || "")));
+  L.push("", "Restart sentence: " + (S.d.restart || ""), "If-then plans (builder):"); (S.d.itb || []).forEach((p, i) => L.push("  " + (i + 1) + ". " + (p.text || "")));
+  L.push("", "Research findings are summarized and simplified. Results from one group don't guarantee results for everyone. Use these as ideas to test, not rules.");
+  return L.join("\n");
+}
+function barRow(label, n, d) { return h("div", { style: "margin:.4rem 0" }, h("div", null, h("b", null, label + ": "), fmt(n) + " of " + d + " (" + Math.round(n / d * 100) + "%)"), h("div", { class: "bar", role: "img", "aria-label": label + ": " + fmt(n) + " of " + d }, h("i", { style: "width:" + Math.round(n / d * 100) + "%" }))); }
+
+MODS.push({ id: "results", title: "Results", minutes: 0, steps: [
+  { t: "", results: true, need: () => null,
+    build(r) {
+      if (!S.finished) { S.finished = new Date().toISOString(); save(); }
+      const R = allResults(); const name = fullName();
+      const h1 = $("#main h1"); if (h1) h1.textContent = name + ", here's your Build Your Plan summary";
+      const sec = (t, ...k) => h("section", { class: "card plan-sec" }, h("h2", null, t), k);
+      r.append(h("p", { class: "eyebrow" }, "You're done. " + dateStr()),
+        h("div", { class: "row noprint" },
+          h("button", { class: "btn primary", type: "button", on: { click: () => { document.title = "Build-Your-Plan_" + safeName(); window.print(); } } }, "Print / Save as PDF"),
+          h("button", { class: "btn", type: "button", id: "bCopy", on: { click: copyPlan } }, "Copy plan as text"),
+          h("button", { class: "btn", type: "button", on: { click: downloadPlan } }, "Download plan (.txt)"),
+          h("button", { class: "btn", type: "button", on: { click: openMenu } }, "Review a module")),
+        h("div", { id: "copyMsg", class: "small", role: "status" }),
+        h("div", { class: "callout noprint" }, h("b", null, "Share with your teacher: "), "Print or save as PDF and hand it in or upload it where your teacher directs. Nothing is sent from this page."),
+        sec("Completion: " + R.compPct + "%", h("ul", null, R.rows.map((x) => h("li", null, (x.done ? "✓ " : "☐ ") + x.m.title)))),
+        sec("Knowledge", barRow("Knowledge check", R.kc.total, 10), barRow("Science vs. Hype (first try)", R.svh, 10)),
+        sec("Application", barRow("Goal Repair Lab (best attempt)", R.lab, 15), barRow("If–then builder", R.itb, 3), barRow("Action plan quality", R.pq, 6)),
+        sec("Personal reflection", h("p", null, "Completed ✓")),
+        sec("Strengths and next steps",
+          R.tagRes.map((t) => { const b = band(t.pct); return h("p", null, h("b", null, TAGS[t.t].t + ": " + b[0] + " (" + t.c + "/" + t.n + "). "), t.pct >= 80 ? "You showed solid understanding here." : TAGS[t.t].tip); }),
+          h("p", { class: "muted small" }, "Strong is 80% or more, Solid is 60 to 79%, and Revisit is under 60%. These describe your answers on this activity, not you.")),
+        sec("Your Action Plan", h("dl", null, planLines().map(([k, v]) => h("div", { class: "plan-sec" }, h("dt", null, k), h("dd", null, v || "—"))))),
+        sec("Your restart sentence", h("p", { class: "wrapany" }, S.d.restart || "—")),
+        sec("Your if–then plans", h("ol", null, (S.d.itb || []).map((p) => h("li", { class: "wrapany" }, p.text || "—")))),
+        h("div", { class: "callout noprint" }, COUNSELOR_LINE),
+        sec("Sources and honesty note", h("p", null, "Research findings are summarized and simplified. Results from one group don't guarantee results for everyone. Use these as ideas to test, not rules."),
+          h("p", { class: "small" }, "Sources: Lally et al. (2010); Wood, Quinn & Kashy (2002); Gollwitzer & Sheeran (2006); Duckworth et al. (2011); Oettingen; Locke & Latham (2002); Lepper, Greene & Nisbett (1973); Deci, Koestner & Ryan (1999); Ryan & Deci (2000); Hulleman & Harackiewicz (2009); Breines & Chen (2012); Schultz and colleagues; Berridge & Robinson; American Academy of Sleep Medicine consensus.")));
+    } }
+] });
+
+function copyPlan() {
+  const t = exportText(), msg = $("#copyMsg");
+  const fallback = () => { const ta = h("textarea", { "aria-hidden": "true", style: "position:fixed;left:-999px" }); ta.value = t; document.body.appendChild(ta); ta.select(); let ok = false; try { ok = document.execCommand("copy"); } catch (e) { ok = false; } ta.remove(); msg.textContent = ok ? "Copied ✓" : "Couldn't copy automatically. Use Download instead."; };
+  if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(t).then(() => { msg.textContent = "Copied ✓"; }, fallback); else fallback();
+}
+function downloadPlan() {
+  const blob = new Blob([exportText()], { type: "text/plain;charset=utf-8" }); const a = h("a", { download: "Build-Your-Plan_" + safeName() + ".txt", href: URL.createObjectURL(blob) });
+  document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 500);
+}
+
+/* ================= 10. SHELL: ROUTER, NAV, DIALOGS ================= */
+const LAST = MODS.length - 1;
+const cmp = (a, b) => a.m - b.m || a.s - b.s;
+function frontier() {
+  for (let m = 0; m < MODS.length; m++) for (let s = 0; s < MODS[m].steps.length; s++) if (MODS[m].steps[s].need()) return { m, s };
+  return { m: LAST, s: 0 };
+}
+const hashFor = (m, s) => (m === LAST ? "#/results" : "#/module-" + m + "/step-" + (s + 1));
+function parseHash() {
+  const x = location.hash.match(/^#\/module-(\d+)\/step-(\d+)$/);
+  if (x) { const m = +x[1], s = +x[2] - 1; if (m < LAST && MODS[m] && s >= 0 && s < MODS[m].steps.length) return { m, s }; }
+  if (location.hash === "#/results") return { m: LAST, s: 0 };
+  return null;
+}
+function go(m, s) { const hsh = hashFor(m, s); if (location.hash === hsh) route(); else location.hash = hsh; }
+function route() {
+  let want = parseHash() || S.pos; const f = frontier();
+  if (cmp(want, f) > 0) want = f;
+  const hsh = hashFor(want.m, want.s);
+  if (location.hash !== hsh) { try { history.replaceState(null, "", hsh); } catch (e) { location.replace(hsh); return; } }
+  S.pos = { m: want.m, s: want.s }; save(); render();
+}
+function updateWho() { const n = fullName(); $("#who").textContent = n ? "Student: " + n : ""; $("#printHeader").textContent = CONFIG.title + " | " + (n || "") + " | " + dateStr(); }
+function render() {
+  clearTimers();
+  const { m, s } = S.pos, mod = MODS[m], st = mod.steps[s], main = $("#main");
+  main.replaceChildren();
+  const eyebrow = h("div", { class: "eyebrow noprint" }, st.results ? "Results" : (m ? "Module " + m + ": " : "") + mod.title + " · Step " + (s + 1) + " of " + mod.steps.length + " in this section · about " + mod.minutes + " min");
+  const h1 = h("h1", { tabindex: "-1" }, st.t);
+  const body = h("div"); const foot = h("div", { class: "foot" }, "Teacher or shared computer? ", h("button", { type: "button", on: { click: resetLesson } }, "Reset lesson on this computer"));
+  main.append(eyebrow, h1, body, foot);
+  st.build(body);
+  updateWho(); updateNav();
+  window.scrollTo(0, 0); h1.focus({ preventScroll: true });
+  say((st.results ? "Results" : mod.title + ", step " + (s + 1) + " of " + mod.steps.length) + ". " + h1.textContent);
+  if (!S.seenHelp && m === 0 && s === 1) { S.seenHelp = true; save(); openHelp(0); }
+}
+function curStep() { return MODS[S.pos.m].steps[S.pos.s]; }
+function updateNav() {
+  const { m, s } = S.pos, mod = MODS[m], st = mod.steps[s], need = st.need();
+  const nb = $("#bNext"), last = s === mod.steps.length - 1;
+  nb.hidden = !!st.results;
+  nb.textContent = (st.next || (last ? (m + 1 === LAST ? "See my results →" : "Next module →") : "Next →"));
+  nb.setAttribute("aria-disabled", need ? "true" : "false");
+  $("#gate").textContent = need || (st.results ? "" : "Ready. Press Next.");
+  $("#bBack").disabled = m === 0 && s === 0;
+  // top bar
+  $("#modName").textContent = st.results ? "Results" : (m ? "Module " + m + ": " : "") + mod.title;
+  $("#stepCount").textContent = st.results ? "" : "Step " + (s + 1) + " of " + mod.steps.length + " in this section";
+  const segs = $("#segs"), fr = frontier(); let left = 0, tot = 0, doneAll = 0, stepsAll = 0;
+  segs.replaceChildren(...MODS.map((mm, i) => {
+    const d = i < fr.m ? mm.steps.length : (i === fr.m ? fr.s : 0), f = i === LAST ? (S.finished ? 1 : 0) : d / mm.steps.length;
+    left += mm.minutes * (1 - f); tot += mm.minutes; if (i < LAST) { doneAll += d; stepsAll += mm.steps.length; }
+    return h("i", { class: i === m ? "cur" : "", title: mm.title }, h("b", { style: "width:" + Math.round(f * 100) + "%" }));
+  }));
+  const pct = Math.round(doneAll / stepsAll * 100);
+  segs.setAttribute("aria-valuenow", pct); segs.setAttribute("aria-valuetext", "Module " + m + " of " + (LAST - 1) + ". " + pct + " percent of the lesson complete.");
+  $("#minLeft").textContent = st.results || (S.finished && left < 1) ? "Finished" : "~" + Math.max(1, Math.round(left)) + " min left";
+}
+function next() {
+  const st = curStep(), need = st.need(); if (st.results) return;
+  if (need) { say(need); const g = $("#gate"); g.style.fontWeight = "700"; setTimeout(() => { g.style.fontWeight = ""; }, 900); return; }
+  const { m, s } = S.pos; if (s + 1 < MODS[m].steps.length) go(m, s + 1); else go(m + 1, 0);
+}
+function back() { const { m, s } = S.pos; if (s > 0) go(m, s - 1); else if (m > 0) go(m - 1, MODS[m - 1].steps.length - 1); }
+function jumpTo(m) {
+  const f = frontier(); if (m > f.m) return;
+  const here = { m: S.pos.m, s: S.pos.s }; const target = m < f.m ? { m, s: 0 } : f;
+  if (here.m !== target.m) S.ret = here;
+  $("#dlg").close(); go(target.m, target.s);
+}
+function toggleTheme() { S.set.theme = document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark"; applySettings(); save(); }
+function bumpScale(d) { S.set.scale = clamp(S.set.scale + d, 0, 3); applySettings(); save(); }
+function toggleMotion() { const was = curStep().anim; S.set.reduce = !reduced(); applySettings(); save(); if (was) render(); }
+
+/* ---- dialogs ---- */
+let lastFocus = null;
+function openDlg(build) { const d = $("#dlg"); if (!d.open) lastFocus = document.activeElement; d.replaceChildren(); build(d); if (!d.open) d.showModal(); const hh = d.querySelector("h1"); if (hh) { hh.tabIndex = -1; hh.focus(); } }
+function confirmBox(msg, ok) {
+  return new Promise((res) => {
+    const d = $("#cdlg"); d.returnValue = "";
+    d.replaceChildren(h("h1", null, "Please confirm"), h("p", null, msg), h("div", { class: "row" }, h("button", { class: "btn primary", type: "button", on: { click: () => d.close("yes") } }, ok || "Yes"), h("button", { class: "btn", type: "button", on: { click: () => d.close("no") } }, "Cancel")));
+    d.addEventListener("close", () => res(d.returnValue === "yes"), { once: true }); d.showModal();
+  });
+}
+function openMenu() {
+  openDlg((d) => {
+    const f = frontier();
+    d.append(h("h1", null, "Lesson menu"), P("You can go back to any finished module. Modules ahead unlock as you finish the ones before."),
+      h("ul", { class: "mlist" }, MODS.map((mm, i) => {
+        const state = i < f.m ? "✓ Done" : i === f.m ? "● Current" : "🔒 Locked";
+        const lock = i > f.m;
+        return h("li", null, h("button", { class: "btn" + (i === S.pos.m ? " primary" : ""), type: "button", "aria-disabled": lock ? "true" : "false", on: { click: () => { if (!lock) jumpTo(i); } } },
+          h("span", null, (i && i < LAST ? i + ". " : "") + mm.title + (mm.minutes ? " (" + mm.minutes + " min)" : "")), h("span", null, state)));
+      })),
+      S.ret && cmp(S.ret, S.pos) !== 0 ? h("button", { class: "btn primary", type: "button", on: { click: () => { const r = S.ret; S.ret = null; d.close(); go(r.m, r.s); } } }, "Return to where I was") : null,
+      h("div", { class: "row", style: "margin-top:.8rem" }, h("button", { class: "btn", type: "button", on: { click: nameDialog } }, "Change my name"), h("button", { class: "btn", type: "button", on: { click: () => d.close() } }, "Close menu")),
+      h("p", { class: "foot" }, h("button", { type: "button", on: { click: () => { d.close(); resetLesson(); } } }, "Reset lesson on this computer")));
+  });
+}
+function nameDialog() {
+  const tmp = { first: S.name.first, last: S.name.last };
+  openDlg((d) => {
+    const msg = h("p", { role: "status" });
+    d.append(h("h1", null, "Change my name"), field("First name", tmp, "first"), field("Last name", tmp, "last"), msg,
+      h("div", { class: "row", style: "margin-top:.8rem" }, h("button", { class: "btn primary", type: "button", on: { click: () => { if (!tmp.first.trim() || !tmp.last.trim()) { msg.textContent = "Both names are needed."; return; } S.name.first = tmp.first; S.name.last = tmp.last; save(); updateWho(); d.close(); const hh = $("#main h1"); if (curStep().results && hh) hh.textContent = fullName() + ", here's your Build Your Plan summary"; } } }, "Save name"), h("button", { class: "btn", type: "button", on: { click: openMenu } }, "Cancel")));
+  });
+}
+function orientSvg(p) {
+  const svg = s("svg", { viewBox: "0 0 600 200", role: "img", "aria-label": p === 0 ? "Picture of the top bar with labels." : "Picture of the bottom bar with Back and Next buttons." });
+  const box = (x, y, w, hh, t, fill) => [s("rect", { x, y, width: w, height: hh, rx: 6, style: "fill:" + (fill || "var(--surface2)") + ";stroke:var(--text);stroke-width:2" }), s("text", { x: x + w / 2, y: y + hh / 2 + 5, "font-size": 14, "text-anchor": "middle", "font-weight": 700 }, t)];
+  const lab = (x, y, t) => s("text", { x, y, "font-size": 14, "text-anchor": "middle" }, t);
+  if (p === 0) {
+    svg.append(...box(10, 20, 580, 90, "", "var(--surface)"), ...box(20, 30, 150, 28, "Lesson title"), ...box(180, 30, 150, 28, "Student: your name"), ...box(440, 30, 70, 28, "Menu"), ...box(520, 30, 60, 28, "?"),
+      ...box(20, 70, 180, 28, "Module and step"), ...box(215, 70, 230, 28, "▮▮▮▯▯▯▯▯▯ progress", "var(--infobg)"), ...box(460, 70, 120, 28, "~X min left"),
+      lab(300, 150, "The top bar shows where you are, how far you've come, and the time left."), lab(300, 175, "Menu = jump to finished parts. ? = help."));
+  } else {
+    svg.append(...box(10, 40, 580, 70, "", "var(--surface)"), ...box(25, 55, 110, 40, "← Back"), ...box(165, 55, 270, 40, "What's left to do shows here"), ...box(460, 55, 115, 40, "Next →", "var(--accent)"),
+      lab(300, 150, "Next is always bottom right. Back is always bottom left."), lab(300, 175, "If Next is gray, the middle message tells you exactly what's left."));
+  }
+  return h("div", { class: "svgwrap" }, svg);
+}
+function openHelp(page) {
+  const pages = [
+    () => [h("h1", null, "How to use this (1 of 3): the top bar"), orientSvg(0), P("Each section is a short set of steps. Every screen has one idea or one activity.")],
+    () => [h("h1", null, "How to use this (2 of 3): moving on"), orientSvg(1), P("Finish the activity, then press Next. Press Back any time to review. Your work is saved automatically (look for “Saved ✓”).")],
+    () => [h("h1", null, "How to use this (3 of 3): shortcuts"), h("table", { class: "t" }, h("tbody", null, [["Enter or →", "Next"], ["←", "Back"], ["M", "Menu"], ["?", "This help"]].map(([k, v]) => h("tr", null, h("td", null, h("span", { class: "kbd" }, k)), h("td", null, v))))), P("Shortcuts turn off while you're typing in a box. You can close the tab and come back; your progress is saved on this computer.")]
+  ];
+  openDlg((d) => {
+    const draw = (i) => { d.replaceChildren(...pages[i](), h("div", { class: "row", style: "margin-top:.8rem" },
+      i > 0 ? h("button", { class: "btn", type: "button", on: { click: () => { draw(i - 1); d.querySelector("h1").focus(); } } }, "← Previous") : null,
+      i < 2 ? h("button", { class: "btn primary", type: "button", on: { click: () => { draw(i + 1); d.querySelector("h1").focus(); } } }, "Next →") : null,
+      h("button", { class: "btn", type: "button", on: { click: () => d.close() } }, i < 2 ? "Skip" : "Got it")));
+      d.querySelectorAll("h1").forEach((x) => { x.tabIndex = -1; }); };
+    draw(page);
+  });
+}
+async function resetLesson() {
+  const ok = await confirmBox("This erases your name, answers, and progress on this computer. This can't be undone. Continue?", "Yes, erase everything");
+  if (!ok) return;
+  const set = S.set; S = FRESH(); S.set = set; save(); updateWho(); go(0, 0);
+}
+
+/* ---- keyboard ---- */
+document.addEventListener("keydown", (e) => {
+  if (e.defaultPrevented || e.ctrlKey || e.metaKey || e.altKey) return;
+  if (document.querySelector("dialog[open]")) return;
+  const t = e.target, tag = t.tagName, ty = t.type;
+  if (tag === "TEXTAREA" || tag === "SELECT" || t.isContentEditable || (tag === "INPUT" && !["button", "checkbox", "radio", "range"].includes(ty))) return;
+  const k = e.key;
+  if (k === "m" || k === "M") { e.preventDefault(); openMenu(); }
+  else if (k === "?") { e.preventDefault(); openHelp(2); }
+  else if (k === "ArrowRight" || k === "ArrowLeft") { if (tag === "INPUT" && ["radio", "range", "checkbox"].includes(ty)) return; e.preventDefault(); k === "ArrowRight" ? next() : back(); }
+  else if (k === "Enter") { if (["BUTTON", "A", "SUMMARY", "INPUT"].includes(tag)) return; e.preventDefault(); next(); }
+});
+window.addEventListener("beforeunload", (e) => { if (!store.ok && hasTypedText()) { e.preventDefault(); e.returnValue = ""; } });
+window.addEventListener("hashchange", () => { if ($("#dlg").open) $("#dlg").close(); route(); });
+window.addEventListener("afterprint", () => { document.title = "Build Your Plan: Motivation and Goal-Setting Lesson"; });
+$("#dlg").addEventListener("close", () => { if (lastFocus && lastFocus.focus && document.contains(lastFocus)) lastFocus.focus(); });
+
+/* ---- start ---- */
+function promptResume(saved) {
+  openDlg((d) => {
+    const nm = fullName();
+    d.append(h("h1", null, "Welcome back" + (nm ? ", " + S.name.first.trim() : "")),
+      P(S.finished ? "You finished the lesson. You can see your results or review any module." : "Your progress is saved on this computer. Pick up where you left off, or start over."),
+      h("div", { class: "row" },
+        h("button", { class: "btn primary", type: "button", on: { click: () => { d.close(); S.finished ? go(LAST, 0) : route(); } } }, S.finished ? "See my results" : "Resume"),
+        S.finished ? h("button", { class: "btn", type: "button", on: { click: () => { d.close(); route(); openMenu(); } } }, "Review a module") : null,
+        h("button", { class: "btn", type: "button", on: { click: async () => { const ok = await confirmBox("Start over? This erases your answers on this computer.", "Yes, start over"); if (ok) { d.close(); const set = S.set; S = FRESH(); S.set = set; save(); go(0, 0); } } } }, "Start over")));
+  });
+}
+function init() {
+  probeStorage();
+  $("#lessonTitle").textContent = CONFIG.title;
+  $("#bMenu").addEventListener("click", openMenu); $("#bHelp").addEventListener("click", () => openHelp(0));
+  $("#bTheme").addEventListener("click", toggleTheme); $("#bSm").addEventListener("click", () => bumpScale(-1)); $("#bLg").addEventListener("click", () => bumpScale(1));
+  $("#bMotion").addEventListener("click", toggleMotion);
+  $("#bNext").addEventListener("click", next); $("#bBack").addEventListener("click", back);
+  const saved = loadSaved();
+  if (saved) S = Object.assign(FRESH(), saved);
+  applySettings(); showNotice(); updateWho();
+  if (saved && (S.name.first || S.name.last || Object.keys(S.d).length)) { updateNav(); promptResume(); } else route();
+}
+init();
+</script>
+</body>
+</html>
