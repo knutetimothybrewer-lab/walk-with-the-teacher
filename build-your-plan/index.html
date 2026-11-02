@@ -5,11 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Build Your Plan: Motivation and Goal-Setting Lesson</title>
 <style>
-:root{--bg:#f4f7fb;--surface:#fff;--surface2:#eaf0f7;--text:#13202e;--muted:#43546a;--border:#aebccc;--accent:#1d5bbf;--onaccent:#fff;--focus:#0a3d91;--ok:#14633a;--okbg:#e2f3e8;--bad:#a1252b;--badbg:#fbe6e8;--warn:#7a4a00;--warnbg:#fff0d0;--infobg:#e4edfb;--scale:1}
-html[data-theme=dark]{--bg:#0f1620;--surface:#18222f;--surface2:#223044;--text:#eef3f8;--muted:#b6c3d2;--border:#4a5b70;--accent:#8dbcff;--onaccent:#0a1a30;--focus:#ffd479;--ok:#7fdca8;--okbg:#12301f;--bad:#ff9ea2;--badbg:#3d1b1e;--warn:#f5c26b;--warnbg:#3a2c10;--infobg:#1b2b42}
+:root{--bg:#e9f4f4;--surface:#ffffff;--surface2:#d8eaec;--text:#10222b;--muted:#3b535d;--border:#8fb0b6;--accent:#0b6b78;--onaccent:#fff;--focus:#a33b00;--ok:#14633a;--okbg:#e2f3e8;--bad:#a1252b;--badbg:#fbe6e8;--warn:#7a4a00;--warnbg:#fff0d0;--infobg:#dcf0f2;--grid:rgba(11,107,120,.08);--shadow:rgba(16,34,43,.14);--scale:1}
+html[data-theme=dark]{--bg:#0a1920;--surface:#12262f;--surface2:#1b3642;--text:#e8f6f6;--muted:#a9c3c8;--border:#3f6877;--accent:#4fd1c5;--onaccent:#04222a;--focus:#ffd479;--ok:#7fdca8;--okbg:#12301f;--bad:#ff9ea2;--badbg:#3d1b1e;--warn:#f5c26b;--warnbg:#3a2c10;--infobg:#14313c;--grid:rgba(79,209,197,.07);--shadow:rgba(0,0,0,.35)}
 *{box-sizing:border-box}
 html{font-size:calc(18px*var(--scale));-webkit-text-size-adjust:100%}
-body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;line-height:1.5;min-height:100vh;display:flex;flex-direction:column}
+body{margin:0;background-color:var(--bg);background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:28px 28px;color:var(--text);font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;line-height:1.5;min-height:100vh;display:flex;flex-direction:column}
 h1{font-size:1.6rem;line-height:1.2;margin:.2rem 0 .8rem}
 h2{font-size:1.2rem;margin:1.1rem 0 .4rem}
 h3{font-size:1.05rem;margin:.9rem 0 .3rem}
@@ -19,7 +19,8 @@ button,input,select,textarea{font:inherit;color:inherit}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 .skip{position:absolute;left:-999px;top:0;background:var(--accent);color:var(--onaccent);padding:.5rem 1rem;z-index:50}
 .skip:focus{left:0}
-header#top{background:var(--surface);border-bottom:2px solid var(--border);padding:.45rem 1rem .55rem}
+header#top{background:var(--surface);border-bottom:3px solid var(--border);padding:0 1rem .55rem;position:relative;z-index:2}
+header#top::before{content:"";display:block;height:7px;margin:0 -1rem .45rem;background:repeating-linear-gradient(-45deg,#ffb703 0 12px,#1b2a33 12px 24px)}
 .row1,.row2{display:flex;flex-wrap:wrap;gap:.4rem .9rem;align-items:center;justify-content:space-between}
 .brand{font-weight:700;display:flex;gap:.8rem;flex-wrap:wrap;align-items:baseline}
 .brand #who{font-weight:500;color:var(--muted);font-size:.85rem}
@@ -28,21 +29,23 @@ header#top{background:var(--surface);border-bottom:2px solid var(--border);paddi
 #saved.on{opacity:1}
 .row2{margin-top:.35rem;font-size:.9rem}
 .row2 .mod{flex:0 1 auto}
-#segs{display:flex;gap:3px;flex:1 1 220px;min-width:180px;max-width:520px}
-#segs i{flex:1;height:12px;border-radius:3px;background:var(--surface2);border:1px solid var(--border);overflow:hidden;position:relative}
-#segs i b{position:absolute;left:0;top:0;bottom:0;background:var(--accent)}
-#segs i.cur{outline:2px solid var(--text);outline-offset:1px}
+#segs{display:flex;gap:5px;flex:1 1 220px;min-width:180px;max-width:520px;align-items:flex-end}
+#segs i{flex:1;height:30px;border-radius:3px 3px 14px 14px;background:var(--surface2);border:2px solid var(--muted);overflow:hidden;position:relative}
+#segs i b{position:absolute;left:0;right:0;bottom:0;background:linear-gradient(180deg,var(--accent),#2a9d8f);transition:height .8s ease}
+#segs i b::after{content:"";position:absolute;left:30%;bottom:3px;width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,.8);animation:tubeb 2.2s ease-in infinite}
+#segs i.cur{outline:3px solid var(--text);outline-offset:1px}
 .btn{min-height:44px;min-width:44px;padding:.4rem .9rem;border-radius:8px;border:2px solid var(--border);background:var(--surface);cursor:pointer;font-weight:600}
 .btn:hover{border-color:var(--accent)}
-.btn.primary{background:var(--accent);color:var(--onaccent);border-color:var(--accent)}
+.btn.primary{background:var(--accent);color:var(--onaccent);border-color:var(--accent);box-shadow:0 4px 0 var(--shadow)}
+.btn.primary:active{transform:translateY(2px);box-shadow:0 2px 0 var(--shadow)}
 .btn.sm{min-height:44px;padding:.2rem .6rem;font-size:.85rem}
 .btn[disabled],.btn[aria-disabled=true]{opacity:.55;cursor:not-allowed}
 .btn.big{font-size:1.1rem;padding:.55rem 1.6rem}
 .btn.on{background:var(--infobg);border-color:var(--accent)}
-main#main{flex:1;width:100%;max-width:980px;margin:0 auto;padding:1rem 1rem 2rem}
+main#main{position:relative;z-index:1;flex:1;width:100%;max-width:980px;margin:0 auto;padding:1rem 1rem 2rem}
 main:focus,h1:focus{outline:none}
 .eyebrow{font-size:.85rem;color:var(--muted);font-weight:600;letter-spacing:.02em}
-.card{background:var(--surface);border:2px solid var(--border);border-radius:12px;padding:1rem 1.1rem;margin:.8rem 0}
+.card{background:var(--surface);border:2px solid var(--border);border-radius:14px;padding:1rem 1.1rem;margin:.8rem 0;box-shadow:0 3px 0 var(--shadow)}
 .callout{background:var(--infobg);border-left:6px solid var(--accent);padding:.6rem .9rem;border-radius:6px;margin:.8rem 0}
 .callout.warn{background:var(--warnbg);border-color:var(--warn)}
 .grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:.8rem}
@@ -121,6 +124,56 @@ dialog h1{font-size:1.3rem}
 .plan-sec dd{margin:0 0 .2rem;overflow-wrap:anywhere;white-space:pre-wrap}
 .wrapany{overflow-wrap:anywhere}
 #printHeader{display:none}
+
+/* ---- lab theme: people, bubbles, scene ---- */
+#bubbles{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+#bubbles span{position:absolute;bottom:-60px;border-radius:50%;border:2px solid var(--accent);opacity:.2;animation:rise linear infinite}
+.hd{display:flex;gap:1rem;align-items:flex-start;justify-content:space-between}
+.hd>div:first-child{min-width:0;flex:1}
+.guide{display:flex;align-items:flex-end;gap:.3rem;flex:none;margin-top:-.2rem}
+.bubble{position:relative;max-width:190px;background:var(--surface);border:2px solid var(--border);border-radius:12px;padding:.3rem .6rem;font-size:.8rem;line-height:1.3;color:var(--muted);margin-bottom:1.6rem}
+.bubble::after{content:"";position:absolute;right:-8px;bottom:8px;width:12px;height:12px;background:var(--surface);border-right:2px solid var(--border);border-top:2px solid var(--border);transform:rotate(45deg)}
+.ppl{width:84px;height:auto;overflow:visible;flex:none}
+.scene .ppl{width:auto}
+.scene svg{max-height:200px}
+.ppl .bodyg{animation:bob 2.6s ease-in-out infinite}
+.ppl .headg{transform-origin:50px 56px;animation:nod 3.4s ease-in-out infinite}
+.ppl .blink{transform-box:fill-box;transform-origin:center;animation:blink 4.5s infinite}
+.ppl .pony{transform-origin:64px 30px;animation:sway 1.8s ease-in-out infinite alternate}
+.ppl .al{transform-origin:32px 56px;transform:rotate(8deg)}
+.ppl .ar{transform-origin:68px 56px;transform:rotate(-16deg)}
+.ppl .mo2,.ppl .sparks{display:none}
+.ppl.wave .al{transform:rotate(150deg);animation:wavel .7s ease-in-out infinite alternate}
+.ppl.work .ar{transform:rotate(-40deg);animation:swirl 1.1s ease-in-out infinite alternate}
+.ppl.cheer .al{transform:rotate(158deg);animation:cheerl .45s ease-in-out infinite alternate}
+.ppl.cheer .ar{transform:rotate(-158deg);animation:cheerr .45s ease-in-out infinite alternate}
+.ppl.cheer .bodyg{animation:hop .45s ease-in-out infinite alternate}
+.ppl.cheer .mo1{display:none}
+.ppl.cheer .mo2,.ppl.cheer .sparks{display:inline}
+.ppl .spark{transform-box:fill-box;transform-origin:center;animation:spark 1s ease-in-out infinite alternate}
+.bub{animation:bubb 1.8s ease-in infinite}
+.bub.b2{animation-delay:-.6s}.bub.b3{animation-delay:-1.2s}
+.orbit{animation:spin 8s linear infinite}
+.conf{animation:fall 3s linear infinite}
+.scene{padding:0;overflow:hidden;background:var(--surface2)}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-2.5px)}}
+@keyframes hop{from{transform:translateY(0)}to{transform:translateY(-7px)}}
+@keyframes nod{0%,100%{transform:rotate(-2deg)}50%{transform:rotate(2.5deg)}}
+@keyframes blink{0%,92%,100%{transform:scaleY(1)}95%{transform:scaleY(.1)}}
+@keyframes sway{from{transform:rotate(-10deg)}to{transform:rotate(12deg)}}
+@keyframes wavel{from{transform:rotate(125deg)}to{transform:rotate(172deg)}}
+@keyframes swirl{from{transform:rotate(-30deg)}to{transform:rotate(-58deg)}}
+@keyframes cheerl{from{transform:rotate(146deg)}to{transform:rotate(174deg)}}
+@keyframes cheerr{from{transform:rotate(-146deg)}to{transform:rotate(-174deg)}}
+@keyframes spark{from{transform:scale(.6);opacity:.5}to{transform:scale(1.3);opacity:1}}
+@keyframes bubb{0%{transform:translateY(0);opacity:0}25%{opacity:1}100%{transform:translateY(-9px);opacity:0}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes fall{0%{transform:translateY(-14px) rotate(0)}100%{transform:translateY(205px) rotate(540deg)}}
+@keyframes rise{0%{transform:translateY(0) translateX(0)}50%{transform:translateY(-55vh) translateX(18px)}100%{transform:translateY(-120vh) translateX(-10px)}}
+@keyframes tubeb{0%{transform:translateY(0);opacity:0}30%{opacity:1}100%{transform:translateY(-16px);opacity:0}}
+html[data-motion=reduce] #bubbles{display:none}
+html[data-motion=reduce] .conf{display:none}
+@media (max-width:640px){.bubble{display:none}.ppl{width:56px}.guide{margin-top:0}}
 @media (max-width:640px){html{font-size:calc(17px*var(--scale))}footer#bottom .btn{min-width:5rem}#gate{font-size:.8rem}.row1{gap:.3rem}}
 @media print{
  html{font-size:12pt!important}
@@ -138,6 +191,7 @@ dialog h1{font-size:1.3rem}
 </head>
 <body>
 <a class="skip" href="#main">Skip to the lesson</a>
+<div id="bubbles" aria-hidden="true"></div>
 <header id="top">
  <div class="row1">
   <div class="brand"><span id="lessonTitle"></span><span id="who"></span></div>
@@ -438,8 +492,11 @@ function fb(kind, head, body) {
 }
 
 /* --- multiple choice / select-all with feedback; state in S.d.q[id] --- */
-function qstate(id) { const q = D("q", {}); if (!q[id]) q[id] = { sel: [], checked: false, ok: false, first: null, tries: 0 }; return q[id]; }
-function qDone(id) { const q = S.d.q && S.d.q[id]; return !!(q && q.checked); }
+/* Scored items: 1st try 100%, 2nd 75%, 3rd 50%, 4th (or later) 0%. */
+const TRY_PTS = [1, 0.75, 0.5, 0];
+const pctTxt = (n) => Math.round(TRY_PTS[Math.min(n, 3)] * 100) + "%";
+function qstate(id) { const q = D("q", {}); if (!q[id]) q[id] = { sel: [], checked: false, ok: false, first: null, tries: 0, done: false, pts: 0 }; return q[id]; }
+function qDone(id) { const q = S.d.q && S.d.q[id]; return !!(q && q.done); }
 function mcq(id, o) {
   const st = qstate(id);
   const multi = !!o.multi;
@@ -451,7 +508,7 @@ function mcq(id, o) {
   const draw = () => {
     box.replaceChildren(h("legend", null, o.q));
     if (multi) box.appendChild(h("div", { class: "help" }, o.hint || "Select all that apply."));
-    const locked = st.checked && (o.once || st.ok);
+    const locked = st.done && (o.once || st.ok || o.scored);
     order.forEach((oi) => {
       const inp = h("input", { type: multi ? "checkbox" : "radio", name: "q_" + id, value: oi, disabled: locked });
       inp.checked = st.sel.includes(oi);
@@ -467,6 +524,7 @@ function mcq(id, o) {
     box.appendChild(btns); box.appendChild(out);
     btns.replaceChildren(chk);
     chk.disabled = !st.sel.length || locked;
+    if (o.scored && !st.done) btns.appendChild(h("span", { class: "tag" }, "Attempt " + (st.tries + 1) + " of 4: worth " + pctTxt(st.tries)));
     out.replaceChildren();
     if (st.checked) showFb();
   };
@@ -474,8 +532,15 @@ function mcq(id, o) {
     st.tries++; const sel = st.sel.slice().sort();
     st.ok = o.ok ? o.ok(sel) : (sel.length === o.c.length && sel.every((v, i) => v === o.c.slice().sort()[i]));
     if (st.first === null) st.first = st.ok;
+    if (o.scored) { if (st.ok) { st.done = true; st.pts = TRY_PTS[Math.min(st.tries - 1, 3)]; } else if (st.tries >= 4) { st.done = true; st.pts = 0; } } else st.done = true;
     st.checked = true; changed(); draw(); say(st.ok ? "Correct." : "Not quite."); if (o.onCheck) o.onCheck(); } } }, "Check my answer");
   function showFb() {
+    if (o.scored) {
+      if (st.ok) out.replaceChildren(fb("ok", "Right.", "Attempt " + st.tries + ": " + Math.round(st.pts * 100) + "% credit. " + (o.why || "")));
+      else if (st.done) out.replaceChildren(fb("bad", "Out of attempts (0% credit).", "Best answer: " + o.c.map((i) => o.opts[i].replace(/[.]$/, "")).join("; ") + ". " + (o.why || "")));
+      else out.replaceChildren(fb("bad", "Not quite.", "Take another look. Your next attempt is worth " + pctTxt(st.tries) + "."), h("button", { class: "btn", type: "button", on: { click: () => { st.sel = []; st.checked = false; changed(); draw(); const f = box.querySelector("input"); if (f) f.focus(); } } }, "Try again"));
+      return;
+    }
     const parts = [];
     if (o.optFb) st.sel.forEach((i) => { if (o.optFb[i]) parts.push(o.optFb[i] + " "); });
     parts.push(o.why || "");
@@ -486,53 +551,77 @@ function mcq(id, o) {
   draw(); return box;
 }
 
-/* --- card sort: one card at a time, 4 buttons or drag. state S.d[key].att --- */
+/* --- card sort: one card at a time, buttons or drag.
+   Plain mode: att[0][id] = binId.  Scored mode (o.tries): att[0][id] = {w:[wrong bins], done, bin, pts} --- */
+const isAns = (v) => !!v && (typeof v === "string" || v.done);
 function cardSort(key, o) {
   const st = D(key, { att: [{}] });
   const root = h("div");
-  let pending = null;
-  const cur = () => st.att[st.att.length - 1];
-  const pts = (it, b) => o.points ? o.points(it, b) : (it.a === b ? 1 : 0);
-  function answer(it, bin) { cur()[it.id] = bin; pending = it.id; changed(); draw(); const nb = $("#sortNext"); if (nb) nb.focus(); }
+  let pending = null, msg = null;
+  const a0 = () => st.att[0];
+  function answer(it, bin) {
+    const a = a0();
+    if (!o.tries) { a[it.id] = bin; pending = it.id; }
+    else {
+      const rec = a[it.id] || (a[it.id] = { w: [], done: false, bin: null, pts: 0 });
+      if (bin === it.a) { rec.done = true; rec.bin = bin; rec.pts = TRY_PTS[Math.min(rec.w.length, 3)]; pending = it.id; msg = null; }
+      else {
+        rec.w.push(bin);
+        if (rec.w.length >= o.bins.length - 1) { rec.done = true; rec.bin = it.a; rec.pts = 0; pending = it.id; msg = null; }
+        else msg = "Not quite. Your next try is worth " + pctTxt(rec.w.length) + ".";
+      }
+    }
+    changed(); draw(); say(msg || "Answer recorded.");
+    const nb = $("#sortNext") || $("#sortcard"); if (nb) nb.focus();
+  }
   function draw() {
     root.replaceChildren();
-    const a = cur(); const left = o.items.filter((i) => !a[i.id]);
+    const a = a0(); const left = o.items.filter((i) => !isAns(a[i.id]));
     const showId = pending || (left[0] && left[0].id);
     if (!showId) { summary(); return; }
     const it = o.items.find((i) => i.id === showId); const idx = o.items.indexOf(it);
-    root.appendChild(h("p", { class: "muted small" }, "Card " + (idx + 1) + " of " + o.items.length));
+    const rec = o.tries ? a[it.id] : null;
+    root.appendChild(h("p", { class: "muted small" }, "Card " + (idx + 1) + " of " + o.items.length + (o.tries && !pending ? "  ·  Attempt " + ((rec ? rec.w.length : 0) + 1) + " of 4, worth " + pctTxt(rec ? rec.w.length : 0) : "")));
     const card = h("div", { class: "sortcard", tabindex: "-1", draggable: pending ? null : "true", id: "sortcard" }, it.text);
     card.addEventListener("dragstart", (e) => { e.dataTransfer.setData("text/plain", it.id); });
     root.appendChild(card);
     if (!pending) {
+      if (msg) root.appendChild(fb("bad", "", msg));
       root.appendChild(h("p", { class: "help" }, "Choose a button below, or drag the card onto one."));
       root.appendChild(h("div", { class: "bins", role: "group", "aria-label": "Choose a category" }, o.bins.map((b) => {
-        const bt = h("button", { class: "bin", type: "button", "data-act": "1", on: { click: () => answer(it, b.id) } }, h("b", null, b.t), h("span", null, b.d || ""));
+        const tried = !!(rec && rec.w.includes(b.id));
+        const bt = h("button", { class: "bin", type: "button", "data-act": "1", "aria-disabled": tried ? "true" : null, on: { click: () => { if (!tried) answer(it, b.id); } } }, h("b", null, (tried ? "✗ " : "") + b.t), h("span", null, tried ? "Already tried" : (b.d || "")));
+        if (tried) bt.style.opacity = ".55";
         bt.addEventListener("dragover", (e) => { e.preventDefault(); bt.classList.add("over"); });
         bt.addEventListener("dragleave", () => bt.classList.remove("over"));
-        bt.addEventListener("drop", (e) => { e.preventDefault(); answer(it, b.id); });
+        bt.addEventListener("drop", (e) => { e.preventDefault(); bt.classList.remove("over"); if (!tried) answer(it, b.id); });
         return bt;
       })));
     } else {
-      const bin = a[it.id]; const p = pts(it, bin);
       const bname = (id) => o.bins.find((b) => b.id === id).t;
-      const body = o.reveal(it, bin, p);
-      const box = fb(p >= 1 ? "ok" : (p > 0 ? "warn" : "bad"), p >= 1 ? "Match." : (p > 0 ? "Close (half credit)." : "Not this time."), "You chose “" + bname(bin) + "”. " + (o.verdict ? o.verdict(it, bname) : ""));
+      let box, body;
+      if (o.tries) {
+        const p = rec.pts; const n = rec.w.length + 1;
+        box = fb(p >= 1 ? "ok" : (p > 0 ? "warn" : "bad"), p > 0 ? "Correct on attempt " + n + ": " + Math.round(p * 100) + "% credit." : "Out of attempts: 0% credit.", "The answer: “" + bname(it.a) + "”.");
+        body = o.reveal(it, it.a, p);
+      } else {
+        const bin = a[it.id];
+        box = fb("info", "", "You chose “" + bname(bin) + "”. " + (o.verdict ? o.verdict(it, bname) : ""));
+        body = o.reveal(it, bin, 1);
+      }
       root.appendChild(box); root.appendChild(body);
-      root.appendChild(h("button", { id: "sortNext", class: "btn primary", type: "button", "data-act": "1", on: { click: () => { pending = null; draw(); const c = $("#sortcard"); if (c) c.focus(); } } }, o.items.every((i) => cur()[i.id]) ? "See my results" : "Next card →"));
+      root.appendChild(h("button", { id: "sortNext", class: "btn primary", type: "button", "data-act": "1", on: { click: () => { pending = null; msg = null; draw(); const c = $("#sortcard"); if (c) c.focus(); } } }, o.items.every((i) => isAns(a0()[i.id])) ? "See my results" : "Next card →"));
     }
   }
   function summary() {
-    const first = st.att[0]; const score = (att) => o.items.reduce((t, i) => t + pts(i, att[i.id]), 0);
     root.appendChild(h("h2", null, "Your results"));
-    root.appendChild(h("p", null, "First try: ", h("b", null, fmt(score(first)) + " out of " + o.items.length), st.att[1] && o.items.every((i) => st.att[1][i.id]) ? ["   |   Second try: ", h("b", null, fmt(score(st.att[1])) + " out of " + o.items.length)] : "", ". The first try is the one that counts."));
-    if (o.review) root.appendChild(o.review(first));
-    if (o.retry) root.appendChild(h("button", { class: "btn", type: "button", "data-act": "1", on: { click: () => { if (st.att.length >= 2) st.att[1] = {}; else st.att.push({}); pending = null; changed(); draw(); } } }, "Try the deck again (for practice)"));
+    if (o.tries) root.appendChild(h("p", null, "Score: ", h("b", null, fmt(sortScore(key)) + " out of " + o.items.length), ". Each card is worth 100% on the first attempt, 75% on the second, 50% on the third, and 0% on the fourth."));
+    if (o.review) root.appendChild(o.review(a0()));
   }
   draw(); return root;
 }
-const cardsLeft = (key, items) => { const st = S.d[key]; return items.length - (st ? items.filter((i) => st.att[0][i.id]).length : 0); };
-const cardScore = (key, items, pts) => { const st = S.d[key]; if (!st) return 0; return items.reduce((t, i) => t + (st.att[0][i.id] ? pts(i, st.att[0][i.id]) : 0), 0); };
+const cardsLeft = (key, items) => { const st = S.d[key]; return items.length - (st ? items.filter((i) => isAns(st.att[0][i.id])).length : 0); };
+const sortScore = (key) => { const st = S.d[key]; if (!st) return 0; return Object.values(st.att[0]).reduce((t, r) => t + (r && r.pts ? r.pts : 0), 0); };
 
 /* --- frame animation: auto-plays (unless reduced), always has play/pause/replay/step --- */
 function frameAnim(o) {
@@ -623,17 +712,105 @@ function planMissing() {
 function kcResult() {
   const q = S.d.q || {}; const per = {}; let total = 0;
   KC.forEach((k) => {
-    const st = q["kc_" + k.id]; const ok = !!(st && st.ok);
-    (per[k.tag] = per[k.tag] || { n: 0, c: 0 }); per[k.tag].n++; if (ok) { per[k.tag].c++; total++; }
+    const st = q["kc_" + k.id]; const pts = st && st.done ? st.pts : 0;
+    (per[k.tag] = per[k.tag] || { n: 0, c: 0 }); per[k.tag].n++; per[k.tag].c += pts; total += pts;
   });
   return { total, per };
 }
-const svhPts = (it, b) => (it.a === b ? 1 : (b === "P" && (it.a === "S" || it.a === "H") ? 0.5 : 0));
-function svhScore() { return cardScore("svh", SVH_CARDS, svhPts); }
+function svhScore() { return sortScore("svh"); }
 function labBest() { const l = S.d.lab || {}; return GOAL_LAB.reduce((t, g) => t + ((l[g.id] && l[g.id].best) || 0), 0); }
 function itBest() { const b = S.d.itBest || {}; return [0, 1, 2].filter((i) => b[i]).length; }
 function planScore() { return planQuality(S.d.plan).filter((x) => x.ok).length; }
 function band(pct) { return pct >= 80 ? ["Strong", "ok"] : pct >= 60 ? ["Solid. Review these areas", "warn"] : ["Revisit these ideas", "bad"]; }
+
+/* ================= 4b. LAB ART: little animated lab people (inline SVG, no images) ================= */
+const PEOPLE = {
+  maya: { skin: "#c68642", hair: "#2b1b12", style: "pony", shirt: "#e07a5f", goggles: true, prop: "flask" },
+  jordan: { skin: "#8d5524", hair: "#1a1210", style: "curly", shirt: "#3d85c6", glasses: true, prop: "clipboard" },
+  alex: { skin: "#f1c27d", hair: "#b5651d", style: "bun", shirt: "#8e6bbf", prop: "flask" },
+  sam: { skin: "#e0ac69", hair: "#3b2f2f", style: "short", shirt: "#3f9e6b", glasses: true, prop: "lens" }
+};
+const GUIDE = ["maya", "maya", "sam", "alex", "jordan", "jordan", "alex", "sam", "maya", "maya"];
+const GUIDE_TIPS = [
+  ["Hi! I'm your lab partner. Fill in the form.", "Take your time. Nothing here is timed."],
+  ["Motivation moves. That's normal data!", "Let's observe how it works."],
+  ["Good scientists say “it depends.”", "Check the evidence first."],
+  ["Actions are things you control.", "Make it matter to you."],
+  ["Let's repair this goal together.", "Specific and realistic is testable."],
+  ["Every experiment needs a backup plan.", "Plan for the obstacle."],
+  ["One missed day barely changes the curve.", "Restart small and kind."],
+  ["Follow the data, not a hunch.", "Check the notes."],
+  ["Your plan is your experiment.", "Small enough for a bad day."],
+  ["You did it!"]
+];
+const GUIDE_DONE = ["Nice work! Press Next.", "Experiment complete. On to the next.", "Data looks good. Press Next."];
+const INK = "#1b3a4b";
+function propFor(kind, x) {
+  const st = "stroke:" + INK + ";stroke-width:1.6;stroke-linejoin:round";
+  if (kind === "flask") return s("g", { transform: "translate(" + x + " 84)" }, s("path", { d: "M-4 -16 L-4 -6 L-11 6 Q-13 11 -8 11 L8 11 Q13 11 11 6 L4 -6 L4 -16 Z", style: "fill:#e8fbff;" + st }),
+    s("path", { d: "M-9 3 L9 3 L11 6 Q13 11 8 11 L-8 11 Q-13 11 -11 6Z", style: "fill:#2ec4b6" }),
+    s("circle", { class: "bub", cx: -3, cy: 6, r: 1.8, style: "fill:#fff" }), s("circle", { class: "bub b2", cx: 3, cy: 7, r: 1.4, style: "fill:#fff" }), s("circle", { class: "bub b3", cx: 0, cy: 5, r: 1.2, style: "fill:#fff" }));
+  if (kind === "clipboard") return s("g", { transform: "translate(" + x + " 84)" }, s("rect", { x: -10, y: -14, width: 20, height: 26, rx: 2, style: "fill:#c8a26b;" + st }), s("rect", { x: -7, y: -10, width: 14, height: 19, style: "fill:#fff" }),
+    s("line", { x1: -5, y1: -6, x2: 5, y2: -6, style: st }), s("line", { x1: -5, y1: -1, x2: 5, y2: -1, style: st }), s("line", { x1: -5, y1: 4, x2: 2, y2: 4, style: st }));
+  return s("g", { transform: "translate(" + x + " 84)" }, s("circle", { cx: 0, cy: -9, r: 8, style: "fill:rgba(190,235,255,.6);" + st }), s("line", { x1: 6, y1: -3, x2: 12, y2: 5, style: "stroke:" + INK + ";stroke-width:3;stroke-linecap:round" }));
+}
+function person(name, pose, attrs) {
+  const P = PEOPLE[name], st = (c) => "fill:" + c + ";stroke:" + INK + ";stroke-width:2;stroke-linejoin:round";
+  const svg = s("svg", Object.assign({ viewBox: "0 0 100 130", class: "ppl " + pose, "aria-hidden": "true" }, attrs || {}));
+  const arm = (x, cls, extra) => s("g", { class: "arm " + cls },
+    s("line", { x1: x, y1: 56, x2: x, y2: 82, style: "stroke:" + INK + ";stroke-width:11;stroke-linecap:round" }), s("line", { x1: x, y1: 56, x2: x, y2: 82, style: "stroke:#f7fbfb;stroke-width:7;stroke-linecap:round" }),
+    s("circle", { cx: x, cy: 85, r: 5, style: st(P.skin) }), extra);
+  const eyes = s("g", { class: "blink" }, s("circle", { cx: 44, cy: 39, r: 2.2, style: "fill:" + INK }), s("circle", { cx: 56, cy: 39, r: 2.2, style: "fill:" + INK }));
+  const cap = s("path", { d: "M33 38 Q32 20 50 20 Q68 20 67 38 Q60 29 50 29 Q40 29 33 38Z", style: st(P.hair) });
+  const hairExtra = P.style === "pony" ? null : P.style === "bun" ? s("circle", { cx: 50, cy: 16, r: 7, style: st(P.hair) }) :
+    P.style === "curly" ? [[36, 25], [44, 19], [56, 19], [64, 25], [33, 34], [67, 34]].map(([cx, cy]) => s("circle", { cx, cy, r: 6.5, style: st(P.hair) })) : null;
+  const head = s("g", { class: "headg" },
+    P.style === "pony" ? s("g", { class: "pony" }, s("circle", { cx: 68, cy: 33, r: 7, style: st(P.hair) })) : null,
+    s("rect", { x: 45, y: 50, width: 10, height: 9, style: st(P.skin) }), s("circle", { cx: 50, cy: 38, r: 16, style: st(P.skin) }),
+    hairExtra, cap, eyes,
+    s("circle", { cx: 40, cy: 44, r: 3, style: "fill:#ff8fa3;opacity:.45" }), s("circle", { cx: 60, cy: 44, r: 3, style: "fill:#ff8fa3;opacity:.45" }),
+    s("path", { class: "mo1", d: "M44 46 Q50 51 56 46", style: "fill:none;stroke:" + INK + ";stroke-width:2;stroke-linecap:round" }),
+    s("path", { class: "mo2", d: "M43 45 Q50 57 57 45 Z", style: "fill:#7a2e2e;stroke:" + INK + ";stroke-width:2;stroke-linejoin:round" }),
+    P.glasses ? s("g", { style: "fill:rgba(255,255,255,.25);stroke:" + INK + ";stroke-width:1.8" }, s("circle", { cx: 44, cy: 39, r: 6 }), s("circle", { cx: 56, cy: 39, r: 6 }), s("line", { x1: 50, y1: 39, x2: 50, y2: 39 })) : null,
+    P.goggles ? s("g", null, s("rect", { x: 32, y: 24, width: 36, height: 5, style: "fill:#3a7ca5" }), s("circle", { cx: 43, cy: 25, r: 5.5, style: "fill:rgba(160,230,255,.7);stroke:" + INK + ";stroke-width:1.8" }), s("circle", { cx: 57, cy: 25, r: 5.5, style: "fill:rgba(160,230,255,.7);stroke:" + INK + ";stroke-width:1.8" })) : null);
+  const body = s("g", { class: "bodyg" },
+    s("path", { d: "M30 58 Q30 50 40 50 L60 50 Q70 50 70 58 L74 98 L26 98 Z", style: st("#f7fbfb") }),
+    s("path", { d: "M43 50 L50 68 L57 50 Z", style: st(P.shirt) }), s("rect", { x: 56, y: 78, width: 10, height: 10, rx: 1, style: "fill:none;stroke:" + INK + ";stroke-width:1.6" }), s("line", { x1: 60, y1: 74, x2: 60, y2: 83, style: "stroke:#e63946;stroke-width:2" }),
+    arm(32, "al"), arm(68, "ar", propFor(P.prop, 68)), head);
+  svg.append(s("ellipse", { cx: 50, cy: 125, rx: 24, ry: 4, style: "fill:rgba(0,0,0,.18)" }),
+    s("g", { class: "legs" }, s("rect", { x: 37, y: 92, width: 10, height: 26, rx: 3, style: st("#2f4a5a") }), s("rect", { x: 53, y: 92, width: 10, height: 26, rx: 3, style: st("#2f4a5a") }), s("ellipse", { cx: 41, cy: 119, rx: 8, ry: 4, style: st("#233") }), s("ellipse", { cx: 59, cy: 119, rx: 8, ry: 4, style: st("#233") })),
+    body, s("g", { class: "sparks" }, [[12, 24], [86, 22], [16, 62], [84, 60]].map(([x, y], i) => s("text", { class: "spark", x, y, "font-size": 16, style: "fill:#ffb703;animation-delay:" + i * 0.25 + "s" }, "✦"))));
+  return svg;
+}
+function flaskIcon() {
+  return s("svg", { viewBox: "0 0 32 32", width: 28, height: 28, "aria-hidden": "true", style: "vertical-align:middle;margin-right:.35rem" },
+    s("path", { d: "M12 3 L12 12 L4 26 Q2 30 7 30 L25 30 Q30 30 28 26 L20 12 L20 3 Z", style: "fill:#e8fbff;stroke:" + INK + ";stroke-width:2;stroke-linejoin:round" }),
+    s("path", { d: "M8 21 L24 21 L27 26 Q29 30 25 30 L7 30 Q3 30 5 26Z", style: "fill:#2ec4b6" }),
+    s("circle", { class: "bub", cx: 12, cy: 25, r: 2, style: "fill:#fff" }), s("circle", { class: "bub b2", cx: 19, cy: 26, r: 1.6, style: "fill:#fff" }), s("circle", { class: "bub b3", cx: 16, cy: 23, r: 1.4, style: "fill:#fff" }));
+}
+/* A banner scene: a lab bench with four little people. mode: "hello" or "party". */
+function labScene(mode) {
+  const party = mode === "party";
+  const svg = s("svg", { viewBox: "0 0 600 200", role: "img", "aria-label": party ? "Animated picture: four cartoon lab workers cheer and confetti falls." : "Animated picture: four cartoon lab workers at a bench; one waves hello." });
+  svg.append(s("rect", { x: 0, y: 0, width: 600, height: 200, style: "fill:var(--surface2)" }), s("rect", { x: 0, y: 62, width: 600, height: 4, style: "fill:var(--border)" }));
+  ["#2ec4b6", "#ffb703", "#b388eb", "#5fd068"].forEach((c, i) => {
+    const x = 60 + i * 70;
+    svg.append(s("g", { transform: "translate(" + x + " 34)" }, s("path", { d: "M-4 -14 L-4 -4 L-12 12 Q-14 16 -9 16 L9 16 Q14 16 12 12 L4 -4 L4 -14 Z", style: "fill:#e8fbff;stroke:" + INK + ";stroke-width:2;stroke-linejoin:round" }),
+      s("path", { d: "M-9 6 L9 6 L12 12 Q14 16 9 16 L-9 16 Q-14 16 -12 12Z", style: "fill:" + c }), s("circle", { class: "bub", cx: -3, cy: 11, r: 2, style: "fill:#fff;animation-delay:" + i * 0.4 + "s" }), s("circle", { class: "bub b2", cx: 3, cy: 12, r: 1.5, style: "fill:#fff;animation-delay:" + i * 0.3 + "s" })));
+  });
+  const atom = s("g", { transform: "translate(520 38)" }, s("g", { class: "orbit" }, [0, 60, 120].map((r) => s("ellipse", { rx: 26, ry: 9, transform: "rotate(" + r + ")", style: "fill:none;stroke:var(--accent);stroke-width:2" })), s("circle", { r: 4, style: "fill:#ffb703" })));
+  svg.append(atom);
+  for (let i = 0; i < 12; i++) svg.append(s("rect", { x: 400 + (i % 4) * 16, y: 14 + Math.floor(i / 4) * 14, width: 13, height: 11, rx: 2, style: "fill:var(--accent);opacity:" + (0.25 + (i % 5) * 0.13) }));
+  svg.append(s("rect", { x: 0, y: 160, width: 600, height: 40, style: "fill:var(--border)" }), s("rect", { x: 0, y: 156, width: 600, height: 6, style: "fill:var(--muted)" }));
+  const pose = (n) => (party ? "cheer" : (n === "maya" ? "wave" : (n === "alex" ? "work" : "idle")));
+  ["maya", "jordan", "alex", "sam"].forEach((n, i) => { const p = person(n, pose(n), { x: 120 + i * 105, y: 36, width: 100, height: 130 }); svg.append(p); });
+  if (party) for (let i = 0; i < 22; i++) svg.append(s("rect", { class: "conf", x: 10 + i * 27, y: 0, width: 7, height: 11, style: "fill:" + ["#ffb703", "#2ec4b6", "#ef476f", "#8e6bbf", "#4caf7a"][i % 5] + ";animation-delay:" + ((i * 0.37) % 3).toFixed(2) + "s;animation-duration:" + (2.4 + (i % 4) * 0.5) + "s" }));
+  return h("div", { class: "svgwrap scene" }, svg);
+}
+function makeBubbles() {
+  const wrap = $("#bubbles"); wrap.replaceChildren();
+  for (let i = 0; i < 9; i++) { const sz = 14 + (i * 7) % 26; wrap.appendChild(h("span", { style: "left:" + (6 + i * 11) % 96 + "%;width:" + sz + "px;height:" + sz + "px;animation-duration:" + (14 + (i * 3) % 11) + "s;animation-delay:-" + (i * 2.3).toFixed(1) + "s" })); }
+}
 
 /* ================= 6. MODULES 0-3 ================= */
 function sectionIntro(...kids) { return h("div", null, kids); }
@@ -662,7 +839,7 @@ function settingsRow() {
 const MODS = [];
 
 MODS.push({ id: "start", title: "Start", minutes: 2, steps: [
-  { t: "What's your name?", next: "Start", need: () => (S.name.first.trim() && S.name.last.trim() ? null : "Enter your first and last name to begin"),
+  { t: "What's your name?", scene: "hello", next: "Start", need: () => (S.name.first.trim() && S.name.last.trim() ? null : "Enter your first and last name to begin"),
     build(r) {
       r.append(P("Your teacher needs to know whose work this is. Your name stays on this computer and is printed on your summary."),
         h("div", { class: "card" }, field("First name", S.name, "first", { onInput: updateWho }), field("Last name", S.name, "last", { onInput: updateWho })),
@@ -779,17 +956,16 @@ MODS.push({ id: "m2", title: "Science vs. Hype", minutes: 7, steps: [
     build(r) {
       r.append(P("You'll see 10 claims you may have heard. Sort each into one of four bins:"),
         h("ul", null, SVH_BINS.map((b) => h("li", null, h("b", null, b.t), ": " + b.d))),
-        P("After each card you'll see what the research says. Scoring: 1 point for a match, half a point for choosing “Partly true” when the real answer is Supported or Hype. Only your first time through counts, but you can try the deck again for practice."),
+        P("After each card you'll see what the research says. If you miss, you can try again: a correct answer is worth 100% on the first attempt, 75% on the second, 50% on the third, and 0% on the fourth."),
         h("div", { class: "callout" }, "A good scientist says “it depends” and “we don't know yet” a lot. Those are real answers."));
     } },
   { t: "Claim sort", need: () => { const n = cardsLeft("svh", SVH_CARDS); return n ? "Sort all 10 cards to continue (" + n + " left)" : null; },
     build(r) {
       const nm = (id) => SVH_BINS.find((b) => b.id === id).t;
-      r.append(cardSort("svh", { items: SVH_CARDS, bins: SVH_BINS, points: svhPts, retry: true,
-        verdict: (it) => "Research says: " + nm(it.a) + ".",
+      r.append(cardSort("svh", { items: SVH_CARDS, bins: SVH_BINS, tries: true,
         reveal: (it) => h("div", null, h("h2", null, "What the research says"), P(it.why), h("span", { class: "tag" }, "Source: " + it.src)),
-        review: (first) => h("table", { class: "t" }, h("thead", null, h("tr", null, h("th", null, "Claim"), h("th", null, "You chose"), h("th", null, "Research says"))),
-          h("tbody", null, SVH_CARDS.map((c) => h("tr", null, h("td", null, c.text), h("td", null, nm(first[c.id])), h("td", null, nm(c.a)))))) }));
+        review: (a) => h("table", { class: "t" }, h("thead", null, h("tr", null, h("th", null, "Claim"), h("th", null, "Research says"), h("th", null, "Credit"))),
+          h("tbody", null, SVH_CARDS.map((c) => h("tr", null, h("td", null, c.text), h("td", null, nm(c.a)), h("td", null, a[c.id] ? Math.round(a[c.id].pts * 100) + "% (attempt " + (a[c.id].w.length + 1) + ")" : "")))))  }));
     } },
   { t: "How to spot hype", need: () => (qDone("flags") ? null : "Pick exactly 2 red flags, then check"),
     build(r) {
@@ -1157,12 +1333,12 @@ MODS.push({ id: "m8", title: "Make Your Plan", minutes: 12, steps: [
       const draw = () => {
         area.replaceChildren();
         const left = order.filter((id) => !qDone("kc_" + id)); const idShow = pend || left[0];
-        if (!idShow) { const kr = kcResult(); area.append(h("h2", null, "You finished the knowledge check"), h("p", null, h("b", null, kr.total + " out of 10"), " correct. See your full breakdown on the results page.")); return; }
+        if (!idShow) { const kr = kcResult(); area.append(h("h2", null, "You finished the knowledge check"), h("p", null, h("b", null, fmt(kr.total) + " out of 10"), " points. See your full breakdown on the results page.")); return; }
         const k = KC.find((x) => x.id === idShow); const n = order.indexOf(idShow) + 1;
-        area.append(h("p", { class: "muted small" }, "Question " + n + " of 10"), mcq("kc_" + k.id, { q: k.q, opts: k.opts, c: k.c, multi: k.multi, shuffle: true, once: true, why: k.why, onCheck: () => { pend = k.id; draw(); const b = $("#kcNext"); if (b) b.focus(); } }));
+        area.append(h("p", { class: "muted small" }, "Question " + n + " of 10"), mcq("kc_" + k.id, { q: k.q, opts: k.opts, c: k.c, multi: k.multi, shuffle: true, scored: true, why: k.why, onCheck: () => { if (qDone("kc_" + k.id)) { pend = k.id; draw(); const b = $("#kcNext"); if (b) b.focus(); } } }));
         if (pend) area.append(h("button", { id: "kcNext", class: "btn primary", type: "button", "data-act": "1", on: { click: () => { pend = null; draw(); const f = area.querySelector("input"); if (f) f.focus(); } } }, order.filter((id) => !qDone("kc_" + id)).length ? "Next question →" : "Finish"));
       };
-      r.append(P("10 questions. You get one try on each, and you'll see an explanation after every answer."), area); draw();
+      r.append(P("10 questions. If you miss one you can try again: a correct answer is worth 100% on the first attempt, 75% on the second, 50% on the third, and 0% on the fourth. You'll see an explanation once the question is finished."), area); draw();
     } },
   { t: "Reflection", need: () => { const n = REFLECT.filter((_, i) => (S.d["ref" + i] || "").trim().length < CONFIG.reflectionMinChars).length; return n ? "Write at least " + CONFIG.reflectionMinChars + " characters in each box (" + n + " left)" : null; },
     build(r) {
@@ -1202,7 +1378,7 @@ function dateStr() { return new Date().toLocaleDateString(undefined, { year: "nu
 function exportText() {
   const R = allResults(); const L = [];
   L.push("BUILD YOUR PLAN: " + fullName(), "Date: " + dateStr(), "");
-  L.push("COMPLETION: " + R.compPct + "%", "KNOWLEDGE", "  Knowledge check: " + R.kc.total + "/10", "  Science vs. Hype (first try): " + fmt(R.svh) + "/10",
+  L.push("COMPLETION: " + R.compPct + "%", "KNOWLEDGE", "  Knowledge check: " + fmt(R.kc.total) + "/10", "  Science vs. Hype: " + fmt(R.svh) + "/10",
     "APPLICATION", "  Goal Repair Lab (best): " + R.lab + "/15", "  If-then builder: " + R.itb + "/3", "  Action plan quality: " + R.pq + "/6", "REFLECTION: Completed", "");
   L.push("MY ACTION PLAN"); planLines().forEach(([k, v]) => L.push(k + ": " + (v || "")));
   L.push("", "Restart sentence: " + (S.d.restart || ""), "If-then plans (builder):"); (S.d.itb || []).forEach((p, i) => L.push("  " + (i + 1) + ". " + (p.text || "")));
@@ -1227,11 +1403,11 @@ MODS.push({ id: "results", title: "Results", minutes: 0, steps: [
         h("div", { id: "copyMsg", class: "small", role: "status" }),
         h("div", { class: "callout noprint" }, h("b", null, "Share with your teacher: "), "Print or save as PDF and hand it in or upload it where your teacher directs. Nothing is sent from this page."),
         sec("Completion: " + R.compPct + "%", h("ul", null, R.rows.map((x) => h("li", null, (x.done ? "✓ " : "☐ ") + x.m.title)))),
-        sec("Knowledge", barRow("Knowledge check", R.kc.total, 10), barRow("Science vs. Hype (first try)", R.svh, 10)),
+        sec("Knowledge", barRow("Knowledge check", R.kc.total, 10), barRow("Science vs. Hype", R.svh, 10)),
         sec("Application", barRow("Goal Repair Lab (best attempt)", R.lab, 15), barRow("If–then builder", R.itb, 3), barRow("Action plan quality", R.pq, 6)),
         sec("Personal reflection", h("p", null, "Completed ✓")),
         sec("Strengths and next steps",
-          R.tagRes.map((t) => { const b = band(t.pct); return h("p", null, h("b", null, TAGS[t.t].t + ": " + b[0] + " (" + t.c + "/" + t.n + "). "), t.pct >= 80 ? "You showed solid understanding here." : TAGS[t.t].tip); }),
+          R.tagRes.map((t) => { const b = band(t.pct); return h("p", null, h("b", null, TAGS[t.t].t + ": " + b[0] + " (" + fmt(t.c) + "/" + t.n + "). "), t.pct >= 80 ? "You showed solid understanding here." : TAGS[t.t].tip); }),
           h("p", { class: "muted small" }, "Strong is 80% or more, Solid is 60 to 79%, and Revisit is under 60%. These describe your answers on this activity, not you.")),
         sec("Your Action Plan", h("dl", null, planLines().map(([k, v]) => h("div", { class: "plan-sec" }, h("dt", null, k), h("dd", null, v || "—"))))),
         sec("Your restart sentence", h("p", { class: "wrapany" }, S.d.restart || "—")),
@@ -1282,7 +1458,9 @@ function render() {
   const eyebrow = h("div", { class: "eyebrow noprint" }, st.results ? "Results" : (m ? "Module " + m + ": " : "") + mod.title + " · Step " + (s + 1) + " of " + mod.steps.length + " in this section · about " + mod.minutes + " min");
   const h1 = h("h1", { tabindex: "-1" }, st.t);
   const body = h("div"); const foot = h("div", { class: "foot" }, "Teacher or shared computer? ", h("button", { type: "button", on: { click: resetLesson } }, "Reset lesson on this computer"));
-  main.append(eyebrow, h1, body, foot);
+  const scene = st.results ? "party" : st.scene;
+  const guide = scene ? null : h("div", { class: "guide", "aria-hidden": "true" }, h("div", { class: "bubble" }), person(GUIDE[m], "work"));
+  main.append(h("div", { class: "hd" }, h("div", null, eyebrow, h1), guide), scene ? labScene(scene) : null, body, foot);
   st.build(body);
   updateWho(); updateNav();
   window.scrollTo(0, 0); h1.focus({ preventScroll: true });
@@ -1296,6 +1474,8 @@ function updateNav() {
   nb.hidden = !!st.results;
   nb.textContent = (st.next || (last ? (m + 1 === LAST ? "See my results →" : "Next module →") : "Next →"));
   nb.setAttribute("aria-disabled", need ? "true" : "false");
+  const gd = $(".guide");
+  if (gd) { gd.querySelector("svg").setAttribute("class", "ppl " + (need ? "work" : "cheer")); const tips = GUIDE_TIPS[m] || [""]; $(".bubble", gd).textContent = need ? tips[s % tips.length] : GUIDE_DONE[(m + s) % GUIDE_DONE.length]; }
   $("#gate").textContent = need || (st.results ? "" : "Ready. Press Next.");
   $("#bBack").disabled = m === 0 && s === 0;
   // top bar
@@ -1305,7 +1485,7 @@ function updateNav() {
   segs.replaceChildren(...MODS.map((mm, i) => {
     const d = i < fr.m ? mm.steps.length : (i === fr.m ? fr.s : 0), f = i === LAST ? (S.finished ? 1 : 0) : d / mm.steps.length;
     left += mm.minutes * (1 - f); tot += mm.minutes; if (i < LAST) { doneAll += d; stepsAll += mm.steps.length; }
-    return h("i", { class: i === m ? "cur" : "", title: mm.title }, h("b", { style: "width:" + Math.round(f * 100) + "%" }));
+    return h("i", { class: i === m ? "cur" : "", title: mm.title }, h("b", { style: "height:" + Math.round(f * 100) + "%" }));
   }));
   const pct = Math.round(doneAll / stepsAll * 100);
   segs.setAttribute("aria-valuenow", pct); segs.setAttribute("aria-valuetext", "Module " + m + " of " + (LAST - 1) + ". " + pct + " percent of the lesson complete.");
@@ -1426,7 +1606,7 @@ function promptResume(saved) {
 }
 function init() {
   probeStorage();
-  $("#lessonTitle").textContent = CONFIG.title;
+  $("#lessonTitle").append(flaskIcon(), CONFIG.title + " · Motivation Lab"); makeBubbles();
   $("#bMenu").addEventListener("click", openMenu); $("#bHelp").addEventListener("click", () => openHelp(0));
   $("#bTheme").addEventListener("click", toggleTheme); $("#bSm").addEventListener("click", () => bumpScale(-1)); $("#bLg").addEventListener("click", () => bumpScale(1));
   $("#bMotion").addEventListener("click", toggleMotion);
