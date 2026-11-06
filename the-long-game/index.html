@@ -84,6 +84,15 @@ ol.moments{columns:2;column-gap:20px;padding-left:22px}ol.moments li{break-insid
 #debug{position:fixed;right:8px;bottom:8px;width:390px;max-width:calc(100vw - 16px);max-height:82vh;overflow:auto;z-index:80;background:#06101f;border:2px solid var(--accent);border-radius:12px;padding:10px;font:12px/1.4 ui-monospace,Menlo,Consolas,monospace;color:#e8f0ff}
 #debug h3{margin:8px 0 2px;font-size:12px;color:var(--accent)}#debug button{min-height:30px;font-size:12px;padding:2px 8px;margin:2px}
 #debug .ab{display:flex;align-items:center;gap:6px}#debug .ab i{display:block;height:8px;background:var(--info)}
+.cert{max-width:860px;margin:0 auto;background:var(--panel);border:3px solid var(--accent);border-radius:16px;padding:10px 22px;display:grid;gap:7px}
+.ch{text-align:center}.ch span{letter-spacing:.2em;font-size:.8rem;color:var(--accent);font-weight:800}.ch h1{margin:0;font-size:1.4rem}
+.cn input{min-height:38px;font-size:1.4rem;font-weight:800;background:transparent;border:0;border-bottom:3px solid var(--accent);border-radius:0;padding:4px 0}
+.cm,.cg{display:grid;grid-template-columns:1fr 1fr;gap:14px}.cm input{border-radius:6px;padding:2px 8px;min-height:34px}
+.cm b,.cg b{display:block;font-size:1.05rem}.cg small{display:block;color:var(--muted)}
+.cgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.cs{background:var(--panel2);border-radius:10px;padding:6px 10px}.cs span{display:block;font-size:.75rem;color:var(--muted)}.cs b{font-size:.95rem}
+.cbars{display:grid;gap:4px}.cb{display:grid;grid-template-columns:190px 1fr 50px;gap:8px;align-items:center;font-size:.85rem}.cb .bar{margin:0}
+.cf{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:8px;font-size:.85rem;color:var(--muted)}.cf b{color:var(--ink);letter-spacing:.1em}
+@media (max-width:640px){.cm,.cg{grid-template-columns:1fr}.cgrid{grid-template-columns:1fr 1fr}.cb{grid-template-columns:120px 1fr 44px}}
 body.reduced *{animation:none!important;transition:none!important}
 body.reduced .delta{animation:none!important;opacity:1;position:static;display:inline-block;margin-left:6px}
 body.reduced .fadeUp{animation:none!important}
@@ -1577,7 +1586,7 @@ function showReview() {
   S.phase = 'review'; save(); FX.set(null, 0); $('#play').hidden = true;
   const rv = $('#review'); rv.hidden = false; const P = CONFIG.profiles[S.final.profile], v = visible(S);
   const money = x => fmtMoney(x), rd = radar();
-  rv.innerHTML = `<div class="rv"><h1>Your Life in Review: ${esc(S.name)}</h1>
+  rv.innerHTML = `<div class="rv"><h1>Your Life in Review: ${esc(S.name)}</h1><div class="row"><button class="primary btnDone" type="button">Finish: get my completion page</button></div>
   <div class="rvs"><h2>${esc(P.title)}</h2><p>${esc(fmt(P.desc, S))}</p><p><b>Strengths:</b> ${esc(fmt(P.bright, S))}<br><b>Still open:</b> ${esc(fmt(P.open, S))}</p>
    <p class="hint">Every ending is a real place to stand. None of these profiles is a failure, and none is "the right answer."</p></div>
   <div class="rvs"><h2>Your path through time</h2><div id="tlbox"></div><div class="legend"><span>● Choice</span><span>◆ Event (happened to you)</span><span><i style="background:#52e0aa"></i>Lifted momentum</span><span><i style="background:#ff8a80"></i>Drained momentum</span><span><i style="background:#8fd0ff"></i>A trade-off (sideways)</span></div>
@@ -1594,7 +1603,7 @@ function showReview() {
     return `<li><b>Age ${x.age}: ${esc(x.title)}</b> (${x.tone === 'good' ? 'good luck' : x.tone === 'bad' ? 'hardship' : 'mixed'})${bits.length ? ' · ' + bits.join(', ') : ''}. ${esc(x.out)}</li>`; }).join('')}</ul></div>
   <div class="rvs"><h2>Questions for discussion</h2><ol class="qs">${CONFIG.questions.map(q => `<li>${esc(q)}</li>`).join('')}</ol>
    <p class="hint">If anything in this activity stirred up real feelings, a school counselor or other trusted adult is a good person to talk to.</p></div>
-  <div class="row"><button class="primary" id="btnReplay" type="button">Replay with a different starting point</button><button id="btnExport" type="button">Export summary (.txt)</button><button id="btnPrint" type="button">Print this page</button></div></div>`;
+  <div class="row"><button class="primary btnDone" type="button">Finish: get my completion page</button><button id="btnReplay" type="button">Replay with a different starting point</button><button id="btnExport" type="button">Export summary (.txt)</button><button id="btnPrint" type="button">Print this page</button></div></div>`;
   // timeline
   const X0 = 40, XW = 880, xa = a => X0 + (a - 17) / 33 * XW, hist = S.hist; let t = `<svg viewBox="0 0 960 230" role="group" aria-label="Timeline of ${esc(S.name)}'s life from age 17 to 50" style="width:100%;height:auto">`;
   CONFIG.stages.slice(0, 5).forEach((st, i) => { t += `<rect x="${xa(st.start)}" y="14" width="${xa(st.end) - xa(st.start)}" height="170" style="fill:var(--panel2)" opacity="${i % 2 ? 0.35 : 0.8}"/><text x="${(xa(st.start) + xa(st.end)) / 2}" y="30" text-anchor="middle" font-size="12" style="fill:var(--muted)">${st.short}</text>`; });
@@ -1618,8 +1627,36 @@ function showReview() {
   Tween.add(1.6, rd.anim);
   $('#btnExport').onclick = () => { const a = h('a', { href: URL.createObjectURL(new Blob([exportText()], { type: 'text/plain' })), download: `the-long-game-${S.name.replace(/\W+/g, '-')}.txt` }); document.body.append(a); a.click(); a.remove(); };
   $('#btnPrint').onclick = () => window.print();
+  $$('.btnDone').forEach(b => { b.onclick = showCompletion; });
   $('#btnReplay').onclick = () => { const t = S.traits, n = {}; for (const k in t) n[k] = (t[k] + 1 + Math.floor(Math.random() * 2)) % 3; store.del(SAVE); setup.name = S.name; showSetup(n); window.scrollTo(0, 0); };
   window.scrollTo(0, 0); $('#main').focus({ preventScroll: true });
+}
+
+/* ---------------- completion page (screenshot-friendly) ---------------- */
+function doneCode() {
+  let x = 0; const str = S.seed + '|' + S.name + '|' + S.final.profile + '|' + S.hist.length;
+  for (const c of str) x = (Math.imul(x, 31) + c.charCodeAt(0)) | 0;
+  return (x >>> 0).toString(36).toUpperCase().padStart(6, '0').slice(-6);
+}
+function showCompletion() {
+  const rv = $('#review'), P = CONFIG.profiles[S.final.profile], v = visible(S);
+  const dec = S.hist.filter(x => x.kind === 'choice').length, evs = S.hist.length - dec;
+  const date = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+  const stat = (l, val) => `<div class="cs"><span>${l}</span><b>${esc(val)}</b></div>`;
+  const bars = Object.keys(CONFIG.axes).map(k => `<div class="cb"><span>${CONFIG.axes[k].label}</span><div class="bar"><i style="width:${S.ax[k] / CONFIG.axisMax * 100}%;background:var(--accent)"></i></div><b>${S.ax[k].toFixed(0)}/${CONFIG.axisMax}</b></div>`).join('');
+  rv.innerHTML = `<div class="rv"><p class="hint" style="text-align:center">Type your name below, then take a screenshot of this card and submit it.</p>
+  <div class="cert" id="cert"><div class="ch"><span>THE LONG GAME</span><h1>Certificate of Completion</h1></div>
+   <div class="cn"><label class="hint" for="stName">Completed by</label><input type="text" id="stName" maxlength="40" autocomplete="off" placeholder="Type your full name here" value="${esc(S.student || '')}"></div>
+   <div class="cm"><div><label class="hint" for="stClass">Class / period</label><input type="text" id="stClass" maxlength="30" autocomplete="off" placeholder="Optional" value="${esc(S.period || '')}"></div><div><span class="hint">Date</span><b>${date}</b></div></div>
+   <div class="cg"><div><span class="hint">Avatar</span><b>${esc(S.name)}</b><small>${esc(traitLine())}</small></div><div><span class="hint">Ending at age 50</span><b>${esc(P.title)}</b><small>${dec} decisions · ${evs} life events</small></div></div>
+   <div class="cgrid">${stat('Job', v.title)}${stat('Place', CONFIG.locName[v.loc] + ', ' + CONFIG.houseName[v.housing].toLowerCase())}${stat('Health', Math.round(v.hp) + '/100')}${stat('Income', fmtMoney(v.income) + '/yr')}${stat('Net worth', fmtMoney(v.net))}${stat('Fulfillment', Math.round(v.ful) + '%')}</div>
+   <div class="cbars">${bars}</div>
+   <div class="cf"><span>Verification code: <b>${doneCode()}</b></span><span>Every ending is a valid ending.</span></div></div>
+  <div class="row" style="justify-content:center"><button id="btnBack" type="button">Back to review</button></div></div>`;
+  const save2 = () => { S.student = $('#stName').value; S.period = $('#stClass').value; save(); };
+  $('#stName').oninput = save2; $('#stClass').oninput = save2;
+  $('#btnBack').onclick = showReview;
+  window.scrollTo(0, 0); $('#stName').focus({ preventScroll: true });
 }
 const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
