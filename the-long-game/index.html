@@ -1,0 +1,1669 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Long Game</title>
+<meta name="description" content="An educational life simulation for ages 14-18: small choices compound, obstacles happen to everyone, and many paths are valid.">
+<style>
+:root{--bg:#0d1830;--panel:#15244a;--panel2:#1c3060;--ink:#f3f6fc;--muted:#b9c5e0;--line:#3a508a;--accent:#ffb020;--acc-ink:#1a1300;--good:#52e0aa;--bad:#ff8a80;--info:#8fd0ff;--btn:#243b74;--btn-h:#2f4c96;--focus:#9ddcff;--spd:1}
+body.hc{--bg:#000;--panel:#000;--panel2:#0d0d0d;--ink:#fff;--muted:#f0f0f0;--line:#fff;--accent:#ffd400;--btn:#000;--btn-h:#262626;--focus:#00e5ff;--good:#3dff9e;--bad:#ff6b6b;--info:#7fe0ff}
+*{box-sizing:border-box}[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;min-height:100vh}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.skip{position:absolute;left:8px;top:-70px;background:var(--accent);color:var(--acc-ink);padding:8px 12px;border-radius:8px;z-index:60}.skip:focus{top:8px}
+.top{display:flex;align-items:center;gap:10px;padding:8px 14px;border-bottom:2px solid var(--line);flex-wrap:wrap;background:var(--panel)}
+.brand{margin:0;font-size:1.3rem;font-weight:800;font-style:italic;letter-spacing:.3px}.brand span{color:var(--accent)}
+.tools{margin-left:auto;display:flex;gap:6px;flex-wrap:wrap}
+.tools button{min-height:40px;padding:4px 10px;font-size:.9rem}
+button{font:inherit;color:var(--ink);background:var(--btn);border:2px solid var(--line);border-radius:10px;padding:6px 12px;min-height:44px;cursor:pointer;transition:background .15s,transform .1s}
+button:hover:not(:disabled){background:var(--btn-h)}button:active:not(:disabled){transform:translateY(1px)}button:disabled{cursor:default}
+button[aria-pressed="true"],button[aria-checked="true"]{border-color:var(--accent)}
+.primary{background:var(--accent);color:var(--acc-ink);border-color:var(--accent);font-weight:700}.primary:hover:not(:disabled){background:#ffc24d}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.grid{display:grid;grid-template-columns:minmax(0,1fr) 340px;grid-template-areas:"stage side" "beat side";gap:12px;padding:12px;max-width:1380px;margin:0 auto;align-items:start}
+.stageCol{grid-area:stage}#side{grid-area:side}#beat{grid-area:beat}
+@media (max-width:920px){.grid{grid-template-columns:minmax(0,1fr);grid-template-areas:"stage" "side" "beat"}}
+#stage{position:relative;width:min(100%,calc(52vh*16/9));min-width:min(100%,300px);aspect-ratio:16/9;margin:0 auto;border-radius:14px;overflow:hidden;border:2px solid var(--line);background:#000}
+#stage svg,#stage canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+#stage::after{content:"";position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity 1s}
+#stage[data-fx="rain"]::after{background:rgba(30,50,110,.25);opacity:1}
+#stage[data-fx="rays"]::after{background:linear-gradient(115deg,rgba(255,224,150,.28),rgba(255,224,150,0) 60%);opacity:1}
+.tl{position:absolute;inset:0;display:grid;place-items:center;pointer-events:none;opacity:0;transition:opacity .5s}.tl.on{opacity:1}
+.tl div{background:rgba(8,14,34,.82);padding:12px 24px;border-radius:14px;text-align:center;border:2px solid var(--accent)}
+.tl b{display:block;font-size:1.6rem;font-style:italic}.tl span{color:var(--muted)}
+.badge{position:absolute;left:10px;top:10px;background:rgba(8,14,34,.78);padding:4px 12px;border-radius:999px;font-size:.9rem;font-weight:700}
+.beatCard{background:var(--panel);border:2px solid var(--line);border-radius:14px;padding:16px 18px;max-width:900px;margin:0 auto}
+.fadeUp{animation:fadeUp calc(.5s/var(--spd)) both}@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.chip{display:inline-block;font-size:.8rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:2px 10px;border-radius:999px;background:var(--panel2);border:1px solid var(--line);color:var(--muted)}
+.chip.ev{background:var(--accent);color:var(--acc-ink);border-color:var(--accent)}
+.beatCard h2{margin:8px 0 6px;font-size:1.35rem}.beatCard p{font-size:1.1rem;margin:.4em 0;max-width:68ch}
+.note{border-left:4px solid var(--info);padding:6px 12px;background:var(--panel2);border-radius:0 8px 8px 0;font-size:.95rem;color:var(--muted)}
+.think{font-style:italic;color:var(--info)}
+.opts{display:grid;gap:10px;margin-top:12px}
+.opt{display:flex;gap:12px;align-items:center;text-align:left;min-height:58px;padding:10px 14px;font-size:1.05rem;width:100%}
+.opt .k{flex:none;width:28px;height:28px;border-radius:8px;background:var(--panel);border:2px solid var(--line);display:grid;place-items:center;font-weight:800;font-size:.9rem}
+.opt.picked{border-color:var(--accent);background:var(--panel2)}.opt.dim{opacity:.5}
+.outcome{margin-top:12px;padding:10px 14px;border-radius:10px;background:var(--panel2);border:2px solid var(--line)}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:12px}
+.hud,.creator{background:var(--panel);border:2px solid var(--line);border-radius:14px;padding:12px 14px}
+@media (min-width:921px){#side{position:sticky;top:8px}}
+.hud h2,.creator h2{font-size:1.1rem;margin:0 0 6px}
+.hrow{display:flex;justify-content:space-between;align-items:baseline;gap:8px;padding:6px 0;border-top:1px solid var(--line);position:relative}
+.hrow:first-of-type{border-top:0}
+.hl{color:var(--muted);font-size:.85rem}.hv{font-weight:800;font-size:1.15rem;font-variant-numeric:tabular-nums}
+.hv.neg{color:var(--bad)}
+.hsub{font-size:.9rem;font-weight:600;text-align:right}
+.bar{height:10px;background:var(--panel2);border:1px solid var(--line);border-radius:6px;overflow:hidden;margin-top:4px}.bar i{display:block;height:100%;background:var(--good);width:0;transition:width calc(.8s/var(--spd))}
+.hbody{display:flex;gap:10px;align-items:center;padding:6px 0}.hbody svg{flex:none;width:58px;height:100px}
+.people{display:flex;gap:2px}.people svg{width:14px;height:22px}
+.delta{position:absolute;right:0;top:-4px;font-weight:800;font-size:.95rem;pointer-events:none;animation:floatUp calc(2s/var(--spd)) forwards;text-shadow:0 1px 2px #000}
+.delta.g{color:var(--good)}.delta.b{color:var(--bad)}
+@keyframes floatUp{0%{opacity:0;transform:translateY(8px)}15%{opacity:1}100%{opacity:0;transform:translateY(-22px)}}
+.pill{display:inline-block;padding:1px 10px;border-radius:999px;border:2px solid var(--accent);font-weight:700;font-size:.85rem}
+.field{margin:10px 0}.field>label,.field>legend,legend{display:block;font-weight:700;margin-bottom:4px}
+fieldset{border:0;margin:10px 0;padding:0}
+input[type=text]{font:inherit;width:100%;padding:8px 10px;border-radius:10px;border:2px solid var(--line);background:var(--bg);color:var(--ink);min-height:44px}
+.sw{display:flex;gap:8px;flex-wrap:wrap}.sw button{min-width:44px;padding:0 8px}
+.sw .c{width:44px;padding:0;border-radius:50%}
+.seg{display:flex;gap:6px;flex-wrap:wrap}.seg button{flex:1;min-width:84px}
+.hint{color:var(--muted);font-size:.85rem}
+.rv{max-width:1100px;margin:0 auto;padding:14px}.rv h1{font-style:italic;margin:.2em 0}
+.rvs{background:var(--panel);border:2px solid var(--line);border-radius:14px;padding:16px;margin:14px 0}.rvs h2{margin-top:0}
+.charts{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px}
+.chart svg{width:100%;height:auto}.chart h3{margin:0 0 4px;font-size:1rem}
+.ln{fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+.tip{position:fixed;z-index:70;background:#000;color:#fff;border:1px solid #fff;padding:4px 8px;border-radius:6px;font-size:.85rem;pointer-events:none}
+.tbl{width:100%;border-collapse:collapse;font-size:.85rem}.tbl th,.tbl td{border-bottom:1px solid var(--line);padding:3px 6px;text-align:right}.tbl th:first-child,.tbl td:first-child{text-align:left}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:.9rem;color:var(--muted);margin:6px 0}
+.legend i{display:inline-block;width:12px;height:12px;vertical-align:-1px;margin-right:4px}
+.mk:focus{outline:none}.mk:focus-visible{outline:3px solid var(--focus)}
+ol.moments{columns:2;column-gap:20px;padding-left:22px}ol.moments li{break-inside:avoid;margin-bottom:6px}
+@media (max-width:700px){ol.moments{columns:1}}
+.qs li{margin:8px 0}
+#debug{position:fixed;right:8px;bottom:8px;width:390px;max-width:calc(100vw - 16px);max-height:82vh;overflow:auto;z-index:80;background:#06101f;border:2px solid var(--accent);border-radius:12px;padding:10px;font:12px/1.4 ui-monospace,Menlo,Consolas,monospace;color:#e8f0ff}
+#debug h3{margin:8px 0 2px;font-size:12px;color:var(--accent)}#debug button{min-height:30px;font-size:12px;padding:2px 8px;margin:2px}
+#debug .ab{display:flex;align-items:center;gap:6px}#debug .ab i{display:block;height:8px;background:var(--info)}
+body.reduced *{animation:none!important;transition:none!important}
+body.reduced .delta{animation:none!important;opacity:1;position:static;display:inline-block;margin-left:6px}
+body.reduced .fadeUp{animation:none!important}
+@media print{.top,#debug{display:none}}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to main content</a>
+<header class="top">
+  <h1 class="brand">The Long <span>Game</span></h1>
+  <div class="tools" role="toolbar" aria-label="Settings">
+    <button id="btnSpeed" aria-pressed="false" title="Make animations and pauses shorter (good for demos)">Speed: Normal</button>
+    <button id="btnMotion" aria-pressed="false" title="Turn motion effects on or off">Motion: On</button>
+    <button id="btnSound" aria-pressed="false" title="Soft ambient music">Sound: Off</button>
+    <button id="btnHC" aria-pressed="false" title="High-contrast colors">High contrast: Off</button>
+    <button id="btnNew" title="Start over">New game</button>
+  </div>
+</header>
+<main id="main" tabindex="-1">
+  <div id="play" class="grid">
+    <div class="stageCol">
+      <div id="stage" data-fx="">
+        <svg id="scene" viewBox="0 0 800 450" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+          <defs>
+            <linearGradient id="gSky" x1="0" y1="0" x2="0" y2="1"><stop id="sk1" offset="0" stop-color="#6fb4f5"/><stop id="sk2" offset="1" stop-color="#d4ebff"/></linearGradient>
+            <filter id="glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="3"/></filter>
+          </defs>
+          <rect width="800" height="450" fill="url(#gSky)"/>
+          <g id="gStars"></g>
+          <g id="gSun"><circle r="46" fill="#fff3c4" opacity=".25"/><circle r="26" fill="#ffe9a8"/></g>
+          <g id="gMoon"><circle r="22" fill="#eef2ff"/><circle cx="8" cy="-4" r="20" fill="#16204d" opacity=".0"/></g>
+          <g id="Lfar"><g id="clouds"></g><g id="farA"></g></g>
+          <g id="Lmid"><g id="midA"></g></g>
+          <g id="Lnear"><g id="nearA"></g></g>
+          <rect id="night" width="800" height="450" fill="#070d26" opacity="0"/>
+          <g id="Lav"></g>
+          <g id="Lfront"></g>
+        </svg>
+        <canvas id="fxc" aria-hidden="true"></canvas>
+        <div class="badge" id="badge" aria-hidden="true"></div>
+        <div class="tl" id="tl" aria-hidden="true"><div><b></b><span></span></div></div>
+      </div>
+      <p class="sr" id="stageDesc"></p>
+    </div>
+    <aside id="side" aria-label="Character and life dashboard"></aside>
+    <section id="beat" aria-label="Story"></section>
+  </div>
+  <div id="review" hidden></div>
+</main>
+<div id="debug" role="dialog" aria-label="Teacher debug panel" hidden></div>
+<div id="live" class="sr" aria-live="polite" role="status"></div>
+<noscript><p style="padding:20px">This simulation needs JavaScript.</p></noscript>
+
+<!-- ======================================================================
+     CONTENT CONFIG  — edit this block to change/add scenes, choices, events.
+     (See the "How to add content" notes in the project README / chat.)
+     ====================================================================== -->
+<script id="content">
+const CONFIG = {
+  /* ---------- core numbers ---------- */
+  axes: {                       // hidden momentum axes (0..axisMax). Revealed only in the debrief.
+    fin:  { label: 'Financial Stability',      short: 'Money',  blurb: 'saving, debt, and how well money can absorb surprises' },
+    phys: { label: 'Physical Health Habits',   short: 'Body',   blurb: 'sleep, movement, and getting care when you need it' },
+    ment: { label: 'Mental Resilience',        short: 'Mind',   blurb: 'coping skills and being willing to ask for help' },
+    rel:  { label: 'Relationships & Support',  short: 'People', blurb: 'friends, family, mentors, and community' },
+    skill:{ label: 'Skill & Career Capital',   short: 'Skills', blurb: 'what you know, what you can do, and who knows it' }
+  },
+  axisMax: 30, axisStart: 12, maxStep: 5,   // no choice moves an axis more than maxStep (≈17% of range)
+  locMult: { city: 1.12, suburb: 1.05, town: 1, rural: 0.92 },       // income by place
+  locSave: { city: -0.03, suburb: -0.01, town: 0, rural: 0.02 },     // savings rate by place
+  houseSave: { family: 0.08, dorm: 0, rent: 0, shared: 0.05, own: 0.03 },
+  locName: { city: 'City', suburb: 'Suburb', town: 'Small town', rural: 'Rural area' },
+  houseName: { family: 'Living with family', dorm: 'Campus housing', rent: 'Renting', shared: 'Shared housing', own: 'Owns a home' },
+
+  /* ---------- starting traits (student picks) ---------- */
+  traits: {
+    risk:   { label: 'Risk tolerance', levels: ['Cautious', 'Balanced', 'Bold'],
+              blurb: ['likes to play it safe', 'weighs both sides', 'likes big swings'],
+              fx: [{ fin: 2, skill: -1 }, {}, { fin: -1, skill: 1, ment: 1 }] },
+    family: { label: 'Family support', levels: ['Limited', 'Steady', 'Strong'],
+              blurb: ['has less family support to lean on', 'has steady family support', 'has a strong family support system'],
+              fx: [{ rel: -3, ment: -1 }, {}, { rel: 3, ment: 1, fin: 1 }] },
+    money:  { label: 'Money at home', levels: ['Tight', 'Okay', 'Comfortable'],
+              blurb: ['grew up with tight money', 'grew up with enough money', 'grew up comfortable'],
+              fx: [{ fin: -3 }, {}, { fin: 3 }], cash: [0, 500, 2500] }
+  },
+  looks: {
+    skin: ['#f6d5b8', '#e8b98f', '#c98e63', '#a8683f', '#7a4a2c', '#4f2e1c'],
+    hair: ['#1b1b1f', '#4a2c1a', '#8a5a2b', '#c9a24b', '#b5502d', '#9aa0aa'],
+    style: ['short', 'long', 'curly', 'bun'],
+    accent: ['#3b5b9a', '#7a3b6e', '#2f7f6f', '#b0533a', '#555b6b']
+  },
+  names: ['Amara', 'Mateo', 'Priya', 'Jordan', 'Mei', 'Dre', 'Sofia', 'Kofi', 'Layla', 'Noah', 'Tariq', 'Rosa', 'Aiko', 'Sam'],
+
+  /* ---------- life stages & beat plan ----------
+     Each plan slot: ['D', kind] decision of kind neutral|tilted|clear, ['D','=id'] a fixed decision,
+     ['E', tone] event of tone bad|good|any. A queued follow-up (from an event) takes the next
+     non-clear, non-fixed decision slot. */
+  stages: [
+    { id: 'teen',   label: 'Late Teens',     short: '17–19', start: 17, end: 20, blurb: '{name} is almost grown. Choices here open doors, but nothing is locked.',
+      plan: [['D','tilted'],['E','any'],['D','=fork_hs']] },
+    { id: 'early',  label: 'Early Twenties', short: '20–24', start: 20, end: 25, blurb: 'Independence arrives, along with rent, schedules, and big questions.',
+      plan: [['D','neutral'],['D','clear'],['E','bad'],['D','tilted']] },
+    { id: 'late',   label: 'Late Twenties',  short: '25–29', start: 25, end: 30, blurb: 'Habits set in. People start to compare paths, and no two look alike.',
+      plan: [['D','neutral'],['E','good'],['D','neutral'],['E','bad'],['D','neutral']] },
+    { id: 'thirty', label: 'Thirties',       short: '30–39', start: 30, end: 40, blurb: 'Years move faster. Responsibilities grow, and so do rewards.',
+      plan: [['D','neutral'],['E','any'],['D','tilted'],['D','clear']] },
+    { id: 'forty',  label: 'Forties',        short: '40–49', start: 40, end: 50, blurb: 'Time to look at what has been built and what still matters.',
+      plan: [['D','neutral'],['E','bad'],['D','neutral'],['E','any'],['D','tilted']] },
+    { id: 'fifty',  label: 'Age 50',         short: '50',    start: 50, end: 50, blurb: '', plan: [] }
+  ],
+
+  /* ---------- arcs & jobs ---------- */
+  arcs: {
+    college: { label: 'College-to-career',   desc: 'Debt and delayed income early, higher skill capital and a different network later.' },
+    trade:   { label: 'Trade / service',     desc: 'Paid training, earlier income and hands-on skill, with physical wear to manage.' },
+    work:    { label: 'Workforce-first',     desc: 'Income right away and little debt, with a slower climb unless new skills are added.' },
+    founder: { label: 'Entrepreneur',        desc: 'High variety and high variance: freedom and risk arrive together.' },
+    care:    { label: 'Family / caregiver',  desc: 'Deep ties and purpose, with lower income and fewer career doors early on.' }
+  },
+  jobs: {   // by arc, then stage index 0..5. emp defaults to 'Employed'.
+    school:  [{ title: 'High school student', inc: 3000, emp: 'Student' }],
+    college: [{ title: 'College student', inc: 4000, emp: 'Student' }, { title: 'College student', inc: 9000, emp: 'Student' }, { title: 'Early-career professional', inc: 56000 }, { title: 'Senior specialist', inc: 84000 }, { title: 'Department lead', inc: 102000 }, { title: 'Experienced professional', inc: 110000 }],
+    trade:   [{ title: 'Apprentice / service recruit', inc: 18000 }, { title: 'Apprentice, then journey-level', inc: 40000 }, { title: 'Licensed tradesperson', inc: 64000 }, { title: 'Crew lead', inc: 80000 }, { title: 'Master tradesperson', inc: 90000 }, { title: 'Master tradesperson', inc: 94000 }],
+    work:    [{ title: 'Part-time cashier', inc: 13000 }, { title: 'Warehouse / retail associate', inc: 31000 }, { title: 'Shift supervisor', inc: 43000 }, { title: 'Operations coordinator', inc: 57000 }, { title: 'Operations manager', inc: 68000 }, { title: 'Operations manager', inc: 72000 }],
+    founder: [{ title: 'Student & side-hustler', inc: 5000, emp: 'Student' }, { title: 'Founder (early days)', inc: 17000, emp: 'Self-employed' }, { title: 'Small-business owner', inc: 46000, emp: 'Self-employed' }, { title: 'Business owner', inc: 78000, emp: 'Self-employed' }, { title: 'Business owner', inc: 96000, emp: 'Self-employed' }, { title: 'Business owner', inc: 102000, emp: 'Self-employed' }],
+    care:    [{ title: 'Part-time worker & family helper', inc: 11000 }, { title: 'Part-time worker & caregiver', inc: 22000 }, { title: 'Home health aide', inc: 35000 }, { title: 'Care coordinator', inc: 48000 }, { title: 'Care coordinator', inc: 56000 }, { title: 'Care coordinator', inc: 58000 }]
+  },
+
+  /* ---------- DECISIONS ----------
+     kind: neutral | tilted | clear   (hidden from players)
+     Option fields: text, out, ax:{fin,phys,ment,rel,skill} (±1–3, big ones up to 5),
+       v:{hp,ful,sup,cash,debt,hi,mult,tmp,pur}, set:{arc,loc,housing,flags,unflags,title,queue},
+       roll:{p,hit:{out,ax,v,set},miss:{...}}, fn:(s)=>{}, tag:'recovery'|'temptation', pose, fx   */
+  decisions: {
+    hs_stress: { kind: 'tilted', stages: [0], title: 'Finals pressure', scene: 'school', help: true,
+      text: "Finals week is here, and {name} has three big tests and a pile of worry. Sleep has been short and the pressure keeps building.",
+      note: "Feeling overwhelmed is normal. A school counselor, teacher, or other trusted adult can help with stress.",
+      options: [
+        { text: "Tell a counselor, teacher, or family member how much pressure I'm under.", out: "{name} admitted it was a lot, and someone helped break the week into smaller pieces.", ax: { ment: 2, rel: 1 }, v: { hp: 3, sup: 4 }, tag: 'recovery' },
+        { text: "Make a study plan with a few classmates.", out: "Studying together made the material stick, and the group chat turned into real friendships.", ax: { skill: 2, rel: 1 }, v: { ful: 2, sup: 3 } },
+        { text: "Stay up all night cramming and keep it to myself.", out: "{name} got through the tests on caffeine and nerves, but felt wrung out for days.", ax: { skill: 1, phys: -2, ment: -1 }, v: { hp: -6, ful: -2 } }
+      ] },
+    hs_friend: { kind: 'tilted', stages: [0], title: 'Friend fight', scene: 'school',
+      text: "{name} and a close friend had an argument over something small that snowballed. Now the group chat is quiet and school feels awkward.",
+      options: [
+        { text: "Reach out first and apologize for my part.", out: "The apology was awkward but honest, and the friendship came back a little stronger.", ax: { rel: 2, ment: 1 }, v: { sup: 5, ful: 3 } },
+        { text: "Wait for them to make the first move.", out: "Days turned into weeks, and the friendship cooled even though nobody was really angry.", ax: { rel: -1 }, v: { sup: -3 } },
+        { text: "Vent online and pull other friends into it.", out: "The drama spread fast and people picked sides. {name} felt more alone than before.", ax: { rel: -2, ment: -1 }, v: { sup: -6, ful: -3 } }
+      ] },
+    fork_hs: { kind: 'neutral', stages: [0], title: 'What comes after graduation', scene: 'school', fixed: true,
+      text: "Graduation is a few weeks away. Everyone keeps asking {name} the same question: \"So, what's next?\" Several roads look good, and each one costs something different.",
+      think: "Which cost are you most comfortable carrying: debt, a slower start, distance from home, or uncertainty?",
+      options: [
+        { text: "Go to a four-year college.", out: "{name} packed up for campus with loans and big plans. A full paycheck was years away, but so were new people and new skills.", ax: { skill: 3, fin: -2, rel: 1 }, v: { ful: 3 }, set: { arc: 'college', housing: 'dorm' }, fn: s => { s.debt += [30000, 22000, 9000][s.traits.money]; } },
+        { text: "Learn a trade, or join an apprenticeship or national service.", out: "{name} signed up to learn by doing, and got paid a little while training.", ax: { skill: 2, phys: 2, fin: 2 }, v: { cash: 1500, ful: 2 }, set: { arc: 'trade', housing: 'shared' } },
+        { text: "Start working full-time right away.", out: "A steady paycheck started immediately, and {name} loved the freedom of earning their own money.", ax: { fin: 3, skill: 1 }, v: { cash: 3000, ful: 2 }, set: { arc: 'work', housing: 'family' } },
+        { text: "Stay close to home, help my family, and work part-time.", out: "{name} stayed close, picking up shifts and helping at home. Family ties deepened, even as some other doors stayed closed for now.", ax: { rel: 3, ment: 1, fin: -1 }, v: { sup: 8, ful: 3, pur: 4 }, set: { arc: 'care', housing: 'family' } }
+      ] },
+    city_or_home: { kind: 'neutral', stages: [1, 2], title: 'City or home', scene: 'city',
+      text: "{name} has a job opportunity in a bigger city. Friends, family, and familiar streets are back home. Either place could work out.",
+      think: "What matters more to you right now: opportunity, or the people who already know you?",
+      options: [
+        { text: "Move to the city for the opportunities.", out: "The city was loud and expensive, but doors opened fast. {name} also learned what homesickness feels like.", ax: { skill: 2, fin: -1, rel: -1 }, v: { ful: 2, sup: -5, mult: 0.08 }, set: { loc: 'city', housing: 'rent' } },
+        { text: "Stay near family and friends.", out: "Staying kept {name}'s circle close, though the biggest opportunities were a longer drive away.", ax: { rel: 2, ment: 1, skill: -1, fin: 1 }, v: { sup: 5, ful: 2 }, set: { loc: 'town' } },
+        { text: "Try a small town or rural area with lower costs.", out: "Rent was cheap and the air felt clearer. Fewer jobs nearby meant getting creative.", ax: { fin: 1, phys: 1, skill: -1 }, v: { ful: 2, mult: -0.05 }, set: { loc: 'rural', housing: 'rent' } }
+      ] },
+    fork_business: { kind: 'neutral', stages: [1, 2], title: 'Side hustle or steady job', scene: 'shop',
+      req: s => s.arc !== 'founder', w: s => 0.9 + s.traits.risk * 0.3 + (s.ax.skill >= 12 ? 0.3 : 0),
+      text: "{name} has been making a little money on the side (custom sneakers, tutoring, lawn care, a small app) and it is actually attracting customers. A steady job is also on the table.",
+      think: "Do you like building something from nothing, or learning the ropes first? How much uncertainty can you handle?",
+      options: [
+        { text: "Go all in and build the business.", out: "{name} took the leap. Some weeks were thrilling and some were scary, but every lesson was real.", ax: { skill: 2, fin: -2, ment: 1 }, v: { cash: -3000, ful: 3 }, set: { arc: 'founder' } },
+        { text: "Take the stable job and keep the business as a side project.", out: "The paycheck gave breathing room, and the side project kept the spark alive.", ax: { fin: 2, skill: 1 }, v: { cash: 1500 }, set: { flags: ['sidehustle'] } },
+        { text: "Let it go and focus on one path.", out: "{name} closed that chapter without drama and put full energy into one path.", ax: { skill: 1, ment: 1 }, v: { ful: -1 } }
+      ] },
+    partner_commit: { kind: 'neutral', stages: [1, 2, 3], title: 'Making plans together', scene: 'park',
+      req: s => !s.flags.partner,
+      text: "{name} has been seeing someone special for a while. They are talking about the future, like moving in together, while {name} also has goals that need attention.",
+      think: "Can love and ambition fit together? What would you need to know before making a big commitment?",
+      options: [
+        { text: "Commit and plan a future together.", out: "Sharing a home meant sharing rent and worries. {name} felt more supported than before.", ax: { rel: 3, fin: 1, skill: -1 }, v: { sup: 8, ful: 4 }, set: { flags: ['partner'], housing: 'rent' } },
+        { text: "Stay close, but keep my own space and goals first.", out: "{name} kept some independence and kept growing, and the relationship stayed honest about both.", ax: { skill: 2, ment: 1 }, v: { ful: 1 } },
+        { text: "Take a break from dating to focus on myself.", out: "Time alone brought clarity, along with a few quiet evenings.", ax: { skill: 1, phys: 1, rel: -1 }, v: { sup: -2 } }
+      ] },
+    ride_impaired: { kind: 'clear', stages: [1, 2], title: 'The ride home', scene: 'city', night: true, temptation: true,
+      text: "At a late party, the friend who drove everyone has had a few drinks and says, \"I'm fine, hop in.\" The keys are already in their hand.",
+      options: [
+        { text: "Say no and arrange a different ride, or stay put.", out: "It felt awkward for a minute. Everyone got home safely, and a couple of friends admitted they were relieved someone spoke up.", ax: { ment: 1, rel: 1, phys: 1 }, v: { ful: 2 } },
+        { text: "Text a trusted adult to come pick us up.", out: "The ride cost {name} a little pride and saved everyone a lot of risk. Asking for help turned out to be easy.", ax: { rel: 1, ment: 2, phys: 1 }, v: { sup: 3, ful: 1 }, tag: 'recovery' },
+        { text: "Ride along. It's probably fine.", out: "The drive was a near miss on a dark road. Everyone was shaken but unhurt this time, and nobody wanted a lesson like that.", ax: { phys: -2, ment: -2 }, v: { hp: -8, ful: -4 },
+          roll: { p: 0.3, hit: { out: "Worse, the car clipped a guardrail and {name} ended up with a broken wrist and a big repair bill split among friends.", ax: { phys: -2, fin: -2 }, v: { hp: -16, cash: -2000 } } } }
+      ] },
+    unsafe_shortcut: { kind: 'clear', stages: [1, 2, 3], title: 'Skipping the safety step', scene: 'work', req: s => { const j = jobFor(s); return j.emp !== 'Student'; },
+      text: "At work, a supervisor in a rush tells {name} to skip a safety step (the harness, the guard, the proper gloves) \"just this once\" to finish on time.",
+      options: [
+        { text: "Politely refuse and ask for the proper gear or step.", out: "It cost twenty minutes and an eye-roll. Later, a coworker thanked {name}, and the rules were updated.", ax: { skill: 1, phys: 1, ment: 1 }, v: { hp: 1, ful: 2 } },
+        { text: "Report it to a safety officer or someone above the supervisor.", out: "It was uncomfortable, but the report was taken seriously, and {name} earned quiet respect.", ax: { skill: 1, ment: 1, rel: -1 }, v: { ful: 2 } },
+        { text: "Skip the step. Deadlines are deadlines.", out: "{name} finished fast, then slipped and wrenched a shoulder. Recovery took weeks and the bills came right away.", ax: { phys: -2, fin: -1 }, v: { hp: -14, cash: -1200, ful: -3 }, pose: 'sick', set: { queue: ['rehab'] } }
+      ] },
+    scam_offer: { kind: 'clear', stages: [1, 2, 3, 4], title: 'Too good to be true', scene: 'apartment', temptation: true,
+      text: "A message arrives: \"Guaranteed 300% returns in one week. Just send $500 and invite friends!\" A friend says they already made money.",
+      options: [
+        { text: "Ignore it, then block and report it.", out: "{name} avoided a headache. Later, the friend admitted they had lost everything.", ax: { fin: 1, ment: 1 }, v: { ful: 1 } },
+        { text: "Check it out first: search reviews and ask someone experienced.", out: "A quick search turned up dozens of warnings. {name} also helped the friend get out early.", ax: { fin: 1, rel: 1, skill: 1 }, v: { sup: 2 } },
+        { text: "Send the money. It might be a real chance.", out: "The money vanished. {name} was embarrassed, but told a trusted person and learned how common these scams are.", ax: { fin: -3, ment: -1 }, v: { cash: -2000, ful: -4 } }
+      ] },
+    ignore_symptom: { kind: 'clear', stages: [3, 4], title: 'The symptom I ignored', scene: 'apartment',
+      text: "For weeks, {name} has had a worrying symptom: dizziness and shortness of breath on the stairs. They keep saying it's probably nothing. Work is busy and doctor visits are a hassle.",
+      options: [
+        { text: "Make an appointment this week.", out: "The doctor caught a treatable problem early. A few new habits and some medicine later, {name} felt relief at not waiting.", ax: { phys: 2, ment: 1 }, v: { hp: 4, cash: -300, ful: 2 } },
+        { text: "Ask a friend or relative to go with me.", out: "Having company made it easier to go. The news was manageable, and so was the plan.", ax: { phys: 2, rel: 1, ment: 1 }, v: { hp: 3, sup: 3 }, tag: 'recovery' },
+        { text: "Wait and see. I'm too busy right now.", out: "The symptom got worse and a hospital visit followed, with a longer recovery and bigger bills than an early visit would have meant.", ax: { phys: -3, fin: -1 }, v: { hp: -16, cash: -4500, ful: -4 }, pose: 'sick', set: { queue: ['rehab'] } }
+      ] },
+    credit_card: { kind: 'tilted', stages: [1, 2], title: 'The store credit card', scene: 'shop', temptation: true,
+      text: "A store offers {name} a credit card with a big sign-up discount, but a very high interest rate. A shiny new laptop is tempting, and rent is due in two weeks.",
+      options: [
+        { text: "Skip it and save up for what I need.", out: "Waiting stung a bit, but {name} stayed debt-free.", ax: { fin: 2 }, v: { cash: 200 } },
+        { text: "Use it for one needed item and pay it off in full right away.", out: "The card became a tool instead of a trap, and {name} built a solid credit history.", ax: { fin: 1, skill: 1 }, v: { cash: -300 } },
+        { text: "Buy the upgrade and make minimum payments.", out: "The new gear was great. The growing balance, with interest, was less great.", ax: { fin: -3 }, v: { hi: 2500, ful: 2 } }
+      ] },
+    budget_start: { kind: 'tilted', stages: [1, 2, 3, 4], title: 'Money arrives', scene: 'apartment', help: true,
+      text: "A paycheck, a bonus, or a birthday gift lands in {name}'s account. A friend suggests a trip, and a coworker just started an emergency fund.",
+      options: [
+        { text: "Set aside part of it automatically, then enjoy the rest.", out: "Saving a little each time felt invisible, until suddenly {name} had a real cushion.", ax: { fin: 2, ment: 1 }, v: { cash: 1500, ful: 1 } },
+        { text: "Spend it all on experiences with friends.", out: "The memories were great. The bank balance was less so.", ax: { rel: 1, fin: -1 }, v: { cash: -400, sup: 3, ful: 3 } },
+        { text: "Lock away as much as possible and skip the fun stuff.", out: "{name} built a nice cushion but missed a few things that would have been fun.", ax: { fin: 2, rel: -1, ment: -1 }, v: { cash: 2200, ful: -1 } }
+      ] },
+    friend_lonely: { kind: 'tilted', stages: [1, 2, 3, 4], title: 'A quiet friend', scene: 'park', help: true,
+      text: "{name} notices a friend has gone quiet: no replies, canceled plans. {name} is busy too, and reaching out feels awkward.",
+      options: [
+        { text: "Send a message and offer to meet this week.", out: "The friend was grateful. They had been having a rough time, and a simple hello helped.", ax: { rel: 2, ment: 1 }, v: { sup: 5, ful: 2 } },
+        { text: "Invite a few people out and make sure they are included.", out: "The group hangout was easy and warm, and the friend started showing up again.", ax: { rel: 2 }, v: { sup: 4, ful: 2 } },
+        { text: "Mean to reach out later.", out: "Life got busy. By the time {name} remembered, the friendship had drifted.", ax: { rel: -1 }, v: { sup: -2 } }
+      ] },
+    exercise_habit: { kind: 'tilted', stages: [2, 3, 4], title: 'The workout slips', scene: 'park', help: true,
+      text: "Work has been intense, and {name}'s regular workout is the easiest thing to cancel. The couch looks very inviting.",
+      options: [
+        { text: "Keep a short, steady routine. Even 20 minutes counts.", out: "Most days it was small, but after a few months {name} had more energy and slept better.", ax: { phys: 2, ment: 1 }, v: { hp: 4, ful: 1 } },
+        { text: "Join a class or team so someone expects me there.", out: "Having people count on {name} made showing up easy, and the gym crowd became friends.", ax: { phys: 2, rel: 1 }, v: { hp: 4, sup: 3, cash: -300 } },
+        { text: "Skip it this season and restart later.", out: "\"Later\" kept sliding further away. {name} felt a bit more tired every month.", ax: { phys: -2 }, v: { hp: -4 } }
+      ] },
+    ask_for_raise: { kind: 'tilted', stages: [2, 3], title: 'Asking for more', scene: 'work',
+      req: s => jobFor(s).emp === 'Employed' && !s.flags.laidOff,
+      text: "{name} has taken on bigger responsibilities for a year without a raise or a new title.",
+      options: [
+        { text: "Prepare examples and ask for a raise or promotion.", out: "The answer was a partial yes: a smaller raise and a clear plan for the next step.", ax: { fin: 1, skill: 1, ment: 1 }, v: { mult: 0.06 }, roll: { p: 0.3, hit: { out: "Pleasantly, they offered even more than {name} asked for.", v: { mult: 0.05, ful: 3 } } } },
+        { text: "Start looking for a better offer elsewhere.", out: "A new employer valued the experience more, and the job hunt taught {name} about their worth.", ax: { fin: 1, skill: 1, rel: -1 }, v: { mult: 0.05 } },
+        { text: "Say nothing and hope it gets noticed.", out: "Nothing changed, and resentment simmered quietly.", ax: { fin: -1, ment: -1 }, v: { ful: -2 } }
+      ] },
+    therapy_or_not: { kind: 'tilted', stages: [2, 3, 4], title: 'Carrying too much', scene: 'apartment', help: true,
+      text: "Stress has been piling up for {name}: poor sleep, a short temper, and a heavy mood that won't lift. They keep thinking they should handle it alone.",
+      note: "Asking for help is a strength. A doctor, counselor, or trusted adult can help with stress and low mood. They are there for exactly this.",
+      options: [
+        { text: "Reach out to a counselor or doctor, or talk to a trusted person.", out: "It was awkward for ten minutes and a relief after. {name} left with a few new tools.", ax: { ment: 3, rel: 1, phys: 1 }, v: { hp: 5, ful: 3, cash: -300 }, tag: 'recovery' },
+        { text: "Build a new routine: sleep, time outside, and a weekly check-in with a friend.", out: "Small habits helped, and having someone to check in with made them stick.", ax: { ment: 1, phys: 1, rel: 1 }, v: { hp: 3, sup: 3 } },
+        { text: "Pull away and push through alone.", out: "{name} got through the weeks but felt more distant from everyone.", ax: { ment: -2, rel: -2 }, v: { hp: -6, sup: -5, ful: -4 } }
+      ] },
+    health_screening: { kind: 'tilted', stages: [3, 4], title: 'The check-up reminder', scene: 'hospital', help: true,
+      text: "A reminder arrives for a routine check-up and screenings. {name} hasn't been in a while, and it doesn't feel urgent.",
+      options: [
+        { text: "Book it and go.", out: "The visit was routine, and a small issue was caught early and handled.", ax: { phys: 2, ment: 1 }, v: { hp: 3, cash: -200 } },
+        { text: "Push it off again.", out: "Nothing happened right away, but the list of things to look into quietly grew.", ax: { phys: -1 }, v: { hp: -2 } }
+      ] },
+    career_pivot: { kind: 'neutral', stages: [2, 3], title: 'Does this path still fit?', scene: 'work', req: s => jobFor(s).emp !== 'Student',
+      text: "{name} isn't sure the current path fits anymore. The work pays the bills, but they've been wondering about something different.",
+      think: "Is it braver to change, or to deepen what you already do? What would you want to be good at in ten years?",
+      options: [
+        { text: "Go back to school to retrain.", out: "Night classes and a smaller paycheck made things tight, but a new direction opened up.", ax: { skill: 3, fin: -2 }, v: { debt: 14000, ful: 2, mult: 0.1, tmp: -0.3 }, set: { arc: 'college', title: 'Returning student' } },
+        { text: "Switch to a skilled trade or hands-on field.", out: "{name} swapped screens and meetings for tools and results, and the work felt real.", ax: { skill: 2, phys: 1 }, v: { ful: 2, tmp: -0.15 }, set: { arc: 'trade' } },
+        { text: "Stay on the current path and deepen my skills.", out: "Steady progress: not exciting, but each month {name} got a bit better and a bit more trusted.", ax: { skill: 2, fin: 1 }, v: { mult: 0.05 } },
+        { text: "Work part-time for a while to explore and think.", out: "A lighter schedule made room for clarity, and for a few good questions.", ax: { ment: 2, fin: -2 }, v: { ful: 3, cash: -3000, tmp: -0.2 } }
+      ] },
+    job_offer_far: { kind: 'neutral', stages: [2, 3], title: 'The faraway offer', scene: 'city', req: s => jobFor(s).emp !== 'Student',
+      text: "A job opens in a different region with better pay. The new place feels exciting, and also very far from the people {name} loves.",
+      think: "Would you rather have more opportunity or more nearness? Can a video call ever replace a Sunday dinner?",
+      options: [
+        { text: "Take it and move.", out: "The new job paid better and the city offered a fresh start. The distance from home was harder than expected.", ax: { skill: 2, fin: 1, rel: -2 }, v: { sup: -8, ful: 1, mult: 0.12 }, set: { loc: 'city', housing: 'rent' } },
+        { text: "Turn it down and stay.", out: "Staying meant Sunday dinners and familiar faces. A few doors closed quietly.", ax: { rel: 2, ment: 1, skill: -1 }, v: { sup: 4 } },
+        { text: "Negotiate for remote or hybrid work.", out: "A flexible deal, though not the top pay. {name} gets some of both worlds.", ax: { skill: 1, rel: 1 }, v: { mult: 0.04 }, roll: { p: 0.4, hit: { out: "They agreed to full flexibility!", ax: { skill: 1 }, v: { mult: 0.06, ful: 2 } } } }
+      ] },
+    buy_or_rent: { kind: 'neutral', stages: [2, 3, 4], title: 'Home sweet home?', scene: 'house', req: s => s.housing !== 'own',
+      text: "Housing costs are rising. {name} is deciding whether to buy a modest home or keep renting while saving, and each has different upsides.",
+      think: "Is a home a place to live, an investment, or both? What would you do if the water heater broke the week after you bought?",
+      options: [
+        { text: "Buy a small, modest home.", out: "Owning felt like putting down roots, and repairs came with it.", ax: { fin: 1, ment: 1 }, v: { cash: -6000, ful: 3 }, set: { housing: 'own' } },
+        { text: "Keep renting and invest what I save.", out: "Renting kept {name} flexible, and the savings quietly grew.", ax: { fin: 1, skill: 1 }, v: { cash: 3000 }, set: { housing: 'rent' } },
+        { text: "Share a place with roommates or family to save faster.", out: "The place was crowded, but the savings grew fast and there was always someone around.", ax: { fin: 2, rel: 1, ment: -1 }, v: { cash: 5000, sup: 3 }, set: { housing: 'shared' } }
+      ] },
+    mgmt_vs_craft: { kind: 'neutral', stages: [3], title: 'Manager or master', scene: 'work', req: s => jobFor(s).emp === 'Employed' && ['college', 'work', 'trade'].includes(s.arc),
+      text: "Leadership asks {name} to manage a team. It means more pay and more meetings, but less of the hands-on work {name} loves.",
+      think: "Is success a bigger title or being excellent at something you love?",
+      options: [
+        { text: "Become a manager.", out: "The raise was real, and so were the headaches. {name} learned how hard it is to lead people well.", ax: { skill: 2, fin: 1, ment: -1 }, v: { mult: 0.12, ful: -1 } },
+        { text: "Stay a specialist and master the craft.", out: "{name} became the person everyone went to for the hard problems, and loved every minute.", ax: { skill: 3, ment: 1 }, v: { mult: 0.05, ful: 3 }, set: { flags: ['craft'] } },
+        { text: "Lead in a community group instead of at work.", out: "Leading outside of work gave {name} purpose and a wider circle of friends.", ax: { rel: 2, skill: 1, ment: 1 }, v: { sup: 5, ful: 3, pur: 3 } }
+      ] },
+    passion_project: { kind: 'neutral', stages: [3, 4], title: 'The idea that won\'t go away', scene: 'apartment',
+      text: "{name} has an idea that has been nagging for years: writing, music, a community garden, a tiny side business.",
+      think: "What did you love doing when nobody was grading you? What stops you from doing it now?",
+      options: [
+        { text: "Carve out evenings to work on it.", out: "Tired but happy, {name} kept at it. The project grew slowly and so did {name}'s confidence.", ax: { ment: 2, phys: -1, skill: 1 }, v: { ful: 5 } },
+        { text: "Share it and invite others to collaborate.", out: "Other people brought energy {name} didn't know they needed.", ax: { rel: 2, skill: 1, ment: 1 }, v: { sup: 4, ful: 4 } },
+        { text: "Put it on hold. Family and work come first.", out: "The idea went quiet. {name} told themselves it was only for now.", ax: { fin: 1, ment: -1 }, v: { ful: -2 } }
+      ] },
+    downshift: { kind: 'neutral', stages: [3, 4], title: 'Push or pause', scene: 'work',
+      text: "After years of pushing, {name} is tired. They could keep climbing, or ease off and make room for time, health, and family.",
+      think: "What does \"enough\" look like for you? Who decides?",
+      options: [
+        { text: "Keep pushing for the next level.", out: "The next level came with more money and more stress, and {name} wondered where the weekends went.", ax: { fin: 2, skill: 1, phys: -2, rel: -1 }, v: { mult: 0.1, hp: -4, ful: -1 } },
+        { text: "Reduce hours or responsibilities.", out: "Less money, more time. {name} had dinner with people they loved and walked every morning.", ax: { phys: 2, rel: 2, fin: -2 }, v: { mult: -0.1, hp: 5, ful: 4 } },
+        { text: "Make smaller changes: protect evenings and weekends.", out: "No big change, just a few firm lines. It helped more than expected.", ax: { phys: 1, rel: 1, ment: 1 }, v: { hp: 2, ful: 2 } }
+      ] },
+    parent_move: { kind: 'neutral', stages: [2, 3, 4], title: 'A parent needs more help', scene: 'house',
+      w: s => s.flags.parentNeeds ? 3 : 0.6,
+      text: "{name}'s parent is getting older and needs more help. The family has to figure out who helps, where, and how.",
+      think: "What do we owe the people who raised us? What do we owe ourselves?",
+      options: [
+        { text: "Move home and become the main caregiver.", out: "{name} gave up a lot, income and independence among them. The closeness gained was something money couldn't buy.", ax: { rel: 3, fin: -3, skill: -1 }, v: { sup: 6, ful: 4, pur: 6, hp: -3, mult: -0.1 }, set: { arc: 'care', housing: 'family', loc: 'town' } },
+        { text: "Share the work with relatives and pitch in on weekends.", out: "It took many phone calls, but the load was shared and nobody carried it alone.", ax: { rel: 1, fin: -1, ment: 1 }, v: { sup: 3, ful: 2 } },
+        { text: "Arrange professional help and visit regularly.", out: "It was costly, but sustainable, and {name} could still be present on the best days.", ax: { fin: -2, ment: 1 }, v: { cash: -3000, ful: 1 } }
+      ] },
+    new_chapter: { kind: 'neutral', stages: [4], title: 'Is it time for something new?', scene: 'park',
+      text: "At {age}, {name} feels a pull toward something new. The work, the town, and the routine all feel familiar, and also a little small.",
+      think: "Do you reinvent yourself or build on what you have? Can you do both?",
+      options: [
+        { text: "Go back to school or train for a new field.", out: "Being a beginner again was humbling and exciting, and {name} loved the feeling of learning.", ax: { skill: 3, fin: -2 }, v: { debt: 8000, ful: 4, mult: 0.06, tmp: -0.2 }, set: { arc: 'college' } },
+        { text: "Start a small business.", out: "{name} put years of experience into something of their own. It was frightening and thrilling.", ax: { skill: 2, fin: -2, ment: 1 }, v: { ful: 3, cash: -5000 }, set: { arc: 'founder' } },
+        { text: "Stay on course and enjoy what I've built.", out: "{name} stopped chasing and started noticing. The contentment was real.", ax: { ment: 2, rel: 1, phys: 1 }, v: { ful: 2 } },
+        { text: "Move somewhere new for a fresh start.", out: "New streets, new faces, and a lot of boxes. {name} felt alive and a little lonely.", ax: { rel: -1, ment: 1, skill: 1 }, v: { ful: 3, sup: -4 }, set: { loc: 'suburb', housing: 'rent' } }
+      ] },
+    mentor_others: { kind: 'neutral', stages: [4], title: 'A younger person asks for help', scene: 'work',
+      text: "A younger coworker, neighbor, or relative asks {name} for advice. Helping would take real time and energy.",
+      think: "Who helped you? What would it be worth to pass that on?",
+      options: [
+        { text: "Take them under my wing.", out: "Mentoring took hours {name} didn't think they had, and gave back more than they expected.", ax: { rel: 2, skill: 1, ment: 1 }, v: { sup: 4, ful: 5, pur: 4 } },
+        { text: "Offer occasional advice, but protect my time.", out: "A few good conversations helped, and {name} kept their own plans on track.", ax: { rel: 1 }, v: { ful: 1 } },
+        { text: "Focus on my own projects right now.", out: "{name} got a lot done, and the quiet felt a little lonelier.", ax: { skill: 1, fin: 1, rel: -1 } }
+      ] },
+    /* ---- follow-ups: only appear after the matching event queues them ---- */
+    after_layoff: { kind: 'neutral', queueOnly: true, stages: [], title: 'After the layoff', scene: 'apartment',
+      text: "The weeks after the layoff are quiet. {name} can grab the first job that comes along, or use the time differently.",
+      think: "Is the fastest fix always the best one?",
+      options: [
+        { text: "Take the first decent job right away.", out: "A paycheck returned quickly, though the job was a step sideways.", ax: { fin: 1, ment: -1 }, v: { mult: -0.06 }, set: { unflags: ['laidOff'] } },
+        { text: "Reach out to old coworkers and mentors for leads.", out: "After a few weeks, a lead from an old coworker turned into a solid new job.", ax: { rel: 2, skill: 1, ment: 1 }, v: { sup: 4, mult: -0.02 }, set: { unflags: ['laidOff'] }, roll: { p: 0.5, hit: { out: "It was even better than the old one.", v: { mult: 0.06, ful: 3 } } } },
+        { text: "Use the time to retrain for something new.", out: "Classes and a thinner budget, but {name} came out with fresh skills and a clearer direction.", ax: { skill: 3, fin: -2 }, v: { ful: 2, mult: 0.06, debt: 3000 }, set: { unflags: ['laidOff'], flags: ['between'] } }
+      ] },
+    after_breakup: { kind: 'tilted', queueOnly: true, stages: [], title: 'After the breakup', scene: 'park',
+      text: "The apartment feels quieter. {name} has a free evening and a heavy heart.",
+      note: "Heartache is a normal part of life. Talking with friends, family, a counselor, or another trusted adult can help.",
+      options: [
+        { text: "Lean on friends and family, and talk about it.", out: "Saying it out loud made it lighter. {name} found out who was in their corner.", ax: { rel: 2, ment: 2 }, v: { sup: 5, hp: 3, ful: 2 }, tag: 'recovery' },
+        { text: "Talk with a counselor or trusted adult.", out: "{name} learned some ways to carry the hurt without letting it steer everything.", ax: { ment: 3, rel: 1 }, v: { hp: 3, ful: 2 }, tag: 'recovery' },
+        { text: "Throw myself into work or hobbies and avoid thinking about it.", out: "Staying busy helped for a while, but feelings are patient.", ax: { skill: 1, ment: -1 }, v: { ful: -1 } },
+        { text: "Pull away from everyone for a while.", out: "The quiet turned into weeks. {name} felt more alone than the breakup alone would have caused.", ax: { rel: -2, ment: -2 }, v: { sup: -6, hp: -4, ful: -3 } }
+      ] },
+    rehab: { kind: 'tilted', queueOnly: true, stages: [], title: 'The slow recovery', scene: 'hospital',
+      text: "The injury is healing, but slowly. The doctor gave {name} exercises that are boring, and the rest of life isn't waiting.",
+      options: [
+        { text: "Follow the rehab plan, even when it's tedious.", out: "Patience paid off. {name} came back stronger and a bit wiser about their body.", ax: { phys: 2, ment: 1 }, v: { hp: 8, cash: -400 } },
+        { text: "Ask a coach, trainer, or friend to keep me accountable.", out: "Having someone check in made rehab easier, and sometimes even fun.", ax: { phys: 2, rel: 1 }, v: { hp: 7, sup: 3 } },
+        { text: "Return to full activity early to catch up.", out: "{name} felt fine at first, then pain brought the setback roaring back.", ax: { phys: -2 }, v: { hp: -6 }, roll: { p: 0.4, hit: { out: "A re-injury meant more weeks off.", v: { hp: -6, cash: -800 } } } }
+      ] },
+    windfall_use: { kind: 'tilted', queueOnly: true, stages: [], title: 'What to do with the windfall', scene: 'apartment', temptation: true,
+      text: "Unexpected money landed in {name}'s account. Suddenly, everyone has an opinion about what to do with it.",
+      options: [
+        { text: "Save or invest at least half, and enjoy the rest.", out: "A balanced plan: some fun, some security. It felt good both now and later.", ax: { fin: 2, ment: 1 }, v: { ful: 2 }, fn: s => { s.cash -= Math.round(s.windfall * 0.2); } },
+        { text: "Spend most of it on a big upgrade.", out: "It was exciting for a few weeks. Then the money was gone and the novelty faded.", ax: { fin: -2 }, v: { ful: 3 }, fn: s => { s.cash -= Math.round(s.windfall * 0.9); } },
+        { text: "Lend a big chunk to a friend with a \"sure thing\" business idea.", out: "{name} wanted to help. The idea struggled, and so did the friendship for a while.", ax: { fin: -1, rel: -1 }, v: { ful: -1 }, fn: s => { s.cash -= Math.round(s.windfall * 0.7); },
+          roll: { p: 0.35, hit: { out: "Happily, it worked out and the friend paid it back with thanks.", ax: { rel: 2, fin: 1 }, v: { sup: 4, ful: 3 }, fn: s => { s.cash += Math.round(s.windfall * 0.9); } } } }
+      ] },
+    grief_support: { kind: 'tilted', queueOnly: true, stages: [], title: 'Missing someone', scene: 'house',
+      text: "{name} is still missing their grandparent. Familiar smells, old songs, and family stories keep bringing the loss back.",
+      note: "Grief is a normal response to loss. Family, friends, school counselors, and other trusted adults can help.",
+      options: [
+        { text: "Spend time with relatives, share stories, and look at photos.", out: "Sharing memories made the loss feel less lonely and the family closer.", ax: { rel: 2, ment: 2 }, v: { sup: 5, hp: 2, ful: 2, pur: 2 } },
+        { text: "Talk to a counselor, teacher, or trusted adult.", out: "Someone listened without hurrying. {name} found some words for something that felt wordless.", ax: { ment: 3, rel: 1 }, v: { hp: 3, ful: 2 }, tag: 'recovery' },
+        { text: "Keep busy and avoid talking about it.", out: "Busy worked, until quiet moments arrived with the feelings still waiting.", ax: { ment: -1 }, v: { ful: -2 } }
+      ] },
+    burnout_choice: { kind: 'tilted', queueOnly: true, stages: [], title: 'Running on empty', scene: 'apartment',
+      text: "{name} is exhausted: Sunday dread, little energy, and nothing feels fun. A coworker mentions that time off is available.",
+      note: "Burnout is real and common. A doctor, counselor, or trusted adult can help you sort out what's next.",
+      options: [
+        { text: "Take the time off and truly rest. Talk to a boss or doctor if needed.", out: "After a week of sleep and walks, {name} felt like a person again.", ax: { phys: 2, ment: 2 }, v: { hp: 8, ful: 2 }, tag: 'recovery' },
+        { text: "Change how I work: set limits, delegate, say no more often.", out: "Saying no was awkward at first, then freeing. The work didn't collapse.", ax: { ment: 2, skill: 1, rel: 1 }, v: { hp: 5, ful: 3 } },
+        { text: "Push through. It'll calm down after this deadline.", out: "The deadline passed. The tiredness didn't.", ax: { ment: -2, phys: -2 }, v: { hp: -6, ful: -3 } }
+      ] },
+    mentor_offer: { kind: 'neutral', queueOnly: true, stages: [], title: 'A stretch opportunity', scene: 'work',
+      text: "The mentor offers {name} a stretch opportunity: a role that could grow quickly, but with long hours and learning on the fly.",
+      think: "Is the fastest way up the one you want?",
+      options: [
+        { text: "Say yes and dive in.", out: "It was hard, fast, and thrilling. {name} learned more in a year than in the previous three.", ax: { skill: 3, fin: 1, phys: -1 }, v: { mult: 0.1, ful: 2 } },
+        { text: "Say yes, but negotiate a pace I can sustain.", out: "The mentor respected the honesty. The pace was challenging but human.", ax: { skill: 2, ment: 1 }, v: { mult: 0.06, ful: 2 } },
+        { text: "Thank them and stay where I am.", out: "{name} stayed comfortable and kept evenings free, and wondered occasionally about the road not taken.", ax: { ment: 1, rel: 1 } }
+      ] }
+  },
+
+  /* ---------- EVENTS: things that happen TO the avatar ----------
+     tone: bad|good|mixed. Effects (ax, v, set) are applied automatically; negatives are scaled by resilience.
+     land: [softer sentence, harder sentence] chosen by how well {name} is equipped to absorb it. */
+  events: {
+    layoff: { tone: 'bad', stages: [1, 2, 3, 4], title: 'Laid off', scene: 'work', pose: 'slump', fx: 'rain',
+      req: s => s.arc !== 'founder' && jobFor(s).emp === 'Employed' && !s.flags.laidOff, w: s => 1 + (s.ax.skill < 9 ? 0.6 : 0),
+      text: "A meeting invitation with no subject turned out to be bad news. The company was cutting jobs, and {name}'s role was one of them.",
+      land: ["The shock was real, but savings and good friends gave {name} room to breathe and make a plan.", "The shock hit hard. Money worries and self-doubt kept {name} up at night."],
+      ax: { fin: -1, ment: -1 }, v: { hp: -5, ful: -10, cash: -1200 }, set: { flags: ['laidOff'], queue: ['after_layoff'] } },
+    breakup: { tone: 'bad', stages: [0, 1, 2, 3], title: 'Heartbreak', scene: 'park', pose: 'slump', fx: 'rain',
+      text: "A relationship that mattered to {name} ended this week. There was no villain, just two people heading in different directions, and it still hurts.",
+      land: ["It hurt, but {name} had people to call, and the hurt came in waves instead of one flood.", "It felt like the floor dropped out, and {name} didn't know who to call."],
+      ax: { ment: -1, rel: -1 }, v: { ful: -10, hp: -4, sup: -6 }, set: { queue: ['after_breakup'] } },
+    injury: { tone: 'bad', stages: [0, 1, 2, 3, 4], title: 'Injury', scene: 'hospital', pose: 'sick',
+      w: s => 1 + (s.ax.phys < 10 ? 0.6 : 0) + (s.traits.risk === 2 ? 0.4 : 0) + (s.arc === 'trade' ? 0.4 : 0),
+      text: "On an ordinary day, {name} twisted a knee and went down hard. The doctor said no big activity for several weeks.",
+      land: ["Frustrating, but {name} had the habits and support to make the recovery manageable.", "Being sidelined was lonely and frightening, and the bills made it worse."],
+      ax: { phys: -1 }, v: { hp: -18, cash: -1500, ful: -4 }, set: { queue: ['rehab'] } },
+    illness: { tone: 'bad', stages: [0, 1, 2, 3, 4], title: 'Sick for weeks', scene: 'apartment', pose: 'sick', fx: 'rain',
+      w: s => 1 + (s.ax.phys < 10 ? 0.5 : 0),
+      text: "A nasty illness knocked {name} flat for two weeks: fever, missed days, and a cough that lingered long after.",
+      land: ["With rest and help from friends, {name} recovered more quickly than expected.", "The illness dragged on, and falling behind made it feel worse."],
+      ax: { phys: -1, fin: -1 }, v: { hp: -15, cash: -400, ful: -3 } },
+    windfall: { tone: 'good', stages: [1, 2, 3, 4], title: 'Unexpected money', scene: 'apartment', pose: 'success', fx: 'rays',
+      text: s => "A surprise: a relative's gift, a tax refund, and a small bonus arrived close together. {name} suddenly has about " + fmtMoney([0, 2500, 6000, 10000, 15000][s.stage]) + " to decide about.",
+      land: ["It felt like good luck, and {name} knew it wasn't a plan.", "It felt like good luck, and {name} knew it wasn't a plan."],
+      ax: {}, v: { ful: 4 }, set: { queue: ['windfall_use'] }, fn: s => { s.windfall = [0, 2500, 6000, 10000, 15000][s.stage]; s.cash += s.windfall; } },
+    grandparent: { tone: 'bad', stages: [0, 1, 2, 3, 4], title: 'Goodbye to a grandparent', scene: 'house', pose: 'slump', fx: 'rain', w: s => 0.8,
+      text: "{name}'s grandparent passed away peacefully this week. The family gathered, shared stories, and cried and laughed at the same time.",
+      land: ["Grieving hurt, but being surrounded by family helped {name} feel held.", "The loss was heavy, and {name} felt it alone more than they wished."],
+      ax: { ment: -1, rel: 1 }, v: { ful: -8, hp: -3 }, set: { queue: ['grief_support'] } },
+    mentor: { tone: 'good', stages: [0, 1, 2, 3, 4], title: 'A mentor appears', scene: 'work', pose: 'success', fx: 'rays',
+      req: s => !s.flags.mentor, w: s => 1 + (s.ax.skill >= 12 ? 0.6 : 0) + (s.ax.rel >= 12 ? 0.4 : 0),
+      text: "A veteran from work, school, or the community noticed {name}'s effort. Ms. Okafor offered to coach {name}, just because she remembered someone doing the same for her.",
+      land: ["{name} soaked up every piece of advice.", "{name} wasn't sure they deserved it, but said yes anyway."],
+      ax: { skill: 2, rel: 1 }, v: { sup: 5, ful: 4 }, set: { flags: ['mentor'], queue: ['mentor_offer'] } },
+    burnout: { tone: 'bad', stages: [2, 3, 4], title: 'Burnout', scene: 'work', pose: 'slump', fx: 'rain',
+      req: s => jobFor(s).emp !== 'Student', w: s => 0.7 + (s.ax.ment < 12 ? 0.6 : 0) + (s.ax.phys < 12 ? 0.4 : 0) + (s.mult > 0.15 ? 0.5 : 0),
+      text: "Months of long hours finally caught up. One morning {name} couldn't feel motivated, and realized they'd been running on empty for a long time.",
+      land: ["{name} recognized the signs sooner than most and could ask for help.", "{name} felt like a failure, which only made things heavier."],
+      ax: { ment: -1 }, v: { hp: -12, ful: -8 }, set: { queue: ['burnout_choice'] } },
+    rent_hike: { tone: 'bad', stages: [1, 2, 3, 4], title: 'A surprise bill', scene: 'apartment', pose: 'slump',
+      text: "Two surprises arrived at once: the landlord raised the rent and the car needed a costly repair. {name} had to cover both fast.",
+      land: ["A cushion made it stressful but survivable.", "Without a cushion, it meant skipped plans and a lot of worry."],
+      ax: { fin: -1 }, v: { cash: -2200, ful: -3 } },
+    downturn: { tone: 'bad', stages: [2, 3, 4], title: 'The economy turns', scene: 'work', pose: 'slump', fx: 'rain',
+      req: s => jobFor(s).emp !== 'Student', w: s => s.arc === 'founder' ? 2.5 : 0.8,
+      text: "The economy turned. Customers cut back, hours shrank, and everyone from the shop floor to the boardroom felt it.",
+      land: ["{name} tightened the budget and adapted.", "{name} had little margin, and the squeeze was real."],
+      ax: { fin: -1 }, v: { cash: -3000, ful: -4, hp: -2, mult: -0.05 }, fn: s => { if (s.arc === 'founder') s.bizLuck *= 0.85; } },
+    lucky_break: { tone: 'good', stages: [1, 2, 3, 4], title: 'A lucky break', scene: 'work', pose: 'success', fx: 'rays',
+      req: s => jobFor(s).emp !== 'Student', w: s => 0.6 + s.traits.risk * 0.25 + (s.ax.skill >= 12 ? 0.3 : 0),
+      text: "Out of nowhere, someone mentioned {name}'s name in the right room. A message arrived: \"We'd like to talk to you.\"",
+      land: ["Luck helped, and {name} was ready to catch it.", "Luck helped, and {name} wasn't sure they were ready, but went for it."],
+      ax: { skill: 1, fin: 1 }, v: { ful: 4, mult: 0.1 } },
+    friend_drift: { tone: 'mixed', stages: [1, 2, 3, 4], title: 'A friend moves away', scene: 'park', pose: 'slump', w: s => 0.9,
+      text: "Plans slipped, schedules clashed, and one of {name}'s closest friends moved away. Nobody did anything wrong. Life just pulled people apart.",
+      land: ["It stung, but {name} had other connections to lean on.", "It stung, and {name} felt the empty spot at the table."],
+      ax: { rel: -1 }, v: { sup: -6, ful: -4 } },
+    parent_care: { tone: 'mixed', stages: [2, 3, 4], title: 'A parent needs care', scene: 'house', pose: 'slump', req: s => !s.flags.parentNeeds, w: s => 0.8,
+      text: "A call came in: {name}'s parent had a fall. They're okay, but life at home will need to change, and the whole family is rethinking things.",
+      land: ["The family pulled together to figure it out.", "{name} felt pulled in many directions at once."],
+      ax: { ment: -1 }, v: { ful: -3, hp: -2 }, set: { flags: ['parentNeeds'], queue: ['parent_move'] } },
+    checkup_flag: { tone: 'mixed', stages: [2, 3, 4], title: 'A health warning', scene: 'hospital', pose: 'think', w: s => 0.5 + (s.ax.phys < 12 ? 0.9 : 0),
+      text: "At a routine visit, the doctor said {name}'s blood pressure and sleep were off track. Nothing dramatic, but worth attention.",
+      land: ["{name} took it as a useful heads-up.", "{name} felt scared for a day before taking it in."],
+      ax: { phys: -1 }, v: { hp: -4 }, set: { queue: ['health_screening'] } },
+    storm: { tone: 'bad', stages: [1, 2, 3, 4], title: 'The big storm', scene: 'house', pose: 'slump', fx: 'rain', w: s => 0.6,
+      text: "A major storm flooded streets and cut the power for days. {name}'s place had damage, but neighbors showed up with buckets, generators, and casseroles.",
+      land: ["Cleanup was exhausting, but the neighborhood felt closer than ever.", "Cleanup was exhausting, and the repair costs weighed on {name}."],
+      ax: { fin: -1, rel: 1 }, v: { cash: -1800, ful: -2, sup: 5 } },
+    community: { tone: 'good', stages: [1, 2, 3, 4], title: 'A really good day', scene: 'park', pose: 'success', fx: 'rays', w: s => 0.8 + (s.ax.rel >= 12 ? 0.5 : 0),
+      text: "At a neighborhood cookout, {name} reconnected with old friends and made two new ones. There was no big plan, just a really good day.",
+      land: ["{name} went home with a full heart.", "{name} went home with a full heart and a new phone number or two."],
+      ax: { rel: 2, ment: 1 }, v: { sup: 6, ful: 6, hp: 3 } }
+  },
+
+  /* ---------- injected options: guarantee a way back when struggling / a temptation when thriving ---------- */
+  inject: {
+    recovery: [
+      { text: "Pause and talk it through with someone I trust, like a family member, mentor, or counselor.", out: "Talking it over helped {name} see things more calmly. It didn't solve everything, but the next step felt smaller and clearer.", ax: { rel: 2, ment: 2 }, v: { sup: 5, hp: 3, ful: 2 }, tag: 'recovery' },
+      { text: "Take the slower, steadier route and give myself time to recover first.", out: "{name} chose steady over fast. Progress was slow, but energy started coming back.", ax: { phys: 1, ment: 2 }, v: { hp: 5, ful: 1 }, tag: 'recovery' }
+    ],
+    temptation: [
+      { text: "Go big: take the exciting, risky shot while things are going well.", out: "{name} swung for it.", ax: { skill: 1 }, v: { ful: 2 }, tag: 'temptation',
+        roll: { p: 0.5, hit: { out: "It paid off better than expected!", ax: { fin: 2 }, v: { cash: 2500, ful: 3 } }, miss: { out: "It didn't work out, and the setback stung.", ax: { fin: -2, ment: -1 }, v: { cash: -2500, ful: -3 } } } },
+      { text: "Treat myself to a big upgrade, because I've earned it.", out: "The upgrade felt amazing for a while.", ax: { fin: -2 }, v: { ful: 4, cash: -3500 }, tag: 'temptation',
+        roll: { p: 0.3, hit: { out: "Better yet, it brought friends together for months.", ax: { rel: 1 }, v: { sup: 3 } } } }
+    ]
+  },
+
+  /* ---------- reflection interludes (no answers shown) ---------- */
+  reflections: [
+    { stage: 1, trait: 'risk', text: ["{name} likes to play it safe. When is playing it safe a strength, and when might it hold someone back?", "{name} weighs both sides before deciding. How do you know when you have thought about something enough?", "{name} likes big swings. When is a risk worth it for you, and when is it not?"] },
+    { stage: 2, trait: 'family', text: ["{name} has less family support to lean on. Where else can people find support?", "{name} has steady family support. What kinds of support could you offer other people?", "{name} has a strong support system. Who is yours, and how could you be that for someone else?"] },
+    { stage: 3, trait: 'money', text: ["{name} grew up with tight money. How might early money conditions shape choices, and what can still be changed?", "{name} grew up with enough. How might that help or hide risks?", "{name} grew up comfortable. How do safety nets change the risks people can take?"] },
+    { stage: 4, trait: null, text: ["Think about a small habit you have right now. If you did it every day for thirty years, where would it lead?"] }
+  ],
+
+  /* ---------- final profiles: highest score wins. m = metrics (0..1 unless noted) ---------- */
+  profiles: {
+    comfy: { title: 'Comfortable, but Quiet', scene: 'house', mood: 'calm',
+      desc: "{name} is financially comfortable, with savings, stability, and a well-run life. Over the years, work and money got more attention than friendships, and the house is a little quieter than {name} would like.",
+      bright: "Security, skills, and the freedom to choose.", open: "Reaching out and rebuilding connection. It is never too late.",
+      score: m => 1.6 * (m.f - 0.5) + 1.0 * (m.nwN - 0.4) + 0.4 * (m.k - 0.5) - 2.2 * (m.r - 0.5) + (m.r < 0.45 ? 0.3 : 0) },
+    table: { title: 'The Full Table', scene: 'house', mood: 'good',
+      desc: "{name} doesn't have a big bank balance, but the table is full: friends, family, and neighbors who show up. Good habits keep {name} healthy, and days feel meaningful.",
+      bright: "Relationships, health, and everyday joy.", open: "Building more of a financial cushion for the years ahead.",
+      score: m => 0.2 + 1.6 * (m.r - 0.5) + 1.0 * (m.p - 0.5) + 0.5 * (m.fulN - 0.6) - 1.0 * (m.incN - 0.6) - 0.6 * (m.nwN - 0.4) },
+    bloom: { title: 'The Late Bloom', scene: 'work', mood: 'good',
+      desc: "Setbacks slowed {name} early on, but skills piled up quietly. In the last decade, doors that were closed began to open, and {name}'s best work is happening now.",
+      bright: "Hard-won skills and a rising path.", open: "Making up for lost time in savings and rest.",
+      score: m => 2.2 * (m.growth - 0.3) + 0.5 * (m.mm - 0.5) + 0.3 * (m.k - 0.5) + 0.4 * (m.nBad / 6 - 0.4) },
+    purpose: { title: 'Rich in Purpose, Light on Savings', scene: 'park', mood: 'good',
+      desc: "{name} carries more debt than most, and also a stronger sense of why they get up in the morning. Work, family, or community gives life a clear meaning, even when the budget is tight.",
+      bright: "Meaning, motivation, and a close community.", open: "A gradual plan to pay down debt without losing the purpose.",
+      score: m => m.pur / 7 + 1.2 * (m.fulN - 0.55) - 0.8 * (m.nwN - 0.4) + 0.8 * m.debtN + 0.3 * (m.r - 0.5) - 0.2 },
+    steady: { title: 'The Steady Keeper', scene: 'house', mood: 'calm',
+      desc: "No part of {name}'s life is extraordinary and none of it is in crisis. Money, health, friendships, and skills are all in decent shape, the quiet result of thousands of ordinary, reasonable days.",
+      bright: "Balance, stability, and a life with room to breathe.", open: "Deciding where to invest the next chapter's energy.",
+      score: m => 0.9 - 3.0 * (m.spread - 0.3) + 0.3 * (m.fulN - 0.6) },
+    caretaker: { title: 'The Heart of the Family', scene: 'house', mood: 'good',
+      desc: "{name} gave a lot of time and energy to the people they love. The paycheck has stayed modest, but {name} is surrounded by people who know how much they matter.",
+      bright: "Deep bonds and a strong sense of purpose.", open: "Making space for {name}'s own goals and rest.",
+      score: m => (m.arc === 'care' ? 0.6 : 0) + 1.0 * (m.r - 0.5) + 0.05 * m.pur + 0.5 * (m.fulN - 0.6) - 0.5 * (m.f - 0.5) },
+    craft: { title: 'The Master of the Craft', scene: 'work', mood: 'good',
+      desc: "{name} became really, truly good at something, and people know it. The work is satisfying, respected, and steady, and younger people come to {name} for advice.",
+      bright: "Expertise, respect, and pride in the work.", open: "Making sure the body and the friendships get the same care as the craft.",
+      score: m => 2.2 * (m.k - 0.65) + (m.arc === 'trade' ? 0.4 : 0) + (m.flags.craft ? 0.7 : 0) + 0.3 * (m.fulN - 0.6) - 0.3 * (m.r - 0.5) },
+    rebuilder: { title: 'The Rebuilder', scene: 'park', mood: 'good',
+      desc: "Life knocked {name} down more than once. Each time, {name} learned a little more about getting back up, and who to ask for help. The result is a person with real resilience.",
+      bright: "Resilience, perspective, and hard-earned wisdom.", open: "Giving the body and the budget time to catch up with the spirit.",
+      score: m => 0.9 * (m.nBad / 6) + 0.9 * (m.mm - 0.5) + 0.4 * (m.fulN - 0.5) + (m.minHp < 35 ? 0.5 : 0) - 0.5 },
+    founder: { title: "The Founder's Roller Coaster", scene: 'shop', mood: 'good',
+      desc: "{name} bet on their own ideas. There were scary months and big wins, and the business is a part of who {name} is. Nobody who knows {name} would call them boring.",
+      bright: "Independence, creativity, and the guts to try.", open: "Building stability so the next surprise is easier to absorb.",
+      score: m => (m.arc === 'founder' ? 0.8 : 0) + 0.6 * (m.k - 0.5) + 0.4 * Math.abs(m.bizLuck - 1) - 0.1 },
+    slower: { title: 'A Slower Season', scene: 'apartment', mood: 'calm',
+      desc: "Health, money, and energy are stretched right now, but this is one season, not the whole story. {name} has people, skills, and years left, and small steady steps matter more than ever.",
+      bright: "Time, a foundation of small wins, and room to grow.", open: "Rest, support, and a few simple habits to rebuild momentum.",
+      score: m => 1.4 * (0.6 - m.hpN) + 1.2 * (0.6 - m.fulN) + 0.8 * (0.5 - m.f) + 0.3 * (0.5 - m.mm) }
+  },
+
+  /* ---------- debrief ---------- */
+  questions: [
+    "Which choice felt hardest to make? Was it hard because of what you might lose or what you might gain?",
+    "Find a moment where two reasonable options led to different but equally valid paths. What did each give up, and what did each gain?",
+    "Which events happened to your avatar with no choice at all? How did earlier habits and support affect how hard they landed?",
+    "Pick one small choice. How might it have mattered more after ten or twenty years? Where in your own life do small, repeated choices (sleep, savings, friendships) add up?",
+    "Who or what helped your avatar recover from setbacks? Who could play that role for you, and for whom could you?",
+    "Compare your ending with a classmate's. Neither is a failure. What does each life have more of, and what do you value most?"
+  ]
+};
+</script>
+
+<script id="engine">
+'use strict';
+/* =====================================================================
+   ENGINE — pure game logic (no DOM). Reads CONFIG; keeps hidden axes.
+   ===================================================================== */
+const AXES = Object.keys(CONFIG.axes);
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const lerp = (a, b, t) => a + (b - a) * t;
+const ease = t => t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+const sum = o => Object.values(o).reduce((a, b) => a + b, 0);
+function fmtMoney(n) { return (n < 0 ? '−' : '') + '$' + Math.abs(Math.round(n)).toLocaleString('en-US'); }
+function fmt(t, s) { return String(typeof t === 'function' ? t(s) : t).replace(/\{name\}/g, s.name).replace(/\{age\}/g, Math.floor(s.age)); }
+const store = {
+  get(k) { try { return JSON.parse(localStorage.getItem(k)); } catch (e) { return null; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* storage unavailable */ } },
+  del(k) { try { localStorage.removeItem(k); } catch (e) { /* ignore */ } }
+};
+Object.entries(CONFIG.decisions).forEach(([id, d]) => { d.id = id; });
+Object.entries(CONFIG.events).forEach(([id, e]) => { e.id = id; });
+
+/* ---------- seeded RNG (state lives in the save so refresh doesn't change outcomes) ---------- */
+function rnd(s) {
+  s.rng = (s.rng + 0x6D2B79F5) | 0;
+  let t = Math.imul(s.rng ^ (s.rng >>> 15), 1 | s.rng);
+  t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+  return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+}
+const pickR = (s, arr) => arr[Math.floor(rnd(s) * arr.length)];
+function wpick(s, items, wf) {
+  let tot = 0; const ws = items.map(it => { const w = Math.max(0, wf(it)); tot += w; return w; });
+  if (tot <= 0) return null;
+  let r = rnd(s) * tot;
+  for (let i = 0; i < items.length; i++) { r -= ws[i]; if (r <= 0) return items[i]; }
+  return items[items.length - 1];
+}
+
+/* ---------- derived visible state ---------- */
+function jobFor(s) { return s.arc ? CONFIG.jobs[s.arc][Math.min(s.stage, 5)] : CONFIG.jobs.school[0]; }
+function empStatus(s) {
+  if (s.flags.laidOff) return s.arc === 'founder' ? 'Between jobs' : 'Unemployed';
+  if (s.flags.between) return 'Between jobs';
+  return jobFor(s).emp || 'Employed';
+}
+function titleOf(s) {
+  if (s.flags.laidOff) return 'Looking for work';
+  if (s.flags.between) return 'Retraining';
+  if (s.titleOv && s.titleOv.stage === s.stage) return s.titleOv.t;
+  return jobFor(s).title;
+}
+function income(s) {
+  const j = jobFor(s);
+  if (j.emp === 'Student') return j.inc;
+  let b = j.inc; if (s.arc === 'founder' && s.stage >= 2) b *= s.bizLuck;
+  let m = b * Math.max(0.2, 1 + s.mult + s.tmp) * (0.85 + s.ax.skill / 30 * 0.4) * CONFIG.locMult[s.loc];
+  if (s.flags.laidOff) m *= 0.25; if (s.flags.between) m *= 0.4;
+  return Math.round(m / 100) * 100;
+}
+function visible(s) {
+  return { hp: s.hp, ful: s.ful, sup: s.sup, income: income(s), net: s.cash - s.debt - s.hi,
+    emp: empStatus(s), title: titleOf(s), loc: s.loc, housing: s.housing, age: Math.floor(s.age) };
+}
+function diffVis(a, b) { const d = {}; for (const k of ['hp', 'ful', 'sup', 'income', 'net']) d[k] = b[k] - a[k]; return d; }
+function point(s) { return { age: s.age, hp: s.hp, ful: s.ful, sup: s.sup, income: income(s), net: s.cash - s.debt - s.hi, mult: s.mult, ax: { ...s.ax } }; }
+
+/* ---------- resilience & trajectory ---------- */
+const resil = s => clamp((s.ax.ment + s.ax.rel + s.ax.fin) / 90, 0, 1);
+const severity = s => 1.45 - 1.1 * resil(s);                 // how hard bad events land (≈0.8–1.25)
+function direction(s) {
+  const m = AXES.reduce((a, k) => a + s.ax[k], 0) / AXES.length;
+  const r = s.dHist.slice(-3), rv = r.length ? r.reduce((a, b) => a + b, 0) / r.length : 0;
+  return (m - CONFIG.axisStart) + 3 * rv;
+}
+function modeOf(s) {
+  const D = direction(s);
+  const struggling = D < -2 || s.hp < 40 || s.ful < 32 || !!s.flags.laidOff;
+  const thriving = !struggling && D > 2 && s.hp >= 60 && s.ful >= 50;
+  return { D, struggling, thriving };
+}
+
+/* ---------- state ---------- */
+function newState(setup) {
+  const seed = (Math.random() * 4294967296) >>> 0;
+  const s = { v: 1, name: (setup.name || 'Alex').trim().slice(0, 18) || 'Alex', look: setup.look, traits: { ...setup.traits },
+    seed, rng: seed, stage: 0, slot: 0, needStage: true, age: 17, ax: {}, ax0: {}, pass: {}, arc: null, flags: {}, loc: 'town', housing: 'family',
+    mult: 0, tmp: 0, bizLuck: 1, hp: 72, ful: 60, sup: 0, cash: 0, debt: 0, hi: 0, pur: 0, windfall: 0, queue: [], used: {}, usedEv: {},
+    hist: [], series: [], arcLog: [], dHist: [], cur: null, titleOv: null, nBad: 0, nGood: 0, minHp: 72, notes: [], phase: 'play', ui: { season: 1, tod: 0.2 }, dbg: null };
+  AXES.forEach(k => { s.ax[k] = CONFIG.axisStart; });
+  for (const t in s.traits) { const e = CONFIG.traits[t].fx[s.traits[t]]; for (const k in e) s.ax[k] = clamp(s.ax[k] + e[k], 0, CONFIG.axisMax); }
+  AXES.forEach(k => { s.ax0[k] = s.ax[k]; s.pass[k] = 0; });
+  s.cash = CONFIG.traits.money.cash[s.traits.money]; s.sup = 5 + s.ax.rel / 30 * 85;
+  s.loc = pickR(s, ['town', 'town', 'suburb', 'city', 'rural']);
+  s.series.push(point(s));
+  return s;
+}
+function setArc(s, arc) {
+  if (s.arc !== arc) s.arcLog.push({ age: s.age, arc });
+  s.arc = arc; s.titleOv = null; delete s.flags.between;
+  if (arc === 'founder') s.bizLuck = clamp(0.55 + rnd(s) * 1.15 + (s.traits.risk - 1) * 0.05, 0.4, 2);
+}
+
+/* ---------- applying effects ---------- */
+function addAx(s, ax) {
+  const d = {}; if (!ax) return d;
+  for (const k of AXES) if (ax[k]) {
+    const step = clamp(ax[k], -CONFIG.maxStep, CONFIG.maxStep), nv = clamp(s.ax[k] + step, 0, CONFIG.axisMax);
+    d[k] = +(nv - s.ax[k]).toFixed(2); s.ax[k] = nv;
+  }
+  return d;
+}
+const mergeD = (a, b) => { for (const k in b) a[k] = (a[k] || 0) + b[k]; return a; };
+function applyFx(s, fx, isEvent) {
+  const sev = isEvent ? severity(s) : 1, neg = x => x < 0 ? x * sev : x, v = fx.v || {};
+  const dAx = addAx(s, fx.ax);
+  if (v.hp) s.hp = clamp(s.hp + neg(v.hp), 8, 100);
+  if (v.ful) s.ful = clamp(s.ful + neg(v.ful), 5, 100);
+  if (v.sup) s.sup = clamp(s.sup + neg(v.sup), 0, 100);
+  if (v.cash) s.cash += Math.round(neg(v.cash) / 50) * 50;
+  if (v.debt) s.debt += v.debt; if (v.hi) s.hi += v.hi;
+  if (v.mult) s.mult += v.mult; if (v.tmp) s.tmp += v.tmp; if (v.pur) s.pur += v.pur;
+  const st = fx.set || {};
+  if (st.arc) setArc(s, st.arc);
+  if (st.loc) s.loc = st.loc; if (st.housing) s.housing = st.housing;
+  (st.flags || []).forEach(f => { s.flags[f] = 1; }); (st.unflags || []).forEach(f => { delete s.flags[f]; });
+  if (st.title) s.titleOv = { t: st.title, stage: s.stage };
+  (st.queue || []).forEach(id => { if (!s.used[id] && !s.queue.includes(id)) s.queue.push(id); });
+  if (fx.fn) fx.fn(s);
+  s.minHp = Math.min(s.minHp, s.hp);
+  return dAx;
+}
+function resolve(s, o, isEvent) {
+  const d = {}; mergeD(d, applyFx(s, o, isEvent));
+  let out = o.out ? fmt(o.out, s) : '';
+  if (o.roll) {
+    const br = rnd(s) < o.roll.p ? o.roll.hit : o.roll.miss;
+    if (br) { mergeD(d, applyFx(s, br, isEvent)); if (br.out) out += ' ' + fmt(br.out, s); }
+  }
+  return { out, d };
+}
+function autoLook(dAx, dv) {
+  const lift = sum(dAx) + dv.hp / 8 + dv.ful / 8;
+  if (lift >= 2.5) return { pose: 'success', fx: 'rays' };
+  if (lift <= -2.5) return { pose: 'slump', fx: 'rain' };
+  return { pose: 'idle', fx: null };
+}
+
+/* ---------- beats ---------- */
+function getOpt(d, ref) { return typeof ref === 'number' ? d.options[ref] : CONFIG.inject[ref[0] === 'r' ? 'recovery' : 'temptation'][+ref.slice(1)]; }
+function endStage(s) {
+  const n = [];
+  if (s.flags.laidOff) { delete s.flags.laidOff; s.mult -= 0.03; n.push('Time passed, and {name} found steady work again, though it took longer than hoped.'); }
+  if (s.flags.between) { delete s.flags.between; n.push('{name} finished retraining and returned to work with new skills.'); }
+  if (s.tmp) { s.tmp = 0; n.push('The transition period ended and income recovered.'); }
+  s.queue = []; s.titleOv = null; return n;
+}
+function pickDecision(s, kind) {
+  const m = modeOf(s);
+  const elig = k => Object.values(CONFIG.decisions).filter(d => !d.queueOnly && !d.fixed && !s.used[d.id] && d.stages.includes(s.stage) && (!k || d.kind === k) && (!d.req || d.req(s)));
+  let c = elig(kind); if (!c.length) c = elig(null);
+  const wf = d => { let w = d.w ? d.w(s) : 1; if (m.struggling && d.help) w *= 2.2; if (m.thriving && d.temptation) w *= 2; return w; };
+  s.dbg = { D: +m.D.toFixed(2), struggling: m.struggling, thriving: m.thriving, kind, cands: c.map(d => [d.id, +wf(d).toFixed(2)]) };
+  return wpick(s, c, wf);
+}
+function pickEvent(s, tone) {
+  const m = modeOf(s);
+  const c = Object.values(CONFIG.events).filter(e => !s.usedEv[e.id] && e.stages.includes(s.stage) && (!e.req || e.req(s)));
+  const wf = e => {
+    let w = e.w ? e.w(s) : 1; const t = e.tone;
+    if (tone === 'bad') { if (t === 'good') return 0; if (t === 'mixed') w *= 0.6; }
+    else if (tone === 'good') { if (t !== 'good') return 0; }
+    else if (m.struggling) { if (t === 'good') w *= 2.2; if (t === 'bad') w *= 0.6; }
+    else if (m.thriving) { if (t === 'good') w *= 0.6; else w *= 1.2; }
+    return w;
+  };
+  s.dbg = { D: +m.D.toFixed(2), struggling: m.struggling, thriving: m.thriving, tone, cands: c.map(e => [e.id, +wf(e).toFixed(2)]) };
+  return wpick(s, c, wf) || wpick(s, c, e => e.w ? e.w(s) : 1);
+}
+function buildRefs(s, d) {
+  let refs = d.options.map((o, i) => i).filter(i => !d.options[i].req || d.options[i].req(s));
+  if (d.kind !== 'clear' && !d.fixed) {
+    const m = modeOf(s), has = t => refs.some(i => d.options[i].tag === t); let ref = null;
+    if (m.struggling && !has('recovery')) ref = 'r' + Math.floor(rnd(s) * CONFIG.inject.recovery.length);
+    else if (m.thriving && !has('temptation') && !d.temptation) ref = 't' + Math.floor(rnd(s) * CONFIG.inject.temptation.length);
+    if (ref) { if (refs.length >= 4) refs.pop(); refs.push(ref); }
+  }
+  if (!d.fixed) for (let i = refs.length - 1; i > 0; i--) { const j = Math.floor(rnd(s) * (i + 1)); [refs[i], refs[j]] = [refs[j], refs[i]]; }
+  return refs;
+}
+function nextBeat(s) {
+  if (s.stage >= 5) { s.age = 50; return finish(s); }
+  const st = CONFIG.stages[s.stage];
+  if (s.needStage) { s.needStage = false; s.age = st.start; const notes = s.notes; s.notes = []; return s.cur = { kind: 'stage', stage: s.stage, notes }; }
+  if (s.slot >= st.plan.length) {
+    s.notes = endStage(s).map(n => fmt(n, s)); s.stage++; s.slot = 0; s.needStage = s.stage < 5;
+    if (s.stage === 3) s.arcAt30 = s.arc;
+    return nextBeat(s);
+  }
+  const [type, arg] = st.plan[s.slot], idx = s.slot; s.slot++;
+  s.age = st.start + (st.end - st.start) * idx / st.plan.length;
+  if (type === 'D') {
+    let id = null;
+    if (arg[0] === '=') id = arg.slice(1);
+    else if (arg !== 'clear') while (s.queue.length) { const q = s.queue.shift(), d = CONFIG.decisions[q]; if (d && !s.used[q] && (!d.req || d.req(s))) { id = q; break; } }
+    if (!id) { const d = pickDecision(s, arg); if (d) id = d.id; }
+    if (!id) return nextBeat(s);
+    const d = CONFIG.decisions[id];
+    return s.cur = { kind: 'decision', id, refs: buildRefs(s, d), age: Math.floor(s.age), dk: d.kind };
+  }
+  const ev = pickEvent(s, arg);
+  if (!ev) return nextBeat(s);
+  const before = visible(s), sev = severity(s), r = resolve(s, ev, true), after = visible(s), dv = diffVis(before, after);
+  s.usedEv[ev.id] = 1; if (ev.tone === 'bad') s.nBad++; else if (ev.tone === 'mixed') s.nBad += 0.5; else s.nGood++;
+  s.dHist.push(sum(r.d) / 5);
+  const land = fmt(ev.land[sev < 1.0 ? 0 : 1], s);
+  s.hist.push({ kind: 'event', id: ev.id, title: ev.title, tone: ev.tone, age: Math.floor(s.age), stage: s.stage, text: fmt(ev.text, s), out: land, dAx: r.d, dv, sev: +sev.toFixed(2), res: +resil(s).toFixed(2) });
+  return s.cur = { kind: 'event', id: ev.id, age: Math.floor(s.age), before, land, dv, dAx: r.d, pose: ev.pose, fx: ev.fx, sev: +sev.toFixed(2) };
+}
+function choose(s, i) {
+  const c = s.cur, d = CONFIG.decisions[c.id], opt = getOpt(d, c.refs[i]), before = visible(s);
+  const r = resolve(s, opt, false), dv = diffVis(before, visible(s)), look = autoLook(r.d, dv);
+  s.used[c.id] = 1; s.dHist.push(sum(r.d) / 5);
+  c.res = { i, text: fmt(opt.text, s), out: r.out, dAx: r.d, dv, before, pose: opt.pose || look.pose, fx: opt.fx !== undefined ? opt.fx : look.fx };
+  s.hist.push({ kind: 'choice', id: c.id, title: d.title, dkind: d.kind, age: c.age, stage: s.stage, text: c.res.text, out: r.out, dAx: r.d, dv });
+  return c.res;
+}
+function tick(s, y) {
+  const ax = s.ax, inc = income(s), res = resil(s);
+  const hT = 38 + (ax.phys + ax.ment) / 60 * 62 - s.stage * 1.2;
+  s.hp = clamp(s.hp + (hT - s.hp) * (0.25 + res * 0.3) + (rnd(s) * 2 - 1) * 1.5, 8, 100);
+  const fT = 24 + (ax.rel + ax.ment * 0.7 + ax.skill * 0.4 + ax.phys * 0.3) / 72 * 66 + Math.min(s.pur, 18) * 0.8 - (s.hp < 40 ? 6 : 0) - (s.flags.laidOff ? 8 : 0);
+  s.ful = clamp(s.ful + (fT - s.ful) * 0.3, 5, 100);
+  s.sup = clamp(s.sup + ((5 + ax.rel / 30 * 85) - s.sup) * 0.4, 0, 100);
+  let frac = clamp(0.06 + ax.fin / 30 * 0.14 + (CONFIG.houseSave[s.housing] || 0) + (CONFIG.locSave[s.loc] || 0), 0, 0.45);
+  if (jobFor(s).emp === 'Student') frac = Math.min(frac, 0.03);
+  let avail = inc * frac * y;
+  s.hi *= Math.pow(1.2, y); let p = Math.min(s.hi, avail); s.hi -= p; avail -= p;
+  s.debt *= Math.pow(1.05, y); p = Math.min(s.debt, avail); s.debt -= p; avail -= p;
+  s.cash = s.cash < 0 ? s.cash * Math.pow(1.08, y) + avail : s.cash * Math.pow(1.03, y) + avail;
+  if (s.arc === 'founder') s.bizLuck = clamp(s.bizLuck + (rnd(s) - 0.5) * 0.15, 0.4, 2);
+  // compounding: the axes slowly feed each other (this is how small habits become a direction)
+  const c = 15;   // neutral point for feedback between axes
+  const P = { fin: (ax.skill - c) * 0.03 + (ax.ment - c) * 0.01, phys: (ax.ment - c) * 0.015,
+    ment: (ax.rel - c) * 0.03 + (ax.phys - c) * 0.02 - (ax.fin < 8 ? 0.2 : 0), rel: (ax.ment - c) * 0.015, skill: (ax.phys + ax.ment - 2 * c) * 0.012 };
+  for (const k of AXES) { const nv = clamp(ax[k] + clamp(P[k], -0.6, 0.6), 0, CONFIG.axisMax); s.pass[k] += nv - ax[k]; ax[k] = nv; }
+  s.minHp = Math.min(s.minHp, s.hp);
+}
+function closeBeat(s) {          // time passes after a beat; returns visible deltas
+  const before = visible(s), st = CONFIG.stages[s.stage], y = (st.end - st.start) / st.plan.length;
+  tick(s, y); s.age += y; s.series.push(point(s)); s.cur = null;
+  return diffVis(before, visible(s));
+}
+
+/* ---------- ending ---------- */
+function metrics(s) {
+  const A = s.ax, f = A.fin / 30, p = A.phys / 30, m = A.ment / 30, r = A.rel / 30, k = A.skill / 30, v = visible(s);
+  const p30 = s.series.find(x => x.age >= 30) || s.series[0], vals = [f, p, m, r, k];
+  return { f, p, m, r, k, mm: m, nwN: clamp((v.net + 30000) / 1000000, 0, 1), incN: clamp(v.income / 160000, 0, 1), debtN: clamp((s.debt + s.hi) / 50000, 0, 1),
+    fulN: s.ful / 100, hpN: s.hp / 100, pur: s.pur, nBad: s.nBad, arc: s.arc, flags: s.flags, growth: clamp((s.mult - p30.mult) * 3 + (A.skill - p30.ax.skill) / 10, 0, 1.2),
+    spread: Math.max(...vals) - Math.min(...vals), minHp: s.minHp, bizLuck: s.bizLuck };
+}
+function finish(s) {
+  if (!s.final) {
+    const m = metrics(s); let best = null, bs = -1e9;
+    for (const [id, p] of Object.entries(CONFIG.profiles)) { const sc = p.score(m); if (sc > bs) { bs = sc; best = id; } }
+    s.final = { profile: best };
+    s.phase = 'end';
+  }
+  return s.cur = { kind: 'end', profile: s.final.profile };
+}
+
+/* ---------- headless simulation (teacher panel) ---------- */
+function randomSetup() {
+  const r = a => a[Math.floor(Math.random() * a.length)];
+  return { name: 'Sim', look: { skin: r(CONFIG.looks.skin), hair: r(CONFIG.looks.hair), style: r(CONFIG.looks.style), accent: r(CONFIG.looks.accent) },
+    traits: { risk: Math.floor(Math.random() * 3), family: Math.floor(Math.random() * 3), money: Math.floor(Math.random() * 3) } };
+}
+function simulate(n) {
+  const out = { n, profiles: {}, arcs30: {}, kinds: { neutral: 0, tilted: 0, clear: 0 }, avgNet: 0, avgInc: 0, avgBad: 0, injR: 0 };
+  for (let i = 0; i < n; i++) {
+    const s = newState(randomSetup()); let g = 0;
+    while (g++ < 300) {
+      const b = nextBeat(s);
+      if (b.kind === 'end') break;
+      if (b.kind === 'decision') { choose(s, Math.floor(Math.random() * b.refs.length)); out.kinds[b.dk]++; closeBeat(s); }
+      else if (b.kind === 'event') closeBeat(s);
+    }
+    const v = visible(s);
+    out.profiles[s.final.profile] = (out.profiles[s.final.profile] || 0) + 1;
+    out.arcs30[s.arcAt30 || 'none'] = (out.arcs30[s.arcAt30 || 'none'] || 0) + 1;
+    out.avgNet += v.net / n; out.avgInc += v.income / n; out.avgBad += s.nBad / n;
+  }
+  return out;
+}
+</script>
+<script id="render">
+'use strict';
+/* =====================================================================
+   RENDERER — layered SVG scene (parallax), articulated avatar, particles
+   ===================================================================== */
+const App = { speed: 1, reduced: false, hc: false, sound: false };
+const $ = (q, r = document) => r.querySelector(q);
+const $$ = (q, r = document) => [...r.querySelectorAll(q)];
+function hex2rgb(h) { h = h.replace('#', ''); return [parseInt(h.slice(0, 2), 16), parseInt(h.slice(2, 4), 16), parseInt(h.slice(4, 6), 16)]; }
+function mix(a, b, t) { const A = hex2rgb(a), B = hex2rgb(b); return '#' + [0, 1, 2].map(i => Math.round(clamp(lerp(A[i], B[i], t), 0, 255)).toString(16).padStart(2, '0')).join(''); }
+const shade = (c, t = 0.18) => mix(c, '#000000', t);
+
+/* ---------------- scene art ---------------- */
+const R = (x, y, w, h, f, e = '') => `<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${f}" ${e}/>`;
+const W = (x, y, w, h) => `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="2" style="fill:var(--win)" stroke="#2a3552" stroke-width="1.5"/>`;
+const WG = (x, y, c, r, w, h, gx, gy) => { let o = ''; for (let j = 0; j < r; j++) for (let i = 0; i < c; i++) o += W(x + i * (w + gx), y + j * (h + gy), w, h); return o; };
+const TREE = (x, y, s = 1) => `<g transform="translate(${x} ${y}) scale(${s})"><rect x="-6" y="-60" width="12" height="62" fill="#6b4a2f"/><g style="opacity:var(--leafo)"><ellipse cx="0" cy="-88" rx="38" ry="34" style="fill:var(--leaf)"/><ellipse cx="-24" cy="-66" rx="26" ry="22" style="fill:var(--leaf)"/><ellipse cx="24" cy="-68" rx="26" ry="22" style="fill:var(--leaf)"/></g><g style="opacity:var(--bare)" stroke="#6b4a2f" stroke-width="4" fill="none"><path d="M0 -50 L-28 -92 M0 -60 L26 -96 M0 -74 L0 -112"/></g></g>`;
+const TXT = (x, y, t, sz = 11, f = '#fff') => `<text x="${x}" y="${y}" text-anchor="middle" font-size="${sz}" font-weight="700" fill="${f}" font-family="system-ui,sans-serif">${t}</text>`;
+const SCENES = {
+  school: () => R(40, 206, 500, 166, '#b5533c') + R(30, 194, 520, 14, '#5b6577') + WG(64, 226, 3, 2, 44, 36, 14, 34) + WG(346, 226, 3, 2, 44, 36, 14, 34) +
+    R(236, 236, 108, 136, '#a6483a') + '<path d="M228 238 L290 192 L352 238Z" fill="#5b6577"/>' + R(272, 296, 36, 76, '#2d3a5a') + R(262, 366, 56, 8, '#cfd4dc') + TXT(290, 266, 'WESTVIEW HIGH', 10) +
+    '<rect x="578" y="150" width="4" height="222" fill="#8b93a3"/><path class="flag" d="M582 154 q22 -8 44 0 v28 q-22 -8 -44 0z" fill="#d9534f"/>' + TREE(700, 372, 1.1),
+  campus: () => R(70, 128, 56, 244, '#9b4b38') + '<path d="M64 130 L98 90 L132 130Z" fill="#3e4a63"/><circle cx="98" cy="164" r="15" fill="#fff"/><path d="M98 164 v-9 M98 164 h7" stroke="#222" stroke-width="2"/>' +
+    R(160, 236, 360, 136, '#a85a43') + R(150, 224, 380, 14, '#5b6577') + WG(180, 258, 4, 2, 40, 34, 16, 24) + R(380, 290, 90, 82, '#7f3c2d') + '<path d="M388 372 v-60 q27 -34 54 0 v60z" fill="#2d3a5a"/>' + R(380, 366, 90, 8, '#cfd4dc') + TREE(580, 372, 1.2) + TREE(690, 372, 1),
+  office: () => R(60, 70, 270, 302, '#5f7fa8') + WG(78, 88, 6, 9, 34, 20, 8, 12) + R(160, 326, 80, 46, '#2b3a58') + R(350, 170, 190, 202, '#8da0bf') + WG(366, 188, 4, 6, 30, 18, 12, 14) + R(40, 360, 40, 12, '#4a7a5a') + R(560, 352, 60, 20, '#4a7a5a') + TREE(690, 372, 0.9),
+  worksite: () => R(130, 70, 12, 302, '#e6a817') + R(60, 70, 330, 10, '#e6a817') + R(48, 62, 22, 24, '#555') + '<path d="M360 80 V190" stroke="#333" stroke-width="2"/><rect x="352" y="190" width="16" height="12" fill="#c33"/>' +
+    [0, 1, 2, 3].map(i => R(210 + i * 80, 200, 8, 172, '#7d8794')).join('') + [0, 1, 2].map(i => R(206, 200 + i * 60, 252, 8, '#9aa5b3')).join('') + R(206, 330, 252, 42, '#b9c0cc', 'opacity=".5"') +
+    '<path d="M500 372 l14 -30 l14 30z M540 372 l14 -30 l14 30z" fill="#ff7a1a"/>' + R(600, 330, 110, 42, '#f2c230') + R(676, 316, 40, 30, '#e0b020'),
+  shop: () => R(0, 200, 60, 172, '#b9a58a') + R(470, 190, 170, 182, '#9aa7bd') + R(60, 228, 400, 144, '#d9c7a8') +
+    Array.from({ length: 10 }, (_, i) => R(60 + i * 40, 232, 40, 30, i % 2 ? '#f5efe3' : '#c8553d')).join('') + R(120, 192, 200, 32, '#2f3b52') + TXT(220, 214, 'CORNER SHOP', 16) +
+    R(84, 278, 200, 78, '#cfe8f2', 'stroke="#3a4a66" stroke-width="3"') + R(96, 326, 176, 6, '#8a6a4d') + '<circle cx="120" cy="318" r="8" fill="#e0643c"/><circle cx="160" cy="318" r="8" fill="#f2c230"/><circle cx="200" cy="318" r="8" fill="#52a86a"/>' +
+    R(320, 278, 66, 94, '#5a3d2b') + R(332, 300, 42, 16, '#f6e7b4') + TXT(353, 312, 'OPEN', 10, '#222'),
+  apartment: () => R(0, 0, 800, 372, '#d5c9b8') + R(0, 356, 800, 16, '#b4a591') + R(70, 60, 220, 170, '#f4f1ea') + '<rect x="80" y="70" width="200" height="150" fill="url(#gSky)"/><path d="M180 70 v150 M80 145 h200" stroke="#f4f1ea" stroke-width="6"/>' +
+    '<path d="M60 56 h26 v190 h-26z M274 56 h26 v190 h-26z" fill="#a24f4a"/>' + R(330, 300, 190, 62, '#6f7f9c') + R(330, 270, 190, 40, '#7d8dab') + R(322, 290, 18, 72, '#5f6f8c') + R(510, 290, 18, 72, '#5f6f8c') +
+    R(340, 100, 100, 70, '#fff', 'stroke="#8a6a4d" stroke-width="5"') + '<path d="M350 160 l30 -40 l20 24 l14 -14 l16 30z" fill="#7ab08a"/>' + R(470, 100, 70, 8, '#8a6a4d') + R(470, 108, 70, 56, '#e8dfd0') +
+    R(640, 190, 6, 170, '#555') + '<path d="M620 190 h46 l-8 -34 h-30z" fill="#f2d98a"/><ellipse cx="643" cy="190" rx="34" ry="30" fill="#ffd98a" filter="url(#glow)" style="opacity:var(--glow)"/>' + '<ellipse cx="440" cy="372" rx="150" ry="14" fill="#a24f4a" opacity=".6"/>',
+  hospital: () => R(40, 150, 480, 222, '#e6edf3') + R(40, 140, 480, 12, '#9db0c4') + WG(70, 230, 4, 2, 44, 34, 20, 26) + WG(330, 230, 3, 2, 44, 34, 20, 26) +
+    R(230, 160, 60, 60, '#fff', 'stroke="#9db0c4" stroke-width="3"') + R(252, 168, 16, 44, '#d94f4f') + R(238, 182, 44, 16, '#d94f4f') + R(190, 300, 140, 12, '#c0392b') + R(196, 312, 8, 60, '#c9d3de') + R(316, 312, 8, 60, '#c9d3de') + R(228, 322, 64, 50, '#9fc4d8') +
+    R(580, 320, 140, 52, '#fff', 'stroke="#9db0c4" stroke-width="2"') + R(580, 342, 140, 8, '#d94f4f') + '<circle cx="610" cy="374" r="9" fill="#333"/><circle cx="690" cy="374" r="9" fill="#333"/>',
+  house: () => R(90, 248, 290, 124, '#e9d8b8') + '<path d="M70 252 L235 168 L400 252Z" fill="#8a4b3a"/>' + R(310, 186, 22, 50, '#8a5a4a') + R(212, 300, 46, 72, '#6b3f2b') + '<circle cx="250" cy="338" r="3" fill="#ffd98a"/>' + W(120, 280, 56, 50) + W(292, 280, 56, 50) +
+    R(200, 368, 70, 6, '#cfd4dc') + [0, 1, 2, 3, 4, 5, 6].map(i => R(400 + i * 28, 336, 10, 36, '#f4f1ea')).join('') + R(396, 346, 190, 6, '#f4f1ea') + R(620, 320, 5, 52, '#6b4a2f') + R(608, 312, 30, 16, '#4a6fa5') + TREE(700, 372, 1.2),
+  park: () => TREE(130, 372, 1.35) + TREE(300, 372, 1) + TREE(500, 372, 1.15) + TREE(720, 372, 0.9) + R(340, 340, 90, 8, '#8a6a4d') + R(346, 348, 6, 24, '#5a4630') + R(418, 348, 6, 24, '#5a4630') + R(340, 318, 90, 6, '#8a6a4d') +
+    '<rect x="620" y="250" width="5" height="122" fill="#555"/><circle cx="622" cy="246" r="9" fill="#ffd98a"/>',
+  city: () => R(30, 120, 150, 252, '#6f7f9c') + WG(46, 140, 4, 6, 24, 20, 10, 18) + R(190, 190, 120, 182, '#8d77a8') + WG(204, 206, 3, 5, 26, 20, 10, 18) + R(320, 80, 170, 292, '#5d8aa5') + WG(336, 100, 4, 8, 28, 20, 10, 14) +
+    R(500, 220, 90, 152, '#b08968') + R(520, 320, 40, 52, '#4a3524') + R(610, 230, 6, 142, '#555') + R(600, 226, 26, 12, '#333') + '<circle cx="613" cy="232" r="3" fill="#ff5a5a"/>'
+};
+const nearGround = (sc, loc) => (sc === 'apartment') ? 'indoor' : (sc === 'city' || (loc === 'city' && ['office', 'shop', 'hospital', 'worksite'].includes(sc))) ? 'city' : 'green';
+const NEAR = {
+  indoor: () => R(0, 372, 800, 78, '#8a6a4d') + Array.from({ length: 8 }, (_, i) => R(0, 384 + i * 10, 800, 1, '#6b4f38')).join(''),
+  city: () => R(0, 372, 800, 78, '#7a8498') + R(0, 372, 800, 6, '#aab2c2') + Array.from({ length: 8 }, (_, i) => R(i * 110, 436, 60, 4, '#c8ced9')).join('') +
+    R(40, 250, 6, 200, '#444') + '<circle cx="43" cy="246" r="9" fill="#ffd98a"/>' + R(756, 270, 6, 180, '#444') + '<circle cx="759" cy="266" r="9" fill="#ffd98a"/>',
+  green: () => '<rect y="372" width="800" height="78" style="fill:var(--grass)"/><path d="M360 450 Q420 380 470 372 L520 372 Q470 400 470 450Z" fill="#c9b99a" opacity=".85"/>' +
+    Array.from({ length: 22 }, (_, i) => `<path d="M${i * 38 + 6} 450 q3 -14 6 0 M${i * 38 + 18} 420 q3 -12 6 0" stroke="${'#000'}" stroke-opacity=".15" fill="none"/>`).join('') +
+    '<ellipse cx="-6" cy="446" rx="70" ry="30" style="fill:var(--leaf)"/><ellipse cx="806" cy="448" rx="70" ry="30" style="fill:var(--leaf)"/>'
+};
+function farMarkup(loc) {
+  let q = 11; const r = () => (q = (q * 16807) % 2147483647) / 2147483647; let o = '';
+  if (loc === 'city') {
+    for (let x = -400; x < 1200; x += 50) { const w = 40 + r() * 50, h = 70 + r() * 170; o += R(x, 372 - h, w, h, r() > 0.5 ? '#8493b5' : '#7585a8', 'opacity=".55"'); for (let k = 0; k < 4; k++) o += R(x + 6 + r() * (w - 14), 372 - h + 10 + r() * (h - 24), 5, 7, '#fff', 'opacity=".25"'); }
+  } else if (loc === 'rural') {
+    o += '<path d="M-400 372 Q-200 270 0 330 T400 320 T800 335 T1200 300 V372Z" style="fill:var(--hill)"/>' + Array.from({ length: 16 }, (_, i) => `<path d="M${-400 + i * 100} 372 L${-340 + i * 100} 340" stroke="#000" stroke-opacity=".08" stroke-width="10"/>`).join('') + R(150, 318, 34, 26, '#b5533c') + '<path d="M146 318 L167 300 L188 318Z" fill="#5b6577"/>';
+  } else {
+    o += '<path d="M-400 372 Q-200 300 0 345 T400 335 T800 345 T1200 325 V372Z" style="fill:var(--hill)"/>';
+    for (let x = -380; x < 1200; x += 46) o += `<ellipse cx="${x}" cy="${340 + r() * 14}" rx="${16 + r() * 8}" ry="${20 + r() * 8}" style="fill:var(--leaf);opacity:calc(var(--leafo)*.55)"/>`;
+  }
+  return o;
+}
+const SKY = [[0, '#f2a77f', '#7088c9'], [0.1, '#78b8f7', '#d9eeff'], [0.4, '#6fb4f5', '#d4ebff'], [0.5, '#f08a5d', '#7a5fa0'], [0.58, '#161d46', '#2b3a78'], [0.92, '#101638', '#222f66'], [1, '#f2a77f', '#7088c9']];
+const SEA = [{ grass: '#79c27f', leaf: '#8fd18f', leafo: 1, hill: '#8fbf9a' }, { grass: '#4fa35a', leaf: '#3f9a52', leafo: 1, hill: '#6fae7e' }, { grass: '#b8a24d', leaf: '#e0893c', leafo: 1, hill: '#b79d5f' }, { grass: '#e9f1f6', leaf: '#cfd8dc', leafo: 0.06, hill: '#cdd8e2' }];
+const nightF = t => t < 0.5 ? 0 : t < 0.58 ? (t - 0.5) / 0.08 : t < 0.92 ? 1 : 1 - (t - 0.92) / 0.08;
+
+const Scene = (() => {
+  const svg = $('#scene'), g = id => document.getElementById(id);
+  const L = { far: g('Lfar'), mid: g('Lmid'), near: g('Lnear') }, A = { far: g('farA'), mid: g('midA'), near: g('nearA'), clouds: g('clouds') };
+  const sky1 = g('sk1'), sky2 = g('sk2'), sun = g('gSun'), moon = g('gMoon'), night = g('night');
+  let st = { tod: 0.2, seasonF: 1, scene: 'park', loc: 'town', gloom: 0, gloomT: 0 }, tr = null, par = { x: 0, y: 0, tx: 0, ty: 0 }, shift = 0;
+  let q = 7; const rr = () => (q = (q * 16807) % 2147483647) / 2147483647;
+  g('gStars').innerHTML = Array.from({ length: 55 }, () => `<circle cx="${rr() * 800}" cy="${rr() * 250}" r="${0.6 + rr() * 1.3}" fill="#fff"/>`).join('');
+  const clouds = Array.from({ length: 6 }, (_, i) => ({ x0: i * 270, y: 40 + rr() * 110, s: 0.7 + rr() * 0.8, v: 5 + rr() * 6 }));
+  A.clouds.innerHTML = clouds.map(() => '<g><ellipse rx="46" ry="14" fill="#fff" opacity=".8"/><ellipse cx="-24" cy="4" rx="28" ry="11" fill="#fff" opacity=".8"/><ellipse cx="26" cy="5" rx="30" ry="11" fill="#fff" opacity=".8"/></g>').join('');
+  const cl = [...A.clouds.children];
+  function content(scene, loc) { A.mid.innerHTML = SCENES[scene](); A.near.innerHTML = NEAR[nearGround(scene, loc)](); A.far.innerHTML = scene === 'apartment' ? '' : farMarkup(loc); st.scene = scene; st.loc = loc; }
+  function keys(t) { let i = 0; while (i < SKY.length - 2 && t > SKY[i + 1][0]) i++; const a = SKY[i], b = SKY[i + 1], f = clamp((t - a[0]) / (b[0] - a[0]), 0, 1); return [mix(a[1], b[1], f), mix(a[2], b[2], f)]; }
+  function paint(time) {
+    const nf = nightF(st.tod), [c1, c2] = keys(st.tod), gl = st.gloom;
+    sky1.setAttribute('stop-color', mix(c1, '#4a5163', gl * 0.55)); sky2.setAttribute('stop-color', mix(c2, '#7b8394', gl * 0.5));
+    const i = Math.floor(st.seasonF) % 4, j = (i + 1) % 4, f = st.seasonF % 1, S = {};
+    for (const k of ['grass', 'leaf', 'hill']) S[k] = mix(SEA[i][k], SEA[j][k], f);
+    const lo = lerp(SEA[i].leafo, SEA[j].leafo, f), s = svg.style;
+    s.setProperty('--grass', mix(S.grass, '#000000', nf * 0.35)); s.setProperty('--leaf', mix(S.leaf, '#000000', nf * 0.35)); s.setProperty('--hill', mix(S.hill, '#000000', nf * 0.3));
+    s.setProperty('--leafo', lo); s.setProperty('--bare', 1 - lo); s.setProperty('--win', mix('#b7d7f0', '#ffd98a', nf)); s.setProperty('--glow', nf);
+    night.setAttribute('opacity', (nf * 0.38).toFixed(3));
+    g('gStars').style.opacity = clamp(nf * 1.2 - 0.1, 0, 1) * (1 - gl * 0.7);
+    const sp = clamp(st.tod / 0.52, 0, 1), mp = clamp((st.tod - 0.54) / 0.46, 0, 1);
+    sun.setAttribute('transform', `translate(${60 + 680 * sp} ${330 - Math.sin(sp * Math.PI) * 250})`); sun.style.opacity = st.tod <= 0.52 ? 1 - gl * 0.6 : 0;
+    moon.setAttribute('transform', `translate(${60 + 680 * mp} ${330 - Math.sin(mp * Math.PI) * 250})`); moon.style.opacity = st.tod >= 0.54 ? 1 : 0;
+    cl.forEach((c, k) => { const o = clouds[k]; c.setAttribute('transform', `translate(${((o.x0 + (App.reduced ? 0 : time * o.v)) % 1600) - 400} ${o.y}) scale(${o.s})`); });
+    const px = par.x, py = par.y;
+    L.far.setAttribute('transform', `translate(${px * 6 + shift * 0.25} ${py * 2})`); L.mid.setAttribute('transform', `translate(${px * 12 + shift} ${py * 3})`); L.near.setAttribute('transform', `translate(${px * 22 + shift * 1.2} ${py * 5})`);
+  }
+  function frame(dt, time) {
+    if (App.reduced) { par.x = par.y = 0; } else { par.x += (par.tx - par.x) * Math.min(1, dt * 4); par.y += (par.ty - par.y) * Math.min(1, dt * 4); }
+    st.gloom += (st.gloomT - st.gloom) * Math.min(1, dt * 2);
+    if (tr) {
+      const p = clamp((performance.now() - tr.t0) / tr.dur, 0, 1), e = ease(p);
+      st.tod = (((lerp(tr.from.tod, tr.T, e)) % 1) + 1) % 1; st.seasonF = lerp(tr.from.sf, tr.S, e) % 4;
+      if (tr.walk) {
+        if (p < 0.5) shift = -1000 * ease(p * 2);
+        else { if (!tr.swapped) { content(tr.target.scene, tr.target.loc); tr.swapped = true; } shift = 1000 * (1 - ease((p - 0.5) * 2)); }
+      }
+      if (p >= 1) { st.tod = tr.T % 1; st.seasonF = tr.S % 4; shift = 0; if (tr.walk && !tr.swapped) content(tr.target.scene, tr.target.loc); const r = tr.res; tr = null; r(); }
+    }
+    paint(time);
+  }
+  function snap(o) { if (o.tod !== undefined) st.tod = o.tod; if (o.season !== undefined) st.seasonF = o.season; content(o.scene || st.scene, o.loc || st.loc); paint(0); }
+  function change(o) {
+    return new Promise(res => {
+      const target = { scene: o.scene || st.scene, loc: o.loc || st.loc }, changed = target.scene !== st.scene || target.loc !== st.loc;
+      if (App.reduced) { if (o.tod !== undefined) st.tod = o.tod; if (o.season !== undefined) st.seasonF = o.season; if (changed) content(target.scene, target.loc); res(); return; }
+      let T = o.tod === undefined ? st.tod : o.tod; while (T <= st.tod + 0.12) T += 1; T += (o.spins || 0);
+      let S = o.season === undefined ? st.seasonF : o.season; while (S < st.seasonF) S += 4;
+      tr = { t0: performance.now(), dur: (o.dur || (changed ? 2.2 : 1.3)) * 1000 / App.speed, from: { tod: st.tod, sf: st.seasonF }, T, S, walk: changed, target, swapped: false, res };
+    });
+  }
+  svg.parentElement.addEventListener('pointermove', e => { const r = svg.getBoundingClientRect(); par.tx = ((e.clientX - r.left) / r.width - 0.5) * 2; par.ty = ((e.clientY - r.top) / r.height - 0.5) * 2; });
+  svg.parentElement.addEventListener('pointerleave', () => { par.tx = par.ty = 0; });
+  return { frame, snap, change, setGloom: v => { st.gloomT = v; }, get: () => ({ ...st }) , busy: () => !!tr };
+})();
+
+/* ---------------- avatar ---------------- */
+const POSES = {
+  idle:    { sd: 0, hd: 0, ht: 0, tr: 0, by: 0, aL: [6, 0], aR: [6, 0], lg: 3, m: 0.15, pal: 0 },     // anatomical position
+  slump:   { sd: 9, hd: 13, ht: 5, tr: 1, by: 4, aL: [3, 6], aR: [3, 6], lg: 2, m: -0.9, pal: 0 },
+  success: { sd: -4, hd: -3, ht: -3, tr: 0, by: -2, aL: [150, 6], aR: [150, 6], lg: 7, m: 1, pal: 0 },
+  walk:    { sd: 0, hd: 0, ht: 0, tr: 0, by: 0, aL: [8, 10], aR: [8, 10], lg: 2, m: 0.2, pal: 0 },
+  sick:    { sd: 7, hd: 9, ht: -6, tr: 3, by: 4, aL: [8, 4], aR: [24, 105], lg: 2, m: -0.6, pal: 0.8 },
+  think:   { sd: 0, hd: 2, ht: 7, tr: 0, by: 0, aL: [6, 0], aR: [10, 138], lg: 3, m: 0, pal: 0 },
+  shrug:   { sd: -2, hd: 0, ht: -4, tr: 0, by: 0, aL: [38, 60], aR: [38, 60], lg: 3, m: 0, pal: 0 },
+  calm:    { sd: 0, hd: 0, ht: 0, tr: 0, by: 0, aL: [6, 0], aR: [6, 0], lg: 3, m: 0.65, pal: 0 }
+};
+const Avatar = (() => {
+  const root = $('#Lav'); let ref = {}, cur = JSON.parse(JSON.stringify(POSES.idle)), tgt = JSON.parse(JSON.stringify(POSES.idle)), pose = 'idle';
+  let walkAmp = 0, bounce = 0, ageG = 0, blinkAt = 2, blinkT = -1, pos = { x: 560, y: 426, s: 0.93 }, posT = { ...pos };
+  function outfitFor(s, gown) {
+    const a = s.look.accent, st = s.stage;
+    if (gown) return { top: '#bfe3f2', bottom: '#9ec9dc', shoe: '#e8eef3', sleeve: 'short', acc: ['dots'] };
+    if (!s.arc) return { top: a, bottom: '#2f3f66', shoe: '#e9edf5', sleeve: 'long', acc: ['hoodie', 'backpack'] };
+    const O = {
+      college: st <= 1 ? { top: a, bottom: '#2f3f66', sleeve: 'long', acc: ['hoodie', 'backpack'] } : { top: '#59647a', bottom: '#2b3245', sleeve: 'long', acc: ['collar', 'lanyard'] },
+      trade: { top: '#a9885a', bottom: '#5a4630', sleeve: 'long', acc: st >= 1 ? ['vest', 'hardhat'] : ['vest'] },
+      work: st <= 1 ? { top: '#c8553d', bottom: '#2b3245', sleeve: 'short', acc: ['apron'] } : { top: '#4a6fa5', bottom: '#2b3245', sleeve: 'short', acc: ['collar', 'lanyard'] },
+      founder: { top: '#232a3a', bottom: '#3a4a6a', sleeve: 'long', acc: ['jacket'] },
+      care: { top: '#2f8f8f', bottom: '#2f8f8f', sleeve: 'short', acc: ['cardigan', 'lanyard'] }
+    }[s.arc];
+    return { shoe: '#222a3a', ...O };
+  }
+  function hair(style, c, front) {
+    if (front) {
+      const cap = `<path d="M-25 -36 C-28 -70 28 -70 25 -36 C22 -50 10 -54 0 -54 C-10 -54 -22 -50 -25 -36Z" fill="${c}"/>`;
+      if (style === 'curly') return Array.from({ length: 9 }, (_, i) => { const a = Math.PI * (1.08 + i * 0.105); return `<circle cx="${Math.cos(a) * 27}" cy="${-34 + Math.sin(a) * 30}" r="10" fill="${c}"/>`; }).join('') + cap;
+      if (style === 'bun') return cap + `<circle cx="0" cy="-70" r="11" fill="${c}"/>`;
+      return cap;
+    }
+    if (style === 'long') return `<path d="M-27 -38 C-31 -72 31 -72 27 -38 L31 12 L-31 12Z" fill="${c}"/>`;
+    return '';
+  }
+  function build(s, opt = {}) {
+    const look = s.look, age = s.age, o = outfitFor(s, opt.gown), top = o.top, g = clamp((age - 30) / 20, 0, 1) * 0.85;
+    const skin = look.skin, sh = shade(skin, 0.2), hc = mix(look.hair, '#d3d6dc', g), isLong = o.sleeve === 'long';
+    ageG = clamp((age - 17) / 33, 0, 1);
+    const a = o.acc, has = k => a.includes(k), glasses = age >= 42;
+    const arm = side => {
+      const sg = side === 'L' ? -1 : 1; // thumb is on the outward side
+      return `<g id="av${'Arm' + side}"><circle cx="0" cy="0" r="9" fill="${top}"/><rect x="-7.5" y="-4" width="15" height="58" rx="7.5" fill="${top}"/>
+        <g id="av${'Fore' + side}" transform="translate(0 50)"><rect x="-6.5" y="-4" width="13" height="48" rx="6.5" fill="${isLong ? top : skin}"/>
+        <g transform="translate(0 42)"><ellipse cx="0" cy="8" rx="7.5" ry="9.5" fill="${skin}"/><ellipse cx="${sg * 8.5}" cy="4" rx="3" ry="6" fill="${skin}" transform="rotate(${sg * -15} ${sg * 8.5} 4)"/>
+        <path d="M-3.5 13 v6 M0 13 v7 M3.5 13 v6" stroke="${sh}" stroke-width="1.6" stroke-linecap="round"/></g></g></g>`;
+    };
+    const leg = side => `<g id="avLeg${side}"><rect x="-10.5" y="0" width="21" height="106" rx="8" fill="${o.bottom}"/><path d="M-13 98 q-3 11 3 14 h22 q5 -8 -2 -14z" fill="${o.shoe}"/></g>`;
+    const torsoOver =
+      (has('hoodie') ? `<ellipse cx="0" cy="-190" rx="21" ry="8" fill="${shade(top, 0.22)}"/><path d="M-18 -142 h36 l5 22 h-46z" fill="${shade(top, 0.15)}"/><path d="M-4 -186 v18 M4 -186 v18" stroke="#fff" stroke-opacity=".7" stroke-width="1.5"/>` : '') +
+      (has('vest') ? `<path d="M-33 -188 L-14 -192 L-14 -106 L-29 -106Z M33 -188 L14 -192 L14 -106 L29 -106Z" fill="#ff8a1f"/><path d="M-31 -150 h17 v5 h-17z M31 -150 h-17 v5 h17z M-30 -128 h16 v5 h-16z M30 -128 h-16 v5 h16z" fill="#f6f2b8"/>` : '') +
+      (has('collar') ? `<path d="M-11 -193 L0 -168 L11 -193Z" fill="#f3f5fa"/><path d="M-11 -193 L-3 -186 L-9 -180Z M11 -193 L3 -186 L9 -180Z" fill="${shade(top, 0.25)}"/>` : '') +
+      (has('jacket') ? `<path d="M-8 -190 Q0 -184 8 -190 L15 -106 L-15 -106Z" fill="#e9edf5"/>` : '') +
+      (has('cardigan') ? `<path d="M-10 -193 L0 -160 L10 -193Z" fill="#f6f8fb"/><circle cx="0" cy="-146" r="2" fill="#fff"/><circle cx="0" cy="-130" r="2" fill="#fff"/>` : '') +
+      (has('apron') ? `<path d="M-22 -168 h44 v62 h-44z" fill="#2b3245" opacity=".92"/><path d="M-12 -192 L-21 -168 M12 -192 L21 -168" stroke="#2b3245" stroke-width="3" fill="none"/>` : '') +
+      (has('lanyard') ? `<path d="M-8 -193 L0 -150 L8 -193" stroke="#d94f4f" stroke-width="3" fill="none"/><rect x="-7" y="-152" width="14" height="18" rx="2" fill="#fff" stroke="#888"/>` : '') +
+      (has('backpack') ? `<rect x="-29" y="-192" width="9" height="64" rx="4" fill="#1d2433" opacity=".85"/><rect x="20" y="-192" width="9" height="64" rx="4" fill="#1d2433" opacity=".85"/>` : '') +
+      (has('dots') ? [[-14, -170], [10, -150], [-8, -128], [16, -178], [0, -112]].map(p => `<circle cx="${p[0]}" cy="${p[1]}" r="2" fill="#7fb2cc"/>`).join('') : '');
+    const hat = has('hardhat') ? '<path d="M-27 -50 C-27 -76 27 -76 27 -50Z" fill="#f2c230"/><rect x="-31" y="-51" width="62" height="6" rx="3" fill="#d9a920"/>' : '';
+    const wr = clamp((age - 32) / 18, 0, 1) * 0.55;
+    root.innerHTML = `<g id="avRoot"><ellipse id="avShadow" cx="0" cy="3" rx="48" ry="9" fill="#000" opacity=".28"/>
+      ${leg('L')}${leg('R')}
+      <g id="avTorso"><rect x="-27" y="-124" width="54" height="22" rx="6" fill="${o.bottom}"/>
+        <path d="M-33 -188 Q0 -198 33 -188 L29 -106 Q0 -98 -29 -106Z" fill="${top}"/>${torsoOver}
+        ${arm('R')}${arm('L')}
+        <rect x="-8.5" y="-203" width="17" height="16" fill="${sh}"/>
+        <g id="avHead">${hair(look.style, hc, false)}
+          <circle cx="-24.5" cy="-32" r="5.5" fill="${skin}"/><circle cx="24.5" cy="-32" r="5.5" fill="${skin}"/>
+          <ellipse cx="0" cy="-32" rx="24" ry="27" fill="${skin}"/>
+          <ellipse id="avPale" cx="0" cy="-32" rx="24" ry="27" fill="#e8f0f5" opacity="0"/>
+          <g stroke="${sh}" stroke-width="1.4" fill="none" opacity="${wr}" stroke-linecap="round"><path d="M-14 -50 q14 -4 28 0 M-12 -45 q12 -3 24 0 M-19 -37 l-5 -2 M-19 -33 l-5 1 M19 -37 l5 -2 M19 -33 l5 1 M-9 -20 q-5 5 -2 10 M9 -20 q5 5 2 10"/></g>
+          <g id="avEyeL" transform="translate(-9 -36)"><ellipse rx="3.4" ry="3.9" fill="#1a1a2a"/><circle cx="1" cy="-1.2" r="1" fill="#fff"/></g>
+          <g id="avEyeR" transform="translate(9 -36)"><ellipse rx="3.4" ry="3.9" fill="#1a1a2a"/><circle cx="1" cy="-1.2" r="1" fill="#fff"/></g>
+          <path id="avBrowL" d="M-14 0 L-4 0" stroke="${shade(hc, 0.3)}" stroke-width="2.6" stroke-linecap="round" transform="translate(-9 -46)"/>
+          <path id="avBrowR" d="M4 0 L14 0" stroke="${shade(hc, 0.3)}" stroke-width="2.6" stroke-linecap="round" transform="translate(9 -46)"/>
+          <path d="M0 -34 q-3.5 9 0 10.5 q3 -0.5 3.5 -2" stroke="${sh}" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+          <path id="avMouth" d="M-8 -17 Q0 -17 8 -17" stroke="#7a2e2e" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+          ${hair(look.style, hc, true)}
+          ${(glasses || has('glasses')) ? '<g stroke="#222" stroke-width="1.8" fill="rgba(200,230,255,.15)"><circle cx="-9" cy="-36" r="8"/><circle cx="9" cy="-36" r="8"/><path d="M-1 -36 h2"/></g>' : ''}
+          ${hat}
+        </g></g></g>`;
+    ref = {}; ['Root', 'Shadow', 'Torso', 'ArmL', 'ArmR', 'ForeL', 'ForeR', 'LegL', 'LegR', 'Head', 'Pale', 'EyeL', 'EyeR', 'BrowL', 'BrowR', 'Mouth'].forEach(k => { ref[k] = document.getElementById('av' + k); });
+    place(); apply(0, 0);
+  }
+  function place() { ref.Root && ref.Root.setAttribute('transform', `translate(${pos.x} ${pos.y}) scale(${pos.s})`); }
+  function setPose(name, o = {}) {
+    pose = name; const P = POSES[name] || POSES.idle;
+    tgt = JSON.parse(JSON.stringify(P)); tgt.sd += ageG * 3.5; tgt.hd += ageG * 4;
+    if (name === 'success') bounce = 1; if (o.instant || App.reduced) { cur = JSON.parse(JSON.stringify(tgt)); }
+  }
+  function setPos(x, s) { posT = { x, y: 426, s: s || pos.s }; if (App.reduced) { pos = { ...posT }; place(); } }
+  function apply(dt, t) {
+    if (!ref.Root) return;
+    const walking = pose === 'walk', w = Math.sin(t * 7.5), b = App.reduced ? 0 : Math.sin(t * 1.7);
+    walkAmp += ((walking && !App.reduced ? 1 : 0) - walkAmp) * Math.min(1, dt * 8);
+    bounce = Math.max(0, bounce - dt * 0.35);
+    const jump = (App.reduced ? 0 : Math.abs(Math.sin(t * 6)) * 7 * bounce);
+    const by = cur.by - Math.abs(w) * 3 * walkAmp - jump - b * 0.6;
+    ref.Torso.setAttribute('transform', `translate(0 ${by.toFixed(2)}) rotate(${(cur.tr + w * 2 * walkAmp).toFixed(2)} 0 -112) translate(0 -112) scale(${(1 + b * 0.008).toFixed(4)} ${(1 - cur.sd * 0.007 + b * 0.012).toFixed(4)}) translate(0 112)`);
+    const sy = -184 + cur.sd * 0.5 - b * 0.4, sw = 12 * w * walkAmp;
+    ref.ArmL.setAttribute('transform', `translate(-35 ${sy}) rotate(${cur.aL[0] + sw})`); ref.ArmR.setAttribute('transform', `translate(35 ${sy}) rotate(${-(cur.aR[0] - sw)})`);
+    ref.ForeL.setAttribute('transform', `translate(0 50) rotate(${-cur.aL[1]})`); ref.ForeR.setAttribute('transform', `translate(0 50) rotate(${cur.aR[1]})`);
+    ref.Head.setAttribute('transform', `translate(0 ${-192 + cur.hd + b * 0.4}) rotate(${cur.ht} 0 0)`);
+    const lL = Math.max(0, w) * 9 * walkAmp, lR = Math.max(0, -w) * 9 * walkAmp;
+    ref.LegL.setAttribute('transform', `translate(-13 ${-112 - lL}) rotate(${cur.lg}) scale(1 ${1 - lL * 0.008})`); ref.LegR.setAttribute('transform', `translate(13 ${-112 - lR}) rotate(${-cur.lg}) scale(1 ${1 - lR * 0.008})`);
+    ref.Shadow.setAttribute('rx', 48 - (lL + lR + jump) * 0.8);
+    // face
+    const m = cur.m, sad = Math.max(0, -m), up = Math.max(0, m);
+    ref.Mouth.setAttribute('d', `M-8 -17 Q0 ${(-17 + 8 * m).toFixed(2)} 8 -17`);
+    ref.BrowL.setAttribute('transform', `translate(-9 ${-46 - up * 2}) rotate(${-sad * 14})`); ref.BrowR.setAttribute('transform', `translate(9 ${-46 - up * 2}) rotate(${sad * 14})`);
+    let bl = 1; if (!App.reduced) { if (t > blinkAt) { blinkT = t; blinkAt = t + 2.5 + Math.random() * 3; } if (blinkT > 0 && t - blinkT < 0.14) bl = 0.1; }
+    ref.EyeL.setAttribute('transform', `translate(-9 -36) scale(1 ${bl})`); ref.EyeR.setAttribute('transform', `translate(9 -36) scale(1 ${bl})`);
+    ref.Pale.setAttribute('opacity', (cur.pal * 0.3).toFixed(2));
+  }
+  function frame(dt, t) {
+    if (!ref.Root) return;
+    const k = App.reduced ? 1 : 1 - Math.exp(-dt * 7);
+    for (const key in tgt) { if (Array.isArray(tgt[key])) { cur[key][0] += (tgt[key][0] - cur[key][0]) * k; cur[key][1] += (tgt[key][1] - cur[key][1]) * k; } else cur[key] += (tgt[key] - cur[key]) * k; }
+    const kp = App.reduced ? 1 : 1 - Math.exp(-dt * 3);
+    if (Math.abs(pos.x - posT.x) > 0.05 || Math.abs(pos.s - posT.s) > 0.001) { pos.x += (posT.x - pos.x) * kp; pos.s += (posT.s - pos.s) * kp; place(); }
+    apply(dt, t);
+  }
+  return { build, setPose, setPos, frame, outfitFor, pose: () => pose };
+})();
+
+/* ---------------- particles ---------------- */
+const FX = (() => {
+  const c = $('#fxc'), ctx = c.getContext('2d'), stage = $('#stage');
+  let W = 0, H = 0, want = { rain: 0, rays: 0 }, lvl = { rain: 0, rays: 0 }, drops = [], sparks = [], motes = [], amb = null, ambP = [], timer = 0, spawn = 0;
+  function size() { const r = c.getBoundingClientRect(), d = Math.min(2, window.devicePixelRatio || 1); W = r.width; H = r.height; c.width = Math.max(1, W * d); c.height = Math.max(1, H * d); ctx.setTransform(d, 0, 0, d, 0, 0); }
+  new ResizeObserver(size).observe(c); size();
+  function set(name, ms) {
+    want = { rain: name === 'rain' ? 1 : 0, rays: name === 'rays' ? 1 : 0 }; stage.dataset.fx = name || '';
+    Scene.setGloom(name === 'rain' ? 1 : 0); clearTimeout(timer); spawn = name === 'rays' ? 70 : 0;
+    if (name && ms !== 0) timer = setTimeout(() => { want = { rain: 0, rays: 0 }; stage.dataset.fx = ''; Scene.setGloom(0); }, (ms || 9000) / App.speed);
+  }
+  function ambient(kind) { amb = kind; ambP = []; }
+  function frame(dt, t) {
+    ctx.clearRect(0, 0, W, H);
+    for (const k in lvl) lvl[k] += (want[k] - lvl[k]) * Math.min(1, dt * 1.6);
+    if (App.reduced) return;
+    if (lvl.rays > 0.02) {
+      ctx.save(); for (let i = 0; i < 5; i++) {
+        const x0 = W * (0.45 + i * 0.13), a = lvl.rays * (0.1 + 0.06 * Math.sin(t * 0.8 + i)); const gr = ctx.createLinearGradient(x0, 0, x0 - W * 0.25, H);
+        gr.addColorStop(0, `rgba(255,236,170,${a})`); gr.addColorStop(1, 'rgba(255,236,170,0)'); ctx.fillStyle = gr;
+        ctx.beginPath(); ctx.moveTo(x0, 0); ctx.lineTo(x0 + W * 0.07, 0); ctx.lineTo(x0 - W * 0.2, H); ctx.lineTo(x0 - W * 0.32, H); ctx.fill();
+      } ctx.restore();
+      if (spawn > 0 || Math.random() < 0.3) for (let i = 0; i < (spawn > 0 ? 3 : 1); i++) { sparks.push({ x: W * (0.58 + (Math.random() - 0.5) * 0.18), y: H * 0.62, vx: (Math.random() - 0.5) * 90, vy: -60 - Math.random() * 120, l: 1.4 + Math.random(), a: 0, c: Math.random() > 0.5 ? '255,176,32' : '255,255,255' }); spawn--; }
+    }
+    sparks = sparks.filter(p => (p.l -= dt) > 0); sparks.forEach(p => { p.x += p.vx * dt; p.y += p.vy * dt; p.vy += 30 * dt; ctx.fillStyle = `rgba(${p.c},${clamp(p.l, 0, 1)})`; ctx.beginPath(); ctx.arc(p.x, p.y, 2.2, 0, 6.3); ctx.fill(); });
+    if (lvl.rain > 0.02) {
+      const n = Math.round(150 * lvl.rain); while (drops.length < n) drops.push({ x: Math.random() * (W + 100), y: Math.random() * H, v: 700 + Math.random() * 500, l: 10 + Math.random() * 12 });
+      drops.length = Math.min(drops.length, n); ctx.strokeStyle = 'rgba(200,220,255,.55)'; ctx.lineWidth = 1.2; ctx.beginPath();
+      drops.forEach(d => { d.y += d.v * dt; d.x -= d.v * 0.18 * dt; if (d.y > H) { d.y = -20; d.x = Math.random() * (W + 100); } ctx.moveTo(d.x, d.y); ctx.lineTo(d.x + d.l * 0.18, d.y - d.l); }); ctx.stroke();
+    } else drops.length = 0;
+    if (amb) {
+      const N = amb === 'snow' ? 70 : 24; while (ambP.length < N) ambP.push({ x: Math.random() * W, y: Math.random() * H, v: 20 + Math.random() * 40, p: Math.random() * 6, s: 1.5 + Math.random() * 2.5 });
+      ambP.forEach(p => { p.y += p.v * dt; p.x += Math.sin(t + p.p) * 20 * dt + (amb === 'snow' ? 0 : 25 * dt); if (p.y > H + 10) { p.y = -10; p.x = Math.random() * W; } if (p.x > W + 10) p.x = -10;
+        ctx.fillStyle = amb === 'snow' ? 'rgba(255,255,255,.85)' : amb === 'leaf' ? 'rgba(224,137,60,.85)' : 'rgba(255,200,220,.8)'; ctx.beginPath(); if (amb === 'snow') ctx.arc(p.x, p.y, p.s, 0, 6.3); else ctx.ellipse(p.x, p.y, p.s * 1.8, p.s, Math.sin(t + p.p), 0, 6.3); ctx.fill(); });
+    }
+  }
+  return { set, ambient, frame };
+})();
+
+/* ---------------- tweens & main loop ---------------- */
+const Tween = { list: [], add(dur, fn, done) { if (App.reduced || dur <= 0) { fn(1); done && done(); return; } this.list.push({ t: 0, dur: dur / App.speed, fn, done }); },
+  update(dt) { this.list = this.list.filter(o => { o.t += dt; const p = clamp(o.t / o.dur, 0, 1); o.fn(ease(p)); if (p >= 1) { o.done && o.done(); return false; } return true; }); } };
+let lastT = performance.now();
+function loop(now) { const dt = Math.min(0.05, (now - lastT) / 1000); lastT = now; Tween.update(dt); Scene.frame(dt, now / 1000); Avatar.frame(dt, now / 1000); FX.frame(dt, now / 1000); requestAnimationFrame(loop); }
+</script>
+<script id="ui">
+'use strict';
+/* =====================================================================
+   UI — setup, HUD, story flow, debrief, teacher panel, autosave
+   ===================================================================== */
+const SAVE = 'longgame.save.v1', SETK = 'longgame.settings.v1';
+let S = null, busy = false, lastSetup = null;
+const side = $('#side'), beatEl = $('#beat'), liveEl = $('#live');
+const say = t => { liveEl.textContent = ''; setTimeout(() => { liveEl.textContent = t; }, 40); };
+const wait = ms => new Promise(r => setTimeout(r, App.reduced ? Math.min(ms, 200) : ms / App.speed));
+function h(tag, props, ...kids) {
+  const e = document.createElement(tag);
+  if (props) for (const k in props) { const v = props[k]; if (k === 'class') e.className = v; else if (k === 'text') e.textContent = v; else if (k.startsWith('on')) e.addEventListener(k.slice(2), v); else if (v === true) e.setAttribute(k, ''); else if (v !== false && v != null) e.setAttribute(k, v); }
+  for (const c of kids.flat()) { if (c == null || c === false) continue; e.append(c.nodeType ? c : document.createTextNode(c)); }
+  return e;
+}
+const save = () => { if (S) { store.set(SAVE, S); renderDebug(); } };
+
+/* ---------------- settings ---------------- */
+const settings = Object.assign({ speed: 1, motion: null, sound: false, hc: false }, store.get(SETK) || {});
+const mql = matchMedia('(prefers-reduced-motion: reduce)');
+function applySettings() {
+  App.speed = settings.speed; document.documentElement.style.setProperty('--spd', App.speed);
+  App.reduced = settings.motion === null ? mql.matches : settings.motion === 'off';
+  document.body.classList.toggle('reduced', App.reduced); document.body.classList.toggle('hc', settings.hc);
+  const set = (id, txt, on) => { const b = $(id); b.textContent = txt; b.setAttribute('aria-pressed', on ? 'true' : 'false'); };
+  set('#btnSpeed', 'Speed: ' + (App.speed > 1 ? 'Faster' : 'Normal'), App.speed > 1);
+  set('#btnMotion', 'Motion: ' + (App.reduced ? 'Reduced' : 'On'), App.reduced);
+  set('#btnSound', 'Sound: ' + (settings.sound ? 'On' : 'Off'), settings.sound);
+  set('#btnHC', 'High contrast: ' + (settings.hc ? 'On' : 'Off'), settings.hc);
+  Snd.enable(settings.sound);
+  store.set(SETK, settings);
+}
+mql.addEventListener && mql.addEventListener('change', applySettings);
+
+/* ---------------- soft ambient sound (off by default) ---------------- */
+const Snd = (() => {
+  let ac = null, master = null, timer = 0, i = 0;
+  const warm = [[220, 277.2, 329.6], [196, 246.9, 293.7], [174.6, 220, 261.6], [196, 261.6, 329.6]];
+  function chord() {
+    if (!ac || ac.state !== 'running') return;
+    const t = ac.currentTime, low = S && modeOf(S).struggling, c = warm[i++ % 4].map(f => low ? f * (f === 277.2 ? 0.945 : 1) : f);
+    c.forEach((f, k) => { const o = ac.createOscillator(), g = ac.createGain(); o.type = 'sine'; o.frequency.value = f / (k === 0 ? 2 : 1); o.detune.value = (k - 1) * 4;
+      g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(0.35, t + 2.5); g.gain.linearRampToValueAtTime(0, t + 7); o.connect(g); g.connect(master); o.start(t); o.stop(t + 7.2); });
+  }
+  function enable(on) {
+    try {
+      if (on) {
+        if (!ac) { ac = new (window.AudioContext || window.webkitAudioContext)(); master = ac.createGain(); master.gain.value = 0.1; const lp = ac.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 900; master.connect(lp); lp.connect(ac.destination); }
+        ac.resume(); if (!timer) { chord(); timer = setInterval(chord, 5500); }
+      } else { clearInterval(timer); timer = 0; if (ac) ac.suspend(); }
+    } catch (e) { /* audio unavailable */ }
+  }
+  return { enable };
+})();
+$('#btnSpeed').onclick = () => { settings.speed = settings.speed > 1 ? 1 : 2.4; applySettings(); };
+$('#btnMotion').onclick = () => { settings.motion = App.reduced ? 'on' : 'off'; applySettings(); if (S) rebuildAvatar(); };
+$('#btnSound').onclick = () => { settings.sound = !settings.sound; applySettings(); };
+$('#btnHC').onclick = () => { settings.hc = !settings.hc; applySettings(); };
+$('#btnNew').onclick = () => { if (!S || confirm('Start over? Your current run will be erased.')) { store.del(SAVE); S = null; showSetup(); } };
+
+/* ---------------- avatar helpers ---------------- */
+function rebuildAvatar(gown) { Avatar.build(S || previewState(), { gown }); Avatar.setPose(Avatar.pose(), { instant: true }); }
+function previewState() { return { look: setup.look, age: 17, arc: null, stage: 0 }; }
+function defaultScene(s) {
+  if (!s.arc) return 'school';
+  return { college: s.stage <= 1 ? 'campus' : 'office', trade: 'worksite', work: s.stage <= 2 ? 'shop' : 'office', founder: 'shop', care: 'house' }[s.arc];
+}
+function sceneKey(b) {
+  let sc = b.kind === 'decision' ? CONFIG.decisions[b.id].scene : b.kind === 'event' ? CONFIG.events[b.id].scene : null;
+  return (!sc || sc === 'work') ? defaultScene(S) : sc;
+}
+
+/* ---------------- setup screen ---------------- */
+let setup = { name: '', look: { skin: CONFIG.looks.skin[2], hair: CONFIG.looks.hair[1], style: 'short', accent: CONFIG.looks.accent[0] }, traits: { risk: 1, family: 1, money: 1 } };
+function radio(legend, items, isSel, onPick, cls) {
+  const fs = h('fieldset', { class: 'field' }, h('legend', { text: legend }));
+  const row = h('div', { class: cls || 'seg', role: 'radiogroup', 'aria-label': legend });
+  items.forEach((it, i) => {
+    const b = h('button', { type: 'button', role: 'radio', 'aria-checked': isSel(i) ? 'true' : 'false', 'aria-label': it.label, title: it.label, style: it.style || null, text: it.text || '' });
+    b.onclick = () => { onPick(i); $$('button', row).forEach((x, j) => x.setAttribute('aria-checked', isSel(j) ? 'true' : 'false')); };
+    row.append(b);
+  });
+  fs.append(row); return fs;
+}
+function showSetup(preset) {
+  S = null; $('#review').hidden = true; $('#play').hidden = false; FX.set(null, 0); FX.ambient(null);
+  if (preset) setup.traits = preset;
+  const box = h('div', { class: 'creator' }, h('h2', { text: 'Create your avatar' }));
+  const nameIn = h('input', { type: 'text', id: 'nm', maxlength: 18, value: setup.name, placeholder: 'Pick a name (not your own)', autocomplete: 'off' });
+  nameIn.oninput = () => { setup.name = nameIn.value; };
+  box.append(h('div', { class: 'field' }, h('label', { for: 'nm', text: 'Name' }), nameIn,
+    h('button', { type: 'button', text: 'Surprise me', onclick: () => { setup.name = CONFIG.names[Math.floor(Math.random() * CONFIG.names.length)]; nameIn.value = setup.name; } })));
+  const L = CONFIG.looks, rb = () => Avatar.build(previewState());
+  box.append(radio('Skin tone', L.skin.map((c, i) => ({ label: 'Skin tone ' + (i + 1), style: 'background:' + c }) ), i => setup.look.skin === L.skin[i], i => { setup.look.skin = L.skin[i]; rb(); }, 'sw c'));
+  box.append(radio('Hair color', L.hair.map((c, i) => ({ label: 'Hair color ' + (i + 1), style: 'background:' + c })), i => setup.look.hair === L.hair[i], i => { setup.look.hair = L.hair[i]; rb(); }, 'sw c'));
+  box.append(radio('Hair style', L.style.map(x => ({ label: x, text: x })), i => setup.look.style === L.style[i], i => { setup.look.style = L.style[i]; rb(); }));
+  box.append(radio('Favorite color', L.accent.map((c, i) => ({ label: 'Favorite color ' + (i + 1), style: 'background:' + c })), i => setup.look.accent === L.accent[i], i => { setup.look.accent = L.accent[i]; rb(); }, 'sw c'));
+  for (const t of Object.keys(CONFIG.traits)) {
+    const T = CONFIG.traits[t], note = h('p', { class: 'hint', text: '' });
+    const upd = () => { note.textContent = 'Your avatar ' + T.blurb[setup.traits[t]] + '.'; };
+    box.append(radio(T.label, T.levels.map(x => ({ label: x, text: x })), i => setup.traits[t] === i, i => { setup.traits[t] = i; upd(); }), note); upd();
+  }
+  side.replaceChildren(box);
+  const sv = store.get(SAVE);
+  const card = h('div', { class: 'beatCard fadeUp' }, h('span', { class: 'chip', text: 'A life simulation · about 25 minutes' }), h('h2', { text: 'The Long Game' }),
+    h('p', { text: 'You will guide a made-up person from age 17 to age 50. Some choices are big forks, some are small habits, and some things simply happen to them. There are no wrong paths and no game over, and no one gets the same ending.' }),
+    h('p', { class: 'note', text: 'Your avatar is shown in anatomical position (standing, facing forward, arms at sides, palms forward), the neutral pose they return to between moments.' }));
+  const go = h('button', { class: 'primary', type: 'button', text: 'Begin the story', onclick: () => { lastSetup = JSON.parse(JSON.stringify(setup)); startGame(); } });
+  card.append(h('div', { class: 'row' }, go));
+  beatEl.replaceChildren(card);
+  Scene.snap({ scene: 'park', loc: 'town', tod: 0.2, season: 1 }); Avatar.setPos(400, 0.93); Avatar.setPose('idle', { instant: true }); rb(); $('#badge').textContent = 'Create your avatar';
+}
+function startGame() {
+  const nm = (setup.name || '').trim() || CONFIG.names[Math.floor(Math.random() * CONFIG.names.length)];
+  S = newState({ name: nm, look: { ...setup.look }, traits: { ...setup.traits } }); store.set(SAVE, S);
+  Avatar.setPos(560, 0.93); buildHUD(); setHUD(visible(S), { animate: false }); next();
+}
+
+/* ---------------- HUD ---------------- */
+const HUD = { vis: null };
+function buildHUD() {
+  side.innerHTML = `<div class="hud"><h2><span id="hName"></span> <span class="pill" id="hAge"></span></h2><div class="hl" id="hStage"></div>
+  <div class="hbody"><svg viewBox="0 0 60 100" aria-hidden="true" id="sil"><defs><clipPath id="hpclip"><rect id="hpc" x="0" y="0" width="60" height="100"/></clipPath>
+   <g id="shape" fill="currentColor" stroke="currentColor"><circle cx="30" cy="13" r="10" stroke="none"/><rect x="20" y="26" width="20" height="38" rx="9" stroke="none"/><path d="M22 32 L11 62 M38 32 L49 62 M26 62 L24 96 M34 62 L36 96" stroke-width="8" stroke-linecap="round" fill="none"/></g></defs>
+   <use href="#shape" style="color:var(--muted);opacity:.3"/><use href="#shape" clip-path="url(#hpclip)" id="silFill"/></svg>
+   <div style="flex:1"><div class="hl">Health (body + mind)</div><div><span class="hv" id="hHp"></span> <span class="hsub" id="hHpW"></span></div><div class="bar" role="presentation"><i id="hHpBar"></i></div></div></div>
+  <div class="hrow" id="rInc"><span class="hl">Income / year</span><span class="hv" id="hInc"></span></div>
+  <div class="hrow" id="rNet"><span class="hl">Net worth</span><span class="hv" id="hNet"></span></div>
+  <div class="hrow"><span class="hl">Employment</span><span class="hsub" id="hEmp"></span></div>
+  <div class="hrow"><span class="hl">Job / title</span><span class="hsub" id="hJob"></span></div>
+  <div class="hrow"><span class="hl">Place</span><span class="hsub" id="hLoc"></span></div>
+  <div class="hrow" id="rSup"><span class="hl">Support network</span><span><span class="people" id="hPeople" role="img"></span></span></div>
+  <div class="hrow" id="rFul" style="display:block"><div style="display:flex;justify-content:space-between"><span class="hl">Fulfillment</span><span class="hv" id="hFul"></span></div><div class="bar"><i id="hFulBar" style="background:var(--accent)"></i></div></div></div>`;
+  $('#hName').textContent = S.name; HUD.vis = null;
+}
+function hpColor(v) { return v >= 65 ? '#4cd6a0' : v >= 40 ? '#ffc35a' : '#ff7a7a'; }
+function pop(rowId, txt, good) { const r = $(rowId); if (!r) return; const d = h('span', { class: 'delta ' + (good ? 'g' : 'b'), text: txt }); r.append(d); setTimeout(() => d.remove(), 2200 / App.speed); }
+function setHUD(v, o = {}) {
+  const old = HUD.vis || v, anim = o.animate !== false; HUD.vis = v;
+  $('#hAge').textContent = 'Age ' + v.age; $('#hStage').textContent = CONFIG.stages[S.stage].label;
+  $('#hEmp').textContent = v.emp; $('#hJob').textContent = v.title; $('#hLoc').textContent = CONFIG.locName[v.loc] + ' · ' + CONFIG.houseName[v.housing];
+  const paint = e => {
+    const hp = lerp(old.hp, v.hp, e), ful = lerp(old.ful, v.ful, e), inc = lerp(old.income, v.income, e), net = lerp(old.net, v.net, e);
+    $('#hHp').textContent = Math.round(hp); $('#hHpW').textContent = hp >= 65 ? 'Strong' : hp >= 40 ? 'Okay' : 'Low';
+    $('#hHpBar').style.width = hp + '%'; $('#hHpBar').style.background = hpColor(hp); $('#hpc').setAttribute('y', 100 - hp); $('#hpc').setAttribute('height', hp);
+    $('#sil').style.color = hpColor(hp); $('#sil').style.filter = `drop-shadow(0 0 ${3 + hp / 12}px ${hpColor(hp)})`;
+    $('#hInc').textContent = fmtMoney(inc); $('#hNet').textContent = fmtMoney(net); $('#hNet').classList.toggle('neg', net < 0);
+    $('#hFul').textContent = Math.round(ful) + '%'; $('#hFulBar').style.width = ful + '%';
+  };
+  if (anim) Tween.add(0.9, paint); else paint(1);
+  const n = Math.round(v.sup / 10);
+  $('#hPeople').innerHTML = Array.from({ length: 10 }, (_, i) => `<svg viewBox="0 0 14 22" aria-hidden="true"><circle cx="7" cy="5" r="4" fill="${i < n ? 'var(--info)' : 'none'}" stroke="var(--info)" stroke-width="1.5"/><path d="M1.5 21 v-6 a5.5 5.5 0 0 1 11 0 v6z" fill="${i < n ? 'var(--info)' : 'none'}" stroke="var(--info)" stroke-width="1.5"/></svg>`).join('');
+  $('#hPeople').setAttribute('aria-label', `Support network: ${n} of 10`);
+  const d = o.deltas;
+  if (d && anim) {
+    const sg = x => (x > 0 ? '+' : '−');
+    if (Math.abs(d.hp) >= 1) pop('.hbody', `${sg(d.hp)}${Math.abs(Math.round(d.hp))} health`, d.hp > 0);
+    if (Math.abs(d.income) >= 500) pop('#rInc', `${sg(d.income)}${fmtMoney(Math.abs(d.income))}/yr`, d.income > 0);
+    if (Math.abs(d.net) >= 200) pop('#rNet', `${sg(d.net)}${fmtMoney(Math.abs(d.net))}`, d.net > 0);
+    if (Math.abs(d.sup) >= 2) pop('#rSup', `${sg(d.sup)}${Math.abs(Math.round(d.sup / 10 * 10) / 10)} people`, d.sup > 0);
+    if (Math.abs(d.ful) >= 1) pop('#rFul', `${sg(d.ful)}${Math.abs(Math.round(d.ful))}% fulfillment`, d.ful > 0);
+    const bits = []; if (Math.abs(d.hp) >= 1) bits.push(`health ${d.hp > 0 ? 'up' : 'down'} ${Math.abs(Math.round(d.hp))}`); if (Math.abs(d.net) >= 200) bits.push(`net worth ${d.net > 0 ? 'up' : 'down'} ${fmtMoney(Math.abs(d.net))}`); if (Math.abs(d.income) >= 500) bits.push(`income ${d.income > 0 ? 'up' : 'down'} ${fmtMoney(Math.abs(d.income))}`);
+    if (bits.length) say('Changes: ' + bits.join(', '));
+  }
+}
+
+/* ---------------- story flow ---------------- */
+function next() {
+  const b = nextBeat(S); save(); present(b, false);
+}
+async function present(b, resumed) {
+  busy = true; beatEl.replaceChildren(); window.scrollTo({ top: 0 });
+  try {
+    if (b.kind === 'stage') await showStage(b, resumed);
+    else if (b.kind === 'decision') await showDecision(b, resumed);
+    else if (b.kind === 'event') await showEvent(b, resumed);
+    else await showEnd(b, resumed);
+  } finally { busy = false; }
+}
+async function enter(b, resumed, forceScene) {
+  const sc = forceScene || (b.kind === 'stage' ? defaultScene(S) : sceneKey(b));
+  if (!resumed) { S.ui.season = (S.ui.season + 1) % 4; S.ui.tod = b.night ? 0.7 : (b.kind === 'decision' && CONFIG.decisions[b.id].night) ? 0.7 : [0.12, 0.22, 0.3, 0.4, 0.46][Math.floor(Math.random() * 5)]; }
+  rebuildAvatar(); $('#badge').textContent = `Age ${Math.floor(S.age)} · ${CONFIG.stages[S.stage].label}`;
+  if (resumed) Scene.snap({ scene: sc, loc: S.loc, tod: S.ui.tod, season: S.ui.season });
+  else {
+    Avatar.setPose('walk');
+    if (b.kind === 'stage') { const tl = $('#tl'); tl.querySelector('b').textContent = `Age ${CONFIG.stages[S.stage].start}`; tl.querySelector('span').textContent = CONFIG.stages[S.stage].label; tl.classList.add('on'); }
+    await Scene.change({ scene: sc, loc: S.loc, tod: S.ui.tod, season: S.ui.season, spins: b.kind === 'stage' ? 1 : 0, dur: b.kind === 'stage' ? 3.6 : undefined });
+    $('#tl').classList.remove('on');
+  }
+  FX.ambient(['petal', null, 'leaf', 'snow'][S.ui.season % 4]);
+  Avatar.setPose('idle'); setHUD(HUD.vis && !resumed ? HUD.vis : visible(S), { animate: false }); save();
+  const info = `Scene: ${sc}. ${S.name} is ${Math.floor(S.age)}.`; $('#stageDesc').textContent = info;
+}
+function card(chip, title, kids, ev) {
+  const c = h('div', { class: 'beatCard fadeUp' }, h('span', { class: 'chip' + (ev ? ' ev' : ''), text: chip }), h('h2', { tabindex: '-1', text: title }), kids);
+  beatEl.replaceChildren(c); c.querySelector('h2').focus({ preventScroll: true }); return c;
+}
+const contBtn = (label, fn) => h('button', { class: 'primary', type: 'button', text: label, onclick: function () { this.disabled = true; fn(); } });
+
+async function showStage(b, resumed) {
+  const st = CONFIG.stages[b.stage], kids = [];
+  if (b.stage === 0) {
+    const tr = Object.entries(CONFIG.traits).map(([k, T]) => T.blurb[S.traits[k]]);
+    kids.push(h('p', { text: `${S.name} is 17, ${tr[0]}, ${tr[1]}, and ${tr[2]}. Senior year is winding down.` }));
+  } else kids.push(h('p', { text: fmt(st.blurb, S) }));
+  (b.notes || []).forEach(n => kids.push(h('p', { class: 'note', text: fmt(n, S) })));
+  const ref = CONFIG.reflections.find(r => r.stage === b.stage);
+  if (ref) { const t = ref.trait ? ref.text[S.traits[ref.trait]] : ref.text[0]; kids.push(h('p', { class: 'think', text: 'Pause and reflect: ' + fmt(t, S) })); }
+  await enter(b, resumed);
+  const c = card(`Chapter ${b.stage + 1} · Ages ${st.short}`, st.label, kids);
+  c.append(h('div', { class: 'row' }, contBtn('Continue', () => next())));
+  c.querySelector('.primary').focus({ preventScroll: true });
+}
+function traitLine() { return Object.entries(CONFIG.traits).map(([k, T]) => `${T.label}: ${T.levels[S.traits[k]]}`).join(' · '); }
+async function showDecision(b, resumed) {
+  const d = CONFIG.decisions[b.id], kids = [h('p', { text: fmt(d.text, S) })];
+  await enter(b, resumed);
+  if (d.note) kids.push(h('p', { class: 'note', text: d.note }));
+  if (d.think) {
+    const tp = h('p', { class: 'think', hidden: true, text: `${d.think} (${S.name}: ${traitLine()}. What would you do?)` });
+    const tb = h('button', { type: 'button', 'aria-expanded': 'false', text: 'Think about it', onclick: () => { tp.hidden = !tp.hidden; tb.setAttribute('aria-expanded', String(!tp.hidden)); } });
+    kids.push(h('div', { class: 'row' }, tb), tp);
+  }
+  const optsEl = h('div', { class: 'opts', role: 'group', 'aria-label': 'Your choices' });
+  b.refs.forEach((ref, i) => {
+    const o = getOpt(d, ref);
+    optsEl.append(h('button', { type: 'button', class: 'opt fadeUp', style: `animation-delay:${0.15 + i * 0.08}s`, 'data-i': i, onclick: () => pick(i) }, h('span', { class: 'k', 'aria-hidden': 'true', text: i + 1 }), h('span', { text: fmt(o.text, S) })));
+  });
+  kids.push(optsEl);
+  const c = card('Decision' + ` · Age ${b.age}`, d.title, kids);
+  if (b.res) restoreOutcome(b);
+}
+function showOutcome(c, r, label) {
+  const out = h('div', { class: 'outcome fadeUp', role: 'status' }, h('p', { text: r.out }));
+  c.append(out, h('div', { class: 'row' }, contBtn(label || 'Continue', proceed)));
+  c.querySelector('.outcome + .row .primary').focus({ preventScroll: true });
+  out.scrollIntoView({ behavior: App.reduced ? 'auto' : 'smooth', block: 'nearest' });
+}
+function restoreOutcome(b) {
+  const c = beatEl.firstChild; $$('.opt', c).forEach((x, j) => { x.disabled = true; x.classList.add(j === b.res.i ? 'picked' : 'dim'); });
+  showOutcome(c, b.res); setHUD(visible(S), { animate: false });
+}
+function pick(i) {
+  if (busy) return; busy = true;
+  const b = S.cur, r = choose(S, i); save();
+  const c = beatEl.firstChild; $$('.opt', c).forEach((x, j) => { x.disabled = true; x.classList.add(j === i ? 'picked' : 'dim'); });
+  Avatar.setPose(r.pose); FX.set(r.fx); setHUD(visible(S), { deltas: r.dv });
+  setTimeout(() => { showOutcome(c, r); busy = false; }, App.reduced ? 0 : 900 / App.speed);
+}
+async function showEvent(b, resumed) {
+  const ev = CONFIG.events[b.id];
+  if (!resumed) HUD.vis = b.before;          // keep the HUD at its old values until the event lands
+  await enter(b, resumed);
+  const gown = b.pose === 'sick' && sceneKey(b) === 'hospital';
+  const c = card(`Life happens · Age ${b.age}`, ev.title, [h('p', { text: fmt(ev.text, S) })], true);
+  if (gown && !resumed) rebuildAvatar(true);
+  const land = async () => {
+    Avatar.setPose(b.pose || 'slump'); FX.set(b.fx || null); setHUD(visible(S), { deltas: b.dv });
+    say(ev.title + '. ' + b.land);
+    await wait(1100); const out = h('div', { class: 'outcome fadeUp', role: 'status' }, h('p', { class: 'note', text: 'Nobody chose this. It happened to ' + S.name + '.' }), h('p', { text: b.land }));
+    c.append(out, h('div', { class: 'row' }, contBtn('Continue', proceed))); c.querySelector('.primary').focus({ preventScroll: true }); out.scrollIntoView({ behavior: App.reduced ? 'auto' : 'smooth', block: 'nearest' });
+  };
+  if (resumed) { Avatar.setPose(b.pose || 'idle', { instant: true }); setHUD(visible(S), { animate: false }); const out = h('div', { class: 'outcome' }, h('p', { text: b.land })); c.append(out, h('div', { class: 'row' }, contBtn('Continue', proceed))); }
+  else { await wait(1500); await land(); }
+}
+async function proceed() {
+  if (busy) return; busy = true;
+  const dt = closeBeat(S); save(); FX.set(null, 0); Avatar.setPose('idle'); setHUD(visible(S), { deltas: dt });
+  rebuildAvatar(); await wait(1000); busy = false; next();
+}
+
+/* ---------------- ending ---------------- */
+async function showEnd(b, resumed) {
+  const P = CONFIG.profiles[b.profile]; S.phase = 'end';
+  await enter(b, resumed, P.scene);
+  Avatar.setPose(P.mood === 'good' ? 'success' : 'calm'); if (P.mood === 'good') FX.set('rays', 6000);
+  setHUD(visible(S), { animate: false }); const v = visible(S);
+  const c = card('Age 50', 'Where ' + S.name + ' landed', [
+    h('p', { text: `${S.name} is 50. ${S.hist.length} moments, big and small, have led here. Nobody else's road looks quite like it.` }),
+    h('p', { text: `${S.name}'s work: ${v.title.toLowerCase()}. Home: ${CONFIG.locName[v.loc].toLowerCase()} (${CONFIG.houseName[v.housing].toLowerCase()}). Health-wise, ${S.name} is ${v.hp >= 65 ? 'in good shape' : v.hp >= 40 ? 'doing okay' : 'working on getting stronger'}.` }),
+    h('div', { class: 'outcome' }, h('h3', { text: P.title }), h('p', { text: fmt(P.desc, S) }), h('p', { text: 'Strengths: ' + fmt(P.bright, S) }), h('p', { text: 'Still open: ' + fmt(P.open, S) }))
+  ]);
+  c.append(h('div', { class: 'row' }, h('button', { class: 'primary', type: 'button', text: 'See Your Life in Review', onclick: showReview })));
+  save();
+}
+
+/* ---------------- Life in Review ---------------- */
+const abs = o => Object.values(o).reduce((a, b) => a + Math.abs(b), 0);
+const sgn = n => (n > 0 ? '+' : n < 0 ? '−' : '') + Math.abs(n);
+function explain() {
+  const ch = S.hist.filter(x => x.kind === 'choice'), ev = S.hist.filter(x => x.kind === 'event'), out = [];
+  const total = S.hist.reduce((a, x) => a + abs(x.dAx), 0) || 1, big = S.hist.reduce((a, x) => abs(x.dAx) > abs(a.dAx) ? x : a, S.hist[0]);
+  out.push(`Across ${ch.length} decisions and ${ev.length} life events, the single biggest moment ("${big.title}") accounted for only ${Math.round(abs(big.dAx) / total * 100)}% of everything that moved ${S.name}'s hidden momentum. No single choice made or broke this life.`);
+  const rank = Object.keys(CONFIG.axes).map(k => ({ k, d: S.ax[k] - S.ax0[k] })).sort((a, b) => Math.abs(b.d) - Math.abs(a.d)).slice(0, 2);
+  rank.forEach(({ k, d }) => {
+    const n = ch.filter(x => x.dAx[k]).length, p = S.pass[k];
+    out.push(`${CONFIG.axes[k].label} (${CONFIG.axes[k].blurb}) moved from ${S.ax0[k].toFixed(1)} to ${S.ax[k].toFixed(1)} out of ${CONFIG.axisMax}. ${n} separate choices touched it, and none moved it by more than ${CONFIG.maxStep} points. About ${p >= 0 ? '+' : '−'}${Math.abs(p).toFixed(1)} points came purely from habits feeding each other: sleep helps mood, mood helps work, friends help both. That is compounding.`);
+  });
+  const kc = { neutral: 0, tilted: 0, clear: 0 }; ch.forEach(x => kc[x.dkind]++);
+  out.push(`Of the ${ch.length} decisions, ${kc.neutral} were forks where neither option was better, just different (each traded one set of benefits and risks for another), ${kc.tilted} gently favored one direction, and ${kc.clear} had a clearly safer option.`);
+  const first = S.arcLog[0], arcs30 = S.arcAt30 && CONFIG.arcs[S.arcAt30];
+  if (first) out.push(`${S.name} began on the "${CONFIG.arcs[first.arc].label}" path${arcs30 ? ` and was on the "${arcs30.label}" path by age 30` : ''}. ${arcs30 ? arcs30.desc : ''} ${S.arcLog.length > 1 ? 'Later choices let the path change course, which paths do.' : ''}`);
+  const bad = ev.filter(x => x.tone !== 'good');
+  if (bad.length) { const av = bad.reduce((a, x) => a + x.sev, 0) / bad.length; out.push(`${bad.length} hard events arrived no matter what. On average they landed ${Math.abs(Math.round((av - 1) * 100))}% ${av < 1 ? 'softer' : 'harder'} than a typical hit, because resilience (mental coping, relationships, and financial cushion) controls how hard hardship lands and how fast health bounces back.`); }
+  return out;
+}
+function exportText() {
+  const P = CONFIG.profiles[S.final.profile], v = visible(S), L = [];
+  L.push('THE LONG GAME: RUN SUMMARY', '', `Avatar: ${S.name}  |  Traits: ${traitLine()}`, `Ending: ${P.title}`, fmt(P.desc, S), '', `At 50: ${v.title}, ${CONFIG.locName[v.loc]}, ${CONFIG.houseName[v.housing]}`,
+    `Health ${Math.round(v.hp)}/100 · Income ${fmtMoney(v.income)}/yr · Net worth ${fmtMoney(v.net)} · Fulfillment ${Math.round(v.ful)}% · Support ${Math.round(v.sup / 10)}/10`, '', 'TIMELINE');
+  S.hist.forEach((x, i) => L.push(`${i + 1}. Age ${x.age} [${x.kind === 'event' ? 'EVENT' : 'CHOICE'}] ${x.title}${x.kind === 'choice' ? ' - I chose: ' + x.text : ''}\n   ${x.out}`));
+  L.push('', 'HIDDEN MOMENTUM (start -> end, out of ' + CONFIG.axisMax + ')');
+  Object.keys(CONFIG.axes).forEach(k => L.push(`${CONFIG.axes[k].label}: ${S.ax0[k].toFixed(1)} -> ${S.ax[k].toFixed(1)}`));
+  L.push('', 'HOW SMALL CHOICES COMPOUNDED', ...explain(), '', 'REFLECTION QUESTIONS (write your answers)', ...CONFIG.questions.map((q, i) => `${i + 1}. ${q}\n`));
+  return L.join('\n');
+}
+function chart(o) {
+  const W = 440, H = 210, m = { l: 12, r: 62, t: 20, b: 26 }, pts = S.series, xs = a => m.l + (a - 17) / 33 * (W - m.l - m.r);
+  let lo = Math.min(...pts.map(p => p[o.key])), hi = Math.max(...pts.map(p => p[o.key]));
+  if (o.zero) { lo = Math.min(lo, 0); hi = Math.max(hi, 1); } if (o.fixed) { lo = 0; hi = 100; } if (hi === lo) hi = lo + 1; const pad = (hi - lo) * 0.06; if (!o.fixed) { hi += pad; if (lo < 0) lo -= pad; }
+  const ys = v => H - m.b - (v - lo) / (hi - lo) * (H - m.t - m.b), col = o.color;
+  const d = pts.map((p, i) => (i ? 'L' : 'M') + xs(p.age).toFixed(1) + ' ' + ys(p[o.key]).toFixed(1)).join('');
+  let g = ''; for (let i = 0; i <= 3; i++) { const v = lo + (hi - lo) * i / 3, y = ys(v); g += `<line x1="${m.l}" x2="${W - m.r}" y1="${y}" y2="${y}" stroke="var(--line)" stroke-opacity=".6" stroke-dasharray="2 4"/><text x="${W - m.r + 6}" y="${y + 4}" font-size="11" style="fill:var(--muted)">${o.fmt(v)}</text>`; }
+  [20, 30, 40, 50].forEach(a => { g += `<text x="${xs(a)}" y="${H - 8}" font-size="11" text-anchor="middle" style="fill:var(--muted)">${a}</text>`; });
+  if (lo < 0) g += `<line x1="${m.l}" x2="${W - m.r}" y1="${ys(0)}" y2="${ys(0)}" style="stroke:var(--muted)" stroke-width="1.5"/>`;
+  S.hist.filter(x => x.kind === 'event').forEach(x => { const X = xs(x.age); g += `<line x1="${X}" x2="${X}" y1="${m.t}" y2="${H - m.b}" stroke="${x.tone === 'good' ? '#52e0aa' : x.tone === 'bad' ? '#ff8a80' : '#8fd0ff'}" stroke-opacity=".5" stroke-dasharray="3 3"/>`; });
+  const last = pts[pts.length - 1], first = pts[0];
+  const dots = pts.map(p => `<circle class="mk" tabindex="0" data-tip="Age ${Math.floor(p.age)}: ${o.title} ${o.fmt(p[o.key])}" cx="${xs(p.age)}" cy="${ys(p[o.key])}" r="5" fill="${col}" stroke="var(--panel)" stroke-width="2" aria-label="Age ${Math.floor(p.age)}: ${o.title} ${o.fmt(p[o.key])}"/>`).join('');
+  return `<div class="chart"><h3>${o.title}</h3><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${o.title} from age 17 to 50: starts ${o.fmt(first[o.key])}, ends ${o.fmt(last[o.key])}">${g}<path class="ln" d="${d}" style="stroke:${col}" data-draw="1"/>${dots}
+    <text x="${xs(last.age) + 8}" y="${ys(last[o.key]) - 8}" font-size="12" font-weight="700" style="fill:var(--ink)">${o.fmt(last[o.key])}</text><text x="${xs(first.age)}" y="${ys(first[o.key]) - 10}" font-size="11" style="fill:var(--muted)">age 17: ${o.fmt(first[o.key])}</text></svg></div>`;
+}
+function radar() {
+  const keys = Object.keys(CONFIG.axes), cx = 190, cy = 175, R = 118, ang = i => -Math.PI / 2 + i * 2 * Math.PI / keys.length;
+  const P = (vals, k) => vals.map((v, i) => `${(cx + Math.cos(ang(i)) * R * v / CONFIG.axisMax * k).toFixed(1)},${(cy + Math.sin(ang(i)) * R * v / CONFIG.axisMax * k).toFixed(1)}`).join(' ');
+  let g = [0.25, 0.5, 0.75, 1].map(f => `<polygon points="${P(keys.map(() => CONFIG.axisMax * f), 1)}" fill="none" style="stroke:var(--line)"/>`).join('');
+  g += keys.map((k, i) => `<line x1="${cx}" y1="${cy}" x2="${cx + Math.cos(ang(i)) * R}" y2="${cy + Math.sin(ang(i)) * R}" style="stroke:var(--line)"/><text x="${cx + Math.cos(ang(i)) * (R + 16)}" y="${cy + Math.sin(ang(i)) * (R + 16) + 4}" text-anchor="middle" font-size="12" font-weight="700" style="fill:var(--ink)">${CONFIG.axes[k].short} ${S.ax[k].toFixed(0)}</text>`).join('');
+  const svg = `<svg viewBox="0 0 380 350" role="img" aria-label="Radar chart of the five hidden momentum axes at age 50 compared with the start" style="max-width:420px;width:100%">${g}
+    <polygon points="${P(keys.map(k => S.ax0[k]), 1)}" fill="none" style="stroke:var(--info)" stroke-width="2" stroke-dasharray="5 4"/><polygon id="rdEnd" points="${P(keys.map(k => S.ax[k]), 0)}" fill="rgba(255,176,32,.35)" style="stroke:var(--accent)" stroke-width="3"/></svg>`;
+  return { svg, anim: e => { const el = $('#rdEnd'); if (el) el.setAttribute('points', P(keys.map(k => S.ax[k]), e)); } };
+}
+function showReview() {
+  S.phase = 'review'; save(); FX.set(null, 0); $('#play').hidden = true;
+  const rv = $('#review'); rv.hidden = false; const P = CONFIG.profiles[S.final.profile], v = visible(S);
+  const money = x => fmtMoney(x), rd = radar();
+  rv.innerHTML = `<div class="rv"><h1>Your Life in Review: ${esc(S.name)}</h1>
+  <div class="rvs"><h2>${esc(P.title)}</h2><p>${esc(fmt(P.desc, S))}</p><p><b>Strengths:</b> ${esc(fmt(P.bright, S))}<br><b>Still open:</b> ${esc(fmt(P.open, S))}</p>
+   <p class="hint">Every ending is a real place to stand. None of these profiles is a failure, and none is "the right answer."</p></div>
+  <div class="rvs"><h2>Your path through time</h2><div id="tlbox"></div><div class="legend"><span>● Choice</span><span>◆ Event (happened to you)</span><span><i style="background:#52e0aa"></i>Lifted momentum</span><span><i style="background:#ff8a80"></i>Drained momentum</span><span><i style="background:#8fd0ff"></i>A trade-off (sideways)</span></div>
+   <div class="outcome" id="tlDetail" aria-live="polite">Select a marker (or press Tab and Enter) to read what happened.</div>
+   <details><summary>Read the full timeline as a list</summary><ol class="moments" id="momList"></ol></details></div>
+  <div class="rvs"><h2>How health, money, and meaning changed</h2><div class="legend"><span>Dashed vertical lines mark life events: <b style="color:#52e0aa">good</b>, <b style="color:#ff8a80">hard</b>, or <b style="color:#8fd0ff">mixed</b>.</span></div>
+   <div class="charts">${chart({ key: 'hp', title: 'Health', color: '#4cd6a0', fmt: x => Math.round(x), fixed: true })}${chart({ key: 'income', title: 'Income per year', color: '#ffb020', fmt: x => (x < 0 ? '−' : '') + '$' + (Math.abs(x) >= 1000 ? Math.round(Math.abs(x) / 1000) + 'k' : Math.round(Math.abs(x))), zero: true })}${chart({ key: 'net', title: 'Net worth', color: '#8fd0ff', fmt: x => (x < 0 ? '−' : '') + '$' + (Math.abs(x) >= 1000 ? Math.round(Math.abs(x) / 1000) + 'k' : Math.round(Math.abs(x))), zero: true })}</div>
+   <details><summary>Show the numbers as a table</summary><table class="tbl"><thead><tr><th>Age</th><th>Health</th><th>Income</th><th>Net worth</th><th>Fulfillment</th></tr></thead><tbody>${S.series.map(p => `<tr><td>${Math.floor(p.age)}</td><td>${Math.round(p.hp)}</td><td>${money(p.income)}</td><td>${money(p.net)}</td><td>${Math.round(p.ful)}%</td></tr>`).join('')}</tbody></table></details></div>
+  <div class="rvs"><h2>The hidden momentum, revealed</h2><p>During the game, five invisible scores quietly moved a little with every choice. Here they are.</p><div class="legend"><span><i style="background:var(--accent)"></i>Age 50</span><span><i style="background:transparent;border:2px dashed var(--info)"></i>Where ${esc(S.name)} started</span></div>
+   <div style="display:flex;flex-wrap:wrap;gap:16px;align-items:center">${rd.svg}<table class="tbl" style="flex:1;min-width:260px"><thead><tr><th>Axis</th><th>Start</th><th>Age 50</th></tr></thead><tbody>${Object.keys(CONFIG.axes).map(k => `<tr><td>${CONFIG.axes[k].label}</td><td>${S.ax0[k].toFixed(1)}</td><td>${S.ax[k].toFixed(1)}</td></tr>`).join('')}</tbody></table></div></div>
+  <div class="rvs"><h2>How small choices added up</h2>${explain().map(t => `<p>${esc(t)}</p>`).join('')}</div>
+  <div class="rvs"><h2>What was outside ${esc(S.name)}'s control</h2><p>These things happened with no choice involved. What ${esc(S.name)} did next, and how prepared they were to absorb it, is where choices mattered.</p><ul>${S.hist.filter(x => x.kind === 'event').map(x => {
+    const bits = []; if (Math.abs(x.dv.hp) >= 1) bits.push(`health ${sgn(Math.round(x.dv.hp))}`); if (Math.abs(x.dv.net) >= 100) bits.push(`net worth ${x.dv.net < 0 ? '−' : '+'}${money(Math.abs(x.dv.net))}`); if (Math.abs(x.dv.ful) >= 1) bits.push(`fulfillment ${sgn(Math.round(x.dv.ful))}`);
+    return `<li><b>Age ${x.age}: ${esc(x.title)}</b> (${x.tone === 'good' ? 'good luck' : x.tone === 'bad' ? 'hardship' : 'mixed'})${bits.length ? ' · ' + bits.join(', ') : ''}. ${esc(x.out)}</li>`; }).join('')}</ul></div>
+  <div class="rvs"><h2>Questions for discussion</h2><ol class="qs">${CONFIG.questions.map(q => `<li>${esc(q)}</li>`).join('')}</ol>
+   <p class="hint">If anything in this activity stirred up real feelings, a school counselor or other trusted adult is a good person to talk to.</p></div>
+  <div class="row"><button class="primary" id="btnReplay" type="button">Replay with a different starting point</button><button id="btnExport" type="button">Export summary (.txt)</button><button id="btnPrint" type="button">Print this page</button></div></div>`;
+  // timeline
+  const X0 = 40, XW = 880, xa = a => X0 + (a - 17) / 33 * XW, hist = S.hist; let t = `<svg viewBox="0 0 960 230" role="group" aria-label="Timeline of ${esc(S.name)}'s life from age 17 to 50" style="width:100%;height:auto">`;
+  CONFIG.stages.slice(0, 5).forEach((st, i) => { t += `<rect x="${xa(st.start)}" y="14" width="${xa(st.end) - xa(st.start)}" height="170" style="fill:var(--panel2)" opacity="${i % 2 ? 0.35 : 0.8}"/><text x="${(xa(st.start) + xa(st.end)) / 2}" y="30" text-anchor="middle" font-size="12" style="fill:var(--muted)">${st.short}</text>`; });
+  t += `<line x1="${X0}" x2="${X0 + XW}" y1="99" y2="99" style="stroke:var(--muted)" stroke-width="2"/>`;
+  const AC = { college: '#8fd0ff', trade: '#ffb020', work: '#52e0aa', founder: '#ff8a80', care: '#c9a4ff' }, log = S.arcLog.concat([{ age: 50, arc: null }]);
+  for (let i = 0; i < log.length - 1; i++) t += `<rect x="${xa(log[i].age)}" y="196" width="${xa(log[i + 1].age) - xa(log[i].age)}" height="12" rx="3" fill="${AC[log[i].arc]}"/><text x="${xa(log[i].age) + 4}" y="224" font-size="11" style="fill:var(--muted)">${CONFIG.arcs[log[i].arc].label}</text>`;
+  hist.forEach((x, i) => {
+    const px = xa(x.age + (x.stage === 0 ? 0 : 0) + (i % 3) * 0.12), up = i % 2 === 0, py = up ? 62 : 136, lift = abs(x.dAx) ? sum(x.dAx) : 0;
+    const col = x.kind === 'event' ? (x.tone === 'good' ? '#52e0aa' : x.tone === 'bad' ? '#ff8a80' : '#8fd0ff') : (lift >= 2 ? '#52e0aa' : lift <= -2 ? '#ff8a80' : '#8fd0ff');
+    const shp = x.kind === 'event' ? `<path d="M${px} ${py - 14} L${px + 14} ${py} L${px} ${py + 14} L${px - 14} ${py}Z" fill="${col}" stroke="var(--bg)" stroke-width="2"/>` : `<circle cx="${px}" cy="${py}" r="12" fill="${col}" stroke="var(--bg)" stroke-width="2"/>`;
+    t += `<g class="mk" tabindex="0" role="button" data-i="${i}" aria-label="${i + 1}. Age ${x.age}, ${x.kind === 'event' ? 'event' : 'choice'}: ${esc(x.title)}" style="cursor:pointer"><line x1="${px}" x2="${px}" y1="${py}" y2="99" style="stroke:var(--muted)" stroke-opacity=".6"/>${shp}<text x="${px}" y="${py + 4}" text-anchor="middle" font-size="11" font-weight="800" fill="#0d1830">${i + 1}</text></g>`;
+  });
+  $('#tlbox').innerHTML = t + '</svg>';
+  const detail = i => { const x = hist[i]; $('#tlDetail').innerHTML = `<b>${i + 1}. Age ${x.age}: ${esc(x.title)}</b> <span class="chip">${x.kind === 'event' ? 'Happened to you' : 'Your choice'}</span><p>${x.kind === 'choice' ? 'You chose: <i>' + esc(x.text) + '</i>' : esc(x.text)}</p><p>${esc(x.out)}</p>`; };
+  $$('#tlbox .mk').forEach(m => { const i = +m.dataset.i; m.onclick = () => detail(i); m.onfocus = () => detail(i); m.onkeydown = e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); detail(i); } }; });
+  $('#momList').innerHTML = hist.map((x, i) => `<li><b>Age ${x.age}: ${esc(x.title)}</b> (${x.kind === 'event' ? 'event' : 'choice'}). ${x.kind === 'choice' ? 'You chose: ' + esc(x.text) + ' ' : ''}${esc(x.out)}</li>`).join('');
+  // chart tooltips + draw animation
+  const tip = h('div', { class: 'tip', hidden: true }); document.body.append(tip);
+  $$('.mk[data-tip]').forEach(c => { const sh = () => { const r = c.getBoundingClientRect(); tip.textContent = c.dataset.tip; tip.hidden = false; tip.style.left = Math.min(innerWidth - 220, r.left + 10) + 'px'; tip.style.top = (r.top - 34) + 'px'; }; c.onmouseenter = sh; c.onfocus = sh; c.onmouseleave = c.onblur = () => { tip.hidden = true; }; });
+  $$('path[data-draw]').forEach(p => { const L = p.getTotalLength(); if (!App.reduced) { p.style.strokeDasharray = L; p.style.strokeDashoffset = L; Tween.add(1.8, e => { p.style.strokeDashoffset = L * (1 - e); }); } });
+  Tween.add(1.6, rd.anim);
+  $('#btnExport').onclick = () => { const a = h('a', { href: URL.createObjectURL(new Blob([exportText()], { type: 'text/plain' })), download: `the-long-game-${S.name.replace(/\W+/g, '-')}.txt` }); document.body.append(a); a.click(); a.remove(); };
+  $('#btnPrint').onclick = () => window.print();
+  $('#btnReplay').onclick = () => { const t = S.traits, n = {}; for (const k in t) n[k] = (t[k] + 1 + Math.floor(Math.random() * 2)) % 3; store.del(SAVE); setup.name = S.name; showSetup(n); window.scrollTo(0, 0); };
+  window.scrollTo(0, 0); $('#main').focus({ preventScroll: true });
+}
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+/* ---------------- teacher debug panel (Ctrl+Alt+Shift+D, Alt+Shift+D, or type "teacher") ---------------- */
+const dbgEl = $('#debug');
+function renderDebug() {
+  if (dbgEl.hidden) return;
+  if (!S) { dbgEl.innerHTML = '<b>Teacher panel</b><p>No active run.</p>'; return; }
+  const m = modeOf(S);
+  const bars = Object.keys(CONFIG.axes).map(k => `<div class="ab"><span style="width:92px">${CONFIG.axes[k].short}</span><i style="width:${S.ax[k] / CONFIG.axisMax * 150}px"></i> ${S.ax[k].toFixed(1)} <span style="color:#8aa">(start ${S.ax0[k].toFixed(1)}, drift ${S.pass[k].toFixed(1)})</span></div>`).join('');
+  dbgEl.innerHTML = `<b style="font-size:14px">Teacher panel</b> <button id="dbgX">Close</button>
+   <h3>Hidden axes (0–${CONFIG.axisMax})</h3>${bars}
+   <h3>Trajectory</h3>Direction D=${m.D.toFixed(2)} · ${m.struggling ? 'STRUGGLING → recovery option injected' : m.thriving ? 'THRIVING → temptation injected' : 'neutral'}<br>Resilience ${resil(S).toFixed(2)} · hit severity ×${severity(S).toFixed(2)}<br>Health ${S.hp.toFixed(0)} · Fulfillment ${S.ful.toFixed(0)} · Support ${S.sup.toFixed(0)} · Cash ${fmtMoney(S.cash)} · Debt ${fmtMoney(S.debt + S.hi)}
+   <h3>Position</h3>Stage ${S.stage} slot ${S.slot} · age ${S.age.toFixed(1)} · arc ${S.arc || '–'} (30: ${S.arcAt30 || '–'}) · mult ${S.mult.toFixed(2)} tmp ${S.tmp.toFixed(2)} · bizLuck ${S.bizLuck.toFixed(2)}<br>Flags: ${Object.keys(S.flags).join(', ') || '–'}<br>Queue: ${S.queue.join(', ') || '–'}<br>Seed ${S.seed}
+   <h3>Last pool draw (id, weight)</h3>${S.dbg ? JSON.stringify(S.dbg.kind || S.dbg.tone) + ' ' + S.dbg.cands.map(c => c.join('=')).join(', ') : '–'}
+   <h3>Current beat</h3>${S.cur ? S.cur.kind + ' ' + (S.cur.id || '') + (S.cur.refs ? ' options(hidden axis sums): ' + S.cur.refs.map(r => { const o = getOpt(CONFIG.decisions[S.cur.id], r); return sum(o.ax || {}); }).join(', ') : '') : '–'}
+   <h3>Used</h3>Decisions ${Object.keys(S.used).join(', ') || '–'}<br>Events ${Object.keys(S.usedEv).join(', ') || '–'}
+   <h3>Tools</h3><button id="dbgSim">Run 300 simulated lives</button><button id="dbgEnd">Fast-forward to ending</button><button id="dbgClr">Clear save</button><pre id="dbgOut" style="white-space:pre-wrap"></pre>`;
+  $('#dbgX').onclick = () => { dbgEl.hidden = true; };
+  $('#dbgSim').onclick = () => { const r = simulate(300); $('#dbgOut').textContent = JSON.stringify(r, (k, v) => typeof v === 'number' ? Math.round(v * 10) / 10 : v, 1); };
+  $('#dbgEnd').onclick = () => { let g = 0; while (g++ < 300) { const b = nextBeat(S); if (b.kind === 'end') break; if (b.kind === 'decision') { choose(S, Math.floor(Math.random() * b.refs.length)); closeBeat(S); } else if (b.kind === 'event') closeBeat(S); } save(); present(S.cur, false); };
+  $('#dbgClr').onclick = () => { store.del(SAVE); $('#dbgOut').textContent = 'Save cleared.'; };
+}
+function toggleDebug() { dbgEl.hidden = !dbgEl.hidden; renderDebug(); }
+let typed = '';
+document.addEventListener('keydown', e => {
+  if ((e.ctrlKey && e.altKey && e.shiftKey && e.code === 'KeyD') || (e.altKey && e.shiftKey && e.code === 'KeyD')) { e.preventDefault(); toggleDebug(); return; }
+  if (/INPUT|TEXTAREA/.test(document.activeElement.tagName)) return;
+  if (/^[1-4]$/.test(e.key) && !e.ctrlKey && !e.metaKey && !e.altKey) { const b = $$('.opt:not(:disabled)')[+e.key - 1]; if (b) b.click(); return; }
+  typed = (typed + e.key.toLowerCase()).slice(-7); if (typed === 'teacher') toggleDebug();
+});
+
+/* ---------------- boot ---------------- */
+applySettings();
+Scene.snap({ scene: 'park', loc: 'town', tod: 0.2, season: 1 }); requestAnimationFrame(loop);
+window.addEventListener('beforeunload', () => { if (S) store.set(SAVE, S); });
+(function boot() {
+  const sv = store.get(SAVE);
+  if (sv && sv.v === 1 && sv.name && sv.phase) {
+    S = sv; Avatar.setPos(560, 0.93); buildHUD(); setHUD(visible(S), { animate: false });
+    if (S.phase === 'review') { Avatar.build(S); showReview(); return; }
+    if (S.cur) present(S.cur, true); else next();
+  } else showSetup();
+})();
+window.__LG = { get S() { return S; } };
+</script>
+</body></html>
