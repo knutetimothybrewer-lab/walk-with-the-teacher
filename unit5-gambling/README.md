@@ -1,6 +1,6 @@
 # Gambling: Behind the Odds (Unit 5 summative, Grade 10 Health)
 
-A digital summative assessment for the Gambling unit. Students investigate six “case files” (about 60 minutes of work, a hard maximum of **90 minutes**), use six short simulations whose results feed real questions, and are graded automatically. Everything students type is checked by a **server you own** (a Google Apps Script web app writing to a Google Sheet in your account). The website itself is static and sits on GitHub Pages, so it works on school Chromebooks with nothing to install.
+A digital summative assessment for the Gambling unit. Students investigate six “case files” (about 45 minutes of work on the short form that ships by default, about 63 on the full bank; a hard maximum of **90 minutes**), use up to six short simulations (four in the short form) whose results feed real questions, and are graded automatically. Everything students type is checked by a **server you own** (a Google Apps Script web app writing to a Google Sheet in your account). The website itself is static and sits on GitHub Pages, so it works on school Chromebooks with nothing to install.
 
 | | |
 |---|---|
@@ -156,3 +156,8 @@ On `localhost` the page talks to the bundled dev server. Dev class codes are `DE
 - The Google backend and real Chromebook performance were **not tested in this build** (it was built in an environment without access to your Google account). The same engine, and the real generated `Code.gs`, were tested against a faithful Apps Script mock. Run the Step 6 checks and a small pilot before the real class. See [docs/TESTING.md](docs/TESTING.md).
 - Timing figures (about 56–66 minutes typical) are model estimates, not measurements. Pilot with one class.
 - Some statistics in the unit’s own handouts are secondary sources that were not re-verified. See [docs/SOURCES.md](docs/SOURCES.md).
+
+
+## Short form (about 45 minutes)
+
+The bank ships as a short form: 23 of 32 questions and 4 of 6 simulations, re-weighted so the total is still exactly 100 points and each chapter keeps its point target. Two objectives (L4.4 and L5.1) are no longer assessed. The cuts are listed in `authoring/short.js` (inside the encrypted vault). To get the full bank back, unlock the vault, set `enabled: false` in `authoring/short.js`, run `node tools/build.js`, lock the vault again, and paste the new `private/KeyData.gs` into Apps Script. Only `KeyData.gs` changes in Apps Script; `Code.gs` stays the same.
