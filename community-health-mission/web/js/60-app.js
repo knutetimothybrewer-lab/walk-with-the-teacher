@@ -143,7 +143,7 @@
     var view = h('div.hub',
       h('div.hub-map', h('h1.sr-h', 'County map'), cm.svg, h('p.small', 'Click a glowing place, or use the mission list. You may visit places in any order; the numbers suggest a route.')),
       h('aside.hub-side', h('h2', 'Your mission'), h('p', 'Investigate the county, then present an evidence-based plan. ' + doneCount + ' of ' + nUnits + ' questions finished.'), list,
-        h('p.small', 'Suggested pacing is about 45–60 minutes in all. You have a 90-minute limit, shown in the top bar; your answers are submitted automatically when it ends.'),
+        h('p.small', 'Suggested pacing is about 35–45 minutes in all. You have a 90-minute limit, shown in the top bar; your answers are submitted automatically when it ends.'),
         fin, h('p.small', h('button.linkbtn', { type: 'button', onclick: function () { CHM.go('tutorial'); } }, 'Reopen the briefing'))));
     mount(view, 'County map');
     CHM.hubMap = cm;

@@ -1,11 +1,11 @@
 # Community Health Mission — 10th-grade Community & Environmental Health summative
 
-An animated, self-grading digital assessment. Students join a youth advisory team, travel an illustrated county map, and complete **29 scored units (100 points)** across six locations: neighborhood investigation and $1M budget challenge, an outbreak operations center, an environmental safety lab, a health-data observatory, a media and source studio, and a community action council. Grading, attempts, scoring and results all happen **on the server**, and results land in **your private Google Sheet** automatically.
+An animated, self-grading digital assessment. Students join a youth advisory team, travel an illustrated county map, and complete **23 scored units (100 points) on the short form that ships by default (29 units on the full assessment)** across six locations: neighborhood investigation and $1M budget challenge, an outbreak operations center, an environmental safety lab, a health-data observatory, a media and source studio, and a community action council. Grading, attempts, scoring and results all happen **on the server**, and results land in **your private Google Sheet** automatically.
 
 > **Read this first — three honest limits**
 > 1. **Your 14 source files were not available to the builder.** Content follows the topic list in your assignment, not the original slides/worksheets. Slide/page locators in `docs/ALIGNMENT.md` are topic-level and must be confirmed. See `docs/SOURCE_STATUS.md`. The Riverbend profile details and the "illustrative" minutes/miles are written to be replaced or confirmed against your case files.
 > 2. **Nothing has been deployed to your Google account.** The Apps Script code was tested against a mock of Google's services and the same logic was tested end-to-end in a real browser with a local server. A live deployment (steps below) and the delivery test are still yours to run. See `docs/QA_REPORT.md`.
-> 3. **Timing is an estimate, not a measurement.** Model estimate ≈ 55–60 minutes typical (range roughly 45–70). A classroom pilot is still needed. See `docs/BLUEPRINT.md`.
+> 3. **Timing is an estimate, not a measurement.** Model estimate ≈ 45–50 minutes typical on the short form (about 57 for the full assessment). Real classes ran about 25% longer than the model on another summative here, so expect roughly 55 minutes. A classroom pilot is still needed. See `docs/BLUEPRINT.md`.
 
 ## What is in this folder
 
@@ -75,3 +75,8 @@ Open `dist/demo/index.html` (or host it on GitHub Pages). Class code `DEMO`, any
 
 ## Documentation index
 `docs/SOURCE_STATUS.md` · `docs/ALIGNMENT.md` · `docs/BLUEPRINT.md` · `docs/CONTENT_NOTES.md` (accuracy corrections for teachers) · `docs/SOURCES.md` · `docs/SECURITY_PRIVACY.md` · `docs/TEACHER_PREVIEW.md` · `docs/PACING_PLAN.md` · `docs/QA_REPORT.md` · `private/ANSWER_KEY.md` (private)
+
+
+## Short form (about 45 minutes)
+
+By default the build leaves out six units (M1-U2, M2-U2, M3-U3, M3-U5, M4-U4, M5-U4) and re-weights the rest so the total is still exactly 100 points and each location keeps its point share. The list and new points are in `content/src/short.js`; nothing is deleted (`content/generated/public.json` and `private/keys.json` stay complete). Run `CHM_FULL=1 node tools/build.js` for the full 29-unit assessment. After either build, paste the new `dist/apps-script/Code.gs` **and** `dist/apps-script/Index.html` into your Apps Script project and redeploy (Manage deployments, New version), because the student page is served from Apps Script. `npm test` checks the short form; `CHM_FULL=1 npm test` checks the full one.

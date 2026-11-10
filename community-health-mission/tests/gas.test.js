@@ -8,6 +8,7 @@ const HAVE = !!split.load().priv;
 if (!HAVE) { test('GAS tests skipped: private/keys.json not present', { skip: true }, () => {}); return; }
 execSync('node tools/build.js', { cwd: require('path').join(__dirname, '..') });
 const { pub, priv } = split.load();
+const N = pub.modules.reduce((a, m) => a + m.units.length, 0);   // 23 units in the short form that ships, 29 with CHM_FULL=1
 
 function boot() {
   const e = loadCode(); const c = e.ctx;
@@ -31,7 +32,7 @@ test('GAS: join, submit, resume, finalize writes Sessions/Responses; row counts 
   const f = api('finalize', { sessionId: j.sessionId, token: j.token, requestId: 'final-aaaaaa', confirm: true });
   assert.ok(f.ok); assert.equal(f.final.gradebook, 'recorded'); assert.equal(f.final.results.pctDisplay, '100.0');
   const sess = e.ss.sheets.Sessions.rows, resp = e.ss.sheets.Responses.rows;
-  assert.equal(sess.length, 2); assert.equal(resp.length, 30);                       // header + 29
+  assert.equal(sess.length, 2); assert.equal(resp.length, N + 1);                    // header + one row per unit
   assert.equal(sess[1][17], 'recorded'); assert.equal(sess[1][7], 'finalized'); assert.equal(sess[1][14], 100);
   assert.equal(sess[1][4], "'=cmd|calc");                                            // formula injection neutralised
   assert.equal(e.ss.sheets._State.hidden, true);
@@ -53,7 +54,7 @@ test('GAS: busy lock returns retryable BUSY without consuming; later retry succe
   e.forceLock(true); const busy = api('submitUnit', req); e.forceLock(false);
   assert.equal(busy.code, 'BUSY'); assert.equal(busy.retryable, true);
   assert.equal(api('getState', { sessionId: j.sessionId, token: j.token }).state.units[u.id].attempts, 0);
-  assert.equal(api('submitUnit', req).earned, 4);
+  assert.equal(api('submitUnit', req).earned, u.points);   // 4 in the full content, 5 in the short form
 });
 
 test('GAS: answer keys never leave the server; preview and tests are isolated from production tabs', () => {
@@ -79,14 +80,14 @@ test('GAS: reset writes ResetAudit, supersedes old row, student can restart', ()
   assert.equal(e.ss.sheets.Sessions.rows.find(r => r[0] === j.sessionId)[7], 'reset'); assert.equal(e.ss.sheets.Responses.rows.length, 2);
 });
 
-test('GAS: simultaneous classroom (45 students x 29 units) stays consistent and quick per call', () => {
+test('GAS: simultaneous classroom (45 students x every unit) stays consistent and quick per call', () => {
   const { e, api } = boot(); const S = []; for (let i = 0; i < 45; i++) S.push(api('join', { classCode: 'HEALTH3A', rosterId: 'kid' + i, name: 'Kid ' + i }));
   const t0 = Date.now();
   for (const u of U) for (const s of S) assert.equal(api('submitUnit', { sessionId: s.sessionId, token: s.token, requestId: 'c-' + s.sessionId + u.id, unitId: u.id, response: G.makeCorrect(pub, u, priv.units[u.id]), expectedAttempt: 1 }).ok, true);
   S.forEach((s, i) => assert.ok(api('finalize', { sessionId: s.sessionId, token: s.token, requestId: 'cf-' + i + '-000001', confirm: true }).ok));
-  assert.equal(e.ss.sheets.Responses.rows.length, 1 + 45 * 29); assert.equal(e.ss.sheets.Sessions.rows.length, 46);
+  assert.equal(e.ss.sheets.Responses.rows.length, 1 + 45 * N); assert.equal(e.ss.sheets.Sessions.rows.length, 46);
   assert.equal(e.ss.sheets.Sessions.rows.slice(1).every(r => r[17] === 'recorded' && r[14] === 100), true);
-  console.log('      mock: ' + (45 * 29) + ' submits + 45 finalizes in ' + (Date.now() - t0) + ' ms of pure compute; lock waits: ' + e.stats.lockWaits);
+  console.log('      mock: ' + (45 * N) + ' submits + 45 finalizes in ' + (Date.now() - t0) + ' ms of pure compute; lock waits: ' + e.stats.lockWaits);
 });
 
 test('GAS: dist/apps-script/Index.html has no answer key; Code.gs is the only file with keys', () => {

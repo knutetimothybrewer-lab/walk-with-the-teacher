@@ -22,10 +22,11 @@ function page(config, pub, extra) {
 }
 
 function main() {
-  const { pub, priv } = split.load();
-  if (split.HAVE_SRC) {     // refresh the committed public bundle and the private key file from the private sources
-    write('content/generated/public.json', JSON.stringify(pub, null, 1)); write('private/keys.json', JSON.stringify(priv));
+  if (split.HAVE_SRC) {     // refresh the committed public bundle and the private key file from the private sources (always the FULL content)
+    const full = split.load({ full: true });
+    write('content/generated/public.json', JSON.stringify(full.pub, null, 1)); write('private/keys.json', JSON.stringify(full.priv));
   }
+  const { pub, priv } = split.load();   // the short form (content/src/short.js) unless CHM_FULL=1
   // 1) portable frontend (HTTP transport to /api; used with tools/dev-server.js or any host that implements POST /api)
   write('dist/web/index.html', page({ transport: 'http' }, pub, '<script>\n' + grading + '\n</script>'));
 
