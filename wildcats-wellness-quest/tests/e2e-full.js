@@ -1,13 +1,13 @@
 // Full run through the REAL UI (clicks/typing only). Optional mode: wrongfirst (every item answered wrong first, then right on the retry).
-// NODE_PATH=$(npm root -g) node tests/e2e-full.js [best|wrongfirst]
+// NODE_PATH=$(npm root -g) node tests/e2e-full.js [best|wrongfirst] [long|short]   (long = the original 49-item form, the default; short = the 40-item short form)
 const { chromium } = require('playwright'); const path = require('path'); const { BROWSER } = require('./helpers');
-const MODE = process.argv[2] || 'best';
+const MODE = process.argv[2] || 'best', ROSTER = process.argv[3] || 'long', N_ITEMS = ROSTER === 'short' ? 40 : 49;
 let fails = 0, passes = 0; const ok = (c, m) => { if (c) { passes++; console.log('  ok  :', m); } else { fails++; console.log('  FAIL:', m); } };
 (async () => {
   const browser = await chromium.launch({ executablePath: '/opt/pw-browsers/chromium-1194/chrome-linux/chrome', args: ['--no-sandbox'] });
   const ctx = await browser.newContext({ viewport: { width: 1366, height: 768 }, reducedMotion: 'reduce' }); const page = await ctx.newPage(); page.setDefaultTimeout(8000);
   const errs = []; page.on('pageerror', e => errs.push(e.message)); page.on('console', m => { if (m.type() === 'error') errs.push(m.text()); });
-  await page.addInitScript(BROWSER); await page.goto('file://' + path.resolve(__dirname, '../index.html')); await page.waitForSelector('#stage-title');
+  await page.addInitScript('window.__ROSTER = ' + JSON.stringify(ROSTER) + ';'); await page.addInitScript(BROWSER); await page.goto('file://' + path.resolve(__dirname, '../index.html')); await page.waitForSelector('#stage-title');
   const t0 = Date.now(); let submitsClicked = 0;
 
   async function applyResponse(itemId, dir) {
@@ -90,7 +90,7 @@ let fails = 0, passes = 0; const ok = (c, m) => { if (c) { passes++; console.log
   console.log('   mode=' + MODE + ' final=' + rep.scores.earnedPoints.toFixed(4) + ' first-attempt=' + rep.firstAttemptEvidence.points.toFixed(4) + ' completion=' + rep.completion.percent);
   if (MODE === 'best') { ok(Math.abs(rep.scores.earnedPoints - 100) < 1e-9, 'best-answer UI run = exactly 100 points'); ok(Math.abs(rep.firstAttemptEvidence.points - 100) < 1e-9, 'first-attempt evidence = 100'); }
   else { ok(Math.abs(rep.scores.earnedPoints - 90) < 0.3 || rep.scores.earnedPoints < 95, 'wrong-then-right run is capped near 90 (' + rep.scores.earnedPoints.toFixed(2) + ')'); ok(rep.firstAttemptEvidence.points < 5, 'first-attempt evidence reflects the wrong first answers (' + rep.firstAttemptEvidence.points.toFixed(2) + ')'); }
-  ok(rep.completion.percent === 100, 'completion 100%'); ok(rep.items.length === 49 && rep.scores.manualReviewPoints === 0, '49 auto-scored items, 0 manual points');
+  ok(rep.completion.percent === 100, 'completion 100%'); ok(rep.items.length === N_ITEMS && rep.scores.manualReviewPoints === 0, N_ITEMS + ' auto-scored items, 0 manual points');
   await page.screenshot({ path: `/tmp/claude-0/shots/full_${MODE}_results.png`, fullPage: true });
   ok(!errs.length, 'no console errors' + (errs.length ? ': ' + errs.slice(0, 3).join(' | ') : ''));
   console.log(`   (${submitsClicked} Submit clicks, ${(Date.now() - t0) / 1000}s automation time; not a student timing)`);

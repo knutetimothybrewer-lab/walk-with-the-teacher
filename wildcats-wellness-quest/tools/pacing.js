@@ -1,6 +1,7 @@
 // Pacing ESTIMATE from content word counts. This is a design estimate, NOT a validated classroom duration (see docs/PILOT_CHECKLIST.md).
 // node tools/pacing.js [--wpm 180]
 const { load } = require('../tests/load'); const W = load();
+if (process.argv.includes('--short')) W.applyRoster('short');   // estimate the short form (about 45 min)
 const arg = (n, d) => { const i = process.argv.indexOf('--' + n); return i > 0 ? +process.argv[i + 1] : d; };
 const wpm = arg('wpm', 220), SEC_PER_CHOICE = arg('choice', 5), SEC_PER_SUBMIT = arg('submit', 10), RETRY_RATE = arg('retry', 0.2);
 const words = s => String(s || '').split(/\s+/).filter(Boolean).length;
@@ -19,7 +20,7 @@ W.MISSIONS.forEach(m => {
   if (m.id === 2) w += 170 * 0.5; // reference panel (students consult about half of it)
   if (m.id === 1) { w += 90; choices += 3; }          // overlap lab lenses
   if (m.id === 6) { w += W.DECISIONS.reduce((a, d) => a + words(d.scene) + Object.values(d.opts).reduce((x, o) => x + words(o), 0), 0); choices += 12; submits += 1;
-    w += W.DECISIONS2.reduce((a, d) => a + words(d.scene) + Object.values(d.opts).reduce((x, o) => x + words(o), 0), 0); choices += W.DECISIONS2.length; submits += 1; }   // second pass: Maya's week
+    if (W.ACTIVITIES.some(a => a.id === 'playWeek2')) { w += W.DECISIONS2.reduce((a, d) => a + words(d.scene) + Object.values(d.opts).reduce((x, o) => x + words(o), 0), 0); choices += W.DECISIONS2.length; submits += 1; } }   // second pass: Maya's week (not in the short form)
   if (m.id === 7) { const PL = W.PLAN; w += PL.rate.reduce((a, r) => a + words(r[1]), 0) + 120; choices += PL.rate.length + 6; submits += 1; }   // 7-day plan builder
   if (m.id === 0) { w += 250; choices += 2; submits += 1; }
   const readMin = (w + extra) / wpm, actMin = (choices * SEC_PER_CHOICE + submits * SEC_PER_SUBMIT) / 60, tot = readMin + actMin; totalMin += tot;

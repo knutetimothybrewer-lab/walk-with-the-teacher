@@ -5,7 +5,7 @@ An animated, walk-through **summative assessment** for a high school health unit
 - Static HTML/CSS/JavaScript. **No server, accounts, API keys, paid services or build step.** Local relative paths only.
 - Runs on Chromebooks (Chrome) from one student link on GitHub Pages.
 - Saves in each student's own browser. **By default nothing is sent anywhere.** Optionally, results can be sent to **your Google Sheet** with a class code (see "Send results to a Google Sheet").
-- Designed for about an hour (55-65 minutes for a typical reader), with a **90-minute hard limit** counted from when the student presses Start (`timeLimitMinutes` in `js/config.js`; 0 turns it off). A countdown shows in the top bar, and at zero any selected-but-unsubmitted answer is submitted, the assessment locks and sends, and anything unanswered earns 0. See "Timing, honestly" below.
+- Designed for about 45 minutes on the **short form** (the default for every fresh start; about 56 minutes on the original **full form**, which any device with an existing record keeps). **90-minute hard limit** counted from when the student presses Start (`timeLimitMinutes` in `js/config.js`; 0 turns it off). A countdown shows in the top bar, and at zero any selected-but-unsubmitted answer is submitted, the assessment locks and sends, and anything unanswered earns 0. See "Two forms (short and full)" and "Timing, honestly" below.
 
 > **Before using for grades:** set your teacher passcode ([docs/TEACHER_SETUP.md](docs/TEACHER_SETUP.md)), verify the clinical reference values ([docs/SOURCE_REGISTER.md](docs/SOURCE_REGISTER.md)), and run a short pilot on real Chromebooks ([docs/PILOT_CHECKLIST.md](docs/PILOT_CHECKLIST.md)). The six source decks/worksheet were not available when this was built, so slide numbers in the coverage matrix are unverified.
 
@@ -105,9 +105,23 @@ No accounts or analytics. By default there are **no network calls**; only if you
 
 Fully keyboard operable (a keyboard-only run through all seven missions is tested), drag/drop always has click and keyboard alternatives, visible focus, semantic controls, WCAG AA text contrast (checked), color never the only cue, charts have text and table equivalents, text size options, an animation toggle plus support for the device's reduced-motion setting, no flashing, no audio, no reflex-speed tasks. Real screen-reader and Chromebook testing is part of the pilot.
 
+## Two forms (short and full)
+
+| | Short form (default) | Full form |
+|---|---|---|
+| Graded items / points | 40 / 100 | 49 / 100 |
+| Estimated time (typical reader) | about 44 min | about 56 min |
+| Storage version | `wwq-1.0-short` | `wwq-1.0` |
+
+The short form removes four sort cards (Mission 1), two check-up questions (Mission 2), two media cases (Mission 4), one simulator question (`m6.pm1`), Maya's unscored second week and its comparison checkpoint, and two unscored checkpoints (the ripple chain and STOP situation C), then re-weights points so the total is still exactly 100. Nothing is deleted from the data files. The full list is in `js/data/short-form.js`.
+
+**Saved work is never touched.** A device that already holds a Wildcats Quest record (active, submitted, history or an unsent upload) keeps the full form, so a student who started, or finished, before the short form existed resumes and sees exactly what they had, with the same score. Every fresh start gets the short form and saves under its own key, so the two can never overwrite each other. Set `roster` in `js/teacher-config.js` to change this: `'auto'` (default), `'long'` (everyone gets the full form) or `'short'` (everyone gets the short form; an old record stays in the browser but is not shown). `node tools/pacing.js --short` estimates the short form. `node tests/short-form.js` checks this against saved sessions written by the original code (`tests/fixtures/`).
+
+Two things to know: a teacher reset on a device that holds a full-form record starts the next attempt on the full form (clear that device's site data, or set `roster: 'short'`, to move it to the short form); and the Sheet will hold some students' results out of the same 100 points but from different forms (item ids and points differ for the items that changed, so the Detail and Reteach tabs mix them).
+
 ## Timing, honestly
 
-The estimate from word counts and selection counts is about **48 minutes for fast readers (280 wpm), 56 for typical readers (220 wpm) and 65-70 for slower readers (180-160 wpm)** ([docs/TEST_REPORT.md](docs/TEST_REPORT.md), `node tools/pacing.js`). This is **not a validated student duration**. The 90-minute hard limit still leaves room, but it is tighter for slower readers now, so pilot it; plan the period with your pilot data and consider the extended-time setting.
+The figures below are for the **full form**; the short form is about 11 minutes shorter (44 min typical, `node tools/pacing.js --short`). The estimate from word counts and selection counts is about **48 minutes for fast readers (280 wpm), 56 for typical readers (220 wpm) and 65-70 for slower readers (180-160 wpm)** ([docs/TEST_REPORT.md](docs/TEST_REPORT.md), `node tools/pacing.js`). This is **not a validated student duration**. The 90-minute hard limit still leaves room, but it is tighter for slower readers now, so pilot it; plan the period with your pilot data and consider the extended-time setting.
 
 ## Folder map
 

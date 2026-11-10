@@ -13,7 +13,7 @@ server.listen(0, async () => {
   ok(bad.length === 0, 'no 404/4xx responses under the repository subpath ' + bad.join(','));
   ok(reqs.every(u => u.startsWith(`http://localhost:${port}`) || u.startsWith('data:')), 'no external network requests (all same-origin or data URIs)');
   ok(errs.length === 0, 'no console errors ' + errs.join('|'));
-  ok((await page.evaluate(() => typeof WWQ === 'object' && WWQ.ITEMS.length)) === 49, 'app boots under subpath with 49 items');
+  ok((await page.evaluate(() => typeof WWQ === 'object' && WWQ.ITEMS.length)) === 40, 'app boots under subpath with the 40-item short form (a fresh device gets the short form by default)');
   const src = fs.readdirSync(path.join(ROOT, 'wildcats-wellness-quest/js'), { recursive: true }).filter(f => f.endsWith('.js')).map(f => fs.readFileSync(path.join(ROOT, 'wildcats-wellness-quest/js', f), 'utf8')).join('\n') + fs.readFileSync(path.join(ROOT, 'wildcats-wellness-quest/index.html'), 'utf8') + fs.readFileSync(path.join(ROOT, 'wildcats-wellness-quest/teacher/passcode-setup.html'), 'utf8');
   ok(!/(src|href)=["']\/(?!\/)/.test(src), 'no root-absolute src/href in HTML');
   ok(!/https?:\/\/(?!www\.w3\.org)/.test(fs.readFileSync(path.join(ROOT, 'wildcats-wellness-quest/index.html'), 'utf8')), 'index.html references no external hosts');

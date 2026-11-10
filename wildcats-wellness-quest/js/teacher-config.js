@@ -12,6 +12,7 @@ WWQ.applyConfig({
   // assessmentVersion: 'wwq-1.0',          // change ONLY between class sets (starts fresh local records)
   // attemptLimits: { short: 2, complex: 3 }, // complex may be 2 or 3; short is 2 (3 only where a third variant exists)
   // caps: [1, 0.9, 0.75],
+  // roster: 'auto',                        // 'auto' (fresh starts get the short ~45 min form; devices with saved work keep the full form) | 'long' | 'short'
   // timeGuidance: { targetMinutes: 60, rangeMinutes: [55, 65], extendedMultiplier: 1.5, extendedTime: false },
   extendedExploration: true,            // shows optional extras (never required, never scored); set false to hide them
   // motion: 'auto',                       // 'auto' | 'on' | 'off'
