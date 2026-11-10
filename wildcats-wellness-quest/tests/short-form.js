@@ -60,6 +60,7 @@ console.log('== Saved work, in a real browser (original-code fixtures, default s
     const txt = await page.locator('body').innerText(); ok(txt.includes(f.expected.percent), 'submitted record: results screen shows ' + f.expected.percent + '%');
     const after = await dump(page); ok(after['wwq:wwq-1.0:submitted'] === f.localStorage['wwq:wwq-1.0:submitted'], 'submitted record: the saved submission is not rewritten (byte for byte)');
     ok(!Object.keys(after).some(k => k.includes('-short')), 'submitted record: nothing written under the short-form key');
+    ok((await page.locator('#form-label').innerText()).startsWith('Full form (49'), 'submitted record: the footer says "Full form (49 graded questions)"');
     ok(!errs.length, 'submitted record: no console errors' + (errs.length ? ' ' + errs[0] : '')); await ctx.close(); }
 
   // --- 2. in-progress full-form record: resumes on the full form and can be finished and submitted
@@ -88,6 +89,7 @@ console.log('== Saved work, in a real browser (original-code fixtures, default s
     const keys = Object.keys(await dump(page)); ok(keys.length > 0 && keys.every(k => k.startsWith('wwq:wwq-1.0-short:')), 'fresh device: saves only under the short-form keys (' + keys.join(', ') + ')');
     await page.reload(); await page.waitForSelector('#stage-title');
     const r2 = await page.evaluate(() => ({ roster: WWQ.roster, alias: WWQ.App.state.student.alias, started: WWQ.App.state.progress.started })); ok(r2.roster === 'short' && r2.alias === 'Fresh Student' && r2.started, 'fresh device: reload resumes the same short-form session');
+    ok((await page.locator('#form-label').innerText()).startsWith('Short form (40'), 'fresh device: the footer says "Short form (40 graded questions)"');
     ok(!errs.length, 'fresh device: no console errors' + (errs.length ? ' ' + errs[0] : '')); await ctx.close(); }
 
   // --- 5. teacher forces the short form on a device that has an old record: the old record is kept, not shown, not altered

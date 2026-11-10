@@ -80,7 +80,7 @@
   /* ---------- footer note ---------- */
   Sh.footnote = function (state) {
     return h('div.footnote.noprint', h('span', 'Saved only in this browser on this device. Clearing site data can erase it, so download a recovery file now and then. ' + (W.Sync.enabled() ? 'Only your final result is sent to your teacher, when you submit.' : 'Nothing is sent anywhere.')),
-      h('span', h('button', { type: 'button', onclick: function () { Sh.teacher(); } }, 'Teacher reset')));
+      h('span', h('span', { id: 'form-label', style: { marginRight: '12px' } }, (W.roster === 'short' ? 'Short form' : 'Full form') + ' (' + W.ITEMS.length + ' graded questions)'), h('button', { type: 'button', onclick: function () { Sh.teacher(); } }, 'Teacher reset')));
   };
 
   /* ---------- My Work ---------- */
