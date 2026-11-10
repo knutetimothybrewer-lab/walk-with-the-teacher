@@ -1,7 +1,8 @@
 // Build: authoring/*.js (has answers)  ->  content/public.js (no answers; hashed keys)
 //                                       ->  google-apps-script/KeyData.gs (server-side scoring key)
 //                                       ->  teacher-private/*.md (answer key + item map)
-// Usage: node tools/build.js [--strip]   (--strip: server-grading build; no hashes/explanations in the public bundle)
+// Usage: node tools/build.js [--strip] [--full]   (--strip: server-grading build; no hashes/explanations in the public bundle;
+//        --full: the original longer test; the default is the short form in authoring/short.js)
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -12,6 +13,7 @@ import { solve } from '../js/solve.js';
 import { DOMAIN_NAME } from '../js/scoring.js';
 import { CONCEPTS, LVL_NAME } from '../authoring/lib.js';
 import { blueprint } from './blueprint.js';
+import { applyShort } from '../authoring/apply-short.js';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const VERSION = JSON.parse(fs.readFileSync(path.join(root, 'package.json'), 'utf8')).version;
@@ -25,6 +27,10 @@ for (const m of mods) missions.push((await import(`../authoring/${m}.js`)).defau
 
 const errors = [];
 const err = (m) => errors.push(m);
+
+// ---- short form (authoring/short.js, applied by authoring/apply-short.js) ---------------------------------
+// Default build = short form. `node tools/build.js --full` rebuilds the original, longer test. Nothing in authoring/m*.js is deleted.
+for (const p of applyShort(missions, { full: process.argv.includes('--full') })) err(p);
 
 // ---- walk helpers --------------------------------------------------------------------------------------
 function* stagesIn(stages) { for (const s of stages) { yield s; if (s.kind === 'pool') for (const g of s.groups) yield* stagesIn(g.items); } }

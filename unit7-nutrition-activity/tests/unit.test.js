@@ -80,7 +80,7 @@ test('multi-select and order-sensitive items are order-independent / order-depen
   assert.equal(gradeLocal(content, q, [...ans].reverse()), true);
   assert.equal(gradeLocal(content, q, ans.slice(1)), false, 'missing one correct option');
   assert.equal(gradeLocal(content, q, [...ans, 'e']), false, 'extra incorrect option');
-  const s = pubQs.find((x) => x.id === 'f-rank'); const ord = authored['f-rank'].ans;
+  const s = pubQs.find((x) => x.id === 'm-seq-a'); const ord = authored['m-seq-a'].ans;   // an order-sensitive item that is in the short form
   assert.equal(gradeLocal(content, s, ord), true); assert.equal(gradeLocal(content, s, [...ord].reverse()), false);
 });
 
@@ -209,7 +209,7 @@ test('analytics: summary, domain means, item stats, most missed, reteach and blo
   const R = A.counted(d, { showDemo: true }); assert.equal(R.length, 28); assert.equal(A.counted(d, { showDemo: false }).length, 0, 'demo hidden by default');
   const S = A.summary(R, d.options); assert.equal(S.n, 28); assert.ok(Math.abs(S.avg - R.reduce((a, s) => a + s.pct, 0) / 28) < 0.06); assert.ok(S.min <= S.median && S.median <= S.max);
   assert.equal(A.counted(d, { block: 'Block 3/4', showDemo: true }).length, 7);
-  const stats = A.itemStats(d, R.map((s) => s.sid)); assert.ok(stats.length >= 45);
+  const stats = A.itemStats(d, R.map((s) => s.sid)); assert.ok(stats.length >= 35);   // a short-form student version has about 39 questions (53 in the full form)
   const mm = A.mostMissed(stats, 5); assert.ok(mm[0].firstPct <= mm[4].firstPct);
   const rt = A.reteach(stats, content.concepts, { scope: 'All Classes' }); assert.equal(rt.length, 5); assert.ok(rt[0].pct <= rt[4].pct); assert.match(rt[0].text, /Priority 1/);
   const cmp = A.compareBlocks(d, { showDemo: true }); assert.equal(cmp.length, 4); assert.ok(cmp.every((b) => b.n === 7 && b.domains.length === 7));
