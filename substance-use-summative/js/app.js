@@ -147,7 +147,7 @@ function screenEntry(message, kind = 'err') {
     h('h2#f-h', 'Sign in to begin'),
     h('div.field', h('label', { for: 'f-name' }, 'Student name'), name),
     h('div.grid2', h('div.field', h('label', { for: 'f-period' }, 'Class / period'), period), h('div.field', h('label', { for: 'f-code' }, 'Class code'), code)),
-    msg, h('div.row', btn, h('span.small.muted', 'This takes about an hour. Your progress is saved if the page refreshes.')));
+    msg, h('div.row', btn, h('span.small.muted', 'This takes about 45 minutes. Your progress is saved if the page refreshes.')));
   form.onsubmit = async (e) => {
     e.preventDefault();
     const nm = name.value.trim().replace(/\s+/g, ' '), cd = code.value.trim(), pd = period.value;
@@ -243,7 +243,7 @@ function screenOrient() {
       h('div.panel', h('h3', '3. Your progress is saved'), h('p', 'If the page refreshes or closes, reopen this link and sign in again. You will return to where you were, and used attempts stay used.'))),
     h('div.panel', h('h3', 'Try it: practice question'), pi.el),
     h('div.panel', h('div.row.spread', h('div', h('strong', 'Need larger text, a different font, or less motion?'), h('div.small.muted', 'Open Settings (the gear in the top bar) at any time.')), h('button.btn', { type: 'button', onclick: openSettings }, 'Open settings'))),
-    h('div.navrow', h('span.status', 'About 50 to 60 minutes. Take your time with the simulations.'), cont));
+    h('div.navrow', h('span.status', 'About 40 to 50 minutes. Take your time with the simulations.'), cont));
   setScreen(screen, { theme: 'entry' }); updateTrail();
 }
 

@@ -1,6 +1,6 @@
 # Question bank and answer key (CONTAINS ANSWERS. Do not publish.)
 
-All 83 scorable items, including every pool alternative.
+All 69 scorable items, including every pool alternative.
 
 ## MISSION 1: Brain & Addiction Lab
 
@@ -13,33 +13,7 @@ Select the region that supports planning, judgment and impulse control, and that
 
 **Why:** The prefrontal cortex handles planning, judgment and impulse control, and it is one of the last regions to finish maturing (into the mid-20s). Reward circuits are already very responsive in adolescence.
 
-### b2  •  Brain & Addiction  •  seq  •  1 pt
-
-Put these steps of neuron-to-neuron communication in order, from first to last.
-
-- (k1) An electrical signal travels down the sending neuron to its end.
-- (k2) Neurotransmitter molecules are released into the gap (the synapse).
-- (k3) Neurotransmitters attach to receptors on the receiving neuron.
-- (k4) The receiving neuron responds, and leftover neurotransmitter is cleared away or recycled.
-
-**Answer:** 1. An electrical signal travels down the sending neuron to its end. | 2. Neurotransmitter molecules are released into the gap (the synapse). | 3. Neurotransmitters attach to receptors on the receiving neuron. | 4. The receiving neuron responds, and leftover neurotransmitter is cleared away or recycled.
-
-**Why:** Signals move as electricity inside a neuron, then as chemicals (neurotransmitters) across the synapse, then bind to receptors, and are cleared so the signal can end.
-
-### b-def  •  Brain & Addiction  •  match  •  1 pt
-
-Match each term to the description that fits it best.
-
-- (x1) Needing more of a substance over time to get the same effect.
-- (x2) The body has adapted to a substance and works differently when it is suddenly removed.
-- (x3) Symptoms that appear when a regularly used substance is stopped or sharply reduced.
-- (x4) Continued use despite harm, loss of control and failed attempts to cut back.
-
-**Answer:** Tolerance → Needing more of a substance over time to get the same effect. | Physical dependence → The body has adapted to a substance and works differently when it is suddenly removed. | Withdrawal → Symptoms that appear when a regularly used substance is stopped or sharply reduced.
-
-**Why:** Tolerance means needing more for the same effect. Physical dependence means the body has adapted. Withdrawal is the set of symptoms after stopping. The fourth description is the pattern of a substance use disorder (addiction), which is different from the other three.
-
-### b3  •  Brain & Addiction  •  mc  •  2 pts
+### b3  •  Brain & Addiction  •  mc  •  3 pts
 
 Using what you saw, which statement best explains why a substance like Substance X could make repeated use more likely?
 
@@ -52,20 +26,7 @@ Using what you saw, which statement best explains why a substance like Substance
 
 **Why:** More dopamine for longer means a stronger “this mattered, do it again” signal. That is reinforcement: the brain’s learning system marks the experience as worth repeating.
 
-### b4  •  Brain & Addiction  •  mc  •  1 pt
-
-Which statement about the adolescent brain is best supported by research?
-
-- (a) Reward circuits are very responsive while the prefrontal cortex is still maturing, so impulse control can lag behind.  **← correct**
-- (b) The brain is fully mature by age 14, so risky choices reflect only a teen’s attitude and not anything about brain development.
-- (c) Teen brains are permanently damaged by any single exposure to a substance and cannot recover.
-- (d) Adolescents are unable to make good decisions in any situation because their brains are too immature.
-
-**Answer:** Reward circuits are very responsive while the prefrontal cortex is still maturing, so impulse control can lag behind.
-
-**Why:** Adolescent brains are still developing. That makes this a period of greater vulnerability, not a period of inability. Planning ahead and support help.
-
-### c-tol  •  Brain & Addiction  •  mc  •  3 pts  •  pool: cases
+### c-tol  •  Brain & Addiction  •  mc  •  4 pts  •  pool: cases
 
 **Case file: Ari**
 
@@ -84,7 +45,7 @@ Which concept does this evidence most directly demonstrate?
 
 **Why:** Needing more to get the same effect is tolerance. Nothing here shows stopping symptoms (withdrawal), loss of control, or harm (a substance use disorder).
 
-### c-dep  •  Brain & Addiction  •  mc  •  3 pts  •  pool: cases
+### c-dep  •  Brain & Addiction  •  mc  •  4 pts  •  pool: cases
 
 **Case file: Maya**
 
@@ -103,7 +64,7 @@ Which concept best describes what the evidence shows?
 
 **Why:** The body has adapted to the medicine (physical dependence), which is why a gradual taper is planned. Taking it as directed, with no cravings, loss of control or harm, is not an addiction pattern.
 
-### c-wd  •  Brain & Addiction  •  mc  •  3 pts  •  pool: cases
+### c-wd  •  Brain & Addiction  •  mc  •  4 pts  •  pool: cases
 
 **Case file: Dev**
 
@@ -122,7 +83,7 @@ Which concept do these symptoms, which started after stopping, most directly dem
 
 **Why:** Symptoms that appear when a regularly used substance is stopped or reduced are withdrawal. They show the body has adapted (dependence), but on their own they do not prove a substance use disorder.
 
-### c-rein  •  Brain & Addiction  •  mc  •  3 pts  •  pool: cases
+### c-rein  •  Brain & Addiction  •  mc  •  4 pts  •  pool: cases
 
 **Case file: Lena**
 
@@ -141,7 +102,7 @@ Which concept is best supported by this evidence?
 
 **Why:** A rewarding experience followed by thinking about and seeking it again is reinforcement. One use and one day of wanting it is not enough to show dependence or a substance use disorder.
 
-### c-sud  •  Brain & Addiction  •  mc  •  3 pts  •  pool: cases
+### c-sud  •  Brain & Addiction  •  mc  •  4 pts  •  pool: cases
 
 **Clinician’s summary: Tom, 24 (past 12 months)**
 
@@ -158,7 +119,7 @@ Which conclusion do these details best support?
 
 **Why:** Several features appear together over time: loss of control, failed attempts to cut back, time spent, giving up activities, and use despite harm. That is the kind of pattern clinicians look for. Treatment works, and a professional makes the formal assessment.
 
-### c-ins1  •  Brain & Addiction  •  mc  •  3 pts  •  pool: cases
+### c-ins1  •  Brain & Addiction  •  mc  •  4 pts  •  pool: cases
 
 **Case file: Eli**
 
@@ -177,7 +138,7 @@ Which conclusion is best supported by this evidence?
 
 **Why:** Frequent use for two weeks is worth noticing, but it does not show control problems, harm, tolerance, or withdrawal. A friend’s label is an opinion. The responsible conclusion is that there is not enough evidence.
 
-### c-ins2  •  Brain & Addiction  •  mc  •  3 pts  •  pool: cases
+### c-ins2  •  Brain & Addiction  •  mc  •  4 pts  •  pool: cases
 
 **Case file: Zoe**
 
@@ -230,22 +191,7 @@ Which response best uses the evidence?
 
 ## MISSION 2: Nicotine & Vaping Timeline
 
-### n1  •  Nicotine, Tobacco & Vaping  •  match  •  1 pt
-
-Match each product to the description that fits it best.
-
-- (d1) Tobacco is burned. The smoke contains nicotine plus tar, carbon monoxide and many cancer-causing chemicals.
-- (d2) A roll of tobacco leaf that is burned. One large cigar can contain as much tobacco as a whole pack of cigarettes.
-- (d3) Tobacco held between the cheek and gum. It is not burned, but still delivers nicotine and cancer-causing chemicals through the mouth lining.
-- (d4) A small pouch held between the lip and gum that releases nicotine. It is not burned or chewed, but it still delivers addictive nicotine.
-- (d5) A battery-powered device that heats a liquid, often with nicotine and flavorings, into an aerosol that is inhaled.
-- (d6) Nicotine gum or a patch approved to help adults quit smoking.
-
-**Answer:** Cigarette → Tobacco is burned. The smoke contains nicotine plus tar, carbon monoxide and many cancer-causing chemicals. | Cigar → A roll of tobacco leaf that is burned. One large cigar can contain as much tobacco as a whole pack of cigarettes. | Smokeless tobacco → Tobacco held between the cheek and gum. It is not burned, but still delivers nicotine and cancer-causing chemicals through the mouth lining. | Nicotine pouch → A small pouch held between the lip and gum that releases nicotine. It is not burned or chewed, but it still delivers addictive nicotine. | E-cigarette (vape) → A battery-powered device that heats a liquid, often with nicotine and flavorings, into an aerosol that is inhaled.
-
-**Why:** Cigarettes and cigars burn tobacco. Smokeless tobacco and pouches are used in the mouth and are not burned. E-cigarettes heat a liquid into an aerosol. All of these can deliver addictive nicotine. Gum and patches are medications to help adults quit.
-
-### n2  •  Nicotine, Tobacco & Vaping  •  sort  •  2 pts
+### n2  •  Nicotine, Tobacco & Vaping  •  sort  •  3 pts
 
 Sort each statement: does it describe cigarette smoke, e-cigarette aerosol, both, or neither (a myth)?
 
@@ -278,35 +224,6 @@ Which statement best separates “less harmful” from “safe”?
 
 **Why:** Products differ in risk, and that is useful for adults who already smoke. It does not make any product safe or appropriate for youth, because nicotine harms adolescent brain development and can cause addiction.
 
-### n4  •  Nicotine, Tobacco & Vaping  •  multi  •  1 pt
-
-Select ALL effects of nicotine exposure during adolescence that are supported by public health evidence.
-
-- (a) It can harm the parts of the brain that control attention and learning.  **← correct**
-- (b) It can affect mood and impulse control.  **← correct**
-- (c) It can lead to nicotine addiction.  **← correct**
-- (d) It strengthens the prefrontal cortex so teens make better decisions.
-- (e) It has no effect on the brain until after age 25.
-- (f) It may increase the risk of later addiction to other drugs.  **← correct**
-
-**Answer:** It can harm the parts of the brain that control attention and learning. | It can affect mood and impulse control. | It can lead to nicotine addiction. | It may increase the risk of later addiction to other drugs.
-
-**Why:** Nicotine activates reward pathways and can interfere with brain areas for attention, learning, mood and impulse control while they are still developing. Adolescent exposure is linked to addiction and to higher risk of later drug use.
-
-### n5  •  Nicotine, Tobacco & Vaping  •  seq  •  1 pt
-
-Drag the milestones onto the timeline, earliest on the left and most recent on the right.
-
-- (e1) The U.S. Surgeon General’s first report links smoking to lung cancer and other diseases.
-- (e2) Cigarette advertising ends on U.S. television and radio.
-- (e3) A federal law gives the FDA authority to regulate tobacco products.
-- (e4) A slim, USB-shaped pod device with high-nicotine liquid launches and spreads quickly among teens.
-- (e5) The federal minimum age to buy tobacco products, including e-cigarettes, rises to 21.
-
-**Answer:** 1. The U.S. Surgeon General’s first report links smoking to lung cancer and other diseases. | 2. Cigarette advertising ends on U.S. television and radio. | 3. A federal law gives the FDA authority to regulate tobacco products. | 4. A slim, USB-shaped pod device with high-nicotine liquid launches and spreads quickly among teens. | 5. The federal minimum age to buy tobacco products, including e-cigarettes, rises to 21.
-
-**Why:** The order is 1964 (Surgeon General’s report), 1971 (broadcast ad ban), 2009 (FDA authority), 2015 (pod devices spread), 2019 (minimum age raised to 21).
-
 ### g1p  •  Nicotine, Tobacco & Vaping  •  predict  •  1 pt
 
 The graph shows 1965 to 2015. Based on the trend, which range is most likely for 2022?
@@ -321,7 +238,7 @@ The graph shows 1965 to 2015. Based on the trend, which range is most likely for
 
 **Why:** The line fell from about 19% (2010) to 15% (2015), a drop of about 1 percentage point per year, which points to roughly 10 to 14% by 2022. The actual 2022 value was 11.6%.
 
-### g1b  •  Nicotine, Tobacco & Vaping  •  multi  •  2 pts
+### g1b  •  Nicotine, Tobacco & Vaping  •  multi  •  3 pts
 
 Select ALL conclusions this graph CANNOT prove by itself.
 
@@ -335,7 +252,7 @@ Select ALL conclusions this graph CANNOT prove by itself.
 
 **Why:** The graph shows adult cigarette smoking only. It cannot show what caused the change, what teens did, or whether people switched to other products. It can show that 2022 is lower than 1965 and how steady the decline was.
 
-### g2a  •  Nicotine, Tobacco & Vaping  •  mc  •  2 pts
+### g2a  •  Nicotine, Tobacco & Vaping  •  mc  •  3 pts
 
 Which interpretation is best supported by both lines?
 
@@ -378,20 +295,7 @@ Which explanation is most accurate?
 
 **Why:** Alcohol slows the central nervous system. The early “excitement” comes from lowered inhibition and judgment. Reaction time, coordination, memory and (at high amounts) breathing are slowed.
 
-### a2  •  Alcohol  •  match  •  1 pt
-
-A U.S. standard drink contains 14 grams of pure alcohol (for example, 12 oz of 5% beer). Match each drink to about how many standard drinks it contains.
-
-- (x1) 1 standard drink
-- (x13) About 1⅓ standard drinks
-- (x2) About 2 standard drinks
-- (x3) About 3 standard drinks
-
-**Answer:** 12 oz can of 5% beer → 1 standard drink | 5 oz glass of 12% wine → 1 standard drink | 16 oz pint of 5% beer → About 1⅓ standard drinks | 24 oz can of 8% malt beverage → About 3 standard drinks
-
-**Why:** Standard drinks depend on both size and strength: 12 oz × 5% = 1; 5 oz × 12% = 1; 16 oz × 5% ≈ 1⅓; 24 oz × 8% ≈ 3.
-
-### a-r2  •  Alcohol  •  mc  •  3 pts
+### a-r2  •  Alcohol  •  mc  •  4 pts
 
 The model added about 0.3 seconds. At 45 mph (about 66 feet per second), that is roughly 20 extra feet traveled before braking even begins. Which conclusion is best supported?
 
@@ -404,7 +308,7 @@ The model added about 0.3 seconds. At 45 mph (about 66 feet per second), that is
 
 **Why:** Twenty feet is more than a car length, and reaction time is only one part of impaired driving (judgment, vision and coordination are affected too). A simplified model can show a pattern, but it cannot say who is safe to drive. No amount of drinking is “safe” for driving.
 
-### a-b  •  Alcohol  •  multi  •  3 pts
+### a-b  •  Alcohol  •  multi  •  4 pts
 
 Use the controls to test each statement. Select ALL statements the model supports.
 
@@ -418,7 +322,7 @@ Use the controls to test each statement. Select ALL statements the model support
 
 **Why:** The model shows that pace and food change the peak but not how long clearing takes, and that body size matters. It has no coffee setting because coffee does not change BAC. A model also cannot show that any number is safe to drive: impairment begins well below 0.08, and real BAC varies widely.
 
-### a-tab  •  Alcohol  •  mc  •  2 pts
+### a-tab  •  Alcohol  •  mc  •  3 pts
 
 > A student reads the table and says: “At 0.07 I’m okay, because 0.08 is where problems begin.”
 >
@@ -451,22 +355,7 @@ Sort each claim: Myth, Fact, or Depends on the situation.
 
 **Why:** Coffee, showers and exercise can make a person feel more awake but do not remove alcohol. Only time lowers BAC. Whether a specific number of drinks passes a limit depends on body size, time, food and other factors.
 
-### a-long  •  Alcohol  •  multi  •  1 pt
-
-Select ALL health effects linked to heavy, repeated drinking over time.
-
-- (a) Liver disease  **← correct**
-- (b) High blood pressure and heart problems  **← correct**
-- (c) Higher risk of several cancers  **← correct**
-- (d) Stronger bones and a stronger immune system
-- (e) Greater risk of alcohol use disorder  **← correct**
-- (f) Better long-term memory
-
-**Answer:** Liver disease | High blood pressure and heart problems | Higher risk of several cancers | Greater risk of alcohol use disorder
-
-**Why:** Heavy, long-term drinking is linked to liver disease, heart problems, several cancers and alcohol use disorder, a treatable medical condition.
-
-### as-drive  •  Alcohol  •  mc  •  2 pts  •  pool: alc-scen
+### as-drive  •  Alcohol  •  mc  •  3 pts  •  pool: alc-scen
 
 **Scene**
 
@@ -483,7 +372,7 @@ Which response is best?
 
 **Why:** Feeling fine is not a reliable test, and judgment is one of the first things alcohol affects. Walking tests, water and slow driving do not remove the risk. A different ride does.
 
-### as-consent  •  Alcohol  •  mc  •  2 pts  •  pool: alc-scen
+### as-consent  •  Alcohol  •  mc  •  3 pts  •  pool: alc-scen
 
 **Scene**
 
@@ -500,7 +389,7 @@ What does Alex’s level of impairment mean for consent?
 
 **Why:** Consent requires the ability to understand and decide. Heavy impairment removes that capacity, and consent can be withdrawn at any time.
 
-### as-poison  •  Alcohol  •  mc  •  2 pts  •  pool: alc-scen
+### as-poison  •  Alcohol  •  mc  •  3 pts  •  pool: alc-scen
 
 **Scene**
 
@@ -517,7 +406,7 @@ What is the best action?
 
 **Why:** Being hard to wake, slow or irregular breathing, vomiting and pale or bluish skin are signs of alcohol poisoning, which can stop breathing. This is an emergency: call 911, stay, and keep the airway clear.
 
-### as-aggr  •  Alcohol  •  mc  •  2 pts  •  pool: alc-scen
+### as-aggr  •  Alcohol  •  mc  •  3 pts  •  pool: alc-scen
 
 **Scene**
 
@@ -534,95 +423,9 @@ Which statement is best supported by what is known about alcohol?
 
 **Why:** Alcohol impairs the brain areas that regulate impulses and emotions. De-escalating, creating distance and involving an adult lowers the risk of injury.
 
-### ae-black  •  Alcohol  •  mc  •  2 pts  •  pool: alc-scen
-
-**Scene**
-
-> The next morning, Sam cannot remember a large part of the night, though friends say Sam was walking, talking and answering questions.
->
-Which explanation fits best?
-
-- (a) Alcohol interfered with Sam’s ability to form new memories, so those events were never stored. This is a blackout.  **← correct**
-- (b) Sam must have been unconscious for most of the night, since a person who is awake always remembers it.
-- (c) Alcohol permanently erased Sam’s older memories, which is why Sam cannot recall the evening or earlier events.
-- (d) Sam is probably pretending to forget, because walking and talking would mean the brain was recording normally.
-
-**Answer:** Alcohol interfered with Sam’s ability to form new memories, so those events were never stored. This is a blackout.
-
-**Why:** In a blackout, a person can act awake but the brain is not recording new memories. It usually follows heavy, rapid drinking and signals serious impairment.
-
-### ae-meds  •  Alcohol  •  mc  •  2 pts  •  pool: alc-scen
-
-**Scene**
-
-> Jordan takes a prescribed medication that causes drowsiness. At a family event Jordan thinks, “One drink can’t hurt.”
->
-What is the most accurate response?
-
-- (a) Alcohol can interact with many medications and increase drowsiness. Jordan should follow the label and ask a pharmacist.  **← correct**
-- (b) Medications and alcohol do not interact when the dose of each is small, so one drink is fine.
-- (c) Alcohol makes drowsy medications work better, so the combination is helpful when a person is having trouble sleeping at night.
-- (d) Interactions only matter for illegal drugs, so a prescribed medication and a drink cannot affect each other.
-
-**Answer:** Alcohol can interact with many medications and increase drowsiness. Jordan should follow the label and ask a pharmacist.
-
-**Why:** Alcohol interacts with many prescription and over-the-counter medications and can intensify sedation or other risks. A pharmacist or clinician can say what applies to a specific medication.
-
-### ae-binge  •  Alcohol  •  mc  •  2 pts  •  pool: alc-scen
-
-**Scene**
-
-> A health class is discussing what “binge drinking” means. Four students give four definitions.
->
-Which description best matches binge drinking?
-
-- (a) Drinking enough, quickly enough, to bring BAC to 0.08 g/dL or higher, usually in about two hours. Smaller or younger people reach it with fewer drinks.  **← correct**
-- (b) Drinking on every single weekend regardless of the number of drinks, because the repeated weekly pattern is what defines a binge in health class.
-- (c) Drinking only hard liquor, because spirits are the only kind of alcohol strong enough to count as a binge.
-- (d) Drinking alone, because drinking without anyone else around is what separates a binge from social drinking.
-
-**Answer:** Drinking enough, quickly enough, to bring BAC to 0.08 g/dL or higher, usually in about two hours. Smaller or younger people reach it with fewer drinks.
-
-**Why:** Binge drinking is defined by the pattern and the BAC it produces, not by the type of drink. It raises risk of injury, alcohol poisoning and blackouts.
-
-### ae-factors  •  Alcohol  •  multi  •  2 pts  •  pool: alc-scen
-
-**Scene**
-
-> Two students at the same event each report having “three drinks.” One is clearly more impaired than the other.
->
-Select ALL factors that can explain a difference in how impaired the two students are.
-
-- (a) How quickly each student drank  **← correct**
-- (b) Body size and composition  **← correct**
-- (c) Whether each student had eaten  **← correct**
-- (d) Medications each student takes  **← correct**
-- (e) How confident each student feels about their limits
-- (f) The color of the drinks
-
-**Answer:** How quickly each student drank | Body size and composition | Whether each student had eaten | Medications each student takes
-
-**Why:** Pace, body size, food, medications and individual differences all matter, as does the actual amount. Feeling confident is not a factor and can be misleading because alcohol affects judgment.
-
 ## MISSION 4: Substance Risk Investigation
 
-### c1  •  Cannabis & Prescription Drugs  •  multi  •  1 pt
-
-Select ALL factors that can change how cannabis affects a person.
-
-- (a) The dose (how much THC)  **← correct**
-- (b) The potency of the product (THC concentration)  **← correct**
-- (c) How it is taken (for example inhaled or eaten)  **← correct**
-- (d) How often the person uses it  **← correct**
-- (e) Individual factors such as age, mental health, and other substances used  **← correct**
-- (f) Whether the product is described as “natural”
-- (g) How confident the person feels that they can handle it
-
-**Answer:** The dose (how much THC) | The potency of the product (THC concentration) | How it is taken (for example inhaled or eaten) | How often the person uses it | Individual factors such as age, mental health, and other substances used
-
-**Why:** Dose, potency, route, frequency and individual factors all matter. “Natural” describes a source, not safety, and feeling confident does not predict how someone will be affected.
-
-### cs-drive  •  Cannabis & Prescription Drugs  •  mc  •  3 pts  •  pool: cann-scen
+### cs-drive  •  Cannabis & Prescription Drugs  •  mc  •  4 pts  •  pool: cann-scen
 
 **Scene**
 
@@ -639,7 +442,7 @@ Which statement best uses the evidence?
 
 **Why:** Cannabis affects attention, reaction time, coordination and judgment, and people are poor judges of their own impairment. Being experienced may change how impaired someone feels, not how well they drive.
 
-### cs-edible  •  Cannabis & Prescription Drugs  •  mc  •  3 pts  •  pool: cann-scen
+### cs-edible  •  Cannabis & Prescription Drugs  •  mc  •  4 pts  •  pool: cann-scen
 
 An adult relative ate a cannabis edible 40 minutes ago, feels nothing yet, and says, “I’ll take another one.” Which statement best uses the illustration?
 
@@ -652,7 +455,7 @@ An adult relative ate a cannabis edible 40 minutes ago, feels nothing yet, and s
 
 **Why:** Eaten cannabis can take from 30 minutes to a couple of hours to produce effects, which can then last for hours. Taking more because “nothing happened” is a common way people end up with an unexpectedly strong reaction.
 
-### cs-teen  •  Cannabis & Prescription Drugs  •  mc  •  3 pts  •  pool: cann-scen
+### cs-teen  •  Cannabis & Prescription Drugs  •  mc  •  4 pts  •  pool: cann-scen
 
 **Scene**
 
@@ -805,20 +608,6 @@ Build the response: choose the FIVE correct actions and put them in the best ord
 
 ## MISSION 6: Pressure & Decision Simulator
 
-### p1  •  Decision-Making & Refusal  •  sort  •  1 pt
-
-Sort each example: direct pressure (someone pushes you) or indirect pressure (the situation, media or perceived norms push you).
-
-- (q1) A friend holds out a vape and says, “Just try it.”
-- (q2) Your feed is full of party posts, so it starts to feel like everyone is doing it.
-- (q3) A group chat asks, “You coming or are you scared?”
-- (q4) You believe most students vape, even though surveys show most do not.
-- (q5) You see others laugh at someone who said no, and you worry it would happen to you.
-
-**Answer:** A friend holds out a vape and says, “Just try it.” → Direct pressure | Your feed is full of party posts, so it starts to feel like everyone is doing it. → Indirect pressure | A group chat asks, “You coming or are you scared?” → Direct pressure | You believe most students vape, even though surveys show most do not. → Indirect pressure | You see others laugh at someone who said no, and you worry it would happen to you. → Indirect pressure
-
-**Why:** Direct pressure is a person asking, urging or taunting you. Indirect pressure comes from the environment: media, what you think others do (perceived norms, which are often higher than the real numbers), and fear of rejection.
-
 ### p2  •  Nicotine, Tobacco & Vaping  •  multi  •  2 pts
 
 Select ALL techniques in this fictional ad that are likely to increase appeal to young people.
@@ -887,7 +676,7 @@ Build your reply. Choose one option for each part.
 
 **Why:** Your friend’s medicine is for your friend. A short no, an alternative way to help each other study, and real support for stress are safer than taking it.
 
-### p-chat  •  Decision-Making & Refusal  •  run  •  5 pts
+### p-chat  •  Decision-Making & Refusal  •  run  •  6 pts
 
 Finish the conversation in a way that keeps you safe, lowers the pressure and keeps support available.
 
