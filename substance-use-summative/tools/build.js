@@ -1,7 +1,8 @@
 // Build: authoring/*.js (has answers)  ->  content/public.js (no answers; hashed keys)
 //                                       ->  google-apps-script/KeyData.gs (server-side scoring key)
 //                                       ->  teacher-private/*.md (blueprint, question bank, answer key)
-// Usage: node tools/build.js [--strip]   (--strip: server-grading build; no hashes/explanations in the public bundle)
+// Usage: node tools/build.js [--strip] [--full]   (--strip: server-grading build; no hashes/explanations in the public bundle;
+//        --full: the original longer test; the default is the short form in authoring/short.js)
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -24,6 +25,26 @@ const chat = (await import('../authoring/chat.js')).default;
 
 const errors = [], warns = [];
 const err = (m) => errors.push(m);
+
+// ---- short form (authoring/short.js) ----------------------------------------------------------------------
+// Default build = short form. `node tools/build.js --full` rebuilds the original, longer test. Nothing in authoring/m*.js is deleted.
+if (!process.argv.includes('--full')) {
+  const S = (await import('../authoring/short.js')).default;
+  const usedQ = new Set(), usedG = new Set(), usedP = new Set();
+  for (const mi of missions) {
+    mi.stages = mi.stages.filter((s) => { if (s.kind === 'q' && (S.dropQ || []).includes(s.q.id)) { usedQ.add(s.q.id); return false; } return true; }).map((s) => {
+      const drop = s.kind === 'pool' && (S.dropGroups || {})[s.id];
+      if (!drop) return s;
+      drop.forEach((i) => usedG.add(s.id + ':' + i));
+      return { ...s, groups: s.groups.filter((_, i) => !drop.includes(i)) };
+    });
+    if (S.est && S.est[mi.id] != null) mi.est = S.est[mi.id];
+    for (const q of allQs(mi)) if ((S.pts || {})[q.id] != null) { q.pts = S.pts[q.id]; usedP.add(q.id); }
+  }
+  for (const id of S.dropQ || []) if (!usedQ.has(id)) err(`short.js: dropQ ${id} not found`);
+  for (const [pid, gs] of Object.entries(S.dropGroups || {})) for (const g of gs) if (!usedG.has(pid + ':' + g)) err(`short.js: dropGroups ${pid}[${g}] not found`);
+  for (const id of Object.keys(S.pts || {})) if (!usedP.has(id)) err(`short.js: pts ${id} not found`);
+}
 
 // ---- walk helpers --------------------------------------------------------------------------------------
 function* stagesIn(stages) { for (const s of stages) { yield s; if (s.kind === 'pool') for (const g of s.groups) yield* stagesIn(g.items); } }

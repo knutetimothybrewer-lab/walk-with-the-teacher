@@ -44,7 +44,7 @@ export function renderLogin(root, notice) {
     notice ? h('div', { class: 'notice warn' }, notice) : null,
     h('button', { class: 'btn btn-primary btn-lg', type: 'submit', style: 'width:100%' }, 'Continue'),
     h('p', { class: 'muted small', style: 'margin-top:.9rem' }, 'We keep only your name, Student ID and block, to record your score. If your computer restarts or you close the tab, sign in again with the same information and your timer and answers will still be there.'));
-  const shell = h('main', { id: 'main', class: 'page narrow' }, h('div', { class: 'hero enter' }, h('div', { class: 'kicker' }, 'Grade 10 Health · Unit 5 Summative'), h('h1', null, CONFIG.title), h('p', null, 'Investigate the math, the brain science, the marketing, and the decisions behind gambling. About 60 minutes of work; 90 minutes is the maximum.')), form);
+  const shell = h('main', { id: 'main', class: 'page narrow' }, h('div', { class: 'hero enter' }, h('div', { class: 'kicker' }, 'Grade 10 Health · Unit 5 Summative'), h('h1', null, CONFIG.title), h('p', null, 'Investigate the math, the brain science, the marketing, and the decisions behind gambling. About 45 minutes of work; 90 minutes is the maximum.')), form);
   mount(root, oddsBackground(), topLinks(), shell);
 
   const showErr = (key, msg) => { const e = $('#e-' + key, form); if (!e) return; e.textContent = msg; e.hidden = !msg; if (f[key]) f[key].setAttribute('aria-invalid', msg ? 'true' : 'false'); };
@@ -101,7 +101,7 @@ export function renderBriefing(root) {
     h('div', { class: 'hero' }, h('div', { class: 'kicker' }, 'You are signed in'), h('h1', null, `Ready, ${s.first}?`), h('p', null, `${s.first} ${s.last} · ID ${s.studentId} · ${s.block}`)),
     h('div', { class: 'card briefing' }, h('h2', null, 'Before you begin'),
       h('ul', null,
-        h('li', null, md(`**You have a maximum of 90 minutes.** The clock starts only when you press *Begin Assessment*. Most students need about an hour. The timer is kept by the server, so refreshing, closing the tab, or switching tabs does not pause or reset it.`)),
+        h('li', null, md(`**You have a maximum of 90 minutes.** The clock starts only when you press *Begin Assessment*. Most students need about 45 to 60 minutes. The timer is kept by the server, so refreshing, closing the tab, or switching tabs does not pause or reset it.`)),
         h('li', null, md('**Six case files** (chapters) with six short simulations. Each question is worth points and every simulation feeds real questions.')),
         h('li', null, md('**Three attempts per question.** Press *Check answer* to submit an attempt. Incomplete answers never use an attempt. You get a hint after a miss, and an explanation if a question locks.')),
         h('li', null, md('**Your work saves automatically** after every answer. If something goes wrong, sign in again with the same information and carry on.')),

@@ -2,7 +2,7 @@
 
 An immersive, self-grading digital summative. Students move through eight "missions" (brain science, nicotine and vaping, alcohol, other substances, overdose response, social pressure, evidence evaluation, and a final synthesis case). Each mission looks and behaves differently, and the work is mostly interpreting evidence and making decisions rather than recalling facts.
 
-* **100 points per student**, about **50 to 60 minutes** (see `teacher-private/BLUEPRINT.md` for the item-by-item time estimate).
+* **100 points per student**, about **45 minutes** on the short form that ships by default (see `teacher-private/BLUEPRINT.md` for the item-by-item time estimate). The short form leaves out 11 low-stakes questions listed in `authoring/short.js` and re-weights the rest to 100 points; nothing is deleted. `node tools/build.js --full` rebuilds the original 54-minute test.
 * **Three attempts per question**: 100% / 85% / 75% / 0, with no answer reveal until a question locks.
 * **Five simulations**: reaction time, an alcohol BAC model, an overdose response scene, a branching social-pressure conversation, and an Evidence Lab.
 * **Static website** (HTML, CSS, vanilla JavaScript; no framework, no build step needed to run it, no external requests, no trackers). Works on Chromebooks (Chrome) and tablets.

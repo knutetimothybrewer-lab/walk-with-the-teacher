@@ -162,7 +162,7 @@ function screenEntry(message, kind = 'err') {
     h('h2#f-h', 'Sign in to begin'),
     h('div.grid2', h('div.field', h('label', { for: 'f-first' }, 'First name'), first), h('div.field', h('label', { for: 'f-last' }, 'Last name'), last)),
     h('div.grid2', h('div.field', h('label', { for: 'f-block' }, 'Class block'), block), h('div.field', h('label', { for: 'f-code' }, 'Class code'), code)),
-    msg, h('div.row', btn, h('span.small.muted', 'About an hour. Your progress saves automatically if the page refreshes.')));
+    msg, h('div.row', btn, h('span.small.muted', 'About 45 minutes. Your progress saves automatically if the page refreshes.')));
   form.onsubmit = async (e) => {
     e.preventDefault();
     const f = normName(first.value), l = normName(last.value), cd = code.value.trim(), bl = block.value;

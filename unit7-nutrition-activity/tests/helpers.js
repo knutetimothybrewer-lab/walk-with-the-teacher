@@ -4,6 +4,10 @@ import { fileURLToPath } from 'node:url';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const mods = [];
 for (const m of ['m1', 'm2', 'm3', 'm4', 'm5', 'm6', 'm7']) mods.push((await import(`${root}/authoring/${m}.js`)).default);
+import { applyShort } from '../authoring/apply-short.js';
+// The tests see the same questions the build ships: the short form by default, the original with WWQ_FULL=1 (as `build.js --full`).
+const shortProblems = applyShort(mods, { full: !!process.env.WWQ_FULL });
+if (shortProblems.length) throw new Error(shortProblems.join('; '));
 export { mods, root };
 export function* qsOf(stage) { if (stage.kind === 'q') yield stage.q; else if (stage.kind === 'scene') yield* stage.qs; }
 export function* allStages(stages) { for (const s of stages) { yield s; if (s.kind === 'pool') for (const g of s.groups) yield* allStages(g.items); } }

@@ -16,6 +16,10 @@ for (const m of ['m1', 'm2', 'm3', 'm4', 'm5', 'm6', 'm7', 'm8']) mods.push((awa
 const chat = (await import('../authoring/chat.js')).default;
 function* authoredQs(stages) { for (const s of stages) { if (s.kind === 'pool') for (const g of s.groups) yield* authoredQs(g.items); else if (s.kind === 'q') yield s.q; else yield* s.qs; } }
 const authored = Object.fromEntries(mods.flatMap((m) => [...authoredQs(m.stages)]).map((q) => [q.id, q]));
+// Questions the short form (authoring/short.js) leaves out of the build: single stages in dropQ plus every question in a dropped pool group.
+const short = (await import('../authoring/short.js')).default;
+const shortDropped = new Set(short.dropQ || []);
+for (const m of mods) for (const s of m.stages) if (s.kind === 'pool') (short.dropGroups?.[s.id] || []).forEach((gi) => { for (const q of authoredQs(s.groups[gi].items)) shortDropped.add(q.id); });
 const pubQs = {}; (function w(st) { for (const s of st) { if (s.kind === 'pool') s.groups.forEach((g) => w(g.items)); else partsOf(s).forEach((q) => (pubQs[q.id] = q)); } })(content.missions.flatMap((m) => m.stages));
 
 test('sha256 test vectors', () => {
@@ -36,7 +40,9 @@ test('three-attempt credit: 100 / 85 / 75 / 0', () => {
 test('every authored answer is accepted and a wrong answer is rejected (local hash grading)', () => {
   let n = 0;
   for (const [id, q] of Object.entries(authored)) {
-    const pq = pubQs[id]; assert.ok(pq, 'public question exists ' + id);
+    const pq = pubQs[id];
+    if (!pq && shortDropped.has(id)) continue;   // left out on purpose by the short form (authoring/short.js)
+    assert.ok(pq, 'public question exists ' + id);
     assert.ok(!('ans' in pq) && !('explain' in pq), 'no plaintext key in public content: ' + id);
     if (q.type === 'run') {
       for (const p of passingPaths(chat)) assert.equal(gradeLocal(content, pq, p), true);
@@ -58,7 +64,7 @@ test('every authored answer is accepted and a wrong answer is rejected (local ha
     }
     n++;
   }
-  assert.ok(n > 70);
+  assert.ok(n > 60 && n + shortDropped.size === Object.keys(authored).length, 'every authored question is either built or deliberately left out (' + n + ' built, ' + shortDropped.size + ' left out)');
 });
 
 test('every student version is worth exactly 100 points and covers every domain', () => {
