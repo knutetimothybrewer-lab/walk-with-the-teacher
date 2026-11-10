@@ -93,7 +93,14 @@ export default {
   /* ---- Remove questions without touching the content files ------------------
      List item ids (shown in CONTENT-MAP.md and TIMING.md) that should be left
      out for everyone, e.g. after your pilot: disabledItems: ['s5-04', 's9-08'] */
-  disabledItems: [],
+  disabledItems: [
+    // SHORT FORM (about 47 min instead of about 60). Delete a line to put those questions back, then run `npm run timing -- --write`.
+    // 1) The unscored practice checkpoints ('more practice' repeats; worth 0 points, so no grade changes).
+    's1-k1', 's1-k2', 's2-k1', 's2-k2', 's3-k1', 's3-k2', 's4-k1', 's4-k2', 's5-k1', 's5-k2',
+    's6-k1', 's6-k2', 's7-k1', 's8-k1', 's8-k2', 's9-k1', 's9-k2',
+    // 2) The five least essential scored questions (each topic is assessed elsewhere; see the end of TIMING.md).
+    's2-05', 's7-06', 's9-08', 's4-07', 's6-08'
+  ],
 
   /* ---- Time limit ------------------------------------------------------------
      Hard limit in minutes, counted from the moment the student starts (the clock
