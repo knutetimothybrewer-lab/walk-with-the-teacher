@@ -65,10 +65,30 @@ function buildDemo() {
 }
 
 // load(): returns {pub, priv}. priv is null when the private answer key is not on this machine.
-function load() {
-  const pubFile = path.join(ROOT, 'content', 'generated', 'public.json'), keyFile = path.join(ROOT, 'private', 'keys.json');
-  if (HAVE_SRC) { const r = build(); return r; }
-  if (!fs.existsSync(pubFile)) throw new Error('content/generated/public.json is missing. Rebuild from the private sources.');
-  return { pub: JSON.parse(fs.readFileSync(pubFile, 'utf8')), priv: fs.existsSync(keyFile) ? JSON.parse(fs.readFileSync(keyFile, 'utf8')) : null };
+/* Short form (content/src/short.js): returns a copy of pub/priv without the dropped units and with the new points.
+   Set CHM_FULL=1 to skip it. Throws if the short-form list names something that does not exist, or the total is not 100. */
+function shorten(pub, priv) {
+  if (process.env.CHM_FULL || !priv) return { pub, priv };
+  const S = require(path.join(C, 'short'));
+  const P = clone(pub), K = clone(priv), seen = new Set(), seenP = new Set();
+  for (const mod of P.modules) {
+    mod.units = mod.units.filter(u => { if (S.drop.includes(u.id)) { seen.add(u.id); delete K.units[u.id]; return false; } return true; });
+    for (const u of mod.units) if (S.points[u.id] != null) { u.points = S.points[u.id]; K.units[u.id].points = S.points[u.id]; seenP.add(u.id); }
+    mod.points = mod.units.reduce((a, u) => a + u.points, 0);
+    if (S.minutes && S.minutes[mod.id] != null) mod.minutes = S.minutes[mod.id];
+  }
+  for (const id of S.drop) if (!seen.has(id)) throw new Error('short.js: drop ' + id + ' not found');
+  for (const id of Object.keys(S.points)) if (!seenP.has(id)) throw new Error('short.js: points ' + id + ' not found');
+  P.totalPoints = P.modules.reduce((a, m) => a + m.points, 0); K.totalPoints = P.totalPoints;
+  if (P.totalPoints !== 100) throw new Error('short form must total 100 points, got ' + P.totalPoints);
+  return { pub: P, priv: K };
 }
-module.exports = { build, buildDemo, load, HAVE_SRC, common, refs, mods: m };
+
+function load(opts) {
+  const pubFile = path.join(ROOT, 'content', 'generated', 'public.json'), keyFile = path.join(ROOT, 'private', 'keys.json');
+  if (HAVE_SRC) { const r = build(); return opts && opts.full ? r : shorten(r.pub, r.priv); }
+  if (!fs.existsSync(pubFile)) throw new Error('content/generated/public.json is missing. Rebuild from the private sources.');
+  const full = { pub: JSON.parse(fs.readFileSync(pubFile, 'utf8')), priv: fs.existsSync(keyFile) ? JSON.parse(fs.readFileSync(keyFile, 'utf8')) : null };
+  return opts && opts.full ? full : shorten(full.pub, full.priv);
+}
+module.exports = { build, buildDemo, load, shorten, HAVE_SRC, common, refs, mods: m };

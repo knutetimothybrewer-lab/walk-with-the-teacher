@@ -6,8 +6,10 @@ const MemoryStore = require('../server/stores/memory');
 
 const env = { sha256: s => crypto.createHash('sha256').update(s).digest('hex'), randomId: n => crypto.randomBytes(n).toString('base64url').replace(/[-_]/g, 'x').slice(0, n) };
 
-function setup(extra) {
-  const { pub, priv } = split.load();
+// Engine tests run against the FULL content (29 units) because they test engine behavior on specific unit types.
+// The shipped short form (content/src/short.js) is checked by short.test.js and by gas.test.js (which builds and runs the real Code.gs).
+function setup(extra, opts) {
+  const { pub, priv } = split.load(opts && opts.short ? undefined : { full: true });
   if (!priv) throw new Error('PRIVATE_KEYS_MISSING');
   const salt = 'testsalt';
   const store = new MemoryStore({ teacher: { salt, hash: env.sha256(salt + 'teach-pass'), emails: [] } });
@@ -25,4 +27,4 @@ function joinStudent(ctx, rosterId, name) {
   return r;
 }
 function teacher(ctx) { const r = ctx.call('teacherLogin', { passcode: 'teach-pass' }); if (!r.ok) throw new Error('login'); return r.teacherToken; }
-module.exports = { hasKeys: () => !!split.load().priv, setup, joinStudent, teacher, env };
+module.exports = { hasKeys: () => !!split.load({ full: true }).priv, setup, joinStudent, teacher, env };
