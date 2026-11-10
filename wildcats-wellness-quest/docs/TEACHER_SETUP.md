@@ -27,6 +27,7 @@ Uncomment and change only what you need. Anything omitted keeps its default from
 | `assessmentVersion` | `wwq-1.0` | Part of every browser-storage key. Changing it starts **fresh local records on every device** (old records are not deleted, just no longer found). Change only between class sets, as a deliberate decision. |
 | `attemptLimits` | `{ short: 2, complex: 3 }` | `complex` may be 2 or 3. `short` items have two authored equivalent variants, so 2 is the maximum. |
 | `caps` | `[1, 0.9, 0.75]` | Maximum share of an item's points on attempt 1, 2, 3 (a teacher-selected grading policy, not a research formula). |
+| `roster` | `auto` | Which form students get: `auto` = fresh starts get the short form (about 45 min), devices with an existing record keep the full form; `long` / `short` force one (README, "Two forms"). The short form sets its own pacing guide (target 45, range 40-50). |
 | `timeGuidance` | target 60, range 55-65, `extendedTime: false`, multiplier 1.5 | Pacing guidance only (never speed-scored). The enforced limit is the separate `timeLimitMinutes` setting (default 90). `extendedTime: true` shows a longer pacing guide (x1.5) in the optional pacing chip. |
 | `extendedExploration` | `false` | `true` shows optional, unscored extras (for example the best/worst-case week explorer). |
 | `motion` | `auto` | `auto` follows the device's reduced-motion setting; `on`/`off` force the default. Students can still change it in Settings. |

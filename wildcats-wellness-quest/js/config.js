@@ -14,6 +14,11 @@
     // Only change it between class sets, and only as a deliberate teacher decision (see docs/TEACHER_SETUP.md).
     assessmentVersion: 'wwq-1.0',
 
+    // Which test form students get. 'auto' (default): a device that already holds a full-form record keeps the full form, so nobody's saved
+    // work is touched, and every fresh start gets the shorter form (about 45 min). 'long' = everyone gets the full form (about 56 min).
+    // 'short' = everyone gets the short form, even on a device with an old full-form record (that record is kept but not shown).
+    roster: 'auto',
+
     // Scored-attempt policy. "Attempts" includes the first submission.
     // short  = matching / classification / metric meaning / short concept items
     // complex = data interpretation, multi-step calculation, scenario application, evidence evaluation, structured reasoning

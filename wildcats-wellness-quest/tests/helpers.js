@@ -2,6 +2,8 @@
 module.exports.BROWSER = `
 // Tests run with the Sheet backend OFF unless a test sets window.__KEEP_BACKEND (so they never call the teacher's real Apps Script).
 document.addEventListener('DOMContentLoaded', () => { if (window.WWQ && !window.__KEEP_BACKEND) window.WWQ.CONFIG.backend.url = ''; });
+// The browser suites below were written for the FULL form (49 items). A test can set window.__ROSTER = 'short' | 'auto' before this runs to exercise the short form or the automatic choice.
+document.addEventListener('DOMContentLoaded', () => { if (window.WWQ) window.WWQ.CONFIG.roster = window.__ROSTER || 'long'; });
 window.__T = {
   extreme(v, dir) {
     const r = {}; const order = v.parts.slice().sort((a, b) => (a.dep ? 1 : 0) - (b.dep ? 1 : 0));

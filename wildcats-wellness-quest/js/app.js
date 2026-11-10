@@ -136,6 +136,8 @@
   App.boot = function () {
     var storage = W.Teacher.boot(); if (!storage) { try { storage = root.localStorage; } catch (e) { storage = null; } }
     St.useStorage(storage);
+    /* Which test does this device get? A device that already holds a full-form record keeps the full form (so saved work is untouched); everyone else gets the short form. */
+    if (W.chooseRoster) W.chooseRoster(St.storageOK ? St.storage : null);
     var init = St.init(); App.state = init.state; App.mode = init.mode; App.notices = init.notices;
     var st = App.state, pr = st.progress;
     W.Teacher.prepare(st);
