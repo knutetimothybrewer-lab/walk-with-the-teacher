@@ -1,0 +1,612 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; img-src data:; base-uri 'none'; form-action 'none'">
+<meta name="color-scheme" content="dark">
+<title>Social Dilemma Check</title>
+<link rel="icon" href="data:,">
+<style>
+:root{
+  --bg:#05070d; --panel:#0b1220; --panel2:#101a2e; --line:#1c2a44;
+  --blue:#2f7bff; --cyan:#3fd0ff; --red:#ff3b30; --red-badge:#d62b20; --amber:#ffb020;
+  --text:#e6ecf5; --muted:#8a97ad;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;min-height:100vh;min-height:100dvh;color:var(--text);font:16px/1.5 var(--sans);
+  background:
+    radial-gradient(circle at 1px 1px,rgba(63,208,255,.11) 1px,transparent 1.6px) 0 0/24px 24px,
+    radial-gradient(ellipse 80% 50% at 50% -8%,rgba(47,123,255,.20),transparent 70%),
+    var(--bg);
+  background-attachment:fixed;
+  overflow-x:hidden;
+}
+/* scanline + vignette overlays, very low opacity */
+body::before,body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:50}
+body::before{background:radial-gradient(ellipse at center,transparent 55%,rgba(0,0,0,.45) 100%)}
+body::after{background:repeating-linear-gradient(to bottom,rgba(255,255,255,.022) 0 1px,transparent 1px 3px)}
+.mono{font-family:var(--mono)}
+.sr-only{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+button,input{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--cyan);outline-offset:2px;box-shadow:0 0 14px rgba(63,208,255,.6)}
+.wrap{max-width:760px;margin:0 auto;padding:16px 16px 40px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:20px;box-shadow:0 0 0 1px rgba(47,123,255,.06),0 10px 40px rgba(0,0,0,.45)}
+.label{font:600 .8rem/1.2 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+
+/* title + glitch (title only) */
+.title{font:800 clamp(2rem,8vw,3.2rem)/1.05 var(--sans);letter-spacing:-.02em;margin:.2em 0 .1em;position:relative;display:inline-block;text-shadow:0 0 22px rgba(63,208,255,.35)}
+.glitch::before,.glitch::after{
+  content:attr(data-text);content:attr(data-text) / "";position:absolute;left:0;top:0;width:100%;
+  clip-path:inset(0 0 100% 0);pointer-events:none;text-shadow:none}
+.glitch::before{color:var(--cyan);animation:gl1 7s infinite steps(1)}
+.glitch::after{color:var(--red);animation:gl2 7s infinite steps(1)}
+@keyframes gl1{0%,91%,100%{transform:none;clip-path:inset(0 0 100% 0)}92%{transform:translate(-3px,0);clip-path:inset(15% 0 55% 0)}94%{transform:translate(2px,0);clip-path:inset(60% 0 10% 0)}96%{transform:none;clip-path:inset(0 0 100% 0)}}
+@keyframes gl2{0%,91%,100%{transform:none;clip-path:inset(0 0 100% 0)}93%{transform:translate(3px,0);clip-path:inset(40% 0 35% 0)}95%{transform:translate(-2px,0);clip-path:inset(5% 0 80% 0)}97%{transform:none;clip-path:inset(0 0 100% 0)}}
+.subtitle{font:600 1rem var(--mono);color:var(--cyan);margin:0 0 14px;letter-spacing:.04em}
+
+/* start */
+.lead{margin:.2em 0 1em}
+.scoring{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin:0 0 18px}
+.scoring ul{list-style:none;margin:8px 0 0;padding:0;display:grid;grid-template-columns:repeat(2,1fr);gap:6px 14px;font-family:var(--mono);font-size:.95rem}
+.scoring li b{color:var(--cyan)}
+.field{margin:0 0 14px}
+.field label{display:block;font:600 .9rem var(--mono);margin-bottom:6px}
+.field .opt{color:var(--muted);font-weight:400}
+.field input{width:100%;min-height:48px;padding:10px 12px;background:#070c18;border:1px solid #2a3d63;border-radius:10px;color:var(--text)}
+.field input:focus{border-color:var(--cyan);outline:none;box-shadow:0 0 0 3px rgba(63,208,255,.35)}
+.err{color:#ff7a70;font-size:.95rem;margin:6px 0 0;min-height:0}
+.btn{min-height:48px;padding:10px 22px;border:0;border-radius:10px;background:var(--blue);color:#04060c;font:700 1rem var(--mono);letter-spacing:.04em;cursor:pointer;box-shadow:0 0 22px rgba(47,123,255,.45);transition:transform .12s,box-shadow .12s}
+.btn:hover{box-shadow:0 0 30px rgba(63,208,255,.65);transform:translateY(-1px)}
+.btn.block{width:100%}
+.notice{font:.9rem var(--mono);color:var(--amber);margin:0 0 12px}
+.fine{color:var(--muted);font-size:.9rem;margin:14px 0 0}
+
+/* quiz top bar */
+.top{display:flex;align-items:center;gap:12px;margin:4px 0 14px}
+.badge{flex:none;background:var(--red-badge);color:#fff;font:700 .95rem var(--mono);border-radius:999px;padding:4px 12px;min-width:4.6em;text-align:center;box-shadow:0 0 14px rgba(255,59,48,.45)}
+.feed{flex:1;height:10px;border-radius:99px;background:#0e1830;border:1px solid var(--line);overflow:hidden}
+.feed i{display:block;height:100%;background:linear-gradient(90deg,var(--blue),var(--cyan));box-shadow:0 0 12px var(--cyan);border-radius:99px;transition:width .4s}
+.notif{display:flex;align-items:center;gap:10px;margin:0 0 12px;font:700 .95rem var(--mono);color:var(--cyan)}
+.notif .ico{flex:none;width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,var(--blue),var(--cyan));display:grid;place-items:center;color:#04060c;font-size:.85rem}
+.notif small{display:block;color:var(--muted);font-weight:400;font-size:.8rem}
+.q{font:650 1.2rem/1.45 var(--sans);margin:0 0 16px}
+.q:focus{outline:none}
+.opts{display:grid;gap:10px;margin:0 0 14px}
+.opt-btn{display:flex;gap:12px;align-items:flex-start;text-align:left;width:100%;min-height:52px;padding:12px 14px;background:var(--panel2);border:1px solid #27385c;border-radius:10px;cursor:pointer;color:var(--text);transition:border-color .12s,box-shadow .12s}
+.opt-btn:hover:not(:disabled){border-color:var(--cyan);box-shadow:0 0 16px rgba(63,208,255,.3)}
+.opt-btn .k{flex:none;width:28px;height:28px;border-radius:7px;border:1px solid #3a5088;display:grid;place-items:center;font:700 .9rem var(--mono);color:var(--cyan);margin-top:1px}
+.opt-btn .t{flex:1}
+.opt-btn:disabled{cursor:default}
+.opt-btn.tried{background:#120d14;border-color:#5a2a2e;color:var(--muted);text-decoration:line-through;text-decoration-color:#7a3a3e}
+.opt-btn.tried .k{border-color:#7a3a3e;color:#ff7a70}
+.opt-btn.right{border-color:var(--cyan);background:#0a2236;box-shadow:0 0 18px rgba(63,208,255,.35)}
+.opt-btn.right .k{background:var(--cyan);color:#04060c;border-color:var(--cyan)}
+.opt-btn.dim{opacity:.7}
+.pips{display:flex;align-items:center;gap:8px;font:.9rem var(--mono);color:var(--muted);margin:0 0 12px;flex-wrap:wrap}
+.pip{width:14px;height:14px;border-radius:50%;border:2px solid #3a5088}
+.pip.bad{background:var(--red);border-color:var(--red)}
+.pip.good{background:var(--cyan);border-color:var(--cyan);box-shadow:0 0 8px var(--cyan)}
+.fb{border-radius:10px;padding:12px 14px;margin:0 0 14px;border:1px solid}
+.fb p{margin:0}
+.fb .h{font:700 .9rem var(--mono);letter-spacing:.05em;text-transform:uppercase;margin:0 0 4px}
+.fb.hint{background:#1a1408;border-color:#6a4a10}.fb.hint .h{color:var(--amber)}
+.fb.why{background:#08192b;border-color:#1d4a78}.fb.why .h{color:var(--cyan)}
+.fb.miss{background:#1c0b0d;border-color:#6a2226}.fb.miss .h{color:#ff7a70}
+.keys{color:var(--muted);font-size:.85rem;margin:12px 0 0;font-family:var(--mono)}
+
+/* results (compact, one screenshot) */
+.res{max-width:1100px;margin:0 auto;padding:10px 12px 14px}
+.res .card{padding:12px 14px}
+.rhead{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:4px 16px;margin:0 0 8px}
+.rhead h1{font:800 1.15rem/1.2 var(--sans);margin:0}
+.rhead h1 span{color:var(--cyan);font-family:var(--mono);font-size:.8rem;letter-spacing:.06em;display:block}
+.ids{display:grid;grid-template-columns:1fr 1fr;gap:2px 12px;font:.8rem/1.35 var(--mono);margin:0;width:100%}
+.ids div{min-width:0;overflow-wrap:anywhere}
+.ids b{color:var(--muted);font-weight:600}
+.ids .nm{grid-column:1/-1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ids .code b{color:var(--muted)}.ids .code span{color:var(--amber);font-weight:700;letter-spacing:.08em}
+.rbody{display:grid;gap:8px}
+.scorebox{display:flex;align-items:center;gap:12px}
+.big{font:800 3.4rem/1 var(--sans);color:var(--cyan);text-shadow:0 0 22px rgba(63,208,255,.5);letter-spacing:-.03em}
+.big small{font-size:1.6rem}
+.msg{font-size:.9rem;line-height:1.35;margin:0}
+.msg em{display:block;font:normal .8rem var(--mono);color:var(--muted);margin-top:2px}
+.grid{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:1fr 1fr;gap:5px}
+.cell{background:var(--panel2);border:1px solid var(--line);border-left:4px solid var(--cyan);border-radius:6px;padding:3px 8px;line-height:1.25;min-width:0}
+.cell .a{display:block;font-size:.8rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cell .a b{font-family:var(--mono);color:var(--cyan)}
+.cell .r{display:block;font:.8rem var(--mono);color:var(--muted)}
+.cell.c1{border-left-color:var(--cyan)}.cell.c2{border-left-color:var(--blue)}.cell.c3{border-left-color:var(--amber)}.cell.c0{border-left-color:var(--red)}
+.cell.c0 .r{color:#ff7a70;font-weight:700}
+.secs{display:grid;grid-template-columns:1fr 1fr;gap:6px 12px;margin:0}
+.sec .n{display:flex;justify-content:space-between;gap:6px;font:.8rem/1.2 var(--mono)}
+.sec .n b{color:var(--cyan)}
+.bar{height:6px;border-radius:9px;background:#0e1830;border:1px solid var(--line);overflow:hidden;margin-top:3px}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--blue),var(--cyan))}
+.shot{margin:8px 0 0;text-align:center;font:700 .85rem/1.3 var(--mono);color:var(--amber);border:1px dashed #6a4a10;border-radius:8px;padding:6px 8px}
+.rh{font:600 .72rem/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 5px}
+
+@media (min-width:900px){
+  .res{padding:14px 18px}
+  .res .card{padding:16px 20px}
+  .rhead{align-items:flex-end;margin-bottom:12px}
+  .ids{width:auto;grid-template-columns:auto auto;gap:2px 28px;font-size:.88rem}
+  .ids .nm{grid-column:auto}
+  .rbody{grid-template-columns:340px 1fr;gap:20px}
+  .big{font-size:5rem}.big small{font-size:2.2rem}
+  .msg{font-size:1rem}
+  .grid{gap:7px}
+  .cell{padding:6px 10px}.cell .a{font-size:.95rem}.cell .r{font-size:.88rem}
+  .secs{grid-template-columns:1fr;gap:9px;margin-top:6px}
+  .sec .n{font-size:.88rem}.bar{height:8px}
+  .shot{font-size:1rem;padding:9px;margin-top:12px}
+}
+@media (max-width:420px){
+  .wrap{padding:12px 12px 32px}
+  .card{padding:16px 14px}
+  .scoring ul{grid-template-columns:1fr}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+  .glitch::before,.glitch::after{display:none}
+}
+</style>
+</head>
+<body>
+<noscript><p style="padding:20px">This activity needs JavaScript. Please use a current browser.</p></noscript>
+<div id="app"></div>
+<div id="live" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></div>
+
+<script>
+"use strict";
+/* =====================================================================
+   TEACHER SETTINGS: edit these two blocks. Questions are further below.
+   ===================================================================== */
+const TEACHER_LABEL = "your teacher";   // shown in: "Take a screenshot ... and send it to ___."
+
+const CONFIG = {
+  // Credit by attempt that gets it right: 1st, 2nd, 3rd. The number of entries = number of tries allowed.
+  CREDIT: [1.00, 0.75, 0.50],
+  // After this many misses with no correct answer: reveal answer, 0% credit, marked "Review".
+  QUIZ_TITLE: "The Social Dilemma",
+  STORAGE_KEY: "socialDilemmaCheck.v1",
+  QUIZ_VERSION: 1,           // bump this if you change the number or order of questions (clears saved progress)
+  RESET_PARAM: "teacher",    // visit  index.html?teacher=reset  to clear saved progress on that device
+  RESET_VALUE: "reset"
+};
+
+const SECTIONS = [
+  { name: "The Business Model",                   short: "Business Model" },
+  { name: "Persuasive Design",                    short: "Persuasive Design" },
+  { name: "Algorithms and Data",                  short: "Algorithms & Data" },
+  { name: "Mental Health",                        short: "Mental Health" },
+  { name: "Misinformation and Polarization",      short: "Misinformation" },
+  { name: "Your Role and the Way Forward",        short: "Way Forward" }
+];
+
+/* QUESTION BANK.  "correct" is the one right answer; "wrong" are the three misconceptions.
+   (Order on screen is shuffled per student.)  hints[0] shows after the 1st miss, hints[1] after the 2nd.  */
+const QUESTIONS = [
+/* ---------- Section 1: The Business Model ---------- */
+{ section:0, tag:"Free Product",
+  q:"A friend says, “Social media is free, so those companies can't be making much money.” Using the film's central idea, which reply is best?",
+  correct:"Advertisers pay for access to users' attention, so the users' attention and behavior are what is really being sold.",
+  wrong:["Companies earn most of their money from users' monthly subscription fees.",
+         "The companies are mostly funded by donations and government grants.",
+         "They make money by selling the app's source code to other companies."],
+  hints:["Ask who is actually paying the companies, and what that payer gets in return.",
+         "Think of the film's line about what it means when you are not paying for the product."],
+  why:"The film argues the customers are advertisers; the users' attention (and predictions about what they'll do) is the product." },
+{ section:0, tag:"Three Goals",
+  q:"Tristan Harris describes three goals that drive nearly every design decision at these companies. If you wanted to maximize ad revenue, which set would you push as high as possible?",
+  correct:"Engagement, growth, and advertising",
+  wrong:["Privacy, safety, and education","Accuracy, fairness, and transparency","Creativity, connection, and community"],
+  hints:["Picture a dashboard of numbers an ad-supported company would watch every day.",
+         "One goal is about time on the app, one is about new and returning users, one is about money."],
+  why:"Engagement keeps you on the app, growth brings in more users, and advertising turns both into revenue." },
+{ section:0, tag:"Time = Data",
+  q:"Why is it so valuable to these companies for you to spend more time on the app?",
+  correct:"More time means more ads shown and more data collected, which improves predictions about what you will do next.",
+  wrong:["Longer sessions make the app's servers run faster.",
+         "Longer sessions mean users are learning more accurate information.",
+         "More time on the app lowers the company's costs of building new features."],
+  hints:["Follow what happens to the company each extra minute you stay.",
+         "The film describes a marketplace trading in predictions about human behavior."],
+  why:"Time on the app converts to ad impressions and to data that sharpens behavioral predictions, which advertisers pay for." },
+/* ---------- Section 2: Persuasive Design ---------- */
+{ section:1, tag:"Slot Machine",
+  q:"You pull down to refresh your feed. Sometimes there is nothing new; sometimes something exciting appears. Which design idea from the film explains why this is so hard to stop?",
+  correct:"Unpredictable (variable) rewards, similar to how a slot machine keeps people pulling the lever.",
+  wrong:["A fixed daily reward that arrives at the same time every day.",
+         "A paywall that blocks content until you pay.",
+         "End-to-end encryption protecting your messages."],
+  hints:["Think about what keeps someone pulling a lever on a casino game.",
+         "If the reward were guaranteed every time, would it be as compelling?"],
+  why:"Harris compares the feed to a slot machine; uncertain rewards create a strong pull to keep checking." },
+{ section:1, tag:"Endless Scroll",
+  q:"Your feed scrolls forever and the next video starts automatically. What is the most likely design reason there is no “end”?",
+  correct:"Removing natural stopping points keeps people on the app longer.",
+  wrong:["Endless content is the only way to make sure the app loads quickly.",
+         "It helps users finish their homework more efficiently.",
+         "It is required by law so users never miss important news."],
+  hints:["When does a TV show or a book give you a natural moment to stop?",
+         "Connect it to the company's goal of engagement."],
+  why:"Features like infinite scroll and autoplay are persuasive design choices that remove “stop here” cues." },
+{ section:1, tag:"Social Approval",
+  q:"A notification says someone tagged you in a photo. Why does that pull so many people back into the app right away?",
+  correct:"It taps our need for social approval, and the platform is built to trigger that need.",
+  wrong:["Notifications are only sent when something truly urgent happens.",
+         "People open them because phones force the app to open.",
+         "It is mostly a habit from older technology like email."],
+  hints:["What does being tagged or liked say about how others see you?",
+         "The film discusses how social validation became a feature designers could trigger on purpose."],
+  why:"Likes, tags, and comments act as social approval signals, and platforms use notifications to bring you back for them." },
+/* ---------- Section 3: Algorithms and Data ---------- */
+{ section:2, tag:"Custom Feeds",
+  q:"You and a friend follow some of the same accounts, but your feeds look very different. What best explains this?",
+  correct:"The algorithm uses each person's data to predict what will keep them engaged, so each person gets a customized feed.",
+  wrong:["The app shows every user the same feed in a random order.",
+         "Friends are always shown a different feed on purpose to avoid arguments.",
+         "Feeds differ only because phones have different screen sizes."],
+  hints:["Think about what the platform knows about you that it does not know about your friend.",
+         "The film contrasts a feed with something everyone sees the same way."],
+  why:"Personalization means each user effectively sees a different version of the world." },
+{ section:2, tag:"What It Optimizes",
+  q:"According to the film, what is the AI behind your feed actually optimizing for?",
+  correct:"Whatever keeps you engaged, whether or not it is true or good for you.",
+  wrong:["Showing you the most accurate information available.",
+         "Helping you reach your personal goals.",
+         "Making sure all viewpoints get equal exposure."],
+  hints:["Look at the goal the company set for the system, not the goal you might wish it had.",
+         "Does the system understand truth, or does it understand clicks and time spent?"],
+  why:"The algorithms are tuned to engagement and have no built-in concern for truth or wellbeing." },
+{ section:2, tag:"Control Room",
+  q:"In the dramatized scenes, three characters in a control room adjust what the teen character sees. What are they meant to represent?",
+  correct:"The AI and algorithms working to predict and influence his behavior.",
+  wrong:["Human employees reading his private messages.",
+         "His parents monitoring his phone use.",
+         "Advertisers meeting to design a TV commercial."],
+  hints:["The film wanted a way to make invisible software visible.",
+         "Notice what they are trying to get him to do with his attention."],
+  why:"The scenes personify the algorithms so viewers can “see” how the system tries to capture attention." },
+/* ---------- Section 4: Mental Health ---------- */
+{ section:3, tag:"Teen Trends",
+  q:"What pattern about adolescent mental health does the film highlight?",
+  correct:"Rising rates of anxiety, depression, and self-harm among teens, especially girls, beginning around when social media became widely available on mobile phones.",
+  wrong:["Teen mental health has steadily improved since the early 2000s.",
+         "Rates changed only among adults, not among teens.",
+         "Rates are unchanged, but teens report them more often."],
+  hints:["Look at what the film's researchers said about the years after smartphones became common.",
+         "Think about which direction the trend line moved."],
+  why:"The film presents these trends as evidence that heavy social media use may harm adolescent wellbeing." },
+{ section:3, tag:"Self-Esteem",
+  q:"Likes, follower counts, and filtered photos are constantly visible. Which explanation best fits the film's concern about self-esteem?",
+  correct:"People compare their real lives to curated highlights and start tying their self-worth to public metrics.",
+  wrong:["Metrics are private, so they cannot affect how users feel.",
+         "Showing numbers makes users more confident because the numbers are always positive.",
+         "Self-esteem is unaffected by what other people appear to think of us."],
+  hints:["Ask what you are comparing when you scroll: your whole life, or someone else's best moments?",
+         "Consider what happens when worth gets measured as a number."],
+  why:"Social validation loops reward short-term approval and encourage constant comparison." },
+{ section:3, tag:"Cause vs. Link",
+  q:"A critic says, “The film shows that social media use and teen distress rose together, but that does not prove social media caused it.” What would make the argument stronger?",
+  correct:"Evidence that rules out other explanations, such as studies showing outcomes change when exposure changes.",
+  wrong:["Showing more examples of teens who feel sad.",
+         "Repeating the trend graph more loudly.",
+         "Pointing out that the creators of social media regret their work."],
+  hints:["Two things rising together is correlation. What would you need to isolate one cause?",
+         "Think about how scientists test whether changing X changes Y."],
+  why:"Correlation is not causation; stronger claims need controlled comparisons and ruling out other factors. This question is about evaluating the film's argument, not just repeating it." },
+/* ---------- Section 5: Misinformation and Polarization ---------- */
+{ section:4, tag:"Fast Falsehoods",
+  q:"According to research cited in the film, how does the spread of false stories compare with true stories on social media?",
+  correct:"False stories spread about six times faster.",
+  wrong:["True stories spread about six times faster.","They spread at about the same speed.","False stories spread twice as slowly."],
+  hints:["Think about which kind of content tends to be more surprising or emotional.",
+         "The film's point is that the system rewards what gets reactions, not what is accurate."],
+  why:"Novel, emotional, outrageous content gets more engagement, so algorithms tend to push it further." },
+{ section:4, tag:"Echo Chambers",
+  q:"Two neighbors with different political views each feel completely certain the other side is “crazy.” Which explanation best fits the film?",
+  correct:"Personalized feeds show each person a different, reinforcing set of “facts,” so shared ground shrinks.",
+  wrong:["Everyone sees the same facts and simply ignores them.",
+         "Social media shows people a perfectly balanced mix of viewpoints.",
+         "Disagreements started with social media and had no earlier causes."],
+  hints:["If each person's feed is customized, do they share the same set of facts?",
+         "Consider what an engagement-driven system shows you after you click on something you agree with."],
+  why:"Echo chambers and recommendation systems can deepen polarization and weaken a shared sense of reality." },
+/* ---------- Section 6: Your Role and the Way Forward ---------- */
+{ section:5, tag:"Real Threat",
+  q:"Harris says, “It's not about the technology being the existential threat, it's the technology's ability to bring out the worst in society.” What does he mean?",
+  correct:"The danger is not evil machines, but systems that amplify human weaknesses such as outrage and division.",
+  wrong:["Computers will become conscious and decide to harm people.",
+         "The danger is that the internet will stop working.",
+         "Technology is neutral and cannot influence behavior."],
+  hints:["Is he blaming the machines, or what the machines encourage in people?",
+         "Connect it to what engagement-optimized systems tend to reward."],
+  why:"The harm comes from business models and design that amplify our worst impulses at massive scale." },
+{ section:5, tag:"Regulation",
+  q:"A company could redesign its app to protect users' wellbeing, but it would reduce time spent on the app. According to the film's analysis, why is the company unlikely to do it voluntarily?",
+  correct:"Its business model rewards engagement, so wellbeing and profit pull in opposite directions; the film argues this is why outside rules and regulation are needed.",
+  wrong:["Engineers do not know how to build healthier features.",
+         "Users have said they prefer the addictive version.",
+         "Wellbeing features are illegal under current laws."],
+  hints:["Follow the money: what happens to revenue when time on the app drops?",
+         "The film's experts argue we regulate other powerful industries; what might that look like here?"],
+  why:"This is the “dilemma”: profit incentives conflict with user wellbeing, which is why the film's experts call for regulation and individual habit changes (such as turning off nonessential notifications)." }
+];
+
+/* =====================================================================
+   LOGIC (no need to edit below this line)
+   ===================================================================== */
+const N = QUESTIONS.length;
+const MAX_TRIES = CONFIG.CREDIT.length;
+const $app = document.getElementById("app");
+const $live = document.getElementById("live");
+
+/* ---- storage with in-memory fallback ---- */
+const store = {
+  mem: null,
+  get(){ try { return window.localStorage.getItem(CONFIG.STORAGE_KEY); } catch(e){ return this.mem; } },
+  set(v){ this.mem = v; try { window.localStorage.setItem(CONFIG.STORAGE_KEY, v); } catch(e){} },
+  del(){ this.mem = null; try { window.localStorage.removeItem(CONFIG.STORAGE_KEY); } catch(e){} }
+};
+
+let resetNotice = false;
+(function teacherReset(){
+  try {
+    const p = new URLSearchParams(location.search);
+    if (p.get(CONFIG.RESET_PARAM) === CONFIG.RESET_VALUE) {
+      store.del();
+      resetNotice = true;
+      history.replaceState(null, "", location.pathname);   // so a later refresh does not wipe a student's work
+    }
+  } catch(e){}
+})();
+
+function freshState(){
+  const seed = (crypto && crypto.getRandomValues) ? crypto.getRandomValues(new Uint32Array(1))[0] : Math.floor(Math.random()*4294967296);
+  return { ver: CONFIG.QUIZ_VERSION, n: N, seed, phase: "start", name: "", period: "", startedAt: 0, qi: 0, answers: {}, finishedAt: 0, code: "" };
+}
+function loadState(){
+  try {
+    const raw = store.get();
+    if (raw) {
+      const s = JSON.parse(raw);
+      if (s && s.ver === CONFIG.QUIZ_VERSION && s.n === N && typeof s.seed === "number" && s.answers && typeof s.answers === "object") return s;
+    }
+  } catch(e){}
+  return freshState();
+}
+let S = loadState();
+function save(){ try { store.set(JSON.stringify(S)); } catch(e){} }
+
+/* ---- helpers ---- */
+const esc = t => String(t).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const pct = x => Math.round(x * 100);
+const ord = n => n + (n===1?"st":n===2?"nd":n===3?"rd":"th");
+function announce(msg){ $live.textContent = ""; setTimeout(()=>{ $live.textContent = msg; }, 30); }
+
+function mulberry32(a){ return function(){ a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+function order(qi){            // display order of the 4 options (original indices; 0 = correct), fixed per student
+  const r = mulberry32((S.seed ^ Math.imul(qi + 1, 2654435761)) >>> 0);
+  const a = [0,1,2,3];
+  for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(r() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; }
+  return a;
+}
+function hash8(str){            // cyrb53-style, 8 chars base36 uppercase
+  let h1 = 0xdeadbeef, h2 = 0x41c6ce57;
+  for (let i = 0; i < str.length; i++) { const c = str.charCodeAt(i); h1 = Math.imul(h1 ^ c, 2654435761); h2 = Math.imul(h2 ^ c, 1597334677); }
+  h1 = Math.imul(h1 ^ (h1>>>16), 2246822507) ^ Math.imul(h2 ^ (h2>>>13), 3266489909);
+  h2 = Math.imul(h2 ^ (h2>>>16), 2246822507) ^ Math.imul(h1 ^ (h1>>>13), 3266489909);
+  return ((h2>>>0).toString(36) + (h1>>>0).toString(36)).toUpperCase().padStart(8,"0").slice(0,8);
+}
+
+/* ---- scoring ---- */
+function ans(i){ return S.answers[i] || (S.answers[i] = { tries: [], done: false, attempt: 0 }); }
+function credit(i){ const a = S.answers[i]; return (a && a.done && a.attempt > 0) ? CONFIG.CREDIT[a.attempt - 1] : 0; }
+function totalCredit(){ let t = 0; for (let i = 0; i < N; i++) t += credit(i); return t / N; }     // 0..1
+function sectionCredit(s){ let t = 0, c = 0; QUESTIONS.forEach((q,i)=>{ if (q.section === s) { t += credit(i); c++; } }); return c ? t / c : 0; }
+function doneCount(){ let c = 0; for (let i = 0; i < N; i++) if (S.answers[i] && S.answers[i].done) c++; return c; }
+
+/* ---- actions ---- */
+function begin(name, period){
+  S.name = name; S.period = period; S.startedAt = Date.now(); S.phase = "quiz"; S.qi = 0; save(); render("q");
+}
+function pick(orig){
+  const a = ans(S.qi);
+  if (a.done || a.tries.includes(orig)) return;
+  a.tries.push(orig);
+  const used = a.tries.length;
+  let msg;
+  if (orig === 0) { a.done = true; a.attempt = used; msg = "Correct on attempt " + used + ". " + QUESTIONS[S.qi].why; }
+  else if (used >= MAX_TRIES) { a.done = true; a.attempt = 0; msg = "Out of attempts. The correct answer is now highlighted. " + QUESTIONS[S.qi].why; }
+  else { msg = "Not quite. Attempt " + used + " of " + MAX_TRIES + " used. Hint: " + QUESTIONS[S.qi].hints[Math.min(used, QUESTIONS[S.qi].hints.length) - 1]; }
+  save();
+  render(a.done ? "next" : "opt");
+  announce(msg);
+}
+function next(){
+  const a = S.answers[S.qi];
+  if (!a || !a.done) return;
+  if (S.qi < N - 1) { S.qi++; save(); render("q"); }
+  else {
+    S.finishedAt = Date.now();
+    S.code = hash8(S.name + "|" + pct(totalCredit()) + "|" + S.finishedAt);
+    S.phase = "results"; save(); render("top");
+    announce("Results ready. Your score is " + pct(totalCredit()) + " percent.");
+  }
+}
+
+/* ---- views ---- */
+function viewStart(){
+  const rows = CONFIG.CREDIT.map((c,i)=>"<li><b>" + ord(i+1) + " try</b> = " + pct(c) + "%</li>").join("")
+             + "<li><b>Still missed</b> = 0% + Review</li>";
+  $app.innerHTML =
+  '<main class="wrap"><div class="card">' +
+    '<p class="label">Health · Check for Understanding</p>' +
+    '<h1 class="title glitch" data-text="' + esc(CONFIG.QUIZ_TITLE) + '">' + esc(CONFIG.QUIZ_TITLE) + '</h1>' +
+    '<p class="subtitle">// check for understanding</p>' +
+    (resetNotice ? '<p class="notice" role="status">Saved progress on this device was cleared.</p>' : '') +
+    '<p class="lead">' + N + ' scenario questions about the film. Pick the best answer. If you miss, you get a hint and try again.</p>' +
+    '<div class="scoring"><p class="label">How scoring works</p><ul>' + rows + '</ul></div>' +
+    '<form id="startForm" novalidate>' +
+      '<div class="field"><label for="nm">Your name</label>' +
+        '<input id="nm" name="nm" type="text" autocomplete="name" maxlength="40" required aria-required="true" aria-describedby="nmErr">' +
+        '<p class="err" id="nmErr" role="alert"></p></div>' +
+      '<div class="field"><label for="pd">Class period <span class="opt">(optional)</span></label>' +
+        '<input id="pd" name="pd" type="text" maxlength="12" autocomplete="off"></div>' +
+      '<button class="btn block" type="submit">BEGIN</button>' +
+    '</form>' +
+    '<p class="fine">Takes about 15–20 minutes. Your progress saves on this device, so a refresh will not reset your tries.</p>' +
+  '</div></main>';
+  const form = document.getElementById("startForm");
+  form.addEventListener("submit", e => {
+    e.preventDefault();
+    const nm = document.getElementById("nm").value.trim().replace(/\s+/g," ");
+    if (!nm) {
+      document.getElementById("nmErr").textContent = "Please enter your name to begin.";
+      document.getElementById("nm").setAttribute("aria-invalid","true");
+      document.getElementById("nm").focus();
+      return;
+    }
+    begin(nm, document.getElementById("pd").value.trim());
+  });
+}
+
+function viewQuiz(focus){
+  const i = S.qi, q = QUESTIONS[i], a = ans(i), used = a.tries.length;
+  const done = a.done, solved = done && a.attempt > 0;
+  const sec = SECTIONS[q.section];
+  const feed = Math.round(doneCount() / N * 100);
+
+  let pips = "";
+  for (let k = 0; k < MAX_TRIES; k++) {
+    const cls = k < used ? ((solved && k === used - 1) ? "good" : "bad") : "";
+    pips += '<span class="pip ' + cls + '"></span>';
+  }
+  let pipText;
+  if (!done) pipText = "Attempt " + (used + 1) + " of " + MAX_TRIES + " · worth " + pct(CONFIG.CREDIT[used]) + "%";
+  else if (solved) pipText = "Solved on attempt " + a.attempt + " · " + pct(CONFIG.CREDIT[a.attempt-1]) + "% credit";
+  else pipText = "Review · 0% credit";
+
+  const opts = order(i).map((orig, pos) => {
+    const tried = a.tries.includes(orig);
+    let cls = "opt-btn", dis = false, extra = "";
+    if (done) {
+      dis = true;
+      if (orig === 0) { cls += " right"; extra = '<span class="sr-only"> (correct answer)</span>'; }
+      else if (tried) { cls += " tried"; extra = '<span class="sr-only"> (you tried this)</span>'; }
+      else cls += " dim";
+    } else if (tried) { cls += " tried"; dis = true; extra = '<span class="sr-only"> (tried, not correct)</span>'; }
+    return '<button type="button" class="' + cls + '" data-orig="' + orig + '" data-pos="' + (pos+1) + '"' + (dis ? " disabled" : "") + '>' +
+           '<span class="k" aria-hidden="true">' + (orig === 0 && done ? "✓" : tried ? "✕" : (pos + 1)) + '</span>' +
+           '<span class="t">' + esc(orig === 0 ? q.correct : q.wrong[orig - 1]) + extra + '</span></button>';
+  }).join("");
+
+  let fb = "";
+  if (!done && used > 0) {
+    fb = '<div class="fb hint"><p class="h">Not quite · hint ' + used + '</p><p>' + esc(q.hints[Math.min(used, q.hints.length) - 1]) + '</p></div>';
+  } else if (done) {
+    if (!solved) fb += '<div class="fb miss"><p class="h">Out of attempts</p><p>The correct answer is highlighted above. Mark this one for review.</p></div>';
+    fb += '<div class="fb why"><p class="h">Why</p><p>' + esc(q.why) + '</p></div>';
+  }
+
+  $app.innerHTML =
+  '<main class="wrap">' +
+    '<div class="top"><span class="badge" aria-label="Question ' + (i+1) + ' of ' + N + '">Q ' + (i+1) + ' of ' + N + '</span>' +
+      '<div class="feed" role="progressbar" aria-label="Quiz progress" aria-valuemin="0" aria-valuemax="' + N + '" aria-valuenow="' + doneCount() + '"><i style="width:' + feed + '%"></i></div></div>' +
+    '<div class="card">' +
+      '<p class="notif"><span class="ico" aria-hidden="true">!</span><span>' + esc(sec.name) + '<small>Section ' + (q.section+1) + ' of ' + SECTIONS.length + '</small></span></p>' +
+      '<h2 class="q" id="qtext" tabindex="-1">' + esc(q.q) + '</h2>' +
+      '<div class="pips" aria-hidden="true">' + pips + '<span>' + esc(pipText) + '</span></div>' +
+      '<div class="opts" role="group" aria-labelledby="qtext">' + opts + '</div>' +
+      fb +
+      (done ? '<button type="button" class="btn" id="nextBtn">' + (i === N - 1 ? "SEE MY RESULTS →" : "NEXT QUESTION →") + '</button>' : '') +
+      '<p class="keys">Keys: 1–4 choose an answer · Enter continues</p>' +
+    '</div></main>';
+
+  if (focus === "q") document.getElementById("qtext").focus({preventScroll:false});
+  else if (focus === "next") { const b = document.getElementById("nextBtn"); if (b) b.focus(); }
+  else if (focus === "opt") { const b = $app.querySelector(".opt-btn:not(:disabled)"); if (b) b.focus(); }
+}
+
+function viewResults(){
+  const total = pct(totalCredit());
+  const fin = new Date(S.finishedAt || Date.now());
+  const when = fin.toLocaleString([], { year:"numeric", month:"short", day:"numeric", hour:"numeric", minute:"2-digit" });
+  const mins = S.startedAt && S.finishedAt ? Math.max(1, Math.round((S.finishedAt - S.startedAt) / 60000)) : 0;
+  let review = 0; for (let i = 0; i < N; i++) if (S.answers[i] && S.answers[i].attempt === 0) review++;
+  const message = total >= 90 ? "Excellent: you can see how the feed is built to hold attention."
+                : total >= 75 ? "Solid understanding. Look again at the questions marked below."
+                : total >= 50 ? "Getting there. Revisit the film moments behind your later tries."
+                : "Rewatch key scenes and talk these ideas through with " + TEACHER_LABEL + ".";
+
+  const cells = QUESTIONS.map((q,i)=>{
+    const a = S.answers[i], c = credit(i);
+    const res = (a && a.attempt > 0) ? ord(a.attempt) + " try · " + pct(c) + "%" : "Review · 0%";
+    const cls = a && a.attempt > 0 ? "c" + a.attempt : "c0";
+    return '<li class="cell ' + cls + '"><span class="a"><b>Q' + (i+1) + '</b> · ' + esc(q.tag) + '</span><span class="r">' + res + '</span></li>';
+  }).join("");
+
+  const secs = SECTIONS.map((s,k)=>{
+    const p = pct(sectionCredit(k));
+    return '<div class="sec"><div class="n"><span>' + esc(s.short) + '</span><b>' + p + '%</b></div><div class="bar"><i style="width:' + p + '%"></i></div></div>';
+  }).join("");
+
+  $app.innerHTML =
+  '<main class="res"><div class="card">' +
+    '<div class="rhead"><h1><span>// results</span>' + esc(CONFIG.QUIZ_TITLE) + ': Check for Understanding</h1>' +
+      '<div class="ids">' +
+        '<div class="nm"><b>Name:</b> ' + esc(S.name) + '</div>' +
+        '<div><b>Period:</b> ' + esc(S.period || "—") + '</div>' +
+        '<div><b>Finished:</b> ' + esc(when) + (mins ? " (" + mins + " min)" : "") + '</div>' +
+        '<div class="code"><b>Code:</b> <span>' + esc(S.code) + '</span></div>' +
+      '</div></div>' +
+    '<div class="rbody">' +
+      '<div>' +
+        '<div class="scorebox"><div class="big" aria-label="Overall score ' + total + ' percent">' + total + '<small>%</small></div>' +
+          '<p class="msg">' + esc(message) + '<em>' + (review ? review + " to review" : "Nothing to review") + '</em></p></div>' +
+        '<h2 class="rh" style="margin-top:10px">Section scores</h2><div class="secs">' + secs + '</div>' +
+      '</div>' +
+      '<div><h2 class="rh">Every question</h2><ul class="grid">' + cells + '</ul></div>' +
+    '</div>' +
+    '<p class="shot">Take a screenshot of this page and send it to ' + esc(TEACHER_LABEL) + '.</p>' +
+  '</div></main>';
+  window.scrollTo(0, 0);
+}
+
+function render(focus){
+  if (S.phase === "results") viewResults();
+  else if (S.phase === "quiz") viewQuiz(focus);
+  else viewStart();
+}
+
+/* ---- events ---- */
+$app.addEventListener("click", e => {
+  const b = e.target.closest("button");
+  if (!b) return;
+  if (b.classList.contains("opt-btn")) pick(+b.dataset.orig);
+  else if (b.id === "nextBtn") next();
+});
+document.addEventListener("keydown", e => {
+  if (S.phase !== "quiz" || e.ctrlKey || e.metaKey || e.altKey) return;
+  const t = e.target, tag = t && t.tagName;
+  if (tag === "INPUT" || tag === "TEXTAREA") return;
+  if (/^[1-4]$/.test(e.key)) {
+    const b = $app.querySelector('.opt-btn[data-pos="' + e.key + '"]');
+    if (b && !b.disabled) { e.preventDefault(); b.click(); }
+  } else if (e.key === "Enter" && tag !== "BUTTON") {
+    const nb = document.getElementById("nextBtn");
+    if (nb) { e.preventDefault(); nb.click(); }
+  }
+});
+
+render("q");
+</script>
+</body>
+</html>
