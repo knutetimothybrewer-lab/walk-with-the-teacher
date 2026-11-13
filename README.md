@@ -8,7 +8,7 @@ Every summative (`health-summative/`, `substance-use-summative/`, `unit7-nutriti
 
 ## The Social Dilemma: Check for Understanding (`social-dilemma-check/`)
 
-A single self-contained HTML file (no network, no build) for students who have just watched the documentary: 16 scenario questions in 6 sections, 3 tries each paying 100% / 75% / 50% (0% and "Review" after a third miss), hints after each miss, and a one-screen results page (score, per-question grid, section bars, 8-character completion code) built to be screenshotted and sent to the teacher. Progress is saved in the browser; open `?teacher=reset` to clear a device. Edit `TEACHER_LABEL`, `CONFIG` and `QUESTIONS` at the top of the script.
+A single self-contained HTML file (no network, no build) for students who have just watched the documentary: 20 scenario questions in 6 sections, 3 tries each paying 100% / 75% / 50% (0% and "Review" after a third miss), hints after each miss, and a one-screen results page (score, per-question grid, section bars, 8-character completion code) built to be screenshotted and sent to the teacher. Students can retake the whole assignment from the results page (two taps to confirm, new option order, results show "try 2" etc.; set `ALLOW_RETAKE: false` in `CONFIG` to turn it off). Progress is saved in the browser; open `?teacher=reset` to clear a device. Edit `TEACHER_LABEL`, `CONFIG` and `QUESTIONS` at the top of the script.
 
 Student link once GitHub Pages is on: `https://YOUR-USER.github.io/walk-with-the-teacher/social-dilemma-check/`
 

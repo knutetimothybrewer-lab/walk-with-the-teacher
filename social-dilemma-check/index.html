@@ -63,6 +63,9 @@ button,input{font:inherit;color:inherit}
 .btn{min-height:48px;padding:10px 22px;border:0;border-radius:10px;background:var(--blue);color:#04060c;font:700 1rem var(--mono);letter-spacing:.04em;cursor:pointer;box-shadow:0 0 22px rgba(47,123,255,.45);transition:transform .12s,box-shadow .12s}
 .btn:hover{box-shadow:0 0 30px rgba(63,208,255,.65);transform:translateY(-1px)}
 .btn.block{width:100%}
+.btn.ghost{background:transparent;color:var(--cyan);border:1px solid #2a3d63;box-shadow:none;font-size:.9rem}
+.btn.ghost:hover{border-color:var(--cyan);box-shadow:0 0 16px rgba(63,208,255,.35)}
+.again{max-width:1100px;margin:30px auto 0;text-align:center}
 .notice{font:.9rem var(--mono);color:var(--amber);margin:0 0 12px}
 .fine{color:var(--muted);font-size:.9rem;margin:14px 0 0}
 
@@ -100,20 +103,20 @@ button,input{font:inherit;color:inherit}
 .keys{color:var(--muted);font-size:.85rem;margin:12px 0 0;font-family:var(--mono)}
 
 /* results (compact, one screenshot) */
-.res{max-width:1100px;margin:0 auto;padding:10px 12px 14px}
-.res .card{padding:12px 14px}
-.rhead{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:4px 16px;margin:0 0 8px}
-.rhead h1{font:800 1.15rem/1.2 var(--sans);margin:0}
-.rhead h1 span{color:var(--cyan);font-family:var(--mono);font-size:.8rem;letter-spacing:.06em;display:block}
-.ids{display:grid;grid-template-columns:1fr 1fr;gap:2px 12px;font:.8rem/1.35 var(--mono);margin:0;width:100%}
+.res{max-width:1100px;margin:0 auto;padding:8px 10px 16px}
+.res .card{padding:10px 12px}
+.rhead{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:3px 16px;margin:0 0 6px}
+.rhead h1{font:800 1rem/1.2 var(--sans);margin:0;letter-spacing:-.01em}
+.rhead h1 span{color:var(--cyan);font-family:var(--mono);font-size:.8rem;letter-spacing:.06em;display:none}
+.ids{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 12px;font:.8rem/1.35 var(--mono);margin:0;width:100%}
 .ids div{min-width:0;overflow-wrap:anywhere}
 .ids b{color:var(--muted);font-weight:600}
-.ids .nm{grid-column:1/-1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ids .nm,.ids .fin{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .ids .code b{color:var(--muted)}.ids .code span{color:var(--amber);font-weight:700;letter-spacing:.08em}
 .rbody{display:grid;gap:8px}
 .scorebox{display:flex;align-items:center;gap:12px}
-.big{font:800 3.4rem/1 var(--sans);color:var(--cyan);text-shadow:0 0 22px rgba(63,208,255,.5);letter-spacing:-.03em}
-.big small{font-size:1.6rem}
+.big{font:800 3rem/1 var(--sans);color:var(--cyan);text-shadow:0 0 22px rgba(63,208,255,.5);letter-spacing:-.03em}
+.big small{font-size:1.5rem}
 .msg{font-size:.9rem;line-height:1.35;margin:0}
 .msg em{display:block;font:normal .8rem var(--mono);color:var(--muted);margin-top:2px}
 .grid{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:1fr 1fr;gap:5px}
@@ -129,19 +132,21 @@ button,input{font:inherit;color:inherit}
 .sec .n b{color:var(--cyan)}
 .bar{height:6px;border-radius:9px;background:#0e1830;border:1px solid var(--line);overflow:hidden;margin-top:3px}
 .bar i{display:block;height:100%;background:linear-gradient(90deg,var(--blue),var(--cyan))}
-.shot{margin:8px 0 0;text-align:center;font:700 .85rem/1.3 var(--mono);color:var(--amber);border:1px dashed #6a4a10;border-radius:8px;padding:6px 8px}
+.shot{margin:6px 0 0;text-align:center;font:700 .85rem/1.3 var(--mono);color:var(--amber);border:1px dashed #6a4a10;border-radius:8px;padding:6px 8px}
 .rh{font:600 .72rem/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 5px}
 
 @media (min-width:900px){
   .res{padding:14px 18px}
   .res .card{padding:16px 20px}
   .rhead{align-items:flex-end;margin-bottom:12px}
+  .rhead h1{font-size:1.15rem}
+  .rhead h1 span{display:block}
   .ids{width:auto;grid-template-columns:auto auto;gap:2px 28px;font-size:.88rem}
-  .ids .nm{grid-column:auto}
   .rbody{grid-template-columns:340px 1fr;gap:20px}
   .big{font-size:5rem}.big small{font-size:2.2rem}
   .msg{font-size:1rem}
-  .grid{gap:7px}
+  .grid{gap:7px;grid-template-columns:repeat(3,1fr)}
+  .again{margin-top:18px}
   .cell{padding:6px 10px}.cell .a{font-size:.95rem}.cell .r{font-size:.88rem}
   .secs{grid-template-columns:1fr;gap:9px;margin-top:6px}
   .sec .n{font-size:.88rem}.bar{height:8px}
@@ -176,7 +181,8 @@ const CONFIG = {
   // After this many misses with no correct answer: reveal answer, 0% credit, marked "Review".
   QUIZ_TITLE: "The Social Dilemma",
   STORAGE_KEY: "socialDilemmaCheck.v1",
-  QUIZ_VERSION: 1,           // bump this if you change the number or order of questions (clears saved progress)
+  ALLOW_RETAKE: true,       // show a "retake the whole assignment" button on the results page
+  QUIZ_VERSION: 2,           // bump this if you change the number or order of questions (clears saved progress)
   RESET_PARAM: "teacher",    // visit  index.html?teacher=reset  to clear saved progress on that device
   RESET_VALUE: "reset"
 };
@@ -275,6 +281,15 @@ const QUESTIONS = [
   hints:["The film wanted a way to make invisible software visible.",
          "Notice what they are trying to get him to do with his attention."],
   why:"The scenes personify the algorithms so viewers can “see” how the system tries to capture attention." },
+{ section:2, tag:"Feed Learning",
+  q:"A teen watches one video about a topic, and soon the feed is full of similar videos. What is the system most likely doing?",
+  correct:"Learning that this topic holds the teen's attention and serving more of it.",
+  wrong:["Checking each new video for accuracy before recommending it to the teen.",
+         "Randomly choosing new topics so the teen sees something different each time.",
+         "Following a list of safe topics the teen's parents chose for the feed."],
+  hints:["Think about what the system learns from the fact that the teen watched.",
+         "Recall what the film says the AI behind the feed is optimizing for."],
+  why:"Recommendation systems learn from each click and show more of what holds attention, because they are tuned for engagement." },
 /* ---------- Section 4: Mental Health ---------- */
 { section:3, tag:"Teen Trends",
   q:"What pattern about adolescent mental health does the film highlight?",
@@ -320,6 +335,15 @@ const QUESTIONS = [
   hints:["If each person's feed is customized, do they share the same set of facts?",
          "Consider what an engagement-driven system shows you after you click on something you agree with."],
   why:"Echo chambers and recommendation systems can deepen polarization and weaken a shared sense of reality." },
+{ section:4, tag:"Viral Post",
+  q:"A shocking, unverified post gets thousands of shares in an hour, while a careful correction gets very few. Based on the film, what will the algorithm most likely do next?",
+  correct:"Show the shocking post to even more people, since it earns more reactions.",
+  wrong:["Hold the post back until an independent fact-checker confirms it is accurate.",
+         "Push the careful correction to the top of every feed because accuracy matters most.",
+         "Treat both posts equally and show each to the same number of people."],
+  hints:["Which post earned more reactions, and what does an engagement-driven system do with reactions?",
+         "Remember the research on how fast false stories spread compared with true ones."],
+  why:"The system rewards what gets reactions, not what is accurate, so shocking content gets pushed further than careful corrections." },
 /* ---------- Section 6: Your Role and the Way Forward ---------- */
 { section:5, tag:"Real Threat",
   q:"Harris says, “It's not about the technology being the existential threat, it's the technology's ability to bring out the worst in society.” What does he mean?",
@@ -338,7 +362,25 @@ const QUESTIONS = [
          "Features meant to protect users' wellbeing are illegal under current laws."],
   hints:["Follow the money: what happens to revenue when time on the app drops?",
          "The film's experts argue we regulate other powerful industries; what might that look like here?"],
-  why:"This is the “dilemma”: profit incentives conflict with user wellbeing, which is why the film's experts call for regulation and individual habit changes (such as turning off nonessential notifications)." }
+  why:"This is the “dilemma”: profit incentives conflict with user wellbeing, which is why the film's experts call for regulation and individual habit changes (such as turning off nonessential notifications)." },
+{ section:5, tag:"Your Habits",
+  q:"After watching the film, a student wants one change that makes the app less able to pull them back in. Which choice best fits the film's suggestions?",
+  correct:"Turn off nonessential notifications so the app cannot call them back.",
+  wrong:["Check the app more often so they never miss anything their friends post.",
+         "Post more often, so that friends send them fewer messages and alerts.",
+         "Switch to a different social app that uses the same kind of alerts and feed."],
+  hints:["Which feature in the film is designed to interrupt you and bring you back?",
+         "Think about what you can control on your own phone in about a minute."],
+  why:"The film's experts suggest simple habit changes, like turning off nonessential notifications, to take back control of attention." },
+{ section:5, tag:"Both Matter",
+  q:"A classmate says, “If I just use my phone less, the problem is solved.” Which response best fits the film's overall message?",
+  correct:"Personal habits help, but the incentives behind the apps need to change too.",
+  wrong:["Yes, habits alone fix everything, so companies and regulation do not matter.",
+         "No, nothing individuals do makes any difference, so the best choice is to do nothing.",
+         "Only if everyone deletes every account, which would end the problem for good."],
+  hints:["Does the film say the problem comes only from how individual users behave?",
+         "Look back at why a company would not fix this voluntarily, and what the experts propose."],
+  why:"The dilemma is that profit incentives conflict with wellbeing, so the film pairs individual habit changes with calls for regulation and redesign." }
 ];
 
 /* =====================================================================
@@ -371,7 +413,7 @@ let resetNotice = false;
 
 function freshState(){
   const seed = (crypto && crypto.getRandomValues) ? crypto.getRandomValues(new Uint32Array(1))[0] : Math.floor(Math.random()*4294967296);
-  return { ver: CONFIG.QUIZ_VERSION, n: N, seed, phase: "start", name: "", period: "", startedAt: 0, qi: 0, answers: {}, finishedAt: 0, code: "" };
+  return { ver: CONFIG.QUIZ_VERSION, n: N, seed, phase: "start", attempt: 1, name: "", period: "", startedAt: 0, qi: 0, answers: {}, finishedAt: 0, code: "" };
 }
 function loadState(){
   try {
@@ -430,6 +472,25 @@ function pick(orig){
   save();
   render(a.done ? "next" : "opt");
   announce(msg);
+}
+let retakeArmed = false, retakeTimer = 0;
+function retake(){
+  const prev = S;
+  S = freshState();                       // new seed => new option order
+  S.name = prev.name; S.period = prev.period;
+  S.attempt = (prev.attempt || 1) + 1;
+  S.startedAt = Date.now(); S.phase = "quiz"; S.qi = 0;
+  retakeArmed = false; clearTimeout(retakeTimer);
+  save(); render("q");
+  announce("New attempt started. Question 1 of " + N + ".");
+}
+function armRetake(btn){
+  if (!retakeArmed) {
+    retakeArmed = true;
+    btn.textContent = "TAP AGAIN TO ERASE THESE RESULTS AND START OVER";
+    announce("Tap the button again to erase these results and start over.");
+    retakeTimer = setTimeout(() => { retakeArmed = false; const b = document.getElementById("retakeBtn"); if (b) b.textContent = "RETAKE THE WHOLE ASSIGNMENT"; }, 6000);
+  } else retake();
 }
 function next(){
   const a = S.answers[S.qi];
@@ -539,7 +600,7 @@ function viewQuiz(focus){
 function viewResults(){
   const total = pct(totalCredit());
   const fin = new Date(S.finishedAt || Date.now());
-  const when = fin.toLocaleString([], { year:"numeric", month:"short", day:"numeric", hour:"numeric", minute:"2-digit" });
+  const when = fin.toLocaleString([], { dateStyle:"short", timeStyle:"short" });
   const mins = S.startedAt && S.finishedAt ? Math.max(1, Math.round((S.finishedAt - S.startedAt) / 60000)) : 0;
   let review = 0; for (let i = 0; i < N; i++) if (S.answers[i] && S.answers[i].attempt === 0) review++;
   const message = total >= 90 ? "Excellent: you can see how the feed is built to hold attention."
@@ -560,24 +621,26 @@ function viewResults(){
   }).join("");
 
   $app.innerHTML =
-  '<main class="res"><div class="card">' +
+  '<main class="res"><div class="card" id="resCard">' +
     '<div class="rhead"><h1><span>// results</span>' + esc(CONFIG.QUIZ_TITLE) + ': Check for Understanding</h1>' +
       '<div class="ids">' +
         '<div class="nm"><b>Name:</b> ' + esc(S.name) + '</div>' +
-        '<div><b>Period:</b> ' + esc(S.period || "—") + '</div>' +
-        '<div><b>Finished:</b> ' + esc(when) + (mins ? " (" + mins + " min)" : "") + '</div>' +
+        '<div class="pd"><b>Period:</b> ' + esc(S.period || "—") + '</div>' +
+        '<div class="fin"><b>Done:</b> ' + esc(when) + '</div>' +
         '<div class="code"><b>Code:</b> <span>' + esc(S.code) + '</span></div>' +
       '</div></div>' +
     '<div class="rbody">' +
       '<div>' +
         '<div class="scorebox"><div class="big" aria-label="Overall score ' + total + ' percent">' + total + '<small>%</small></div>' +
-          '<p class="msg">' + esc(message) + '<em>' + (review ? review + " to review" : "Nothing to review") + '</em></p></div>' +
+          '<p class="msg">' + esc(message) + '<em>' + [(review ? review + " to review" : "Nothing to review"), mins ? mins + " min" : "", (S.attempt > 1 ? "try " + S.attempt : "")].filter(Boolean).join(" · ") + '</em></p></div>' +
         '<h2 class="rh" style="margin-top:10px">Section scores</h2><div class="secs">' + secs + '</div>' +
       '</div>' +
       '<div><h2 class="rh">Every question</h2><ul class="grid">' + cells + '</ul></div>' +
     '</div>' +
     '<p class="shot">Take a screenshot of this page and send it to ' + esc(TEACHER_LABEL) + '.</p>' +
-  '</div></main>';
+  '</div>' +
+  (CONFIG.ALLOW_RETAKE ? '<div class="again"><button type="button" class="btn ghost" id="retakeBtn">RETAKE THE WHOLE ASSIGNMENT</button></div>' : '') +
+  '</main>';
   window.scrollTo(0, 0);
 }
 
@@ -593,6 +656,7 @@ $app.addEventListener("click", e => {
   if (!b) return;
   if (b.classList.contains("opt-btn")) pick(+b.dataset.orig);
   else if (b.id === "nextBtn") next();
+  else if (b.id === "retakeBtn") armRetake(b);
 });
 document.addEventListener("keydown", e => {
   if (S.phase !== "quiz" || e.ctrlKey || e.metaKey || e.altKey) return;
