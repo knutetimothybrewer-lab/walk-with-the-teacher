@@ -125,6 +125,7 @@ button,input{font:inherit;color:inherit}
 .cell.c0 .r{color:#ff7a70;font-weight:700}
 .secs{display:grid;grid-template-columns:1fr 1fr;gap:6px 12px;margin:0}
 .sec .n{display:flex;justify-content:space-between;gap:6px;font:.8rem/1.2 var(--mono)}
+.sec .n span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
 .sec .n b{color:var(--cyan)}
 .bar{height:6px;border-radius:9px;background:#0e1830;border:1px solid var(--line);overflow:hidden;margin-top:3px}
 .bar i{display:block;height:100%;background:linear-gradient(90deg,var(--blue),var(--cyan))}
@@ -182,8 +183,8 @@ const CONFIG = {
 
 const SECTIONS = [
   { name: "The Business Model",                   short: "Business Model" },
-  { name: "Persuasive Design",                    short: "Persuasive Design" },
-  { name: "Algorithms and Data",                  short: "Algorithms & Data" },
+  { name: "Persuasive Design",                    short: "Persuasion" },
+  { name: "Algorithms and Data",                  short: "Algorithms" },
   { name: "Mental Health",                        short: "Mental Health" },
   { name: "Misinformation and Polarization",      short: "Misinformation" },
   { name: "Your Role and the Way Forward",        short: "Way Forward" }
