@@ -1,0 +1,1107 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; img-src data:; base-uri 'none'; form-action 'none'">
+<meta name="color-scheme" content="light">
+<title>Emotional Health Expedition</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M2 28 L12 10 L18 20 L22 14 L30 28Z' fill='%232f7d5b'/%3E%3Ccircle cx='24' cy='7' r='4' fill='%23f2b33d'/%3E%3C/svg%3E">
+<style>
+:root{
+  --ink:#1d2b2a; --muted:#5b6b69; --line:#d9e2df; --card:#ffffff; --soft:#f4f8f6;
+  --green:#2f7d5b; --green2:#e3f3ea; --blue:#2c6fb7; --blue2:#e5effa;
+  --amber:#b7791f; --amber2:#fdf3df; --red:#c0392b; --red2:#fbe6e3;
+  --purple:#6b4fa8; --purple2:#efe9fa;
+  --sky1:#bfe3f5; --sky2:#f6efe0;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --serif:Georgia,"Times New Roman",serif;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;min-height:100vh;color:var(--ink);font:16px/1.55 var(--sans);
+  background:linear-gradient(180deg,var(--sky1) 0%,#dcefef 45%,var(--sky2) 100%);background-attachment:fixed;overflow-x:hidden}
+button,input,select{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+.sr-only{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}
+
+/* scenery */
+#scenery{position:fixed;inset:auto 0 0 0;height:42vh;pointer-events:none;z-index:0}
+#scenery svg{width:100%;height:100%;display:block}
+.cloud{position:fixed;top:0;left:-200px;width:160px;height:50px;pointer-events:none;z-index:0;opacity:.85;animation:drift linear infinite}
+.cloud::before,.cloud::after{content:"";position:absolute;background:#fff;border-radius:50%}
+.cloud::before{width:90px;height:50px;left:20px;top:0}.cloud::after{width:120px;height:36px;left:0;top:18px;border-radius:30px}
+@keyframes drift{to{transform:translateX(calc(100vw + 400px))}}
+
+/* layout */
+.top{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.88);backdrop-filter:blur(6px);border-bottom:1px solid var(--line)}
+.top .in{max-width:1080px;margin:0 auto;padding:8px 16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.brand{font-weight:800;letter-spacing:.01em;display:flex;align-items:center;gap:8px}
+.brand svg{width:26px;height:26px}
+.prog{flex:1;min-width:140px;display:flex;align-items:center;gap:8px;font-size:.85rem;color:var(--muted)}
+.bar{flex:1;height:10px;background:#e6ecea;border-radius:99px;overflow:hidden}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--green),#5bb98c);border-radius:99px;transition:width .6s}
+.helpbtn{background:var(--red);color:#fff;border:0;border-radius:99px;padding:6px 14px;font-weight:700;cursor:pointer;font-size:.9rem}
+.guidebtn{background:var(--blue2);color:var(--blue);border:1px solid #c6d9ef;border-radius:99px;padding:6px 14px;font-weight:700;cursor:pointer;font-size:.9rem}
+main{position:relative;z-index:1;max-width:1080px;margin:0 auto;padding:18px 16px 80px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px;box-shadow:0 8px 30px rgba(30,60,50,.10)}
+h1,h2,h3{line-height:1.2;margin:0 0 .5em}
+h1{font-size:clamp(1.6rem,4vw,2.4rem)}
+h2{font-size:1.35rem}
+h3{font-size:1.08rem}
+p{margin:0 0 .8em}
+.muted{color:var(--muted)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:12px;padding:12px 20px;font-weight:700;cursor:pointer;background:var(--green);color:#fff;box-shadow:0 3px 0 #1f5a40;transition:transform .1s}
+.btn:active{transform:translateY(2px);box-shadow:0 1px 0 #1f5a40}
+.btn[disabled]{background:#a9b8b3;box-shadow:0 3px 0 #8a9893;cursor:not-allowed}
+.btn.ghost{background:#fff;color:var(--green);border:2px solid var(--green);box-shadow:none}
+.btn.blue{background:var(--blue);box-shadow:0 3px 0 #1d4f85}
+.row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+.grid2{display:grid;grid-template-columns:300px 1fr;gap:18px;align-items:start}
+@media (max-width:820px){.grid2{grid-template-columns:1fr}}
+.pill{display:inline-block;padding:2px 10px;border-radius:99px;font-size:.78rem;font-weight:700;background:var(--soft);border:1px solid var(--line);color:var(--muted)}
+.dots{display:inline-flex;gap:3px;vertical-align:middle}.dots b{width:9px;height:9px;border-radius:50%;background:#d5dedb}.dots b.on{background:var(--amber)}
+input[type=text]{width:100%;padding:12px 14px;border:2px solid var(--line);border-radius:12px;background:#fff}
+input[type=text]:focus{border-color:var(--green);outline:none}
+label.f{display:block;font-weight:700;margin:12px 0 4px}
+.fade{animation:fade .45s ease}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+/* start */
+.hero{display:grid;grid-template-columns:1.2fr 1fr;gap:22px;align-items:center}
+@media (max-width:820px){.hero{grid-template-columns:1fr}}
+.heroart svg{width:100%;height:auto;display:block}
+.howto{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:14px 0}
+@media (max-width:600px){.howto{grid-template-columns:1fr}}
+.howto div{background:var(--soft);border:1px solid var(--line);border-radius:12px;padding:10px 12px;font-size:.92rem}
+.howto b{display:block;font-size:1rem}
+
+/* flip cards */
+.flips{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+@media (max-width:760px){.flips{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:460px){.flips{grid-template-columns:1fr}}
+.flip{perspective:900px;height:200px;cursor:pointer;border:0;background:none;padding:0;text-align:left}
+.flip .inner{position:relative;width:100%;height:100%;transition:transform .6s;transform-style:preserve-3d}
+.flip.on .inner{transform:rotateY(180deg)}
+.flip .face{position:absolute;inset:0;backface-visibility:hidden;border-radius:16px;padding:14px;display:flex;flex-direction:column;border:2px solid var(--line)}
+.flip .front{background:#fff;align-items:center;justify-content:center;text-align:center}
+.flip .front .ic{font-size:2.4rem}
+.flip .front b{font-size:1.2rem}
+.flip .back{transform:rotateY(180deg);background:var(--soft);font-size:.88rem;overflow:auto}
+.flip .back b{font-size:1rem;margin-bottom:4px}
+.flip .back ul{margin:0;padding-left:18px}
+.diisrow{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:12px 0}
+@media (max-width:760px){.diisrow{grid-template-columns:repeat(2,1fr)}}
+.diisrow div{border-radius:14px;padding:12px;background:var(--blue2);border:1px solid #c6d9ef}
+.diisrow .big{font-size:1.8rem;font-weight:900;color:var(--blue);line-height:1}
+
+/* map */
+.mapwrap{position:relative}
+.map svg{width:100%;height:auto;display:block;border-radius:16px}
+.stop{cursor:pointer}
+.stop circle.c{transition:r .2s}
+.stop:hover circle.c{r:19}
+.stop.locked{cursor:not-allowed}
+#hiker{transition:transform 1.4s cubic-bezier(.5,0,.3,1)}
+.hikerbob{animation:bob 1s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(-4px)}}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:.85rem;color:var(--muted);margin-top:10px}
+.legend span::before{content:"";display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:5px;vertical-align:-1px;background:var(--c)}
+
+/* stage */
+.stagehead{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:14px;padding:14px 18px;border-radius:18px;color:#fff;background:var(--region);box-shadow:0 8px 30px rgba(30,60,50,.15)}
+.stagehead h2{margin:0;font-size:1.3rem}
+.stagehead .pill{background:rgba(255,255,255,.2);border-color:rgba(255,255,255,.35);color:#fff}
+.stagehead .dots b{background:rgba(255,255,255,.35)}.stagehead .dots b.on{background:#ffd166}
+.person{text-align:center;position:sticky;top:70px}
+@media (max-width:820px){.person{position:static}}
+.avbox{position:relative;cursor:pointer;border:0;background:none;padding:0;width:100%;max-width:240px;margin:0 auto;display:block}
+.avbox svg{width:100%;height:auto;display:block}
+.bubble{position:relative;background:#fff;border:2px solid var(--line);border-radius:16px;padding:10px 12px;font-size:.92rem;font-style:italic;margin:0 auto 10px;max-width:260px;min-height:48px;display:flex;align-items:center;justify-content:center}
+.bubble::after{content:"";position:absolute;bottom:-10px;left:50%;margin-left:-8px;border:8px solid transparent;border-top-color:#fff;border-bottom:0}
+.bubble.pop{animation:pop .35s}
+@keyframes pop{0%{transform:scale(.85)}60%{transform:scale(1.05)}100%{transform:scale(1)}}
+.tapme{font-size:.8rem;color:var(--muted)}
+.profile{margin-top:8px}
+.profile b{font-size:1.15rem}
+.steps{display:flex;gap:6px;flex-wrap:wrap;margin:12px 0 0;justify-content:center}
+.steps span{font-size:.75rem;font-weight:700;padding:3px 9px;border-radius:99px;background:#eef2f1;color:var(--muted);border:1px solid var(--line)}
+.steps span.cur{background:var(--amber2);color:var(--amber);border-color:#f0d9a8}
+.steps span.ok{background:var(--green2);color:var(--green);border-color:#bfe2cf}
+
+/* blog */
+.blog{background:#fffdf8;border:1px solid #eadfcb;border-radius:18px;overflow:hidden;box-shadow:0 8px 30px rgba(60,50,30,.10)}
+.blog .bhead{display:flex;align-items:center;gap:10px;padding:12px 16px;background:#fff;border-bottom:1px solid #eee3d0}
+.blog .bhead .mini{width:40px;height:40px;border-radius:50%;overflow:hidden;background:#eef}
+.blog .bhead .mini svg{width:100%;height:100%}
+.blog .bhead .who b{display:block;line-height:1.1}
+.blog .bhead .who small{color:var(--muted)}
+.blog .bbody{padding:16px 20px;font-family:var(--serif);font-size:1.04rem;line-height:1.7}
+.blog .bbody h3{font-family:var(--sans);font-size:1.25rem;margin-bottom:.6em}
+.blog .bfoot{display:flex;gap:14px;align-items:center;padding:10px 18px;border-top:1px solid #eee3d0;background:#fff;font-size:.9rem;color:var(--muted);flex-wrap:wrap}
+.heart{border:1px solid var(--line);background:#fff;border-radius:99px;padding:4px 12px;cursor:pointer}
+.heart.on{color:#d6336c;border-color:#f3b6cb;background:#fff0f5}
+.comment{padding:10px 18px 14px;background:#fff;font-size:.92rem;border-top:1px dashed #eee3d0}
+.comment b{color:var(--blue)}
+.s{border-radius:6px;transition:background .2s,box-shadow .2s;padding:1px 2px;margin:0 -2px}
+.tagging .s{cursor:pointer;background:rgba(44,111,183,.06);box-shadow:inset 0 -2px 0 rgba(44,111,183,.25)}
+.tagging .s:hover{background:rgba(44,111,183,.14)}
+.s.sel{background:#ffe9a8!important;box-shadow:inset 0 -2px 0 var(--amber)!important}
+.s.no{text-decoration:line-through;text-decoration-color:var(--red);opacity:.55;cursor:not-allowed}
+.s.clue{background:#d9f2e4;box-shadow:inset 0 -2px 0 var(--green)}
+.p2post{border:2px solid var(--purple);}
+.p2post .bhead{background:var(--purple2)}
+.oldpost{margin-top:12px}
+details.reread{margin-top:12px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:10px 14px}
+details.reread summary{cursor:pointer;font-weight:700;color:var(--blue)}
+details.reread .bbody{padding:10px 0 0;font-family:var(--serif)}
+
+/* task */
+.task{margin-top:18px}
+.task .q{font-weight:700;font-size:1.08rem}
+.attempt{display:inline-flex;gap:6px;align-items:center;font-size:.85rem;color:var(--muted);margin-left:8px}
+.attempt i{width:12px;height:12px;border-radius:50%;background:#dfe6e3;display:inline-block}
+.attempt i.used{background:var(--red)}
+.attempt i.won{background:var(--green)}
+.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:12px 0}
+@media (max-width:600px){.tiles{grid-template-columns:repeat(2,1fr)}}
+.tile{border:2px solid var(--line);background:#fff;border-radius:14px;padding:14px 10px;cursor:pointer;text-align:center;font-weight:700;transition:transform .12s,border-color .12s}
+.tile:hover:not([disabled]){transform:translateY(-2px);border-color:var(--blue)}
+.tile .ic{font-size:1.7rem;display:block}
+.tile.sel{border-color:var(--blue);background:var(--blue2)}
+.tile[disabled]{opacity:.4;cursor:not-allowed;text-decoration:line-through}
+.tile.right{border-color:var(--green);background:var(--green2);opacity:1;text-decoration:none}
+.opts{display:grid;gap:8px;margin:12px 0}
+.opt{border:2px solid var(--line);background:#fff;border-radius:12px;padding:12px 14px;cursor:pointer;text-align:left}
+.opt:hover:not([disabled]){border-color:var(--blue)}
+.opt.sel{border-color:var(--blue);background:var(--blue2)}
+.opt[disabled]{opacity:.45;cursor:not-allowed;text-decoration:line-through}
+.opt.right{border-color:var(--green);background:var(--green2);opacity:1;text-decoration:none}
+.diis{display:grid;gap:12px;margin:12px 0}
+.drow{border:2px solid var(--line);border-radius:14px;padding:10px 12px;background:#fff}
+.drow.bad{border-color:var(--red);background:var(--red2)}
+.drow.good{border-color:var(--green);background:var(--green2)}
+.drow h4{margin:0 0 6px;font-size:.98rem;display:flex;align-items:center;gap:8px}
+.drow h4 .L{display:inline-grid;place-items:center;width:26px;height:26px;border-radius:8px;background:var(--blue);color:#fff;font-weight:900}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:2px solid var(--line);background:#fff;border-radius:99px;padding:6px 12px;cursor:pointer;font-size:.9rem}
+.chip:hover:not([disabled]){border-color:var(--blue)}
+.chip.sel{border-color:var(--blue);background:var(--blue);color:#fff}
+.chip.right{border-color:var(--green);background:var(--green);color:#fff}
+.chip[disabled]{cursor:default}
+.rowhint{font-size:.86rem;margin-top:6px;color:#7d2a20}
+.sorts{display:grid;gap:10px;margin:12px 0}
+.scard{border:2px solid var(--line);border-radius:14px;padding:10px 12px;background:#fff;display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;transition:border-color .2s,background .2s}
+@media (max-width:640px){.scard{grid-template-columns:1fr}}
+.scard.b0{border-color:#9fd3b6;background:#f3fbf6}.scard.b1{border-color:#efd08f;background:#fffaf0}.scard.b2{border-color:#eca79e;background:#fff4f2}
+.scard.bad{box-shadow:0 0 0 3px var(--red)}
+.scard .why{grid-column:1/-1;font-size:.86rem;color:var(--muted)}
+.bins{display:flex;gap:6px;flex-wrap:wrap}
+.bin{border:2px solid var(--line);background:#fff;border-radius:10px;padding:6px 10px;cursor:pointer;font-size:.85rem;font-weight:700}
+.bin.k0.sel{background:var(--green);border-color:var(--green);color:#fff}
+.bin.k1.sel{background:var(--amber);border-color:var(--amber);color:#fff}
+.bin.k2.sel{background:var(--red);border-color:var(--red);color:#fff}
+.bin[disabled]{cursor:default}
+.tally{display:flex;gap:10px;flex-wrap:wrap;font-size:.88rem}
+.tally span{padding:4px 10px;border-radius:99px;font-weight:700}
+.fb{margin-top:14px;border-radius:14px;padding:14px 16px;animation:fade .35s}
+.fb.good{background:var(--green2);border:2px solid #a9dbbf}
+.fb.bad{background:var(--amber2);border:2px solid #f0d9a8}
+.fb.reveal{background:var(--blue2);border:2px solid #c6d9ef}
+.fb h4{margin:0 0 6px;font-size:1.02rem}
+.shake{animation:shake .4s}
+@keyframes shake{20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
+.stagedone{text-align:center;padding:26px}
+.stagedone .badge{font-size:3rem;animation:pop .6s}
+.safety{margin-top:14px;border-left:5px solid var(--red);background:var(--red2);padding:10px 14px;border-radius:10px;font-size:.92rem}
+
+/* modal */
+.modal{position:fixed;inset:0;z-index:100;background:rgba(20,30,30,.55);display:flex;align-items:center;justify-content:center;padding:16px}
+.modal .card{max-width:640px;width:100%;max-height:88vh;overflow:auto;position:relative}
+.modal .x{position:absolute;top:10px;right:12px;border:0;background:var(--soft);border-radius:50%;width:36px;height:36px;font-size:1.2rem;cursor:pointer}
+.gtable{width:100%;border-collapse:collapse;font-size:.9rem}
+.gtable td,.gtable th{border-bottom:1px solid var(--line);padding:6px 4px;text-align:left;vertical-align:top}
+.hotline{display:grid;gap:8px;margin:10px 0}
+.hotline div{background:var(--soft);border-radius:12px;padding:10px 12px;border:1px solid var(--line)}
+.hotline b{font-size:1.1rem}
+
+/* results */
+.results{max-width:820px;margin:0 auto}
+.rtop{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:flex-start}
+.stamp{display:inline-block;border:4px solid var(--green);color:var(--green);font-weight:900;font-size:1.4rem;padding:6px 16px;border-radius:12px;transform:rotate(-4deg);letter-spacing:.06em}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:16px 0}
+@media (max-width:640px){.kpis{grid-template-columns:repeat(2,1fr)}}
+.kpis div{background:var(--soft);border:1px solid var(--line);border-radius:14px;padding:10px 12px}
+.kpis b{display:block;font-size:1.5rem;line-height:1.1}
+.kpis small{color:var(--muted)}
+.rtable{width:100%;border-collapse:collapse;font-size:.9rem}
+.rtable th,.rtable td{padding:6px 6px;border-bottom:1px solid var(--line);text-align:left}
+.rtable td.c{text-align:center}
+.mark{display:inline-grid;place-items:center;min-width:26px;height:26px;border-radius:8px;font-weight:800;font-size:.8rem;padding:0 4px}
+.mark.a1{background:var(--green);color:#fff}.mark.a2{background:#6fbf93;color:#fff}.mark.a3{background:var(--amber);color:#fff}.mark.a0{background:#cfd8d5;color:#445}
+.shot{margin-top:16px;padding:14px;border-radius:14px;background:#fff7d6;border:2px dashed var(--amber);font-weight:700;text-align:center}
+.rgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media (max-width:700px){.rgrid{grid-template-columns:1fr}}
+.code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:1.1rem;letter-spacing:.12em;background:#1d2b2a;color:#fff;padding:4px 10px;border-radius:8px}
+
+/* avatar animation */
+.av .body{transform-origin:100px 240px;transform-box:view-box;animation:breathe 4s ease-in-out infinite}
+.av .head{transform-origin:100px 150px;transform-box:view-box}
+.av .eyes{transform-origin:center;transform-box:fill-box;animation:blink 5s infinite}
+@keyframes breathe{50%{transform:scale(1.025,1.015)}}
+@keyframes blink{0%,46%,50%,100%{transform:scaleY(1)}48%{transform:scaleY(.1)}}
+.m-stress .head{animation:throb 2.2s ease-in-out infinite}
+.m-stress .steam{animation:steam 1.6s ease-in-out infinite}
+@keyframes throb{50%{transform:rotate(-2deg)}}
+@keyframes steam{0%{opacity:0;transform:translateY(6px)}50%{opacity:1}100%{opacity:0;transform:translateY(-10px)}}
+.m-panic .body{animation:breathe .6s ease-in-out infinite}
+.m-panic .head{animation:tremble .14s linear infinite}
+@keyframes tremble{25%{transform:translate(1.4px,0)}75%{transform:translate(-1.4px,.5px)}}
+.m-grief .head{transform:rotate(4deg) translateY(4px);animation:sway 6s ease-in-out infinite}
+@keyframes sway{50%{transform:rotate(1deg) translateY(2px)}}
+.tear{animation:tear 3.4s ease-in infinite}
+@keyframes tear{0%,40%{opacity:0;transform:translateY(0)}50%{opacity:1}100%{opacity:0;transform:translateY(26px)}}
+.m-anx .pupils{animation:dart 2.6s steps(1) infinite}
+@keyframes dart{0%{transform:translateX(0)}25%{transform:translateX(-3px)}50%{transform:translateX(3px)}75%{transform:translateX(-2px)}}
+.m-anx .head{animation:fidget 1.3s ease-in-out infinite}
+@keyframes fidget{50%{transform:translate(1px,-1px) rotate(1deg)}}
+.m-dep{filter:saturate(.45)}
+.m-dep .body{animation:breathe 7s ease-in-out infinite}
+.m-dep .head{transform:translateY(6px) rotate(-3deg)}
+.m-dist .mA{animation:mixA 4s infinite}.m-dist .mB{animation:mixB 4s infinite}
+@keyframes mixA{0%,45%{opacity:1}50%,95%{opacity:0}100%{opacity:1}}
+@keyframes mixB{0%,45%{opacity:0}50%,95%{opacity:1}100%{opacity:0}}
+.m-dist .head{animation:throb 3s ease-in-out infinite}
+.sweat{animation:tear 2s ease-in infinite}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+@media print{#scenery,.cloud,.top{display:none}}
+</style>
+</head>
+<body>
+<div id="scenery" aria-hidden="true">
+<svg viewBox="0 0 1440 400" preserveAspectRatio="none">
+  <path d="M0 230 L160 120 L300 210 L470 70 L640 200 L800 100 L980 220 L1150 90 L1300 190 L1440 130 L1440 400 L0 400Z" fill="#9fc3c0" opacity=".55"/>
+  <path d="M0 290 Q200 210 380 270 T760 260 T1120 250 T1440 240 L1440 400 L0 400Z" fill="#7fb59a" opacity=".7"/>
+  <path d="M0 340 Q240 290 520 330 T1020 320 T1440 310 L1440 400 L0 400Z" fill="#5d9c78"/>
+</svg>
+</div>
+<div class="cloud" style="top:8vh;animation-duration:70s"></div>
+<div class="cloud" style="top:20vh;animation-duration:95s;animation-delay:-40s;transform:scale(.7)"></div>
+<div class="cloud" style="top:13vh;animation-duration:120s;animation-delay:-80s"></div>
+
+<header class="top"><div class="in">
+  <div class="brand"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M2 28 L12 10 L18 20 L22 14 L30 28Z" fill="#2f7d5b"/><circle cx="24" cy="7" r="4" fill="#f2b33d"/></svg>Emotional Health Expedition</div>
+  <div class="prog" id="prog"></div>
+  <button class="guidebtn" data-act="guide" type="button">Field Guide</button>
+  <button class="helpbtn" data-act="help" type="button">Need help now?</button>
+</div></header>
+<main id="app" tabindex="-1"></main>
+<div id="live" class="sr-only" aria-live="polite"></div>
+<div id="modal"></div>
+
+<script>
+"use strict";
+/* ======================= TEACHER SETTINGS ======================= */
+const CONFIG = {
+  TITLE: "Emotional Health Expedition",
+  SUBMIT_TO: "Schoology",                 // shown on the results page
+  CREDIT: [1, 0.75, 0.5],                 // credit on try 1 / 2 / 3; 0 after a third miss
+  STORAGE_KEY: "ehx-progress-v1",
+  RESET_PARAM: "teacher", RESET_VALUE: "reset"   // open ?teacher=reset to clear a device
+};
+
+/* ======================= CONTENT ======================= */
+const CONDS = [
+  {k:"stress",  name:"Stress",  ic:"🌩️", signs:["Irritability","Sleep difficulty","Headaches","Muscle tension","Trouble concentrating","Eating changes"], note:"A response to a specific pressure or demand. Usually eases when the pressure ends."},
+  {k:"anxiety", name:"Anxiety", ic:"🌀", signs:["Excessive worry","Restlessness","Avoidance","Racing heart","Fast breathing","Seeking reassurance"], note:"Worry that is bigger than the situation, often about many things, and that keeps going."},
+  {k:"depression",name:"Depression",ic:"🌧️", signs:["Sadness","Hopelessness","Withdrawal","Low energy","Sleep changes","Appetite changes","Loss of interest"], note:"A low mood most of the day, most days, for two weeks or more."},
+  {k:"panic",   name:"Panic",   ic:"⚡", signs:["Racing heart","Shortness of breath","Dizziness","Shaking","Feeling of losing control","Fear of it happening again"], note:"A sudden rush of intense fear that peaks within minutes."},
+  {k:"grief",   name:"Grief",   ic:"🕊️", signs:["Sadness","Anger","Guilt","Numbness","Difficulty concentrating","Longing","Comes in waves"], note:"A natural reaction to a loss. Feelings come and go in waves."},
+  {k:"distress",name:"Emotional Distress",ic:"🌊", signs:["Overwhelmed by demands","Irritability","Tearfulness","Difficulty coping","Mixed signals","Doesn't fit one category"], note:"Feeling overwhelmed and unable to cope, with mixed signs that don't fit one category."}
+];
+const DIIS = [
+  {L:"D", name:"Duration", ask:"How long has it lasted?", opts:["Minutes — hits suddenly and peaks fast","A few days — tied to one specific upcoming event","Two weeks or longer — present most days","Comes and goes in waves after a loss"]},
+  {L:"I", name:"Intensity", ask:"How strong is it?", opts:["Mild — noticeable but manageable","Moderate — hard, but still coping","Severe — overwhelming; can't cope"]},
+  {L:"I", name:"Interference", ask:"How much does it get in the way of daily life?", opts:["Little to none — daily life mostly normal","Some — one or two areas affected","Major — school, relationships and routines all affected"]},
+  {L:"S", name:"Safety", ask:"Is anyone's safety at risk?", opts:["No safety concern","Possible concern — check in and tell a trusted adult","Clear concern — get help right away"]}
+];
+const BINS = [
+  {k:0, name:"Protective", short:"Protective", ic:"🛡️", c:"var(--green)", def:"Things that help a person cope and stay safe: supportive people, healthy coping skills, activities they enjoy, getting help."},
+  {k:1, name:"Warning sign", short:"Warning", ic:"⚠️", c:"var(--amber)", def:"Changes that show someone is struggling. Check in with them and tell a trusted adult soon."},
+  {k:2, name:"Red flag", short:"Red flag", ic:"🚩", c:"var(--red)", def:"Signs that someone's safety or health is in danger now. Get an adult or medical professional immediately — never keep it secret."}
+];
+const REGIONS = [
+  {n:"Sunrise Meadow",   g:"linear-gradient(120deg,#3f9a6b,#7cc47f)"},
+  {n:"Rushing River",    g:"linear-gradient(120deg,#2a7fb0,#58b6d8)"},
+  {n:"Willow Grove",     g:"linear-gradient(120deg,#5c7d4a,#93a86a)"},
+  {n:"Whispering Woods", g:"linear-gradient(120deg,#2d5e48,#4f8a6a)"},
+  {n:"Fog Hollow",       g:"linear-gradient(120deg,#5a6b78,#8c9aa6)"},
+  {n:"Storm Pass",       g:"linear-gradient(120deg,#3d3f66,#6b5f9c)"},
+  {n:"Lookout Point",    g:"linear-gradient(120deg,#b06a2c,#e0a050)"},
+  {n:"Switchback Trail", g:"linear-gradient(120deg,#8a5a3c,#c48b5c)"},
+  {n:"Cedar Ridge",      g:"linear-gradient(120deg,#6a4a7a,#a07ab5)"},
+  {n:"Boulder Field",    g:"linear-gradient(120deg,#5f5a55,#948b80)"},
+  {n:"Cliffside Path",   g:"linear-gradient(120deg,#7a3b3b,#b5605a)"},
+  {n:"Summit Ridge",     g:"linear-gradient(120deg,#26354f,#4b6690)"}
+];
+
+/* People. In each blog, c:1 marks a sentence that is a sign of the condition. */
+const PEOPLE = [
+{ name:"Jordan Reyes", age:16, handle:"@jordan.runs", mood:"m-stress", cond:"stress",
+  look:{skin:"#c98e62", hair:"#2b1d14", style:"short", shirt:"#e07a3f"},
+  bio:"Junior · cross-country · works at Grill Masters",
+  thoughts:["Five more days. Five more days.","Where did I put my learner's permit?","Formulas, then work, then sleep. Maybe.","Why is everyone so LOUD today?"],
+  blog:{ title:"Running on Fumes (Finals Week Edition)", date:"Sunday, 11:48 PM",
+    paras:[
+      [{t:"Okay, so finals start Monday, my driver's test is Wednesday, and my manager put me on four closing shifts this week."},
+       {t:"I made a color-coded schedule and I'm actually sticking to it, mostly."}],
+      [{t:"I've snapped at my little brother twice today for literally just breathing near me.",c:1},
+       {t:"My shoulders feel like they're up by my ears, and I've had a headache every afternoon since Thursday.",c:1},
+       {t:"Last night I lay in bed going over chemistry formulas until almost 2 a.m.",c:1},
+       {t:"I've been living on vending-machine chips because I keep forgetting to eat real meals.",c:1},
+       {t:"I read the same page of my history notes three times and still couldn't tell you what it said.",c:1}],
+      [{t:"I still went to practice and laughed a ton with the team, which helped."},
+       {t:"My grades are fine so far, and I'm keeping up at work — just slower than usual."},
+       {t:"Honestly, it's a lot, but it's manageable, and I know it all ends Friday."},
+       {t:"Mom says once Friday hits I'm sleeping for twelve hours, and that sounds perfect."}]
+    ],
+    comment:{who:"@coach_d", t:"Proud of you for still showing up. Hydrate, eat a real dinner, and get some sleep, Reyes!"} },
+  need:2,
+  clueHints:["Look for changes in Jordan's body, sleep, eating, mood, or focus — not the list of things on Jordan's schedule.","The second paragraph is packed with signs. The schedule and the jokes at practice are not signs."],
+  idHints:["Is there one specific pressure causing this? Does Jordan expect it to end soon?","Irritability, headaches, tension, sleep trouble and eating changes, all tied to finals week, point to one condition."],
+  idExplain:"<b>Stress.</b> Jordan has a clear, specific pressure (finals, a driver's test, extra shifts) and classic stress signs: irritability, headaches, tension, poor sleep, skipped meals and trouble focusing. Jordan expects it to end on Friday.",
+  diis:[1,0,1,0],
+  diisHints:["Jordan's signs started this week and are tied to one event that ends Friday.","Jordan says \"it's a lot, but it's manageable.\"","Sleep and focus are affected, but practice, grades and work are still going fine.","Nothing in the post suggests anyone is in danger."],
+  diisExplain:"<b>D:</b> a few days, tied to finals. <b>I:</b> mild (\"manageable\"). <b>I:</b> some (sleep and focus), but school, work and friends are still on track. <b>S:</b> no safety concern.",
+  p2:{ date:"Two weeks later", title:"Finals: survived. (One scary thing though.)",
+    paras:["Finals are DONE and I passed my driver's test!! My mom made my favorite dinner to celebrate and we watched movies all night.",
+      "Real talk though: last Thursday at work I'd had four energy drinks and no food all day. My chest started hurting, everything went gray, and I almost fainted behind the counter. I didn't tell anyone because I didn't want to make it a big deal.",
+      "My headaches are still kind of hanging around, and I'm still snappy with my brother sometimes. Coach says I can take a recovery week from practice."],
+    cards:[
+      {t:"Made a study schedule and stuck to it", b:0, why:"Planning ahead is a healthy coping skill."},
+      {t:"Mom checks in and cooked a celebration dinner", b:0, why:"A supportive family member is a strong protective factor."},
+      {t:"Coach offered a recovery week from practice", b:0, why:"A caring adult who notices and helps is protective."},
+      {t:"Still snapping at his little brother", b:1, why:"Lasting irritability is a warning sign to keep an eye on."},
+      {t:"Headaches keep hanging around after finals ended", b:1, why:"Signs that continue after the stressor ends are a warning sign."},
+      {t:"Chest pain and nearly fainted after four energy drinks and no food", b:2, why:"Chest pain and near-fainting are a medical red flag. Jordan needs to be checked by a doctor or nurse."}
+    ],
+    act:{ q:"Jordan's friend reads this post. What's the best next step about the chest pain and near-fainting?",
+      opts:["Encourage Jordan to tell a parent today and get checked by a doctor or the school nurse","Tell Jordan to drink a different energy drink next time","Wait and see if it happens again before saying anything","Tell Jordan it's just stress and will go away on its own"],
+      hints:["Chest pain and almost fainting are physical symptoms. Who is trained to check those?","This is a red flag, so an adult and a medical professional need to know — soon, not \"if it happens again.\""],
+      explain:"Chest pain and almost fainting are <b>medical red flags</b>. Even if stress and caffeine caused them, a doctor or nurse needs to check. A parent or trusted adult should know today." },
+    thoughts:["I didn't want to make a big deal of it…","Twelve hours of sleep was amazing.","Maybe I should tell my mom about Thursday."] }
+},
+{ name:"Priya Nair", age:15, handle:"@priya.paints", mood:"m-panic", cond:"panic",
+  look:{skin:"#8d5a3b", hair:"#141010", style:"long", shirt:"#3f8ee0"},
+  bio:"Sophomore · art club · loves hiking",
+  thoughts:["Breathe in… two… three… four…","What if it happens again in class?","I'm okay. I'm okay. I'm okay.","Why did my body DO that?"],
+  blog:{ title:"What happened in the gym (I'm okay now)", date:"Tuesday, 8:15 PM",
+    paras:[
+      [{t:"Yesterday during the mile run in PE, something happened that I still can't really explain."},
+       {t:"Out of nowhere my heart started pounding so hard I could see my shirt moving.",c:1},
+       {t:"I couldn't get a full breath — it felt like someone was sitting on my chest.",c:1},
+       {t:"The gym started tilting, and I had to grab the bleachers so I didn't fall.",c:1},
+       {t:"My hands were shaking so badly I couldn't even unlock my phone to text my mom.",c:1},
+       {t:"I honestly thought I was dying or going crazy, like I had zero control over my own body.",c:1}],
+      [{t:"Coach sat with me and counted breaths with me, and after about ten minutes it faded."},
+       {t:"The nurse checked my heart and said it was healthy."},
+       {t:"Now I keep thinking: what if it happens again in the middle of class?",c:1},
+       {t:"I already asked to sit out of PE tomorrow, just in case.",c:1}],
+      [{t:"Other than that, I've been totally normal — painting, hanging out with Dev, sleeping fine."},
+       {t:"In the moment it was the scariest thing ever, but by dinner I felt like myself again."}]
+    ],
+    comment:{who:"@dev.k", t:"That sounds terrifying. Want me to walk with you to PE tomorrow?"} },
+  need:3,
+  clueHints:["Look for what Priya's body did during the episode, and how she feels about it happening again.","Pounding heart, breath, dizziness, shaking, feeling out of control, fear of a repeat. Her normal week is not a sign."],
+  idHints:["How fast did this start, and how long did it last?","Sudden, intense, peaks within minutes, strong body signs, and fear of it happening again — that is the pattern of one condition."],
+  idExplain:"<b>Panic.</b> It hit suddenly, peaked fast and faded in about ten minutes, with a racing heart, shortness of breath, dizziness, shaking and a feeling of losing control. Now Priya fears it will happen again.",
+  diis:[0,2,1,0],
+  diisHints:["It started \"out of nowhere\" and faded after about ten minutes.","In the moment, Priya thought she was dying. That is not mild.","She's sitting out of PE, but she says the rest of her life is \"totally normal.\"","Feeling like you're dying during panic is a body alarm, not a wish to hurt yourself. The nurse found her heart healthy."],
+  diisExplain:"<b>D:</b> minutes. <b>I:</b> severe in the moment. <b>I:</b> some (avoiding PE). <b>S:</b> no safety concern — the \"I'm dying\" feeling is part of panic, and the nurse checked her heart.",
+  p2:{ date:"Two weeks later", title:"Panic update + the breathing trick",
+    paras:["So I've had two more panic attacks since the gym. Coach taught me a box-breathing count (in 4, hold 4, out 4, hold 4) and it actually helps. I also finally told my mom everything.",
+      "But I'm kind of scared all the time now. I've skipped PE six times, and I bailed on the mall AND the pep assembly because what if it happens there?",
+      "The last one was during lunch. I got so dizzy I passed out and hit my head on the edge of the table. My friend said I was out for a few seconds. I didn't go to the nurse because I was embarrassed."],
+    cards:[
+      {t:"Learned box breathing from her coach — and it helps", b:0, why:"A healthy coping skill she can use is protective."},
+      {t:"Told her mom everything", b:0, why:"Talking to a trusted adult is protective."},
+      {t:"Her friend Dev offers to walk with her to class", b:0, why:"Supportive friends are protective."},
+      {t:"Has skipped PE six times", b:1, why:"Growing avoidance is a warning sign that panic is taking over more of her life."},
+      {t:"Now avoids the mall and school assemblies too", b:1, why:"Avoidance that spreads to more places is a warning sign."},
+      {t:"Passed out and hit her head, and didn't get checked", b:2, why:"Losing consciousness and a head injury need medical attention right away."}
+    ],
+    act:{ q:"A friend is having a panic attack in front of you right now. What's the best way to help?",
+      opts:["Stay with them, speak calmly, breathe slowly with them, and get a teacher or the nurse","Tell them to calm down and that they're overreacting","Leave them alone so they have space","Record it so you can show the nurse later"],
+      hints:["Think about what Coach did for Priya in the gym.","Panic feels scary and out of control. A calm, steady person nearby helps — and an adult should know."],
+      explain:"Stay calm and stay with them. Breathe slowly with them, remind them it will pass, and get an adult. If they faint, hit their head, or have chest pain, get medical help right away." },
+    thoughts:["In four… hold four… out four…","I don't want to miss the assembly again.","Maybe I SHOULD have gone to the nurse."] }
+},
+{ name:"Marcus Bell", age:17, handle:"@mbell.hoops", mood:"m-grief", cond:"grief",
+  look:{skin:"#5b3a26", hair:"#120c08", style:"buzz", shirt:"#2f7d5b"},
+  bio:"Senior · basketball · Pop's biggest fan",
+  thoughts:["Pop would've loved that game.","I should've visited that weekend.","Some days are fine. Some days aren't.","I still have his number saved."],
+  blog:{ title:"Two months without Pop", date:"Thursday, 10:02 PM",
+    paras:[
+      [{t:"It's been two months since my grandpa died, and people keep asking if I'm \"doing better.\""},
+       {t:"Some days I'm fine — I laughed at lunch on Tuesday like nothing happened.",c:1},
+       {t:"Then Wednesday I heard his favorite song in the grocery store and had to leave my cart and sit in the car.",c:1}],
+      [{t:"I'm weirdly angry at the doctors, even though I know they tried everything.",c:1},
+       {t:"I keep replaying how I skipped visiting him the weekend before because I wanted to go to a party.",c:1},
+       {t:"At the funeral I didn't cry at all — I just felt numb, like I was watching a movie.",c:1},
+       {t:"I still grab my phone to text him the basketball scores, and then I remember.",c:1},
+       {t:"In class my mind drifts, and I miss what the teacher just said.",c:1}],
+      [{t:"My mom and I have been going through his old photos together, which hurts but also helps."},
+       {t:"I still go to practice and hang out with my friends on weekends."},
+       {t:"It's hard, but I'm getting through most days."}]
+    ],
+    comment:{who:"@aunt_reenie", t:"He was SO proud of you, baby. Sunday dinner at my house — bring your appetite."} },
+  need:3,
+  clueHints:["Grief has many feelings, not just sadness. Look for anger, guilt, numbness, longing, focus problems, and feelings that come and go.","The fine-one-day, hard-the-next pattern counts too. The photos with his mom and going to practice are not signs."],
+  idHints:["What happened two months ago that started all of this?","Anger, guilt, numbness and longing after a death, coming and going in waves, describe one specific condition."],
+  idExplain:"<b>Grief.</b> Marcus lost his grandfather. He has waves of sadness, anger at the doctors, guilt about the missed visit, numbness, longing, and trouble concentrating. Grief is a natural response to loss.",
+  diis:[3,1,1,0],
+  diisHints:["Fine Tuesday, sitting in the car Wednesday. How do his feelings show up over time?","\"It's hard, but I'm getting through most days.\"","His focus in class slips, but he still goes to practice and sees friends.","There's no sign that Marcus or anyone else is in danger."],
+  diisExplain:"<b>D:</b> comes and goes in waves since the loss. <b>I:</b> moderate (\"hard, but getting through\"). <b>I:</b> some (focus in class). <b>S:</b> no safety concern right now.",
+  p2:{ date:"Three weeks later", title:"not doing great tbh",
+    paras:["I went to see the school counselor once, and it was actually okay. My mom and I still look at Pop's photos on Sundays.",
+      "But I stopped going to practice three weeks ago. I'm failing two classes. I keep telling myself it's my fault I wasn't there.",
+      "I found Pop's leftover pain pills in the bathroom cabinet. I've been taking a couple at night because they make me feel nothing, and nothing is better than this. Don't tell anyone, I've got it under control."],
+    cards:[
+      {t:"Met with the school counselor", b:0, why:"Reaching out to a professional is protective."},
+      {t:"Looks at photos with his mom on Sundays", b:0, why:"Sharing memories with family is a healthy way to grieve."},
+      {t:"His aunt invites him to Sunday dinners", b:0, why:"Family support is protective."},
+      {t:"Stopped going to practice for three weeks", b:1, why:"Pulling away from things he loves is a warning sign."},
+      {t:"Failing two classes", b:1, why:"A big drop in school performance is a warning sign."},
+      {t:"Keeps blaming himself for not being there", b:1, why:"Guilt that keeps growing is a warning sign worth talking about."},
+      {t:"Taking his grandpa's leftover pain pills to \"feel nothing\"", b:2, why:"Misusing someone else's prescription to numb pain is dangerous and needs an adult right away."}
+    ],
+    act:{ q:"Marcus asks you to keep the pills a secret. What should you do?",
+      opts:["Tell a trusted adult right away, even though he asked you not to","Keep the secret so he still trusts you","Tell him to only take one pill instead of two","Wait until he takes more, then tell someone"],
+      hints:["Is this a warning sign or a red flag?","Some secrets are not safe to keep. When someone's health is in danger, an adult needs to know now."],
+      explain:"Using someone else's pain pills to \"feel nothing\" is a <b>red flag</b>. Keeping him safe matters more than keeping a secret. Tell a parent, counselor, or other trusted adult right away." },
+    thoughts:["I've got it under control.","Pop wouldn't want this.","The counselor was… actually okay."] }
+},
+{ name:"Sofia Alvarez", age:16, handle:"@sofi.sketches", mood:"m-anx", cond:"anxiety",
+  look:{skin:"#d9a77c", hair:"#5a3418", style:"curly", shirt:"#b25fb0"},
+  bio:"Junior · art · former Spanish club member",
+  thoughts:["What if she's mad at me?","What if I mess up the presentation?","Are we okay? Are we REALLY okay?","Stop thinking. Stop thinking."],
+  blog:{ title:"The \"what if\" machine in my head", date:"Monday, 11:30 PM",
+    paras:[
+      [{t:"Everyone says junior year is stressful, but mine doesn't feel like normal stress."},
+       {t:"It's not about one thing — since last spring, my brain just runs \"what ifs\" about everything.",c:1},
+       {t:"What if I fail the quiz, what if my friends are secretly annoyed with me, what if something happens to my mom on the highway?",c:1}],
+      [{t:"I text my best friend \"are we okay??\" like five times a week, even though she always says yes.",c:1},
+       {t:"I can't sit still in class; my leg bounces nonstop and I pick at my sleeves.",c:1},
+       {t:"When I have to present, my heart races and my breathing gets fast and shallow — sometimes days before.",c:1},
+       {t:"I've \"gotten sick\" on both presentation days this month so I could stay home.",c:1},
+       {t:"I quit Spanish club because walking into a room full of people felt impossible.",c:1},
+       {t:"I've also stopped going to my friends' movie nights."}],
+      [{t:"My cousin keeps telling me to just \"stop worrying,\" like it's a switch."},
+       {t:"I do love my art class, and my best friend is super patient with me."},
+       {t:"I'm still getting through most days, but it's exhausting, and it's taking over school and my friendships."}]
+    ],
+    comment:{who:"@lena.b", t:"We're okay. We're ALWAYS okay. Art room at lunch tomorrow? 💜"} },
+  need:3,
+  clueHints:["Look for worry, restlessness, avoiding things, body signs, and needing reassurance.","Careful: a sentence that only describes junior year or her cousin is not a sign. Look for what Sofia DOES and FEELS."],
+  idHints:["Is this tied to one specific event, like a test, or is the worry about everything, for months?","Excessive worry about many things, reassurance-seeking, restlessness and avoidance that keep going point to one condition — not stress."],
+  idExplain:"<b>Anxiety.</b> Sofia worries about almost everything, for months, with no single cause. She seeks reassurance, is restless, has a racing heart and fast breathing, and avoids presentations and groups. Stress is tied to a specific pressure; this is bigger and keeps going.",
+  diis:[2,1,2,0],
+  diisHints:["\"Since last spring\" is a lot longer than a few days.","She says she's \"still getting through most days, but it's exhausting.\"","Count the areas: school (missed days), clubs (quit), and friends (skipping movie nights).","Nothing suggests she or anyone else is in danger."],
+  diisExplain:"<b>D:</b> two weeks or longer (since last spring). <b>I:</b> moderate (still coping, but exhausted). <b>I:</b> major (missing school, quit club, skipping friends). <b>S:</b> no safety concern in this post.",
+  p2:{ date:"Two weeks later", title:"trying something new",
+    paras:["I started seeing the school counselor on Tuesdays. She taught me to write my \"what ifs\" down and then write what I'd actually do. Art class is still my safe place, and Lena is still the best.",
+      "I still missed four days this month to avoid presentations, and I ask Lena if we're okay pretty much daily now.",
+      "When the worry gets really bad at night, I've been scratching my arms until they bleed. It's the only thing that makes the noise stop. I wear hoodies so no one notices."],
+    cards:[
+      {t:"Sees the school counselor every Tuesday", b:0, why:"Ongoing support from a professional is protective."},
+      {t:"Uses art class to calm down", b:0, why:"A healthy activity she enjoys is protective."},
+      {t:"Her best friend is patient and reliable", b:0, why:"A supportive friend is protective."},
+      {t:"Missed four school days to avoid presentations", b:1, why:"Avoidance that keeps growing is a warning sign."},
+      {t:"Asks for reassurance almost every day", b:1, why:"Reassurance-seeking that's increasing is a warning sign."},
+      {t:"Scratching her arms until they bleed when worry gets bad", b:2, why:"Self-harm is a red flag. A trusted adult needs to know right away."},
+      {t:"Hides the marks under hoodies so no one notices", b:2, why:"Hiding self-harm makes it more urgent to tell an adult."}
+    ],
+    act:{ q:"Sofia shows you her arms and says she's \"handling it.\" What's the best response?",
+      opts:["Tell her you care, and go with her to the counselor or another trusted adult today","Promise not to tell anyone so she keeps trusting you","Tell her to just stop doing it","Change the subject so she doesn't feel embarrassed"],
+      hints:["Self-harm is in which category: warning sign or red flag?","Be kind AND get help. She already trusts one adult at school."],
+      explain:"Self-harm is a <b>red flag</b>. Stay calm, don't judge, and tell her you care. Then help her reach a trusted adult — like the counselor she already sees — <b>today</b>. Don't promise to keep it a secret." },
+    thoughts:["Writing the what-ifs down helps a little.","Nobody can know about my arms.","Lena's going to be mad. …What if she's not?"] }
+},
+{ name:"Eli Thompson", age:16, handle:"@eli.draws.things", mood:"m-dep", cond:"depression",
+  look:{skin:"#f0cfb0", hair:"#a8763e", style:"wavy", shirt:"#5d6a78"},
+  bio:"Sophomore · artist · cat dad to Pickles",
+  thoughts:["What's even the point.","I'm so tired.","They're better off without me around.","Pickles is the only one who gets it."],
+  blog:{ title:"idk", date:"Saturday, 2:14 PM",
+    paras:[
+      [{t:"Haven't posted in a while."},
+       {t:"It's been about a month of every day feeling gray, like someone turned the color down on everything.",c:1},
+       {t:"I used to spend whole weekends drawing and gaming with my friends, and now I don't even want to open my sketchbook.",c:1},
+       {t:"I've stopped answering the group chat; it's easier to just not.",c:1}],
+      [{t:"I sleep eleven or twelve hours and still wake up exhausted.",c:1},
+       {t:"Mom says I barely touch dinner anymore, and my jeans are loose.",c:1},
+       {t:"I failed two tests this month because I just stared at the page.",c:1},
+       {t:"Nothing bad even happened — no breakup, no big event."}],
+      [{t:"Honestly, I don't see it ever getting better.",c:1},
+       {t:"Sometimes I think everyone would be better off if I just wasn't around.",c:1},
+       {t:"My cat Pickles still sleeps on my bed every night, so that's something."}]
+    ],
+    comment:{who:"@ms.ortiz.art", t:"Eli, we miss you in the studio. My door is open anytime — even just to sit."} },
+  need:4,
+  clueHints:["Look for a low mood that won't lift, losing interest, pulling away, and changes in sleep, energy and appetite.","Also look for how Eli feels about the future and about himself. \"Haven't posted in a while\" and \"nothing bad happened\" are not signs by themselves."],
+  idHints:["How long has Eli felt this way? Is it tied to an event or a loss?","Most days for a month, loss of interest, withdrawal, low energy, appetite changes and hopelessness — this is more than sadness."],
+  idExplain:"<b>Depression.</b> For about a month Eli has felt low most days, lost interest in drawing and gaming, pulled away from friends, and had sleep, energy and appetite changes and hopelessness. It isn't caused by a loss (grief) or a specific pressure (stress).",
+  diis:[2,2,2,2],
+  diisHints:["\"About a month of every day feeling gray.\"","He can't see it ever getting better. How strong is that?","Friends, hobbies, school and eating are all affected.","Read the last paragraph again. \"Everyone would be better off if I just wasn't around\" is never just a passing comment."],
+  diisExplain:"<b>D:</b> two weeks or longer (a month). <b>I:</b> severe (hopeless). <b>I:</b> major (friends, hobbies, school, eating). <b>S:</b> clear concern. Saying others would be \"better off\" without you is a suicide warning sign. Tell an adult right away.",
+  safety:true,
+  p2:{ date:"Ten days later", title:"thanks for everything",
+    paras:["Ms. Ortiz messaged me and I actually wrote back. My mom keeps checking on me, which is nice I guess.",
+      "Still sleeping like twelve hours. Still not answering the group chat. Haven't drawn anything.",
+      "Weirdly I feel calm now, like I finally figured things out. I gave my sketchbooks and my console to my cousin. Just want to say thanks for everything, guys. I won't be a problem much longer."],
+    cards:[
+      {t:"Replied to his art teacher's message", b:0, why:"Staying connected to a caring adult is protective."},
+      {t:"His mom checks on him regularly", b:0, why:"An involved parent is protective."},
+      {t:"Sleeping twelve hours a day", b:1, why:"A big change in sleep is a warning sign."},
+      {t:"Lost interest in drawing and gaming", b:1, why:"Losing interest in things you love is a warning sign."},
+      {t:"Gave away his sketchbooks and console", b:2, why:"Giving away important belongings is a suicide red flag."},
+      {t:"Posted \"thanks for everything… I won't be a problem much longer\"", b:2, why:"Goodbye messages and talking about not being around are red flags."},
+      {t:"Suddenly seems calm after weeks of hopelessness", b:2, why:"A sudden calm after deep hopelessness can mean someone has made a plan. This is a red flag."}
+    ],
+    act:{ q:"You see Eli's post at 9 p.m. on a school night. What should you do?",
+      opts:["Tell a parent or adult right now, and call or text 988 (call 911 if he's in immediate danger)","Message him tomorrow at school to check in","DM him tonight and wait to see if he replies before telling anyone","Like the post so he knows you saw it"],
+      hints:["These are red flags. How fast does help need to happen?","Don't wait until morning, and don't handle this alone. Get an adult and a crisis line involved tonight."],
+      explain:"Giving things away, goodbye messages, and sudden calm are <b>red flags for suicide</b>. Act <b>now</b>: tell an adult immediately and call or text <b>988</b> (Suicide &amp; Crisis Lifeline). If he's in immediate danger, call <b>911</b>. You can also message Eli to say you care — but never instead of getting help." },
+    thoughts:["I feel… calm.","Thanks for everything, I guess.","Ms. Ortiz actually wrote back again."] }
+},
+{ name:"Taylor Kim", age:17, handle:"@tkim.10", mood:"m-dist", cond:"distress",
+  look:{skin:"#e8c39e", hair:"#1b1b1b", style:"bun", shirt:"#d64545"},
+  bio:"Senior · soccer captain · pizza-shift legend",
+  thoughts:["I'm fine. Just tired.","One more thing and I'll break.","Why did I yell at them…","Soccer. Just think about soccer."],
+  blog:{ title:"Too many plates", date:"Wednesday, 1:07 AM",
+    paras:[
+      [{t:"Three weeks ago my parents told us they're separating, and I moved into the basement so my little sisters could share my room."},
+       {t:"I picked up extra shifts at the pizza place to help my mom, and I'm also captain of the soccer team this season."},
+       {t:"I feel like I'm holding everybody up, and there's nothing left for me.",c:1}],
+      [{t:"I cried in the parking lot before practice on Monday, and ten minutes later I was joking around with the team like nothing happened.",c:1},
+       {t:"I've yelled at my sisters over tiny stuff, and then I feel awful about it.",c:1},
+       {t:"Some nights I sleep fine; other nights I'm wide awake at 3 a.m.",c:1},
+       {t:"I'm not exactly sad, and not exactly worried — I just can't handle one more thing.",c:1},
+       {t:"Last week my manager asked me to cover a shift, and I just stood there and couldn't answer.",c:1}],
+      [{t:"My grades went from B's to D's in two classes, and I've stopped hanging out with anyone outside of practice."},
+       {t:"Friday I punched the wall in the basement, and my knuckles are still bruised.",c:1},
+       {t:"Coach asked if I was okay, and I said \"yeah, just tired.\""},
+       {t:"I still love soccer — it's the only time my brain gets quiet."}]
+    ],
+    comment:{who:"@aunt.june", t:"Tay, you don't have to carry all of it. Come stay with me this weekend? Love you."} },
+  need:4,
+  clueHints:["Taylor's signs are MIXED. Look for being overwhelmed, tearfulness, irritability, trouble coping, and signs that swing back and forth.","Hurting yourself in a moment of overwhelm counts as a sign too. The list of jobs and family changes is the cause, not a sign."],
+  idHints:["Does this fit neatly into stress, anxiety, depression, panic, or grief? Or is it a mix?","Overwhelmed by many demands, tearful one minute and joking the next, irritable, and can't cope: \"not exactly sad, not exactly worried.\""],
+  idExplain:"<b>Emotional Distress.</b> Taylor is overwhelmed by many demands at once (family changes, work, captain duties). There's tearfulness, irritability, trouble coping, and mixed signals that swing back and forth. It doesn't fit just one category.",
+  diis:[2,2,2,1],
+  diisHints:["It started three weeks ago and is there most days.","\"I just can't handle one more thing.\" She froze when asked a simple question.","Count the areas: grades, family, friends, work.","Punching a wall hurt her. That isn't an emergency yet, but it's not \"no concern\" either."],
+  diisExplain:"<b>D:</b> two weeks or longer (three weeks). <b>I:</b> severe (can't handle one more thing). <b>I:</b> major (grades, family, friends). <b>S:</b> possible concern. Punching a wall is a way of hurting herself, so a trusted adult should know.",
+  p2:{ date:"One week later", title:"I just want everything to stop",
+    paras:["I told my aunt a little about what's going on, and I'm staying at her place this weekend. Soccer is still the one place my head is quiet. Coach told me his door is open.",
+      "I'm still crying and then laughing like five minutes later, and I keep telling everyone I'm \"fine, just tired.\" My grades are still D's.",
+      "Last night I drove 90 on the highway with my lights off just to feel something. Then I wrote in my notes app, \"I just want everything to stop.\" I'm not going to do anything. I just want it to stop."],
+    cards:[
+      {t:"Staying with her aunt this weekend", b:0, why:"A safe place and a supportive relative are protective."},
+      {t:"Soccer is the one place her mind gets quiet", b:0, why:"A healthy activity that helps her cope is protective."},
+      {t:"Coach noticed and offered his door is open", b:0, why:"A caring adult who notices is protective."},
+      {t:"Crying, then laughing minutes later", b:1, why:"Mood swings are a warning sign of distress."},
+      {t:"Keeps telling everyone she's \"fine, just tired\"", b:1, why:"Hiding how bad things are is a warning sign. It makes checking in more important."},
+      {t:"Grades still down to D's", b:1, why:"Ongoing trouble at school is a warning sign."},
+      {t:"Drove 90 mph with the lights off \"to feel something\"", b:2, why:"Dangerous, reckless behavior is a red flag. Her life was at risk."},
+      {t:"Wrote \"I just want everything to stop\"", b:2, why:"Wanting everything to stop can mean thoughts of suicide. Take it seriously as a red flag."}
+    ],
+    act:{ q:"Taylor tells you, \"I'm not going to do anything. I just want everything to stop. Don't tell anyone.\" What's the BEST response?",
+      opts:["Ask her directly if she's thinking about suicide, stay with her, and bring in a trusted adult today","Keep it secret since she said she's not going to do anything","Tell her she just needs more sleep","Post in the group chat to ask your friends what to do"],
+      hints:["\"I'm not going to do anything\" doesn't cancel out the red flags you just sorted.","Asking someone directly about suicide does NOT put the idea in their head. It shows you care. Then an adult needs to be involved."],
+      explain:"Take it seriously. Asking directly — \"Are you thinking about suicide?\" — is safe and shows you care. Stay with her, don't keep it a secret, and get a trusted adult (or call/text <b>988</b>) involved <b>today</b>. Her aunt and coach are great people to tell." },
+    thoughts:["I'm fine. Just tired.","Aunt June's couch is so comfy.","I don't actually want to die. I just want it to stop."] }
+}
+];
+
+/* ======================= STATE ======================= */
+const STAGES = [];
+PEOPLE.forEach((p,i)=>STAGES.push({part:1, pi:i, steps:["clues","id","diis"]}));
+PEOPLE.forEach((p,i)=>STAGES.push({part:2, pi:i, steps:["sort","act"]}));
+const TASK_IDS = []; STAGES.forEach((s,si)=>s.steps.forEach(st=>TASK_IDS.push(si+":"+st)));
+const N_TASKS = TASK_IDS.length;
+const MAX_TRIES = CONFIG.CREDIT.length;
+
+const store = { mem:null,
+  get(){ try{ return localStorage.getItem(CONFIG.STORAGE_KEY); }catch(e){ return this.mem; } },
+  set(v){ this.mem=v; try{ localStorage.setItem(CONFIG.STORAGE_KEY,v); }catch(e){} },
+  del(){ this.mem=null; try{ localStorage.removeItem(CONFIG.STORAGE_KEY); }catch(e){} } };
+(function(){ try{ const p=new URLSearchParams(location.search); if(p.get(CONFIG.RESET_PARAM)===CONFIG.RESET_VALUE){ store.del(); history.replaceState(null,"",location.pathname); } }catch(e){} })();
+
+function fresh(){ return {v:1, view:"start", name:"", period:"", seed:(Math.random()*1e9)|0, startedAt:0, finishedAt:0, stage:0, t:{}, camp1:false, camp2:false, lastPos:0, hearts:{}}; }
+let S = (function(){ try{ const s=JSON.parse(store.get()||"null"); if(s && s.v===1 && s.t) return s; }catch(e){} return fresh(); })();
+function save(){ try{ store.set(JSON.stringify(S)); }catch(e){} }
+let UI = { sel:null, fb:null, flips:{}, bubble:{} };
+
+function T(id){ return S.t[id] || (S.t[id]={tries:0, done:false, att:0, elim:[], marks:[]}); }
+function credit(id){ const t=S.t[id]; return (t&&t.done&&t.att>0)?CONFIG.CREDIT[t.att-1]:0; }
+function doneCount(){ return TASK_IDS.filter(id=>S.t[id]&&S.t[id].done).length; }
+function stageDone(si){ return STAGES[si].steps.every(st=>S.t[si+":"+st]&&S.t[si+":"+st].done); }
+function curStep(si){ return STAGES[si].steps.find(st=>!(S.t[si+":"+st]&&S.t[si+":"+st].done)); }
+function firstOpenStage(){ for(let i=0;i<STAGES.length;i++) if(!stageDone(i)) return i; return -1; }
+
+/* helpers */
+const $app=document.getElementById("app"), $modal=document.getElementById("modal"), $live=document.getElementById("live");
+function esc(s){ return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
+function announce(m){ $live.textContent=""; setTimeout(()=>{$live.textContent=m;},30); }
+function rng(a){ return function(){ a|=0; a=a+0x6D2B79F5|0; let t=Math.imul(a^a>>>15,1|a); t=t+Math.imul(t^t>>>7,61|t)^t; return ((t^t>>>14)>>>0)/4294967296; }; }
+function shuffled(n,salt){ const r=rng(S.seed+salt*7919); const a=[...Array(n).keys()]; for(let i=n-1;i>0;i--){const j=Math.floor(r()*(i+1)); [a[i],a[j]]=[a[j],a[i]];} return a; }
+function hash8(str){ let h1=0xdeadbeef,h2=0x41c6ce57; for(let i=0;i<str.length;i++){const c=str.charCodeAt(i); h1=Math.imul(h1^c,2654435761); h2=Math.imul(h2^c,1597334677);} h1=Math.imul(h1^(h1>>>16),2246822507)^Math.imul(h2^(h2>>>13),3266489909); h2=Math.imul(h2^(h2>>>16),2246822507)^Math.imul(h1^(h1>>>13),3266489909); return (4294967296*(2097151&h2)+(h1>>>0)).toString(36).toUpperCase().padStart(8,"0").slice(-8); }
+function dots(n){ let h='<span class="dots" aria-label="Difficulty '+n+' of 6">'; for(let i=1;i<=6;i++) h+='<b class="'+(i<=n?"on":"")+'"></b>'; return h+"</span>"; }
+function attemptPips(t){ let h='<span class="attempt">'; for(let i=0;i<MAX_TRIES;i++){ let c=""; if(i<t.tries) c="used"; if(t.done&&t.att===i+1) c="won"; h+='<i class="'+c+'"></i>'; } h+=t.done?"":" Try "+(t.tries+1)+" of "+MAX_TRIES; return h+"</span>"; }
+function fmtTime(ms){ const m=Math.max(1,Math.round(ms/60000)); return m+" min"; }
+
+/* ======================= AVATAR ======================= */
+function hairBack(st,c){ if(st==="long") return '<path d="M52 100 Q46 175 66 190 L134 190 Q154 175 148 100Z" fill="'+c+'"/>'; if(st==="wavy") return '<path d="M54 100 Q50 150 62 160 L138 160 Q150 150 146 100Z" fill="'+c+'"/>'; return ""; }
+function hairFront(st,c){
+  if(st==="curly") return [[60,92],[66,72],[82,60],[100,55],[118,60],[134,72],[140,92]].map(p=>'<circle cx="'+p[0]+'" cy="'+p[1]+'" r="17" fill="'+c+'"/>').join("");
+  if(st==="buzz") return '<path d="M58 100 Q60 60 100 58 Q140 60 142 100 Q124 80 100 80 Q76 80 58 100Z" fill="'+c+'" opacity=".92"/>';
+  let cap='<path d="M54 106 Q52 54 100 52 Q148 54 146 106 Q134 76 100 76 Q66 76 54 106Z" fill="'+c+'"/>';
+  if(st==="bun") cap+='<circle cx="100" cy="46" r="17" fill="'+c+'"/>';
+  if(st==="wavy") cap+='<path d="M60 84 Q80 96 96 80 Q112 96 140 84 L140 74 L60 74Z" fill="'+c+'"/>';
+  if(st==="short") cap+='<path d="M64 80 Q90 62 132 78 L128 70 Q96 54 66 72Z" fill="'+c+'"/>';
+  return cap;
+}
+function avatar(p,mood,size){
+  const L=p.look, m=mood||p.mood;
+  const brows={ "m-stress":'<path d="M72 92 L90 98 M128 92 L110 98"/>', "m-panic":'<path d="M72 88 Q81 82 90 88 M110 88 Q119 82 128 88"/>', "m-grief":'<path d="M72 96 L90 90 M128 96 L110 90"/>', "m-anx":'<path d="M72 92 L90 86 M128 92 L110 86"/>', "m-dep":'<path d="M72 97 L90 92 M128 97 L110 92"/>', "m-dist":'<path d="M72 92 L90 96 M110 90 L128 94"/>' }[m];
+  const mouth={ "m-stress":'<path d="M86 128 L114 128" />', "m-panic":'<ellipse cx="100" cy="130" rx="7" ry="9" fill="#5a2a2a" stroke="none"/>', "m-grief":'<path d="M86 132 Q100 124 114 132"/>', "m-anx":'<path d="M86 129 Q93 124 100 129 Q107 134 114 129"/>', "m-dep":'<path d="M88 132 Q100 127 112 132"/>', "m-dist":'<g class="mA"><path d="M86 127 Q100 136 114 127"/></g><g class="mB"><path d="M86 132 Q100 123 114 132"/></g>' }[m];
+  let extra="";
+  if(m==="m-stress") extra='<g class="steam" stroke="#9aa" stroke-width="3" fill="none" stroke-linecap="round"><path d="M70 40 q-6 -8 0 -16"/><path d="M130 40 q6 -8 0 -16"/></g>';
+  if(m==="m-panic"||m==="m-anx") extra='<path class="sweat" d="M141 84 q5 8 0 12 q-5 -4 0 -12Z" fill="#7cc7ef"/>';
+  if(m==="m-grief"||m==="m-dep") extra=(m==="m-grief"?'<path class="tear" d="M81 113 q4 7 0 10 q-4 -3 0 -10Z" fill="#7cc7ef"/>':'')+'<path d="M74 112 Q81 116 88 112 M112 112 Q119 116 126 112" stroke="#7a6a8a" stroke-width="2" fill="none" opacity=".5"/>';
+  const bg={ "m-stress":"#fde7d2","m-panic":"#dcecfb","m-grief":"#e3ecdf","m-anx":"#f1e4f4","m-dep":"#e2e4ea","m-dist":"#f9e0e0"}[m];
+  return '<svg viewBox="0 0 200 240" '+(size?'width="'+size+'" height="'+size+'"':'')+' aria-hidden="true"><g class="av '+m+'">'+
+    '<circle cx="100" cy="120" r="98" fill="'+bg+'"/>'+
+    '<g class="body"><path d="M34 240 Q36 172 100 168 Q164 172 166 240Z" fill="'+L.shirt+'"/><path d="M84 168 Q100 186 116 168" fill="none" stroke="rgba(0,0,0,.15)" stroke-width="4"/>'+
+    '<rect x="88" y="146" width="24" height="26" rx="8" fill="'+L.skin+'"/></g>'+
+    '<g class="head">'+hairBack(L.style,L.hair)+
+      '<ellipse cx="55" cy="110" rx="8" ry="11" fill="'+L.skin+'"/><ellipse cx="145" cy="110" rx="8" ry="11" fill="'+L.skin+'"/>'+
+      '<ellipse cx="100" cy="106" rx="46" ry="50" fill="'+L.skin+'"/>'+
+      hairFront(L.style,L.hair)+
+      '<g class="eyes"><ellipse cx="81" cy="106" rx="7" ry="8" fill="#fff"/><ellipse cx="119" cy="106" rx="7" ry="8" fill="#fff"/><g class="pupils"><circle cx="81" cy="107" r="4" fill="#2a1f1a"/><circle cx="119" cy="107" r="4" fill="#2a1f1a"/></g></g>'+
+      '<g stroke="'+L.hair+'" stroke-width="4" stroke-linecap="round" fill="none">'+brows+'</g>'+
+      '<ellipse cx="72" cy="122" rx="7" ry="4" fill="#e88" opacity=".25"/><ellipse cx="128" cy="122" rx="7" ry="4" fill="#e88" opacity=".25"/>'+
+      '<g stroke="#5a2a2a" stroke-width="3.5" stroke-linecap="round" fill="none">'+mouth+'</g>'+extra+
+    '</g></g></svg>';
+}
+
+/* ======================= VIEWS ======================= */
+function topbar(){
+  const d=doneCount();
+  document.getElementById("prog").innerHTML = S.view==="start" ? "" :
+    '<span>'+(S.name?esc(S.name.split(" ")[0])+" · ":"")+d+'/'+N_TASKS+' tasks</span><span class="bar"><i style="width:'+(100*d/N_TASKS)+'%"></i></span>';
+}
+function render(focus){
+  topbar();
+  const v=S.view;
+  if(v==="start") $app.innerHTML=viewStart();
+  else if(v==="camp1") $app.innerHTML=viewCamp1();
+  else if(v==="camp2") $app.innerHTML=viewCamp2();
+  else if(v==="map") { $app.innerHTML=viewMap(); animateHiker(); }
+  else if(v==="stage") $app.innerHTML=viewStage();
+  else if(v==="results") $app.innerHTML=viewResults();
+  if(focus){ window.scrollTo({top:0,behavior:"instant"}); $app.focus({preventScroll:true}); }
+  else { const r=$app.firstElementChild; if(r) r.classList.remove("fade"); }
+}
+
+function viewStart(){
+  const heroPeople=[0,1,2,3,4,5].map(i=>avatar(PEOPLE[i]).replace('<svg ','<svg x="'+(i%3*120+5)+'" y="'+(Math.floor(i/3)*125)+'" width="110" height="125" ')).join("");
+  return '<div class="card fade"><div class="hero"><div>'+
+    '<span class="pill">Mental Health Unit · about 25 minutes</span>'+
+    '<h1 style="margin-top:10px">'+CONFIG.TITLE+'</h1>'+
+    '<p>Hike a trail of 12 stops. At each one you\'ll meet a teen, read their blog, and figure out what they\'re going through. The trail gets steeper (harder) as you climb.</p>'+
+    '<div class="howto"><div><b>Part 1 · Feelings Valley</b>Spot stress, anxiety, depression, panic, grief, or emotional distress, then rate it with <b style="display:inline">D-I-I-S</b>.</div>'+
+    '<div><b>Part 2 · Signal Ridge</b>Revisit everyone. Sort protective factors, warning signs, and red flags that need an adult right away.</div>'+
+    '<div><b>3 tries each</b>Every task gives you 3 tries with a new hint after each miss. Just finish them all to complete it.</div></div>'+
+    '<label class="f" for="nm">Your first and last name</label><input type="text" id="nm" maxlength="60" autocomplete="name" value="'+esc(S.name)+'" placeholder="e.g., Alex Rivera">'+
+    '<label class="f" for="pd">Class period / block <span class="muted" style="font-weight:400">(optional)</span></label><input type="text" id="pd" maxlength="20" value="'+esc(S.period)+'" placeholder="e.g., Block 3">'+
+    '<p id="nmerr" class="muted" style="color:var(--red);min-height:1.4em;margin-top:6px"></p>'+
+    '<button class="btn" data-act="begin" type="button">Start the expedition →</button>'+
+    '</div><div class="heroart"><svg viewBox="0 0 360 250" aria-hidden="true">'+heroPeople+'</svg></div></div></div>';
+}
+
+function flipMsg(part){
+  const n=part===1?6:3, have=Object.keys(UI.flips).length;
+  if(have>=n) return part===1?"Field Guide packed! You're ready.":"Ready to climb.";
+  return "Flip all "+n+" cards to continue ("+have+"/"+n+").";
+}
+function viewCamp1(){
+  const allFlipped = CONDS.every((c,i)=>UI.flips[i]);
+  return '<div class="card fade"><span class="pill">Base Camp · Part 1</span><h1 style="margin-top:8px">Understanding Emotional Health</h1>'+
+    '<p>Before you hit the trail, pack your Field Guide. <b>Tap each card to flip it</b> and learn the signs. (You can open the Field Guide any time with the button at the top.)</p>'+
+    '<div class="flips">'+CONDS.map((c,i)=>'<button type="button" class="flip '+(UI.flips[i]?"on":"")+'" data-act="flip" data-i="'+i+'" aria-pressed="'+(UI.flips[i]?"true":"false")+'"><div class="inner">'+
+      '<div class="face front"><span class="ic">'+c.ic+'</span><b>'+c.name+'</b><small class="muted">tap to flip</small></div>'+
+      '<div class="face back"><b>'+c.ic+' '+c.name+'</b><ul>'+c.signs.map(s=>'<li>'+s+'</li>').join("")+'</ul><small class="muted" style="margin-top:4px">'+c.note+'</small></div></div></button>').join("")+'</div>'+
+    '<h2 style="margin-top:22px">How serious is it? Use D-I-I-S</h2>'+
+    '<div class="diisrow">'+
+      '<div><span class="big">D</span><b>Duration</b><br><small>How long has it lasted? Minutes, days, weeks, or waves?</small></div>'+
+      '<div><span class="big">I</span><b>Intensity</b><br><small>How strong is it? Mild, moderate, or severe?</small></div>'+
+      '<div><span class="big">I</span><b>Interference</b><br><small>How much does it get in the way of school, friends, and daily life?</small></div>'+
+      '<div><span class="big">S</span><b>Safety</b><br><small>Is anyone at risk of getting hurt? If so, get an adult.</small></div></div>'+
+    '<p class="muted" id="flipmsg">'+flipMsg(1)+'</p>'+
+    '<button class="btn" id="flipgo" data-act="camp1done" type="button" '+(allFlipped?"":"disabled")+'>Hit the trail →</button></div>';
+}
+
+function viewCamp2(){
+  const allFlipped=[0,1,2].every(i=>UI.flips["b"+i]);
+  return '<div class="card fade"><span class="pill">Ridge Camp · Part 2</span><h1 style="margin-top:8px">Recognizing Protective Factors, Warning Signs &amp; Red Flags</h1>'+
+    '<p>You made it through Feelings Valley! Now the trail climbs to <b>Signal Ridge</b>. You\'ll check back in with the same six teens a few weeks later. Your job: sort what you see into three kinds of signals, then decide what to do.</p>'+
+    '<div class="flips">'+BINS.map(b=>'<button type="button" class="flip '+(UI.flips["b"+b.k]?"on":"")+'" data-act="flip" data-i="b'+b.k+'"><div class="inner">'+
+      '<div class="face front" style="border-color:'+b.c+'"><span class="ic">'+b.ic+'</span><b>'+b.name+'</b><small class="muted">tap to flip</small></div>'+
+      '<div class="face back" style="border-color:'+b.c+'"><b>'+b.ic+' '+b.name+'</b><p style="margin:4px 0 0">'+b.def+'</p></div></div></button>').join("")+'</div>'+
+    '<div class="safety" style="border-color:var(--blue);background:var(--blue2)"><b>Remember:</b> if a friend tells you about a red flag, it is <b>never</b> a secret you should keep. Telling a trusted adult is how you protect them.</div>'+
+    '<p class="muted" style="margin-top:12px" id="flipmsg">'+flipMsg(2)+'</p>'+
+    '<button class="btn" id="flipgo" data-act="camp2done" type="button" '+(allFlipped?"":"disabled")+'>Climb to Signal Ridge →</button></div>';
+}
+
+const MAP_PTS=[[70,545],[160,505],[270,520],[365,470],[300,410],[420,380],[540,400],[620,340],[540,290],[650,248],[765,268],[700,198],[805,152],[880,112],[935,62]];
+// index: 0 = base camp, 1..6 = stages 0..5, 7 = ridge camp, 8..13 = stages 6..11, 14 = summit
+function stagePt(si){ return si<6 ? si+1 : si+2; }
+function curPtIndex(){ const f=firstOpenStage(); if(f<0) return 14; if(f===6 && !S.camp2) return 7; return stagePt(f); }
+function viewMap(){
+  const f=firstOpenStage();
+  const path="M"+MAP_PTS.map(p=>p.join(" ")).join(" L");
+  let stops="";
+  STAGES.forEach((st,si)=>{
+    const [x,y]=MAP_PTS[stagePt(si)], done=stageDone(si), open=(si===f)||done;
+    const col=done?"#2f7d5b":(open?"#e0a020":"#9aa8a4");
+    stops+='<g class="stop '+(open?"":"locked")+'" data-act="'+(open?"open":"")+'" data-si="'+si+'" tabindex="'+(open?0:-1)+'" role="button" aria-label="Stop '+(si+1)+': '+REGIONS[si].n+(done?" (complete)":open?" (current)":" (locked)")+'">'+
+      '<circle class="c" cx="'+x+'" cy="'+y+'" r="16" fill="'+col+'" stroke="#fff" stroke-width="4"/>'+
+      '<text x="'+x+'" y="'+(y+5)+'" text-anchor="middle" font-size="14" font-weight="800" fill="#fff">'+(done?"✓":si+1)+'</text>'+
+      '<text x="'+x+'" y="'+(si===f?y+36:y-24)+'" text-anchor="middle" font-size="12" font-weight="700" fill="#1d2b2a" paint-order="stroke" stroke="#fff" stroke-width="4">'+(si===f?REGIONS[si].n:"")+'</text></g>';
+  });
+  const camp=(i,label)=>{const [x,y]=MAP_PTS[i]; return '<g><path d="M'+(x-16)+' '+(y+10)+' L'+x+' '+(y-16)+' L'+(x+16)+' '+(y+10)+'Z" fill="#c0703a" stroke="#fff" stroke-width="3"/><text x="'+x+'" y="'+(y+28)+'" text-anchor="middle" font-size="12" font-weight="700" fill="#1d2b2a" paint-order="stroke" stroke="#fff" stroke-width="4">'+label+'</text></g>';};
+  const [sx,sy]=MAP_PTS[14];
+  const nextLabel = f<0 ? "See my results →" : (f===6&&!S.camp2 ? "Enter Ridge Camp (Part 2) →" : "Continue to Stop "+(f+1)+": "+REGIONS[f].n+" →");
+  return '<div class="card fade"><div class="row" style="justify-content:space-between"><div><span class="pill">Trail Map</span><h2 style="margin:8px 0 4px">'+(f<0?"You reached the summit!":f<6?"Part 1 · Feelings Valley":"Part 2 · Signal Ridge")+'</h2>'+
+    '<p class="muted" style="margin:0">The higher you climb, the harder the trail. Tap a lit stop to enter.</p></div>'+
+    '<button class="btn" data-act="next" type="button">'+nextLabel+'</button></div>'+
+    '<div class="map" style="margin-top:14px"><svg viewBox="0 0 1000 600" role="img" aria-label="Trail map">'+
+      '<defs><linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#cfeaf7"/><stop offset="1" stop-color="#f3efe3"/></linearGradient></defs>'+
+      '<rect width="1000" height="600" fill="url(#sky)"/>'+
+      '<circle cx="120" cy="90" r="40" fill="#f7c948" opacity=".9"/>'+
+      '<path d="M0 600 L0 430 L180 330 L330 380 L520 240 L640 280 L800 120 L935 40 L1000 90 L1000 600Z" fill="#a9c7b8"/>'+
+      '<path d="M935 40 L900 80 L915 78 L935 60 L955 82 L970 78Z" fill="#fff"/>'+
+      '<path d="M0 600 L0 520 Q150 470 300 500 T600 470 T1000 430 L1000 600Z" fill="#7fb59a"/>'+
+      '<path d="M0 600 L0 570 Q250 540 500 560 T1000 540 L1000 600Z" fill="#5d9c78"/>'+
+      [[220,560],[480,520],[600,520],[100,500],[860,470],[760,500]].map(t=>'<path d="M'+t[0]+' '+(t[1]-34)+' L'+(t[0]-14)+' '+t[1]+' L'+(t[0]+14)+' '+t[1]+'Z" fill="#3d7a58"/>').join("")+
+      '<path d="'+path+'" fill="none" stroke="#fff" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" opacity=".8"/>'+
+      '<path d="'+path+'" fill="none" stroke="#8a6a4a" stroke-width="4" stroke-dasharray="8 9" stroke-linecap="round"/>'+
+      '<text x="250" y="590" font-size="16" font-weight="800" fill="#fff">PART 1 · FEELINGS VALLEY</text>'+
+      '<text x="790" y="340" font-size="16" font-weight="800" fill="#2d4a3e" opacity=".7">PART 2 · SIGNAL RIDGE</text>'+
+      camp(0,"Base Camp")+camp(7,"Ridge Camp")+
+      '<g><line x1="'+sx+'" y1="'+(sy+12)+'" x2="'+sx+'" y2="'+(sy-30)+'" stroke="#333" stroke-width="3"/><path d="M'+sx+' '+(sy-30)+' L'+(sx+26)+' '+(sy-22)+' L'+sx+' '+(sy-14)+'Z" fill="#d64545"/><text x="'+(sx-6)+'" y="'+(sy+30)+'" text-anchor="middle" font-size="12" font-weight="800" fill="#1d2b2a" paint-order="stroke" stroke="#fff" stroke-width="4">Summit</text></g>'+
+      stops+
+      '<g id="hiker" style="transform:translate('+MAP_PTS[S.lastPos||0][0]+'px,'+MAP_PTS[S.lastPos||0][1]+'px)"><g class="hikerbob"><circle cx="0" cy="-34" r="10" fill="#f0cfa0" stroke="#333" stroke-width="2"/><rect x="-8" y="-24" width="16" height="18" rx="5" fill="#2c6fb7"/><rect x="-13" y="-24" width="7" height="14" rx="3" fill="#c0703a"/><line x1="12" y1="-22" x2="16" y2="0" stroke="#555" stroke-width="3"/></g></g>'+
+    '</svg></div>'+
+    '<div class="legend"><span style="--c:#2f7d5b">Complete</span><span style="--c:#e0a020">Current stop</span><span style="--c:#9aa8a4">Locked</span></div></div>';
+}
+function animateHiker(){
+  const target=curPtIndex(); const h=document.getElementById("hiker"); if(!h) return;
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{ h.style.transform='translate('+MAP_PTS[target][0]+'px,'+MAP_PTS[target][1]+'px)'; }));
+  if(S.lastPos!==target){ S.lastPos=target; save(); }
+}
+
+/* ---------- stage ---------- */
+function blogHTML(p, mode, si){
+  // mode: "tag" (tappable), "show" (highlight clues), "plain"
+  const t=T(si+":clues");
+  let k=0, body="";
+  p.blog.paras.forEach((para,pi)=>{
+    body+="<p>"+para.map((s,j)=>{
+      const id=pi+"-"+j; let cls="s";
+      if(mode==="tag"){ if(UI.sel&&UI.sel.has(id)) cls+=" sel"; if(t.marks.includes(id)) cls+=" no"; }
+      if(mode==="show" && s.c) cls+=" clue";
+      const attrs = mode==="tag" && !t.marks.includes(id) ? ' role="button" tabindex="0" aria-pressed="'+(UI.sel&&UI.sel.has(id)?"true":"false")+'" data-act="sent" data-id="'+id+'"' : "";
+      return '<span class="'+cls+'"'+attrs+'>'+s.t+'</span>';
+    }).join(" ")+"</p>";
+  });
+  const hk="h"+si, liked=S.hearts[hk];
+  return '<article class="blog '+(mode==="tag"?"tagging":"")+'"><div class="bhead"><div class="mini">'+avatar(p)+'</div><div class="who"><b>'+p.name+'</b><small>'+p.handle+' · '+p.blog.date+'</small></div></div>'+
+    '<div class="bbody"><h3>'+p.blog.title+'</h3>'+body+'</div>'+
+    '<div class="bfoot"><button type="button" class="heart '+(liked?"on":"")+'" data-act="heart" data-k="'+hk+'">'+(liked?"♥":"♡")+' '+(12+si*3+(liked?1:0))+'</button><span>💬 1 comment</span></div>'+
+    '<div class="comment"><b>'+p.blog.comment.who+'</b> '+p.blog.comment.t+'</div></article>';
+}
+function p2BlogHTML(p, si){
+  const hk="h"+si, liked=S.hearts[hk];
+  return '<article class="blog p2post"><div class="bhead"><div class="mini">'+avatar(p)+'</div><div class="who"><b>'+p.name+'</b><small>'+p.handle+' · '+p.p2.date+'</small></div><span class="pill" style="margin-left:auto">Follow-up post</span></div>'+
+    '<div class="bbody"><h3>'+p.p2.title+'</h3>'+p.p2.paras.map(x=>"<p>"+x+"</p>").join("")+'</div>'+
+    '<div class="bfoot"><button type="button" class="heart '+(liked?"on":"")+'" data-act="heart" data-k="'+hk+'">'+(liked?"♥":"♡")+' '+(9+si+(liked?1:0))+'</button></div></article>'+
+    '<details class="reread"><summary>Reread '+p.name.split(" ")[0]+'\'s first post (from Part 1)</summary><div class="bbody"><h3>'+p.blog.title+'</h3>'+p.blog.paras.map(pp=>"<p>"+pp.map(s=>s.t).join(" ")+"</p>").join("")+'</div></details>';
+}
+function viewStage(){
+  const si=S.stage, st=STAGES[si], p=PEOPLE[st.pi], reg=REGIONS[si];
+  const fbStep = UI.fb && UI.fb.si===si ? UI.fb.step : null;
+  const step = fbStep || curStep(si);
+  const level = st.part===1 ? st.pi+1 : st.pi+1;
+  const stepNames={clues:"Find clues",id:"Identify",diis:"D-I-I-S",sort:"Sort signals",act:"Take action"};
+  const stepsHTML='<div class="steps">'+st.steps.map(s=>{ const d=S.t[si+":"+s]&&S.t[si+":"+s].done; return '<span class="'+(d?"ok":(s===step?"cur":""))+'">'+(d?"✓ ":"")+stepNames[s]+'</span>'; }).join("")+'</div>';
+  const bub=UI.bubble[si]!=null ? (st.part===1?p.thoughts:p.p2.thoughts)[UI.bubble[si]] : "Tap me to hear what I'm thinking.";
+  const person='<div class="person"><div class="bubble" id="bubble">'+esc(bub)+'</div><button type="button" class="avbox" data-act="talk" aria-label="Hear '+p.name+'\'s thoughts">'+avatar(p)+'</button>'+
+    '<div class="profile"><b>'+p.name+'</b>, '+p.age+'<br><small class="muted">'+p.bio+'</small></div>'+stepsHTML+'</div>';
+  let blog;
+  if(st.part===1){ const mode = step==="clues" && !(S.t[si+":clues"]&&S.t[si+":clues"].done) ? "tag" : "show"; blog=blogHTML(p,mode,si); }
+  else blog=p2BlogHTML(p,si);
+  let task="";
+  if(!step){ task=stageDoneHTML(si); }
+  else task = ({clues:taskClues,id:taskId,diis:taskDiis,sort:taskSort,act:taskAct})[step](si,p);
+  return '<div class="fade" style="--region:'+reg.g+'"><div class="stagehead"><div><span class="pill">Part '+st.part+' · Stop '+(si+1)+' of 12</span><h2 style="margin-top:6px">'+reg.n+'</h2></div>'+
+    '<div style="text-align:right"><small>Trail difficulty</small><br>'+dots(level)+'</div></div>'+
+    '<div class="grid2">'+person+'<div>'+blog+'<div class="card task" id="task">'+task+'</div></div></div>'+
+    '<div class="row" style="margin-top:14px"><button class="btn ghost" data-act="tomap" type="button">← Trail map</button></div></div>';
+}
+function fbBox(){ const f=UI.fb; if(!f) return ""; return '<div class="fb '+f.kind+'" role="status"><h4>'+f.title+'</h4><div>'+f.html+'</div>'+(f.next?'<div style="margin-top:10px"><button class="btn" data-act="fbnext" type="button">'+f.next+'</button></div>':'')+'</div>'; }
+function stageDoneHTML(si){
+  const st=STAGES[si], p=PEOPLE[st.pi];
+  const isLastP1 = si===5, isLast = si===11;
+  return '<div class="stagedone"><div class="badge">'+(isLast?"🏔️":"🏅")+'</div><h2>Stop '+(si+1)+' complete!</h2><p>You finished '+p.name.split(" ")[0]+'\'s '+(st.part===1?"story":"check-in")+'.</p>'+
+    (p.safety&&st.part===1?'<div class="safety" style="text-align:left"><b>If this sounds like you or a friend:</b> you are not alone. Talk to a trusted adult, or call or text <b>988</b> any time.</div>':'')+
+    '<button class="btn" data-act="tomap" type="button" style="margin-top:12px">'+(isLast?"Climb to the summit →":isLastP1?"Head to Ridge Camp →":"Back to the trail →")+'</button></div>';
+}
+function taskHead(q,t){ return '<div class="q">'+q+attemptPips(t)+'</div>'; }
+
+function taskClues(si,p){
+  const id=si+":clues", t=T(id);
+  if(t.done) return taskHead("Find the clues",t)+fbBox();
+  if(!UI.sel) UI.sel=new Set();
+  const n=p.need, c=UI.sel.size;
+  return taskHead("Step 1 · Tap "+n+" sentences in "+p.name.split(" ")[0]+"'s blog that are <u>signs</u> of what they're going through.",t)+
+    '<p class="muted" style="margin:6px 0 0">Sentences you can tap are underlined in blue. Tap again to unselect. Choose signs, not just background information.</p>'+
+    '<p style="margin:10px 0"><b>'+c+' / '+n+'</b> selected</p>'+
+    '<button class="btn" data-act="checkClues" type="button" '+(c===n?"":"disabled")+'>Check my clues</button>'+fbBox();
+}
+function taskId(si,p){
+  const id=si+":id", t=T(id);
+  const right=CONDS.findIndex(c=>c.k===p.cond);
+  return taskHead("Step 2 · What is "+p.name.split(" ")[0]+" most likely experiencing?",t)+
+    '<div class="tiles">'+CONDS.map((c,i)=>{ const isR=t.done&&i===right; const dis=t.done||t.elim.includes(i); return '<button type="button" class="tile '+(UI.sel===i?"sel":"")+(isR?" right":"")+'" data-act="pickId" data-i="'+i+'" '+(dis&&!isR?"disabled":(t.done?"disabled":""))+'><span class="ic">'+c.ic+'</span>'+c.name+'</button>'; }).join("")+'</div>'+
+    (t.done?"":'<button class="btn" data-act="checkId" type="button" '+(UI.sel!=null?"":"disabled")+'>Lock it in</button>')+fbBox();
+}
+function taskDiis(si,p){
+  const id=si+":diis", t=T(id);
+  if(!UI.sel||!Array.isArray(UI.sel)) UI.sel=[null,null,null,null];
+  const all=UI.sel.every(x=>x!=null);
+  const bad = t.lastBad||[];
+  return taskHead("Step 3 · Rate "+p.name.split(" ")[0]+"'s situation with D-I-I-S",t)+
+    '<div class="diis">'+DIIS.map((d,r)=>{
+      const rowCls = t.done?"good":(bad.includes(r)&&UI.fb?"bad":"");
+      return '<div class="drow '+rowCls+'"><h4><span class="L">'+d.L+'</span>'+d.name+' <small class="muted" style="font-weight:400">'+d.ask+'</small></h4><div class="chips">'+
+        d.opts.map((o,k)=>{ const isR=t.done&&p.diis[r]===k; return '<button type="button" class="chip '+(isR?"right":(!t.done&&UI.sel[r]===k?"sel":""))+'" data-act="pickDiis" data-r="'+r+'" data-k="'+k+'" '+(t.done?"disabled":"")+'>'+o+'</button>'; }).join("")+
+        '</div>'+(!t.done&&UI.fb&&t.tries>=2&&bad.includes(r)?'<div class="rowhint">Hint: '+p.diisHints[r]+'</div>':'')+'</div>';
+    }).join("")+'</div>'+
+    (t.done?"":'<button class="btn" data-act="checkDiis" type="button" '+(all?"":"disabled")+'>Check D-I-I-S</button>')+fbBox();
+}
+function taskSort(si,p){
+  const id=si+":sort", t=T(id), cards=p.p2.cards, ord=shuffled(cards.length, si*31+1);
+  if(!UI.sel||!Array.isArray(UI.sel)) UI.sel=cards.map(()=>null);
+  const all=UI.sel.every(x=>x!=null);
+  const bad=t.lastBad||[];
+  const counts=[0,1,2].map(k=>UI.sel.filter(x=>x===k).length);
+  return taskHead("Step 1 · Sort each signal from "+p.name.split(" ")[0]+"'s follow-up post",t)+
+    '<p class="muted" style="margin:6px 0 0">Choose <b style="color:var(--green)">Protective</b>, <b style="color:var(--amber)">Warning</b>, or <b style="color:var(--red)">Red flag</b> for every card.</p>'+
+    '<div class="tally" style="margin-top:8px">'+BINS.map(b=>'<span style="background:'+['var(--green2)','var(--amber2)','var(--red2)'][b.k]+'">'+b.ic+' '+b.short+': '+(t.done?cards.filter(c=>c.b===b.k).length:counts[b.k])+'</span>').join("")+'</div>'+
+    '<div class="sorts">'+ord.map(ci=>{
+      const c=cards[ci], v=t.done?c.b:UI.sel[ci];
+      const cls="scard"+(v!=null?" b"+v:"")+(!t.done&&UI.fb&&t.tries>=2&&bad.includes(ci)?" bad":"");
+      return '<div class="'+cls+'"><div>'+c.t+'</div><div class="bins">'+BINS.map(b=>'<button type="button" class="bin k'+b.k+' '+(v===b.k?"sel":"")+'" data-act="pickBin" data-c="'+ci+'" data-k="'+b.k+'" '+(t.done?"disabled":"")+' aria-pressed="'+(v===b.k)+'">'+b.ic+' '+b.short+'</button>').join("")+'</div>'+(t.done?'<div class="why">'+c.why+'</div>':'')+'</div>';
+    }).join("")+'</div>'+
+    (t.done?"":'<button class="btn" data-act="checkSort" type="button" '+(all?"":"disabled")+'>Check my sort</button>')+fbBox();
+}
+function taskAct(si,p){
+  const id=si+":act", t=T(id), a=p.p2.act, ord=shuffled(a.opts.length, si*53+7);
+  return taskHead("Step 2 · "+a.q,t)+
+    '<div class="opts">'+ord.map(oi=>{ const isR=t.done&&oi===0; const dis=t.done||t.elim.includes(oi); return '<button type="button" class="opt '+(UI.sel===oi?"sel":"")+(isR?" right":"")+'" data-act="pickAct" data-i="'+oi+'" '+(dis?"disabled":"")+'>'+a.opts[oi]+'</button>'; }).join("")+'</div>'+
+    (t.done?"":'<button class="btn" data-act="checkAct" type="button" '+(UI.sel!=null?"":"disabled")+'>Lock it in</button>')+fbBox();
+}
+
+/* grading */
+function finishTask(t, correct){
+  if(correct){ t.done=true; t.att=t.tries; }
+  else if(t.tries>=MAX_TRIES){ t.done=true; t.att=0; }
+  save();
+}
+function nextLabel(si){ const left=STAGES[si].steps.filter(s=>!(S.t[si+":"+s]&&S.t[si+":"+s].done)); return left.length?"Next step →":"Finish this stop →"; }
+function setFb(si,step,kind,title,html,next){ UI.fb={si,step,kind,title,html,next}; }
+function praise(t){ return t.att===1?"Nailed it on the first try!":t.att===2?"Got it on try 2!":"Got it on try 3 — nice persistence!"; }
+function shakeTask(){ const el=document.getElementById("task"); if(el){ el.classList.remove("shake"); void el.offsetWidth; el.classList.add("shake"); } }
+
+function checkClues(si){
+  const p=PEOPLE[STAGES[si].pi], t=T(si+":clues");
+  const clueSet=new Set(); p.blog.paras.forEach((pa,pi)=>pa.forEach((s,j)=>{ if(s.c) clueSet.add(pi+"-"+j); }));
+  const picks=[...UI.sel], good=picks.filter(x=>clueSet.has(x)), wrong=picks.filter(x=>!clueSet.has(x));
+  t.tries++;
+  const ok=wrong.length===0;
+  finishTask(t,ok);
+  if(ok){ setFb(si,"clues","good",praise(t),"Every sentence you picked is a sign. All the signs in the post are now highlighted in green. Notice how many there are!",nextLabel(si)); }
+  else if(t.done){ setFb(si,"clues","reveal","Here are the signs","The highlighted sentences are signs. "+p.clueHints[1],nextLabel(si)); }
+  else {
+    if(t.tries>=2){ wrong.forEach(x=>{ if(!t.marks.includes(x)) t.marks.push(x); }); }
+    wrong.forEach(x=>UI.sel.delete(x)); save();
+    setFb(si,"clues","bad","Not quite. "+good.length+" of your "+picks.length+" picks are signs.",
+      (t.tries>=2?"The sentences that are <b>not</b> signs are now crossed out. ":"Your correct picks are still selected. ")+"<b>Hint:</b> "+p.clueHints[t.tries-1],null);
+    shakeTask();
+  }
+  render(); announce(UI.fb.title);
+}
+function checkId(si){
+  const p=PEOPLE[STAGES[si].pi], t=T(si+":id"), right=CONDS.findIndex(c=>c.k===p.cond), pick=UI.sel;
+  t.tries++; const ok=pick===right; if(!ok&&!t.elim.includes(pick)) t.elim.push(pick);
+  finishTask(t,ok);
+  if(ok) setFb(si,"id","good",praise(t),p.idExplain,nextLabel(si));
+  else if(t.done) setFb(si,"id","reveal","The answer is "+CONDS[right].name,p.idExplain,nextLabel(si));
+  else { setFb(si,"id","bad","Not "+CONDS[pick].name+". Try again.","<b>Hint:</b> "+p.idHints[t.tries-1]+' <br><small class="muted">Tip: open the Field Guide at the top to compare the signs.</small>',null); UI.sel=null; shakeTask(); }
+  render(); announce(UI.fb.title);
+}
+function checkDiis(si){
+  const p=PEOPLE[STAGES[si].pi], t=T(si+":diis");
+  const bad=[0,1,2,3].filter(r=>UI.sel[r]!==p.diis[r]);
+  t.tries++; t.lastBad=bad; const ok=bad.length===0; finishTask(t,ok);
+  if(ok) setFb(si,"diis","good",praise(t),p.diisExplain,nextLabel(si));
+  else if(t.done) setFb(si,"diis","reveal","Here's the correct D-I-I-S",p.diisExplain,nextLabel(si));
+  else {
+    const names=bad.map(r=>DIIS[r].name).join(", ");
+    setFb(si,"diis","bad",bad.length+" of 4 need another look: "+names,
+      t.tries===1?"<b>Hint:</b> Reread the post for the row"+(bad.length>1?"s":"")+" in red. "+(bad.includes(3)?"For Safety, ask: did anyone talk about or do something that could hurt them? ":"")+"Your correct rows are kept.":"Specific hints are now shown under each red row.",null);
+    bad.forEach(r=>UI.sel[r]=null); shakeTask();
+  }
+  save(); render(); announce(UI.fb.title);
+}
+function checkSort(si){
+  const p=PEOPLE[STAGES[si].pi], t=T(si+":sort"), cards=p.p2.cards;
+  const bad=cards.map((c,i)=>UI.sel[i]!==c.b?i:-1).filter(i=>i>=0);
+  t.tries++; t.lastBad=bad; const ok=bad.length===0; finishTask(t,ok);
+  if(ok) setFb(si,"sort","good",praise(t),"Every card is in the right place. Read the reason under each card.",nextLabel(si));
+  else if(t.done) setFb(si,"sort","reveal","Here's the correct sort","Read the reason under each card to see why it belongs there.",nextLabel(si));
+  else {
+    const missedRed=bad.some(i=>cards[i].b===2), overRed=bad.some(i=>UI.sel[i]===2);
+    let h = t.tries===1 ? "<b>Hint:</b> "+(missedRed?"A red flag is hiding in the Warning or Protective bin. Red flag = someone's safety or health is in danger <i>right now</i>.":overRed?"Something you marked as a red flag is a warning sign. Red flags mean danger <i>now</i>; warning signs mean someone is struggling.":"Protective = something that HELPS. Warning = a change that shows they're struggling.")
+      : "<b>Hint:</b> The cards outlined in red are in the wrong spot. Ask: does this help, show struggle, or put someone in danger now?";
+    setFb(si,"sort","bad",bad.length+" card"+(bad.length>1?"s are":" is")+" in the wrong spot.",h,null); shakeTask();
+  }
+  save(); render(); announce(UI.fb.title);
+}
+function checkAct(si){
+  const p=PEOPLE[STAGES[si].pi], a=p.p2.act, t=T(si+":act"), pick=UI.sel;
+  t.tries++; const ok=pick===0; if(!ok&&!t.elim.includes(pick)) t.elim.push(pick); finishTask(t,ok);
+  if(ok) setFb(si,"act","good",praise(t),a.explain,nextLabel(si));
+  else if(t.done) setFb(si,"act","reveal","Here's the best response",a.explain,nextLabel(si));
+  else { setFb(si,"act","bad","Not the best choice. Try again.","<b>Hint:</b> "+a.hints[t.tries-1],null); UI.sel=null; shakeTask(); }
+  render(); announce(UI.fb.title);
+}
+
+/* ---------- results ---------- */
+function viewResults(){
+  const total=TASK_IDS.reduce((s,id)=>s+credit(id),0), acc=Math.round(100*total/N_TASKS);
+  const first=TASK_IDS.filter(id=>S.t[id]&&S.t[id].att===1).length;
+  const complete=doneCount()===N_TASKS;
+  const mins=fmtTime((S.finishedAt||Date.now())-S.startedAt);
+  const code=hash8([S.name.trim().toLowerCase(),S.period,acc,first,S.finishedAt].join("|"));
+  const when=new Date(S.finishedAt||Date.now()).toLocaleString([], {dateStyle:"medium",timeStyle:"short"});
+  const mark=id=>{ const t=S.t[id]; if(!t||!t.done) return '<span class="mark a0">–</span>'; return t.att===0?'<span class="mark a0" title="Shown after 3 tries">✕</span>':'<span class="mark a'+t.att+'" title="Solved on try '+t.att+'">'+t.att+'</span>'; };
+  const p1=PEOPLE.map((p,i)=>'<tr><td>'+(i+1)+'. '+p.name+' <small class="muted">('+CONDS.find(c=>c.k===p.cond).name+')</small></td><td class="c">'+mark(i+":clues")+'</td><td class="c">'+mark(i+":id")+'</td><td class="c">'+mark(i+":diis")+'</td></tr>').join("");
+  const p2=PEOPLE.map((p,i)=>'<tr><td>'+(i+7)+'. '+p.name+'</td><td class="c">'+mark((i+6)+":sort")+'</td><td class="c">'+mark((i+6)+":act")+'</td></tr>').join("");
+  // strengths
+  const cat=(ids)=>Math.round(100*ids.reduce((s,id)=>s+credit(id),0)/ids.length);
+  const areas=[["Spotting signs in a story",PEOPLE.map((p,i)=>i+":clues")],["Identifying the condition",PEOPLE.map((p,i)=>i+":id")],["Rating with D-I-I-S",PEOPLE.map((p,i)=>i+":diis")],["Sorting protective / warning / red flags",PEOPLE.map((p,i)=>(i+6)+":sort")],["Choosing the right action",PEOPLE.map((p,i)=>(i+6)+":act")]].map(a=>[a[0],cat(a[1])]);
+  const best=areas.slice().sort((a,b)=>b[1]-a[1])[0], low=areas.slice().sort((a,b)=>a[1]-b[1])[0];
+  return '<div class="results card fade">'+
+    '<div class="rtop"><div><span class="pill">Expedition Results</span><h1 style="margin:8px 0 2px">'+esc(S.name)+'</h1><div class="muted">'+(S.period?esc(S.period)+" · ":"")+when+'</div></div>'+
+    '<div style="text-align:right">'+(complete?'<div class="stamp">COMPLETE ✓</div>':'<div class="stamp" style="color:var(--amber);border-color:var(--amber)">IN PROGRESS</div>')+'<div style="margin-top:10px">Code: <span class="code">'+code+'</span></div></div></div>'+
+    '<div class="kpis"><div><b>'+doneCount()+'/'+N_TASKS+'</b><small>tasks completed</small></div><div><b>'+acc+'%</b><small>accuracy score</small></div><div><b>'+first+'</b><small>first-try correct</small></div><div><b>'+mins+'</b><small>time on trail</small></div></div>'+
+    '<div class="rgrid">'+
+      '<div><h3>Part 1 · Understanding Emotional Health</h3><table class="rtable"><tr><th>Person</th><th class="c">Clues</th><th class="c">ID</th><th class="c">DIIS</th></tr>'+p1+'</table></div>'+
+      '<div><h3>Part 2 · Protective, Warning &amp; Red Flags</h3><table class="rtable"><tr><th>Person</th><th class="c">Sort</th><th class="c">Action</th></tr>'+p2+'</table>'+
+      '<p style="margin-top:12px;font-size:.9rem"><b>Strongest skill:</b> '+best[0]+' ('+best[1]+'%)<br><b>Keep practicing:</b> '+(low[1]<100?low[0]+' ('+low[1]+'%)':'Nothing. Perfect run!')+'</p></div>'+
+    '</div>'+
+    '<p class="muted" style="font-size:.82rem;margin-top:10px">Key: <span class="mark a1">1</span> solved on try 1 · <span class="mark a2">2</span> try 2 · <span class="mark a3">3</span> try 3 · <span class="mark a0">✕</span> answer shown after 3 tries</p>'+
+    '<div class="shot">📸 Take a screenshot of this whole page and submit it to '+esc(CONFIG.SUBMIT_TO)+'.<br><small class="muted" style="font-weight:400">Chromebook: press Ctrl + Shift + Show windows (□||||) · Windows: Win + Shift + S · Mac: Cmd + Shift + 4</small></div>'+
+    '<div class="safety" style="margin-top:14px"><b>You are never alone.</b> If you or a friend are struggling, talk to a trusted adult or school counselor. Call or text <b>988</b> (Suicide &amp; Crisis Lifeline) any time, or text <b>HOME</b> to <b>741741</b>. In an emergency, call <b>911</b>.</div>'+
+    '<div class="row" style="margin-top:14px"><button class="btn ghost" data-act="tomap" type="button">View trail map</button></div>'+
+  '</div>';
+}
+
+/* ---------- modals ---------- */
+function openModal(html){ $modal.innerHTML='<div class="modal" data-act="closeBg"><div class="card" role="dialog" aria-modal="true"><button class="x" data-act="close" aria-label="Close" type="button">×</button>'+html+'</div></div>'; const c=$modal.querySelector(".x"); c&&c.focus(); }
+function guideHTML(){
+  return '<h2>Field Guide</h2><table class="gtable"><tr><th>Condition</th><th>Common signs</th></tr>'+CONDS.map(c=>'<tr><td><b>'+c.ic+' '+c.name+'</b><br><small class="muted">'+c.note+'</small></td><td>'+c.signs.join(", ")+'</td></tr>').join("")+'</table>'+
+    '<h3 style="margin-top:16px">D-I-I-S</h3><table class="gtable">'+DIIS.map(d=>'<tr><td><b>'+d.L+' · '+d.name+'</b></td><td>'+d.ask+'<br><small class="muted">'+d.opts.join(" · ")+'</small></td></tr>').join("")+'</table>'+
+    '<h3 style="margin-top:16px">Signals</h3><table class="gtable">'+BINS.map(b=>'<tr><td><b>'+b.ic+' '+b.name+'</b></td><td>'+b.def+'</td></tr>').join("")+'</table>';
+}
+function helpHTML(){
+  return '<h2>Need help now?</h2><p>If you or someone you know is struggling or not safe, you don\'t have to handle it alone.</p><div class="hotline">'+
+    '<div><b>Call or text 988</b><br>Suicide &amp; Crisis Lifeline: free, confidential, 24/7.</div>'+
+    '<div><b>Text HOME to 741741</b><br>Crisis Text Line: 24/7.</div>'+
+    '<div><b>Call 911</b><br>If someone is in immediate danger.</div>'+
+    '<div><b>Talk to a trusted adult</b><br>A parent, school counselor, teacher, coach, or school nurse.</div></div>'+
+    '<p class="muted" style="font-size:.88rem">The people in this activity are fictional. If something here brought up hard feelings, it\'s okay to pause and talk to someone.</p>';
+}
+
+/* ======================= EVENTS ======================= */
+function go(view){ S.view=view; UI.sel=null; UI.fb=null; save(); render(true); }
+function openStage(si){ S.stage=si; S.view="stage"; UI.sel=null; UI.fb=null; save(); render(true); }
+function nextFromMap(){
+  const f=firstOpenStage();
+  if(f<0){ if(!S.finishedAt){ S.finishedAt=Date.now(); } go("results"); return; }
+  if(f===6&&!S.camp2){ UI.flips={}; go("camp2"); return; }
+  openStage(f);
+}
+document.addEventListener("click",e=>{
+  const el=e.target.closest("[data-act]"); if(!el) return;
+  const a=el.dataset.act;
+  if(a==="closeBg"){ if(e.target===el) $modal.innerHTML=""; return; }
+  if(a==="close"){ $modal.innerHTML=""; return; }
+  if(a==="help"){ openModal(helpHTML()); return; }
+  if(a==="guide"){ openModal(guideHTML()); return; }
+  if(a==="begin"){
+    const nm=document.getElementById("nm").value.trim().replace(/\s+/g," "), pd=document.getElementById("pd").value.trim();
+    if(nm.length<3||!/\s/.test(nm)){ document.getElementById("nmerr").textContent="Please type your first AND last name so your teacher knows it's you."; document.getElementById("nm").focus(); return; }
+    S.name=nm; S.period=pd; if(!S.startedAt) S.startedAt=Date.now();
+    if(S.camp1){ go("map"); } else { UI.flips={}; go("camp1"); }
+    return;
+  }
+  if(a==="flip"){ const i=el.dataset.i; UI.flips[i]=true; el.classList.toggle("on"); el.setAttribute("aria-pressed",el.classList.contains("on")?"true":"false");
+    const part=S.view==="camp1"?1:2, n=part===1?6:3;
+    document.getElementById("flipmsg").textContent=flipMsg(part);
+    document.getElementById("flipgo").disabled=Object.keys(UI.flips).length<n; return; }
+  if(a==="camp1done"){ S.camp1=true; S.lastPos=0; go("map"); return; }
+  if(a==="camp2done"){ S.camp2=true; openStage(6); return; }
+  if(a==="open"){ openStage(+el.dataset.si); return; }
+  if(a==="next"){ nextFromMap(); return; }
+  if(a==="tomap"){ if(firstOpenStage()<0 && !S.finishedAt) S.finishedAt=Date.now(); go(firstOpenStage()<0 && S.view==="stage" ? "results" : "map"); return; }
+  if(a==="heart"){ S.hearts[el.dataset.k]=!S.hearts[el.dataset.k]; save(); keep(()=>render()); return; }
+  if(a==="talk"){ const si=S.stage, st=STAGES[si], p=PEOPLE[st.pi], arr=st.part===1?p.thoughts:p.p2.thoughts; UI.bubble[si]=UI.bubble[si]==null?0:(UI.bubble[si]+1)%arr.length; const b=document.getElementById("bubble"); b.textContent=arr[UI.bubble[si]]; b.classList.remove("pop"); void b.offsetWidth; b.classList.add("pop"); return; }
+  const si=S.stage;
+  if(a==="sent"){ if(!(UI.sel instanceof Set)) UI.sel=new Set(); const id=el.dataset.id, n=PEOPLE[STAGES[si].pi].need;
+    if(UI.sel.has(id)) UI.sel.delete(id); else if(UI.sel.size<n) UI.sel.add(id); else { announce("You already picked "+n+". Unselect one first."); }
+    keep(()=>render()); return; }
+  if(a==="checkClues"){ keep(()=>checkClues(si)); return; }
+  if(a==="pickId"){ UI.sel=+el.dataset.i; keep(()=>render()); return; }
+  if(a==="checkId"){ keep(()=>checkId(si)); return; }
+  if(a==="pickDiis"){ if(!Array.isArray(UI.sel)) UI.sel=[null,null,null,null]; UI.sel[+el.dataset.r]=+el.dataset.k; keep(()=>render()); return; }
+  if(a==="checkDiis"){ keep(()=>checkDiis(si)); return; }
+  if(a==="pickBin"){ const cards=PEOPLE[STAGES[si].pi].p2.cards; if(!Array.isArray(UI.sel)) UI.sel=cards.map(()=>null); UI.sel[+el.dataset.c]=+el.dataset.k; keep(()=>render()); return; }
+  if(a==="checkSort"){ keep(()=>checkSort(si)); return; }
+  if(a==="pickAct"){ UI.sel=+el.dataset.i; keep(()=>render()); return; }
+  if(a==="checkAct"){ keep(()=>checkAct(si)); return; }
+  if(a==="fbnext"){ UI.fb=null; UI.sel=null; render(); const tk=document.getElementById("task"); if(tk) tk.scrollIntoView({behavior:"smooth",block:"start"}); return; }
+});
+function keep(fn){ const y=window.scrollY; fn(); window.scrollTo(0,y); }
+document.addEventListener("keydown",e=>{
+  if(e.key==="Escape" && $modal.innerHTML){ $modal.innerHTML=""; return; }
+  const el=e.target.closest && e.target.closest('[role="button"][data-act]');
+  if(el && (e.key==="Enter"||e.key===" ")){ e.preventDefault(); el.click(); }
+  if(e.key==="Enter" && e.target.id && (e.target.id==="nm"||e.target.id==="pd")){ document.querySelector('[data-act="begin"]').click(); }
+});
+render(true);
+</script>
+</body>
+</html>
