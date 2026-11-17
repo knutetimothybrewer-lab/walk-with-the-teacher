@@ -381,7 +381,8 @@ h1,h2,h3,.btn,.tile,.q{font-weight:800;letter-spacing:-.01em}
 const CONFIG = {
   TITLE: "Emotional Health Expedition",
   SUBMIT_TO: "Schoology",                 // shown on the results page
-  CREDIT: [1, 0.75, 0.5],                 // credit on try 1 / 2 / 3; 0 after a third miss
+  CREDIT: [1, 0.75, 0.5],                 // credit on try 1 / 2 / 3
+  MISS_CREDIT: 0.25,                      // credit when solved after the 3 scored tries (answers are never shown; students keep trying with hints)
   STORAGE_KEY: "ehx-progress-v1",
   RESET_PARAM: "teacher", RESET_VALUE: "reset"   // open ?teacher=reset to clear a device
 };
@@ -718,7 +719,7 @@ function save(){ try{ store.set(JSON.stringify(S)); }catch(e){} }
 let UI = { sel:null, fb:null, flips:{}, bubble:{} };
 
 function T(id){ return S.t[id] || (S.t[id]={tries:0, done:false, att:0, elim:[], marks:[]}); }
-function credit(id){ const t=S.t[id]; return (t&&t.done&&t.att>0)?CONFIG.CREDIT[t.att-1]:0; }
+function credit(id){ const t=S.t[id]; if(!t||!t.done) return 0; return t.att>0 ? CONFIG.CREDIT[t.att-1] : CONFIG.MISS_CREDIT; }
 function doneCount(){ return TASK_IDS.filter(id=>S.t[id]&&S.t[id].done).length; }
 function stageDone(si){ return STAGES[si].steps.every(st=>S.t[si+":"+st]&&S.t[si+":"+st].done); }
 function curStep(si){ return STAGES[si].steps.find(st=>!(S.t[si+":"+st]&&S.t[si+":"+st].done)); }
@@ -732,7 +733,7 @@ function rng(a){ return function(){ a|=0; a=a+0x6D2B79F5|0; let t=Math.imul(a^a>
 function shuffled(n,salt){ const r=rng(S.seed+salt*7919); const a=[...Array(n).keys()]; for(let i=n-1;i>0;i--){const j=Math.floor(r()*(i+1)); [a[i],a[j]]=[a[j],a[i]];} return a; }
 function hash8(str){ let h1=0xdeadbeef,h2=0x41c6ce57; for(let i=0;i<str.length;i++){const c=str.charCodeAt(i); h1=Math.imul(h1^c,2654435761); h2=Math.imul(h2^c,1597334677);} h1=Math.imul(h1^(h1>>>16),2246822507)^Math.imul(h2^(h2>>>13),3266489909); h2=Math.imul(h2^(h2>>>16),2246822507)^Math.imul(h1^(h1>>>13),3266489909); return (4294967296*(2097151&h2)+(h1>>>0)).toString(36).toUpperCase().padStart(8,"0").slice(-8); }
 function dots(n){ let h='<span class="dots" aria-label="Difficulty '+n+' of 6">'; for(let i=1;i<=6;i++) h+='<b class="'+(i<=n?"on":"")+'"></b>'; return h+"</span>"; }
-function attemptPips(t){ let h='<span class="attempt">'; for(let i=0;i<MAX_TRIES;i++){ let c=""; if(i<t.tries) c="used"; if(t.done&&t.att===i+1) c="won"; h+='<i class="'+c+'"></i>'; } h+=t.done?"":" Try "+(t.tries+1)+" of "+MAX_TRIES; return h+"</span>"; }
+function attemptPips(t){ let h='<span class="attempt">'; for(let i=0;i<MAX_TRIES;i++){ let c=""; if(i<t.tries) c="used"; if(t.done&&t.att===i+1) c="won"; h+='<i class="'+c+'"></i>'; } h+=t.done?"":(t.tries<MAX_TRIES?" Try "+(t.tries+1)+" of "+MAX_TRIES:" Extra try. Use the hint!"); return h+"</span>"; }
 function fmtTime(ms){ const m=Math.max(1,Math.round(ms/60000)); return m+" min"; }
 
 /* ======================= AVATAR ======================= */
@@ -915,7 +916,7 @@ function viewStart(){
     '<p>Hike a trail of 12 stops. At each one you\'ll meet a teen, read their blog, and figure out what they\'re going through. The trail gets steeper (harder) as you climb.</p>'+
     '<div class="howto"><div><b>Part 1 · Feelings Valley</b>Spot stress, anxiety, depression, panic, grief, or emotional distress, then rate it with <b style="display:inline">D-I-I-S</b>.</div>'+
     '<div><b>Part 2 · Signal Ridge</b>Revisit everyone. Sort protective factors, warning signs, and red flags that need an adult right away.</div>'+
-    '<div><b>3 tries each</b>Every task gives you 3 tries with a new hint after each miss. Just finish them all to complete it.</div></div>'+
+    '<div><b>Hints, not penalties</b>Miss one? You get a hint and try again. Try 1 = 100%, try 2 = 75%, try 3 = 50%, and after that you keep going with hints for 25%.</div></div>'+
     '<label class="f" for="nm">Your first and last name</label><input type="text" id="nm" maxlength="60" autocomplete="name" value="'+esc(S.name)+'" placeholder="e.g., Alex Rivera">'+
     '<label class="f" for="pd">Class period / block <span class="muted" style="font-weight:400">(optional)</span></label><input type="text" id="pd" maxlength="20" value="'+esc(S.period)+'" placeholder="e.g., Block 3">'+
     '<p id="nmerr" class="muted" style="color:var(--red);min-height:1.4em;margin-top:6px"></p>'+
@@ -1140,13 +1141,13 @@ function taskAct(si,p){
 /* grading */
 function finishTask(t, correct){
   UI.react = correct ? "cheer" : "oops";
-  if(correct){ t.done=true; t.att=t.tries; }
-  else if(t.tries>=MAX_TRIES){ t.done=true; t.att=0; }
+  if(correct){ t.done=true; t.att = t.tries<=MAX_TRIES ? t.tries : 0; }   // att 0 = solved after the 3 scored tries
   save();
 }
 function nextLabel(si){ const left=STAGES[si].steps.filter(s=>!(S.t[si+":"+s]&&S.t[si+":"+s].done)); return left.length?"Next step →":"Finish this stop →"; }
 function setFb(si,step,kind,title,html,next){ UI.fb={si,step,kind,title,html,next}; }
-function praise(t){ return t.att===1?"Nailed it on the first try!":t.att===2?"Got it on try 2!":"Got it on try 3 — nice persistence!"; }
+function praise(t){ return t.att===1?"Nailed it on the first try!":t.att===2?"Got it on try 2!":t.att===3?"Got it on try 3. Nice persistence!":"You got it! That one took extra tries, and that's how learning works."; }
+function keepGoing(t){ return t.tries>=MAX_TRIES ? '<p style="margin:8px 0 0"><small class="muted">You\'ve used your 3 scored tries, so this one will count as '+Math.round(CONFIG.MISS_CREDIT*100)+'% when you solve it. Keep going. You\'ve got this.</small></p>' : ""; }
 function shakeTask(){ const el=document.getElementById("task"); if(el){ el.classList.remove("shake"); void el.offsetWidth; el.classList.add("shake"); } }
 
 function checkClues(si){
@@ -1157,12 +1158,11 @@ function checkClues(si){
   const ok=wrong.length===0;
   finishTask(t,ok);
   if(ok){ setFb(si,"clues","good",praise(t),"Every sentence you picked is a sign. All the signs in the post are now highlighted in green. Notice how many there are!",nextLabel(si)); }
-  else if(t.done){ setFb(si,"clues","reveal","Here are the signs","The highlighted sentences are signs. "+p.clueHints[1],nextLabel(si)); }
   else {
     if(t.tries>=2){ wrong.forEach(x=>{ if(!t.marks.includes(x)) t.marks.push(x); }); }
     wrong.forEach(x=>UI.sel.delete(x)); save();
     setFb(si,"clues","bad","Not quite. "+good.length+" of your "+picks.length+" picks are signs.",
-      (t.tries>=2?"The sentences that are <b>not</b> signs are now crossed out. ":"Your correct picks are still selected. ")+"<b>Hint:</b> "+p.clueHints[t.tries-1],null);
+      (t.tries>=2?"The sentences that are <b>not</b> signs are now crossed out. ":"Your correct picks are still selected. ")+"<b>Hint:</b> "+p.clueHints[Math.min(t.tries,2)-1]+keepGoing(t),null);
     shakeTask();
   }
   render(); announce(UI.fb.title);
@@ -1172,8 +1172,7 @@ function checkId(si){
   t.tries++; const ok=pick===right; if(!ok&&!t.elim.includes(pick)) t.elim.push(pick);
   finishTask(t,ok);
   if(ok) setFb(si,"id","good",praise(t),p.idExplain,nextLabel(si));
-  else if(t.done) setFb(si,"id","reveal","The answer is "+CONDS[right].name,p.idExplain,nextLabel(si));
-  else { setFb(si,"id","bad","Not "+CONDS[pick].name+". Try again.","<b>Hint:</b> "+p.idHints[t.tries-1]+' <br><small class="muted">Tip: open the Field Guide at the top to compare the signs.</small>',null); UI.sel=null; shakeTask(); }
+  else { setFb(si,"id","bad","Not "+CONDS[pick].name+". Try again.","<b>Hint:</b> "+p.idHints[Math.min(t.tries,2)-1]+' <br><small class="muted">Tip: open the Field Guide at the top to compare the signs.</small>'+keepGoing(t),null); UI.sel=null; shakeTask(); }
   render(); announce(UI.fb.title);
 }
 function checkDiis(si){
@@ -1181,11 +1180,10 @@ function checkDiis(si){
   const bad=[0,1,2,3].filter(r=>UI.sel[r]!==p.diis[r]);
   t.tries++; t.lastBad=bad; const ok=bad.length===0; finishTask(t,ok);
   if(ok) setFb(si,"diis","good",praise(t),p.diisExplain,nextLabel(si));
-  else if(t.done) setFb(si,"diis","reveal","Here's the correct D-I-I-S",p.diisExplain,nextLabel(si));
   else {
     const names=bad.map(r=>DIIS[r].name).join(", ");
     setFb(si,"diis","bad",bad.length+" of 4 need another look: "+names,
-      t.tries===1?"<b>Hint:</b> Reread the post for the row"+(bad.length>1?"s":"")+" in red. "+(bad.includes(3)?"For Safety, ask: did anyone talk about or do something that could hurt them? ":"")+"Your correct rows are kept.":"Specific hints are now shown under each red row.",null);
+      t.tries===1?"<b>Hint:</b> Reread the post for the row"+(bad.length>1?"s":"")+" in red. "+(bad.includes(3)?"For Safety, ask: did anyone talk about or do something that could hurt them? ":"")+"Your correct rows are kept.":"Specific hints are now shown under each red row."+keepGoing(t),null);
     bad.forEach(r=>UI.sel[r]=null); shakeTask();
   }
   save(); render(); announce(UI.fb.title);
@@ -1195,12 +1193,11 @@ function checkSort(si){
   const bad=cards.map((c,i)=>UI.sel[i]!==c.b?i:-1).filter(i=>i>=0);
   t.tries++; t.lastBad=bad; const ok=bad.length===0; finishTask(t,ok);
   if(ok) setFb(si,"sort","good",praise(t),"Every card is in the right place. Read the reason under each card.",nextLabel(si));
-  else if(t.done) setFb(si,"sort","reveal","Here's the correct sort","Read the reason under each card to see why it belongs there.",nextLabel(si));
   else {
     const missedRed=bad.some(i=>cards[i].b===2), overRed=bad.some(i=>UI.sel[i]===2);
     let h = t.tries===1 ? "<b>Hint:</b> "+(missedRed?"A red flag is hiding in the Warning or Protective bin. Red flag = someone's safety or health is in danger <i>right now</i>.":overRed?"Something you marked as a red flag is a warning sign. Red flags mean danger <i>now</i>; warning signs mean someone is struggling.":"Protective = something that HELPS. Warning = a change that shows they're struggling.")
       : "<b>Hint:</b> The cards outlined in red are in the wrong spot. Ask: does this help, show struggle, or put someone in danger now?";
-    setFb(si,"sort","bad",bad.length+" card"+(bad.length>1?"s are":" is")+" in the wrong spot.",h,null); shakeTask();
+    setFb(si,"sort","bad",bad.length+" card"+(bad.length>1?"s are":" is")+" in the wrong spot.",h+keepGoing(t),null); shakeTask();
   }
   save(); render(); announce(UI.fb.title);
 }
@@ -1208,8 +1205,7 @@ function checkAct(si){
   const p=PEOPLE[STAGES[si].pi], a=p.p2.act, t=T(si+":act"), pick=UI.sel;
   t.tries++; const ok=pick===0; if(!ok&&!t.elim.includes(pick)) t.elim.push(pick); finishTask(t,ok);
   if(ok) setFb(si,"act","good",praise(t),a.explain,nextLabel(si));
-  else if(t.done) setFb(si,"act","reveal","Here's the best response",a.explain,nextLabel(si));
-  else { setFb(si,"act","bad","Not the best choice. Try again.","<b>Hint:</b> "+a.hints[t.tries-1],null); UI.sel=null; shakeTask(); }
+  else { setFb(si,"act","bad","Not the best choice. Try again.","<b>Hint:</b> "+a.hints[Math.min(t.tries,2)-1]+keepGoing(t),null); UI.sel=null; shakeTask(); }
   render(); announce(UI.fb.title);
 }
 
@@ -1221,7 +1217,7 @@ function viewResults(){
   const mins=fmtTime((S.finishedAt||Date.now())-S.startedAt);
   const code=hash8([S.name.trim().toLowerCase(),S.period,acc,first,S.finishedAt].join("|"));
   const when=new Date(S.finishedAt||Date.now()).toLocaleString([], {dateStyle:"medium",timeStyle:"short"});
-  const mark=id=>{ const t=S.t[id]; if(!t||!t.done) return '<span class="mark a0">–</span>'; return t.att===0?'<span class="mark a0" title="Shown after 3 tries">✕</span>':'<span class="mark a'+t.att+'" title="Solved on try '+t.att+'">'+t.att+'</span>'; };
+  const mark=id=>{ const t=S.t[id]; if(!t||!t.done) return '<span class="mark a0">–</span>'; return t.att===0?'<span class="mark a0" title="Solved after more than 3 tries">4+</span>':'<span class="mark a'+t.att+'" title="Solved on try '+t.att+'">'+t.att+'</span>'; };
   const p1=PEOPLE.map((p,i)=>'<tr><td>'+(i+1)+'. '+p.name+' <small class="muted">('+CONDS.find(c=>c.k===p.cond).name+')</small></td><td class="c">'+mark(i+":clues")+'</td><td class="c">'+mark(i+":id")+'</td><td class="c">'+mark(i+":diis")+'</td></tr>').join("");
   const p2=PEOPLE.map((p,i)=>'<tr><td>'+(i+7)+'. '+p.name+'</td><td class="c">'+mark((i+6)+":sort")+'</td><td class="c">'+mark((i+6)+":act")+'</td></tr>').join("");
   // strengths
@@ -1237,7 +1233,7 @@ function viewResults(){
       '<div><h3>Part 2 · Protective, Warning &amp; Red Flags</h3><table class="rtable"><tr><th>Person</th><th class="c">Sort</th><th class="c">Action</th></tr>'+p2+'</table>'+
       '<p style="margin-top:12px;font-size:.9rem"><b>Strongest skill:</b> '+best[0]+' ('+best[1]+'%)<br><b>Keep practicing:</b> '+(low[1]<100?low[0]+' ('+low[1]+'%)':'Nothing. Perfect run!')+'</p></div>'+
     '</div>'+
-    '<p class="muted" style="font-size:.82rem;margin-top:10px">Key: <span class="mark a1">1</span> solved on try 1 · <span class="mark a2">2</span> try 2 · <span class="mark a3">3</span> try 3 · <span class="mark a0">✕</span> answer shown after 3 tries</p>'+
+    '<p class="muted" style="font-size:.82rem;margin-top:10px">Key: <span class="mark a1">1</span> solved on try 1 (100%) · <span class="mark a2">2</span> try 2 (75%) · <span class="mark a3">3</span> try 3 (50%) · <span class="mark a0">4+</span> solved after more than 3 tries ('+Math.round(CONFIG.MISS_CREDIT*100)+'%)</p>'+
     '<div class="shot">📸 Take a screenshot of this whole page and submit it to '+esc(CONFIG.SUBMIT_TO)+'.<br><small class="muted" style="font-weight:400">Chromebook: press Ctrl + Shift + Show windows (□||||) · Windows: Win + Shift + S · Mac: Cmd + Shift + 4</small></div>'+
     '<div class="safety" style="margin-top:14px"><b>You are never alone.</b> If you or a friend are struggling, talk to a trusted adult or school counselor. Call or text <b>988</b> (Suicide &amp; Crisis Lifeline) any time, or text <b>HOME</b> to <b>741741</b>. In an emergency, call <b>911</b>.</div>'+
     '<div class="row" style="margin-top:14px"><button class="btn ghost" data-act="tomap" type="button">View trail map</button></div>'+
