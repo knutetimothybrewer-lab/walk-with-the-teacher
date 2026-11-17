@@ -125,7 +125,7 @@ label.f{display:block;font-weight:700;margin:12px 0 4px}
 .stagehead .dots b{background:rgba(255,255,255,.35)}.stagehead .dots b.on{background:#ffd166}
 .person{text-align:center;position:sticky;top:70px}
 @media (max-width:820px){.person{position:static}}
-.avbox{position:relative;cursor:pointer;border:0;background:none;padding:0;width:100%;max-width:240px;margin:0 auto;display:block}
+.avbox{position:relative;cursor:pointer;border:0;background:none;padding:0;width:100%;max-width:190px;margin:0 auto;display:block}
 .avbox svg{width:100%;height:auto;display:block}
 .bubble{position:relative;background:#fff;border:2px solid var(--line);border-radius:16px;padding:10px 12px;font-size:.92rem;font-style:italic;margin:0 auto 10px;max-width:260px;min-height:48px;display:flex;align-items:center;justify-content:center}
 .bubble::after{content:"";position:absolute;bottom:-10px;left:50%;margin-left:-8px;border:8px solid transparent;border-top-color:#fff;border-bottom:0}
@@ -255,8 +255,17 @@ details.reread .bbody{padding:10px 0 0;font-family:var(--serif)}
 .code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:1.1rem;letter-spacing:.12em;background:#1d2b2a;color:#fff;padding:4px 10px;border-radius:8px}
 
 /* avatar animation */
-.av .body{transform-origin:100px 240px;transform-box:view-box;animation:breathe 4s ease-in-out infinite}
+.av .body{transform-origin:100px 256px;transform-box:view-box;animation:breathe 4s ease-in-out infinite}
 .av .head{transform-origin:100px 150px;transform-box:view-box}
+.av .armL,.av .armR,.av .legL,.av .legR{transform-box:view-box}
+.av .armL{transform-origin:60px 184px;animation:armL 4s ease-in-out infinite}
+.av .armR{transform-origin:140px 184px;animation:armR 4s ease-in-out infinite}
+@keyframes armL{50%{transform:rotate(2deg)}}
+@keyframes armR{50%{transform:rotate(-2deg)}}
+.m-anx .legR{transform-origin:118px 250px;animation:tap .5s ease-in-out infinite}
+@keyframes tap{50%{transform:rotate(-4deg)}}
+.m-panic .armL,.m-panic .armR,.m-panic .legs{animation:tremble .14s linear infinite}
+.m-dep .armL{transform:rotate(-2deg)}.m-dep .armR{transform:rotate(2deg)}
 .av .eyes{transform-origin:center;transform-box:fill-box;animation:blink 5s infinite}
 @keyframes breathe{50%{transform:scale(1.025,1.015)}}
 @keyframes blink{0%,46%,50%,100%{transform:scaleY(1)}48%{transform:scaleY(.1)}}
@@ -322,7 +331,7 @@ h1,h2,h3,.btn,.tile,.q{font-weight:800;letter-spacing:-.01em}
 .diorama::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,.55),rgba(255,255,255,.08) 55%,rgba(0,0,0,0))}
 .diorama .hills{position:absolute;left:0;right:0;bottom:0;width:100%;height:46%}
 .diorama .bubble,.diorama .avbox{position:relative;z-index:1}
-.diorama .ground{position:absolute;z-index:1;left:50%;bottom:6px;width:62%;height:22px;margin-left:-31%;border-radius:50%;background:radial-gradient(closest-side,rgba(0,0,0,.35),rgba(0,0,0,0))}
+.diorama .ground{display:none;position:absolute;z-index:1;left:50%;bottom:6px;width:62%;height:22px;margin-left:-31%;border-radius:50%;background:radial-gradient(closest-side,rgba(0,0,0,.35),rgba(0,0,0,0))}
 .avbox{transition:transform .2s;transform-origin:50% 100%}
 .avbox svg{filter:drop-shadow(0 10px 10px rgba(0,0,0,.22))}
 .avbox:hover{transform:scale(1.03)}
@@ -414,219 +423,219 @@ const REGIONS = [
 
 /* People. In each blog, c:1 marks a sentence that is a sign of the condition. */
 const PEOPLE = [
-{ name:"Jordan Reyes", age:16, handle:"@jordan.runs", mood:"m-stress", cond:"stress",
-  look:{skin:"#c98e62", hair:"#2b1d14", style:"short", shirt:"#e07a3f"},
-  bio:"Junior · cross-country · works at Grill Masters",
-  thoughts:["Five more days. Five more days.","Where did I put my learner's permit?","Formulas, then work, then sleep. Maybe.","Why is everyone so LOUD today?"],
-  blog:{ title:"Running on Fumes (Finals Week Edition)", date:"Sunday, 11:48 PM",
+{ name:"Jordan Reyes", age:16, handle:"@jreyes", mood:"m-stress", cond:"stress",
+  look:{skin:"#c98e62", hair:"#2b1d14", style:"short", shirt:"#e07a3f", pants:"#3b4a6b", shoes:"#f2f2f2", eye:"#7a4a26"},
+  bio:"Junior · cross-country · works at a burger place",
+  thoughts:["Chem, then work, then sleep.","Just get to Friday.","Where did I put my permit?","I shouldn't have snapped at him."],
+  blog:{ title:"finals week", date:"Sunday, 11:48 PM",
     paras:[
-      [{t:"Okay, so finals start Monday, my driver's test is Wednesday, and my manager put me on four closing shifts this week."},
-       {t:"I made a color-coded schedule and I'm actually sticking to it, mostly."}],
-      [{t:"I've snapped at my little brother twice today for literally just breathing near me.",c:1},
-       {t:"My shoulders feel like they're up by my ears, and I've had a headache every afternoon since Thursday.",c:1},
-       {t:"Last night I lay in bed going over chemistry formulas until almost 2 a.m.",c:1},
-       {t:"I've been living on vending-machine chips because I keep forgetting to eat real meals.",c:1},
-       {t:"I read the same page of my history notes three times and still couldn't tell you what it said.",c:1}],
-      [{t:"I still went to practice and laughed a ton with the team, which helped."},
-       {t:"My grades are fine so far, and I'm keeping up at work — just slower than usual."},
-       {t:"Honestly, it's a lot, but it's manageable, and I know it all ends Friday."},
-       {t:"Mom says once Friday hits I'm sleeping for twelve hours, and that sounds perfect."}]
+      [{t:"Finals start tomorrow, my driver's test is Wednesday, and I'm closing at work three nights this week because two people quit."},
+       {t:"I made a schedule for all of it, which is helping, mostly."}],
+      [{t:"I got short with my little brother tonight over the TV remote and felt bad right after.",c:1},
+       {t:"My neck and shoulders have been tight all week, and I've had a headache most afternoons.",c:1},
+       {t:"I keep lying in bed going over chem in my head, and last night I didn't fall asleep until almost two.",c:1},
+       {t:"I've basically been eating out of the vending machine because there's no time for a real meal.",c:1},
+       {t:"I read the same page of history notes three times and couldn't tell you what was on it.",c:1}],
+      [{t:"Practice is still fine. It's actually the one part of the day I'm not thinking about any of this."},
+       {t:"My grades are okay and work is okay. I'm just slower at everything."},
+       {t:"It's a lot, but it's manageable, and it's over on Friday."},
+       {t:"Planning to sleep all weekend."}]
     ],
-    comment:{who:"@coach_d", t:"Proud of you for still showing up. Hydrate, eat a real dinner, and get some sleep, Reyes!"} },
+    comment:{who:"@coach_d", t:"Take tomorrow's run easy if you need to. Get some sleep."} },
   need:2,
-  clueHints:["Look for changes in Jordan's body, sleep, eating, mood, or focus — not the list of things on Jordan's schedule.","The second paragraph is packed with signs. The schedule and the jokes at practice are not signs."],
+  clueHints:["Look for changes in Jordan's body, sleep, eating, mood, or focus, not the list of things on Jordan's schedule.","The second paragraph is full of signs. The schedule and the part about practice are not signs."],
   idHints:["Is there one specific pressure causing this? Does Jordan expect it to end soon?","Irritability, headaches, tension, sleep trouble and eating changes, all tied to finals week, point to one condition."],
   idExplain:"<b>Stress.</b> Jordan has a clear, specific pressure (finals, a driver's test, extra shifts) and classic stress signs: irritability, headaches, tension, poor sleep, skipped meals and trouble focusing. Jordan expects it to end on Friday.",
   diis:[1,0,1,0],
-  diisHints:["Jordan's signs started this week and are tied to one event that ends Friday.","Jordan says \"it's a lot, but it's manageable.\"","Sleep and focus are affected, but practice, grades and work are still going fine.","Nothing in the post suggests anyone is in danger."],
-  diisExplain:"<b>D:</b> a few days, tied to finals. <b>I:</b> mild (\"manageable\"). <b>I:</b> some (sleep and focus), but school, work and friends are still on track. <b>S:</b> no safety concern.",
-  p2:{ date:"Two weeks later", title:"Finals: survived. (One scary thing though.)",
-    paras:["Finals are DONE and I passed my driver's test!! My mom made my favorite dinner to celebrate and we watched movies all night.",
-      "Real talk though: last Thursday at work I'd had four energy drinks and no food all day. My chest started hurting, everything went gray, and I almost fainted behind the counter. I didn't tell anyone because I didn't want to make it a big deal.",
-      "My headaches are still kind of hanging around, and I'm still snappy with my brother sometimes. Coach says I can take a recovery week from practice."],
+  diisHints:["Jordan's signs started this week and are tied to one stretch that ends Friday.","Jordan calls it \"a lot, but manageable.\"","Sleep and focus are affected, but practice, grades and work are still okay.","Nothing in the post suggests anyone is in danger."],
+  diisExplain:"<b>D:</b> a few days, tied to finals. <b>I:</b> mild (\"manageable\"). <b>I:</b> some (sleep and focus), but school, work and practice are still on track. <b>S:</b> no safety concern.",
+  p2:{ date:"Two weeks later", title:"update",
+    paras:["Finals are over and I passed my driver's test. My mom made dinner to celebrate, which was nice.",
+      "One thing I didn't mention: last Thursday at work I'd had three energy drinks and hadn't eaten all day. My chest started hurting, my vision went kind of gray, and I had to hold onto the counter so I didn't go down. I didn't tell anyone because I didn't want it to turn into a whole thing.",
+      "The headaches haven't totally gone away, and I'm still short with my brother sometimes. Coach told me to take a recovery week."],
     cards:[
-      {t:"Made a study schedule and stuck to it", b:0, why:"Planning ahead is a healthy coping skill."},
-      {t:"Mom checks in and cooked a celebration dinner", b:0, why:"A supportive family member is a strong protective factor."},
-      {t:"Coach offered a recovery week from practice", b:0, why:"A caring adult who notices and helps is protective."},
-      {t:"Still snapping at his little brother", b:1, why:"Lasting irritability is a warning sign to keep an eye on."},
-      {t:"Headaches keep hanging around after finals ended", b:1, why:"Signs that continue after the stressor ends are a warning sign."},
-      {t:"Chest pain and nearly fainted after four energy drinks and no food", b:2, why:"Chest pain and near-fainting are a medical red flag. Jordan needs to be checked by a doctor or nurse."}
+      {t:"Made a schedule for finals and stuck to it", b:0, why:"Planning ahead is a healthy coping skill."},
+      {t:"His mom checks in and made a celebration dinner", b:0, why:"A supportive family member is a strong protective factor."},
+      {t:"Coach told him to take a recovery week", b:0, why:"A caring adult who notices and helps is protective."},
+      {t:"Still short with his little brother", b:1, why:"Irritability that hangs around is a warning sign to keep an eye on."},
+      {t:"Headaches are still hanging around after finals ended", b:1, why:"Signs that continue after the stressor ends are a warning sign."},
+      {t:"Chest pain and nearly passed out after energy drinks and no food", b:2, why:"Chest pain and nearly passing out are a medical red flag. Jordan needs to be checked by a doctor or nurse."}
     ],
-    act:{ q:"Jordan's friend reads this post. What's the best next step about the chest pain and near-fainting?",
-      opts:["Encourage Jordan to tell a parent today and get checked by a doctor or the school nurse","Tell Jordan to drink a different energy drink next time","Wait and see if it happens again before saying anything","Tell Jordan it's just stress and will go away on its own"],
-      hints:["Chest pain and almost fainting are physical symptoms. Who is trained to check those?","This is a red flag, so an adult and a medical professional need to know — soon, not \"if it happens again.\""],
-      explain:"Chest pain and almost fainting are <b>medical red flags</b>. Even if stress and caffeine caused them, a doctor or nurse needs to check. A parent or trusted adult should know today." },
-    thoughts:["I didn't want to make a big deal of it…","Twelve hours of sleep was amazing.","Maybe I should tell my mom about Thursday."] }
+    act:{ q:"You're Jordan's friend and you read this post. What's the best next step about the chest pain and almost passing out?",
+      opts:["Encourage Jordan to tell a parent today and get checked by a doctor or the school nurse","Tell Jordan to switch to a different energy drink","Wait and see if it happens again before saying anything","Tell Jordan it's just stress and it'll go away"],
+      hints:["Chest pain and almost passing out are physical symptoms. Who is trained to check those?","This is a red flag, so an adult and a medical professional need to know soon, not \"if it happens again.\""],
+      explain:"Chest pain and almost passing out are <b>medical red flags</b>. Even if stress and caffeine caused them, a doctor or nurse needs to check. A parent or trusted adult should know today." },
+    thoughts:["I probably should've said something about Thursday.","Finally slept.","It was probably nothing. Right?"] }
 },
-{ name:"Priya Nair", age:15, handle:"@priya.paints", mood:"m-panic", cond:"panic",
-  look:{skin:"#8d5a3b", hair:"#141010", style:"long", shirt:"#3f8ee0"},
-  bio:"Sophomore · art club · loves hiking",
-  thoughts:["Breathe in… two… three… four…","What if it happens again in class?","I'm okay. I'm okay. I'm okay.","Why did my body DO that?"],
-  blog:{ title:"What happened in the gym (I'm okay now)", date:"Tuesday, 8:15 PM",
+{ name:"Priya Nair", age:15, handle:"@priya.n", mood:"m-panic", cond:"panic",
+  look:{skin:"#8d5a3b", hair:"#141010", style:"long", shirt:"#3f8ee0", pants:"#2d2d3a", shoes:"#f4e9dc", eye:"#3b2414"},
+  bio:"Sophomore · art club",
+  thoughts:["In for four, out for four.","What if it happens in class?","I'm fine now. I think.","Why did that happen?"],
+  blog:{ title:"something weird happened in PE", date:"Tuesday, 8:15 PM",
     paras:[
-      [{t:"Yesterday during the mile run in PE, something happened that I still can't really explain."},
-       {t:"Out of nowhere my heart started pounding so hard I could see my shirt moving.",c:1},
-       {t:"I couldn't get a full breath — it felt like someone was sitting on my chest.",c:1},
-       {t:"The gym started tilting, and I had to grab the bleachers so I didn't fall.",c:1},
-       {t:"My hands were shaking so badly I couldn't even unlock my phone to text my mom.",c:1},
-       {t:"I honestly thought I was dying or going crazy, like I had zero control over my own body.",c:1}],
-      [{t:"Coach sat with me and counted breaths with me, and after about ten minutes it faded."},
-       {t:"The nurse checked my heart and said it was healthy."},
-       {t:"Now I keep thinking: what if it happens again in the middle of class?",c:1},
-       {t:"I already asked to sit out of PE tomorrow, just in case.",c:1}],
-      [{t:"Other than that, I've been totally normal — painting, hanging out with Dev, sleeping fine."},
-       {t:"In the moment it was the scariest thing ever, but by dinner I felt like myself again."}]
+      [{t:"We were running the mile yesterday and something happened that I still don't really get."},
+       {t:"My heart started pounding out of nowhere, hard enough that I could feel it in my throat.",c:1},
+       {t:"I couldn't get a full breath in no matter what I did.",c:1},
+       {t:"Everything started spinning and I had to grab the bleachers.",c:1},
+       {t:"My hands were shaking so much I couldn't type a text to my mom.",c:1},
+       {t:"For a minute I honestly thought I was dying, like my body was doing something I couldn't stop.",c:1}],
+      [{t:"Coach sat with me and had me breathe with her, and after about ten minutes it went away."},
+       {t:"The nurse checked me and said my heart sounded normal."},
+       {t:"What scares me now is the idea of it happening again in the middle of class.",c:1},
+       {t:"I asked if I could sit out of PE tomorrow, just in case.",c:1}],
+      [{t:"Otherwise I'm fine. I painted tonight and I've been sleeping okay."},
+       {t:"It was the scariest ten minutes of my life, but by dinner I felt normal again."}]
     ],
-    comment:{who:"@dev.k", t:"That sounds terrifying. Want me to walk with you to PE tomorrow?"} },
+    comment:{who:"@dev.k", t:"I can walk with you to PE tomorrow if you want."} },
   need:3,
-  clueHints:["Look for what Priya's body did during the episode, and how she feels about it happening again.","Pounding heart, breath, dizziness, shaking, feeling out of control, fear of a repeat. Her normal week is not a sign."],
-  idHints:["How fast did this start, and how long did it last?","Sudden, intense, peaks within minutes, strong body signs, and fear of it happening again — that is the pattern of one condition."],
-  idExplain:"<b>Panic.</b> It hit suddenly, peaked fast and faded in about ten minutes, with a racing heart, shortness of breath, dizziness, shaking and a feeling of losing control. Now Priya fears it will happen again.",
+  clueHints:["Look for what Priya's body did during the episode, and how she feels about it happening again.","Pounding heart, breathing, dizziness, shaking, feeling out of control, and fear of it happening again. The rest of her week is not a sign."],
+  idHints:["How fast did this start, and how long did it last?","Sudden and intense, peaking within minutes, with strong body signs and fear of it happening again. That is the pattern of one condition."],
+  idExplain:"<b>Panic.</b> It hit suddenly, peaked fast and was over in about ten minutes, with a racing heart, shortness of breath, dizziness, shaking and a feeling of losing control. Now Priya is afraid it will happen again.",
   diis:[0,2,1,0],
-  diisHints:["It started \"out of nowhere\" and faded after about ten minutes.","In the moment, Priya thought she was dying. That is not mild.","She's sitting out of PE, but she says the rest of her life is \"totally normal.\"","Feeling like you're dying during panic is a body alarm, not a wish to hurt yourself. The nurse found her heart healthy."],
-  diisExplain:"<b>D:</b> minutes. <b>I:</b> severe in the moment. <b>I:</b> some (avoiding PE). <b>S:</b> no safety concern — the \"I'm dying\" feeling is part of panic, and the nurse checked her heart.",
-  p2:{ date:"Two weeks later", title:"Panic update + the breathing trick",
-    paras:["So I've had two more panic attacks since the gym. Coach taught me a box-breathing count (in 4, hold 4, out 4, hold 4) and it actually helps. I also finally told my mom everything.",
-      "But I'm kind of scared all the time now. I've skipped PE six times, and I bailed on the mall AND the pep assembly because what if it happens there?",
-      "The last one was during lunch. I got so dizzy I passed out and hit my head on the edge of the table. My friend said I was out for a few seconds. I didn't go to the nurse because I was embarrassed."],
+  diisHints:["It came on suddenly and was gone in about ten minutes.","For a minute she thought she was dying. That isn't mild.","She's sitting out of PE, but she says everything else is fine.","Feeling like you're dying during panic is the body's alarm, not a wish to hurt yourself. The nurse said her heart sounded normal."],
+  diisExplain:"<b>D:</b> minutes. <b>I:</b> severe in the moment. <b>I:</b> some (sitting out of PE). <b>S:</b> no safety concern. The \"I'm dying\" feeling is part of panic, and the nurse checked her heart.",
+  p2:{ date:"Two weeks later", title:"update on the PE thing",
+    paras:["I've had two more panic attacks since the gym. Coach showed me box breathing (in 4, hold 4, out 4, hold 4) and it actually helps. I also finally told my mom everything, which I'd been putting off.",
+      "I'm kind of on edge all the time now though. I've sat out of PE six times, and I skipped the mall with my friends and the pep assembly because I didn't want it to happen there.",
+      "The last one was at lunch. I got so dizzy that I passed out and hit my head on the table. My friend said I was out for a few seconds. I didn't go to the nurse because everyone was staring and I just wanted to leave."],
     cards:[
-      {t:"Learned box breathing from her coach — and it helps", b:0, why:"A healthy coping skill she can use is protective."},
+      {t:"Learned box breathing from her coach, and it helps", b:0, why:"A healthy coping skill she can use is protective."},
       {t:"Told her mom everything", b:0, why:"Talking to a trusted adult is protective."},
-      {t:"Her friend Dev offers to walk with her to class", b:0, why:"Supportive friends are protective."},
-      {t:"Has skipped PE six times", b:1, why:"Growing avoidance is a warning sign that panic is taking over more of her life."},
-      {t:"Now avoids the mall and school assemblies too", b:1, why:"Avoidance that spreads to more places is a warning sign."},
-      {t:"Passed out and hit her head, and didn't get checked", b:2, why:"Losing consciousness and a head injury need medical attention right away."}
+      {t:"Her friend Dev offered to walk with her to PE", b:0, why:"Supportive friends are protective."},
+      {t:"Has sat out of PE six times", b:1, why:"Growing avoidance is a warning sign that panic is taking over more of her life."},
+      {t:"Now skips the mall and assemblies too", b:1, why:"Avoidance that spreads to more places is a warning sign."},
+      {t:"Passed out and hit her head, and never got checked", b:2, why:"Losing consciousness and a head injury need medical attention right away."}
     ],
-    act:{ q:"A friend is having a panic attack in front of you right now. What's the best way to help?",
-      opts:["Stay with them, speak calmly, breathe slowly with them, and get a teacher or the nurse","Tell them to calm down and that they're overreacting","Leave them alone so they have space","Record it so you can show the nurse later"],
-      hints:["Think about what Coach did for Priya in the gym.","Panic feels scary and out of control. A calm, steady person nearby helps — and an adult should know."],
+    act:{ q:"A friend starts having a panic attack in front of you. What's the best way to help?",
+      opts:["Stay with them, talk calmly, breathe slowly with them, and get a teacher or the nurse","Tell them to calm down and that they're overreacting","Leave them alone so they have some space","Record it so you can show the nurse later"],
+      hints:["Think about what Coach did for Priya in the gym.","Panic feels scary and out of control. A calm, steady person nearby helps, and an adult should know."],
       explain:"Stay calm and stay with them. Breathe slowly with them, remind them it will pass, and get an adult. If they faint, hit their head, or have chest pain, get medical help right away." },
-    thoughts:["In four… hold four… out four…","I don't want to miss the assembly again.","Maybe I SHOULD have gone to the nurse."] }
+    thoughts:["In four, hold four, out four.","I don't want to miss another assembly.","Maybe I should have gone to the nurse."] }
 },
-{ name:"Marcus Bell", age:17, handle:"@mbell.hoops", mood:"m-grief", cond:"grief",
-  look:{skin:"#5b3a26", hair:"#120c08", style:"buzz", shirt:"#2f7d5b"},
-  bio:"Senior · basketball · Pop's biggest fan",
-  thoughts:["Pop would've loved that game.","I should've visited that weekend.","Some days are fine. Some days aren't.","I still have his number saved."],
-  blog:{ title:"Two months without Pop", date:"Thursday, 10:02 PM",
+{ name:"Marcus Bell", age:17, handle:"@marcusbell", mood:"m-grief", cond:"grief",
+  look:{skin:"#5b3a26", hair:"#120c08", style:"buzz", shirt:"#2f7d5b", pants:"#2b2b33", shoes:"#d64545", eye:"#3a2414"},
+  bio:"Senior · basketball",
+  thoughts:["He would've liked that game.","I should've gone that weekend.","Some days are fine.","I still have his number saved."],
+  blog:{ title:"two months", date:"Thursday, 10:02 PM",
     paras:[
-      [{t:"It's been two months since my grandpa died, and people keep asking if I'm \"doing better.\""},
-       {t:"Some days I'm fine — I laughed at lunch on Tuesday like nothing happened.",c:1},
-       {t:"Then Wednesday I heard his favorite song in the grocery store and had to leave my cart and sit in the car.",c:1}],
-      [{t:"I'm weirdly angry at the doctors, even though I know they tried everything.",c:1},
-       {t:"I keep replaying how I skipped visiting him the weekend before because I wanted to go to a party.",c:1},
-       {t:"At the funeral I didn't cry at all — I just felt numb, like I was watching a movie.",c:1},
-       {t:"I still grab my phone to text him the basketball scores, and then I remember.",c:1},
-       {t:"In class my mind drifts, and I miss what the teacher just said.",c:1}],
-      [{t:"My mom and I have been going through his old photos together, which hurts but also helps."},
-       {t:"I still go to practice and hang out with my friends on weekends."},
+      [{t:"It's been two months since my grandpa died, and people have mostly stopped asking about it."},
+       {t:"Some days I'm fine. I was laughing at lunch on Tuesday.",c:1},
+       {t:"Then on Wednesday his song came on in the grocery store and I had to go sit in the car.",c:1}],
+      [{t:"I'm mad at the hospital, even though I know they did everything they could.",c:1},
+       {t:"The weekend before he died I went to a party instead of visiting him, and I keep thinking about that.",c:1},
+       {t:"At the funeral I didn't cry. I just felt numb, like it was happening to someone else.",c:1},
+       {t:"After games I still go to text him the score, and then I remember.",c:1},
+       {t:"In class I'll zone out and realize I missed the last ten minutes.",c:1}],
+      [{t:"My mom and I have been going through his old pictures on Sundays. It's hard, but it helps."},
+       {t:"I'm still going to practice and seeing my friends on weekends."},
        {t:"It's hard, but I'm getting through most days."}]
     ],
-    comment:{who:"@aunt_reenie", t:"He was SO proud of you, baby. Sunday dinner at my house — bring your appetite."} },
+    comment:{who:"@aunt_reenie", t:"He was so proud of you. Dinner at my house Sunday?"} },
   need:3,
-  clueHints:["Grief has many feelings, not just sadness. Look for anger, guilt, numbness, longing, focus problems, and feelings that come and go.","The fine-one-day, hard-the-next pattern counts too. The photos with his mom and going to practice are not signs."],
-  idHints:["What happened two months ago that started all of this?","Anger, guilt, numbness and longing after a death, coming and going in waves, describe one specific condition."],
-  idExplain:"<b>Grief.</b> Marcus lost his grandfather. He has waves of sadness, anger at the doctors, guilt about the missed visit, numbness, longing, and trouble concentrating. Grief is a natural response to loss.",
+  clueHints:["Grief has many feelings, not just sadness. Look for anger, guilt, numbness, missing him, trouble focusing, and feelings that come and go.","Being fine one day and not the next counts too. The pictures with his mom and going to practice are not signs."],
+  idHints:["What happened two months ago that started all of this?","Anger, guilt, numbness and missing someone after a death, coming and going in waves, describe one specific condition."],
+  idExplain:"<b>Grief.</b> Marcus lost his grandfather. He has waves of sadness, anger at the hospital, guilt about the missed visit, numbness, longing, and trouble concentrating. Grief is a natural response to loss.",
   diis:[3,1,1,0],
-  diisHints:["Fine Tuesday, sitting in the car Wednesday. How do his feelings show up over time?","\"It's hard, but I'm getting through most days.\"","His focus in class slips, but he still goes to practice and sees friends.","There's no sign that Marcus or anyone else is in danger."],
+  diisHints:["Fine on Tuesday, sitting in the car on Wednesday. How do his feelings show up over time?","\"It's hard, but I'm getting through most days.\"","He zones out in class, but he still goes to practice and sees friends.","There's no sign that Marcus or anyone else is in danger."],
   diisExplain:"<b>D:</b> comes and goes in waves since the loss. <b>I:</b> moderate (\"hard, but getting through\"). <b>I:</b> some (focus in class). <b>S:</b> no safety concern right now.",
-  p2:{ date:"Three weeks later", title:"not doing great tbh",
-    paras:["I went to see the school counselor once, and it was actually okay. My mom and I still look at Pop's photos on Sundays.",
-      "But I stopped going to practice three weeks ago. I'm failing two classes. I keep telling myself it's my fault I wasn't there.",
-      "I found Pop's leftover pain pills in the bathroom cabinet. I've been taking a couple at night because they make me feel nothing, and nothing is better than this. Don't tell anyone, I've got it under control."],
+  p2:{ date:"Three weeks later", title:"not great",
+    paras:["I talked to the school counselor once. It was better than I expected. My mom and I are still doing the pictures on Sundays.",
+      "I haven't been to practice in three weeks. I'm failing two classes. I keep going back to that weekend and thinking it's on me.",
+      "There were leftover pain pills from when Pop was sick still in the bathroom cabinet. I've been taking a couple at night because they make everything go quiet and I can actually sleep. I know how that sounds. I've got it under control."],
     cards:[
       {t:"Met with the school counselor", b:0, why:"Reaching out to a professional is protective."},
-      {t:"Looks at photos with his mom on Sundays", b:0, why:"Sharing memories with family is a healthy way to grieve."},
-      {t:"His aunt invites him to Sunday dinners", b:0, why:"Family support is protective."},
-      {t:"Stopped going to practice for three weeks", b:1, why:"Pulling away from things he loves is a warning sign."},
+      {t:"Looks at old pictures with his mom on Sundays", b:0, why:"Sharing memories with family is a healthy way to grieve."},
+      {t:"His aunt invites him to Sunday dinner", b:0, why:"Family support is protective."},
+      {t:"Hasn't been to practice in three weeks", b:1, why:"Pulling away from things he loves is a warning sign."},
       {t:"Failing two classes", b:1, why:"A big drop in school performance is a warning sign."},
-      {t:"Keeps blaming himself for not being there", b:1, why:"Guilt that keeps growing is a warning sign worth talking about."},
-      {t:"Taking his grandpa's leftover pain pills to \"feel nothing\"", b:2, why:"Misusing someone else's prescription to numb pain is dangerous and needs an adult right away."}
+      {t:"Keeps blaming himself for missing that weekend", b:1, why:"Guilt that keeps growing is a warning sign worth talking about."},
+      {t:"Taking his grandpa's leftover pain pills at night", b:2, why:"Taking someone else's prescription to numb how you feel is dangerous and needs an adult right away."}
     ],
-    act:{ q:"Marcus asks you to keep the pills a secret. What should you do?",
+    act:{ q:"Marcus tells you about the pills and asks you not to tell anyone. What should you do?",
       opts:["Tell a trusted adult right away, even though he asked you not to","Keep the secret so he still trusts you","Tell him to only take one pill instead of two","Wait until he takes more, then tell someone"],
-      hints:["Is this a warning sign or a red flag?","Some secrets are not safe to keep. When someone's health is in danger, an adult needs to know now."],
-      explain:"Using someone else's pain pills to \"feel nothing\" is a <b>red flag</b>. Keeping him safe matters more than keeping a secret. Tell a parent, counselor, or other trusted adult right away." },
-    thoughts:["I've got it under control.","Pop wouldn't want this.","The counselor was… actually okay."] }
+      hints:["Is this a warning sign or a red flag?","Some secrets aren't safe to keep. When someone's health is in danger, an adult needs to know now."],
+      explain:"Taking someone else's pain pills to numb how he feels is a <b>red flag</b>. Keeping him safe matters more than keeping a secret. Tell a parent, counselor, or other trusted adult right away." },
+    thoughts:["I've got it under control.","Pop wouldn't want this.","The counselor was actually okay."] }
 },
-{ name:"Sofia Alvarez", age:16, handle:"@sofi.sketches", mood:"m-anx", cond:"anxiety",
-  look:{skin:"#d9a77c", hair:"#5a3418", style:"curly", shirt:"#b25fb0"},
-  bio:"Junior · art · former Spanish club member",
-  thoughts:["What if she's mad at me?","What if I mess up the presentation?","Are we okay? Are we REALLY okay?","Stop thinking. Stop thinking."],
-  blog:{ title:"The \"what if\" machine in my head", date:"Monday, 11:30 PM",
+{ name:"Sofia Alvarez", age:16, handle:"@sofia.alv", mood:"m-anx", cond:"anxiety",
+  look:{skin:"#d9a77c", hair:"#5a3418", style:"curly", shirt:"#b25fb0", pants:"#3a5a8a", shoes:"#ffffff", eye:"#6f7a2e"},
+  bio:"Junior · art",
+  thoughts:["What if she's actually annoyed with me?","What if I blank during the presentation?","Stop thinking about it.","Are we good? Like, actually?"],
+  blog:{ title:"can't turn it off", date:"Monday, 11:30 PM",
     paras:[
-      [{t:"Everyone says junior year is stressful, but mine doesn't feel like normal stress."},
-       {t:"It's not about one thing — since last spring, my brain just runs \"what ifs\" about everything.",c:1},
-       {t:"What if I fail the quiz, what if my friends are secretly annoyed with me, what if something happens to my mom on the highway?",c:1}],
-      [{t:"I text my best friend \"are we okay??\" like five times a week, even though she always says yes.",c:1},
-       {t:"I can't sit still in class; my leg bounces nonstop and I pick at my sleeves.",c:1},
-       {t:"When I have to present, my heart races and my breathing gets fast and shallow — sometimes days before.",c:1},
-       {t:"I've \"gotten sick\" on both presentation days this month so I could stay home.",c:1},
-       {t:"I quit Spanish club because walking into a room full of people felt impossible.",c:1},
-       {t:"I've also stopped going to my friends' movie nights."}],
-      [{t:"My cousin keeps telling me to just \"stop worrying,\" like it's a switch."},
-       {t:"I do love my art class, and my best friend is super patient with me."},
-       {t:"I'm still getting through most days, but it's exhausting, and it's taking over school and my friendships."}]
+      [{t:"Everyone says junior year is stressful, but this doesn't feel like regular stress."},
+       {t:"Since last spring my brain won't stop coming up with things that could go wrong.",c:1},
+       {t:"Failing a quiz, my friends being annoyed with me and not saying it, my mom getting in an accident on the highway.",c:1}],
+      [{t:"I text Lena \"are we good?\" a few times a week even though she always says yes.",c:1},
+       {t:"I can't sit still in class. My leg just bounces the whole time.",c:1},
+       {t:"Before presentations my heart races and I can't catch my breath, sometimes days ahead of time.",c:1},
+       {t:"I stayed home \"sick\" on both presentation days this month.",c:1},
+       {t:"I quit Spanish club because walking into that room full of people got to be too much.",c:1},
+       {t:"I've also been skipping movie nights with my friends.",c:1}],
+      [{t:"My cousin keeps telling me to \"just stop worrying,\" like I haven't thought of that."},
+       {t:"Art is the one class I actually like, and Lena is really patient with me."},
+       {t:"I'm getting through most days, but it's exhausting, and it's starting to take over school and my friendships."}]
     ],
-    comment:{who:"@lena.b", t:"We're okay. We're ALWAYS okay. Art room at lunch tomorrow? 💜"} },
+    comment:{who:"@lena.b", t:"We're good. Always. Art room at lunch tomorrow?"} },
   need:3,
-  clueHints:["Look for worry, restlessness, avoiding things, body signs, and needing reassurance.","Careful: a sentence that only describes junior year or her cousin is not a sign. Look for what Sofia DOES and FEELS."],
-  idHints:["Is this tied to one specific event, like a test, or is the worry about everything, for months?","Excessive worry about many things, reassurance-seeking, restlessness and avoidance that keep going point to one condition — not stress."],
-  idExplain:"<b>Anxiety.</b> Sofia worries about almost everything, for months, with no single cause. She seeks reassurance, is restless, has a racing heart and fast breathing, and avoids presentations and groups. Stress is tied to a specific pressure; this is bigger and keeps going.",
+  clueHints:["Look for worry, restlessness, avoiding things, body signs, and needing reassurance.","Careful: a sentence that only describes junior year or her cousin is not a sign. Look for what Sofia does and feels."],
+  idHints:["Is this tied to one specific event, like a test, or is the worry about everything, for months?","Too much worry about many things, needing reassurance, restlessness and avoidance that keep going point to one condition, not stress."],
+  idExplain:"<b>Anxiety.</b> Sofia worries about almost everything, for months, with no single cause. She needs reassurance, is restless, has a racing heart and trouble breathing, and avoids presentations and groups. Stress is tied to a specific pressure; this is bigger and keeps going.",
   diis:[2,1,2,0],
-  diisHints:["\"Since last spring\" is a lot longer than a few days.","She says she's \"still getting through most days, but it's exhausting.\"","Count the areas: school (missed days), clubs (quit), and friends (skipping movie nights).","Nothing suggests she or anyone else is in danger."],
-  diisExplain:"<b>D:</b> two weeks or longer (since last spring). <b>I:</b> moderate (still coping, but exhausted). <b>I:</b> major (missing school, quit club, skipping friends). <b>S:</b> no safety concern in this post.",
-  p2:{ date:"Two weeks later", title:"trying something new",
-    paras:["I started seeing the school counselor on Tuesdays. She taught me to write my \"what ifs\" down and then write what I'd actually do. Art class is still my safe place, and Lena is still the best.",
-      "I still missed four days this month to avoid presentations, and I ask Lena if we're okay pretty much daily now.",
-      "When the worry gets really bad at night, I've been scratching my arms until they bleed. It's the only thing that makes the noise stop. I wear hoodies so no one notices."],
+  diisHints:["\"Since last spring\" is a lot longer than a few days.","She says she's \"getting through most days, but it's exhausting.\"","Count the areas: school (missed days), clubs (quit), and friends (skipping movie nights).","Nothing suggests she or anyone else is in danger."],
+  diisExplain:"<b>D:</b> two weeks or longer (since last spring). <b>I:</b> moderate (still coping, but exhausted). <b>I:</b> major (missing school, quit a club, skipping friends). <b>S:</b> no safety concern in this post.",
+  p2:{ date:"Two weeks later", title:"trying something",
+    paras:["I started seeing the school counselor on Tuesdays. She has me write down the what-ifs and then what I'd actually do if they happened. It helps more than I thought it would. Art is still my safe place, and Lena's still Lena.",
+      "I still missed four days this month to get out of presentations, and I ask Lena if we're good pretty much every day now.",
+      "When it gets really bad at night I've been scratching my arms until they bleed. It's the only thing that makes it quiet for a minute. I wear hoodies so nobody sees."],
     cards:[
       {t:"Sees the school counselor every Tuesday", b:0, why:"Ongoing support from a professional is protective."},
       {t:"Uses art class to calm down", b:0, why:"A healthy activity she enjoys is protective."},
       {t:"Her best friend is patient and reliable", b:0, why:"A supportive friend is protective."},
       {t:"Missed four school days to avoid presentations", b:1, why:"Avoidance that keeps growing is a warning sign."},
       {t:"Asks for reassurance almost every day", b:1, why:"Reassurance-seeking that's increasing is a warning sign."},
-      {t:"Scratching her arms until they bleed when worry gets bad", b:2, why:"Self-harm is a red flag. A trusted adult needs to know right away."},
-      {t:"Hides the marks under hoodies so no one notices", b:2, why:"Hiding self-harm makes it more urgent to tell an adult."}
+      {t:"Scratching her arms until they bleed when the worry gets bad", b:2, why:"Self-harm is a red flag. A trusted adult needs to know right away."},
+      {t:"Wears hoodies so nobody sees the marks", b:2, why:"Hiding self-harm makes it more urgent to tell an adult."}
     ],
     act:{ q:"Sofia shows you her arms and says she's \"handling it.\" What's the best response?",
       opts:["Tell her you care, and go with her to the counselor or another trusted adult today","Promise not to tell anyone so she keeps trusting you","Tell her to just stop doing it","Change the subject so she doesn't feel embarrassed"],
-      hints:["Self-harm is in which category: warning sign or red flag?","Be kind AND get help. She already trusts one adult at school."],
-      explain:"Self-harm is a <b>red flag</b>. Stay calm, don't judge, and tell her you care. Then help her reach a trusted adult — like the counselor she already sees — <b>today</b>. Don't promise to keep it a secret." },
-    thoughts:["Writing the what-ifs down helps a little.","Nobody can know about my arms.","Lena's going to be mad. …What if she's not?"] }
+      hints:["Is self-harm a warning sign or a red flag?","Be kind and get help. She already trusts one adult at school."],
+      explain:"Self-harm is a <b>red flag</b>. Stay calm, don't judge, and tell her you care. Then help her reach a trusted adult, like the counselor she already sees, <b>today</b>. Don't promise to keep it a secret." },
+    thoughts:["Writing the what-ifs down helps a little.","Nobody can know about my arms.","Lena would be upset. Or maybe she wouldn't?"] }
 },
-{ name:"Eli Thompson", age:16, handle:"@eli.draws.things", mood:"m-dep", cond:"depression",
-  look:{skin:"#f0cfb0", hair:"#a8763e", style:"wavy", shirt:"#5d6a78"},
-  bio:"Sophomore · artist · cat dad to Pickles",
-  thoughts:["What's even the point.","I'm so tired.","They're better off without me around.","Pickles is the only one who gets it."],
+{ name:"Eli Thompson", age:16, handle:"@eli.t", mood:"m-dep", cond:"depression",
+  look:{skin:"#f0cfb0", hair:"#a8763e", style:"wavy", shirt:"#5d6a78", pants:"#3c4048", shoes:"#4a4a4a", eye:"#3f84c0"},
+  bio:"Sophomore · draws a lot · has a cat named Pickles",
+  thoughts:["What's the point.","I'm so tired.","They'd be fine without me.","At least Pickles doesn't need me to talk."],
   blog:{ title:"idk", date:"Saturday, 2:14 PM",
     paras:[
       [{t:"Haven't posted in a while."},
-       {t:"It's been about a month of every day feeling gray, like someone turned the color down on everything.",c:1},
-       {t:"I used to spend whole weekends drawing and gaming with my friends, and now I don't even want to open my sketchbook.",c:1},
-       {t:"I've stopped answering the group chat; it's easier to just not.",c:1}],
-      [{t:"I sleep eleven or twelve hours and still wake up exhausted.",c:1},
-       {t:"Mom says I barely touch dinner anymore, and my jeans are loose.",c:1},
-       {t:"I failed two tests this month because I just stared at the page.",c:1},
-       {t:"Nothing bad even happened — no breakup, no big event."}],
-      [{t:"Honestly, I don't see it ever getting better.",c:1},
+       {t:"It's been about a month of every day feeling the same kind of flat and heavy.",c:1},
+       {t:"I used to draw or game with my friends all weekend, and now I don't even want to open my sketchbook.",c:1},
+       {t:"I've stopped answering the group chat. It's easier to just not.",c:1}],
+      [{t:"I sleep eleven or twelve hours and still wake up tired.",c:1},
+       {t:"My mom says I barely eat dinner anymore, and my jeans are loose.",c:1},
+       {t:"I failed two tests this month because I just sat there staring at them.",c:1},
+       {t:"Nothing even happened. No breakup, nothing."}],
+      [{t:"I don't really see it getting better.",c:1},
        {t:"Sometimes I think everyone would be better off if I just wasn't around.",c:1},
-       {t:"My cat Pickles still sleeps on my bed every night, so that's something."}]
+       {t:"My cat still sleeps on my bed every night, so there's that."}]
     ],
-    comment:{who:"@ms.ortiz.art", t:"Eli, we miss you in the studio. My door is open anytime — even just to sit."} },
+    comment:{who:"@ms.ortiz.art", t:"Eli, we miss you in the studio. Door's open anytime, even just to sit."} },
   need:4,
-  clueHints:["Look for a low mood that won't lift, losing interest, pulling away, and changes in sleep, energy and appetite.","Also look for how Eli feels about the future and about himself. \"Haven't posted in a while\" and \"nothing bad happened\" are not signs by themselves."],
-  idHints:["How long has Eli felt this way? Is it tied to an event or a loss?","Most days for a month, loss of interest, withdrawal, low energy, appetite changes and hopelessness — this is more than sadness."],
+  clueHints:["Look for a low mood that won't lift, losing interest, pulling away, and changes in sleep, energy and appetite.","Also look at how Eli feels about the future and about himself. \"Haven't posted in a while\" and \"nothing even happened\" are not signs by themselves."],
+  idHints:["How long has Eli felt this way? Is it tied to an event or a loss?","Most days for a month, loss of interest, pulling away, low energy, appetite changes and hopelessness. This is more than sadness."],
   idExplain:"<b>Depression.</b> For about a month Eli has felt low most days, lost interest in drawing and gaming, pulled away from friends, and had sleep, energy and appetite changes and hopelessness. It isn't caused by a loss (grief) or a specific pressure (stress).",
   diis:[2,2,2,2],
-  diisHints:["\"About a month of every day feeling gray.\"","He can't see it ever getting better. How strong is that?","Friends, hobbies, school and eating are all affected.","Read the last paragraph again. \"Everyone would be better off if I just wasn't around\" is never just a passing comment."],
+  diisHints:["\"About a month of every day feeling the same.\"","He doesn't see it getting better. How strong is that?","Friends, hobbies, school and eating are all affected.","Read the last paragraph again. \"Everyone would be better off if I just wasn't around\" is never just a passing comment."],
   diisExplain:"<b>D:</b> two weeks or longer (a month). <b>I:</b> severe (hopeless). <b>I:</b> major (friends, hobbies, school, eating). <b>S:</b> clear concern. Saying others would be \"better off\" without you is a suicide warning sign. Tell an adult right away.",
   safety:true,
-  p2:{ date:"Ten days later", title:"thanks for everything",
-    paras:["Ms. Ortiz messaged me and I actually wrote back. My mom keeps checking on me, which is nice I guess.",
-      "Still sleeping like twelve hours. Still not answering the group chat. Haven't drawn anything.",
-      "Weirdly I feel calm now, like I finally figured things out. I gave my sketchbooks and my console to my cousin. Just want to say thanks for everything, guys. I won't be a problem much longer."],
+  p2:{ date:"Ten days later", title:"thanks",
+    paras:["Ms. Ortiz messaged me and I actually wrote back. My mom keeps checking on me, which I guess is nice.",
+      "Still sleeping twelve hours. Still haven't answered the group chat. Haven't drawn anything.",
+      "I feel weirdly calm now, like I finally figured it out. I gave my sketchbooks and my console to my cousin. Just want to say thanks for everything, guys. I won't be a problem much longer."],
     cards:[
-      {t:"Replied to his art teacher's message", b:0, why:"Staying connected to a caring adult is protective."},
+      {t:"Wrote back to his art teacher", b:0, why:"Staying connected to a caring adult is protective."},
       {t:"His mom checks on him regularly", b:0, why:"An involved parent is protective."},
       {t:"Sleeping twelve hours a day", b:1, why:"A big change in sleep is a warning sign."},
       {t:"Lost interest in drawing and gaming", b:1, why:"Losing interest in things you love is a warning sign."},
@@ -635,61 +644,59 @@ const PEOPLE = [
       {t:"Suddenly seems calm after weeks of hopelessness", b:2, why:"A sudden calm after deep hopelessness can mean someone has made a plan. This is a red flag."}
     ],
     act:{ q:"You see Eli's post at 9 p.m. on a school night. What should you do?",
-      opts:["Tell a parent or adult right now, and call or text 988 (call 911 if he's in immediate danger)","Message him tomorrow at school to check in","DM him tonight and wait to see if he replies before telling anyone","Like the post so he knows you saw it"],
+      opts:["Tell a parent or adult right now, and call or text 988 (call 911 if he's in immediate danger)","Check in with him tomorrow at school","DM him tonight and wait to see if he replies before telling anyone","Like the post so he knows you saw it"],
       hints:["These are red flags. How fast does help need to happen?","Don't wait until morning, and don't handle this alone. Get an adult and a crisis line involved tonight."],
-      explain:"Giving things away, goodbye messages, and sudden calm are <b>red flags for suicide</b>. Act <b>now</b>: tell an adult immediately and call or text <b>988</b> (Suicide &amp; Crisis Lifeline). If he's in immediate danger, call <b>911</b>. You can also message Eli to say you care — but never instead of getting help." },
-    thoughts:["I feel… calm.","Thanks for everything, I guess.","Ms. Ortiz actually wrote back again."] }
+      explain:"Giving things away, goodbye messages, and sudden calm are <b>red flags for suicide</b>. Act <b>now</b>: tell an adult immediately and call or text <b>988</b> (Suicide &amp; Crisis Lifeline). If he's in immediate danger, call <b>911</b>. You can also message Eli to say you care, but never instead of getting help." },
+    thoughts:["I feel calm.","Thanks for everything, I guess.","Ms. Ortiz wrote back again."] }
 },
-{ name:"Taylor Kim", age:17, handle:"@tkim.10", mood:"m-dist", cond:"distress",
-  look:{skin:"#e8c39e", hair:"#1b1b1b", style:"bun", shirt:"#d64545"},
-  bio:"Senior · soccer captain · pizza-shift legend",
-  thoughts:["I'm fine. Just tired.","One more thing and I'll break.","Why did I yell at them…","Soccer. Just think about soccer."],
-  blog:{ title:"Too many plates", date:"Wednesday, 1:07 AM",
+{ name:"Taylor Kim", age:17, handle:"@taylork", mood:"m-dist", cond:"distress",
+  look:{skin:"#e8c39e", hair:"#1b1b1b", style:"bun", shirt:"#d64545", pants:"#22252e", shoes:"#f2f2f2", eye:"#4a3222"},
+  bio:"Senior · soccer captain · works at a pizza place",
+  thoughts:["I'm fine. Just tired.","One more thing and I'm done.","Why did I yell at them?","Just think about soccer."],
+  blog:{ title:"too much", date:"Wednesday, 1:07 AM",
     paras:[
-      [{t:"Three weeks ago my parents told us they're separating, and I moved into the basement so my little sisters could share my room."},
-       {t:"I picked up extra shifts at the pizza place to help my mom, and I'm also captain of the soccer team this season."},
-       {t:"I feel like I'm holding everybody up, and there's nothing left for me.",c:1}],
-      [{t:"I cried in the parking lot before practice on Monday, and ten minutes later I was joking around with the team like nothing happened.",c:1},
-       {t:"I've yelled at my sisters over tiny stuff, and then I feel awful about it.",c:1},
-       {t:"Some nights I sleep fine; other nights I'm wide awake at 3 a.m.",c:1},
-       {t:"I'm not exactly sad, and not exactly worried — I just can't handle one more thing.",c:1},
-       {t:"Last week my manager asked me to cover a shift, and I just stood there and couldn't answer.",c:1}],
-      [{t:"My grades went from B's to D's in two classes, and I've stopped hanging out with anyone outside of practice."},
-       {t:"Friday I punched the wall in the basement, and my knuckles are still bruised.",c:1},
+      [{t:"Three weeks ago my parents told us they're separating, so I moved into the basement and my little sisters are sharing my room."},
+       {t:"I picked up extra shifts at work to help my mom out, and I'm captain this season too."},
+       {t:"It feels like I'm holding everybody else up and there's nothing left over for me.",c:1}],
+      [{t:"I cried in my car before practice Monday, and ten minutes later I was joking around with the team like nothing happened.",c:1},
+       {t:"I keep snapping at my sisters over nothing and then feeling terrible about it.",c:1},
+       {t:"Some nights I sleep fine, and some nights I'm up at 3 a.m. for no reason.",c:1},
+       {t:"I'm not exactly sad and I'm not exactly worried. I just can't take one more thing.",c:1},
+       {t:"My manager asked me to cover a shift last week, and I just stood there. I couldn't even answer.",c:1}],
+      [{t:"My grades went from B's to D's in two classes, and I haven't hung out with anyone outside of practice in weeks."},
+       {t:"Friday I punched the wall in the basement and my knuckles are still bruised.",c:1},
        {t:"Coach asked if I was okay, and I said \"yeah, just tired.\""},
-       {t:"I still love soccer — it's the only time my brain gets quiet."}]
+       {t:"Soccer's the only time my head actually gets quiet."}]
     ],
-    comment:{who:"@aunt.june", t:"Tay, you don't have to carry all of it. Come stay with me this weekend? Love you."} },
+    comment:{who:"@aunt.june", t:"Tay, you don't have to carry all of this. Come stay with me this weekend?"} },
   need:4,
-  clueHints:["Taylor's signs are MIXED. Look for being overwhelmed, tearfulness, irritability, trouble coping, and signs that swing back and forth.","Hurting yourself in a moment of overwhelm counts as a sign too. The list of jobs and family changes is the cause, not a sign."],
-  idHints:["Does this fit neatly into stress, anxiety, depression, panic, or grief? Or is it a mix?","Overwhelmed by many demands, tearful one minute and joking the next, irritable, and can't cope: \"not exactly sad, not exactly worried.\""],
-  idExplain:"<b>Emotional Distress.</b> Taylor is overwhelmed by many demands at once (family changes, work, captain duties). There's tearfulness, irritability, trouble coping, and mixed signals that swing back and forth. It doesn't fit just one category.",
+  clueHints:["Taylor's signs are mixed. Look for being overwhelmed, crying, irritability, trouble coping, and signs that swing back and forth.","Hurting yourself in a moment of overwhelm counts as a sign too. The list of jobs and family changes is the cause, not a sign."],
+  idHints:["Does this fit neatly into stress, anxiety, depression, panic, or grief? Or is it a mix?","Overwhelmed by many demands, crying one minute and joking the next, irritable, and can't cope: \"not exactly sad, not exactly worried.\""],
+  idExplain:"<b>Emotional Distress.</b> Taylor is overwhelmed by many demands at once (family changes, work, being captain). There's crying, irritability, trouble coping, and mixed signals that swing back and forth. It doesn't fit just one category.",
   diis:[2,2,2,1],
-  diisHints:["It started three weeks ago and is there most days.","\"I just can't handle one more thing.\" She froze when asked a simple question.","Count the areas: grades, family, friends, work.","Punching a wall hurt her. That isn't an emergency yet, but it's not \"no concern\" either."],
-  diisExplain:"<b>D:</b> two weeks or longer (three weeks). <b>I:</b> severe (can't handle one more thing). <b>I:</b> major (grades, family, friends). <b>S:</b> possible concern. Punching a wall is a way of hurting herself, so a trusted adult should know.",
-  p2:{ date:"One week later", title:"I just want everything to stop",
-    paras:["I told my aunt a little about what's going on, and I'm staying at her place this weekend. Soccer is still the one place my head is quiet. Coach told me his door is open.",
-      "I'm still crying and then laughing like five minutes later, and I keep telling everyone I'm \"fine, just tired.\" My grades are still D's.",
-      "Last night I drove 90 on the highway with my lights off just to feel something. Then I wrote in my notes app, \"I just want everything to stop.\" I'm not going to do anything. I just want it to stop."],
+  diisHints:["It started three weeks ago and is there most days.","\"I just can't take one more thing.\" She froze when asked a simple question.","Count the areas: grades, family, friends, work.","Punching a wall hurt her. That isn't an emergency yet, but it's not \"no concern\" either."],
+  diisExplain:"<b>D:</b> two weeks or longer (three weeks). <b>I:</b> severe (can't take one more thing). <b>I:</b> major (grades, family, friends). <b>S:</b> possible concern. Punching a wall is a way of hurting herself, so a trusted adult should know.",
+  p2:{ date:"One week later", title:"still too much",
+    paras:["I told my aunt some of what's been going on, and I'm staying at her place this weekend. Soccer is still the only time my head gets quiet. Coach told me his door is open.",
+      "I'm still crying and then laughing five minutes later, and I keep telling everyone I'm \"fine, just tired.\" My grades are still bad.",
+      "Last night I drove 90 on the highway with the windows down just to feel something. Then I wrote \"I just want everything to stop\" in my notes app. I'm not going to do anything. I just want it all to stop for a while."],
     cards:[
       {t:"Staying with her aunt this weekend", b:0, why:"A safe place and a supportive relative are protective."},
-      {t:"Soccer is the one place her mind gets quiet", b:0, why:"A healthy activity that helps her cope is protective."},
-      {t:"Coach noticed and offered his door is open", b:0, why:"A caring adult who notices is protective."},
+      {t:"Soccer is the one time her head gets quiet", b:0, why:"A healthy activity that helps her cope is protective."},
+      {t:"Coach noticed and told her his door is open", b:0, why:"A caring adult who notices is protective."},
       {t:"Crying, then laughing minutes later", b:1, why:"Mood swings are a warning sign of distress."},
       {t:"Keeps telling everyone she's \"fine, just tired\"", b:1, why:"Hiding how bad things are is a warning sign. It makes checking in more important."},
       {t:"Grades still down to D's", b:1, why:"Ongoing trouble at school is a warning sign."},
-      {t:"Drove 90 mph with the lights off \"to feel something\"", b:2, why:"Dangerous, reckless behavior is a red flag. Her life was at risk."},
+      {t:"Drove 90 mph on the highway \"just to feel something\"", b:2, why:"Dangerous, reckless behavior is a red flag. Her life was at risk."},
       {t:"Wrote \"I just want everything to stop\"", b:2, why:"Wanting everything to stop can mean thoughts of suicide. Take it seriously as a red flag."}
     ],
     act:{ q:"Taylor tells you, \"I'm not going to do anything. I just want everything to stop. Don't tell anyone.\" What's the BEST response?",
       opts:["Ask her directly if she's thinking about suicide, stay with her, and bring in a trusted adult today","Keep it secret since she said she's not going to do anything","Tell her she just needs more sleep","Post in the group chat to ask your friends what to do"],
       hints:["\"I'm not going to do anything\" doesn't cancel out the red flags you just sorted.","Asking someone directly about suicide does NOT put the idea in their head. It shows you care. Then an adult needs to be involved."],
-      explain:"Take it seriously. Asking directly — \"Are you thinking about suicide?\" — is safe and shows you care. Stay with her, don't keep it a secret, and get a trusted adult (or call/text <b>988</b>) involved <b>today</b>. Her aunt and coach are great people to tell." },
-    thoughts:["I'm fine. Just tired.","Aunt June's couch is so comfy.","I don't actually want to die. I just want it to stop."] }
+      explain:"Take it seriously. Asking directly, \"Are you thinking about suicide?\", is safe and shows you care. Stay with her, don't keep it a secret, and get a trusted adult (or call or text <b>988</b>) involved <b>today</b>. Her aunt and coach are good people to tell." },
+    thoughts:["I'm fine. Just tired.","Aunt June's couch is so comfortable.","I don't actually want to die. I just want it to stop."] }
 }
 ];
-
-["#7a4a26","#3b2414","#3a2414","#6f7a2e","#3f84c0","#4a3222"].forEach((e,i)=>PEOPLE[i].look.eye=e);
 
 /* ======================= STATE ======================= */
 const STAGES = [];
@@ -753,7 +760,7 @@ function hairFront(st,u){
   }
   return h+'<path d="M70 60 Q96 46 126 56" stroke="#fff" stroke-width="5" fill="none" opacity=".22" stroke-linecap="round"/>';
 }
-function avatar(p,mood,size){
+function avatar(p,mood,size,headOnly){
   const L=p.look, m=mood||p.mood, u="av"+(++AVN);
   const sk=L.skin, hr=L.hair, sh=L.shirt, ey=L.eye||"#5a3a22", line=dk(sk,.55), brow=dk(hr,.1);
   const bgc={ "m-stress":"#ffd9b8","m-panic":"#c9e2fb","m-grief":"#d6e7cf","m-anx":"#ecd6f2","m-dep":"#d5d9e2","m-dist":"#f8cfcf"}[m];
@@ -787,16 +794,31 @@ function avatar(p,mood,size){
   if(m==="m-panic"||m==="m-anx") extra='<path class="sweat" d="M148 80 q6 10 0 14 q-6 -4 0 -14Z" fill="#8fd3ff" stroke="#fff" stroke-width="1"/>';
   if(m==="m-grief") extra='<path class="tear" d="M78 118 q5 8 0 12 q-5 -4 0 -12Z" fill="#8fd3ff" stroke="#fff" stroke-width="1"/>';
   if(m==="m-dep") extra='<path d="M70 118 Q80 122 90 118 M110 118 Q120 122 130 118" stroke="'+dk(sk,.35)+'" stroke-width="2" fill="none" opacity=".6"/>';
-  return '<svg viewBox="0 0 200 240" '+(size?'width="'+size+'" height="'+size+'"':'')+' aria-hidden="true">'+defs+'<g class="av '+m+'">'+
-    '<circle cx="100" cy="120" r="98" fill="url(#'+u+'bg)"/>'+hairBack(L.style,u)+
-    '<g class="body">'+
-      '<path d="M28 240 Q28 176 100 168 Q172 176 172 240Z" fill="url(#'+u+'sh)"/>'+
-      '<path d="M46 214 Q56 192 78 186" stroke="#fff" stroke-width="5" fill="none" opacity=".22" stroke-linecap="round"/>'+
-      '<path d="M140 206 Q148 220 150 236" stroke="#000" stroke-width="6" fill="none" opacity=".1" stroke-linecap="round"/>'+
-      '<rect x="86" y="140" width="28" height="36" rx="12" fill="url(#'+u+'nk)"/>'+
-      '<path d="M80 172 Q100 194 120 172" stroke="'+dk(sh,.35)+'" stroke-width="5" fill="none" stroke-linecap="round"/>'+
-    '</g>'+
-    '<g class="head">'+hairSides(L.style,u)+
+  const pt=L.pants||"#33384a", sho=L.shoes||"#f2f2f2";
+  const POSE={ "m-dep":[[50,228,54,270],[150,228,146,270]], "m-stress":[[26,150,48,104],[174,150,152,104]], "m-panic":[[42,226,36,268],[152,234,112,210]],
+    "m-grief":[[56,230,94,258],[144,230,106,258]], "m-anx":[[66,236,122,214],[134,236,78,214]], "m-dist":[[28,140,68,84],[170,226,140,252]] }[m];
+  const arm=(sx,sy,a,cls)=>{ const [ex,ey,hx_,hy]=a, mx=sx+(ex-sx)*.6, my=sy+(ey-sy)*.6;
+    return '<g class="'+cls+'">'+
+      '<path d="M'+mx+' '+my+' L'+ex+' '+ey+' L'+hx_+' '+hy+'" stroke="'+dk(sk,.28)+'" stroke-width="17" fill="none" stroke-linecap="round" stroke-linejoin="round"/>'+
+      '<path d="M'+mx+' '+my+' L'+ex+' '+ey+' L'+hx_+' '+hy+'" stroke="'+sk+'" stroke-width="13.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>'+
+      '<path d="M'+sx+' '+sy+' L'+mx+' '+my+'" stroke="'+dk(sh,.3)+'" stroke-width="25" fill="none" stroke-linecap="round"/>'+
+      '<path d="M'+sx+' '+sy+' L'+mx+' '+my+'" stroke="'+sh+'" stroke-width="21.5" fill="none" stroke-linecap="round"/>'+
+      '<circle cx="'+hx_+'" cy="'+hy+'" r="10" fill="url(#'+u+'sk)" stroke="'+dk(sk,.28)+'" stroke-width="1.6"/></g>'; };
+  const pdefs='<radialGradient id="'+u+'gl" cx="50%" cy="45%" r="50%"><stop offset="0" stop-color="'+lt(bgc,.5)+'" stop-opacity=".95"/><stop offset=".65" stop-color="'+bgc+'" stop-opacity=".55"/><stop offset="1" stop-color="'+bgc+'" stop-opacity="0"/></radialGradient><linearGradient id="'+u+'pt" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="'+lt(pt,.22)+'"/><stop offset=".5" stop-color="'+pt+'"/><stop offset="1" stop-color="'+dk(pt,.35)+'"/></linearGradient>';
+  const legs='<g class="legs">'+
+    '<g class="legL"><path d="M66 248 L99 248 L96 330 Q84 334 72 330 Z" fill="url(#'+u+'pt)"/>'+
+      '<path d="M62 338 Q62 324 82 325 Q98 327 98 338 Q98 345 84 345 L68 345 Q62 345 62 338Z" fill="'+sho+'" stroke="'+dk(sho,.35)+'" stroke-width="2"/><path d="M63 341 L97 341" stroke="'+dk(sho,.3)+'" stroke-width="3"/></g>'+
+    '<g class="legR"><path d="M101 248 L134 248 L128 330 Q116 334 104 330 Z" fill="url(#'+u+'pt)"/>'+
+      '<path d="M102 338 Q102 327 118 325 Q138 324 138 338 Q138 345 132 345 L116 345 Q102 345 102 338Z" fill="'+sho+'" stroke="'+dk(sho,.35)+'" stroke-width="2"/><path d="M103 341 L137 341" stroke="'+dk(sho,.3)+'" stroke-width="3"/></g>'+
+    '<rect x="62" y="244" width="76" height="12" rx="5" fill="'+dk(pt,.35)+'"/></g>';
+  const torso='<g class="body">'+
+      '<path d="M54 190 Q54 168 100 165 Q146 168 146 190 L139 254 Q100 262 61 254 Z" fill="url(#'+u+'sh)"/>'+
+      '<path d="M68 200 Q72 186 86 182" stroke="#fff" stroke-width="5" fill="none" opacity=".22" stroke-linecap="round"/>'+
+      '<path d="M128 214 Q132 232 132 250" stroke="#000" stroke-width="6" fill="none" opacity=".1" stroke-linecap="round"/>'+
+      '<rect x="87" y="140" width="26" height="34" rx="11" fill="url(#'+u+'nk)"/>'+
+      '<path d="M82 170 Q100 190 118 170" stroke="'+dk(sh,.35)+'" stroke-width="5" fill="none" stroke-linecap="round"/>'+
+    '</g>';
+  const head='<g class="head">'+hairSides(L.style,u)+
       '<ellipse cx="49" cy="106" rx="10" ry="13" fill="url(#'+u+'sk)"/><ellipse cx="151" cy="106" rx="10" ry="13" fill="url(#'+u+'sk)"/>'+
       '<ellipse cx="50" cy="107" rx="4.5" ry="7" fill="'+dk(sk,.22)+'"/><ellipse cx="150" cy="107" rx="4.5" ry="7" fill="'+dk(sk,.22)+'"/>'+
       '<ellipse cx="100" cy="100" rx="51" ry="53" fill="url(#'+u+'sk)"/>'+
@@ -805,11 +827,15 @@ function avatar(p,mood,size){
       '<ellipse cx="70" cy="124" rx="12" ry="8" fill="url(#'+u+'bl)"/><ellipse cx="130" cy="124" rx="12" ry="8" fill="url(#'+u+'bl)"/>'+
       '<g class="eyes">'+eye(80)+eye(120)+lids+'</g>'+
       '<path d="'+brows+'" stroke="'+brow+'" stroke-width="6" stroke-linecap="round" fill="none"/>'+
-      '<path d="M96 112 Q100 122 104 112" fill="none"/><ellipse cx="100" cy="121" rx="6" ry="4.4" fill="'+dk(sk,.14)+'"/><ellipse cx="98.5" cy="119.5" rx="2.2" ry="1.4" fill="#fff" opacity=".45"/>'+
-      mouth+extra+
-    '</g></g></svg>';
+      '<ellipse cx="100" cy="121" rx="6" ry="4.4" fill="'+dk(sk,.14)+'"/><ellipse cx="98.5" cy="119.5" rx="2.2" ry="1.4" fill="#fff" opacity=".45"/>'+
+      mouth+extra+'</g>';
+  if(headOnly) return '<svg viewBox="36 30 128 128" aria-hidden="true">'+defs+'<g class="av '+m+'"><circle cx="100" cy="94" r="64" fill="url(#'+u+'bg)"/>'+hairBack(L.style,u)+torso+head+'</g></svg>';
+  return '<svg viewBox="0 0 200 360" '+(size?'width="'+size+'" height="'+size+'"':'')+' aria-hidden="true">'+defs.replace('</defs>',pdefs+'</defs>')+'<g class="av '+m+'">'+
+    '<ellipse cx="100" cy="200" rx="100" ry="160" fill="url(#'+u+'gl)"/>'+
+    '<ellipse cx="100" cy="346" rx="60" ry="9" fill="#000" opacity=".22"/>'+
+    hairBack(L.style,u)+legs+torso+head+arm(60,184,POSE[0],"armL")+arm(140,184,POSE[1],"armR")+
+    '</g></svg>';
 }
-
 
 /* ======================= SCENERY (2.5D parallax) ======================= */
 function tree(x,y,s,c){ const id="tg"+Math.round(x)+"_"+Math.round(y);
@@ -882,7 +908,7 @@ function render(focus){
 }
 
 function viewStart(){
-  const heroPeople=[0,1,2,3,4,5].map(i=>avatar(PEOPLE[i]).replace('<svg ','<svg x="'+(i%3*120+5)+'" y="'+(Math.floor(i/3)*125)+'" width="110" height="125" ')).join("");
+  const heroPeople=[0,1,2,3,4,5].map(i=>avatar(PEOPLE[i]).replace('<svg ','<svg x="'+(i%3*120+22)+'" y="'+(Math.floor(i/3)*128)+'" width="76" height="136" ')).join("");
   return '<div class="card fade"><div class="hero"><div>'+
     '<span class="pill">Mental Health Unit · about 25 minutes</span>'+
     '<h1 style="margin-top:10px">'+CONFIG.TITLE+'</h1>'+
@@ -894,7 +920,7 @@ function viewStart(){
     '<label class="f" for="pd">Class period / block <span class="muted" style="font-weight:400">(optional)</span></label><input type="text" id="pd" maxlength="20" value="'+esc(S.period)+'" placeholder="e.g., Block 3">'+
     '<p id="nmerr" class="muted" style="color:var(--red);min-height:1.4em;margin-top:6px"></p>'+
     '<button class="btn" data-act="begin" type="button">Start the expedition →</button>'+
-    '</div><div class="heroart"><svg viewBox="0 0 360 250" aria-hidden="true">'+heroPeople+'</svg></div></div></div>';
+    '</div><div class="heroart"><svg viewBox="0 0 360 266" aria-hidden="true">'+heroPeople+'</svg></div></div></div>';
 }
 
 function flipMsg(part){
@@ -1014,14 +1040,14 @@ function blogHTML(p, mode, si){
     }).join(" ")+"</p>";
   });
   const hk="h"+si, liked=S.hearts[hk];
-  return '<article class="blog '+(mode==="tag"?"tagging":"")+'"><div class="bhead"><div class="mini">'+avatar(p)+'</div><div class="who"><b>'+p.name+'</b><small>'+p.handle+' · '+p.blog.date+'</small></div></div>'+
+  return '<article class="blog '+(mode==="tag"?"tagging":"")+'"><div class="bhead"><div class="mini">'+avatar(p,null,null,true)+'</div><div class="who"><b>'+p.name+'</b><small>'+p.handle+' · '+p.blog.date+'</small></div></div>'+
     '<div class="bbody"><h3>'+p.blog.title+'</h3>'+body+'</div>'+
     '<div class="bfoot"><button type="button" class="heart '+(liked?"on":"")+'" data-act="heart" data-k="'+hk+'">'+(liked?"♥":"♡")+' '+(12+si*3+(liked?1:0))+'</button><span>💬 1 comment</span></div>'+
     '<div class="comment"><b>'+p.blog.comment.who+'</b> '+p.blog.comment.t+'</div></article>';
 }
 function p2BlogHTML(p, si){
   const hk="h"+si, liked=S.hearts[hk];
-  return '<article class="blog p2post"><div class="bhead"><div class="mini">'+avatar(p)+'</div><div class="who"><b>'+p.name+'</b><small>'+p.handle+' · '+p.p2.date+'</small></div><span class="pill" style="margin-left:auto">Follow-up post</span></div>'+
+  return '<article class="blog p2post"><div class="bhead"><div class="mini">'+avatar(p,null,null,true)+'</div><div class="who"><b>'+p.name+'</b><small>'+p.handle+' · '+p.p2.date+'</small></div><span class="pill" style="margin-left:auto">Follow-up post</span></div>'+
     '<div class="bbody"><h3>'+p.p2.title+'</h3>'+p.p2.paras.map(x=>"<p>"+x+"</p>").join("")+'</div>'+
     '<div class="bfoot"><button type="button" class="heart '+(liked?"on":"")+'" data-act="heart" data-k="'+hk+'">'+(liked?"♥":"♡")+' '+(9+si+(liked?1:0))+'</button></div></article>'+
     '<details class="reread"><summary>Reread '+p.name.split(" ")[0]+'\'s first post (from Part 1)</summary><div class="bbody"><h3>'+p.blog.title+'</h3>'+p.blog.paras.map(pp=>"<p>"+pp.map(s=>s.t).join(" ")+"</p>").join("")+'</div></details>';
