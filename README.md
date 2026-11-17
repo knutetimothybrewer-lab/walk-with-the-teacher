@@ -12,6 +12,12 @@ A single self-contained HTML file (no network, no build) for students who have j
 
 Student link once GitHub Pages is on: `https://YOUR-USER.github.io/walk-with-the-teacher/social-dilemma-check/`
 
+## Emotional Health Expedition: Mental Health Unit activity (`emotional-health-expedition/`)
+
+A single self-contained HTML file (no server, no network) that takes about 25 minutes. Students enter their name, then hike a 12-stop trail that gets harder as it climbs. **Part 1 (Feelings Valley, stops 1–6):** each stop is a fictional teen with an animated avatar and a detailed blog post; students tap the sentences that are signs, identify stress, anxiety, depression, panic, grief or emotional distress, and rate the situation with D-I-I-S (Duration, Intensity, Interference, Safety). **Part 2 (Signal Ridge, stops 7–12):** the same six teens post follow-ups; students sort each signal as Protective, Warning sign or Red flag, then choose the right action (tell an adult, 988, medical help). 30 tasks, 3 tries each with a new hint after every miss (100% / 75% / 50%, answer shown after a third miss). The results page shows COMPLETE, tasks done, accuracy, a per-task grid and a completion code, with instructions to screenshot it and submit to Schoology. A "Need help now?" button (988, Crisis Text Line, 911, trusted adult) is on every page. Progress is saved in the browser; open `?teacher=reset` to clear a device. Edit `CONFIG` and `PEOPLE` at the top of the script.
+
+Student link once GitHub Pages is on: `https://YOUR-USER.github.io/walk-with-the-teacher/emotional-health-expedition/`
+
 ## Wellness Dimensions Lab: extra credit (`wellness-dimensions-lab/`)
 
 A single self-contained HTML file (no server, no network needed) that takes about 25 minutes: a Wellness Wheel, a 20-card Metric Sort, five themed labs (physical, mental, emotional, social, environmental) where students manipulate sliders and diagrams and then identify the metrics for each dimension, and a final Integration Lab. Every item allows three tries and pays 100% / 75% / 50% (0 after a third miss, with the answer shown). Students enter their name first; the final report shows their score, a per-dimension breakdown, what they did well and what to review, and is built to be screenshotted and submitted. Previous/Next bar at the bottom; Next unlocks when a stop is finished. Progress is saved in the browser, so refreshing does not reset tries. Nothing is sent anywhere. To reset a student on a shared device, clear site data for the page.
