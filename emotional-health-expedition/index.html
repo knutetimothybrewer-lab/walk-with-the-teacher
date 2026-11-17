@@ -381,7 +381,8 @@ h1,h2,h3,.btn,.tile,.q{font-weight:800;letter-spacing:-.01em}
 const CONFIG = {
   TITLE: "Emotional Health Expedition",
   SUBMIT_TO: "Schoology",                 // shown on the results page
-  CREDIT: [1, 0.75, 0.5],                 // credit on try 1 / 2 / 3; 0 after a third miss
+  CREDIT: [1, 0.75, 0.5],                 // credit on try 1 / 2 / 3
+  MISS_CREDIT: 0.25,                      // credit after missing all 3 tries (answer is then shown)
   STORAGE_KEY: "ehx-progress-v1",
   RESET_PARAM: "teacher", RESET_VALUE: "reset"   // open ?teacher=reset to clear a device
 };
@@ -718,7 +719,7 @@ function save(){ try{ store.set(JSON.stringify(S)); }catch(e){} }
 let UI = { sel:null, fb:null, flips:{}, bubble:{} };
 
 function T(id){ return S.t[id] || (S.t[id]={tries:0, done:false, att:0, elim:[], marks:[]}); }
-function credit(id){ const t=S.t[id]; return (t&&t.done&&t.att>0)?CONFIG.CREDIT[t.att-1]:0; }
+function credit(id){ const t=S.t[id]; if(!t||!t.done) return 0; return t.att>0 ? CONFIG.CREDIT[t.att-1] : CONFIG.MISS_CREDIT; }
 function doneCount(){ return TASK_IDS.filter(id=>S.t[id]&&S.t[id].done).length; }
 function stageDone(si){ return STAGES[si].steps.every(st=>S.t[si+":"+st]&&S.t[si+":"+st].done); }
 function curStep(si){ return STAGES[si].steps.find(st=>!(S.t[si+":"+st]&&S.t[si+":"+st].done)); }
@@ -1237,7 +1238,7 @@ function viewResults(){
       '<div><h3>Part 2 · Protective, Warning &amp; Red Flags</h3><table class="rtable"><tr><th>Person</th><th class="c">Sort</th><th class="c">Action</th></tr>'+p2+'</table>'+
       '<p style="margin-top:12px;font-size:.9rem"><b>Strongest skill:</b> '+best[0]+' ('+best[1]+'%)<br><b>Keep practicing:</b> '+(low[1]<100?low[0]+' ('+low[1]+'%)':'Nothing. Perfect run!')+'</p></div>'+
     '</div>'+
-    '<p class="muted" style="font-size:.82rem;margin-top:10px">Key: <span class="mark a1">1</span> solved on try 1 · <span class="mark a2">2</span> try 2 · <span class="mark a3">3</span> try 3 · <span class="mark a0">✕</span> answer shown after 3 tries</p>'+
+    '<p class="muted" style="font-size:.82rem;margin-top:10px">Key: <span class="mark a1">1</span> solved on try 1 · <span class="mark a2">2</span> try 2 · <span class="mark a3">3</span> try 3 · <span class="mark a0">✕</span> answer shown after 3 tries ('+Math.round(CONFIG.MISS_CREDIT*100)+'%)</p>'+
     '<div class="shot">📸 Take a screenshot of this whole page and submit it to '+esc(CONFIG.SUBMIT_TO)+'.<br><small class="muted" style="font-weight:400">Chromebook: press Ctrl + Shift + Show windows (□||||) · Windows: Win + Shift + S · Mac: Cmd + Shift + 4</small></div>'+
     '<div class="safety" style="margin-top:14px"><b>You are never alone.</b> If you or a friend are struggling, talk to a trusted adult or school counselor. Call or text <b>988</b> (Suicide &amp; Crisis Lifeline) any time, or text <b>HOME</b> to <b>741741</b>. In an emergency, call <b>911</b>.</div>'+
     '<div class="row" style="margin-top:14px"><button class="btn ghost" data-act="tomap" type="button">View trail map</button></div>'+
