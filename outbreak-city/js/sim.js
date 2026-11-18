@@ -66,7 +66,7 @@
     this.blds = city.buildings.map(function (b) {
       return { id: b.id, tile: b.tile, x: b.x, y: b.y, cx: b.x + 0.5, cy: b.y + 0.5, d: b.d, door: b.door,
         S: b.pop, E: 0, Ek: 0, V: 0, R: 0, D: 0, Z: 0, zOff: 0, orig: b.pop,
-        seenT: -999, breachT: -999, comp: 0.5, compBonus: 0, tripMult: 1, health: 0 };
+        seenT: -999, breachT: -999, comp: 0.5, compBonus: 0, tripMult: 1, health: 0, infHits: 0, blight: 0 };
     });
     this.totalPop = city.totalPop;
     this.distOrig = D.DISTRICTS.map(function () { return 0; });
@@ -83,7 +83,7 @@
 
     // Stats
     var zeros = function () { return D.DISTRICTS.map(function () { return 0; }); };
-    this.stats = { kills: 0, strayDeaths: 0, strayExposed: 0, deaths: 0, infections: 0, revealed: 0, vaccinated: 0, cured: 0,
+    this.stats = { megas: 0, megaInf: 0, megaKills: 0, kills: 0, strayDeaths: 0, strayExposed: 0, deaths: 0, infections: 0, revealed: 0, vaccinated: 0, cured: 0,
       captured: 0, contained: 0, detained: 0, turnings: 0, imports: 0, overflowSeconds: 0, decays: 0, breaches: 0,
       built: {}, everBuilt: {}, peakR: 0, peakRt: 0, peakZ: 0, peakZt: 0, peakE: 0, maxDeathsWave: 0,
       distDeaths: zeros(), distInf: zeros(), distVax: zeros(), distCured: zeros(), stockouts: 0, firstBite: -1, firstTurn: -1 };
@@ -308,9 +308,9 @@
     var r = this.rng.next() * n, p = CFG.biteSuccess * this.em.transmission * (mult || 1);
     b.breachT = this.t;
     if (r < b.S) {
-      if (this.rng.next() < p) { b.S--; b.E++; this.onInfect(b.d, b.cx, b.cy); return true; }
+      if (this.rng.next() < p) { b.S--; b.E++; b.infHits++; this.onInfect(b.d, b.cx, b.cy); return true; }
     } else if (r < b.S + b.V) {
-      if (this.rng.next() < p * (1 - this.vaxEff())) { b.V--; b.E++; this.onInfect(b.d, b.cx, b.cy); return true; }
+      if (this.rng.next() < p * (1 - this.vaxEff())) { b.V--; b.E++; b.infHits++; this.onInfect(b.d, b.cx, b.cy); return true; }
     }
     return false;
   };
@@ -530,7 +530,7 @@
           if (a.biteT <= 0 && a.bitesLeft > 0 && a.dest >= 0) {
             a.bitesLeft--; a.biteT = CFG.breachTime / (z.bites + 0.5);
             var bb = this.blds[a.dest];
-            if (this.biteBuilding(bb)) a.offspring++;
+            if (this.biteBuilding(bb)) { a.offspring++; if (z.boss) this.stats.megaInf++; }
             this.emit({ k: 'breach', x: a.x, y: a.y, b: bb.id, zid: a.id, quiet: z.stealth && !a.revealed });
           }
           if (a.breach <= 0) { a.lastBld = a.dest; a.roadTile = a.path && a.path.length ? a.path[a.path.length - 1] : a.roadTile; this.retarget(a); }
@@ -542,7 +542,7 @@
           var btw = this.towerById(bar);
           if (btw) {
             sp *= btw.st.slow;
-            btw.hp -= DT * (a.type === 'brute' ? 18 : 6);
+            btw.hp -= DT * (z.barricadeDps || (a.type === 'brute' ? 18 : 6));
             if (btw.hp <= 0) { this.emit({ k: 'barricadeBreak', x: btw.tx + 0.5, y: btw.ty + 0.5 }); this.removeTower(btw); }
           }
         }
@@ -555,7 +555,7 @@
         // Street bites (stealthy carriers keep a low profile)
         if (a.biteCd <= 0 && !(z.stealth && !a.revealed) && ((tick + a.id) & 1) === 0) {
           var victim = null;
-          this.near(a.x, a.y, CFG.biteRange, function (w) { if (w.kind === 0) { victim = w; return true; } return false; });
+          this.near(a.x, a.y, CFG.biteRange * (z.streetRange || 1), function (w) { if (w.kind === 0) { victim = w; return true; } return false; });
           if (victim) {
             a.biteCd = CFG.biteCooldown;
             var p = CFG.biteSuccess * CFG.streetBiteMult * this.em.transmission;
@@ -565,6 +565,7 @@
               bit = true;
               victim.st = E; victim.inc = rng.exp(CFG.incubationMean); victim.known = false; victim.isolating = false;
               a.offspring++;
+              if (z.boss) this.stats.megaInf++;
               this.onInfect(this.city.district[tile], victim.x, victim.y);
             }
             this.emit({ k: 'bite', x: victim.x, y: victim.y, zid: a.id, vid: victim.id, ok: bit });
@@ -717,6 +718,7 @@
     this.panic = Math.min(100, this.panic + 0.03);
     if (target.hp <= 0) {
       this.stats.kills++;
+      if (target.zdef.boss) this.stats.megaKills++;
       if (this.flags.bounty) this.budget += 3;
       this.emit({ k: 'kill', x: target.x, y: target.y, z: target.type, face: (target.dirx - target.diry) < 0 ? -1 : 1, tw: tw.id });
       this.killZombie(target, 'shot');
@@ -805,7 +807,7 @@
     var cand = null, kind = 0, fresh = CFG.freshZombieWindow * st.freshWindowMult * this.em.capture;
     // 1) freshly turned zombies (early infectious)
     this.near(tw.x, tw.y, st.range, function (a) {
-      if (a.kind === 1 && a.revealed && a.age < fresh && a.type !== 'brute') { cand = a; kind = 1; return true; }
+      if (a.kind === 1 && a.revealed && a.age < fresh && a.type !== 'brute' && !a.zdef.boss) { cand = a; kind = 1; return true; }
       if (a.kind === 0 && a.known && a.st === E && !cand) { cand = a; kind = 2; }
       return false;
     });
@@ -953,6 +955,9 @@
       dAlive[b.d] += alive; dImm[b.d] += b.V + b.R;
       work += (b.S + b.E + b.V + b.R) * D.DISTRICTS[b.d].wealth;
       b.comp = C.clamp(dComp[b.d] + b.compBonus, 0.03, 0.97);
+      // Blight never goes back down: once a building is overrun it stays scarred
+      var lost = b.D + b.Z, lvl = lost >= 0.55 * b.orig ? 3 : (lost >= 0.25 * b.orig || b.infHits >= 0.5 * b.orig) ? 2 : b.infHits >= Math.max(2, 0.15 * b.orig) ? 1 : 0;
+      if (lvl > b.blight) { b.blight = lvl; if (lvl === 3) this.emit({ k: 'ruin', x: b.cx, y: b.cy, b: b.id }); }
       var mobile = b.S + b.E + b.V + b.R + b.Ek * (1 - b.comp);
       this.srcTotal += mobile * b.tripMult;
       this.srcCum[i] = this.srcTotal;
@@ -1000,7 +1005,9 @@
     // Panic: drifts toward a target set by what people see and hear
     var sum = function (arr) { var s = 0; for (var j = 0; j < arr.length; j++) s += arr[j]; return s; };
     var deaths30 = sum(this.win.deaths), shots30 = sum(this.win.shots);
-    var target = 100 * (1 - Math.exp(-(t.zAgents * 0.5 + deaths30 * 0.6 + shots30 * 0.15) / 90));
+    var megaN = 0; for (i = 0; i < this.agents.length; i++) if (!this.agents[i].dead && this.agents[i].kind === 1 && this.agents[i].zdef.boss) megaN++;
+    this.megasActive = megaN;
+    var target = 100 * (1 - Math.exp(-(t.zAgents * 0.5 + megaN * 12 + deaths30 * 0.6 + shots30 * 0.15) / 90));
     this.panic += (target - this.panic) * 0.05;
     for (i = 0; i < this.towers.length; i++) {
       var tw2 = this.towers[i];
@@ -1082,6 +1089,7 @@
       } else if (this.nZombies < CFG.maxZombies + 10) {
         var oz = this.spawnZombie(s.type, ex, ey, s.entry, 0, -1);
         oz.outsider = true;
+        if (oz.zdef.boss) { this.stats.megas++; this.news('mega', null, true); this.emit({ k: 'megaArrive', x: ex, y: ey }); }
         this.stats.imports++;
         this.emit({ k: 'arrive', x: ex, y: ey, type: s.type });
       }
@@ -1258,6 +1266,7 @@
       detectionRate: detectionRate, detectionPct: Math.round(detectionRate * 100),
       vaxCoverage: st.vaccinated / this.totalPop, vaxPct: Math.round(100 * st.vaccinated / this.totalPop),
       towerCounts: tc, barricades: tc.barricade, spin: this.counters.spin, auth: Math.round(this.counters.auth * 10) / 10, flags: this.flags,
+      megas: st.megas, megaInf: st.megaInf, overrun: this.blds.filter(function (b) { return b.blight >= 2; }).length, ruined: this.blds.filter(function (b) { return b.blight >= 3; }).length,
       overflowSeconds: Math.round(st.overflowSeconds), worstDistrict: D.DISTRICTS[worst].name, wave: this.wave, totalWaves: this.totalWaves,
       budget: Math.round(this.budget), vaccines: Math.round(this.vaccines), decisions: this.decisions, active: t.active, t: Math.round(this.t)
     };

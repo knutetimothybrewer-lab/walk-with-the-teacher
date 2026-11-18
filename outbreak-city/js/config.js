@@ -203,25 +203,28 @@
     basic:   { name: 'Shambler', hp: 60,  speed: 0.75, life: 32, bites: 1, armor: 0,    stealth: false, size: 1 },
     runner:  { name: 'Sprinter', hp: 35,  speed: 1.6,  life: 26, bites: 1, armor: 0,    stealth: false, size: 0.9 },
     brute:   { name: 'Brute',    hp: 220, speed: 0.5,  life: 60, bites: 3, armor: 0.45, stealth: false, size: 1.35 },
-    carrier: { name: 'Carrier',  hp: 50,  speed: 0.95, life: 75, bites: 1, armor: 0,    stealth: true,  size: 1 }
+    carrier: { name: 'Carrier',  hp: 50,  speed: 0.95, life: 75, bites: 1, armor: 0,    stealth: true,  size: 1 },
+    // SUPER ZOMBIE: huge, armored, infects many people per attack (a "super-spreader").
+    // Hospitals can't capture it; it smashes barricades. Vaccinated residents resist its bites.
+    mega:    { name: 'Super-Spreader', hp: 600, speed: 0.42, life: 55, bites: 4, armor: 0.35, stealth: false, size: 2.2, boss: true, streetRange: 1.8, barricadeDps: 45 }
   };
-  D.ZOMBIE_ORDER = ['basic', 'runner', 'brute', 'carrier'];
+  D.ZOMBIE_ORDER = ['basic', 'runner', 'brute', 'carrier', 'mega'];
 
   /* ---- WAVES -----------------------------------------------------------
-     z: arriving zombies [shambler, sprinter, brute, carrier]
+     z: arriving zombies [shambler, sprinter, brute, carrier, super-spreader]
      imports: infected-but-healthy-looking travelers arriving from outside
      entries: how many road entrances zombies use
      night: [start, end] darkness 0..1 across the wave; weather: clear/fog/rain */
   D.WAVES = [
-    { z: [4, 0, 0, 0],  imports: 2, entries: 1, night: [0, 0.05],   weather: 'clear' },
-    { z: [6, 2, 0, 0],  imports: 3, entries: 2, night: [0.05, 0.25], weather: 'clear' },
-    { z: [7, 3, 1, 1],  imports: 3, entries: 2, night: [0.25, 0.75], weather: 'clear' },
-    { z: [8, 4, 1, 2],  imports: 4, entries: 2, night: [0.75, 0.95], weather: 'fog' },
-    { z: [9, 5, 2, 2],  imports: 4, entries: 3, night: [0.9, 0.2],  weather: 'clear' },
-    { z: [10, 6, 2, 3], imports: 5, entries: 3, night: [0.1, 0.15], weather: 'rain' },
-    { z: [11, 7, 3, 3], imports: 5, entries: 3, night: [0.15, 0.6], weather: 'clear' },
-    { z: [12, 8, 3, 4], imports: 6, entries: 3, night: [0.6, 1.0],  weather: 'fog' },
-    { z: [14, 9, 4, 4], imports: 6, entries: 4, night: [1.0, 0.55], weather: 'rain' }
+    { z: [4, 0, 0, 0, 0],  imports: 2, entries: 1, night: [0, 0.05],   weather: 'clear' },
+    { z: [6, 2, 0, 0, 0],  imports: 3, entries: 2, night: [0.05, 0.25], weather: 'clear' },
+    { z: [7, 3, 1, 1, 0],  imports: 3, entries: 2, night: [0.25, 0.75], weather: 'clear' },
+    { z: [8, 4, 1, 2, 0],  imports: 4, entries: 2, night: [0.75, 0.95], weather: 'fog' },
+    { z: [9, 5, 2, 2, 1],  imports: 4, entries: 3, night: [0.9, 0.2],  weather: 'clear' },
+    { z: [10, 6, 2, 3, 1], imports: 5, entries: 3, night: [0.1, 0.15], weather: 'rain' },
+    { z: [11, 7, 3, 3, 2], imports: 5, entries: 3, night: [0.15, 0.6], weather: 'clear' },
+    { z: [12, 8, 3, 4, 2], imports: 6, entries: 3, night: [0.6, 1.0],  weather: 'fog' },
+    { z: [14, 9, 4, 4, 3], imports: 6, entries: 4, night: [1.0, 0.55], weather: 'rain' }
   ];
   D.QUICK_WAVES = [0, 1, 3, 5, 7, 8]; // which of the above a Quick game uses
   D.WEATHER = {

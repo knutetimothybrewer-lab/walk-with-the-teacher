@@ -491,7 +491,7 @@
       body = '<p><b>Goal:</b> get ' + esc(D.CITY_NAME) + ' through every wave with as many residents, as much trust and as much fairness as possible. How you win matters: your ending depends on survival, trust, equity and your choices.</p>' +
         '<p><b>The catch:</b> bitten people look healthy while they incubate (the orange ◆ only appears once a Testing Lab finds them). Shooting visible zombies never finds them.</p>' +
         '<h3>Controls</h3><ul class="oc-small"><li>Drag (or WASD / arrow keys) to move the map. Scroll, pinch or +/− to zoom. C to recenter.</li><li>1–8 or the build bar to pick an intervention, then click a spot. Shift-click to place several. Esc or right-click cancels.</li><li>Click a tower to upgrade (U), sell (X) or learn about it. Health Worker vans move when you tap a road.</li><li>Space pauses (you can still build). F changes speed (1x/2x/3x). L opens the Data Lens. Enter starts the next wave.</li></ul>' +
-        '<h3>Map legend</h3><ul class="oc-small"><li><b style="color:#E69F00">◆ orange diamond</b>: a known Exposed person or building (found by testing).</li><li><b style="color:#CC79A7">? pink circle</b>: an unmasked Carrier (looked like a citizen).</li><li>Zombies reach forward with both arms. Sprinters lean and leave speed lines. Brutes are big and armored.</li><li><b style="color:#FFB27A">▼ INCOMING</b>: where the next wave enters the city.</li><li>Building badges show residents; orange badges show infections that testing has found.</li></ul>';
+        '<h3>Map legend</h3><ul class="oc-small"><li><b style="color:#E69F00">◆ orange diamond</b>: a known Exposed person or building (found by testing).</li><li><b style="color:#CC79A7">? pink circle</b>: an unmasked Carrier (looked like a citizen).</li><li>Zombies reach forward with both arms. Sprinters lean and leave speed lines. Brutes are big and armored. <b style="color:#B7E34A">Super-Spreaders</b> (from wave 5) are giants with a green toxic ring: they infect several people per attack, smash barricades and can’t be captured by hospitals.</li><li>Buildings change for good once residents are infected: a red quarantine X, then smashed windows and vines, then a smoking ruin.</li><li><b style="color:#FFB27A">▼ INCOMING</b>: where the next wave enters the city.</li><li>Building badges show residents; orange badges show infections that testing has found.</li></ul>';
     } else if (tab === 'towers') {
       body = D.TOWER_ORDER.map(function (k) {
         var t = D.TOWERS[k];
@@ -665,7 +665,7 @@
         '<div class="oc-stats">' + stat(Math.round(r.survival * 100) + '%', 'residents survived') + stat(r.deaths, 'residents lost') + stat(r.peakR || '-', 'peak R_eff') +
         stat(r.trust, 'final trust') + stat(r.equity, 'equity index') + stat(r.detectionPct + '%', 'infections detected') + stat(r.vaxPct + '%', 'vaccinated') +
         stat(r.cured, 'cured') + stat(r.strayDeaths, 'stray-fire deaths') + stat(g.decisions.length, 'briefing decisions') + stat(r.wave + ' / ' + r.totalWaves, 'waves played') +
-        stat(D.TOWER_ORDER.reduce(function (n, k) { return n + r.towerCounts[k]; }, 0), 'interventions built') + '</div>' +
+        stat(D.TOWER_ORDER.reduce(function (n, k) { return n + r.towerCounts[k]; }, 0), 'interventions built') + stat(r.overrun, 'buildings overrun') + stat(r.megas, 'super-spreaders faced') + '</div>' +
         '<div class="oc-res-code"><span class="oc-small muted">Completion code</span><div class="oc-code">' + esc(code) + '</div></div>' +
         '<div class="oc-res-howto">📸 <b>Take a screenshot of this whole page</b> and submit it to your teacher' + (self.webhook ? ' (your results were also sent automatically)' : '') + '.<br><span class="oc-small muted">Chromebook: Ctrl + Show windows (or Ctrl + Shift + Show windows for part of the screen). Windows: Win + Shift + S. Mac: Cmd + Shift + 4. iPad: top button + volume up.</span></div>' +
         '<div class="oc-row oc-res-actions"><label class="oc-row" style="gap:6px"><span class="oc-small muted">Name:</span><input type="text" maxlength="24" data-f="rname" value="' + esc(nm) + '" placeholder="First name + last initial"></label>' +
@@ -728,7 +728,7 @@
 
   U.buildReflections = function (r) {
     var dist = this.districtRows(), worst = dist.slice().sort(function (a, b) { return b.rate - a.rate; })[0];
-    var vars = { strayDeaths: r.strayDeaths, detectionPct: r.detectionPct, vaxPct: r.vaxPct, equity: r.equity, worstDistrict: worst ? worst.name : '', spin: r.spin, overflowSeconds: r.overflowSeconds, peakR: r.peakR, barricades: r.barricades, seed: r.seed };
+    var vars = { megaInf: r.megaInf, ruined: r.ruined, strayDeaths: r.strayDeaths, detectionPct: r.detectionPct, vaxPct: r.vaxPct, equity: r.equity, worstDistrict: worst ? worst.name : '', spin: r.spin, overflowSeconds: r.overflowSeconds, peakR: r.peakR, barricades: r.barricades, seed: r.seed };
     var qs = [];
     D.REFLECTIONS.forEach(function (q) { try { if (q.when(r) && qs.length < 6) qs.push(q.q.replace(/\{(\w+)\}/g, function (m, k) { return vars[k] !== undefined ? vars[k] : m; })); } catch (e) { } });
     return qs;
@@ -772,6 +772,7 @@
       ['sdoh', 'Eastside Flats started with ' + Math.round(D.DISTRICTS[2].baseAccess * 100) + '% health-care access vs ' + Math.round(D.DISTRICTS[0].baseAccess * 100) + '% in Gilded Heights, before you did anything.'],
       ['equity', 'Final equity index: ' + r.equity + '. Highest death rate: ' + dist.slice().sort(function (a, b) { return b.rate - a.rate; })[0].name + '.'],
       ['riskcomm', (g.flags.honest ? 'You published honest numbers. ' : '') + (r.spin ? 'You spun the facts ' + r.spin + ' time(s). ' : '') + 'You built ' + r.towerCounts.radio + ' Radio Tower(s). Final trust: ' + r.trust + '.'],
+      ['superspread', r.megas + ' Super-Spreader zombies reached the city and caused ' + r.megaInf + ' infections. ' + r.overrun + ' buildings were overrun (' + r.ruined + ' left in ruins).'],
       ['ethics', r.strayDeaths + ' bystanders were hit by militia fire. Coercive choices: ' + r.auth + '. Ask: was each measure necessary, effective, proportional and fair?']
     ];
     var node = el('div', 'oc-card oc-report');
@@ -779,7 +780,7 @@
       '<div class="oc-row"><button type="button" class="oc-btn primary" data-a="results">My Results page</button><button type="button" class="oc-btn" data-a="copy">Copy results</button><button type="button" class="oc-btn" data-a="end">Back</button><button type="button" class="oc-btn" data-a="again">Play again</button></div></div>' +
       '<section><h3>Your completion code</h3><p class="oc-small muted">Paste this into your class assignment. It encodes your name, seed, ending and key scores.</p><div class="oc-code" tabindex="0">' + esc(code) + '</div><p class="oc-small" data-f="submit"></p></section>' +
       '<section><div class="oc-stats">' + stat(Math.round(r.survival * 100) + '%', 'survived') + stat(r.deaths, 'lost') + stat(r.infections, 'infections') + stat(r.peakR || '-', 'peak R_eff') + stat(r.peakZ, 'peak infected') +
-      stat(r.detectionPct + '%', 'infections detected') + stat(r.vaxPct + '%', 'vaccinated') + stat(r.cured, 'cured') + stat(r.strayDeaths, 'stray-fire deaths') + stat(r.trust, 'final trust') + stat(r.equity, 'equity') + '</div></section>' +
+      stat(r.detectionPct + '%', 'infections detected') + stat(r.vaxPct + '%', 'vaccinated') + stat(r.cured, 'cured') + stat(r.strayDeaths, 'stray-fire deaths') + stat(r.trust, 'final trust') + stat(r.equity, 'equity') + stat(r.overrun, 'buildings overrun') + '</div></section>' +
       '<section><h2>Your epidemic curve</h2><canvas class="oc-bigchart" width="1600" height="480" aria-label="Epidemic curve with annotations"></canvas>' +
       '<div class="oc-legend"><span><i style="border-color:#D55E00"></i>Infected (zombies)</span><span><i style="border-color:#E69F00;border-top-style:dashed"></i>Known exposed</span><span><i style="border-color:rgba(230,159,0,.6);border-top-style:dotted"></i>All exposed (the hidden iceberg)</span><span><i style="border-color:#F2A6D6;border-top-style:dotted"></i>Hospital beds</span></div>' +
       '<ol class="oc-annos">' + annos.map(function (a) { return '<li>' + esc(a.label) + ' <span class="muted">(' + C.fmtTime(a.t) + ')</span></li>'; }).join('') + '</ol></section>' +
