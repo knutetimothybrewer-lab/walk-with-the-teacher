@@ -222,6 +222,8 @@
         case 'news': this.pushNews(this.fillNews(e.key, e.vars)); break;
         case 'consequence': this.toast('⏳ ' + e.text, 'warn', 7000); this.pushNews('UPDATE: ' + e.text.toUpperCase()); s.play('alert'); break;
         case 'waveStart': this.banner('WAVE ' + e.w, e.w === g.totalWaves ? 'Final wave' : (g.weather !== 'clear' ? (g.weather === 'fog' ? 'Fog rolls in: turrets see less' : 'Rain: fewer people out') : 'Zombies approach')); break;
+        case 'megaArrive': this.banner('SUPER-SPREADER!', 'A giant zombie that infects many people at once. Focus fire, barricades and high vaccination slow it.'); s.play('alert'); s.play('wave'); this.pushNews(this.fillNews('mega')); break;
+        case 'ruin': s.play('barricade'); break;
         case 'finalPush': this.banner('FINAL PUSH', 'No more arrivals. Clear the remaining cases!'); s.play('alert'); break;
         case 'stockout': this.toast('Vaccine stock is empty. Clinics are idle until the next shipment.', 'bad'); this.flashMeter('vaccines'); break;
         case 'firstBite': if (this.tut) this.tutEvent('bite'); break;

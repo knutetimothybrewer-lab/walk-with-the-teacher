@@ -522,6 +522,7 @@
     militiaMany: ['MORE TURRETS, MORE NOISE: "THE GUNFIRE DRAWS THEM IN," WARNS EXPERT'],
     calm: ['CASES FALLING; RESIDENTS CAUTIOUSLY RETURN TO ARGUING ABOUT PARKING'],
     carrier: ['LAB UNMASKS A "CARRIER": LOOKED HEALTHY, WAS NOT'],
+    mega: ['SUPER-SPREADER SIGHTED ON THE HIGHWAY; EXPERTS: "THAT IS A VERY LARGE BOY"', 'GIANT ZOMBIE INFECTS ENTIRE BIRTHDAY PARTY; CAKE UNHARMED'],
     rising: ['CASES RISING FAST; R-NUMBER ABOVE {r}', 'EXPERTS: "EACH CASE IS MAKING MORE THAN ONE NEW CASE. THAT IS BAD."'],
     consequence: ['UPDATE: {text}']
   };
@@ -549,6 +550,8 @@
       real: 'Public health guidance is to "be first, be right, be credible." When officials were caught hiding outbreak data, trust and cooperation fell.' },
     ethics: { name: 'Public health ethics', text: 'Autonomy (respect choices), beneficence (do good), non-maleficence (avoid harm), justice (fair distribution) and proportionality (least restrictive measure that works).',
       real: 'Ethicists ask whether a restriction is necessary, effective, proportional, fair and as short as possible. History includes forced quarantines that targeted marginalized groups.' },
+    superspread: { name: 'Super-spreading', text: 'Most infected people infect few others, but a small number infect many. Crowded indoor places and long contact make super-spreading more likely.',
+      real: 'In many outbreaks (SARS, measles, COVID-19), roughly 20% of cases caused about 80% of the spread. Limiting large indoor gatherings and boosting immunity target this.' },
     essential: { name: 'The 10 Essential Public Health Services', text: 'A national framework describing what public health systems do, from monitoring health to building equitable access and strong infrastructure.',
       real: 'The 10 Essential Public Health Services were updated in 2020 to put equity at the center of the framework.' }
   };
@@ -610,6 +613,8 @@
     { when: function (r) { return r.peakR > 1.5; }, q: 'Your R_eff peaked around {peakR}. What does that number mean, and which of your actions brought it down (or failed to)?' },
     { when: function (r) { return r.towerCounts.barricade >= 4; }, q: 'You built {barricades} quarantine barricades. What is the difference between quarantine and isolation, and what did the barricades cost the city?' },
     { when: function (r) { return r.towerCounts.chw === 0; }, q: 'You never deployed Community Health Workers. How might trusted local messengers have changed uptake in Eastside Flats or Rustwater Port?' },
+    { when: function (r) { return r.megaInf >= 15; }, q: 'Super-Spreaders caused {megaInf} infections in your city. In real outbreaks, what kinds of places and events lead to super-spreading, and how can public health reduce them?' },
+    { when: function (r) { return r.ruined >= 10; }, q: '{ruined} buildings were completely overrun. Which neighborhoods were they in, and what could have protected them earlier?' },
     { when: function () { return true; }, q: 'If you replayed this exact outbreak (seed {seed}), what is the first thing you would do differently, and why?' },
     { when: function () { return true; }, q: 'Which of the 10 Essential Public Health Services did your strategy use the most? Which did you neglect?' }
   ];
