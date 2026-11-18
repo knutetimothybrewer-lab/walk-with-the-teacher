@@ -221,7 +221,7 @@
       this.endShown = true; this.autosave();
       var self = this;
       if (g.endReason !== 'nuke') this.banner(g.endReason === 'hall' ? 'CITY HALL HAS FALLEN' : g.endReason === 'collapse' ? 'THE CITY HAS FALLEN' : 'OUTBREAK OVER', g.endReason === 'hall' ? 'The command bunker was overrun' : g.endReason === 'collapse' ? 'Too many residents were lost' : 'Let’s see what kind of city is left');
-      setTimeout(function () { if (!self.destroyed) self.showEnd(); }, g.endReason === 'nuke' ? 7000 : 1600);
+      var endedGame = g; setTimeout(function () { if (!self.destroyed && self.game === endedGame && endedGame.phase === 'ended') self.showEnd(); }, g.endReason === 'nuke' ? 7000 : 1600);
     }
   };
 

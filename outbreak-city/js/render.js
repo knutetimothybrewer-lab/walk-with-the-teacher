@@ -1324,15 +1324,23 @@
 
   /* ================= CHAOS: what an overrun district looks like =================
      Driven by game.chaos[d] (0..1, share of the district's buildings overrun). */
+  // Flames are pre-drawn once (8 animation frames) and then stamped: building a gradient
+  // for every flame every frame was the main cost when whole districts are burning.
+  R.flameSprite = function (f) {
+    return this.sprite('fl|' + f, 16, 34, 8, 31, function (ctx) {
+      var a = f / 8 * Math.PI * 2, size = 20, fh = size * (1 + 0.22 * Math.sin(a) + 0.12 * Math.sin(a * 2 + 1)), fw = size * 0.45;
+      var fl = ctx.createLinearGradient(0, 0, 0, -fh);
+      fl.addColorStop(0, 'rgba(255,200,70,0.95)'); fl.addColorStop(0.45, 'rgba(255,110,30,0.85)'); fl.addColorStop(1, 'rgba(200,30,10,0)');
+      ctx.fillStyle = fl;
+      ctx.beginPath(); ctx.moveTo(-fw, 0);
+      ctx.quadraticCurveTo(-fw * 0.6 + Math.sin(a * 1.3) * 2, -fh * 0.55, Math.sin(a) * 2, -fh);
+      ctx.quadraticCurveTo(fw * 0.6, -fh * 0.55, fw, 0); ctx.closePath(); ctx.fill();
+      ctx.fillStyle = 'rgba(255,240,180,0.85)'; ellipse(ctx, 0, -1, fw * 0.45, size * 0.12); ctx.fill();
+    });
+  };
   R.flame = function (ctx, x, y, size, seed) {
-    var t = this.time, fh = size * (1 + 0.25 * Math.sin(t * 13 + seed) + 0.15 * Math.sin(t * 23 + seed * 3)), fw = size * 0.45;
-    var fl = ctx.createLinearGradient(x, y, x, y - fh);
-    fl.addColorStop(0, 'rgba(255,200,70,0.95)'); fl.addColorStop(0.45, 'rgba(255,110,30,0.85)'); fl.addColorStop(1, 'rgba(200,30,10,0)');
-    ctx.fillStyle = fl;
-    ctx.beginPath(); ctx.moveTo(x - fw, y);
-    ctx.quadraticCurveTo(x - fw * 0.6 + Math.sin(t * 9 + seed) * 2, y - fh * 0.55, x + Math.sin(t * 7 + seed) * 2, y - fh);
-    ctx.quadraticCurveTo(x + fw * 0.6, y - fh * 0.55, x + fw, y); ctx.closePath(); ctx.fill();
-    ctx.fillStyle = 'rgba(255,240,180,0.85)'; ellipse(ctx, x, y - 1, fw * 0.45, size * 0.12); ctx.fill();
+    var f = Math.floor(this.time * 12 + seed * 1.7) & 7;
+    this.blit(ctx, this.flameSprite(f), x, y, size / 20);
   };
 
   R.buildChaosProps = function () {
@@ -1348,7 +1356,7 @@
   };
 
   R.drawChaosProps = function (ctx, dt) {
-    var g = this.game; if (!g.chaos || !this.chaosProps) return;
+    var g = this.game; if (!g.chaos || !this.chaosProps || this.settings.lowFx) return; // Low effects: skip street wrecks
     var v = this.view, st = this.settings, t = this.time, night = this.night > 0.5;
     for (var i = 0; i < this.chaosProps.length; i++) {
       var pr = this.chaosProps[i];
@@ -1394,12 +1402,12 @@
   // Overrun buildings burn: roof fires on most ruins, window fires in burning districts
   R.drawBuildingFire = function (ctx, x, y, cb, b, dt) {
     var g = this.game, h = this.bHeight(cb), id = b.id, chaos = g.chaos ? g.chaos[b.d] : 0;
-    if (b.blight >= 3 && hash2(id, 5) < 0.75) {
+    if (b.blight >= 3 && hash2(id, 5) < (this.settings.lowFx ? 0.35 : 0.75)) {
       this.flame(ctx, x - 6, y - h + 2, 16, id);
-      this.flame(ctx, x + 7, y - h + 5, 12, id + 9);
+      if (!this.settings.lowFx) this.flame(ctx, x + 7, y - h + 5, 12, id + 9);
       if (!this.settings.lowFx && Math.random() < dt * 2.5) this.part(x, y - h - 14, { z: 0, vx: 5, vy: -2, vz: 18, g: -6, max: 3, kind: 'smoke', color: 'rgba(35,35,35,0.55)', size: 5 });
       if (!this.settings.lowFx && Math.random() < dt * 3) this.part(x + (Math.random() - 0.5) * 16, y - h, { z: 0, vx: (Math.random() - 0.5) * 10, vy: 0, vz: 30, g: -3, max: 1.5, kind: 'spark', color: '#FFB347', size: 1.8 });
-    } else if (chaos > 0.15 && hash2(id, 11) < 0.15 + chaos * 0.5) {
+    } else if (!this.settings.lowFx && chaos > 0.15 && hash2(id, 11) < 0.15 + chaos * 0.5) {
       this.flame(ctx, x - 8 + hash2(id, 3) * 16, y - h * (0.35 + hash2(id, 4) * 0.4), 9, id);
     }
   };

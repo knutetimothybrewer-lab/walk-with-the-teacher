@@ -274,13 +274,20 @@ node outbreak-city/tools/browser-test.js /tmp/oc-shots
 - `tools/bots.js` runs scripted strategies headlessly to check balance.
 - `tools/browser-test.js` runs the end-to-end browser checks and saves screenshots.
 
-Balance (seeds TEST01, ABC, K7Q2MX, ZED9, Q1 and HELLO on Normal):
+Win rates and game length (`node outbreak-city/tools/winrates.js 40 normal full`). This plays 40 different seeds per strategy on Normal. "Infection wins" means the city collapsed, City Hall fell, or it was nuked.
 
-| Strategy | Typical ending | Survival | Trust |
-|---|---|---|---|
-| Do nothing | Collapse (wave 4–6) | 38% | ~35 |
-| Pure militia | Hollow Victory | 69–76% | 0 |
-| Balanced toolkit | Eradication or Controlled Endemic | 74–92% | 80–97 |
-| Rich districts only | Two-Tier City or low-equity Endemic | 59–69% | 55–86 |
-| Spin-heavy militia | *Secret ending* / Hollow Victory | – | – |
-| No-militia expert (Easy) | Eradication, Endemic or *secret ending* | – | – |
+| Strategy | Infection stopped | Contained (endemic) | Survived, damaged | Infection wins | Avg survival | Game length at 1× |
+|---|---|---|---|---|---|---|
+| Do nothing | 0% | 0% | 0% | 100% | 38% | 5 min (4–6) |
+| Pure militia | 0% | 0% | 3% | 98% | 42% | 14 min (10–15) |
+| Heavy Turrets + militia | 0% | 0% | 0% | 100% | 38% | 10 min (6–15) |
+| Rich districts only | 0% | 18% | 13% | 70% | 54% | 15 min |
+| **Typical student** (varied, partly random choices) | 0% | 23% | 30% | **48%** | 55% | 14 min (8–15) |
+| Balanced public-health toolkit | 15% | 85% | 0% | 0% | 74% | 15 min |
+| Expert (guards entrances + full toolkit) | 23% | 73% | 0% | 5% | 75% | 15 min |
+
+- **Tuning target:** a typical student loses about half the time, while strong public-health play almost never loses.
+- **Easy:** the typical student never loses, and balanced play stops the infection about 95% of the time.
+- **Hard:** the typical student loses about 75% and balanced players about 25%.
+
+**Classroom time:** a full game is about 15 minutes of simulated time at 1× speed. With planning between waves and reading briefings (about 25 s per wave), plan on **18–20 minutes**, plus the tutorial (about 5 minutes) the first time. Doing nothing ends in about 7 minutes. 2× or 3× speed shortens waves. Simulating 280 games takes the computer about 3.5 minutes.
