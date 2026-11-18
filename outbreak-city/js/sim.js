@@ -1020,6 +1020,7 @@
     // R_eff estimate from completed infectious "careers" in the last 30 s
     var off = sum(this.win.off), rem = sum(this.win.rem), turn = sum(this.win.turn), cureE = sum(this.win.cureE);
     if (rem >= 3) {
+      this.reffReady = true;
       var raw = (off / rem) * (turn / (turn + cureE + 0.001));
       this.reff += (raw - this.reff) * 0.25;
       if (rem >= 6 && this.t > 30 && this.reff > this.stats.peakR) { this.stats.peakR = this.reff; this.stats.peakRt = this.t; }
@@ -1228,7 +1229,7 @@
     var auth = this.counters.auth + this.countTowers('militia') * 0.35 + Math.max(0, this.countTowers('barricade') - 3) * 0.3;
     this.authScore = auth;
     if (this.endReason === 'collapse' || surv < 0.55 || active > 0.12 * this.totalPop) return 'collapse';
-    if (this.counters.spin >= 3 && this.trust < 30) return 'zombieMayor';
+    if (this.counters.spin >= 2 && this.trust < 25) return 'zombieMayor';
     var clear = Math.max(3, Math.round(0.003 * this.totalPop));
     if (active <= 3 && surv >= 0.85 && this.trust >= 72 && this.equity >= 70 && !this.stats.everBuilt.militia) return 'modelCity';
     if (this.trust < 20 || (auth >= 4 && this.trust < 35)) return 'hollow';
