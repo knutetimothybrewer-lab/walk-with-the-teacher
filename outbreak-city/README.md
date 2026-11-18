@@ -51,7 +51,7 @@ When a game ends, students see a newspaper front page for their ending, then cli
 - The student's name, which they can type or fix right on the page
 - The date and time, plus the seed, difficulty and length
 - The ending and its headline
-- 12 key scores
+- Key scores, including City Hall integrity, buildings overrun and Super-Spreaders faced
 - The completion code
 - How to take a screenshot on a Chromebook, Windows, Mac or iPad
 
@@ -169,6 +169,11 @@ All CSS is scoped under `.oc-root`, saved data uses one `localStorage` key (`out
 | Community Health Workers boost underserved districts | Community-based public health, health equity |
 | Districts start with very different health-care access | Social determinants of health |
 | Equity Index | Health equity and distributive justice |
+| City Hall command bunker in the middle of town: zombies march on it, crowd its walls and pound on it (damage numbers, cracks, smoke, then fire); an arrow points to it when it's off screen; if its integrity hits 0 the game ends | Protecting public health infrastructure and coordination (Essential Service 10) |
+| New arrivals claw out of glowing "hell holes" at the city's edges | Imported cases keep arriving from outside, so a response has to plan for them |
+| Super-Spreader zombies (from wave 5): giant, armored, infect several people per attack, smash barricades | Super-spreading (a few cases cause most spread); vaccination and controlling crowds blunt it |
+| Districts fall into chaos as they're overrun: burning buildings and car wrecks, flashing police cars, fire glow and smoke, a news helicopter, falling ash | An uncontrolled outbreak spreads harm beyond the sick: panic, lost services, damage to whole neighborhoods |
+| Buildings permanently decay once residents are infected (quarantine X → smashed and overgrown → smoking ruin) | The lasting damage of an uncontrolled outbreak; which neighborhoods were hit hardest |
 | Militia Turret: stray fire, noise draws more arrivals, trust loss | Containment by force, ethics (autonomy, non-maleficence, justice, proportionality) |
 | Briefing cards (curfews, schools, stadium detention, donors, price gouging) | Public health policy, law and ethics |
 | After-Action Report checklist | The 10 Essential Public Health Services |
@@ -192,7 +197,7 @@ All CSS is scoped under `.oc-root`, saved data uses one `localStorage` key (`out
 Tell students the game is satirical, and that how they win matters as much as whether they win.
 
 **During play.**
-- First-timers should leave the tutorial on. It is a playable first wave.
+- First-timers should leave the tutorial on. It is a 22-step guided walkthrough of the first wave: it moves the camera, spotlights each button and meter, and has students build a lab, turret, clinic and hospital themselves (Back, Next and Skip are always available).
 - Encourage students to hover meters and towers (every one explains itself) and to try the **Data lens (L)**.
 - For a whole-class comparison, give everyone the same `?seed=` link.
 - A strong lesson design: play once, debrief, then replay **the same seed** with a different strategy.

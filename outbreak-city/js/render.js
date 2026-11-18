@@ -85,6 +85,7 @@
     this.flash = {};
     this.warmIdx = 0;
     this.buildChunks();
+    this.buildChaosProps();
     this.initCars();
     var mid = iso(this.W / 2, this.H / 2);
     this.cam.x = this.cam.tx = mid.x; this.cam.y = this.cam.ty = mid.y;
@@ -1167,6 +1168,157 @@
     ctx.fillStyle = frac > 0.5 ? '#56B4E9' : frac > 0.25 ? '#E69F00' : '#D55E00'; ctx.fillRect(p.x - w / 2, top + s, w * frac, 5 * s);
   };
 
+
+  /* ================= CHAOS: what an overrun district looks like =================
+     Driven by game.chaos[d] (0..1, share of the district's buildings overrun). */
+  R.flame = function (ctx, x, y, size, seed) {
+    var t = this.time, fh = size * (1 + 0.25 * Math.sin(t * 13 + seed) + 0.15 * Math.sin(t * 23 + seed * 3)), fw = size * 0.45;
+    var fl = ctx.createLinearGradient(x, y, x, y - fh);
+    fl.addColorStop(0, 'rgba(255,200,70,0.95)'); fl.addColorStop(0.45, 'rgba(255,110,30,0.85)'); fl.addColorStop(1, 'rgba(200,30,10,0)');
+    ctx.fillStyle = fl;
+    ctx.beginPath(); ctx.moveTo(x - fw, y);
+    ctx.quadraticCurveTo(x - fw * 0.6 + Math.sin(t * 9 + seed) * 2, y - fh * 0.55, x + Math.sin(t * 7 + seed) * 2, y - fh);
+    ctx.quadraticCurveTo(x + fw * 0.6, y - fh * 0.55, x + fw, y); ctx.closePath(); ctx.fill();
+    ctx.fillStyle = 'rgba(255,240,180,0.85)'; ellipse(ctx, x, y - 1, fw * 0.45, size * 0.12); ctx.fill();
+  };
+
+  R.buildChaosProps = function () {
+    var city = this.game.city, W = this.W, props = [];
+    for (var i = 0; i < city.tiles.length; i++) {
+      if (city.tiles[i] !== T.ROAD) continue;
+      var x = i % W, y = (i / W) | 0, h = hash2(x * 31 + 7, y * 17 + 3);
+      if (h > 0.13 || x === 0 || y === 0 || x === W - 1 || y === this.H - 1) continue;
+      var h2 = hash2(y * 13 + 1, x * 29 + 5);
+      props.push({ x: x + 0.3 + h2 * 0.4, y: y + 0.3 + hash2(x, y * 3) * 0.4, d: city.district[i], kind: Math.floor(h2 * 4), th: 0.08 + hash2(x * 3, y) * 0.35, seed: i });
+    }
+    this.chaosProps = props;
+  };
+
+  R.drawChaosProps = function (ctx, dt) {
+    var g = this.game; if (!g.chaos || !this.chaosProps) return;
+    var v = this.view, st = this.settings, t = this.time, night = this.night > 0.5;
+    for (var i = 0; i < this.chaosProps.length; i++) {
+      var pr = this.chaosProps[i];
+      if (g.chaos[pr.d] < pr.th) continue;
+      var p = iso(pr.x, pr.y);
+      if (p.x < v.x0 || p.x > v.x1 || p.y < v.y0 || p.y > v.y1) continue;
+      if (pr.kind === 0) {
+        // burning car wreck, on its side
+        ctx.fillStyle = 'rgba(0,0,0,0.35)'; ellipse(ctx, p.x + 2, p.y + 2, 12, 5); ctx.fill();
+        ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(0.5 + (pr.seed % 3) * 0.6);
+        ctx.fillStyle = shade('#3A3330', 1, night); ctx.fillRect(-9, -5, 18, 8);
+        ctx.fillStyle = shade('#1E1A18', 1, night); ctx.fillRect(-6, -8, 10, 4);
+        ctx.fillStyle = '#111'; ctx.beginPath(); ctx.arc(-6, 3, 2.2, 0, 7); ctx.arc(6, 3, 2.2, 0, 7); ctx.fill();
+        ctx.restore();
+        this.flame(ctx, p.x - 2, p.y - 4, 13, pr.seed);
+        if (!st.lowFx && Math.random() < dt * 2) this.part(p.x, p.y - 12, { z: 0, vx: 4, vy: -2, vz: 14, g: -6, max: 2.4, kind: 'smoke', color: 'rgba(40,40,40,0.5)', size: 4 });
+      } else if (pr.kind === 1) {
+        // burning barrel
+        ctx.fillStyle = 'rgba(0,0,0,0.3)'; ellipse(ctx, p.x + 1, p.y + 1, 5, 2.4); ctx.fill();
+        ctx.fillStyle = shade('#6E4A33', 1, night); ctx.fillRect(p.x - 3.5, p.y - 8, 7, 8);
+        ctx.fillStyle = shade('#4A3022', 1, night); ellipse(ctx, p.x, p.y - 8, 3.5, 1.6); ctx.fill();
+        this.flame(ctx, p.x, p.y - 8, 9, pr.seed);
+      } else if (pr.kind === 2) {
+        // debris pile
+        var cols = ['#6E6259', '#4E4540', '#8A7D70', '#C9B48A'];
+        for (var k = 0; k < 6; k++) { ctx.fillStyle = shade(cols[k % 4], 1, night); ctx.fillRect(p.x - 8 + hash2(pr.seed, k) * 14, p.y - 3 + hash2(k, pr.seed) * 5, 3 + k % 3, 2 + k % 2); }
+        if (g.chaos[pr.d] > 0.3) this.flame(ctx, p.x + 2, p.y, 7, pr.seed);
+      } else {
+        // abandoned police car with flashing lights
+        ctx.fillStyle = 'rgba(0,0,0,0.3)'; ellipse(ctx, p.x + 2, p.y + 2, 11, 4.5); ctx.fill();
+        ctx.fillStyle = shade('#F2F2F2', 1, night); ctx.fillRect(p.x - 9, p.y - 7, 18, 7);
+        ctx.fillStyle = shade('#1E2A44', 1, night); ctx.fillRect(p.x - 9, p.y - 4, 18, 3);
+        var on = Math.floor(t * 6 + pr.seed) % 2;
+        ctx.fillStyle = on ? '#FF2A2A' : '#2A6BFF'; ctx.fillRect(p.x - 3, p.y - 10, 3, 3);
+        ctx.fillStyle = on ? '#2A6BFF' : '#FF2A2A'; ctx.fillRect(p.x + 1, p.y - 10, 3, 3);
+        ctx.save(); ctx.globalCompositeOperation = 'lighter';
+        ctx.fillStyle = on ? 'rgba(255,40,40,0.25)' : 'rgba(40,100,255,0.25)'; ellipse(ctx, p.x, p.y - 4, 26, 12); ctx.fill();
+        ctx.restore();
+      }
+    }
+  };
+
+  // Overrun buildings burn: roof fires on most ruins, window fires in burning districts
+  R.drawBuildingFire = function (ctx, x, y, cb, b, dt) {
+    var g = this.game, h = this.bHeight(cb), id = b.id, chaos = g.chaos ? g.chaos[b.d] : 0;
+    if (b.blight >= 3 && hash2(id, 5) < 0.75) {
+      this.flame(ctx, x - 6, y - h + 2, 16, id);
+      this.flame(ctx, x + 7, y - h + 5, 12, id + 9);
+      if (!this.settings.lowFx && Math.random() < dt * 2.5) this.part(x, y - h - 14, { z: 0, vx: 5, vy: -2, vz: 18, g: -6, max: 3, kind: 'smoke', color: 'rgba(35,35,35,0.55)', size: 5 });
+      if (!this.settings.lowFx && Math.random() < dt * 3) this.part(x + (Math.random() - 0.5) * 16, y - h, { z: 0, vx: (Math.random() - 0.5) * 10, vy: 0, vz: 30, g: -3, max: 1.5, kind: 'spark', color: '#FFB347', size: 1.8 });
+    } else if (chaos > 0.15 && hash2(id, 11) < 0.15 + chaos * 0.5) {
+      this.flame(ctx, x - 8 + hash2(id, 3) * 16, y - h * (0.35 + hash2(id, 4) * 0.4), 9, id);
+    }
+  };
+
+  // Fire glow (and smoky haze by day) over districts that are falling apart
+  R.drawChaosGlow = function (ctx) {
+    var g = this.game; if (!g.chaos || this.settings.lowFx) return;
+    for (var k = 0; k < g.chaos.length; k++) {
+      var c = g.chaos[k]; if (c < 0.1) continue;
+      var cc = g.city.centers[k], p = iso(cc[0], cc[1]), e = ISO.ellipse(10);
+      var flick = 0.85 + 0.15 * Math.sin(this.time * 3 + k);
+      ctx.save();
+      ctx.translate(p.x, p.y); ctx.scale(1, e.ry / e.rx);
+      var gr = ctx.createRadialGradient(0, 0, 0, 0, 0, e.rx);
+      gr.addColorStop(0, 'rgba(70,60,55,' + (c * 0.22).toFixed(3) + ')'); gr.addColorStop(1, 'rgba(70,60,55,0)');
+      ctx.fillStyle = gr; ctx.beginPath(); ctx.arc(0, 0, e.rx, 0, 7); ctx.fill();
+      ctx.globalCompositeOperation = 'lighter';
+      var gl = ctx.createRadialGradient(0, 0, 0, 0, 0, e.rx);
+      gl.addColorStop(0, 'rgba(255,110,40,' + (c * (0.12 + this.night * 0.22) * flick).toFixed(3) + ')'); gl.addColorStop(1, 'rgba(255,60,20,0)');
+      ctx.fillStyle = gl; ctx.beginPath(); ctx.arc(0, 0, e.rx, 0, 7); ctx.fill();
+      ctx.restore();
+    }
+  };
+
+  // A news helicopter circles the worst district, sweeping a searchlight
+  R.drawHelicopter = function (ctx, dt) {
+    var g = this.game; if (!g.chaos) return;
+    var best = -1, bc = 0.2;
+    for (var k = 0; k < g.chaos.length; k++) if (g.chaos[k] > bc) { bc = g.chaos[k]; best = k; }
+    if (best < 0) return;
+    var cc = g.city.centers[best], a = this.time * 0.35;
+    var wx = cc[0] + Math.cos(a) * 5, wy = cc[1] + Math.sin(a) * 5, p = iso(wx, wy), alt = 120;
+    var sa = this.time * 1.3, sx = wx + Math.cos(sa) * 2.2, sy = wy + Math.sin(sa) * 2.2, sp = iso(sx, sy);
+    ctx.save();
+    // shadow + searchlight
+    ctx.fillStyle = 'rgba(0,0,0,0.22)'; ellipse(ctx, p.x, p.y, 16, 6); ctx.fill();
+    ctx.globalCompositeOperation = 'lighter';
+    var beam = 0.12 + this.night * 0.25;
+    ctx.fillStyle = 'rgba(255,250,210,' + beam.toFixed(3) + ')';
+    ctx.beginPath(); ctx.moveTo(p.x - 3, p.y - alt + 4); ctx.lineTo(sp.x - 26, sp.y); ctx.lineTo(sp.x + 26, sp.y); ctx.closePath(); ctx.fill();
+    ctx.fillStyle = 'rgba(255,250,210,' + (beam * 1.6).toFixed(3) + ')'; ellipse(ctx, sp.x, sp.y, 26, 12); ctx.fill();
+    ctx.restore();
+    // body
+    var hx = p.x, hy = p.y - alt, dir = Math.cos(a + Math.PI / 2) - Math.sin(a + Math.PI / 2) < 0 ? -1 : 1;
+    ctx.save(); ctx.translate(hx, hy); ctx.scale(dir, 1);
+    ctx.fillStyle = '#2E3440'; ctx.beginPath(); ctx.ellipse(0, 0, 11, 6, 0, 0, 7); ctx.fill();
+    ctx.fillRect(-24, -2, 16, 3); ctx.fillRect(-26, -6, 3, 8);
+    ctx.fillStyle = '#9FD3F2'; ctx.beginPath(); ctx.ellipse(5, -1, 5, 3.5, 0, 0, 7); ctx.fill();
+    ctx.strokeStyle = '#2E3440'; ctx.lineWidth = 1.2; ctx.beginPath(); ctx.moveTo(-6, 7); ctx.lineTo(8, 7); ctx.stroke();
+    var r = Math.sin(this.time * 40) * 20;
+    ctx.strokeStyle = 'rgba(40,40,40,0.6)'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(-r, -8); ctx.lineTo(r, -8); ctx.stroke();
+    ctx.fillStyle = Math.floor(this.time * 2) % 2 ? '#FF3030' : '#551010'; ctx.beginPath(); ctx.arc(-25, -7, 1.6, 0, 7); ctx.fill();
+    ctx.fillStyle = '#E8E8E8'; ctx.font = '700 5px Oswald, sans-serif'; ctx.textAlign = 'center'; ctx.fillText('NEWS 7', -2, 3);
+    ctx.restore();
+  };
+
+  // Ash drifting over the whole city once things get bad
+  R.drawAsh = function (ctx, dt) {
+    var g = this.game; if (!g.chaos || this.settings.lowFx) return;
+    var m = 0; for (var k = 0; k < g.chaos.length; k++) m = Math.max(m, g.chaos[k]);
+    if (m < 0.2) return;
+    if (!this.ash) { this.ash = []; for (var i = 0; i < 70; i++) this.ash.push({ x: Math.random(), y: Math.random(), s: 0.5 + Math.random(), c: Math.random() < 0.3 }); }
+    var n = Math.round(this.ash.length * Math.min(1, (m - 0.2) * 2));
+    for (i = 0; i < n; i++) {
+      var a = this.ash[i];
+      a.y += dt * 0.05 * a.s; a.x += dt * 0.02 * Math.sin(this.time + i);
+      if (a.y > 1) { a.y = 0; a.x = Math.random(); }
+      ctx.fillStyle = a.c ? 'rgba(255,140,60,0.75)' : 'rgba(80,80,80,0.55)';
+      ctx.fillRect(a.x * this.vw, a.y * this.vh, a.c ? 2 : 2.5, a.c ? 2 : 2.5);
+    }
+  };
+
   // Downed zombies tip over and fade away (no gore)
   R.corpse = function (wx, wy, type, face, alpha) {
     for (var i = 0; i < this.corpses.length; i++) {
@@ -1302,6 +1454,7 @@
       ctx.fillStyle = bl === 3 ? 'rgba(52,58,30,0.55)' : 'rgba(70,80,36,0.35)'; ellipse(ctx, bp.x, bp.y, be.rx, be.ry); ctx.fill();
     }
     this.drawCorpses(ctx, nightOn);
+    this.drawChaosProps(ctx, dt);
     // ---- depth-sorted world objects ----
     var list = this.drawList;
     for (i = 0; i < list.length; i++) this.drawPool.push(list[i]);
@@ -1362,6 +1515,7 @@
         var bsk = this.bShake[d.o], jx = (bsk !== undefined && this.time - bsk < 0.35 && !st.reducedMotion) ? Math.sin(this.time * 70) * 1.3 : 0;
         this.blit(ctx, this.buildingSprite(cb2, nightOn, dmg), d.x + jx, d.y);
         if (d.o === g.hallId) this.drawHallDamage(ctx, d.x + jx, d.y, cb2, dt);
+        else if (dmg >= 2) this.drawBuildingFire(ctx, d.x + jx, d.y, cb2, b2, dt);
         if (cb2.landmark === 'lighthouse' && night > 0.3 && !st.lowFx) this.drawBeam(ctx, d.x, d.y - this.bHeight(cb2) - 5, night);
       } else if (d.k === 1) {
         var ts = this.treeSprite(d.o.kind, d.o.v, nightOn), sc = d.o.s;
@@ -1378,6 +1532,8 @@
     }
 
     ctx.imageSmoothingEnabled = true;
+    this.drawChaosGlow(ctx);
+    this.drawHelicopter(ctx, dt);
     // placement ghost on top
     if (ui && ui.placeType && ui.hover) {
       var gtw = { type: ui.placeType, x: ui.hover.x + 0.5, y: ui.hover.y + 0.5, level: 1, id: 0, angle: 0.8, st: D.TOWERS[ui.placeType], hp: 1, patients: [] };
@@ -1440,6 +1596,7 @@
       ctx.fillStyle = vg; ctx.fillRect(0, 0, this.vw, this.vh);
     }
     this.drawWeather(ctx, dt * simSpeed);
+    this.drawAsh(ctx, dt * simSpeed);
     this.drawHallAlert(ctx);
   };
 

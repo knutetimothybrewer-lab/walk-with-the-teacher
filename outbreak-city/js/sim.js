@@ -1056,6 +1056,15 @@
     for (i = 0; i < blds.length; i++) if (this.t - blds[i].seenT < 10) tested += blds[i].orig;
     this.reffConf = this.flags.wastewater ? 1 : tested / this.totalPop;
 
+    // District chaos: how much of each district is overrun (drives fires and street chaos)
+    if (!this.chaos) { this.chaos = D.DISTRICTS.map(function () { return 0; }); this.chaosLvl = D.DISTRICTS.map(function () { return 0; }); }
+    for (k = 0; k < nd; k++) {
+      var list = this.city.byDistrict[k]; if (!list.length) continue;
+      var sc = 0; for (i = 0; i < list.length; i++) { var bl = blds[list[i]].blight; sc += bl >= 3 ? 1 : bl === 2 ? 0.65 : bl === 1 ? 0.2 : 0; }
+      this.chaos[k] = sc / list.length;
+      var lv = this.chaos[k] >= 0.4 ? 2 : this.chaos[k] >= 0.18 ? 1 : 0;
+      if (lv > this.chaosLvl[k]) { this.chaosLvl[k] = lv; this.emit({ k: 'chaos', d: k, lvl: lv }); this.news(lv === 2 ? 'chaos2' : 'chaos1', { d: D.DISTRICTS[k].name.toUpperCase() }); }
+    }
     if (t.zombies > this.stats.peakZ) { this.stats.peakZ = t.zombies; this.stats.peakZt = this.t; }
     if (t.trueE > this.stats.peakE) this.stats.peakE = t.trueE;
     if (this.vaccines >= 1) this.stockout = false;
