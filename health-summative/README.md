@@ -60,7 +60,7 @@ tests/  tools/        automated tests; generators for TIMING.md and CONTENT-MAP.
 
 * **Class codes:** `classCodes: ['TRAIL1', 'TRAIL2', …]`. Not case-sensitive. **Change them from the defaults** (the defaults are visible in this repository).
 * **Names:** `appTitle`, `schoolName`, `mascot`, `unitName`, `teacherName`.
-* **Credit by attempt:** `attemptCredit: [1.0, 0.9, 0.75]` and `maxAttempts: 3`.
+* **Credit by attempt:** `attemptCredit: [1.0, 0.5]` and `maxAttempts: 2` (right on try 1 = 100%, right on try 2 = 50%). To go back to three tries use `[1.0, 0.9, 0.75]` and `maxAttempts: 3`.
 * **Points:** `pointsBySubparts`; **remove questions:** `disabledItems: ['s5-04']`.
 * **Accommodations and retakes:** `studentOverrides` (see below).
 
