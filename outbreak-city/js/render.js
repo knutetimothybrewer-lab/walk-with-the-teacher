@@ -1273,12 +1273,13 @@
 
   // A news helicopter circles the worst district, sweeping a searchlight
   R.drawHelicopter = function (ctx, dt) {
-    var g = this.game; if (!g.chaos) return;
+    var g = this.game; this.heliPos = null; if (!g.chaos) return;
     var best = -1, bc = 0.2;
     for (var k = 0; k < g.chaos.length; k++) if (g.chaos[k] > bc) { bc = g.chaos[k]; best = k; }
     if (best < 0) return;
     var cc = g.city.centers[best], a = this.time * 0.35;
     var wx = cc[0] + Math.cos(a) * 5, wy = cc[1] + Math.sin(a) * 5, p = iso(wx, wy), alt = 120;
+    this.heliPos = { x: wx, y: wy };
     var sa = this.time * 1.3, sx = wx + Math.cos(sa) * 2.2, sy = wy + Math.sin(sa) * 2.2, sp = iso(sx, sy);
     ctx.save();
     // shadow + searchlight

@@ -71,5 +71,47 @@
     }
   };
 
+
+  /* Ambient loops: fire and helicopter. Built once, then only their volumes move,
+     so they cost almost nothing (Web Audio mixes on its own thread). */
+  S.buildAmbient = function () {
+    var c = this.ctx, sr = c.sampleRate, i;
+    var out = this.amb = {};
+    // fire: a low roar (filtered noise)...
+    var roar = c.createBufferSource(); roar.buffer = this.noiseBuf; roar.loop = true;
+    var lp = c.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 520;
+    out.fireRoar = c.createGain(); out.fireRoar.gain.value = 0;
+    roar.connect(lp); lp.connect(out.fireRoar); out.fireRoar.connect(this.master); roar.start();
+    // ...plus crackle: a 3-second loop of random pops
+    var len = sr * 3, cb = c.createBuffer(1, len, sr), d = cb.getChannelData(0), r = 12345;
+    var rnd = function () { r = (r * 1103515245 + 12345) & 0x7fffffff; return r / 0x7fffffff; };
+    for (var k = 0; k < 140; k++) {
+      var at = Math.floor(rnd() * (len - 400)), amp = 0.3 + rnd() * 0.7, dur = 40 + Math.floor(rnd() * 260);
+      for (i = 0; i < dur; i++) d[at + i] += (rnd() * 2 - 1) * amp * Math.exp(-i / (dur * 0.25));
+    }
+    var crk = c.createBufferSource(); crk.buffer = cb; crk.loop = true;
+    var hp = c.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = 900;
+    out.fireCrackle = c.createGain(); out.fireCrackle.gain.value = 0;
+    crk.connect(hp); hp.connect(out.fireCrackle); out.fireCrackle.connect(this.master); crk.start();
+    // helicopter: low noise chopped by a ~13 Hz rotor beat
+    var hn = c.createBufferSource(); hn.buffer = this.noiseBuf; hn.loop = true;
+    var hlp = c.createBiquadFilter(); hlp.type = 'lowpass'; hlp.frequency.value = 340;
+    var chop = c.createGain(); chop.gain.value = 0.5;
+    var lfo = c.createOscillator(); lfo.type = 'square'; lfo.frequency.value = 13;
+    var lfoAmt = c.createGain(); lfoAmt.gain.value = 0.5; lfo.connect(lfoAmt); lfoAmt.connect(chop.gain); lfo.start();
+    out.heli = c.createGain(); out.heli.gain.value = 0;
+    hn.connect(hlp); hlp.connect(chop); chop.connect(out.heli); out.heli.connect(this.master); hn.start();
+  };
+
+  // fire, heli: 0..1 loudness wanted right now
+  S.ambient = function (fire, heli) {
+    if (!this.ctx || !this.noiseBuf) return;
+    if (!this.amb) { if (fire <= 0 && heli <= 0) return; this.buildAmbient(); }
+    var off = this.settings.muted || this.settings.lowFx, t = this.ctx.currentTime;
+    this.amb.fireRoar.gain.setTargetAtTime(off ? 0 : fire * 0.22, t, 0.4);
+    this.amb.fireCrackle.gain.setTargetAtTime(off ? 0 : fire * 0.3, t, 0.4);
+    this.amb.heli.gain.setTargetAtTime(off ? 0 : heli * 0.2, t, 0.5);
+  };
+
   NS.Sfx = Sfx;
 })(typeof window !== 'undefined' ? window : globalThis);

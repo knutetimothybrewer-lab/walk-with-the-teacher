@@ -246,7 +246,7 @@ Tell students the game is satirical, and that how they win matters as much as wh
 - Text size options: Normal, Large, Extra large.
 - Reduced motion (defaults to the device setting).
 - Low effects, which **turns on automatically if frames average over 20 ms for 5 seconds**.
-- Sound is synthesized and starts only after the first click; there is a mute toggle.
+- Sound is synthesized and starts only after the first click; there is a mute toggle. Burning districts add a fire crackle and the news helicopter a rotor sound, louder near the camera (off when muted or in Low effects).
 - Progress saves automatically. A returning student sees **Continue** and resumes paused at the exact same moment (the game replays the saved decisions deterministically).
 
 ## Testing (for maintainers)

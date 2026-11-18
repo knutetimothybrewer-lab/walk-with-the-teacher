@@ -166,7 +166,24 @@
       this.checkPhase();
     }
     this.updateTicker(dt);
+    this.ambT = (this.ambT || 0) + dt;
+    if (this.ambT > 0.1) { this.ambT = 0; this.updateAmbient(); }
     if (this.endArt && this.endArtCanvas) { this.endArtT += dt; this.renderer.drawEndingArt(this.endArtCanvas, this.endArt, this.endArtT); }
+  };
+
+  // Ambient fire and helicopter: louder the more is burning near the camera
+  A.updateAmbient = function () {
+    var g = this.game, r = this.renderer;
+    if (!g || g.attract || !g.chaos || g.phase === 'ended' || this.modalOpen && g.phase !== 'briefing' || (root.document && root.document.hidden)) { this.sfx.ambient(0, 0); return; }
+    var c = r.screenToWorld(r.vw / 2, r.vh / 2), span = 14 / Math.max(0.4, r.cam.zoom), fire = 0, i;
+    for (i = 0; i < g.chaos.length; i++) {
+      var cc = g.city.centers[i], dd = Math.hypot(cc[0] - c.x, cc[1] - c.y);
+      fire = Math.max(fire, g.chaos[i] * C.clamp(1.15 - dd / span, 0.15, 1));
+    }
+    fire = C.clamp((fire - 0.08) * 2, 0, 1);
+    var heli = 0;
+    if (r.heliPos) heli = C.clamp(1.1 - Math.hypot(r.heliPos.x - c.x, r.heliPos.y - c.y) / span, 0.15, 1);
+    this.sfx.ambient(fire, heli);
   };
 
   A.trackPerf = function (dtMs) {
