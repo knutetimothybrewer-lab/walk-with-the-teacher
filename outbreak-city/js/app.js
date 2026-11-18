@@ -75,7 +75,7 @@
     this.ui.placeType = null; this.ui.selected = null; this.ui.lens = false; this.ui.moveTeam = false; this.ui.highlightBld = null;
     this.paused = false; this.speed = 1; this.acc = 0;
     this.lastPhase = g.phase; this.endShown = false; this.submitted = false; this.hallWarn50 = this.hallWarn25 = false;
-    this.tut = tutorial ? { i: 0, t: 0 } : null;
+    this.tut = tutorial ? { i: 0, t: 0, start: Date.now() } : null;
     this.hideScreen();
     this.hud.classList.remove('oc-hidden');
     this.tickerQueue = [];
@@ -227,6 +227,11 @@
         case 'waveStart': this.banner('WAVE ' + e.w, e.w === g.totalWaves ? 'Final wave' : (g.weather !== 'clear' ? (g.weather === 'fog' ? 'Fog rolls in: turrets see less' : 'Rain: fewer people out') : 'Zombies approach')); break;
         case 'megaArrive': this.banner('SUPER-SPREADER!', 'A giant zombie that infects many people at once. Focus fire, barricades and high vaccination slow it.'); s.play('alert'); s.play('wave'); this.pushNews(this.fillNews('mega')); break;
         case 'ruin': s.play('barricade'); break;
+        case 'chaos':
+          var dn = D.DISTRICTS[e.d].name;
+          if (e.lvl === 2) { this.banner(dn.toUpperCase() + ' IS BURNING', 'Half the district is overrun: fires, wrecks and panic in the streets'); s.play('lose'); }
+          else this.toast('Fires and chaos are breaking out in ' + dn + '. Contain the outbreak there before it spreads.', 'bad', 6000);
+          break;
         case 'hallHit':
           this.flashMeter('hall'); s.play('alert');
           var hp = e.hp / e.max;
@@ -349,6 +354,8 @@
   A.onTap = function (sx, sy) {
     var g = this.game; if (!g || g.attract || this.modalOpen) return;
     var w = this.renderer.screenToWorld(sx, sy), tx = Math.floor(w.x), ty = Math.floor(w.y);
+    var hi = this.renderer.hallIndicator;
+    if (hi && Math.hypot(sx - hi.x, sy - hi.y) < 50) { this.goToHall(); return; }
     if (this.ui.placeType) { this.tryPlace(this.ui.placeType, tx, ty); this.updateHover(sx, sy); return; }
     var sel = this.ui.selected;
     if (sel && sel.type === 'chw' && (this.ui.moveTeam || this.isRoad(tx, ty)) && !this.pickTower(sx, sy)) { this.doMove(sel, tx, ty); return; }
@@ -420,6 +427,7 @@
     if (this.mouse) this.updateHover(this.mouse.x, this.mouse.y);
     this.updateHud(true); this.updateSelPanel(true);
   };
+  A.goToHall = function () { var g = this.game; if (!g || g.attract) return; var b = g.blds[g.hallId]; this.renderer.focus(b.cx, b.cy, Math.max(this.renderer.cam.tz, 1.1)); this.sfx.play('click'); };
   A.togglePause = function () { this.paused = !this.paused; this.updateHud(true); };
   A.cycleSpeed = function () { this.speed = this.speed >= 3 ? 1 : this.speed + 1; this.updateHud(true); };
   A.toggleLens = function () { this.ui.lens = !this.ui.lens; this.updateHud(true); if (this.ui.lens) this.toast('Data lens: district colors, tower coverage and green immunity bars (share vaccinated or recovered).', 'good'); };

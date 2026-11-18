@@ -63,6 +63,11 @@ const addBots = page => page.addScriptTag({ path: path.join(__dirname, 'strategi
     await page.click('[data-a=start]');
     await page.waitForTimeout(600);
     check('Tutorial bubble shows', await page.isVisible('.oc-tut'));
+    // walk to the Testing Lab step with real clicks and keys: hello, camera, hall, lens (press L), lensOff, pz
+    for (let k = 0; k < 3; k++) { await page.click('.oc-tut [data-a=next]'); await page.waitForTimeout(150); }
+    await page.keyboard.press('l'); await page.waitForTimeout(500);
+    await page.keyboard.press('l');
+    await page.click('.oc-tut [data-a=next]'); await page.waitForTimeout(150);
     await page.click('.oc-tut [data-a=next]');
     await page.waitForTimeout(800);
     await shot(page, '10-tutorial-lab-step');
@@ -83,8 +88,9 @@ const addBots = page => page.addScriptTag({ path: path.join(__dirname, 'strategi
     await page.waitForTimeout(300);
     const placed = await page.evaluate(() => OutbreakCity._instances[0].game.towers.map(t => t.type + '@' + t.tx + ',' + t.ty));
     check('Mouse picking places a tower on the clicked tile', placed.includes('lab@' + target.x + ',' + target.y), placed.join(' '));
-    const step = await page.evaluate(() => OutbreakCity._instances[0].tut && OutbreakCity._instances[0].tut.i);
-    check('Tutorial advances after building', step === 2, step);
+    await page.waitForTimeout(300);
+    const step = await page.evaluate(() => { const a = OutbreakCity._instances[0]; return a.tut && OutbreakCity.data.TUTORIAL[a.tut.i].id; });
+    check('Tutorial advances after building', step === 'hover', step);
     await page.click('.oc-tut [data-a=skip]');
     await page.keyboard.press('Enter');
     await page.waitForTimeout(400);
@@ -131,6 +137,51 @@ const addBots = page => page.addScriptTag({ path: path.join(__dirname, 'strategi
     const after = await page.evaluate(() => { const g = OutbreakCity._instances[0].game; return { tick: g.tick, towers: g.towers.length, inf: g.stats.infections, budget: Math.round(g.budget) }; });
     check('Save/resume restores the exact same game (deterministic replay)', JSON.stringify(before) === JSON.stringify(after), JSON.stringify(before) + ' vs ' + JSON.stringify(after));
     check('No errors in tutorial/input session', page.errors.length === 0, page.errors.join(' | '));
+    await page.close();
+  }
+
+  // ---------- 2b. Full guided walkthrough, every step, real input ----------
+  {
+    const page = await newPage(browser);
+    await page.goto(base + 'index.html?seed=WALK1');
+    await page.waitForTimeout(600);
+    await page.check('[data-f=tut]'); await page.click('[data-a=start]'); await page.waitForTimeout(500);
+    const cur = () => page.evaluate(() => { const a = OutbreakCity._instances[0]; return a.tut ? OutbreakCity.data.TUTORIAL[a.tut.i].id : null; });
+    const placeNear = async (type, key) => {
+      // pick a free tile near the screen centre (where the tutorial moved the camera) and click it
+      const t = await page.evaluate((type) => {
+        const app = OutbreakCity._instances[0], g = app.game, w = app.renderer.screenToWorld(683, 384);
+        for (let r = 0; r < 12; r++) for (let dy = -r; dy <= r; dy++) for (let dx = -r; dx <= r; dx++) {
+          const x = Math.floor(w.x) + dx, y = Math.floor(w.y) + dy;
+          if (g.canPlace(type, x, y).ok) { const p = app.renderer.worldToScreen(x + 0.5, y + 0.5); if (p.x > 40 && p.x < 1080 && p.y > 90 && p.y < 600) return { sx: p.x, sy: p.y }; }
+        }
+        return null;
+      }, type);
+      await page.keyboard.press(key); await page.mouse.click(t.sx, t.sy); await page.waitForTimeout(400);
+    };
+    const seen = [];
+    for (let guard = 0; guard < 60; guard++) {
+      const id = await cur(); if (!id) break;
+      if (!seen.includes(id)) seen.push(id);
+      if (id === 'lens') { await page.keyboard.press('l'); await page.waitForTimeout(400); continue; }
+      if (id === 'lensOff') { await page.keyboard.press('l'); }
+      if (id === 'lab') { await shot(page, '16-walkthrough-lab'); await placeNear('lab', '2'); continue; }
+      if (id === 'militia') { await placeNear('militia', '1'); continue; }
+      if (id === 'clinic') { await placeNear('clinic', '3'); continue; }
+      if (id === 'hospital') { await placeNear('hospital', '4'); continue; }
+      if (id === 'start') { await shot(page, '17-walkthrough-start'); await page.keyboard.press('Enter'); await page.waitForTimeout(400); continue; }
+      if (id === 'watch' || id === 'exposed') { await page.waitForTimeout(1500); continue; }
+      if (id === 'select') {
+        const tp = await page.evaluate(() => { const app = OutbreakCity._instances[0], tw = app.game.towers[0]; app.renderer.focus(tw.x, tw.y, 1.2); app.renderer.cam.x = app.renderer.cam.tx; app.renderer.cam.y = app.renderer.cam.ty; app.renderer.cam.zoom = 1.2; return app.renderer.worldToScreen(tw.x, tw.y, 14); });
+        await page.mouse.click(tp.x, tp.y); await page.waitForTimeout(500); continue;
+      }
+      if (id === 'side') await shot(page, '18-walkthrough-status');
+      await page.click('.oc-tut [data-a=next]'); await page.waitForTimeout(200);
+    }
+    const end = await page.evaluate(() => { const a = OutbreakCity._instances[0]; return { tut: a.tut, towers: a.game.towers.map(t => t.type).sort().join(','), phase: a.game.phase, done: a.store.tutorialDone }; });
+    check('Full walkthrough completes every step with real input (' + seen.length + ' of ' + (await page.evaluate(() => OutbreakCity.data.TUTORIAL.length)) + ' steps)',
+      end.tut === null && seen.length === (await page.evaluate(() => OutbreakCity.data.TUTORIAL.length)) && end.towers === 'clinic,hospital,lab,militia', JSON.stringify(end) + ' saw ' + seen.join('>'));
+    check('No errors during the walkthrough', page.errors.length === 0, page.errors.join(' | '));
     await page.close();
   }
 

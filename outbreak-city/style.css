@@ -270,3 +270,14 @@ details.oc-details summary { cursor: pointer; color: var(--mute); }
 .oc-paper h1 { font-family: 'Oswald', Georgia, serif; font-weight: 700; text-transform: uppercase; letter-spacing: 0.01em; line-height: 1.08; }
 .oc-paper .mast { font-family: Georgia, 'Times New Roman', serif; font-variant: small-caps; letter-spacing: 0.12em; }
 .oc-big { font-family: 'Oswald', system-ui, sans-serif; text-transform: uppercase; letter-spacing: 0.05em; }
+
+/* ---------- guided tutorial ---------- */
+.oc-tut { width: min(560px, 94%); padding: 10px 14px 12px; }
+.oc-tut-head { display: flex; align-items: baseline; gap: 8px; margin-bottom: 4px; }
+.oc-tut-head b { font-family: 'Oswald', system-ui, sans-serif; font-size: 1.1em; letter-spacing: 0.03em; color: var(--yellow); }
+.oc-tut-num { font-family: 'Oswald', system-ui, sans-serif; font-size: 0.75em; color: var(--mute); background: rgba(255,255,255,0.08); padding: 1px 6px; border-radius: 5px; }
+.oc-tut-bar { height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px; overflow: hidden; margin-bottom: 8px; }
+.oc-tut-bar i { display: block; height: 100%; background: var(--yellow); transition: width 0.3s; }
+.oc-tut .step { color: var(--yellow); font-style: italic; }
+.oc-spot { box-shadow: 0 0 0 3px #F0E442, 0 0 18px 4px rgba(240,228,66,0.7) !important; animation: oc-spot 1.1s ease-in-out infinite; }
+@keyframes oc-spot { 50% { box-shadow: 0 0 0 5px #F0E442, 0 0 26px 8px rgba(240,228,66,0.45); } }

@@ -52,6 +52,9 @@
       self.meters[key] = { el: m, val: m.querySelector('.val'), bar: m.querySelector('.oc-bar i'), last: '' };
     };
     mk('hall', 'City Hall', true);
+    this.meters.hall.el.style.cursor = 'pointer'; this.meters.hall.el.setAttribute('role', 'button');
+    this.meters.hall.el.addEventListener('click', function () { self.goToHall(); });
+    this.meters.hall.el.addEventListener('keydown', function (e) { if (e.key === 'Enter') self.goToHall(); });
     mk('budget', 'Budget'); mk('vaccines', 'Vaccines'); mk('beds', 'Beds');
     mk('trust', 'Trust', true); mk('panic', 'Panic', true); mk('equity', 'Equity', true);
     top.appendChild(el('div', 'oc-spacer'));
@@ -818,44 +821,80 @@
   };
 
   /* ================= tutorial ================= */
+  U.tutTargets = function (keys) {
+    var self = this, out = [];
+    (keys || []).forEach(function (k) {
+      if (self.tbtns[k]) out.push(self.tbtns[k]);
+      else if (k === 'start') out.push(self.startBtn);
+      else if (k === 'hall') out.push(self.meters.hall.el);
+      else if (k === 'resources') out.push(self.meters.budget.el, self.meters.vaccines.el, self.meters.beds.el);
+      else if (k === 'social') out.push(self.meters.trust.el, self.meters.panic.el, self.meters.equity.el);
+      else if (k === 'side') { self.side.classList.remove('collapsed'); out.push(self.side); }
+      else if (k === 'reff') out.push(self.side.querySelector('.oc-reff'));
+      else if (k === 'lens') out.push(self.bLens);
+      else if (k === 'speed') out.push(self.bPause, self.bSpeed);
+      else if (k === 'help') out.push(self.bHelp);
+      else if (k === 'others') ['barricade', 'radio', 'chw', 'pantry'].forEach(function (t) { out.push(self.tbtns[t]); });
+    });
+    return out;
+  };
+
   U.renderTutorial = function () {
-    var self = this, t = this.tut;
-    D.TOWER_ORDER.forEach(function (k) { self.tbtns[k].classList.remove('pulse'); });
-    this.startBtn.classList.remove('pulse');
+    var self = this, t = this.tut, g = this.game;
+    this.root.querySelectorAll('.oc-spot').forEach(function (n) { n.classList.remove('oc-spot'); });
     this.ui.highlightBld = null;
     if (!t) { this.tutEl.classList.add('oc-hidden'); return; }
     var step = D.TUTORIAL[t.i];
     if (!step) { this.finishTutorial(); return; }
-    this.tutEl.innerHTML = '<p>' + esc(step.text.replace('{city}', D.CITY_NAME)) + '</p><div class="row"><span class="step">Tutorial ' + (t.i + 1) + ' / ' + D.TUTORIAL.length + '</span>' +
-      (step.until === 'next' ? '<button type="button" class="oc-btn primary" data-a="next">Got it</button>' : '') + '<button type="button" class="oc-btn" data-a="skip">Skip tutorial</button></div>';
+    var n = D.TUTORIAL.length, act = step.until !== 'next' && !/^timer:/.test(step.until);
+    var doing = { lens: 'Waiting for you to turn on the Data Lens…', select: 'Waiting for you to tap a tower…', wave: 'Waiting for you to start the wave…', reveal: 'Watching for the first case your lab finds…' }[step.until] ||
+      (/^built:/.test(step.until) ? 'Waiting for you to place it…' : '');
+    this.tutEl.innerHTML = '<div class="oc-tut-head"><span class="oc-tut-num">' + (t.i + 1) + ' / ' + n + '</span><b>' + esc(step.title || '') + '</b></div>' +
+      '<div class="oc-tut-bar"><i style="width:' + Math.round(100 * (t.i + 1) / n) + '%"></i></div>' +
+      '<p>' + esc(step.text.replace('{city}', D.CITY_NAME)) + '</p>' +
+      '<div class="row">' + (doing ? '<span class="step">' + esc(doing) + '</span>' : '<span class="step"></span>') +
+      (t.i > 0 ? '<button type="button" class="oc-btn" data-a="back">◂ Back</button>' : '') +
+      (!act ? '<button type="button" class="oc-btn primary" data-a="next">' + (t.i === n - 1 ? 'Let’s play!' : 'Next ▸') + '</button>' : '') +
+      '<button type="button" class="oc-btn" data-a="skip">Skip tutorial</button></div>';
     this.tutEl.classList.remove('oc-hidden');
     this.tutEl.querySelectorAll('[data-a]').forEach(function (b) {
-      b.addEventListener('click', function () { if (b.getAttribute('data-a') === 'next') self.advanceTutorial(); else self.finishTutorial(); });
+      b.addEventListener('click', function () {
+        var a = b.getAttribute('data-a');
+        if (a === 'next') self.advanceTutorial(); else if (a === 'back') { self.tut.i = Math.max(0, self.tut.i - 1); self.tut.t = 0; self.tut.start = Date.now(); self.renderTutorial(); } else self.finishTutorial();
+      });
     });
-    if (step.highlight === 'start') this.startBtn.classList.add('pulse');
-    else if (step.highlight && this.tbtns[step.highlight]) this.tbtns[step.highlight].classList.add('pulse');
-    if (step.id === 'lab') {
-      this.ui.highlightBld = this.game.patientZero;
-      var b = this.game.blds[this.game.patientZero];
-      this.renderer.focus(b.cx, b.cy, Math.max(this.renderer.cam.tz, 0.9));
-    }
-    if (step.id === 'militia') {
-      var e = this.game.plans[0].entries[0], W = this.game.W;
-      this.renderer.focus(e % W + 0.5, ((e / W) | 0) + 0.5, Math.max(this.renderer.cam.tz, 0.9));
-    }
+    this.tutTargets(step.highlight).forEach(function (el) { if (el) el.classList.add('oc-spot'); });
+    var W = g.W, R = this.renderer;
+    if (step.focus === 'hall') { var h = g.blds[g.hallId]; R.focus(h.cx, h.cy, Math.max(R.cam.tz, 1.1)); }
+    else if (step.focus === 'pz') { var b = g.blds[g.patientZero]; this.ui.highlightBld = g.patientZero; R.focus(b.cx, b.cy, Math.max(R.cam.tz, 1.0)); }
+    else if (step.focus === 'entry') { var e = g.plans[0].entries[0]; R.focus(e % W + 0.5, ((e / W) | 0) + 0.5, Math.max(R.cam.tz, 1.0)); }
+    else if (step.focus === 'city') R.recenter();
+    if (step.id === 'lab' || step.id === 'pz') this.ui.highlightBld = g.patientZero;
+    var spot = this.tutEl.querySelector('[data-a=next]') || this.tutEl.querySelector('[data-a=skip]');
+    // focus later so the key press that finished the last step can't also press this button
+    if (spot && !this.mouse) setTimeout(function () { try { if (spot.isConnected) spot.focus({ preventScroll: true }); } catch (er) { } }, 350);
   };
-  U.advanceTutorial = function () { if (!this.tut) return; this.tut.i++; this.tut.t = 0; this.renderTutorial(); this.updateHud(true); };
+  U.advanceTutorial = function () { if (!this.tut) return; this.tut.i++; this.tut.t = 0; this.tut.start = Date.now(); this.sfx.play('click'); this.renderTutorial(); this.updateHud(true); };
   U.finishTutorial = function () { this.tut = null; this.store.tutorialDone = true; saveStore(this.store); this.renderTutorial(); this.updateHud(true); };
-  U.tutPauses = function () { var t = this.tut, g = this.game; if (!t || !g) return false; var s = D.TUTORIAL[t.i]; return !!(s && /^built:/.test(s.until) && g.phase === 'wave' && !g.stats.everBuilt[s.until.slice(6)]); };
+  // The wave waits while students read; "watch" steps let it run.
+  U.tutPauses = function () {
+    var t = this.tut, g = this.game; if (!t || !g || g.phase !== 'wave') return false;
+    var s = D.TUTORIAL[t.i]; if (!s || s.run) return false;
+    if (/^built:/.test(s.until) && g.stats.everBuilt[s.until.slice(6)]) return false;
+    return true;
+  };
   U.tutEvent = function () { };
   U.checkTutorial = function () {
     var t = this.tut, g = this.game; if (!t) return;
     var s = D.TUTORIAL[t.i]; if (!s) return;
     t.t += 0.15;
-    var done = false;
-    if (/^built:/.test(s.until)) done = !!g.stats.everBuilt[s.until.slice(6)];
-    else if (s.until === 'wave') done = g.phase === 'wave';
-    else if (s.until === 'reveal') done = (g.stats.revealed > 0 && t.t > 3) || t.t > 30;
+    var done = false, u = s.until;
+    if (/^built:/.test(u)) done = !!g.stats.everBuilt[u.slice(6)];
+    else if (u === 'wave') done = g.phase === 'wave';
+    else if (u === 'lens') done = !!this.ui.lens;
+    else if (u === 'select') done = !!this.ui.selected;
+    else if (u === 'reveal') { var el = (Date.now() - (t.start || Date.now())) / 1000; done = (g.stats.revealed > 0 && el > 3) || el > 30; }
+    else if (/^timer:/.test(u)) done = (Date.now() - (t.start || Date.now())) / 1000 > +u.slice(6); // real seconds
     if (done) this.advanceTutorial();
   };
 })(typeof window !== 'undefined' ? window : globalThis);

@@ -528,6 +528,8 @@
     militiaMany: ['MORE TURRETS, MORE NOISE: "THE GUNFIRE DRAWS THEM IN," WARNS EXPERT'],
     calm: ['CASES FALLING; RESIDENTS CAUTIOUSLY RETURN TO ARGUING ABOUT PARKING'],
     carrier: ['LAB UNMASKS A "CARRIER": LOOKED HEALTHY, WAS NOT'],
+    chaos1: ['FIRES REPORTED ACROSS {d}; FIRE DEPARTMENT "A LITTLE BUSY"', 'SIRENS ALL NIGHT IN {d}; RESIDENTS STOCK UP ON EARPLUGS'],
+    chaos2: ['{d} IN FLAMES; NEWS HELICOPTERS CIRCLE OVERHEAD', 'CHAOS IN {d}: CARS ABANDONED, STREETS ON FIRE'],
     hallHit: ['ZOMBIES POUNDING ON CITY HALL DOORS; MAYOR "WORKING FROM UNDER DESK"', 'COMMAND BUNKER UNDER ATTACK; STAFF BARRICADE BREAK ROOM'],
     mega: ['SUPER-SPREADER SIGHTED ON THE HIGHWAY; EXPERTS: "THAT IS A VERY LARGE BOY"', 'GIANT ZOMBIE INFECTS ENTIRE BIRTHDAY PARTY; CAKE UNHARMED'],
     rising: ['CASES RISING FAST; R-NUMBER ABOVE {r}', 'EXPERTS: "EACH CASE IS MAKING MORE THAN ONE NEW CASE. THAT IS BAD."'],
@@ -630,15 +632,58 @@
 
   /* ------------------------------------------------------------------
      Tutorial: a playable first wave. `until` names a condition in ui.js. */
+  /* Tutorial: a guided walkthrough during the first wave.
+     until:     'next' (button), 'built:<tower>', 'wave' (wave started), 'reveal' (a lab finds a case),
+                'lens' (Data Lens turned on), 'select' (a tower selected), 'timer:<seconds>'
+     highlight: which buttons/meters to spotlight ('hall', 'resources', 'social', 'side', 'reff',
+                'lens', 'speed', 'start', 'help', 'others', or a tower id)
+     focus:     where to move the camera ('hall', 'pz' = patient zero, 'entry' = first hell hole, 'city')
+     run:       true lets the wave keep running while this step is shown (otherwise it pauses) */
   D.TUTORIAL = [
-    { id: 'hello', text: 'Welcome, Acting Health Commissioner! This is {city}. Your command bunker is City Hall in the middle of town: never let zombies break in. Drag to move the map and scroll or pinch to zoom.', until: 'next' },
-    { id: 'lab', text: 'Some residents are already infected but look healthy. Only testing can find them. Press 2 (or tap the Testing Lab below) and place it near the glowing building.', until: 'built:lab', highlight: 'lab' },
-    { id: 'militia', text: 'Zombies will arrive by road. A Militia Turret (1) stops the ones you can see. Put one near the flashing road entrance.', until: 'built:militia', highlight: 'militia' },
-    { id: 'start', text: 'Ready? Press "Start Wave" (or Enter). You can keep building while the wave runs.', until: 'wave', highlight: 'start' },
-    { id: 'exposed', text: 'Orange ◆ markers are known Exposed people your lab found. They\'ll turn into zombies after their incubation period unless they\'re treated.', until: 'reveal' },
-    { id: 'hospital', text: 'Build a Field Hospital (4) near known Exposed cases. It cures people before they turn.', until: 'built:hospital', highlight: 'hospital' },
-    { id: 'clinic', text: 'A Vaccination Clinic (3) protects people before they\'re ever bitten. Watch your vaccine stock at the top.', until: 'built:clinic', highlight: 'clinic' },
-    { id: 'meters', text: 'Watch Trust, Panic and Equity at the top, and R_eff (below 1 means you are winning). Hover any meter to learn more. Good luck!', until: 'next' }
+    { id: 'hello', title: 'Welcome, Commissioner', focus: 'city', until: 'next',
+      text: 'A zombie outbreak is starting in {city}, and you are in charge of the public health response. Your job: get the city through every wave while keeping as many people alive, as much trust and as much fairness as you can. How you win matters.' },
+    { id: 'camera', title: 'Look around', until: 'next',
+      text: 'Drag the map (or use WASD / arrow keys) to move. Scroll, pinch or press + and − to zoom. Press C or the ⌖ button to recenter. Try it now, then press Next.' },
+    { id: 'hall', title: 'Protect City Hall', focus: 'hall', highlight: ['hall'], until: 'next',
+      text: 'This is City Hall, your command bunker. Zombies will march on it. If its integrity (the meter at the top left) reaches 0, the game is over. Tap that meter any time to jump back here.' },
+    { id: 'lens', title: 'Five districts, not equal', highlight: ['lens'], focus: 'city', until: 'lens',
+      text: 'Turn on the Data Lens (press L or tap ◉ Lens). Each color is a district. Eastside Flats and Rustwater Port start with far less health care than Gilded Heights. That gap is a social determinant of health.' },
+    { id: 'lensOff', title: 'Fairness counts', highlight: ['social'], until: 'next',
+      text: 'Your Equity meter (top) shows how fairly protection is shared. Putting help where access is lowest raises it. Press L again to turn the lens off, then press Next.' },
+    { id: 'pz', title: 'The hidden danger', focus: 'pz', until: 'next',
+      text: 'Someone in the glowing building was bitten. They look completely healthy right now, but they are Exposed, and after an incubation period they will turn. Shooting can\'t find them. Testing can.' },
+    { id: 'lab', title: 'Your turn: build a Testing Lab', focus: 'pz', highlight: ['lab'], until: 'built:lab',
+      text: 'Press 2 (or tap Testing Lab below), then tap an open lot or park near the glowing building. The circle shows what it will cover. Labs find Exposed people so they can isolate and get treated.' },
+    { id: 'hover', title: 'Read the city', until: 'next',
+      text: 'Hover over (or tap) any building to see who lives there, how many are protected, and what testing has found. An orange ◆ badge means infections were found there.' },
+    { id: 'entry', title: 'Where zombies come from', focus: 'entry', until: 'next',
+      text: 'See the glowing cracks marked ▼ INCOMING at the edge of the city? When the wave starts, zombies claw up out of these hell holes and head into town, many of them straight for City Hall.' },
+    { id: 'militia', title: 'Your turn: a Militia Turret', focus: 'entry', highlight: ['militia'], until: 'built:militia',
+      text: 'Press 1 and place a Militia Turret near the hell hole. Turrets stop zombies you can see, but stray fire can hit residents and every turret costs trust. Use them carefully.' },
+    { id: 'clinic', title: 'Your turn: a Vaccination Clinic', focus: 'city', highlight: ['clinic'], until: 'built:clinic',
+      text: 'Prevention beats cure. Press 3 and place a Vaccination Clinic where lots of people live (the pop-up shows how many it covers). Vaccinated people resist bites. Clinics use vaccine stock.' },
+    { id: 'resources', title: 'Your resources', highlight: ['resources'], until: 'next',
+      text: 'Top bar: Budget pays for towers and upgrades (you earn more after each wave). Vaccines are used by clinics. Beds show hospital space. Run out and things stop working.' },
+    { id: 'social', title: 'Trust, panic and fairness', highlight: ['social'], until: 'next',
+      text: 'Trust decides whether people follow your advice and get vaccinated. Panic makes people flee across town and spread infection. Equity is fairness across districts. Hover any meter to learn more.' },
+    { id: 'side', title: 'Outbreak status', highlight: ['side', 'reff'], until: 'next',
+      text: 'The status panel counts people who look healthy, known Exposed, infected and lost. R_eff is how many people each case infects: above 1 the outbreak grows, below 1 it shrinks. The curve shows it over time. Try to flatten it.' },
+    { id: 'speed', title: 'Time controls', highlight: ['speed'], until: 'next',
+      text: 'Space pauses (you can still build while paused). F switches speed between 1x, 2x and 3x. Use pause whenever you need to think.' },
+    { id: 'start', title: 'Start the wave', highlight: ['start'], until: 'wave',
+      text: 'Ready? Press Start Wave (or Enter). The wave lasts about a minute and a half, and you can keep building during it.' },
+    { id: 'watch', title: 'Here they come', focus: 'entry', run: true, until: 'timer:7',
+      text: 'Watch the hell hole: zombies climb out, your turret opens fire, and people run. Bitten people keep walking around looking healthy. That is the problem.' },
+    { id: 'exposed', title: 'Hidden cases found', run: true, until: 'reveal',
+      text: 'Keep watching. When your lab finds someone, an orange ◆ appears over them or their building. Known Exposed people can isolate so they don\'t infect their families.' },
+    { id: 'hospital', title: 'Your turn: a Field Hospital', highlight: ['hospital'], until: 'built:hospital',
+      text: 'Press 4 and place a Field Hospital near the orange ◆ cases. Hospitals cure Exposed people before they turn, but beds are limited.' },
+    { id: 'select', title: 'Upgrade and sell', until: 'select',
+      text: 'Tap any of your towers. Its panel shows what it is doing, an Upgrade button and Sell. Tap one now.' },
+    { id: 'others', title: 'More tools', highlight: ['others'], until: 'next',
+      text: 'Barricades (5) slow zombies on roads but hurt trust and business. Radio Towers (6) build trust. Health Workers (7) are a mobile team that boosts nearby clinics and labs, especially in underserved districts. Pantries (8) help people stay home.' },
+    { id: 'briefing', title: 'Mayor\'s Briefings', highlight: ['help'], until: 'next',
+      text: 'After every wave you make a policy decision. Some choices come back to bite you waves later. From wave 5, giant Super-Spreaders appear. The ? button opens the full guide any time. Good luck, Commissioner!' }
   ];
 
   D.TITLE_TAGLINES = [
