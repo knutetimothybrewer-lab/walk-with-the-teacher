@@ -125,6 +125,10 @@
     this.tickerTrack = tk.querySelector('.track'); this.tickerEl = tk;
     hud.appendChild(tk);
     this.seedEl = el('div', 'oc-seed'); hud.appendChild(this.seedEl);
+    this.nukeBtn = el('button', 'oc-nuke oc-hidden', '\u2622 NUCLEAR OPTION'); this.nukeBtn.type = 'button';
+    this.nukeBtn.setAttribute('aria-label', 'Nuclear option: destroy the whole city to stop the infection');
+    this.nukeBtn.addEventListener('click', function () { self.sfx.unlock(); self.confirmNuke(); });
+    hud.appendChild(this.nukeBtn);
     this.toastsEl = el('div', 'oc-toasts'); this.toastsEl.setAttribute('aria-live', 'polite'); r.appendChild(this.toastsEl);
     this.bannerEl = el('div', 'oc-banner oc-hidden'); r.appendChild(this.bannerEl);
     this.pausedEl = el('div', 'oc-paused oc-hidden', 'PAUSED'); hud.appendChild(this.pausedEl);
@@ -208,7 +212,7 @@
     g.towers.forEach(function (tw) { if (tw.type === 'hospital') { beds += tw.st.beds + Math.floor(g.bonusBeds / Math.max(1, nh)); used += tw.patients.length; } });
     var hallPct = Math.round(100 * g.hallHp / g.hallMax);
     this.setMeter('hall', hallPct + '%', hallPct, false, hallPct < 35);
-    this.setMeter('budget', '$' + Math.floor(g.budget));
+    this.setMeter('budget', g.unlimited ? '\u221E' : '$' + Math.floor(g.budget));
     this.setMeter('vaccines', '' + Math.floor(g.vaccines), undefined, false, g.vaccines < 1);
     this.setMeter('beds', beds ? used + ' / ' + beds : 'none', undefined, false, beds > 0 && used >= beds);
     this.setMeter('trust', Math.round(g.trust) + '', g.trust, false, g.trust < 25);
@@ -235,6 +239,9 @@
       var costEl = b.querySelector('.cost'), ctext = cost ? '$' + cost : 'FREE';
       if (costEl.textContent !== ctext) costEl.textContent = ctext;
     });
+    var nukeOk = g.nukeAvailable();
+    if (nukeOk && !this.nukeShown) this.toast('The infection is taking over. A last-resort NUCLEAR OPTION is now available.', 'bad', 6000);
+    this.nukeShown = nukeOk; this.nukeBtn.classList.toggle('oc-hidden', !nukeOk);
     var showStart = g.phase === 'build';
     this.startBtn.classList.toggle('oc-hidden', !showStart);
     if (showStart) this.startBtn.textContent = '▶ Start Wave ' + (g.wave + 1);
@@ -259,7 +266,7 @@
     var def = D.TOWERS[tw.type], st = tw.st, rows = [];
     var nh = Math.max(1, g.countTowers('hospital'));
     switch (tw.type) {
-      case 'militia': rows = [['Damage', Math.round(st.damage * g.em.militiaDamage)], ['Range', st.range.toFixed(1) + ' tiles' + (g.weather === 'fog' ? ' (fog: less)' : '')], ['Fire rate', st.rate + '/s'], ['Stray-fire risk', st.strayMult < 1 ? 'reduced' : 'high near crowds']]; break;
+      case 'militia': case 'heavy': rows = [['Damage', Math.round(st.damage * g.em.militiaDamage)], ['Range', st.range.toFixed(1) + ' tiles' + (g.weather === 'fog' ? ' (fog: less)' : '')], ['Fire rate', st.rate + '/s'], ['Stray-fire risk', st.strayMult < 1 ? 'reduced' : 'high near crowds']].concat(st.splash ? [['Splash damage', 'yes']] : []); break;
       case 'lab': rows = [['Range', st.range.toFixed(1) + ' tiles'], ['Scans every', (st.scanInterval / tw.boost).toFixed(1) + 's'], ['Contact tracing', st.trace ? 'yes' : 'no (upgrade)'], ['Health-worker boost', tw.boost > 1 ? '×' + tw.boost.toFixed(1) : 'none']]; break;
       case 'clinic': rows = [['Range', st.range.toFixed(1) + ' tiles'], ['Doses/sec', (st.rate * tw.boost * tw.uptakeMult * g.uptake(g.city.district[tw.tile])).toFixed(2)], ['Vaccine uptake here', Math.round(100 * g.uptake(g.city.district[tw.tile])) + '%'], ['Buildings covered', tw.bld.length]]; break;
       case 'hospital': rows = [['Beds in use', tw.patients.length + ' / ' + (st.beds + Math.floor(g.bonusBeds / nh))], ['Range', st.range.toFixed(1) + ' tiles'], ['Admits every', st.admitInterval + 's'], ['Overflow', g.t - (tw.overflow || -99) < 3 ? 'YES: beds full' : 'no']]; break;
@@ -386,7 +393,8 @@
   U.showTitle = function () {
     var self = this, st = this.store, sv = st.save;
     var tag = D.TITLE_TAGLINES[Math.floor(Math.random() * D.TITLE_TAGLINES.length)];
-    var diff = this.opts.difficulty && D.DIFFICULTY[this.opts.difficulty] ? this.opts.difficulty : 'normal';
+    var insaneOpen = !!(st.insaneUnlocked || this.opts.insane);
+    var diff = this.opts.difficulty && D.DIFFICULTY[this.opts.difficulty] && (this.opts.difficulty !== 'insane' || insaneOpen) ? this.opts.difficulty : 'normal';
     var quick = !!this.opts.quick;
     var seed = this.seedFromUrl || C.randomSeed();
     var card = el('div', 'oc-card oc-title');
@@ -394,7 +402,8 @@
       '<div class="oc-logo">' + esc(D.GAME_TITLE) + '</div><div class="oc-tag">' + esc(tag) + '</div>' +
       '<p class="muted oc-small">Defend ' + esc(D.CITY_NAME) + ' from a zombie outbreak with real public health tools. Different strategies lead to very different cities.</p>' +
       '<label class="oc-field"><span>Your name (optional)</span><input type="text" maxlength="24" data-f="name" placeholder="First name and last initial" value="' + esc(st.lastName || '') + '"></label>' +
-      '<div class="oc-field"><span>Difficulty</span><div class="oc-seg" data-f="diff">' + ['easy', 'normal', 'hard'].map(function (k) { return '<button type="button" data-v="' + k + '" aria-pressed="' + (k === diff) + '">' + D.DIFFICULTY[k].label + '</button>'; }).join('') + '</div></div>' +
+      '<div class="oc-field"><span>Difficulty</span><div class="oc-seg" data-f="diff">' + ['easy', 'normal', 'hard'].map(function (k) { return '<button type="button" data-v="' + k + '" aria-pressed="' + (k === diff) + '">' + D.DIFFICULTY[k].label + '</button>'; }).join('') +
+      '<button type="button" class="oc-insane' + (insaneOpen ? '' : ' locked') + '" data-v="insane" aria-pressed="' + (diff === 'insane') + '" title="' + (insaneOpen ? 'Unlimited budget, a crazy number of zombies' : 'Finish a full game to unlock') + '">' + (insaneOpen ? '\u2620 INSANE' : '\uD83D\uDD12 INSANE') + '</button></div></div>' +
       '<div class="oc-field"><span>Length</span><div class="oc-seg" data-f="len"><button type="button" data-v="full" aria-pressed="' + !quick + '">Full: 9 waves (~30 min)</button><button type="button" data-v="quick" aria-pressed="' + quick + '">Quick: 6 waves (~15 min)</button></div></div>' +
       '<label class="oc-field"><span>Outbreak seed ' + (this.seedFromUrl ? '(set by your class link)' : '') + '</span><div class="oc-row"><input type="text" data-f="seed" maxlength="20" value="' + esc(seed) + '" style="flex:1;text-transform:uppercase"><button type="button" class="oc-btn" data-a="rand" title="Random seed">↻ Random</button><button type="button" class="oc-btn" data-a="daily">Daily outbreak</button></div></label>' +
       '<p class="oc-small muted" style="margin-top:-4px">Same seed = same city, same outbreak, same briefing cards. Great for comparing strategies in class.</p>' +
@@ -411,6 +420,7 @@
     card.querySelectorAll('.oc-seg').forEach(function (seg) {
       seg.addEventListener('click', function (e) {
         var b = e.target.closest('button'); if (!b) return;
+        if (b.classList.contains('locked')) { self.toast('INSANE mode unlocks after you finish a full game (all waves). Good luck!', 'warn'); return; }
         seg.querySelectorAll('button').forEach(function (x) { x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); });
         state[seg.getAttribute('data-f')] = b.getAttribute('data-v'); updLink();
       });
@@ -497,8 +507,8 @@
     if (tab === 'play') {
       body = '<p><b>Goal:</b> get ' + esc(D.CITY_NAME) + ' through every wave with as many residents, as much trust and as much fairness as possible. How you win matters: your ending depends on survival, trust, equity and your choices.</p>' +
         '<p><b>The catch:</b> bitten people look healthy while they incubate (the orange ◆ only appears once a Testing Lab finds them). Shooting visible zombies never finds them.</p>' +
-        '<h3>Controls</h3><ul class="oc-small"><li>Drag (or WASD / arrow keys) to move the map. Scroll, pinch or +/− to zoom. C to recenter.</li><li>1–8 or the build bar to pick an intervention, then click a spot. Shift-click to place several. Esc or right-click cancels.</li><li>Click a tower to upgrade (U), sell (X) or learn about it. Health Worker vans move when you tap a road.</li><li>Space pauses (you can still build). F changes speed (1x/2x/3x). L opens the Data Lens. Enter starts the next wave.</li></ul>' +
-        '<h3>Map legend</h3><ul class="oc-small"><li><b style="color:#E69F00">◆ orange diamond</b>: a known Exposed person or building (found by testing).</li><li><b style="color:#CC79A7">? pink circle</b>: an unmasked Carrier (looked like a citizen).</li><li>Zombies reach forward with both arms. Sprinters lean and leave speed lines. Brutes are big and armored. <b style="color:#B7E34A">Super-Spreaders</b> (from wave 5) are giants with a green toxic ring: they infect several people per attack, smash barricades and can’t be captured by hospitals.</li><li>Buildings change for good once residents are infected: a red quarantine X, then smashed windows and vines, then a smoking ruin.</li><li><b style="color:#FFB27A">▼ INCOMING</b>: glowing cracks where the next wave will claw up out of the ground. Once open, these hell holes keep producing zombies.</li><li><b style="color:#56B4E9">City Hall</b> (center) is your command bunker. Zombies march on it. If its integrity hits 0, the game ends.</li><li>Building badges show residents; orange badges show infections that testing has found.</li></ul>';
+        '<h3>Controls</h3><ul class="oc-small"><li>Drag (or WASD / arrow keys) to move the map. Scroll, pinch or +/− to zoom. C to recenter.</li><li>1–9 or the build bar to pick an intervention, then click a spot. Shift-click to place several. Esc or right-click cancels.</li><li>Click a tower to upgrade (U), sell (X) or learn about it. Health Worker vans move when you tap a road.</li><li>Space pauses (you can still build). F changes speed (1x/2x/3x). L opens the Data Lens. Enter starts the next wave.</li></ul>' +
+        '<h3>Map legend</h3><ul class="oc-small"><li><b style="color:#E69F00">◆ orange diamond</b>: a known Exposed person or building (found by testing).</li><li><b style="color:#CC79A7">? pink circle</b>: an unmasked Carrier (looked like a citizen).</li><li>Zombies reach forward with both arms. Sprinters lean and leave speed lines. Brutes are big and armored. <b style="color:#B7E34A">Super-Spreaders</b> (from wave 5) are giants with a green toxic ring: they infect several people per attack, smash barricades and can’t be captured by hospitals.</li><li>Newer zombies: <b>Spitters</b> (bloated, green throat) infect people from a distance; <b>Screamers</b> (pale, wild hair) shriek to speed up nearby zombies; <b>Crawlers</b> drag themselves along the ground, slip under barricades and are hard to hit.</li><li>Buildings change for good once residents are infected: a red quarantine X, then smashed windows and vines, then a smoking ruin.</li><li><b style="color:#FFB27A">▼ INCOMING</b>: glowing cracks where the next wave will claw up out of the ground. Once open, these hell holes keep producing zombies.</li><li><b style="color:#56B4E9">City Hall</b> (center) is your command bunker. Zombies march on it. If its integrity hits 0, the game ends.</li><li>Building badges show residents; orange badges show infections that testing has found.</li></ul>';
     } else if (tab === 'towers') {
       body = D.TOWER_ORDER.map(function (k) {
         var t = D.TOWERS[k];
@@ -575,6 +585,8 @@
     if (fx.freeTower) add('Free ' + D.TOWERS[fx.freeTower].name, true);
     if (fx.flags) { if (fx.flags.wastewater) add('Citywide monitoring', true); if (fx.flags.honest) add('Honest data', true); if (fx.flags.bounty) add('Bounties', null); }
     if (fx.custom === 'detain') add('Forced detention', false);
+    if (fx.custom === 'military') add('Tanks citywide for 1 wave', null);
+    if (fx.custom === 'militaryHall') add('Tanks guard downtown for 1 wave', null);
     return out;
   };
 
@@ -621,17 +633,45 @@
     this.showScreen(node, { onKey: function (e) { if (e.key === 'Enter' || e.key === 'Escape') { self.hideScreen(); self.updateHud(true); } } });
   };
 
+
+  /* ================= Nuclear option: asks twice ================= */
+  U.confirmNuke = function () {
+    var self = this, g = this.game, step = 0;
+    if (!g.nukeAvailable()) return;
+    var node = el('div', 'oc-card oc-nukecard');
+    var render = function () {
+      node.innerHTML = step === 0
+        ? '<div class="oc-nuke-sign">☢</div><h2>The Nuclear Option</h2><p>The infection is taking over ' + esc(D.CITY_NAME) + '. You can destroy the entire city to stop it from spreading any further.</p><p><b>Everyone still in the city will be lost: ' + g.totals.aliveNonZ + ' residents.</b> The game will end.</p><p class="muted oc-small">Public health ethics asks: is this necessary, is it proportional, and is there truly no less harmful option left?</p>' +
+          '<div class="oc-row" style="justify-content:flex-end;margin-top:10px"><button type="button" class="oc-btn" data-a="no" autofocus>Keep fighting</button><button type="button" class="oc-btn warn" data-a="yes">Prepare launch</button></div>'
+        : '<div class="oc-nuke-sign">☢</div><h2>Are you absolutely sure?</h2><p>This cannot be undone. ' + esc(D.CITY_NAME) + ' and everyone in it will be destroyed.</p>' +
+          '<div class="oc-row" style="justify-content:flex-end;margin-top:10px"><button type="button" class="oc-btn primary" data-a="no" autofocus>No, keep fighting</button><button type="button" class="oc-btn oc-launch" data-a="yes">☢ LAUNCH</button></div>';
+    };
+    node.addEventListener('click', function (e) {
+      var b = e.target.closest('[data-a]'); if (!b) return;
+      if (b.getAttribute('data-a') === 'no') { self.hideScreen(); return; }
+      if (step === 0) { step = 1; render(); self.sfx.play('alert'); return; }
+      self.hideScreen();
+      self.sfx.play('alert'); self.sfx.play('nuke');
+      g.nuke(); self.autosave(); self.updateHud(true);
+    });
+    render();
+    this.showScreen(node, { onKey: function (e) { if (e.key === 'Escape') self.hideScreen(); } });
+  };
+
   /* ================= endings & report ================= */
   U.showEnd = function () {
     var g = this.game, self = this, end = D.ENDINGS[g.ending], r = g.report();
     this.store.endings = this.store.endings || {};
     var firstTime = !this.store.endings[g.ending];
     this.store.endings[g.ending] = true; saveStore(this.store);
+    var newlyInsane = g.endReason === 'complete' && !this.store.insaneUnlocked;
+    if (g.endReason === 'complete') { this.store.insaneUnlocked = true; saveStore(this.store); }
     var node = el('div', 'oc-paper');
     var now = new Date();
     node.innerHTML = '<div class="mast">' + esc(D.NEWSPAPER.toUpperCase()) + '</div><div class="date">' + now.toDateString() + ' · Seed ' + esc(g.seed) + ' · ' + esc(g.diff.label) + (r.name ? ' · Acting Health Commissioner ' + esc(r.name) : '') + '</div>' +
       '<canvas width="760" height="380" aria-hidden="true"></canvas>' +
       '<span class="endtag">' + esc(end.title.toUpperCase()) + (end.secret && firstTime ? ' · SECRET UNLOCKED!' : '') + '</span>' +
+      (newlyInsane ? '<p class="oc-unlock">\u2620 INSANE MODE UNLOCKED! Pick it on the title screen: unlimited budget, a crazy number of zombies.</p>' : '') +
       '<h1>' + esc(end.headline) + '</h1><p class="sub">' + esc(end.sub) + '</p><p>' + esc(end.body) + '</p>' +
       '<div class="oc-stats">' +
       stat(Math.round(r.survival * 100) + '%', 'residents survived') + stat(r.deaths, 'residents lost') + stat(r.peakR || '-', 'peak R_eff') +
@@ -712,7 +752,7 @@
       var ok = C.checksum(payload) === m[2];
       var p = payload.split('|');
       var tc = p[14] || '', towers = D.TOWER_ORDER.map(function (k, i) { return D.TOWERS[k].name + ': ' + parseInt(tc[i] || '0', 36); }).join(', ');
-      var rows = [['Valid', ok ? 'Yes (checksum matches)' : 'NO: the code was changed'], ['Name', p[1] || '(none)'], ['Seed', p[2]], ['Difficulty', { e: 'Easy', n: 'Normal', h: 'Hard' }[p[3]]], ['Length', p[4] === 'Q' ? 'Quick' : 'Full'],
+      var rows = [['Valid', ok ? 'Yes (checksum matches)' : 'NO: the code was changed'], ['Name', p[1] || '(none)'], ['Seed', p[2]], ['Difficulty', { e: 'Easy', n: 'Normal', h: 'Hard', i: 'INSANE' }[p[3]]], ['Length', p[4] === 'Q' ? 'Quick' : 'Full'],
         ['Ending', (D.ENDINGS[p[5]] || {}).title || p[5]], ['Survival', p[6] + '%'], ['Trust', p[7]], ['Equity', p[8]], ['Peak R_eff', (p[9] / 10).toFixed(1)], ['Deaths', p[10]], ['Stray-fire deaths', p[11]],
         ['Vaccinated', p[12] + '%'], ['Infections detected', p[13] + '%'], ['Towers', towers], ['Decisions', (p[15] || '').split('.').join(', ')], ['Sim time', p[16] + 's']];
       return '<div class="oc-stats" style="grid-template-columns:auto 1fr">' + rows.map(function (r) { return '<span class="muted">' + esc(r[0]) + '</span><span>' + esc(String(r[1])) + '</span>'; }).join('') + '</div>';
@@ -735,7 +775,7 @@
 
   U.buildReflections = function (r) {
     var dist = this.districtRows(), worst = dist.slice().sort(function (a, b) { return b.rate - a.rate; })[0];
-    var vars = { hallPct: r.hallPct, megaInf: r.megaInf, ruined: r.ruined, strayDeaths: r.strayDeaths, detectionPct: r.detectionPct, vaxPct: r.vaxPct, equity: r.equity, worstDistrict: worst ? worst.name : '', spin: r.spin, overflowSeconds: r.overflowSeconds, peakR: r.peakR, barricades: r.barricades, seed: r.seed };
+    var vars = { tankKills: r.tankKills, hallPct: r.hallPct, megaInf: r.megaInf, ruined: r.ruined, strayDeaths: r.strayDeaths, detectionPct: r.detectionPct, vaxPct: r.vaxPct, equity: r.equity, worstDistrict: worst ? worst.name : '', spin: r.spin, overflowSeconds: r.overflowSeconds, peakR: r.peakR, barricades: r.barricades, seed: r.seed };
     var qs = [];
     D.REFLECTIONS.forEach(function (q) { try { if (q.when(r) && qs.length < 6) qs.push(q.q.replace(/\{(\w+)\}/g, function (m, k) { return vars[k] !== undefined ? vars[k] : m; })); } catch (e) { } });
     return qs;

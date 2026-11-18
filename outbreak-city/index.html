@@ -35,7 +35,8 @@
     OutbreakCity.mount(document.getElementById('app'), {
       seed: q.seed || null,
       difficulty: q.diff || q.difficulty || 'normal',
-      quick: q.mode === 'quick'
+      quick: q.mode === 'quick',
+      insane: q.insane === '1'  // teacher preview: unlock INSANE without finishing a game
     });
   })();
 </script>

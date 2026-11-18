@@ -326,6 +326,49 @@ const addBots = page => page.addScriptTag({ path: path.join(__dirname, 'strategi
     await page.close();
   }
 
+  // ---------- 4c. INSANE unlock, military tanks, nuclear option, no fog ----------
+  {
+    const page = await newPage(browser);
+    await page.goto(base + 'index.html?seed=BIG1');
+    await page.evaluate(() => { try { localStorage.removeItem('outbreakCity.v1'); } catch (e) { } });
+    await page.reload(); await page.waitForTimeout(500);
+    const locked = await page.evaluate(() => document.querySelector('.oc-insane').classList.contains('locked'));
+    check('INSANE is locked before finishing a game', locked);
+    // finish a quick game -> INSANE unlocks
+    await page.uncheck('[data-f=tut]'); await page.click('[data-a=start]');
+    await page.evaluate(() => { const app = OutbreakCity._instances[0], g = app.game; g.waveDefs = g.waveDefs.slice(0, 2); g.totalWaves = 2; g.plans = g.plans.slice(0, 2);
+      while (g.phase !== 'ended') { if (g.phase === 'build') g.startWave(); else if (g.phase === 'briefing') g.choose(0); else g.step(); } app.lastPhase = 'wave'; });
+    await page.waitForSelector('.oc-paper', { timeout: 8000 });
+    const unlockedMsg = await page.isVisible('.oc-unlock');
+    await page.click('.oc-paper [data-a=again]'); await page.waitForTimeout(500);
+    const unlocked = await page.evaluate(() => !document.querySelector('.oc-insane').classList.contains('locked'));
+    check('Finishing a game unlocks INSANE (with a message)', unlockedMsg && unlocked);
+    await page.click('.oc-insane'); await page.uncheck('[data-f=tut]'); await page.click('[data-a=start]'); await page.waitForTimeout(400);
+    const ins = await page.evaluate(() => { const app = OutbreakCity._instances[0], g = app.game; const before = g.budget; let placed = 0;
+      for (let y = 2; y < g.H - 2 && placed < 40; y++) for (let x = 2; x < g.W - 2 && placed < 40; x++) if (g.place('clinic', x, y).ok) placed++;
+      app.updateHud(true); return { diff: g.diffKey, budgetText: document.querySelector('.oc-meter .val') && app.meters.budget.val.textContent, placed, spent: before - g.budget, cap: g.maxZombies }; });
+    check('INSANE: unlimited budget (∞) and a higher zombie cap', ins.diff === 'insane' && ins.budgetText === '∞' && ins.placed === 40 && ins.spent === 0 && ins.cap > 140, JSON.stringify(ins));
+    // military card and tanks (Normal)
+    await page.evaluate(() => { const app = OutbreakCity._instances[0]; app.newGame({ seed: 'BIG1', difficulty: 'normal' }); const g = app.game;
+      while (!(g.phase === 'briefing' && g.briefing.card.id === 'military') && g.phase !== 'ended') { if (g.phase === 'build') g.startWave(); else if (g.phase === 'briefing') g.choose(0); else g.step(); } app.lastPhase = 'wave'; });
+    await page.waitForSelector('.oc-brief', { timeout: 5000 });
+    const card = await page.evaluate(() => OutbreakCity._instances[0].game.briefing.card.id + ' after wave ' + OutbreakCity._instances[0].game.wave);
+    await page.click('.oc-opt >> nth=0'); await page.click('.oc-brief .oc-btn.primary');
+    const tanks = await page.evaluate(() => { const g = OutbreakCity._instances[0].game; g.startWave(); for (let i = 0; i < 1200; i++) g.step(); return { n: g.tanks.length, kills: g.stats.tankKills || 0 }; });
+    check('Military intervention offered before wave 5; tanks kill zombies', card === 'military after wave 4' && tanks.n === 3 && tanks.kills > 0, card + ' ' + JSON.stringify(tanks));
+    // nuclear option
+    await page.evaluate(() => { const app = OutbreakCity._instances[0]; app.newGame({ seed: 'NUKE1', difficulty: 'normal' }); const g = app.game; while (!g.nukeAvailable() && g.phase !== 'ended') { if (g.phase === 'build') g.startWave(); else if (g.phase === 'briefing') g.choose(0); else g.step(); } app.hideScreen(); app.lastPhase = g.phase; app.updateHud(true); });
+    await page.waitForSelector('.oc-nuke', { state: 'visible', timeout: 3000 });
+    await page.click('.oc-nuke'); await page.click('.oc-nukecard [data-a=yes]'); await page.click('.oc-nukecard [data-a=yes]');
+    await page.waitForSelector('.oc-paper', { timeout: 12000 });
+    const nk = await page.evaluate(() => { const g = OutbreakCity._instances[0].game; return { ending: g.ending, alive: g.totals.aliveNonZ, ruins: g.blds.every(b => b.blight === 3) }; });
+    check('Nuclear option (asks twice) destroys the city and ends the game', nk.ending === 'nuked' && nk.alive === 0 && nk.ruins, JSON.stringify(nk));
+    const fog = await page.evaluate(() => OutbreakCity.data.WAVES.filter(w => w.weather === 'fog').length);
+    check('No fog in any wave', fog === 0, fog + ' foggy waves');
+    check('No errors (INSANE / tanks / nuke)', page.errors.length === 0, page.errors.join(' | '));
+    await page.close();
+  }
+
   // ---------- 5. Auto low-effects ----------
   {
     const page = await newPage(browser);

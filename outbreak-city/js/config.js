@@ -71,8 +71,8 @@
     importedEntryWalk: true,
 
     // --- Economy ---
-    startBudget: 520,
-    waveGrant: 210,          // emergency funds after each wave
+    startBudget: 800,
+    waveGrant: 300,          // emergency funds after each wave
     taxPerResident: 0.00042, // $ per healthy resident per second
     waveVaccines: 200,       // vaccine doses shipped after each wave
     startVaccines: 320,
@@ -106,8 +106,15 @@
     hallHp: 160,             // integrity points (difficulty multiplies this)
     hallOutsiderPull: 0.55,  // share of zombies arriving from outside that march on City Hall
     hallResidentPull: 0.1,   // share of newly turned residents that head for City Hall
-    hallRepair: 0.2,         // share of integrity repaired after each wave
-    emergeTime: 1.4,         // seconds a zombie spends climbing out of a hell hole before it can move
+    hallRepair: 0.25,        // share of integrity repaired after each wave
+    emergeTime: 1.4,
+    // --- Military intervention (offered before the middle wave) ---
+    tanks: 3,                // tanks that roll in (INSANE doubles it)
+    tankSpeed: 1.0, tankRange: 5, tankDamage: 90, tankRate: 0.9, tankSplash: 0.8, tankStray: 0.1,
+    // --- Nuclear option: offered once the infection has taken over ---
+    nukeSurvival: 0.65,      // available when the share of residents still alive falls below this...
+    nukeChaos: 0.4,          // ...or a district is this overrun...
+    nukeZombies: 0.12,       // ...or zombies make up this share of the population         // seconds a zombie spends climbing out of a hell hole before it can move
     hallDamage: { basic: 3, runner: 2, brute: 8, carrier: 2, mega: 18 }, // integrity lost per attack
 
     // --- Performance ---
@@ -119,7 +126,9 @@
   D.DIFFICULTY = {
     easy:   { hall: 1.35, label: 'Easy',   budget: 1.3,  trust: 68, transmission: 0.85, spawn: 0.75, grant: 1.2,  vaccines: 1.3, pop: 0.9 },
     normal: { hall: 1.0, label: 'Normal', budget: 1.0,  trust: 60, transmission: 1.0,  spawn: 1.0,  grant: 1.0,  vaccines: 1.0, pop: 1.0 },
-    hard:   { hall: 0.8, label: 'Hard',   budget: 0.9,  trust: 52, transmission: 1.08, spawn: 1.2,  grant: 0.9,  vaccines: 0.85, pop: 1.1 }
+    hard:   { hall: 0.8, label: 'Hard',   budget: 0.9,  trust: 52, transmission: 1.08, spawn: 1.2,  grant: 0.9,  vaccines: 0.85, pop: 1.1 },
+    // INSANE: unlocked after finishing a game. Unlimited budget, a crazy number of zombies.
+    insane: { hall: 3,   label: 'INSANE', budget: 1,    trust: 60, transmission: 1.1,  spawn: 4,    grant: 1,    vaccines: 6,   pop: 1.0, unlimited: true, zombieCap: 260, locked: true }
   };
 
   /* ---- TOWERS / INTERVENTIONS ---------------------------------------
@@ -127,7 +136,7 @@
      Okabe-Ito colorblind-safe palette; every tower also has a unique glyph. */
   D.TOWERS = {
     militia: {
-      key: '1', name: 'Militia Turret', glyph: 'crosshair', color: '#D55E00',
+      key: '1', name: 'Militia Turret', glyph: 'crosshair', color: '#D55E00', gun: true,
       cost: 60, range: 4.0, rate: 1.1, damage: 20, strayBase: 0.02, strayPerCiv: 0.035,
       trustDrain: 0.006, noise: 5.5, spawnPenalty: 0.05, strayMult: 1, trustDrainMult: 1,
       short: 'Shoots visible zombies. Cheap, loud, and not picky.',
@@ -135,6 +144,17 @@
       upgrades: [
         { cost: 70, label: 'Heavier Ordnance', damage: 34, range: 4.6 },
         { cost: 90, label: 'De-escalation Training', rate: 1.3, strayMult: 0.4, trustDrainMult: 0.5 }
+      ]
+    },
+    heavy: {
+      key: '9', name: 'Heavy Turret', glyph: 'cannon', color: '#8C2D19', gun: true,
+      cost: 220, range: 5.5, rate: 1.4, damage: 55, splash: 0.75, strayBase: 0.01, strayPerCiv: 0.02,
+      trustDrain: 0.012, noise: 7, spawnPenalty: 0.07, strayMult: 1, trustDrainMult: 1,
+      short: 'Upgraded military firepower: twin cannons, longer range, splash damage. Expensive and very loud.',
+      concept: 'More force, same blind spot: it still cannot see people who are infected but look healthy.',
+      upgrades: [
+        { cost: 150, label: 'Twin Autocannons', rate: 2.2, damage: 65 },
+        { cost: 180, label: 'Targeting Computer', range: 6.8, strayMult: 0.3, trustDrainMult: 0.6 }
       ]
     },
     lab: {
@@ -204,7 +224,7 @@
       ]
     }
   };
-  D.TOWER_ORDER = ['militia', 'lab', 'clinic', 'hospital', 'barricade', 'radio', 'chw', 'pantry'];
+  D.TOWER_ORDER = ['militia', 'lab', 'clinic', 'hospital', 'barricade', 'radio', 'chw', 'pantry', 'heavy'];
 
   /* ---- ZOMBIE TYPES --------------------------------------------------- */
   D.ZOMBIES = {
@@ -214,25 +234,31 @@
     carrier: { name: 'Carrier',  hp: 50,  speed: 0.95, life: 75, bites: 1, armor: 0,    stealth: true,  size: 1 },
     // SUPER ZOMBIE: huge, armored, infects many people per attack (a "super-spreader").
     // Hospitals can't capture it; it smashes barricades. Vaccinated residents resist its bites.
-    mega:    { name: 'Super-Spreader', hp: 600, speed: 0.42, life: 55, bites: 4, armor: 0.35, stealth: false, size: 2.2, boss: true, streetRange: 1.8, barricadeDps: 45 }
+    mega:    { name: 'Super-Spreader', hp: 600, speed: 0.42, life: 55, bites: 4, armor: 0.35, stealth: false, size: 2.2, boss: true, streetRange: 1.8, barricadeDps: 45 },
+    // SPITTER: stops and spits infectious acid at people up to ~2 tiles away
+    spitter: { name: 'Spitter',  hp: 45,  speed: 0.6,  life: 34, bites: 1, armor: 0,    stealth: false, size: 1.1, streetRange: 4, spitCooldown: 3.2 },
+    // SCREAMER: shrieks every few seconds; nearby zombies speed up and panic rises
+    screamer:{ name: 'Screamer', hp: 40,  speed: 0.85, life: 36, bites: 1, armor: 0,    stealth: false, size: 0.95, scream: { every: 6, radius: 4, haste: 1.6, time: 4, panic: 1.5 } },
+    // CRAWLER: low to the ground: slips under barricades and is hard to hit
+    crawler: { name: 'Crawler',  hp: 50,  speed: 0.9,  life: 34, bites: 1, armor: 0,    stealth: false, size: 0.8, underBarricades: true, dodge: 0.4 }
   };
-  D.ZOMBIE_ORDER = ['basic', 'runner', 'brute', 'carrier', 'mega'];
+  D.ZOMBIE_ORDER = ['basic', 'runner', 'brute', 'carrier', 'mega', 'spitter', 'screamer', 'crawler'];
 
   /* ---- WAVES -----------------------------------------------------------
-     z: arriving zombies [shambler, sprinter, brute, carrier, super-spreader]
+     z: arriving zombies [shambler, sprinter, brute, carrier, super-spreader, spitter, screamer, crawler]
      imports: infected-but-healthy-looking travelers arriving from outside
      entries: how many road entrances zombies use
      night: [start, end] darkness 0..1 across the wave; weather: clear/fog/rain */
   D.WAVES = [
-    { z: [4, 0, 0, 0, 0],  imports: 2, entries: 1, night: [0, 0.05],   weather: 'clear' },
-    { z: [6, 2, 0, 0, 0],  imports: 3, entries: 2, night: [0.05, 0.25], weather: 'clear' },
-    { z: [7, 3, 1, 1, 0],  imports: 3, entries: 2, night: [0.25, 0.75], weather: 'clear' },
-    { z: [8, 4, 1, 2, 0],  imports: 4, entries: 2, night: [0.75, 0.95], weather: 'fog' },
-    { z: [9, 5, 2, 2, 1],  imports: 4, entries: 3, night: [0.9, 0.2],  weather: 'clear' },
-    { z: [10, 6, 2, 3, 1], imports: 5, entries: 3, night: [0.1, 0.15], weather: 'rain' },
-    { z: [11, 7, 3, 3, 2], imports: 5, entries: 3, night: [0.15, 0.6], weather: 'clear' },
-    { z: [12, 8, 3, 4, 2], imports: 6, entries: 3, night: [0.6, 1.0],  weather: 'fog' },
-    { z: [14, 9, 4, 4, 3], imports: 6, entries: 4, night: [1.0, 0.55], weather: 'rain' }
+    { z: [4, 0, 0, 0, 0, 0, 0, 0],  imports: 2, entries: 1, night: [0, 0.05],   weather: 'clear' },
+    { z: [6, 2, 0, 0, 0, 0, 0, 1],  imports: 3, entries: 2, night: [0.05, 0.25], weather: 'clear' },
+    { z: [7, 3, 1, 1, 0, 1, 0, 1],  imports: 3, entries: 2, night: [0.25, 0.75], weather: 'clear' },
+    { z: [8, 4, 1, 2, 0, 1, 1, 2],  imports: 4, entries: 2, night: [0.75, 0.95], weather: 'clear' },
+    { z: [9, 5, 2, 2, 1, 2, 1, 2],  imports: 4, entries: 3, night: [0.9, 0.2],  weather: 'clear' },
+    { z: [10, 6, 2, 3, 1, 2, 1, 3], imports: 5, entries: 3, night: [0.1, 0.15], weather: 'rain' },
+    { z: [11, 7, 3, 3, 2, 3, 2, 3], imports: 5, entries: 3, night: [0.15, 0.6], weather: 'clear' },
+    { z: [12, 8, 3, 4, 2, 3, 2, 4], imports: 6, entries: 3, night: [0.6, 1.0],  weather: 'clear' },
+    { z: [14, 9, 4, 4, 3, 4, 3, 4], imports: 6, entries: 4, night: [1.0, 0.55], weather: 'rain' }
   ];
   D.QUICK_WAVES = [0, 1, 3, 5, 7, 8]; // which of the above a Quick game uses
   D.WEATHER = {

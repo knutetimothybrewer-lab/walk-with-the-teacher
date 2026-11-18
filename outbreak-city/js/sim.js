@@ -47,6 +47,9 @@
 
     this.tick = 0; this.t = 0; this.phase = this.attract ? 'attract' : 'build';
     this.wave = 0; this.waveTime = 0; this.weather = 'clear';
+    this.maxZombies = diff.zombieCap || CFG.maxZombies;
+    this.unlimited = !!diff.unlimited;
+    this.tanks = [];
     var qb = this.quick ? CFG.quickBonus : 1;
     this.budget = Math.round(CFG.startBudget * diff.budget * qb);
     this.vaccines = Math.round(CFG.startVaccines * diff.vaccines * qb);
@@ -122,7 +125,7 @@
     this.plans = this.waveDefs.map(function (def) {
       var entries = wr.shuffle(city.entries.slice()).slice(0, Math.max(1, def.entries));
       var z = D.ZOMBIE_ORDER.map(function (type, k) {
-        var max = Math.ceil(def.z[k] * 2.6) + 2, list = [];
+        var max = Math.ceil((def.z[k] || 0) * Math.max(2.6, self.diff.spawn * 1.3)) + 2, list = [];
         for (var i = 0; i < max; i++) list.push({ t: wr.next(), entry: wr.pick(entries), type: type });
         return list;
       });
@@ -137,7 +140,7 @@
 
   G.planDeck = function () {
     var dr = new C.RNG(C.hashStr(this.seed + '|deck'));
-    var ids = D.EVENTS.map(function (e) { return e.id; });
+    var ids = D.EVENTS.filter(function (e) { return !e.special; }).map(function (e) { return e.id; });
     dr.shuffle(ids);
     // Priority cards (e.g. honesty) always appear in the first two briefings
     D.EVENTS.forEach(function (e) {
@@ -327,7 +330,7 @@
     this.stats.turnings++; this.win.turn[this.secIdx]++;
     if (this.stats.firstTurn < 0) { this.stats.firstTurn = this.t; this.news('firstTurn', null, true); }
     var W = this.W, dx = b.door % W + 0.5, dy = ((b.door / W) | 0) + 0.5;
-    if (this.nZombies < CFG.maxZombies) {
+    if (this.nZombies < this.maxZombies) {
       var type = this.rng.next() < CFG.turnRunnerChance ? 'runner' : 'basic';
       this.spawnZombie(type, b.cx + (dx - b.cx) * 0.6, b.cy + (dy - b.cy) * 0.6, b.door, off, b.id);
     } else { b.Z++; b.zOff += off; }
@@ -362,7 +365,7 @@
           var share = b.zOff / b.Z; b.zOff -= share; b.Z--; b.D++;
           this.death(b.d, b.cx, b.cy, 'decay'); this.recordRemoval(share);
         }
-        if (b.Z > 0 && this.nZombies < CFG.maxZombies && rng.next() < DT * 0.6 * b.Z) {
+        if (b.Z > 0 && this.nZombies < this.maxZombies && rng.next() < DT * 0.6 * b.Z) {
           var sh = b.zOff / b.Z; b.zOff -= sh; b.Z--;
           var W = this.W, dx = b.door % W + 0.5, dy = ((b.door / W) | 0) + 0.5;
           this.spawnZombie('basic', b.cx + (dx - b.cx) * 0.6, b.cy + (dy - b.cy) * 0.6, b.door, sh, b.id);
@@ -459,7 +462,7 @@
     this.removeAgent(a);
     this.stats.turnings++; this.win.turn[this.secIdx]++;
     if (this.stats.firstTurn < 0) { this.stats.firstTurn = this.t; this.news('firstTurn', null, true); }
-    if (this.nZombies < CFG.maxZombies) {
+    if (this.nZombies < this.maxZombies) {
       this.spawnZombie(this.rng.next() < CFG.turnRunnerChance ? 'runner' : 'basic', a.x, a.y, tile, 0, -1);
     } else {
       var b = this.blds[a.dest]; b.Z++;
@@ -472,7 +475,7 @@
     var best = null, bd = 1e9;
     for (var i = 0; i < this.towers.length; i++) {
       var tw = this.towers[i];
-      if (tw.type !== 'militia' || this.t - tw.lastFire > 3) continue;
+      if (!tw.st.gun || this.t - tw.lastFire > 3) continue;
       var dx = tw.tx + 0.5 - a.x, dy = tw.ty + 0.5 - a.y, d2 = dx * dx + dy * dy, nr = tw.st.noise;
       if (d2 < nr * nr && d2 < bd) { bd = d2; best = tw; }
     }
@@ -553,8 +556,9 @@
           if (a.breach <= 0) { if (a.dest === this.hallId) a.hallDone = true; a.lastBld = a.dest; a.roadTile = a.path && a.path.length ? a.path[a.path.length - 1] : a.roadTile; this.retarget(a); }
           continue;
         }
-        var tile = this.tileOf(a.x, a.y), sp = z.speed;
-        var bar = this.barricadeAt[tile];
+        var tile = this.tileOf(a.x, a.y), sp = z.speed * (a.hasteT > this.t ? a.haste : 1);
+        if (z.scream) this.screamTick(a, z);
+        var bar = z.underBarricades ? -1 : this.barricadeAt[tile];
         if (bar >= 0) {
           var btw = this.towerById(bar);
           if (btw) {
@@ -574,7 +578,8 @@
           var victim = null;
           this.near(a.x, a.y, CFG.biteRange * (z.streetRange || 1), function (w) { if (w.kind === 0) { victim = w; return true; } return false; });
           if (victim) {
-            a.biteCd = CFG.biteCooldown;
+            a.biteCd = z.spitCooldown || CFG.biteCooldown;
+            if (z.spitCooldown) this.emit({ k: 'spit', x0: a.x, y0: a.y, x: victim.x, y: victim.y, zid: a.id });
             var p = CFG.biteSuccess * CFG.streetBiteMult * this.em.transmission;
             if (victim.st === V) p *= (1 - this.vaxEff());
             var bit = false;
@@ -595,7 +600,7 @@
   /* ================= Towers ================= */
   G.towerById = function (id) { for (var i = 0; i < this.towers.length; i++) if (this.towers[i].id === id) return this.towers[i]; return null; };
 
-  G.placeCost = function (type) { return this.freeTowers[type] ? 0 : D.TOWERS[type].cost; };
+  G.placeCost = function (type) { return this.freeTowers[type] || this.unlimited ? 0 : D.TOWERS[type].cost; };
 
   G.canPlace = function (type, tx, ty) {
     var def = D.TOWERS[type];
@@ -658,6 +663,7 @@
     var tw = this.towerById(id); if (!tw) return { ok: false, reason: 'No tower' };
     var cost = this.upgradeCost(tw);
     if (cost === null) return { ok: false, reason: 'Fully upgraded' };
+    if (this.unlimited) cost = 0;
     if (this.budget < cost) return { ok: false, reason: 'Not enough budget' };
     this.budget -= cost; tw.spent += cost; tw.level++;
     tw.st = this.towerStats(tw);
@@ -713,7 +719,9 @@
     tw.angle = Math.atan2(target.y - tw.y, target.x - tw.x);
     this.win.shots[this.secIdx]++;
     var dmg = st.damage * this.em.militiaDamage * (1 - target.zdef.armor);
+    if (target.zdef.dodge && this.rng.next() < target.zdef.dodge) dmg = 0; // low target: the shot misses
     target.hp -= dmg; target.hitT = this.t;
+    if (st.splash) { var self2 = this; this.near(target.x, target.y, st.splash, function (o) { if (o.kind === 1 && o !== target && o.revealed && !o.dead) { o.hp -= dmg * 0.5; o.hitT = self2.t; if (o.hp <= 0) { self2.stats.kills++; self2.emit({ k: 'kill', x: o.x, y: o.y, z: o.type, face: 1 }); self2.killZombie(o, 'shot'); } } return false; }); }
     // Stray fire: the more civilians around the target, the more likely a bystander is hit
     var civs = [];
     this.near(target.x, target.y, 1.3, function (w) { if (w.kind === 0) civs.push(w); return false; });
@@ -731,7 +739,7 @@
         this.news('stray');
       }
     }
-    this.emit({ k: 'shot', tw: tw.id, x0: tw.x, y0: tw.y, x1: target.x, y1: target.y, stray: !!stray, sx: stray ? stray.x : 0, sy: stray ? stray.y : 0 });
+    this.emit({ k: 'shot', heavy: tw.type === 'heavy', tw: tw.id, x0: tw.x, y0: tw.y, x1: target.x, y1: target.y, stray: !!stray, sx: stray ? stray.x : 0, sy: stray ? stray.y : 0 });
     this.panic = Math.min(100, this.panic + 0.03);
     if (target.hp <= 0) {
       this.stats.kills++;
@@ -893,7 +901,7 @@
     for (var i = 0; i < this.towers.length; i++) {
       var tw = this.towers[i];
       switch (tw.type) {
-        case 'militia': tw.cd -= DT; if (tw.cd <= 0) this.militiaFire(tw); break;
+        case 'militia': case 'heavy': tw.cd -= DT; if (tw.cd <= 0) this.militiaFire(tw); break;
         case 'lab': tw.cd -= DT * tw.boost; if (tw.cd <= 0) { tw.cd = tw.st.scanInterval; this.labScan(tw); } break;
         case 'clinic': this.clinicTick(tw); break;
         case 'hospital': this.hospitalTick(tw); break;
@@ -1008,7 +1016,7 @@
     var dTrust = 0, radioN = 0;
     for (i = 0; i < this.towers.length; i++) {
       var tw = this.towers[i], st = tw.st;
-      if (tw.type === 'militia') dTrust -= st.trustDrain * st.trustDrainMult * em.militiaTrust;
+      if (st.gun) dTrust -= st.trustDrain * st.trustDrainMult * em.militiaTrust;
       if (tw.type === 'radio') { dTrust += st.trustGain / (1 + 0.6 * radioN); radioN++; }
       if (tw.type === 'hospital') {
         var sumE = 0; for (k = 0; k < tw.bld.length; k++) sumE += blds[tw.bld[k]].E; tw.sumE = sumE;
@@ -1095,7 +1103,7 @@
     this.updateBuildings();
     this.launchWalkers();
     this.updateAgents();
-    if (this.phase === 'wave') this.updateTowers();
+    if (this.phase === 'wave') { this.updateTowers(); if (this.tanks.length) this.updateTanks(); }
     this.compact();
     if (this.tick % CFG.simHz === 0) this.perSecond();
     if (this.phase === 'wave' && this.tick % (CFG.simHz * 2) === 0) this.sample();
@@ -1112,7 +1120,7 @@
           this.spawnWalker(E, ex, ey, path, dst.id, false, s.inc, dst.d);
           this.stats.imports++;
         } else { dst.E++; this.stats.imports++; }
-      } else if (this.nZombies < CFG.maxZombies + 10) {
+      } else if (this.nZombies < this.maxZombies + 10) {
         var oz = this.spawnZombie(s.type, ex, ey, s.entry, 0, -1);
         oz.outsider = true; oz.hallPull = undefined; this.retarget(oz); // arrivals march on City Hall more often
         oz.emerge = CFG.emergeTime; // climbing out of a hell hole
@@ -1140,7 +1148,7 @@
       this.emit({ k: 'consequence', text: p.text });
     }
     this.recomputeMods();
-    var mil = this.countTowers('militia');
+    var mil = this.countTowers('militia') + this.countTowers('heavy') * 2;
     var mult = this.diff.spawn * this.em.spawn * (1 + mil * D.TOWERS.militia.spawnPenalty);
     var dur = this.waveDuration * CFG.spawnWindow, q = [];
     D.ZOMBIE_ORDER.forEach(function (type, k) {
@@ -1151,6 +1159,7 @@
     for (i = 0; i < ni; i++) { var im = plan.imports[i]; q.push({ t: im.t * dur, entry: im.entry, imp: true, dest: im.dest, inc: im.inc }); }
     q.sort(function (a, b) { return a.t - b.t; });
     this.spawnQueue = q;
+    if (this.flags.military && !this.tanksUsed) { this.tanksUsed = true; this.deployTanks(this.flags.military); }
     this.waveSpawnCount = q.length;
     this.annotations.push({ t: this.t, kind: 'wave', label: 'Wave ' + this.wave });
     this.cmd('start', []);
@@ -1161,6 +1170,7 @@
   };
 
   G.endWave = function () {
+    if (this.tanks.length) { this.tanks = []; this.emit({ k: 'tanksLeave' }); }
     if (this.wave >= this.totalWaves) {
       // Final Push: a short overtime with no new arrivals to clear the last cases
       if (!this.overtime && this.totals.active > 0) {
@@ -1185,6 +1195,10 @@
   };
 
   G.drawCard = function () {
+    if (!this.militaryOffered && this.wave === Math.ceil(this.totalWaves / 2) - 1) {
+      this.militaryOffered = true;
+      for (var mi = 0; mi < D.EVENTS.length; mi++) if (D.EVENTS[mi].id === 'military') return D.EVENTS[mi];
+    }
     for (var i = 0; i < this.deck.length; i++) {
       var ev = null;
       for (var j = 0; j < D.EVENTS.length; j++) if (D.EVENTS[j].id === this.deck[i]) ev = D.EVENTS[j];
@@ -1230,6 +1244,7 @@
     if (fx.inc) for (k in fx.inc) this.counters[k] = (this.counters[k] || 0) + fx.inc[k];
     if (fx.freeTower) this.freeTowers[fx.freeTower] = (this.freeTowers[fx.freeTower] || 0) + 1;
     if (fx.custom === 'detain') this.detainKnown();
+    if (fx.custom === 'military' || fx.custom === 'militaryHall') this.flags.military = fx.custom === 'militaryHall' ? 'hall' : 'patrol';
     if (fx.access && fx.access.east < 0) this.localTrust[DIST_IDX.east] -= 3;
     this.recomputeMods();
     this.dirty = true;
@@ -1265,8 +1280,9 @@
 
   G.computeEnding = function () {
     var t = this.totals, surv = this.survival(), active = t.active;
-    var auth = this.counters.auth + this.countTowers('militia') * 0.35 + Math.max(0, this.countTowers('barricade') - 3) * 0.3;
+    var auth = this.counters.auth + (this.countTowers('militia') + this.countTowers('heavy') * 1.5) * 0.35 + Math.max(0, this.countTowers('barricade') - 3) * 0.3;
     this.authScore = auth;
+    if (this.endReason === 'nuke') return 'nuked';
     if (this.endReason === 'hall') return 'hallFallen';
     if (this.endReason === 'collapse' || surv < 0.55 || active > 0.12 * this.totalPop) return 'collapse';
     if (this.counters.spin >= 2 && this.trust < 25) return 'zombieMayor';
@@ -1276,6 +1292,101 @@
     if (this.equity < 40) return 'twoTier';
     if (active <= clear && this.reff < 1 && surv >= 0.8) return 'eradication';
     return 'endemic';
+  };
+
+
+  /* ================= New zombie behaviours ================= */
+  G.screamTick = function (a, z) {
+    a.screamT = (a.screamT === undefined ? z.scream.every * 0.5 : a.screamT) - DT;
+    if (a.screamT > 0) return;
+    a.screamT = z.scream.every;
+    var sc = z.scream, self = this, n = 0;
+    this.near(a.x, a.y, sc.radius, function (o) { if (o.kind === 1 && o !== a) { o.haste = sc.haste; o.hasteT = self.t + sc.time; n++; } return false; });
+    this.panic = Math.min(100, this.panic + sc.panic);
+    this.emit({ k: 'scream', x: a.x, y: a.y, r: sc.radius, n: n });
+  };
+
+  /* ================= Military intervention: tanks for one wave ================= */
+  G.deployTanks = function (mode) {
+    var n = CFG.tanks * (this.unlimited ? 2 : 1), W = this.W, plan = this.plans[this.wave - 1], ents = plan.entries.concat(this.city.entries);
+    for (var i = 0; i < n; i++) {
+      var e = ents[i % ents.length];
+      this.tanks.push({ id: this.nextId++, x: e % W + 0.5, y: ((e / W) | 0) + 0.5, px: e % W + 0.5, py: ((e / W) | 0) + 0.5, tile: e, path: null, pi: 0, cd: 1 + i * 0.3, angle: 0, turret: 0, mode: mode, lastFire: -9, dirx: 1, diry: 0 });
+    }
+    this.annotations.push({ t: this.t, kind: 'consequence', label: 'Tanks roll in' });
+    this.emit({ k: 'tanksArrive' });
+  };
+
+  G.tankDest = function (tk) {
+    var W = this.W, rng = this.rng, h = this.blds[this.hallId];
+    for (var k = 0; k < 30; k++) {
+      var x, y;
+      if (tk.mode === 'hall') { x = h.x + rng.int(13) - 6; y = h.y + rng.int(13) - 6; } else { x = 1 + rng.int(W - 2); y = 1 + rng.int(this.H - 2); }
+      if (x < 0 || y < 0 || x >= W || y >= this.H) continue;
+      var t = this.city.tiles[y * W + x];
+      if (t === T.ROAD || t === T.BRIDGE) { var p = this.getPath(tk.tile, y * W + x, true); if (p) return p; }
+    }
+    return null;
+  };
+
+  G.updateTanks = function () {
+    var W = this.W, self = this;
+    for (var i = 0; i < this.tanks.length; i++) {
+      var tk = this.tanks[i];
+      tk.px = tk.x; tk.py = tk.y;
+      if (!tk.path || tk.pi >= tk.path.length) { tk.path = this.tankDest(tk); tk.pi = 0; }
+      if (tk.path && tk.pi < tk.path.length) {
+        var t = tk.path[tk.pi], tx = t % W + 0.5, ty = ((t / W) | 0) + 0.5, dx = tx - tk.x, dy = ty - tk.y, d = Math.sqrt(dx * dx + dy * dy), step = CFG.tankSpeed * DT;
+        if (d <= step) { tk.x = tx; tk.y = ty; tk.tile = t; tk.pi++; } else { tk.x += dx / d * step; tk.y += dy / d * step; tk.angle = Math.atan2(dy, dx); }
+      }
+      tk.cd -= DT;
+      if (tk.cd > 0) continue;
+      var target = null, bd = 1e9;
+      this.near(tk.x, tk.y, CFG.tankRange, function (a, d2) { if (a.kind === 1 && a.revealed && a.emerge <= 0 && d2 < bd) { bd = d2; target = a; } return false; });
+      if (!target) { tk.cd = 0.2; continue; }
+      tk.cd = 1 / CFG.tankRate; tk.lastFire = this.t; tk.turret = Math.atan2(target.y - tk.y, target.x - tk.x);
+      var hit = [], civ = [];
+      this.near(target.x, target.y, CFG.tankSplash, function (a) { if (a.kind === 1) hit.push(a); else civ.push(a); return false; });
+      hit.forEach(function (a) {
+        var dmg = CFG.tankDamage * (a === target ? 1 : 0.5) * (1 - a.zdef.armor);
+        a.hp -= dmg; a.hitT = self.t;
+        if (a.hp <= 0 && !a.dead) { self.stats.kills++; self.stats.tankKills = (self.stats.tankKills || 0) + 1; if (a.zdef.boss) self.stats.megaKills++; self.emit({ k: 'kill', x: a.x, y: a.y, z: a.type, face: 1 }); self.killZombie(a, 'tank'); }
+      });
+      // a tank shell is not precise: bystanders near the blast can be hurt
+      if (civ.length && this.rng.next() < CFG.tankStray * civ.length) {
+        var v = civ[this.rng.int(civ.length)];
+        this.stats.strayDeaths++; this.removeAgent(v); this.death(this.city.district[this.tileOf(v.x, v.y)], v.x, v.y, 'tank');
+        this.trust = Math.max(0, this.trust - CFG.strayTrustHit); this.panic = Math.min(100, this.panic + CFG.strayPanic);
+        this.news('stray');
+      }
+      this.panic = Math.min(100, this.panic + 0.1);
+      this.emit({ k: 'tankShot', id: tk.id, x0: tk.x, y0: tk.y, x1: target.x, y1: target.y });
+    }
+  };
+
+  /* ================= Nuclear option ================= */
+  G.nukeAvailable = function () {
+    if (this.phase !== 'wave' || this.attract) return false;
+    var t = this.totals, m = 0;
+    if (this.chaos) for (var i = 0; i < this.chaos.length; i++) m = Math.max(m, this.chaos[i]);
+    return this.survival() < CFG.nukeSurvival || m >= CFG.nukeChaos || t.zombies >= CFG.nukeZombies * this.totalPop || this.unlimited;
+  };
+  G.nuke = function () {
+    if (!this.nukeAvailable()) return { ok: false };
+    this.cmd('nuke', []);
+    var lost = 0, i;
+    for (i = 0; i < this.blds.length; i++) {
+      var b = this.blds[i], n = b.S + b.E + b.Ek + b.V + b.R + b.Z;
+      for (var k = 0; k < D.DISTRICTS.length; k++) if (k === b.d) this.stats.distDeaths[k] += n;
+      lost += n; b.D += n; b.S = b.E = b.Ek = b.V = b.R = b.Z = 0; b.blight = 3;
+    }
+    for (i = 0; i < this.agents.length; i++) { var a = this.agents[i]; if (!a.dead) { if (a.kind === 0 || !a.outsider) lost++; this.removeAgent(a); } }
+    this.compact();
+    this.stats.deaths += lost; this.stats.nuked = lost; this.trust = 0; this.tanks = [];
+    if (this.chaos) for (i = 0; i < this.chaos.length; i++) this.chaos[i] = 1;
+    this.emit({ k: 'nuke', x: this.blds[this.hallId].cx, y: this.blds[this.hallId].cy });
+    this.finish('nuke');
+    return { ok: true };
   };
 
   /* ================= Report data ================= */
@@ -1296,7 +1407,7 @@
       detectionRate: detectionRate, detectionPct: Math.round(detectionRate * 100),
       vaxCoverage: st.vaccinated / this.totalPop, vaxPct: Math.round(100 * st.vaccinated / this.totalPop),
       towerCounts: tc, barricades: tc.barricade, spin: this.counters.spin, auth: Math.round(this.counters.auth * 10) / 10, flags: this.flags,
-      hallPct: Math.round(100 * this.hallHp / this.hallMax), megas: st.megas, megaInf: st.megaInf, overrun: this.blds.filter(function (b) { return b.blight >= 2; }).length, ruined: this.blds.filter(function (b) { return b.blight >= 3; }).length,
+      hallPct: Math.round(100 * this.hallHp / this.hallMax), tankKills: st.tankKills || 0, nuked: st.nuked || 0, megas: st.megas, megaInf: st.megaInf, overrun: this.blds.filter(function (b) { return b.blight >= 2; }).length, ruined: this.blds.filter(function (b) { return b.blight >= 3; }).length,
       overflowSeconds: Math.round(st.overflowSeconds), worstDistrict: D.DISTRICTS[worst].name, wave: this.wave, totalWaves: this.totalWaves,
       budget: Math.round(this.budget), vaccines: Math.round(this.vaccines), decisions: this.decisions, active: t.active, t: Math.round(this.t)
     };
@@ -1311,6 +1422,7 @@
       case 'move': return this.moveTeam(e.a[0], e.a[1], e.a[2]);
       case 'start': return this.startWave();
       case 'choose': return this.choose(e.a[0]);
+      case 'nuke': return this.nuke();
     }
   };
 

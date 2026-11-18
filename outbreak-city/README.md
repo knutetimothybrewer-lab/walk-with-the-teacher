@@ -39,6 +39,7 @@ Add options to the link:
 | `diff` | `&diff=easy` | `easy`, `normal` (default) or `hard` |
 | `mode` | `&mode=quick` | 6-wave quick game |
 | `teacher` | `?teacher=reset` | Clears this device's saved game and settings |
+| `insane` | `?insane=1` | Unlocks INSANE mode for a preview (normally it unlocks after a student finishes a full game) |
 
 Example: `.../outbreak-city/?seed=PERIOD3&diff=normal&mode=quick`
 
@@ -56,6 +57,10 @@ When a game ends, students see a newspaper front page for their ending, then cli
 - How to take a screenshot on a Chromebook, Windows, Mac or iPad
 
 Ask students to submit a screenshot of this page. The full After-Action Report is one click away.
+
+## INSANE mode
+
+After a student finishes a full game (all waves) on a device, an **INSANE** difficulty unlocks on the title screen. It gives an unlimited budget (towers and upgrades are free), about 4× as many zombies, and a higher zombie limit. It's a reward round, not a fair assessment, so completion codes mark it as INSANE.
 
 ## Completion codes (works without any setup)
 
@@ -172,13 +177,18 @@ All CSS is scoped under `.oc-root`, saved data uses one `localStorage` key (`out
 | City Hall command bunker in the middle of town: zombies march on it, crowd its walls and pound on it (damage numbers, cracks, smoke, then fire); an arrow points to it when it's off screen; if its integrity hits 0 the game ends | Protecting public health infrastructure and coordination (Essential Service 10) |
 | New arrivals claw out of glowing "hell holes" at the city's edges | Imported cases keep arriving from outside, so a response has to plan for them |
 | Super-Spreader zombies (from wave 5): giant, armored, infect several people per attack, smash barricades | Super-spreading (a few cases cause most spread); vaccination and controlling crowds blunt it |
+| Spitters (infect from a distance), Screamers (speed up nearby zombies, raise panic), Crawlers (slip under barricades, hard to hit) | Different transmission routes need different responses; one tool never fits all |
+| Before the middle wave, a General offers tanks for one wave: they kill many zombies but can't see hidden infections | Military force can't replace surveillance and prevention; it costs trust and endangers bystanders |
+| Once the infection takes over, a two-step "Nuclear Option" can destroy the whole city (its own ending) | Ethics of proportionality: the most extreme measure, and what it costs |
 | Districts fall into chaos as they're overrun: burning buildings and car wrecks, flashing police cars, fire glow and smoke, a news helicopter, falling ash | An uncontrolled outbreak spreads harm beyond the sick: panic, lost services, damage to whole neighborhoods |
 | Buildings permanently decay once residents are infected (quarantine X → smashed and overgrown → smoking ruin) | The lasting damage of an uncontrolled outbreak; which neighborhoods were hit hardest |
+| Heavy Turret (key 9): an expensive upgraded military turret with twin cannons and splash damage, and even louder | More force still can't see hidden infections; escalation costs trust |
 | Militia Turret: stray fire, noise draws more arrivals, trust loss | Containment by force, ethics (autonomy, non-maleficence, justice, proportionality) |
 | Briefing cards (curfews, schools, stadium detention, donors, price gouging) | Public health policy, law and ethics |
 | After-Action Report checklist | The 10 Essential Public Health Services |
 
 **Endings** are computed from the final state:
+- **The Nuclear Option:** the player destroyed the city to stop the outbreak.
 - **City Hall Has Fallen:** zombies broke into the command bunker.
 - **Collapse:** fewer than 55% survive or the outbreak is out of control.
 - **Hollow Victory:** survived, but trust is near zero or the response was coercive.
@@ -230,7 +240,7 @@ Tell students the game is satirical, and that how they win matters as much as wh
 
 | Key | Action |
 |---|---|
-| 1–8 | Pick an intervention (Shift-click to place several) |
+| 1–9 | Pick an intervention (Shift-click to place several) |
 | Esc or right-click | Cancel |
 | U / X | Upgrade / sell the selected tower |
 | Space | Pause (you can still build while paused) |

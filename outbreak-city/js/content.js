@@ -33,11 +33,27 @@
     skip:    { name: 'Skip Hollis', role: 'Deputy Press Aide', color: '#56B4E9', hat: 'cap' },
     gold:    { name: 'Thaddeus Goldworth III', role: 'Heights Golf Committee', color: '#CC79A7', hat: 'top' },
     cora:    { name: 'Cora Reyes', role: 'Eastside Tenants Union', color: '#0072B2', hat: 'none' },
-    lin:     { name: 'Prof. Wen Lin', role: 'Mercy Falls University', color: '#F0E442', hat: 'none' }
+    lin:     { name: 'Prof. Wen Lin', role: 'Mercy Falls University', color: '#F0E442', hat: 'none' },
+    gen:     { name: 'General Hal Ironside', role: 'National Guard', color: '#5E6B3A', hat: 'beret' }
   };
 
   /* ------------------------------------------------------------------ */
   D.EVENTS = [
+    {
+      id: 'military', special: true, speaker: 'gen', title: 'Send In the Tanks?',
+      text: 'General Ironside here. I have a column of high-tech tanks ready to roll into {city} for the next wave. They will flatten a lot of zombies. They will not find anyone who is infected but still looks healthy.',
+      options: [
+        { label: 'Send the tanks through the whole city', hint: 'Tanks hunt zombies everywhere for one wave. Trust down; shells can hit bystanders.',
+          fx: { custom: 'military', trust: -6, panic: -4, inc: { auth: 1 } },
+          result: 'Engines roar on the highway. Residents film the tanks from their windows, then go back inside, unsure whether to feel safer.' },
+        { label: 'Tanks guard downtown and City Hall only', hint: 'Tanks stay near the command bunker. Smaller trust cost.',
+          fx: { custom: 'militaryHall', trust: -3, inc: { auth: 0.5 } },
+          result: 'The tanks form a ring of steel around downtown. City Hall staff finally take a lunch break.' },
+        { label: 'No thanks: keep this a public health response', hint: 'Trust up a little. You are on your own.',
+          fx: { trust: 3 },
+          result: 'The General shrugs. "Your call, Commissioner. The offer will not come again."' }
+      ]
+    },
     {
       id: 'honesty', speaker: 'skip', priority: true, title: 'The Numbers',
       text: 'Reporters want case counts. I drafted two press releases. One says "{true} known cases and rising." The other says "Zombies? Never heard of her." Your call, boss.',
@@ -448,6 +464,12 @@
 
   /* ------------------------------------------------------------------ */
   D.ENDINGS = {
+    nuked: {
+      title: 'The Nuclear Option', art: 'nuked',
+      headline: 'OUTBREAK STOPPED; CITY ALSO STOPPED',
+      sub: 'Officials call it "technically a success." Mercy Falls is now a very large parking lot.',
+      body: 'You destroyed the city to stop the infection. The zombies are gone, and so is everyone they could have infected or you could have saved. In public health ethics, proportionality asks: is there any less harmful way? Here, it was too late to find one.'
+    },
     hallFallen: {
       title: 'City Hall Has Fallen', art: 'hallFallen',
       headline: 'ZOMBIES SEIZE CITY HALL, PASS THREE RESOLUTIONS BEFORE LUNCH',
@@ -530,6 +552,7 @@
     carrier: ['LAB UNMASKS A "CARRIER": LOOKED HEALTHY, WAS NOT'],
     chaos1: ['FIRES REPORTED ACROSS {d}; FIRE DEPARTMENT "A LITTLE BUSY"', 'SIRENS ALL NIGHT IN {d}; RESIDENTS STOCK UP ON EARPLUGS'],
     chaos2: ['{d} IN FLAMES; NEWS HELICOPTERS CIRCLE OVERHEAD', 'CHAOS IN {d}: CARS ABANDONED, STREETS ON FIRE'],
+    tanks: ['TANKS ROLL INTO MERCY FALLS; ZOMBIES, PARKED CARS EQUALLY CONCERNED'],
     hallHit: ['ZOMBIES POUNDING ON CITY HALL DOORS; MAYOR "WORKING FROM UNDER DESK"', 'COMMAND BUNKER UNDER ATTACK; STAFF BARRICADE BREAK ROOM'],
     mega: ['SUPER-SPREADER SIGHTED ON THE HIGHWAY; EXPERTS: "THAT IS A VERY LARGE BOY"', 'GIANT ZOMBIE INFECTS ENTIRE BIRTHDAY PARTY; CAKE UNHARMED'],
     rising: ['CASES RISING FAST; R-NUMBER ABOVE {r}', 'EXPERTS: "EACH CASE IS MAKING MORE THAN ONE NEW CASE. THAT IS BAD."'],
@@ -581,6 +604,7 @@
 
   /* Real-world notes per tower (shown in info panels and the report) */
   D.TOWER_REAL = {
+    heavy: 'Militaries can be useful in emergencies (logistics, field hospitals, security), but heavy weapons do nothing against an infection people carry without symptoms, and armed responses in neighborhoods erode the trust outbreak control depends on.',
     militia: 'Force can stop what it can see, but outbreaks spread through people who look healthy. Heavy-handed enforcement in real epidemics has often reduced cooperation and harmed communities that were already over-policed.',
     lab: 'Testing and contact tracing find infections before they spread further. They are the "eyes" of public health. Without them, officials are guessing.',
     clinic: 'Vaccines train the immune system before exposure. High coverage protects whole communities, including people who can\'t be vaccinated.',
@@ -623,6 +647,8 @@
     { when: function (r) { return r.peakR > 1.5; }, q: 'Your R_eff peaked around {peakR}. What does that number mean, and which of your actions brought it down (or failed to)?' },
     { when: function (r) { return r.towerCounts.barricade >= 4; }, q: 'You built {barricades} quarantine barricades. What is the difference between quarantine and isolation, and what did the barricades cost the city?' },
     { when: function (r) { return r.towerCounts.chw === 0; }, q: 'You never deployed Community Health Workers. How might trusted local messengers have changed uptake in Eastside Flats or Rustwater Port?' },
+    { when: function (r) { return r.ending === 'nuked'; }, q: 'You chose the nuclear option. Was there an earlier point when a less harmful measure could have worked? Use proportionality and justice to explain.' },
+    { when: function (r) { return r.tankKills >= 20; }, q: 'Tanks destroyed {tankKills} zombies, but the outbreak kept going. Why couldn\'t military force stop it? What was spreading where the tanks couldn\'t see?' },
     { when: function (r) { return r.hallPct < 60; }, q: 'City Hall dropped to {hallPct}% integrity. Why does a public health response need protected infrastructure and coordination (Essential Service 10)? What happens when it breaks down?' },
     { when: function (r) { return r.megaInf >= 15; }, q: 'Super-Spreaders caused {megaInf} infections in your city. In real outbreaks, what kinds of places and events lead to super-spreading, and how can public health reduce them?' },
     { when: function (r) { return r.ruined >= 10; }, q: '{ruined} buildings were completely overrun. Which neighborhoods were they in, and what could have protected them earlier?' },
