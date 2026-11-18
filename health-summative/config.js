@@ -37,8 +37,8 @@ export default {
      attemptCredit[0] = share of the points earned if right on attempt 1, etc.
      A question not solved after the last attempt earns 0 (the answer and
      explanation are then shown). */
-  maxAttempts: 3,
-  attemptCredit: [1.0, 0.9, 0.75],
+  maxAttempts: 2,
+  attemptCredit: [1.0, 0.5],      // right on try 1 = 100%, right on try 2 = 50%. (It was [1.0, 0.9, 0.75] with 3 tries.)
 
   /* Points per item. Most items are worth 1. Items with several parts
      (sorting 6 cards, ordering steps...) are worth more so they count for more.

@@ -4,14 +4,13 @@ Everything below is implemented in `js/engine/scoring.js` and `js/engine/grade.j
 
 ## 1. Attempts and credit
 
-Every question allows **3 attempts** (`maxAttempts` in `config.js`). Credit depends on the attempt on which the student gets it right (`attemptCredit` in `config.js`):
+Every question allows **2 attempts** (`maxAttempts` in `config.js`). Credit depends on the attempt on which the student gets it right (`attemptCredit` in `config.js`):
 
 | Solved on | Share of the points |
 |---|---|
 | Attempt 1 | **100%** |
-| Attempt 2 | **90%** |
-| Attempt 3 | **75%** |
-| Not solved after attempt 3 | **0%** for the unsolved part. The correct answer and the explanation are then shown. |
+| Attempt 2 | **50%** |
+| Not solved after attempt 2 | **0%** for the unsolved part. The correct answer and the explanation are then shown. |
 
 After a **wrong** attempt the student sees a *hint* (a misconception-specific hint for the option they chose, if one is written; otherwise the question's general hint), never the answer. After a **correct** answer they see a short "why" tied to the lesson.
 
@@ -42,10 +41,10 @@ Worked examples (a 4-card sort worth 2 points):
 | What happens | Score |
 |---|---|
 | All 4 right on attempt 1 | 2 × 1 × 1.00 = **2.00** |
-| 3 of 4 right on attempt 1, then all right on attempt 2 | max(2 × 0.75 × 1.00 = 1.50, 2 × 1 × 0.90 = 1.80) = **1.80** |
-| 2 of 4 on attempt 1, 3 of 4 on attempt 2, all right on attempt 3 | max(1.00, 1.35, 1.50) = **1.50** |
-| 3 of 4 right on every attempt, never finished | max(1.50, 1.35, 1.125) = **1.50** |
-| Select-all with 4 right options: picks 3 right + 1 wrong on attempt 1 | fraction (3 − 1) ÷ 4 = 0.5 → 2 × 0.5 = **1.00** (then fixes it on attempt 2 → **1.80**) |
+| 3 of 4 right on attempt 1, then all right on attempt 2 | max(2 × 0.75 × 1.00 = 1.50, 2 × 1 × 0.50 = 1.00) = **1.50** (the better first try is kept) |
+| 2 of 4 on attempt 1, then all right on attempt 2 | max(2 × 0.50 × 1.00 = 1.00, 2 × 1 × 0.50 = 1.00) = **1.00** |
+| 3 of 4 right on both attempts, never finished | max(1.50, 2 × 0.75 × 0.50 = 0.75) = **1.50** |
+| Select-all with 4 right options: picks 3 right + 1 wrong on attempt 1 | fraction (3 − 1) ÷ 4 = 0.5 → 2 × 0.5 = **1.00** (then fixes it on attempt 2 → still **1.00**, because the first try already earned that much) |
 
 ## 3b. Unscored checkpoints
 
