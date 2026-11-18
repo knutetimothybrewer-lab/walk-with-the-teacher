@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Outbreak City: A Public Health Tower Defense</title>
+<meta name="description" content="A satirical zombie-outbreak tower defense game where every mechanic is a real public health concept. Runs offline, no accounts.">
+<link rel="stylesheet" href="style.css">
+<style>
+  html, body { margin: 0; height: 100%; background: #0f1a24; overflow: hidden; }
+  #app { position: fixed; inset: 0; }
+  .oc-noscript { color: #fff; font: 16px system-ui, sans-serif; padding: 24px; }
+</style>
+</head>
+<body>
+<div id="app"></div>
+<noscript><p class="oc-noscript">Outbreak City needs JavaScript. Please turn it on, or ask your teacher.</p></noscript>
+<!-- Plain scripts (no modules) so the game also works when opened straight from a file. -->
+<script src="js/config.js" charset="utf-8"></script>
+<script src="js/content.js" charset="utf-8"></script>
+<script src="js/core.js" charset="utf-8"></script>
+<script src="js/city.js" charset="utf-8"></script>
+<script src="js/sim.js" charset="utf-8"></script>
+<script src="js/render.js" charset="utf-8"></script>
+<script src="js/audio.js" charset="utf-8"></script>
+<script src="js/ui.js" charset="utf-8"></script>
+<script src="js/app.js" charset="utf-8"></script>
+<script>
+  (function () {
+    // URL options: ?seed=ABC123&diff=easy|normal|hard&mode=quick
+    var q = {};
+    try { new URLSearchParams(location.search).forEach(function (v, k) { q[k] = v; }); } catch (e) {}
+    if (q.teacher === 'reset') { try { localStorage.removeItem('outbreakCity.v1'); } catch (e) {} }
+    OutbreakCity.mount(document.getElementById('app'), {
+      seed: q.seed || null,
+      difficulty: q.diff || q.difficulty || 'normal',
+      quick: q.mode === 'quick'
+    });
+  })();
+</script>
+</body>
+</html>
