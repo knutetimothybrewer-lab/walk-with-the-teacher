@@ -349,6 +349,8 @@
   A.onTap = function (sx, sy) {
     var g = this.game; if (!g || g.attract || this.modalOpen) return;
     var w = this.renderer.screenToWorld(sx, sy), tx = Math.floor(w.x), ty = Math.floor(w.y);
+    var hi = this.renderer.hallIndicator;
+    if (hi && Math.hypot(sx - hi.x, sy - hi.y) < 50) { this.goToHall(); return; }
     if (this.ui.placeType) { this.tryPlace(this.ui.placeType, tx, ty); this.updateHover(sx, sy); return; }
     var sel = this.ui.selected;
     if (sel && sel.type === 'chw' && (this.ui.moveTeam || this.isRoad(tx, ty)) && !this.pickTower(sx, sy)) { this.doMove(sel, tx, ty); return; }
@@ -420,6 +422,7 @@
     if (this.mouse) this.updateHover(this.mouse.x, this.mouse.y);
     this.updateHud(true); this.updateSelPanel(true);
   };
+  A.goToHall = function () { var g = this.game; if (!g || g.attract) return; var b = g.blds[g.hallId]; this.renderer.focus(b.cx, b.cy, Math.max(this.renderer.cam.tz, 1.1)); this.sfx.play('click'); };
   A.togglePause = function () { this.paused = !this.paused; this.updateHud(true); };
   A.cycleSpeed = function () { this.speed = this.speed >= 3 ? 1 : this.speed + 1; this.updateHud(true); };
   A.toggleLens = function () { this.ui.lens = !this.ui.lens; this.updateHud(true); if (this.ui.lens) this.toast('Data lens: district colors, tower coverage and green immunity bars (share vaccinated or recovered).', 'good'); };

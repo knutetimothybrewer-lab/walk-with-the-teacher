@@ -788,7 +788,18 @@
         this.burst(e.x, e.y, 10, { colors: ['#FF6A1F', '#FFD24A', '#B3160B'], speed: 26, up: 70, max: 0.9, kind: 'spark', size: 3, g: 40 });
         this.burst(e.x, e.y, 6, { colors: ['#4A2C1E', '#6E4A33'], speed: 30, up: 50, max: 0.7, size: 2.4 });
         break;
-      case 'hallHit': this.hallFlash = this.time; this.bShake[this.game.hallId] = this.time; if (Math.random() < 0.4) this.text(e.x, e.y - 1, '-' + 'CITY HALL', '#FF8A5C'); break;
+      case 'hallHit': {
+        this.hallFlash = this.time; this.hallAttackT = this.time; this.bShake[this.game.hallId] = this.time; this.bang[e.zid] = this.time;
+        var hs = this.hallSpot(e.zid) || { x: e.x, y: e.y };
+        // sparks and debris where the zombie strikes the wall, plus a damage number
+        this.burst(hs.x, hs.y, e.mega ? 22 : 10, { colors: ['#FFD24A', '#FF6A1F', '#FFFFFF'], speed: 40, up: 60, max: 0.5, kind: 'spark', size: 3, z: 14 });
+        this.burst(hs.x, hs.y, e.mega ? 12 : 6, { colors: ['#CFC9BC', '#8A7D70', '#5FA8A0'], speed: 34, up: 70, max: 0.9, size: 2.6, z: 18 });
+        this.text(hs.x, hs.y, '-' + e.dmg, '#FF5A3C', e.mega);
+        if (this.time - this.lastBang > 0.35) { this.lastBang = this.time; this.text(e.x - 0.3, e.y - 0.6, e.mega ? 'SMASH!' : 'BANG!', '#FFD08A', true); }
+        this.ring(e.x, e.y, 1.7, 'rgba(255,70,40,0.9)', 0.5, 3);
+        this.addShake(e.mega ? 5 : 1.6);
+        break;
+      }
       case 'megaArrive': this.ring(e.x, e.y, 2.2, 'rgba(183,227,74,0.9)', 1.4, 4); this.addShake(7); break;
       case 'ruin': this.burst(e.x, e.y, 16, { colors: ['#6B6B6B', '#3E3E3E', '#8BC34A'], speed: 26, up: 50, max: 1.4, kind: 'smoke', size: 5, g: -12, z: 20 }); this.text(e.x, e.y, 'OVERRUN', '#B7E34A', true); this.addShake(2); break;
       case 'waveStart': this.addShake(2); break;
@@ -1058,6 +1069,74 @@
     }
   };
 
+
+  // Where a zombie attacking City Hall stands: spread around the two walls that face the
+  // viewer so a crowd is visible. Eases in from the door during the first half second.
+  R.hallSpot = function (zid, a, ax, ay) {
+    var g = this.game, b = g.blds[g.hallId];
+    if (!b) return null;
+    var h = hash2(zid, 77), side = h < 0.5, t = (h * 2) % 1 - 0.5;
+    var tx = b.cx + (side ? 0.62 : t * 0.9), ty = b.cy + (side ? t * 0.9 : 0.62);
+    if (!a) return { x: tx, y: ty };
+    var k = C.clamp((D.CONFIG.breachTime - a.breach) / 0.5, 0, 1);
+    return { x: ax + (tx - ax) * k, y: ay + (ty - ay) * k };
+  };
+
+  // City Hall shows its wounds: cracks under 75%, smoke under 50%, fire under 25%
+  R.drawHallDamage = function (ctx, x, y, cb, dt) {
+    var g = this.game, frac = g.hallHp / g.hallMax, h = this.bHeight(cb), a = HW * 0.9, bb = HH * 0.9;
+    if (frac >= 0.75) return;
+    ctx.save();
+    ctx.strokeStyle = 'rgba(40,28,20,0.85)'; ctx.lineWidth = 1.2;
+    var cracks = frac < 0.5 ? 5 : 3;
+    for (var i = 0; i < cracks; i++) {
+      var sx = -a + (i + 0.5) / cracks * 2 * a, sy = (sx < 0 ? (sx + a) / a * bb : bb - sx / a * bb) - h * (0.85 - i * 0.07);
+      ctx.beginPath(); ctx.moveTo(x + sx, y + sy); ctx.lineTo(x + sx + 3, y + sy + 7); ctx.lineTo(x + sx - 1, y + sy + 13); ctx.lineTo(x + sx + 2, y + sy + 20); ctx.stroke();
+    }
+    if (frac < 0.5 && !this.settings.lowFx && Math.random() < dt * (frac < 0.25 ? 10 : 4))
+      this.part(x + (Math.random() - 0.5) * 30, y - h - 6, { z: 0, vx: 6, vy: -3, vz: 16, g: -8, max: 2.6, kind: 'smoke', color: 'rgba(60,60,60,0.55)', size: 5 });
+    if (frac < 0.25) {
+      for (var f = 0; f < 3; f++) {
+        var fx = x - 16 + f * 16, fy = y - h - 2 + (f === 1 ? -6 : 0), fh = 12 + 6 * Math.sin(this.time * 14 + f * 2);
+        var fl = ctx.createLinearGradient(fx, fy, fx, fy - fh);
+        fl.addColorStop(0, 'rgba(255,160,40,0.95)'); fl.addColorStop(1, 'rgba(255,40,10,0)');
+        ctx.fillStyle = fl; ctx.beginPath(); ctx.moveTo(fx - 6, fy); ctx.quadraticCurveTo(fx - 2, fy - fh * 0.6, fx, fy - fh); ctx.quadraticCurveTo(fx + 2, fy - fh * 0.6, fx + 6, fy); ctx.closePath(); ctx.fill();
+      }
+    }
+    ctx.restore();
+  };
+
+  // Screen-space alert: red edge pulse when City Hall is hit, and an arrow if it is off screen
+  R.drawHallAlert = function (ctx) {
+    var g = this.game; this.hallIndicator = null;
+    if (!g || g.attract || g.hallId === undefined || g.phase === 'ended') return;
+    var since = this.hallAttackT === undefined ? 99 : this.time - this.hallAttackT;
+    if (since < 0.7 && !this.settings.reducedMotion) {
+      var al = (0.7 - since) / 0.7 * 0.5;
+      var vg = ctx.createRadialGradient(this.vw / 2, this.vh / 2, Math.min(this.vw, this.vh) * 0.42, this.vw / 2, this.vh / 2, Math.max(this.vw, this.vh) * 0.72);
+      vg.addColorStop(0, 'rgba(213,40,20,0)'); vg.addColorStop(1, 'rgba(213,40,20,' + al.toFixed(3) + ')');
+      ctx.fillStyle = vg; ctx.fillRect(0, 0, this.vw, this.vh);
+    }
+    if (since > 4) return;
+    var b = g.blds[g.hallId], sp = this.worldToScreen(b.cx, b.cy, 20), m = 60;
+    if (sp.x > m && sp.x < this.vw - m && sp.y > m + 40 && sp.y < this.vh - m - 60) return;
+    var cx = this.vw / 2, cy = this.vh / 2, dx = sp.x - cx, dy = sp.y - cy;
+    var k = Math.min((this.vw / 2 - m) / Math.abs(dx || 1), (this.vh / 2 - m - 50) / Math.abs(dy || 1));
+    var ix = cx + dx * k, iy = cy + dy * k, ang = Math.atan2(dy, dx), pul = 1 + 0.12 * Math.sin(this.time * 10);
+    ctx.save(); ctx.translate(ix, iy);
+    ctx.save(); ctx.rotate(ang); ctx.scale(pul, pul);
+    ctx.fillStyle = '#D5281A'; ctx.strokeStyle = '#FFFFFF'; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(22, 0); ctx.lineTo(-10, -15); ctx.lineTo(-4, 0); ctx.lineTo(-10, 15); ctx.closePath(); ctx.fill(); ctx.stroke();
+    ctx.restore();
+    ctx.font = '700 13px Oswald, system-ui, sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    var ty = iy > cy ? -30 : 30, lw = ctx.measureText('CITY HALL UNDER ATTACK').width / 2 + 8;
+    var lx = C.clamp(ix, lw, this.vw - lw) - ix; // keep the label fully on screen
+    ctx.lineWidth = 4; ctx.strokeStyle = 'rgba(0,0,0,0.8)'; ctx.strokeText('CITY HALL UNDER ATTACK', lx, ty);
+    ctx.fillStyle = '#FFB0A0'; ctx.fillText('CITY HALL UNDER ATTACK', lx, ty);
+    ctx.restore();
+    this.hallIndicator = { x: ix, y: iy };
+  };
+
   // City Hall: the command bunker the player must protect
   R.drawHallGround = function (ctx) {
     var g = this.game; if (g.attract || g.hallId === undefined) return;
@@ -1250,7 +1329,10 @@
     var ag = g.agents;
     for (i = 0; i < ag.length; i++) {
       var a = ag[i]; if (a.dead) continue;
-      var ax = a.px + (a.x - a.px) * alpha, ay = a.py + (a.y - a.py) * alpha, ap = iso(ax, ay);
+      var ax = a.px + (a.x - a.px) * alpha, ay = a.py + (a.y - a.py) * alpha;
+      var hsp = a.kind === 1 && a.breach > 0 && a.dest === g.hallId ? this.hallSpot(a.id, a, ax, ay) : null;
+      if (hsp) { ax = hsp.x; ay = hsp.y; }
+      var ap = iso(ax, ay);
       if (!inView(ap.x, ap.y, -30)) continue;
       d = this.getDraw(); d.k = 3; d.d = ax + ay; d.o = a; d.x = ap.x; d.y = ap.y;
     }
@@ -1279,6 +1361,7 @@
         // One sprite per building per frame (a day/night cross-fade doubled the cost).
         var bsk = this.bShake[d.o], jx = (bsk !== undefined && this.time - bsk < 0.35 && !st.reducedMotion) ? Math.sin(this.time * 70) * 1.3 : 0;
         this.blit(ctx, this.buildingSprite(cb2, nightOn, dmg), d.x + jx, d.y);
+        if (d.o === g.hallId) this.drawHallDamage(ctx, d.x + jx, d.y, cb2, dt);
         if (cb2.landmark === 'lighthouse' && night > 0.3 && !st.lowFx) this.drawBeam(ctx, d.x, d.y - this.bHeight(cb2) - 5, night);
       } else if (d.k === 1) {
         var ts = this.treeSprite(d.o.kind, d.o.v, nightOn), sc = d.o.s;
@@ -1357,6 +1440,7 @@
       ctx.fillStyle = vg; ctx.fillRect(0, 0, this.vw, this.vh);
     }
     this.drawWeather(ctx, dt * simSpeed);
+    this.drawHallAlert(ctx);
   };
 
   R.drawWater = function (ctx) {

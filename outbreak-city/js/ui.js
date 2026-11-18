@@ -52,6 +52,9 @@
       self.meters[key] = { el: m, val: m.querySelector('.val'), bar: m.querySelector('.oc-bar i'), last: '' };
     };
     mk('hall', 'City Hall', true);
+    this.meters.hall.el.style.cursor = 'pointer'; this.meters.hall.el.setAttribute('role', 'button');
+    this.meters.hall.el.addEventListener('click', function () { self.goToHall(); });
+    this.meters.hall.el.addEventListener('keydown', function (e) { if (e.key === 'Enter') self.goToHall(); });
     mk('budget', 'Budget'); mk('vaccines', 'Vaccines'); mk('beds', 'Beds');
     mk('trust', 'Trust', true); mk('panic', 'Panic', true); mk('equity', 'Equity', true);
     top.appendChild(el('div', 'oc-spacer'));

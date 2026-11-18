@@ -544,7 +544,7 @@
             if (bb.id === this.hallId && this.phase === 'wave') {
               this.hallHp = Math.max(0, this.hallHp - (CFG.hallDamage[a.type] || 1));
               this.hallHitT = this.t; this.panic = Math.min(100, this.panic + 0.6);
-              this.emit({ k: 'hallHit', x: bb.cx, y: bb.cy, hp: this.hallHp, max: this.hallMax });
+              this.emit({ k: 'hallHit', x: bb.cx, y: bb.cy, hp: this.hallHp, max: this.hallMax, dmg: CFG.hallDamage[a.type] || 1, zx: a.x, zy: a.y, zid: a.id, mega: !!z.boss });
               this.news('hallHit', null, true);
               if (this.hallHp <= 0) { this.finish('hall'); return; }
             }
