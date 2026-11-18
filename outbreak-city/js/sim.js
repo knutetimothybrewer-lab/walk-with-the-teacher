@@ -93,6 +93,12 @@
     this.totals = {};
     this.newsFlags = {};
 
+    // Command Bunker: City Hall in the middle of the city
+    var hall = city.buildings.filter(function (b) { return b.landmark === 'hall'; })[0];
+    if (!hall) { var c1 = city.centers[1], bd = 1e9; city.buildings.forEach(function (b) { var d2 = Math.abs(b.x - c1[0]) + Math.abs(b.y - c1[1]); if (d2 < bd) { bd = d2; hall = b; } }); }
+    this.hallId = hall.id;
+    this.hallMax = Math.round(CFG.hallHp * (diff.hall || 1)); this.hallHp = this.hallMax; this.hallHitT = -99;
+
     // Pre-plan every wave from the seed so a whole class sees identical arrivals
     this.planWaves();
     // Pre-shuffle the briefing deck (identical order for everyone on this seed)
@@ -193,7 +199,7 @@
     return { id: this.nextId++, kind: 0, st: S, known: false, inc: 0, x: 0, y: 0, px: 0, py: 0, path: null, pi: 0, endTile: -1, endFrac: 1,
       dest: -1, home: 0, flee: 0, dirx: 1, diry: 0, dead: false, isolating: false,
       type: null, hp: 0, maxhp: 0, age: 0, life: 0, biteCd: 0, breach: 0, biteT: 0, bitesLeft: 0, offspring: 0,
-      revealed: false, roadTile: -1, lastBld: -1, zdef: null, hitT: -9, outsider: false };
+      revealed: false, roadTile: -1, lastBld: -1, zdef: null, hitT: -9, outsider: false, emerge: 0 };
   };
 
   G.spawnWalker = function (st, x, y, path, destBld, known, inc, home) {
@@ -477,7 +483,10 @@
     var rng = this.rng, blds = this.blds, W = this.W, best = null, bs = -1;
     var rx = a.roadTile % W, ry = (a.roadTile / W) | 0;
     var lure = this.findLure(a);
-    if (lure && lure.nearBld >= 0 && lure.nearBld !== a.lastBld && rng.next() < 0.7) best = blds[lure.nearBld];
+    var pull = a.hallDone ? 0 : (a.outsider ? CFG.hallOutsiderPull : CFG.hallResidentPull);
+    if (a.hallPull === undefined) a.hallPull = rng.next() < pull; // decided once per zombie
+    if (a.hallPull && !a.hallDone && this.attract !== true) best = blds[this.hallId];
+    else if (lure && lure.nearBld >= 0 && lure.nearBld !== a.lastBld && rng.next() < 0.7) best = blds[lure.nearBld];
     else {
       for (var i = 0; i < 12; i++) {
         var b = blds[rng.int(blds.length)];
@@ -521,6 +530,7 @@
         }
         if (this.moveAgent(a, walkSpeed * (a.flee > 0 ? CFG.fleeSpeedMult : 1))) this.arrive(a);
       } else {
+        if (a.emerge > 0) { a.emerge -= DT; continue; } // still clawing out of the ground
         a.age += DT;
         if (a.age >= a.life) { this.stats.decays++; this.emit({ k: 'decay', x: a.x, y: a.y, z: a.type, face: (a.dirx - a.diry) < 0 ? -1 : 1 }); this.killZombie(a, 'decay'); continue; }
         if (a.biteCd > 0) a.biteCd -= DT;
@@ -531,9 +541,16 @@
             a.bitesLeft--; a.biteT = CFG.breachTime / (z.bites + 0.5);
             var bb = this.blds[a.dest];
             if (this.biteBuilding(bb)) { a.offspring++; if (z.boss) this.stats.megaInf++; }
+            if (bb.id === this.hallId && this.phase === 'wave') {
+              this.hallHp = Math.max(0, this.hallHp - (CFG.hallDamage[a.type] || 1));
+              this.hallHitT = this.t; this.panic = Math.min(100, this.panic + 0.6);
+              this.emit({ k: 'hallHit', x: bb.cx, y: bb.cy, hp: this.hallHp, max: this.hallMax });
+              this.news('hallHit', null, true);
+              if (this.hallHp <= 0) { this.finish('hall'); return; }
+            }
             this.emit({ k: 'breach', x: a.x, y: a.y, b: bb.id, zid: a.id, quiet: z.stealth && !a.revealed });
           }
-          if (a.breach <= 0) { a.lastBld = a.dest; a.roadTile = a.path && a.path.length ? a.path[a.path.length - 1] : a.roadTile; this.retarget(a); }
+          if (a.breach <= 0) { if (a.dest === this.hallId) a.hallDone = true; a.lastBld = a.dest; a.roadTile = a.path && a.path.length ? a.path[a.path.length - 1] : a.roadTile; this.retarget(a); }
           continue;
         }
         var tile = this.tileOf(a.x, a.y), sp = z.speed;
@@ -1088,7 +1105,9 @@
         } else { dst.E++; this.stats.imports++; }
       } else if (this.nZombies < CFG.maxZombies + 10) {
         var oz = this.spawnZombie(s.type, ex, ey, s.entry, 0, -1);
-        oz.outsider = true;
+        oz.outsider = true; oz.hallPull = undefined; this.retarget(oz); // arrivals march on City Hall more often
+        oz.emerge = CFG.emergeTime; // climbing out of a hell hole
+        this.holeT = this.holeT || {}; this.holeT[s.entry] = this.t;
         if (oz.zdef.boss) { this.stats.megas++; this.news('mega', null, true); this.emit({ k: 'megaArrive', x: ex, y: ey }); }
         this.stats.imports++;
         this.emit({ k: 'arrive', x: ex, y: ey, type: s.type });
@@ -1145,6 +1164,7 @@
     var grant = Math.round(CFG.waveGrant * this.diff.grant * qb * (this.flags.honest ? 1.1 : 1));
     var doses = Math.round(CFG.waveVaccines * this.diff.vaccines * qb);
     this.budget += grant; this.vaccines += doses;
+    this.hallHp = Math.min(this.hallMax, this.hallHp + Math.round(this.hallMax * CFG.hallRepair));
     var ws = this.waveStartStats || { deaths: 0, infections: 0 };
     this.waveSummary = { wave: this.wave, grant: grant, doses: doses, deaths: this.stats.deaths - ws.deaths, infections: this.stats.infections - ws.infections };
     this.stats.maxDeathsWave = Math.max(this.stats.maxDeathsWave, this.waveSummary.deaths);
@@ -1238,6 +1258,7 @@
     var t = this.totals, surv = this.survival(), active = t.active;
     var auth = this.counters.auth + this.countTowers('militia') * 0.35 + Math.max(0, this.countTowers('barricade') - 3) * 0.3;
     this.authScore = auth;
+    if (this.endReason === 'hall') return 'hallFallen';
     if (this.endReason === 'collapse' || surv < 0.55 || active > 0.12 * this.totalPop) return 'collapse';
     if (this.counters.spin >= 2 && this.trust < 25) return 'zombieMayor';
     var clear = Math.max(3, Math.round(0.003 * this.totalPop));
@@ -1266,7 +1287,7 @@
       detectionRate: detectionRate, detectionPct: Math.round(detectionRate * 100),
       vaxCoverage: st.vaccinated / this.totalPop, vaxPct: Math.round(100 * st.vaccinated / this.totalPop),
       towerCounts: tc, barricades: tc.barricade, spin: this.counters.spin, auth: Math.round(this.counters.auth * 10) / 10, flags: this.flags,
-      megas: st.megas, megaInf: st.megaInf, overrun: this.blds.filter(function (b) { return b.blight >= 2; }).length, ruined: this.blds.filter(function (b) { return b.blight >= 3; }).length,
+      hallPct: Math.round(100 * this.hallHp / this.hallMax), megas: st.megas, megaInf: st.megaInf, overrun: this.blds.filter(function (b) { return b.blight >= 2; }).length, ruined: this.blds.filter(function (b) { return b.blight >= 3; }).length,
       overflowSeconds: Math.round(st.overflowSeconds), worstDistrict: D.DISTRICTS[worst].name, wave: this.wave, totalWaves: this.totalWaves,
       budget: Math.round(this.budget), vaccines: Math.round(this.vaccines), decisions: this.decisions, active: t.active, t: Math.round(this.t)
     };

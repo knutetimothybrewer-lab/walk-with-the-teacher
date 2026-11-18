@@ -4,7 +4,7 @@ A satirical zombie-outbreak tower defense game for high school community health 
 
 - A static site with no server, build step, accounts, trackers, CDNs, images, fonts or audio files. Everything is drawn and synthesized in the browser.
 - Runs from GitHub Pages or by double-clicking `index.html`.
-- About 340 KB in total (the limit is 1 MB).
+- About 489 KB in total, including three embedded open-license fonts (the limit is 1 MB).
 - A full game is 9 waves and takes about 25–40 minutes. A quick game is 6 waves and takes about 15 minutes.
 
 ## Run it locally
@@ -127,6 +127,7 @@ How the game sends results:
 | `js/sim.js` | The deterministic simulation: infection model, agents, towers, meters, waves, endings and report data |
 | `js/render.js` | Isometric renderer, sprites, effects, ending illustrations |
 | `js/ui.js`, `js/app.js`, `style.css` | HUD, screens, input, save/resume, teacher logging |
+| `fonts.css`, `FONTS-LICENSE.txt` | Embedded fonts (Bangers, Oswald, Atkinson Hyperlegible; SIL Open Font License) |
 
 The format for events and effects is documented at the top of `content.js`. Effects can be immediate or delayed (the `later:` key), and decisions can set flags that change the ending.
 
@@ -135,6 +136,7 @@ The format for events and effects is documented at the top of `content.js`. Effe
 The whole game is one namespace (`window.OutbreakCity`) with one entry point:
 
 ```html
+<link rel="stylesheet" href="outbreak-city/fonts.css">
 <link rel="stylesheet" href="outbreak-city/style.css">
 <!-- load js/config.js, content.js, core.js, city.js, sim.js, render.js, audio.js, ui.js, app.js in that order -->
 <div id="activity" style="position:relative;width:100%;height:80vh"></div>
@@ -172,6 +174,7 @@ All CSS is scoped under `.oc-root`, saved data uses one `localStorage` key (`out
 | After-Action Report checklist | The 10 Essential Public Health Services |
 
 **Endings** are computed from the final state:
+- **City Hall Has Fallen:** zombies broke into the command bunker.
 - **Collapse:** fewer than 55% survive or the outbreak is out of control.
 - **Hollow Victory:** survived, but trust is near zero or the response was coercive.
 - **Two-Tier City:** survived, but equity collapsed.

@@ -314,7 +314,7 @@
     var fl = cb.floors;
     switch (cb.landmark || cb.style) {
       case 'lighthouse': return 72;
-      case 'hall': return 30;
+      case 'hall': return 40;
       case 'mansion': case 'club': return 12 + fl * 9;
       case 'tower': return fl * 11 + 4;
       case 'brick': case 'center': return fl * 10 + 3;
@@ -452,7 +452,7 @@
         ctx.fillStyle = '#56B4E9'; ctx.fillRect(0, -h - 22, 7, 4);
       } else if (lm === 'mall') {
         ctx.fillStyle = sh('#0072B2', 1); ctx.fillRect(-16, -h - 14, 32, 10);
-        ctx.fillStyle = '#FFF'; ctx.font = 'bold 7px sans-serif'; ctx.textAlign = 'center'; ctx.fillText('MALL', 0, -h - 6.5);
+        ctx.fillStyle = '#FFF'; ctx.font = '700 7px Oswald, sans-serif'; ctx.textAlign = 'center'; ctx.fillText('MALL', 0, -h - 6.5);
       } else if (st === 'tower') {
         drawBox(a * 0.2, -h - 1, 4, 2, 3, '#9AA3AD');
         if (cb.floors >= 6) { ctx.strokeStyle = sh('#555', 1); ctx.lineWidth = 0.8; ctx.beginPath(); ctx.moveTo(-3, -h - 2); ctx.lineTo(-3, -h - 14); ctx.stroke(); ctx.fillStyle = '#D55E00'; ctx.fillRect(-4, -h - 15, 2, 2); }
@@ -783,7 +783,12 @@
       case 'barricadeBreak': this.burst(e.x, e.y, 18, { colors: ['#F0E442', '#333333', '#8A6A44'], speed: 40, up: 70, max: 0.9, size: 3 }); this.addShake(4); break;
       case 'build': this.ring(e.x, e.y, 0.9, 'rgba(255,255,255,0.8)', 0.5, 3); this.burst(e.x, e.y, 12, { colors: ['#E8DCC0', '#FFFFFF'], speed: 30, up: 30, max: 0.6, kind: 'smoke', size: 3 }); break;
       case 'upgrade': this.burst(e.x, e.y, 14, { colors: ['#F0E442', '#FFFFFF'], speed: 30, up: 80, max: 0.9, kind: 'star', size: 3, z: 20 }); this.text(e.x, e.y, 'Upgraded!', '#F0E442'); break;
-      case 'arrive': if (Math.random() < 0.5) this.ring(e.x, e.y, 0.8, 'rgba(213,94,0,0.8)', 0.6, 2); break;
+      case 'arrive':
+        this.ring(e.x, e.y, 1.1, 'rgba(255,90,31,0.9)', 0.7, 3);
+        this.burst(e.x, e.y, 10, { colors: ['#FF6A1F', '#FFD24A', '#B3160B'], speed: 26, up: 70, max: 0.9, kind: 'spark', size: 3, g: 40 });
+        this.burst(e.x, e.y, 6, { colors: ['#4A2C1E', '#6E4A33'], speed: 30, up: 50, max: 0.7, size: 2.4 });
+        break;
+      case 'hallHit': this.hallFlash = this.time; this.bShake[this.game.hallId] = this.time; if (Math.random() < 0.4) this.text(e.x, e.y - 1, '-' + 'CITY HALL', '#FF8A5C'); break;
       case 'megaArrive': this.ring(e.x, e.y, 2.2, 'rgba(183,227,74,0.9)', 1.4, 4); this.addShake(7); break;
       case 'ruin': this.burst(e.x, e.y, 16, { colors: ['#6B6B6B', '#3E3E3E', '#8BC34A'], speed: 26, up: 50, max: 1.4, kind: 'smoke', size: 5, g: -12, z: 20 }); this.text(e.x, e.y, 'OVERRUN', '#B7E34A', true); this.addShake(2); break;
       case 'waveStart': this.addShake(2); break;
@@ -998,6 +1003,91 @@
     }
   };
 
+
+  // Hell holes: zombies from outside claw their way up out of these
+  R.drawHoles = function (ctx, dt) {
+    var g = this.game, W = this.W, st = this.settings, t = this.time;
+    if (!g.plans || g.attract) return;
+    var cur = g.phase === 'build' ? g.wave : g.wave - 1, open = {}, forming = {};
+    for (var w = 0; w <= Math.min(cur, g.plans.length - 1); w++) g.plans[w].entries.forEach(function (e) { if (w < cur || g.phase !== 'build') open[e] = 1; else forming[e] = 1; });
+    var keys = Object.keys(open).concat(Object.keys(forming).filter(function (k) { return !open[k]; }));
+    for (var i = 0; i < keys.length; i++) {
+      var e = +keys[i], ex = e % W + 0.5, ey = ((e / W) | 0) + 0.5, p = iso(ex, ey), isOpen = !!open[e];
+      var active = g.holeT && g.holeT[e] !== undefined && g.t - g.holeT[e] < 3;
+      var flick = 0.85 + 0.15 * Math.sin(t * 9 + e) * Math.sin(t * 5.3 + e * 2);
+      var seed = e * 7;
+      // scorched ground
+      ctx.fillStyle = 'rgba(25,8,4,' + (isOpen ? 0.6 : 0.35) + ')'; ellipse(ctx, p.x, p.y, 34, 17); ctx.fill();
+      // glowing cracks radiating out
+      for (var c = 0; c < 8; c++) {
+        var ang = c / 8 * Math.PI * 2 + hash2(seed, c) * 0.5, len = (isOpen ? 26 : 18) + hash2(c, seed) * 14;
+        ctx.beginPath(); ctx.moveTo(p.x + Math.cos(ang) * 12, p.y + Math.sin(ang) * 6);
+        var mx = p.x + Math.cos(ang + 0.25) * len * 0.6, my = p.y + Math.sin(ang + 0.25) * len * 0.3;
+        ctx.lineTo(mx, my); ctx.lineTo(p.x + Math.cos(ang) * len, p.y + Math.sin(ang) * len * 0.5);
+        ctx.strokeStyle = 'rgba(255,106,31,' + ((isOpen ? 0.75 : 0.35 + 0.3 * Math.sin(t * 4)) * flick).toFixed(2) + ')'; ctx.lineWidth = 2.6; ctx.stroke();
+        ctx.strokeStyle = 'rgba(30,6,2,0.9)'; ctx.lineWidth = 0.9; ctx.stroke();
+      }
+      if (!isOpen) continue;
+      // the pit: fire far below
+      var gr = ctx.createRadialGradient(p.x, p.y + 1, 1, p.x, p.y, 20);
+      gr.addColorStop(0, 'rgba(255,236,140,' + flick.toFixed(2) + ')'); gr.addColorStop(0.3, '#FF6A1F'); gr.addColorStop(0.65, '#9E1208'); gr.addColorStop(1, '#140202');
+      ctx.fillStyle = gr; ellipse(ctx, p.x, p.y, 19, 9.5); ctx.fill();
+      // back wall of the pit (gives it depth)
+      ctx.fillStyle = 'rgba(10,2,1,0.85)'; ctx.beginPath(); ctx.ellipse(p.x, p.y - 2, 19, 7.5, 0, Math.PI, 0); ctx.ellipse(p.x, p.y + 1, 17, 5.5, 0, 0, Math.PI, true); ctx.fill();
+      // jagged rocky rim
+      for (var r = 0; r < 14; r++) {
+        var ra = r / 14 * Math.PI * 2, rx = p.x + Math.cos(ra) * 20, ry = p.y + Math.sin(ra) * 10, rs = 2.5 + hash2(seed + r, r) * 3;
+        ctx.fillStyle = r % 2 ? '#2B1A12' : '#3D2618';
+        ctx.beginPath(); ctx.moveTo(rx - rs, ry + 1); ctx.lineTo(rx - rs * 0.3, ry - rs * 1.3); ctx.lineTo(rx + rs, ry); ctx.closePath(); ctx.fill();
+      }
+      // glow and flames
+      ctx.save(); ctx.globalCompositeOperation = 'lighter';
+      var glowR = active ? 46 : 30;
+      var gl = ctx.createRadialGradient(p.x, p.y, 2, p.x, p.y, glowR);
+      gl.addColorStop(0, 'rgba(255,120,40,' + ((active ? 0.55 : 0.3) * flick).toFixed(2) + ')'); gl.addColorStop(1, 'rgba(255,60,20,0)');
+      ctx.fillStyle = gl; ellipse(ctx, p.x, p.y, glowR, glowR * 0.6); ctx.fill();
+      if (active) {
+        var fh = 40 + 14 * Math.sin(t * 13 + e);
+        var fl = ctx.createLinearGradient(p.x, p.y, p.x, p.y - fh);
+        fl.addColorStop(0, 'rgba(255,170,60,0.55)'); fl.addColorStop(1, 'rgba(255,40,10,0)');
+        ctx.fillStyle = fl; ctx.beginPath(); ctx.moveTo(p.x - 12, p.y); ctx.quadraticCurveTo(p.x - 4, p.y - fh * 0.6, p.x, p.y - fh); ctx.quadraticCurveTo(p.x + 4, p.y - fh * 0.6, p.x + 12, p.y); ctx.closePath(); ctx.fill();
+      }
+      ctx.restore();
+      // embers drifting up
+      if (!st.lowFx && Math.random() < dt * (active ? 18 : 4)) this.part(p.x + (Math.random() - 0.5) * 22, p.y, { z: 2, vx: (Math.random() - 0.5) * 8, vy: 0, vz: 25 + Math.random() * 25, g: -4, max: 1.4, kind: 'spark', color: Math.random() < 0.5 ? '#FFB347' : '#FF5A1F', size: 2 });
+    }
+  };
+
+  // City Hall: the command bunker the player must protect
+  R.drawHallGround = function (ctx) {
+    var g = this.game; if (g.attract || g.hallId === undefined) return;
+    var b = g.blds[g.hallId], p = iso(b.cx, b.cy), t = this.time, frac = g.hallHp / g.hallMax;
+    var hit = this.hallFlash !== undefined && t - this.hallFlash < 0.4;
+    // sandbag ring
+    for (var i = 0; i < 18; i++) {
+      var a = i / 18 * Math.PI * 2, sx = p.x + Math.cos(a) * 34, sy = p.y + Math.sin(a) * 17;
+      ctx.fillStyle = shade('#C8B48A', i % 2 ? 0.86 : 1, this.night > 0.5); ellipse(ctx, sx, sy, 6, 3.4); ctx.fill();
+    }
+    // protective ring: blue when healthy, orange/red as it weakens, flashing when hit
+    var col = hit ? '255,80,40' : frac > 0.5 ? '86,180,233' : frac > 0.25 ? '230,159,0' : '213,94,0';
+    var pul = 0.5 + 0.5 * Math.sin(t * 3);
+    ctx.strokeStyle = 'rgba(' + col + ',' + (0.55 + pul * 0.35).toFixed(2) + ')'; ctx.lineWidth = hit ? 4 : 2.5; ctx.setLineDash([10, 6]);
+    var e = ISO.ellipse(1.6 + pul * 0.08); ellipse(ctx, p.x, p.y, e.rx, e.ry); ctx.stroke(); ctx.setLineDash([]);
+  };
+  R.drawHallLabel = function (ctx) {
+    var g = this.game; if (g.attract || g.hallId === undefined) return;
+    var cb = g.city.buildings[g.hallId], p = iso(cb.x + 0.5, cb.y + 0.5), z = this.cam.zoom, s = 1 / Math.max(0.55, z);
+    var top = p.y - this.bHeight(cb) - 48 * s, frac = Math.max(0, g.hallHp / g.hallMax), w = 64 * s;
+    var hit = this.hallFlash !== undefined && this.time - this.hallFlash < 0.4;
+    ctx.textAlign = 'center'; ctx.textBaseline = 'bottom';
+    ctx.font = '700 ' + (11 * s).toFixed(1) + 'px Oswald, system-ui, sans-serif';
+    var label = g.phase === 'build' && g.wave === 0 ? 'DEFEND CITY HALL' : 'CITY HALL · COMMAND BUNKER';
+    ctx.lineWidth = 3 * s; ctx.strokeStyle = 'rgba(0,0,0,0.8)'; ctx.strokeText(label, p.x, top - 2 * s);
+    ctx.fillStyle = hit ? '#FF8A5C' : '#BFE6FF'; ctx.fillText(label, p.x, top - 2 * s);
+    ctx.fillStyle = 'rgba(0,0,0,0.7)'; ctx.fillRect(p.x - w / 2 - s, top, w + 2 * s, 7 * s);
+    ctx.fillStyle = frac > 0.5 ? '#56B4E9' : frac > 0.25 ? '#E69F00' : '#D55E00'; ctx.fillRect(p.x - w / 2, top + s, w * frac, 5 * s);
+  };
+
   // Downed zombies tip over and fade away (no gore)
   R.corpse = function (wx, wy, type, face, alpha) {
     for (var i = 0; i < this.corpses.length; i++) {
@@ -1121,6 +1211,8 @@
       ellipse(ctx, rg.x, rg.y, e.rx, e.ry); ctx.stroke(); ctx.globalAlpha = 1;
     }
 
+    this.drawHoles(ctx, dt);
+    this.drawHallGround(ctx);
     // blighted ground around overrun buildings
     var gb = g.blds;
     for (i = 0; i < gb.length; i++) {
@@ -1243,6 +1335,7 @@
 
     // badges over buildings
     this.drawBadges(ctx, ui);
+    this.drawHallLabel(ctx);
 
     // floating texts (constant screen size)
     var fs = Math.max(11, 12) / z;
@@ -1250,7 +1343,7 @@
       var tx = this.texts[i]; if (!tx.on) continue;
       var fa2 = 1 - tx.life / tx.max;
       ctx.globalAlpha = Math.min(1, fa2 * 2);
-      ctx.font = 'bold ' + (tx.big ? fs * 1.15 : fs).toFixed(1) + 'px system-ui, sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.font = ((tx.big ? fs * 1.35 : fs * 1.2)).toFixed(1) + "px Bangers, Impact, system-ui, sans-serif"; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
       ctx.lineWidth = 3 / z; ctx.strokeStyle = 'rgba(0,0,0,0.7)'; ctx.strokeText(tx.s, tx.x, tx.y);
       ctx.fillStyle = tx.color; ctx.fillText(tx.s, tx.x, tx.y);
     }
@@ -1331,8 +1424,17 @@
         }
         sway *= 2;
       }
+      var emerging = a.emerge > 0;
+      if (emerging) {
+        var ef = 1 - a.emerge / D.CONFIG.emergeTime; ef = 1 - (1 - ef) * (1 - ef);
+        zf = 2; sway = Math.sin(this.time * 18 + a.id) * 1.2;
+      }
       spr = this.zombieSprite(a.type === 'carrier' ? 'basic' : a.type, zf, face, night);
-      this.blit(ctx, spr, x + sway, y, zs);
+      if (emerging) {
+        ctx.save(); ctx.beginPath(); ctx.rect(x - 80, y - 260, 160, 260 + 2 * zs); ctx.clip();
+        this.blit(ctx, spr, x + sway, y + (1 - ef) * spr.ay * zs, zs);
+        ctx.restore();
+      } else this.blit(ctx, spr, x + sway, y, zs);
       if (g.t - a.hitT < 0.12) { ctx.fillStyle = 'rgba(255,255,255,0.65)'; ellipse(ctx, x + sway, y - 10 * zs, 5 * zs, 8 * zs); ctx.fill(); }
       if (a.type === 'carrier') {
         ctx.strokeStyle = '#CC79A7'; ctx.lineWidth = 1.5 * zs; ctx.setLineDash([3, 2]);
@@ -1343,7 +1445,7 @@
         var bw = 24 * zs, bt = y - 82 * zs;
         ctx.fillStyle = 'rgba(0,0,0,0.65)'; ctx.fillRect(x - bw - 1, bt - 1, bw * 2 + 2, 6);
         ctx.fillStyle = '#B7E34A'; ctx.fillRect(x - bw, bt, bw * 2 * Math.max(0, a.hp / a.maxhp), 4);
-        ctx.font = 'bold ' + (8 * zs).toFixed(1) + 'px system-ui, sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'bottom';
+        ctx.font = '700 ' + (8.5 * zs).toFixed(1) + 'px Oswald, system-ui, sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'bottom';
         ctx.lineWidth = 2.5; ctx.strokeStyle = 'rgba(0,0,0,0.8)'; ctx.strokeText('SUPER-SPREADER', x, bt - 2); ctx.fillStyle = '#D9F27A'; ctx.fillText('SUPER-SPREADER', x, bt - 2);
       } else if (g.t - a.hitT < 1.5 || a.type === 'brute') {
         var hw = (a.type === 'brute' ? 12 : 8) * zs, top = y - (a.type === 'brute' ? 36 : 26) * zs;
@@ -1395,7 +1497,7 @@
         ctx.fillStyle = 'rgba(213,94,0,' + (0.25 + pul * 0.35).toFixed(2) + ')'; diamond(ctx, ex, ey, 1); ctx.fill();
         ctx.strokeStyle = '#FFB27A'; ctx.lineWidth = 2; diamond(ctx, ex, ey, 1); ctx.stroke();
         if (g.phase === 'build') {
-          ctx.font = 'bold ' + (11 / self.cam.zoom).toFixed(1) + 'px system-ui, sans-serif'; ctx.textAlign = 'center';
+          ctx.font = '700 ' + (12 / self.cam.zoom).toFixed(1) + 'px Oswald, system-ui, sans-serif'; ctx.textAlign = 'center';
           ctx.lineWidth = 3 / self.cam.zoom; ctx.strokeStyle = 'rgba(0,0,0,0.75)'; ctx.strokeText('▼ INCOMING', p.x, p.y - 20 - pul * 4);
           ctx.fillStyle = '#FFB27A'; ctx.fillText('▼ INCOMING', p.x, p.y - 20 - pul * 4);
         }
@@ -1442,7 +1544,7 @@
     var showPop = this.settings.badges && z >= 1.25;
     var lens = ui && ui.lens;
     var fs = 10 / Math.max(0.6, z);
-    ctx.font = 'bold ' + fs.toFixed(1) + 'px system-ui, sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.font = '700 ' + fs.toFixed(1) + 'px Oswald, system-ui, sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
     var ww = !!g.flags.wastewater;
     for (var i = 0; i < cbs.length; i++) {
       var cb = cbs[i], b = g.blds[i];
@@ -1555,7 +1657,7 @@
       person(w * 0.35, ground + 40, 1.6, '#0072B2', false);
       person(w * 0.55, ground + 40, 1.6, '#6E5C7B', true);
       ctx.fillStyle = '#D55E00'; ctx.fillRect(w * 0.55 - 10, ground + 40 - 33 * 1.6, 20, 6); // a seasonal scarf
-      ctx.fillStyle = '#FFF'; ctx.font = 'bold ' + Math.round(h * 0.05) + 'px sans-serif'; ctx.textAlign = 'center';
+      ctx.fillStyle = '#FFF'; ctx.font = Math.round(h * 0.07) + 'px Bangers, Impact, sans-serif'; ctx.textAlign = 'center';
       ctx.fillText('ZOMBIE SEASON: GET YOUR BOOSTER', w * 0.5, h * 0.16);
     } else if (art === 'hollow') {
       for (i = 0; i < 4; i++) {
@@ -1569,12 +1671,23 @@
     } else if (art === 'twoTier') {
       ctx.fillStyle = '#777'; ctx.fillRect(w * 0.49, ground - h * 0.45, w * 0.02, h * 0.6);
       for (i = 0; i < 4; i++) person(w * (0.1 + i * 0.09), ground + 35, 1.3, '#CC79A7', false);
-      ctx.fillStyle = '#FFF'; ctx.font = 'bold ' + Math.round(h * 0.045) + 'px sans-serif'; ctx.textAlign = 'center'; ctx.fillText('GALA ✨', w * 0.25, h * 0.18); ctx.fillText('CLINIC: CLOSED', w * 0.75, h * 0.18);
+      ctx.fillStyle = '#FFF'; ctx.font = Math.round(h * 0.065) + 'px Bangers, Impact, sans-serif'; ctx.textAlign = 'center'; ctx.fillText('GALA ✨', w * 0.25, h * 0.18); ctx.fillText('CLINIC: CLOSED', w * 0.75, h * 0.18);
     } else if (art === 'collapse') {
       for (i = 0; i < 10; i++) person(w * (0.05 + i * 0.1), ground + 32 + (i % 3) * 8, 1.3, '#4A3F55', true);
       ctx.fillStyle = 'rgba(255,120,60,0.25)'; ctx.fillRect(0, 0, w, h);
       ctx.fillStyle = '#AAA'; ctx.fillRect(w * 0.7, h * 0.12, 50, 10); ctx.fillRect(w * 0.7 + 20, h * 0.1, 10, 4); // helicopter
       ctx.strokeStyle = '#AAA'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(w * 0.7 - 10 + Math.sin(t * 20) * 8, h * 0.09); ctx.lineTo(w * 0.7 + 60 - Math.sin(t * 20) * 8, h * 0.09); ctx.stroke();
+    } else if (art === 'hallFallen') {
+      // City Hall with zombies on the steps and a sock for a flag
+      var hx = w * 0.5, hb = ground;
+      ctx.fillStyle = '#E8E4DA'; ctx.fillRect(hx - 130, hb - 120, 260, 120);
+      ctx.fillStyle = '#CFC9BC'; for (i = 0; i < 6; i++) ctx.fillRect(hx - 115 + i * 45, hb - 110, 14, 110);
+      ctx.fillStyle = '#5FA8A0'; ctx.beginPath(); ctx.arc(hx, hb - 120, 60, Math.PI, 0); ctx.fill();
+      ctx.strokeStyle = '#444'; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(hx, hb - 180); ctx.lineTo(hx, hb - 230); ctx.stroke();
+      ctx.fillStyle = '#9EC28A'; ctx.beginPath(); ctx.moveTo(hx, hb - 230); ctx.lineTo(hx + 26, hb - 226); ctx.lineTo(hx + 30, hb - 214); ctx.lineTo(hx + 20, hb - 212); ctx.lineTo(hx + 18, hb - 220); ctx.lineTo(hx, hb - 218); ctx.fill();
+      ctx.fillStyle = '#2A2320'; ctx.fillRect(hx - 22, hb - 60, 44, 60);
+      for (i = 0; i < 7; i++) person(w * (0.18 + i * 0.11), ground + 30 + (i % 2) * 10, 1.5, '#4A3F55', true);
+      ctx.fillStyle = 'rgba(255,90,31,0.18)'; ctx.fillRect(0, 0, w, h);
     } else if (art === 'zombieMayor') {
       ctx.fillStyle = '#6B4A33'; ctx.fillRect(w * 0.42, ground - 10, w * 0.16, 70);
       ctx.fillStyle = '#F0E442'; ctx.beginPath(); ctx.arc(w * 0.5, ground + 20, 12, 0, 7); ctx.fill();
