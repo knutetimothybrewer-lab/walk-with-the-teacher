@@ -291,6 +291,41 @@ const addBots = page => page.addScriptTag({ path: path.join(__dirname, 'strategi
     await page.close();
   }
 
+  // ---------- 4b. Fire + helicopter ambience: works, mutes, doesn't slow frames ----------
+  {
+    const page = await newPage(browser);
+    await page.goto(base + 'index.html?seed=CHAOS1');
+    await page.waitForTimeout(400);
+    await page.uncheck('[data-f=tut]');
+    await page.click('[data-a=start]'); // a real click unlocks Web Audio
+    await page.evaluate(() => {
+      const app = OutbreakCity._instances[0], g = app.game; app.trackPerf = function (ms) { (this.ft = this.ft || []).push(ms); };
+      while (g.phase !== 'ended' && !(g.wave === 4 && g.waveTime > 50)) { if (g.phase === 'build') g.startWave(); else if (g.phase === 'briefing') g.choose(0); else g.step(); }
+      app.hideScreen(); app.lastPhase = g.phase; app.settings.muted = false; app.settings.lowFx = false;
+      let best = 0; g.chaos.forEach((c, k) => { if (c > g.chaos[best]) best = k; }); const c = g.city.centers[best];
+      app.renderer.focus(c[0], c[1], 1.2); app.renderer.cam.x = app.renderer.cam.tx; app.renderer.cam.y = app.renderer.cam.ty; app.renderer.cam.zoom = 1.2;
+    });
+    await page.waitForTimeout(2500);
+    const gains = () => page.evaluate(() => { const a = OutbreakCity._instances[0].sfx.amb; return a ? { fire: +a.fireRoar.gain.value.toFixed(3), crackle: +a.fireCrackle.gain.value.toFixed(3), heli: +a.heli.gain.value.toFixed(3) } : null; });
+    const on = await gains();
+    check('Fire and helicopter ambience plays over a burning district', on && on.fire > 0.02 && on.crackle > 0.02 && on.heli > 0.02, JSON.stringify(on));
+    const frameAvg = async () => { await page.evaluate(() => { OutbreakCity._instances[0].ft = []; }); await page.waitForTimeout(5000); return page.evaluate(() => { const f = OutbreakCity._instances[0].ft; return f.reduce((a, b) => a + b, 0) / f.length; }); };
+    const withSound = await frameAvg();
+    await page.keyboard.press('m'); await page.waitForTimeout(2000);
+    const muted = await gains();
+    check('Ambience goes silent when muted', muted.fire < 0.005 && muted.crackle < 0.005 && muted.heli < 0.005, JSON.stringify(muted));
+    // compare against the ambience fully removed
+    await page.evaluate(() => { const app = OutbreakCity._instances[0]; app.sfx.ambient = function () { }; app.settings.muted = false; });
+    const without = await frameAvg();
+    check('Ambience does not slow the game', withSound - without < 3, 'avg frame ' + withSound.toFixed(1) + ' ms with ambience vs ' + without.toFixed(1) + ' ms without');
+    await page.evaluate(() => { const app = OutbreakCity._instances[0]; delete app.sfx.ambient; app.startAttract('TITLE1'); app.showTitle(); });
+    await page.waitForTimeout(2000);
+    const title = await gains();
+    check('Ambience stops on the title screen', title.fire < 0.005 && title.heli < 0.005, JSON.stringify(title));
+    check('No errors with ambient audio', page.errors.length === 0, page.errors.join(' | '));
+    await page.close();
+  }
+
   // ---------- 5. Auto low-effects ----------
   {
     const page = await newPage(browser);
