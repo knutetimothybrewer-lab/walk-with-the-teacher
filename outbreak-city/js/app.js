@@ -33,6 +33,9 @@
     this.sfx = new NS.Sfx(this.settings);
     this.bindInput();
     this.resize();
+    // Map signs are pre-rendered into sprites; redraw them once the embedded fonts are ready
+    var self0 = this;
+    try { if (root.document.fonts && root.document.fonts.ready) root.document.fonts.ready.then(function () { if (!self0.destroyed && self0.renderer.game) self0.renderer.clearSprites(); }); } catch (e) { }
     this.seedFromUrl = this.opts.seed ? C.cleanSeed(this.opts.seed) : null;
     this.startAttract(this.seedFromUrl || C.randomSeed());
     this.showTitle();
@@ -71,7 +74,7 @@
     this.renderer.setGame(g);
     this.ui.placeType = null; this.ui.selected = null; this.ui.lens = false; this.ui.moveTeam = false; this.ui.highlightBld = null;
     this.paused = false; this.speed = 1; this.acc = 0;
-    this.lastPhase = g.phase; this.endShown = false; this.submitted = false;
+    this.lastPhase = g.phase; this.endShown = false; this.submitted = false; this.hallWarn50 = this.hallWarn25 = false;
     this.tut = tutorial ? { i: 0, t: 0 } : null;
     this.hideScreen();
     this.hud.classList.remove('oc-hidden');
@@ -200,7 +203,7 @@
     if (g.phase === 'ended' && !this.endShown) {
       this.endShown = true; this.autosave();
       var self = this;
-      this.banner(g.endReason === 'collapse' ? 'THE CITY HAS FALLEN' : 'OUTBREAK OVER', g.endReason === 'collapse' ? 'Too many residents were lost' : 'Let’s see what kind of city is left');
+      this.banner(g.endReason === 'hall' ? 'CITY HALL HAS FALLEN' : g.endReason === 'collapse' ? 'THE CITY HAS FALLEN' : 'OUTBREAK OVER', g.endReason === 'hall' ? 'The command bunker was overrun' : g.endReason === 'collapse' ? 'Too many residents were lost' : 'Let’s see what kind of city is left');
       setTimeout(function () { if (!self.destroyed) self.showEnd(); }, 1600);
     }
   };
@@ -224,10 +227,16 @@
         case 'waveStart': this.banner('WAVE ' + e.w, e.w === g.totalWaves ? 'Final wave' : (g.weather !== 'clear' ? (g.weather === 'fog' ? 'Fog rolls in: turrets see less' : 'Rain: fewer people out') : 'Zombies approach')); break;
         case 'megaArrive': this.banner('SUPER-SPREADER!', 'A giant zombie that infects many people at once. Focus fire, barricades and high vaccination slow it.'); s.play('alert'); s.play('wave'); this.pushNews(this.fillNews('mega')); break;
         case 'ruin': s.play('barricade'); break;
+        case 'hallHit':
+          this.flashMeter('hall'); s.play('alert');
+          var hp = e.hp / e.max;
+          if (hp < 0.5 && !this.hallWarn50) { this.hallWarn50 = true; this.toast('City Hall is below 50%! Defend the roads into downtown.', 'bad', 6000); }
+          if (hp < 0.25 && !this.hallWarn25) { this.hallWarn25 = true; this.banner('CITY HALL UNDER SIEGE', 'If the command bunker falls, the game is over'); }
+          break;
         case 'finalPush': this.banner('FINAL PUSH', 'No more arrivals. Clear the remaining cases!'); s.play('alert'); break;
         case 'stockout': this.toast('Vaccine stock is empty. Clinics are idle until the next shipment.', 'bad'); this.flashMeter('vaccines'); break;
         case 'firstBite': if (this.tut) this.tutEvent('bite'); break;
-        case 'ended': s.play(g.ending === 'collapse' || g.ending === 'hollow' || g.ending === 'zombieMayor' ? 'lose' : 'win'); break;
+        case 'ended': s.play(g.ending === 'collapse' || g.ending === 'hallFallen' || g.ending === 'hollow' || g.ending === 'zombieMayor' ? 'lose' : 'win'); break;
       }
     }
     fx.length = 0;

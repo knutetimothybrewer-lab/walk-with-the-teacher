@@ -296,7 +296,7 @@ const addBots = page => page.addScriptTag({ path: path.join(__dirname, 'strategi
 
   // ---------- 8. Page weight ----------
   {
-    const files = ['index.html', 'style.css'].concat(fs.readdirSync(path.join(ROOT, 'js')).map(f => 'js/' + f));
+    const files = ['index.html', 'style.css', 'fonts.css'].concat(fs.readdirSync(path.join(ROOT, 'js')).map(f => 'js/' + f));
     const bytes = files.reduce((s, f) => s + fs.statSync(path.join(ROOT, f)).size, 0);
     check('Total page weight under 1 MB', bytes < 1024 * 1024, (bytes / 1024).toFixed(0) + ' KB uncompressed (' + files.length + ' files)');
   }

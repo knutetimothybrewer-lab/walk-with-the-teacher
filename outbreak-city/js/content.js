@@ -448,6 +448,12 @@
 
   /* ------------------------------------------------------------------ */
   D.ENDINGS = {
+    hallFallen: {
+      title: 'City Hall Has Fallen', art: 'hallFallen',
+      headline: 'ZOMBIES SEIZE CITY HALL, PASS THREE RESOLUTIONS BEFORE LUNCH',
+      sub: 'With the command bunker overrun, the emergency response falls apart.',
+      body: 'Zombies broke into the command bunker. Without a working command center there is no one to coordinate testing, vaccines and hospitals. Strong public health infrastructure has to be protected too.'
+    },
     collapse: {
       title: 'Collapse', art: 'collapse',
       headline: 'CITY COUNCIL MEETING CANCELLED DUE TO EVERYONE BEING A ZOMBIE',
@@ -522,6 +528,7 @@
     militiaMany: ['MORE TURRETS, MORE NOISE: "THE GUNFIRE DRAWS THEM IN," WARNS EXPERT'],
     calm: ['CASES FALLING; RESIDENTS CAUTIOUSLY RETURN TO ARGUING ABOUT PARKING'],
     carrier: ['LAB UNMASKS A "CARRIER": LOOKED HEALTHY, WAS NOT'],
+    hallHit: ['ZOMBIES POUNDING ON CITY HALL DOORS; MAYOR "WORKING FROM UNDER DESK"', 'COMMAND BUNKER UNDER ATTACK; STAFF BARRICADE BREAK ROOM'],
     mega: ['SUPER-SPREADER SIGHTED ON THE HIGHWAY; EXPERTS: "THAT IS A VERY LARGE BOY"', 'GIANT ZOMBIE INFECTS ENTIRE BIRTHDAY PARTY; CAKE UNHARMED'],
     rising: ['CASES RISING FAST; R-NUMBER ABOVE {r}', 'EXPERTS: "EACH CASE IS MAKING MORE THAN ONE NEW CASE. THAT IS BAD."'],
     consequence: ['UPDATE: {text}']
@@ -584,6 +591,7 @@
 
   /* Meter help text */
   D.METERS = {
+    hall: { name: 'City Hall (Command Bunker)', text: 'Your emergency command center in the middle of the city. Zombies march on it, especially new arrivals. If its integrity hits 0, the response collapses and the game ends. Defend nearby roads with turrets and barricades; it repairs a little after each wave.' },
     budget: { name: 'Budget', text: 'Money to build and upgrade. Comes from taxes (healthy, working residents) and emergency grants after each wave.' },
     vaccines: { name: 'Vaccine Stock', text: 'Doses available to clinics. Shipments arrive after each wave. Run out and clinics stop.' },
     beds: { name: 'Hospital Capacity', text: 'Beds in use / total beds. When full, sick people can\'t get treated. That is surge capacity.' },
@@ -613,6 +621,7 @@
     { when: function (r) { return r.peakR > 1.5; }, q: 'Your R_eff peaked around {peakR}. What does that number mean, and which of your actions brought it down (or failed to)?' },
     { when: function (r) { return r.towerCounts.barricade >= 4; }, q: 'You built {barricades} quarantine barricades. What is the difference between quarantine and isolation, and what did the barricades cost the city?' },
     { when: function (r) { return r.towerCounts.chw === 0; }, q: 'You never deployed Community Health Workers. How might trusted local messengers have changed uptake in Eastside Flats or Rustwater Port?' },
+    { when: function (r) { return r.hallPct < 60; }, q: 'City Hall dropped to {hallPct}% integrity. Why does a public health response need protected infrastructure and coordination (Essential Service 10)? What happens when it breaks down?' },
     { when: function (r) { return r.megaInf >= 15; }, q: 'Super-Spreaders caused {megaInf} infections in your city. In real outbreaks, what kinds of places and events lead to super-spreading, and how can public health reduce them?' },
     { when: function (r) { return r.ruined >= 10; }, q: '{ruined} buildings were completely overrun. Which neighborhoods were they in, and what could have protected them earlier?' },
     { when: function () { return true; }, q: 'If you replayed this exact outbreak (seed {seed}), what is the first thing you would do differently, and why?' },
@@ -622,7 +631,7 @@
   /* ------------------------------------------------------------------
      Tutorial: a playable first wave. `until` names a condition in ui.js. */
   D.TUTORIAL = [
-    { id: 'hello', text: 'Welcome, Acting Health Commissioner! This is {city}. Drag to move the map and scroll or pinch to zoom.', until: 'next' },
+    { id: 'hello', text: 'Welcome, Acting Health Commissioner! This is {city}. Your command bunker is City Hall in the middle of town: never let zombies break in. Drag to move the map and scroll or pinch to zoom.', until: 'next' },
     { id: 'lab', text: 'Some residents are already infected but look healthy. Only testing can find them. Press 2 (or tap the Testing Lab below) and place it near the glowing building.', until: 'built:lab', highlight: 'lab' },
     { id: 'militia', text: 'Zombies will arrive by road. A Militia Turret (1) stops the ones you can see. Put one near the flashing road entrance.', until: 'built:militia', highlight: 'militia' },
     { id: 'start', text: 'Ready? Press "Start Wave" (or Enter). You can keep building while the wave runs.', until: 'wave', highlight: 'start' },

@@ -102,6 +102,14 @@
     finalPush: 75,           // after the last wave, up to this many extra seconds to clear remaining cases
     collapseThreshold: 0.38, // game ends early if healthy residents fall below this share
 
+    // --- Command Bunker (City Hall): defend it or the response collapses ---
+    hallHp: 160,             // integrity points (difficulty multiplies this)
+    hallOutsiderPull: 0.55,  // share of zombies arriving from outside that march on City Hall
+    hallResidentPull: 0.1,   // share of newly turned residents that head for City Hall
+    hallRepair: 0.2,         // share of integrity repaired after each wave
+    emergeTime: 1.4,         // seconds a zombie spends climbing out of a hell hole before it can move
+    hallDamage: { basic: 3, runner: 2, brute: 8, carrier: 2, mega: 18 }, // integrity lost per attack
+
     // --- Performance ---
     lowFxFrameMs: 20,        // auto "Low effects" if average frame time exceeds this...
     lowFxSeconds: 5          // ...for this many seconds in a row
@@ -109,9 +117,9 @@
 
   /* Difficulty multipliers */
   D.DIFFICULTY = {
-    easy:   { label: 'Easy',   budget: 1.3,  trust: 68, transmission: 0.85, spawn: 0.75, grant: 1.2,  vaccines: 1.3, pop: 0.9 },
-    normal: { label: 'Normal', budget: 1.0,  trust: 60, transmission: 1.0,  spawn: 1.0,  grant: 1.0,  vaccines: 1.0, pop: 1.0 },
-    hard:   { label: 'Hard',   budget: 0.9,  trust: 52, transmission: 1.08, spawn: 1.2,  grant: 0.9,  vaccines: 0.85, pop: 1.1 }
+    easy:   { hall: 1.35, label: 'Easy',   budget: 1.3,  trust: 68, transmission: 0.85, spawn: 0.75, grant: 1.2,  vaccines: 1.3, pop: 0.9 },
+    normal: { hall: 1.0, label: 'Normal', budget: 1.0,  trust: 60, transmission: 1.0,  spawn: 1.0,  grant: 1.0,  vaccines: 1.0, pop: 1.0 },
+    hard:   { hall: 0.8, label: 'Hard',   budget: 0.9,  trust: 52, transmission: 1.08, spawn: 1.2,  grant: 0.9,  vaccines: 0.85, pop: 1.1 }
   };
 
   /* ---- TOWERS / INTERVENTIONS ---------------------------------------

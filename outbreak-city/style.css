@@ -244,3 +244,29 @@ details.oc-details summary { cursor: pointer; color: var(--mute); }
 .oc-res-code .oc-code { margin-top: 3px; font-size: 0.82em; }
 .oc-res-howto { margin-top: 10px; background: rgba(0,158,115,0.15); border-radius: 8px; padding: 8px 10px; }
 .oc-res-actions { margin-top: 10px; justify-content: space-between; }
+
+/* ---------- typography (fonts embedded in fonts.css) ----------
+   Body: Atkinson Hyperlegible (built for readability). Labels: Oswald (condensed
+   poster/headline). Big moments: Bangers (comic-book display). */
+.oc-root { font-family: 'Atkinson Hyperlegible', system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif; }
+.oc-root .oc-btn, .oc-root .oc-tbtn .nm, .oc-root .oc-tbtn .cost, .oc-meter .lbl, .oc-meter .val, .oc-wave b, .oc-wave small,
+.oc-side-head, .oc-count b, .oc-reff b, .oc-ticker .track, .oc-ticker .tag, .oc-seed, .oc-field > span, .oc-seg button,
+.oc-card h2, .oc-card h3, .oc-brief .kicker, .oc-summary span, .oc-chip, .oc-stat b, .oc-res-game, .oc-res-tag, .oc-paused,
+.oc-opt b, .oc-sel h3, .oc-endtag, .oc-paper .endtag {
+  font-family: 'Oswald', 'Arial Narrow', system-ui, sans-serif; letter-spacing: 0.02em;
+}
+.oc-meter .lbl, .oc-side-head, .oc-field > span, .oc-ticker .track, .oc-wave b { letter-spacing: 0.06em; }
+.oc-meter .val, .oc-count b, .oc-stat b { font-weight: 700; }
+.oc-ticker .track { font-weight: 500; text-transform: uppercase; }
+/* Logo: flat comic-poster lettering instead of a gradient */
+.oc-logo { font-family: 'Bangers', Impact, system-ui, sans-serif; font-weight: 400; font-size: 3.4em; letter-spacing: 0.06em;
+  background: none; -webkit-background-clip: border-box; background-clip: border-box; color: #F0E442; filter: none;
+  text-shadow: 3px 3px 0 #D55E00, 6px 6px 0 #14202b; -webkit-text-stroke: 1.5px #14202b; transform: rotate(-2deg); }
+.oc-tag { font-family: 'Oswald', system-ui, sans-serif; text-transform: uppercase; letter-spacing: 0.08em; color: #ffb27a; }
+.oc-banner div { font-family: 'Bangers', Impact, system-ui, sans-serif; font-weight: 400; font-size: 3em; letter-spacing: 0.07em; color: #F0E442; text-shadow: 3px 3px 0 #000; }
+.oc-banner small { font-family: 'Atkinson Hyperlegible', system-ui, sans-serif; color: #e8e2d0; text-shadow: none; letter-spacing: 0; }
+.oc-stamp { font-family: 'Bangers', Impact, system-ui, sans-serif; font-weight: 400; font-size: 2em; letter-spacing: 0.08em; }
+.oc-res-name { font-family: 'Oswald', system-ui, sans-serif; font-weight: 700; }
+.oc-paper h1 { font-family: 'Oswald', Georgia, serif; font-weight: 700; text-transform: uppercase; letter-spacing: 0.01em; line-height: 1.08; }
+.oc-paper .mast { font-family: Georgia, 'Times New Roman', serif; font-variant: small-caps; letter-spacing: 0.12em; }
+.oc-big { font-family: 'Oswald', system-ui, sans-serif; text-transform: uppercase; letter-spacing: 0.05em; }

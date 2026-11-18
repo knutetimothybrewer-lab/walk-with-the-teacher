@@ -10,6 +10,7 @@
 
   function el(tag, cls, html) { var e = root.document.createElement(tag); if (cls) e.className = cls; if (html !== undefined) e.innerHTML = html; return e; }
   var ICONS = {
+    hall: '<svg class="oc-ico" viewBox="0 0 20 20"><path d="M3 9a7 5 0 0 1 14 0z" fill="#5FA8A0"/><rect x="3" y="9" width="14" height="8" fill="#E8E4DA"/><rect x="8.5" y="12" width="3" height="5" fill="#2A2320"/><path d="M10 4V1" stroke="#ddd" stroke-width="1.4"/></svg>',
     budget: '<svg class="oc-ico" viewBox="0 0 20 20"><circle cx="10" cy="10" r="8" fill="#F0E442"/><text x="10" y="14" font-size="11" text-anchor="middle" font-weight="900" fill="#5a4a00">$</text></svg>',
     vaccines: '<svg class="oc-ico" viewBox="0 0 20 20"><path d="M3 17l9-9" stroke="#36d19a" stroke-width="3" stroke-linecap="round"/><path d="M11 9l3-3M13 4l3 3M15 5l2-2" stroke="#36d19a" stroke-width="2" stroke-linecap="round"/></svg>',
     beds: '<svg class="oc-ico" viewBox="0 0 20 20"><rect x="2" y="9" width="16" height="5" rx="1" fill="#F2A6D6"/><rect x="3" y="6" width="5" height="3" rx="1" fill="#fff"/><path d="M2 6v11M18 11v6" stroke="#F2A6D6" stroke-width="2"/></svg>',
@@ -50,6 +51,7 @@
       top.appendChild(m);
       self.meters[key] = { el: m, val: m.querySelector('.val'), bar: m.querySelector('.oc-bar i'), last: '' };
     };
+    mk('hall', 'City Hall', true);
     mk('budget', 'Budget'); mk('vaccines', 'Vaccines'); mk('beds', 'Beds');
     mk('trust', 'Trust', true); mk('panic', 'Panic', true); mk('equity', 'Equity', true);
     top.appendChild(el('div', 'oc-spacer'));
@@ -201,6 +203,8 @@
 
     var nh = g.countTowers('hospital'), beds = 0, used = 0;
     g.towers.forEach(function (tw) { if (tw.type === 'hospital') { beds += tw.st.beds + Math.floor(g.bonusBeds / Math.max(1, nh)); used += tw.patients.length; } });
+    var hallPct = Math.round(100 * g.hallHp / g.hallMax);
+    this.setMeter('hall', hallPct + '%', hallPct, false, hallPct < 35);
     this.setMeter('budget', '$' + Math.floor(g.budget));
     this.setMeter('vaccines', '' + Math.floor(g.vaccines), undefined, false, g.vaccines < 1);
     this.setMeter('beds', beds ? used + ' / ' + beds : 'none', undefined, false, beds > 0 && used >= beds);
@@ -295,7 +299,7 @@
     hist.forEach(function (p) { yMax = Math.max(yMax, p.z, big ? p.e : p.ek); });
     yMax = Math.max(yMax, beds * 1.1) * 1.1;
     var X = function (t) { return padL + (w - padL - padR) * t / tMax; }, Y = function (v) { return h - padB - (h - padT - padB) * v / yMax; };
-    ctx.font = (big ? 12 : 16) + 'px system-ui, sans-serif'; ctx.fillStyle = '#6f8494';
+    ctx.font = (big ? 13 : 17) + 'px Oswald, system-ui, sans-serif'; ctx.fillStyle = '#6f8494';
     ctx.strokeStyle = 'rgba(255,255,255,0.08)'; ctx.lineWidth = 1;
     // wave bands
     var lastW = -1;
@@ -313,7 +317,7 @@
     line('ek', '#E69F00', [8, 5]);
     line('z', '#D55E00');
     if (big && annos) {
-      ctx.font = 'bold 11px system-ui, sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.font = '700 11px Oswald, system-ui, sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
       annos.forEach(function (a, i) {
         var x = X(a.t);
         ctx.strokeStyle = 'rgba(240,228,66,0.35)'; ctx.beginPath(); ctx.moveTo(x, padT); ctx.lineTo(x, h - padB); ctx.stroke();
@@ -491,7 +495,7 @@
       body = '<p><b>Goal:</b> get ' + esc(D.CITY_NAME) + ' through every wave with as many residents, as much trust and as much fairness as possible. How you win matters: your ending depends on survival, trust, equity and your choices.</p>' +
         '<p><b>The catch:</b> bitten people look healthy while they incubate (the orange ◆ only appears once a Testing Lab finds them). Shooting visible zombies never finds them.</p>' +
         '<h3>Controls</h3><ul class="oc-small"><li>Drag (or WASD / arrow keys) to move the map. Scroll, pinch or +/− to zoom. C to recenter.</li><li>1–8 or the build bar to pick an intervention, then click a spot. Shift-click to place several. Esc or right-click cancels.</li><li>Click a tower to upgrade (U), sell (X) or learn about it. Health Worker vans move when you tap a road.</li><li>Space pauses (you can still build). F changes speed (1x/2x/3x). L opens the Data Lens. Enter starts the next wave.</li></ul>' +
-        '<h3>Map legend</h3><ul class="oc-small"><li><b style="color:#E69F00">◆ orange diamond</b>: a known Exposed person or building (found by testing).</li><li><b style="color:#CC79A7">? pink circle</b>: an unmasked Carrier (looked like a citizen).</li><li>Zombies reach forward with both arms. Sprinters lean and leave speed lines. Brutes are big and armored. <b style="color:#B7E34A">Super-Spreaders</b> (from wave 5) are giants with a green toxic ring: they infect several people per attack, smash barricades and can’t be captured by hospitals.</li><li>Buildings change for good once residents are infected: a red quarantine X, then smashed windows and vines, then a smoking ruin.</li><li><b style="color:#FFB27A">▼ INCOMING</b>: where the next wave enters the city.</li><li>Building badges show residents; orange badges show infections that testing has found.</li></ul>';
+        '<h3>Map legend</h3><ul class="oc-small"><li><b style="color:#E69F00">◆ orange diamond</b>: a known Exposed person or building (found by testing).</li><li><b style="color:#CC79A7">? pink circle</b>: an unmasked Carrier (looked like a citizen).</li><li>Zombies reach forward with both arms. Sprinters lean and leave speed lines. Brutes are big and armored. <b style="color:#B7E34A">Super-Spreaders</b> (from wave 5) are giants with a green toxic ring: they infect several people per attack, smash barricades and can’t be captured by hospitals.</li><li>Buildings change for good once residents are infected: a red quarantine X, then smashed windows and vines, then a smoking ruin.</li><li><b style="color:#FFB27A">▼ INCOMING</b>: glowing cracks where the next wave will claw up out of the ground. Once open, these hell holes keep producing zombies.</li><li><b style="color:#56B4E9">City Hall</b> (center) is your command bunker. Zombies march on it. If its integrity hits 0, the game ends.</li><li>Building badges show residents; orange badges show infections that testing has found.</li></ul>';
     } else if (tab === 'towers') {
       body = D.TOWER_ORDER.map(function (k) {
         var t = D.TOWERS[k];
@@ -665,7 +669,7 @@
         '<div class="oc-stats">' + stat(Math.round(r.survival * 100) + '%', 'residents survived') + stat(r.deaths, 'residents lost') + stat(r.peakR || '-', 'peak R_eff') +
         stat(r.trust, 'final trust') + stat(r.equity, 'equity index') + stat(r.detectionPct + '%', 'infections detected') + stat(r.vaxPct + '%', 'vaccinated') +
         stat(r.cured, 'cured') + stat(r.strayDeaths, 'stray-fire deaths') + stat(g.decisions.length, 'briefing decisions') + stat(r.wave + ' / ' + r.totalWaves, 'waves played') +
-        stat(D.TOWER_ORDER.reduce(function (n, k) { return n + r.towerCounts[k]; }, 0), 'interventions built') + stat(r.overrun, 'buildings overrun') + stat(r.megas, 'super-spreaders faced') + '</div>' +
+        stat(D.TOWER_ORDER.reduce(function (n, k) { return n + r.towerCounts[k]; }, 0), 'interventions built') + stat(r.hallPct + '%', 'City Hall integrity') + stat(r.overrun, 'buildings overrun') + stat(r.megas, 'super-spreaders faced') + '</div>' +
         '<div class="oc-res-code"><span class="oc-small muted">Completion code</span><div class="oc-code">' + esc(code) + '</div></div>' +
         '<div class="oc-res-howto">📸 <b>Take a screenshot of this whole page</b> and submit it to your teacher' + (self.webhook ? ' (your results were also sent automatically)' : '') + '.<br><span class="oc-small muted">Chromebook: Ctrl + Show windows (or Ctrl + Shift + Show windows for part of the screen). Windows: Win + Shift + S. Mac: Cmd + Shift + 4. iPad: top button + volume up.</span></div>' +
         '<div class="oc-row oc-res-actions"><label class="oc-row" style="gap:6px"><span class="oc-small muted">Name:</span><input type="text" maxlength="24" data-f="rname" value="' + esc(nm) + '" placeholder="First name + last initial"></label>' +
@@ -728,7 +732,7 @@
 
   U.buildReflections = function (r) {
     var dist = this.districtRows(), worst = dist.slice().sort(function (a, b) { return b.rate - a.rate; })[0];
-    var vars = { megaInf: r.megaInf, ruined: r.ruined, strayDeaths: r.strayDeaths, detectionPct: r.detectionPct, vaxPct: r.vaxPct, equity: r.equity, worstDistrict: worst ? worst.name : '', spin: r.spin, overflowSeconds: r.overflowSeconds, peakR: r.peakR, barricades: r.barricades, seed: r.seed };
+    var vars = { hallPct: r.hallPct, megaInf: r.megaInf, ruined: r.ruined, strayDeaths: r.strayDeaths, detectionPct: r.detectionPct, vaxPct: r.vaxPct, equity: r.equity, worstDistrict: worst ? worst.name : '', spin: r.spin, overflowSeconds: r.overflowSeconds, peakR: r.peakR, barricades: r.barricades, seed: r.seed };
     var qs = [];
     D.REFLECTIONS.forEach(function (q) { try { if (q.when(r) && qs.length < 6) qs.push(q.q.replace(/\{(\w+)\}/g, function (m, k) { return vars[k] !== undefined ? vars[k] : m; })); } catch (e) { } });
     return qs;

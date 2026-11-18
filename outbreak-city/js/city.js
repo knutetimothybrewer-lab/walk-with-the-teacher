@@ -173,6 +173,18 @@
       }
     });
 
+    // --- Civic plaza: clear City Hall's block so the command bunker stands out ---
+    var hallB = buildings.filter(function (b) { return b.landmark === 'hall'; })[0];
+    if (hallB) {
+      var bx0 = 5 * Math.floor((hallB.x - 2) / 5) + 2, by0 = 5 * Math.floor((hallB.y - 2) / 5) + 2;
+      buildings = buildings.filter(function (b) {
+        var inBlock = b.x >= bx0 && b.x < bx0 + 4 && b.y >= by0 && b.y < by0 + 4;
+        if (inBlock && b !== hallB) { tiles[idx(b.x, b.y)] = T.PLAZA; return false; }
+        return true;
+      });
+      hallB.floors = 4; hallB.weight *= 1.5;
+    }
+
     // --- Population: each district gets its share, split by building size ---
     var pop = Math.round(cfg.population * (opts.popMult || 1)), assigned = 0;
     var dW = D.DISTRICTS.map(function () { return 0; });
