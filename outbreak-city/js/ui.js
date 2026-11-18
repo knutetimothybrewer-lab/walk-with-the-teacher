@@ -629,11 +629,13 @@
       '<div class="oc-stats">' +
       stat(Math.round(r.survival * 100) + '%', 'residents survived') + stat(r.deaths, 'residents lost') + stat(r.peakR || '-', 'peak R_eff') +
       stat(r.trust, 'final trust') + stat(r.equity, 'equity index') + stat(r.strayDeaths, 'hit by stray fire') + '</div>' +
-      '<div class="oc-row" style="justify-content:center"><button type="button" class="oc-btn primary oc-big" autofocus data-a="report">After-Action Report ▸</button><button type="button" class="oc-btn oc-big" data-a="again">Play again</button></div>';
+      '<div class="oc-row" style="justify-content:center"><button type="button" class="oc-btn primary oc-big" autofocus data-a="results">My Results page (screenshot this) ▸</button><button type="button" class="oc-btn oc-big" data-a="report">After-Action Report</button><button type="button" class="oc-btn oc-big" data-a="again">Play again</button></div>';
     this.endArt = end.art; this.endArtT = 0; this.endArtCanvas = node.querySelector('canvas');
     node.addEventListener('click', function (e) {
       var b = e.target.closest('[data-a]'); if (!b) return;
-      if (b.getAttribute('data-a') === 'report') self.showReport();
+      var act = b.getAttribute('data-a');
+      if (act === 'report') self.showReport();
+      else if (act === 'results') self.showResults();
       else { self.startAttract(C.randomSeed()); self.showTitle(); }
     });
     this.showScreen(node);
@@ -642,6 +644,48 @@
     this.submitResults(this.telemetryPayload());
   };
   function stat(v, label) { return '<div class="oc-stat"><b>' + esc(String(v)) + '</b><span>' + esc(label) + '</span></div>'; }
+
+
+  /* ================= Results page (one screen, made for a screenshot) ================= */
+  U.showResults = function () {
+    var g = this.game, self = this, end = D.ENDINGS[g.ending], r = g.report();
+    var good = ['eradication', 'endemic', 'modelCity'].indexOf(g.ending) >= 0;
+    var now = new Date();
+    var when = now.toLocaleDateString(undefined, { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' }) + ' · ' + now.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' });
+    var node = el('div', 'oc-card oc-results');
+    var render = function () {
+      var code = self.completionCode();
+      var nm = g.opts.name || '';
+      node.innerHTML =
+        '<div class="oc-res-head"><div><div class="oc-res-game">' + esc(D.GAME_TITLE) + ' · RESULTS</div>' +
+        '<div class="oc-res-name">' + (nm ? esc(nm) : '<span style="color:#ff8a5c">Type your name below ↓</span>') + '</div>' +
+        '<div class="oc-small muted">' + esc(when) + ' · Seed ' + esc(g.seed) + ' · ' + esc(g.diff.label) + ' · ' + (g.quick ? 'Quick (6 waves)' : 'Full (9 waves)') + '</div></div>' +
+        '<div class="oc-stamp' + (good ? '' : ' warn') + '">✔ COMPLETE</div></div>' +
+        '<div class="oc-res-end"><span class="oc-res-tag">' + esc(end.title.toUpperCase()) + '</span><b>' + esc(end.headline) + '</b></div>' +
+        '<div class="oc-stats">' + stat(Math.round(r.survival * 100) + '%', 'residents survived') + stat(r.deaths, 'residents lost') + stat(r.peakR || '-', 'peak R_eff') +
+        stat(r.trust, 'final trust') + stat(r.equity, 'equity index') + stat(r.detectionPct + '%', 'infections detected') + stat(r.vaxPct + '%', 'vaccinated') +
+        stat(r.cured, 'cured') + stat(r.strayDeaths, 'stray-fire deaths') + stat(g.decisions.length, 'briefing decisions') + stat(r.wave + ' / ' + r.totalWaves, 'waves played') +
+        stat(D.TOWER_ORDER.reduce(function (n, k) { return n + r.towerCounts[k]; }, 0), 'interventions built') + '</div>' +
+        '<div class="oc-res-code"><span class="oc-small muted">Completion code</span><div class="oc-code">' + esc(code) + '</div></div>' +
+        '<div class="oc-res-howto">📸 <b>Take a screenshot of this whole page</b> and submit it to your teacher' + (self.webhook ? ' (your results were also sent automatically)' : '') + '.<br><span class="oc-small muted">Chromebook: Ctrl + Show windows (or Ctrl + Shift + Show windows for part of the screen). Windows: Win + Shift + S. Mac: Cmd + Shift + 4. iPad: top button + volume up.</span></div>' +
+        '<div class="oc-row oc-res-actions"><label class="oc-row" style="gap:6px"><span class="oc-small muted">Name:</span><input type="text" maxlength="24" data-f="rname" value="' + esc(nm) + '" placeholder="First name + last initial"></label>' +
+        '<button type="button" class="oc-btn" data-a="report">After-Action Report</button><button type="button" class="oc-btn" data-a="copy">Copy results</button><button type="button" class="oc-btn" data-a="again">Play again</button></div>';
+      var inp = node.querySelector('[data-f=rname]');
+      inp.addEventListener('change', function () {
+        g.opts.name = inp.value.trim().slice(0, 24); self.store.lastName = g.opts.name; saveStore(self.store);
+        render();
+      });
+    };
+    node.addEventListener('click', function (e) {
+      var b = e.target.closest('[data-a]'); if (!b) return;
+      var a = b.getAttribute('data-a');
+      if (a === 'report') self.showReport();
+      if (a === 'copy') { var rr = g.report(); self.copyText(self.resultsText(rr, self.completionCode(), self.buildReflections(rr)), 'Results copied.'); }
+      if (a === 'again') { self.startAttract(C.randomSeed()); self.showTitle(); }
+    });
+    render();
+    this.showScreen(node);
+  };
 
   U.completionCode = function () {
     var g = this.game, r = g.report();
@@ -732,7 +776,7 @@
     ];
     var node = el('div', 'oc-card oc-report');
     node.innerHTML = '<div class="oc-row" style="justify-content:space-between"><div><div class="kicker" style="color:#E69F00;font-weight:800;letter-spacing:.1em;font-size:.75em">AFTER-ACTION REPORT</div><h2 style="margin:0">' + esc(end.title) + '</h2><div class="muted oc-small">' + esc(r.name || 'Unnamed commissioner') + ' · Seed ' + esc(g.seed) + ' · ' + esc(g.diff.label) + ' · ' + (g.quick ? 'Quick' : 'Full') + ' game · ' + r.wave + ' waves</div></div>' +
-      '<div class="oc-row"><button type="button" class="oc-btn primary" data-a="copy">Copy results</button><button type="button" class="oc-btn" data-a="end">Back</button><button type="button" class="oc-btn" data-a="again">Play again</button></div></div>' +
+      '<div class="oc-row"><button type="button" class="oc-btn primary" data-a="results">My Results page</button><button type="button" class="oc-btn" data-a="copy">Copy results</button><button type="button" class="oc-btn" data-a="end">Back</button><button type="button" class="oc-btn" data-a="again">Play again</button></div></div>' +
       '<section><h3>Your completion code</h3><p class="oc-small muted">Paste this into your class assignment. It encodes your name, seed, ending and key scores.</p><div class="oc-code" tabindex="0">' + esc(code) + '</div><p class="oc-small" data-f="submit"></p></section>' +
       '<section><div class="oc-stats">' + stat(Math.round(r.survival * 100) + '%', 'survived') + stat(r.deaths, 'lost') + stat(r.infections, 'infections') + stat(r.peakR || '-', 'peak R_eff') + stat(r.peakZ, 'peak infected') +
       stat(r.detectionPct + '%', 'infections detected') + stat(r.vaxPct + '%', 'vaccinated') + stat(r.cured, 'cured') + stat(r.strayDeaths, 'stray-fire deaths') + stat(r.trust, 'final trust') + stat(r.equity, 'equity') + '</div></section>' +
@@ -751,6 +795,7 @@
       var a = b.getAttribute('data-a');
       if (a === 'copy') self.copyText(self.resultsText(r, code, qs), 'Results and completion code copied.');
       if (a === 'end') self.showEnd();
+      if (a === 'results') self.showResults();
       if (a === 'again') { self.startAttract(C.randomSeed()); self.showTitle(); }
     });
     this.showScreen(node);

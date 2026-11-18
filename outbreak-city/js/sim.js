@@ -143,7 +143,7 @@
 
   /* ================= Helpers ================= */
   G.cmd = function (c, a) { this.log.push({ k: this.tick, c: c, a: a }); };
-  G.emit = function (o) { if (this.fxOn && this.fx.length < 800) this.fx.push(o); };
+  G.emit = function (o) { if (!this.fxOn) return; if (this.fx.length >= 800) this.fx.splice(0, 400); this.fx.push(o); };
   G.news = function (key, vars, once) {
     if (once) { if (this.newsFlags[key]) return; this.newsFlags[key] = true; }
     this.emit({ k: 'news', key: key, vars: vars || {} });
@@ -522,7 +522,7 @@
         if (this.moveAgent(a, walkSpeed * (a.flee > 0 ? CFG.fleeSpeedMult : 1))) this.arrive(a);
       } else {
         a.age += DT;
-        if (a.age >= a.life) { this.stats.decays++; this.emit({ k: 'decay', x: a.x, y: a.y }); this.killZombie(a, 'decay'); continue; }
+        if (a.age >= a.life) { this.stats.decays++; this.emit({ k: 'decay', x: a.x, y: a.y, z: a.type, face: (a.dirx - a.diry) < 0 ? -1 : 1 }); this.killZombie(a, 'decay'); continue; }
         if (a.biteCd > 0) a.biteCd -= DT;
         var z = a.zdef;
         if (a.breach > 0) {
@@ -531,7 +531,7 @@
             a.bitesLeft--; a.biteT = CFG.breachTime / (z.bites + 0.5);
             var bb = this.blds[a.dest];
             if (this.biteBuilding(bb)) a.offspring++;
-            this.emit({ k: 'breach', x: a.x, y: a.y, b: bb.id, quiet: z.stealth && !a.revealed });
+            this.emit({ k: 'breach', x: a.x, y: a.y, b: bb.id, zid: a.id, quiet: z.stealth && !a.revealed });
           }
           if (a.breach <= 0) { a.lastBld = a.dest; a.roadTile = a.path && a.path.length ? a.path[a.path.length - 1] : a.roadTile; this.retarget(a); }
           continue;
@@ -560,12 +560,14 @@
             a.biteCd = CFG.biteCooldown;
             var p = CFG.biteSuccess * CFG.streetBiteMult * this.em.transmission;
             if (victim.st === V) p *= (1 - this.vaxEff());
+            var bit = false;
             if ((victim.st === S || victim.st === V) && rng.next() < p) {
+              bit = true;
               victim.st = E; victim.inc = rng.exp(CFG.incubationMean); victim.known = false; victim.isolating = false;
               a.offspring++;
               this.onInfect(this.city.district[tile], victim.x, victim.y);
             }
-            this.emit({ k: 'bite', x: victim.x, y: victim.y });
+            this.emit({ k: 'bite', x: victim.x, y: victim.y, zid: a.id, vid: victim.id, ok: bit });
           }
         }
       }
@@ -716,7 +718,7 @@
     if (target.hp <= 0) {
       this.stats.kills++;
       if (this.flags.bounty) this.budget += 3;
-      this.emit({ k: 'kill', x: target.x, y: target.y, z: target.type });
+      this.emit({ k: 'kill', x: target.x, y: target.y, z: target.type, face: (target.dirx - target.diry) < 0 ? -1 : 1, tw: tw.id });
       this.killZombie(target, 'shot');
     }
   };

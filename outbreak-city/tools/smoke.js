@@ -2,7 +2,7 @@
 // Opens the game from file://, starts a game, places towers, runs a wave, and screenshots.
 const { chromium } = require('playwright');
 const path = require('path');
-const out = process.argv[2] || path.join(__dirname, '..', '..', '..', 'oc-shots');
+const out = process.argv[2] || path.join(__dirname, '..', 'test-shots');
 require('fs').mkdirSync(out, { recursive: true });
 (async () => {
   const browser = await chromium.launch();

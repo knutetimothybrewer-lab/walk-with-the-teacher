@@ -228,3 +228,19 @@ details.oc-details summary { cursor: pointer; color: var(--mute); }
   .oc-side { top: 110px; }
 }
 .oc-root[data-motion="reduced"] *, .oc-root[data-motion="reduced"] *::before { animation-duration: 0.001s !important; animation-iteration-count: 1 !important; transition: none !important; }
+
+/* results page (one screen, screenshot-friendly) */
+.oc-results { width: min(820px, 100%); border: 3px solid var(--green); }
+.oc-res-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
+.oc-res-game { font-weight: 900; letter-spacing: 0.1em; color: var(--orange); font-size: 0.85em; }
+.oc-res-name { font-size: 1.7em; font-weight: 800; line-height: 1.15; margin: 2px 0; }
+.oc-stamp { flex: none; border: 4px solid var(--good); color: var(--good); font-weight: 900; font-size: 1.5em; letter-spacing: 0.06em; padding: 4px 12px; border-radius: 10px; transform: rotate(-4deg); }
+.oc-stamp.warn { border-color: var(--yellow); color: var(--yellow); }
+.oc-res-end { margin: 10px 0 4px; display: flex; flex-direction: column; gap: 4px; }
+.oc-res-end b { font-size: 1.05em; }
+.oc-res-tag { align-self: flex-start; background: var(--ink); color: var(--bg); font-weight: 800; font-size: 0.8em; padding: 2px 8px; border-radius: 4px; letter-spacing: 0.05em; }
+.oc-results .oc-stats { grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); }
+.oc-results .oc-stat { background: rgba(255,255,255,0.06); }
+.oc-res-code .oc-code { margin-top: 3px; font-size: 0.82em; }
+.oc-res-howto { margin-top: 10px; background: rgba(0,158,115,0.15); border-radius: 8px; padding: 8px 10px; }
+.oc-res-actions { margin-top: 10px; justify-content: space-between; }

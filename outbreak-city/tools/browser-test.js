@@ -177,7 +177,12 @@ const addBots = page => page.addScriptTag({ path: path.join(__dirname, 'strategi
     endings[strat] = end;
     await shot(page, '3' + Object.keys(endings).length + '-end-' + strat);
     if (strat === 'balanced') {
-      await page.click('[data-a=report]');
+      await page.click('[data-a=results]');
+      await page.waitForTimeout(400);
+      await shot(page, '39-results-page');
+      const res = await page.evaluate(() => { const c = document.querySelector('.oc-results'); const r = c.getBoundingClientRect(); return { stamp: !!c.querySelector('.oc-stamp'), name: c.querySelector('.oc-res-name').textContent, code: c.querySelector('.oc-code').textContent, fits: r.top >= 0 && r.bottom <= innerHeight }; });
+      check('Results page shows COMPLETE, name and code, and fits on one screen (1366x768)', res.stamp && res.name === 'Bot' && res.code.startsWith('OC1-') && res.fits, JSON.stringify(res).slice(0, 120));
+      await page.click('.oc-results [data-a=report]');
       await page.waitForTimeout(500);
       await shot(page, '40-report-top');
       await page.evaluate(() => { const s = document.querySelector('.oc-screen'); s.scrollTop = 700; });

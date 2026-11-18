@@ -71,6 +71,8 @@
     this.rain = []; for (i = 0; i < 160; i++) this.rain.push({ x: Math.random(), y: Math.random(), s: 0.6 + Math.random() * 0.6 });
     this.drawList = []; this.drawPool = [];
     this.flash = {};
+    this.lunge = {}; this.struck = {}; this.bang = {}; this.bShake = {}; this.lastChomp = -9; this.lastBang = -9;
+    this.corpses = []; for (i = 0; i < 48; i++) this.corpses.push({ on: false });
     this.stats = { drawn: 0 };
   }
   var R = Renderer.prototype;
@@ -519,7 +521,8 @@
       ctx.scale(s, s);
       var skin = shade('#9EC28A', 1, night), cloth = shade(type === 'runner' ? '#8A5A44' : type === 'brute' ? '#55505E' : '#6E5C7B', 1, night);
       ctx.fillStyle = 'rgba(0,0,0,0.28)'; ellipse(ctx, 0, 0, 5, 2); ctx.fill();
-      var lean = type === 'runner' ? 2.4 : 1;
+      var lean = type === 'runner' ? 2.4 : 1, atk = frame === 2;
+      if (atk) lean += 1.2;
       var l = frame ? 1.8 : -1.2;
       ctx.strokeStyle = shade('#3A3442', 1, night); ctx.lineWidth = big ? 2.4 : 1.8; ctx.lineCap = 'round';
       ctx.beginPath(); ctx.moveTo(-1 + lean * 0.3, -5.5); ctx.lineTo(-1.5 + l * (type === 'runner' ? 1.6 : 1), -0.4); ctx.moveTo(1 + lean * 0.3, -5.5); ctx.lineTo(1.5 - l, 0); ctx.stroke();
@@ -534,11 +537,14 @@
       // arms reach forward (the classic zombie silhouette)
       ctx.strokeStyle = skin; ctx.lineWidth = big ? 2.2 : 1.5;
       var sway = frame ? 0.7 : -0.4;
-      ctx.beginPath(); ctx.moveTo(lean + 1.5, -10.5); ctx.lineTo(lean + 7, -10.5 + sway); ctx.moveTo(lean + 1.2, -9); ctx.lineTo(lean + 6.4, -8.6 - sway); ctx.stroke();
+      ctx.beginPath();
+      if (atk) { ctx.moveTo(lean + 1.5, -10.5); ctx.lineTo(lean + 6.5, -16); ctx.moveTo(lean + 1.2, -9); ctx.lineTo(lean + 7.5, -13.5); }
+      else { ctx.moveTo(lean + 1.5, -10.5); ctx.lineTo(lean + 7, -10.5 + sway); ctx.moveTo(lean + 1.2, -9); ctx.lineTo(lean + 6.4, -8.6 - sway); }
+      ctx.stroke();
       ctx.fillStyle = skin; ctx.beginPath(); ctx.arc(lean + 1.2, -13.8, 2.8, 0, 7); ctx.fill();
       if (big) { ctx.fillStyle = shade('#6B7580', 1, night); ctx.beginPath(); ctx.arc(lean + 1.2, -14.4, 3.1, Math.PI, 0); ctx.fill(); }
       ctx.fillStyle = '#1A1A1A'; ctx.fillRect(lean + 2, -14.6, 1, 1); ctx.fillRect(lean + 3.4, -14.4, 0.9, 0.9);
-      ctx.fillStyle = shade('#5B3A3A', 1, night); ctx.fillRect(lean + 2.2, -12.6, 1.8, 0.7);
+      ctx.fillStyle = shade('#5B3A3A', 1, night); ctx.fillRect(lean + 2.2, -12.6, 1.8, atk ? 1.8 : 0.7);
       if (type === 'runner') { ctx.strokeStyle = 'rgba(255,255,255,0.5)'; ctx.lineWidth = 0.8; ctx.beginPath(); ctx.moveTo(-6, -9); ctx.lineTo(-10, -9); ctx.moveTo(-6, -6); ctx.lineTo(-9, -6); ctx.stroke(); }
     });
   };
@@ -642,21 +648,37 @@
           this.addShake(3);
         }
         break;
-      case 'kill': this.burst(e.x, e.y, e.z === 'brute' ? 14 : 8, { colors: ['#8FA87E', '#5E6B4F', '#C9C9B0'], speed: 26, up: 40, max: 0.7, kind: 'dot', size: 2.4 }); if (e.z === 'brute') this.addShake(2.5); break;
-      case 'decay': this.burst(e.x, e.y, 6, { colors: ['#9A9A8A', '#77776A'], speed: 12, up: 20, max: 0.9, kind: 'smoke', size: 4, g: -10 }); break;
-      case 'bite': this.burst(e.x, e.y, 4, { colors: ['#9C8CD4'], speed: 18, up: 30, max: 0.4 }); break;
+      case 'kill':
+        this.burst(e.x, e.y, e.z === 'brute' ? 10 : 5, { colors: ['#8FA87E', '#C9C9B0'], speed: 22, up: 35, max: 0.5, kind: 'dot', size: 2.2 });
+        this.corpse(e.x, e.y, e.z, e.face, 1);
+        if (e.z === 'brute') this.addShake(2.5);
+        break;
+      case 'decay': this.corpse(e.x, e.y, e.z, e.face, 0.6); this.burst(e.x, e.y, 4, { colors: ['#9A9A8A'], speed: 10, up: 16, max: 0.9, kind: 'smoke', size: 4, g: -10 }); break;
+      case 'bite':
+        this.lunge[e.zid] = { t: this.time, x: e.x, y: e.y };
+        this.struck[e.vid] = this.time;
+        this.burst(e.x, e.y, e.ok ? 7 : 3, { colors: e.ok ? ['#B07CE0', '#E8D0FF'] : ['#CCCCCC'], speed: 20, up: 34, max: 0.45 });
+        if (e.ok && this.time - this.lastChomp > 0.5) { this.lastChomp = this.time; this.text(e.x, e.y, 'CHOMP!', '#D8B4FF'); }
+        else if (!e.ok && this.time - this.lastChomp > 0.8) { this.lastChomp = this.time; this.text(e.x, e.y, 'dodged!', '#BFE6FF'); }
+        break;
       case 'turn': this.burst(e.x, e.y, 10, { colors: ['#9EC28A', '#6E8A5E', '#CFE3B5'], speed: 20, up: 30, max: 0.9, kind: 'smoke', size: 4, g: -20 }); this.text(e.x, e.y, 'turned!', '#B8D8A0'); break;
       case 'reveal': this.ring(e.x, e.y, 0.9, '#E69F00', 0.7, 2); if (e.n) this.text(e.x, e.y, '◆ ' + e.n + ' found', '#F5B940'); break;
       case 'unmask': this.ring(e.x, e.y, 1.2, '#CC79A7', 0.9, 3); this.text(e.x, e.y, 'Carrier unmasked!', '#E8A0D0', true); break;
       case 'scan': this.ring(e.x, e.y, e.r, 'rgba(86,180,233,0.55)', 1.1, 1.5); break;
       case 'vax':
+        this.flash[e.tw] = this.time;
         this.tracer(e.x0, e.y0, 16, e.x, e.y, 18, { color: '#36D19A', max: 0.55, arc: 30, kind: 'dart', w: 3,
           onHit: function () { self.burst(e.x, e.y, 5, { colors: ['#36D19A', '#B8F5DC'], speed: 18, up: 30, max: 0.6, kind: 'plus', size: 3, z: 18 }); } });
         break;
       case 'cure': this.burst(e.x, e.y, 8, { colors: ['#F2A6D6', '#FFFFFF'], speed: 14, up: 50, max: 1.1, kind: 'plus', size: 3.4, g: -5 }); this.text(e.x, e.y, '+1 cured', '#F7B6DE'); break;
       case 'admit': this.tracer(e.x, e.y, 10, e.x0, e.y0, 16, { color: e.zombie ? '#E8A0D0' : '#F2C1DF', max: 0.6, arc: 18, kind: 'dart', w: 2.5 }); break;
       case 'contained': this.burst(e.x, e.y, 4, { colors: ['#BBBBBB'], speed: 8, up: 14, max: 0.8, kind: 'smoke', size: 3, g: -8 }); break;
-      case 'breach': if (!e.quiet && Math.random() < 0.5) this.burst(e.x, e.y, 3, { colors: ['#C9B48A', '#9A8A6A'], speed: 16, up: 20, max: 0.4 }); break;
+      case 'breach':
+        if (e.quiet) break;
+        this.bang[e.zid] = this.time; this.bShake[e.b] = this.time;
+        this.burst(e.x, e.y, 4, { colors: ['#C9B48A', '#9A8A6A'], speed: 18, up: 24, max: 0.45 });
+        if (this.time - this.lastBang > 0.7) { this.lastBang = this.time; this.text(e.x, e.y, 'BANG! BANG!', '#FFD08A'); }
+        break;
       case 'barricadeBreak': this.burst(e.x, e.y, 18, { colors: ['#F0E442', '#333333', '#8A6A44'], speed: 40, up: 70, max: 0.9, size: 3 }); this.addShake(4); break;
       case 'build': this.ring(e.x, e.y, 0.9, 'rgba(255,255,255,0.8)', 0.5, 3); this.burst(e.x, e.y, 12, { colors: ['#E8DCC0', '#FFFFFF'], speed: 30, up: 30, max: 0.6, kind: 'smoke', size: 3 }); break;
       case 'upgrade': this.burst(e.x, e.y, 14, { colors: ['#F0E442', '#FFFFFF'], speed: 30, up: 80, max: 0.9, kind: 'star', size: 3, z: 20 }); this.text(e.x, e.y, 'Upgraded!', '#F0E442'); break;
@@ -718,6 +740,13 @@
           ctx.fillStyle = '#FFE08A'; ctx.beginPath(); ctx.arc(x + dx * 20, y - 15 + dy * 20, 5, 0, 7); ctx.fill();
           ctx.fillStyle = '#FFFFFF'; ctx.beginPath(); ctx.arc(x + dx * 20, y - 15 + dy * 20, 2.2, 0, 7); ctx.fill();
         }
+        // two soldiers behind the sandbags, aiming where the turret aims
+        if (!ghost) for (var sd = 0; sd < 2; sd++) {
+          var px = x + (sd ? 13 : -14), py = y + (sd ? 3 : 1);
+          var firing = ft !== undefined && t - ft < 0.12 && (Math.floor(ft * 13) % 2) === sd;
+          var rec = firing ? -1.5 : 0;
+          this.soldier(ctx, px + dx * rec, py + dy * rec * 0.5, dx, dy, firing, tw.id + sd);
+        }
         break;
       }
       case 'lab': {
@@ -737,6 +766,15 @@
         box(x, y - 3, 17, 8.5, 13, '#F7F8F6');
         ctx.fillStyle = shade(col, 1); ctx.beginPath(); ctx.moveTo(x - 17, y - 10); ctx.lineTo(x, y - 1.5); ctx.lineTo(x, y - 4.5); ctx.lineTo(x - 17, y - 13); ctx.fill();
         ctx.fillStyle = shade(col, 0.75); ctx.beginPath(); ctx.moveTo(x, y - 1.5); ctx.lineTo(x + 17, y - 10); ctx.lineTo(x + 17, y - 13); ctx.lineTo(x, y - 4.5); ctx.fill();
+        // residents queuing for their shot while the clinic is busy
+        var busy = this.flash[tw.id];
+        if (!ghost && busy !== undefined && t - busy < 4) {
+          var nq = 2 + (tw.id % 3);
+          for (var qn = 0; qn < nq; qn++) {
+            var qp = iso(tw.x - 0.55 - qn * 0.28, tw.y + 0.55);
+            this.blit(ctx, this.personSprite((tw.id + qn * 3) % 8, (Math.floor(t * 2) + qn) % 2 ? 0 : 0, 0, 1, this.night > 0.5), qp.x, qp.y + (qn % 2 ? 0 : -0.5));
+          }
+        }
         var pulse = 1 + Math.sin(t * 4 + tw.id) * 0.12;
         ctx.fillStyle = col; ctx.save(); ctx.translate(x, y - 28); ctx.scale(pulse, pulse);
         ctx.beginPath(); ctx.arc(0, 0, 7.5, 0, 7); ctx.fill();
@@ -837,6 +875,51 @@
     }
     ctx.restore();
   };
+
+  // A small soldier figure (helmet + rifle) used at Militia Turrets
+  R.soldier = function (ctx, x, y, dx, dy, firing, seed) {
+    var face = dx < 0 ? -1 : 1;
+    ctx.fillStyle = 'rgba(0,0,0,0.25)'; ellipse(ctx, x, y, 4.5, 1.8); ctx.fill();
+    ctx.strokeStyle = '#3B4230'; ctx.lineWidth = 1.8; ctx.lineCap = 'round';
+    ctx.beginPath(); ctx.moveTo(x - 1, y - 5); ctx.lineTo(x - 1.6, y); ctx.moveTo(x + 1, y - 5); ctx.lineTo(x + 1.6, y); ctx.stroke();
+    ctx.fillStyle = '#5E6B3A'; ctx.fillRect(x - 3, y - 11.5, 6, 6.8);
+    ctx.fillStyle = '#C69C7B'; ctx.beginPath(); ctx.arc(x, y - 13.8, 2.5, 0, 7); ctx.fill();
+    ctx.fillStyle = '#4B5320'; ctx.beginPath(); ctx.arc(x, y - 14.4, 3.1, Math.PI, 0); ctx.fill(); ctx.fillRect(x - 3.4, y - 14.6, 6.8, 1);
+    // rifle aimed at the target
+    var rx = x + face * 1.5, ry = y - 9.5;
+    ctx.strokeStyle = '#1F2319'; ctx.lineWidth = 1.6;
+    ctx.beginPath(); ctx.moveTo(rx - dx * 2, ry - dy * 2); ctx.lineTo(rx + dx * 9, ry + dy * 9); ctx.stroke();
+    if (firing) {
+      ctx.fillStyle = '#FFE08A'; ctx.beginPath(); ctx.arc(rx + dx * 11, ry + dy * 11, 3, 0, 7); ctx.fill();
+      ctx.fillStyle = '#FFFFFF'; ctx.beginPath(); ctx.arc(rx + dx * 11, ry + dy * 11, 1.3, 0, 7); ctx.fill();
+    }
+  };
+
+  // Downed zombies tip over and fade away (no gore)
+  R.corpse = function (wx, wy, type, face, alpha) {
+    for (var i = 0; i < this.corpses.length; i++) {
+      var c = this.corpses[i]; if (c.on) continue;
+      var p = iso(wx, wy);
+      c.on = true; c.x = p.x; c.y = p.y; c.type = type === 'carrier' ? 'basic' : (type || 'basic'); c.face = face || 1; c.t = this.time; c.a = alpha || 1;
+      return;
+    }
+  };
+  R.drawCorpses = function (ctx, night) {
+    var zs = this.agentScale || 1;
+    for (var i = 0; i < this.corpses.length; i++) {
+      var c = this.corpses[i]; if (!c.on) continue;
+      var age = this.time - c.t;
+      if (age > 2.2) { c.on = false; continue; }
+      var fall = Math.min(1, age / 0.3);
+      ctx.save();
+      ctx.globalAlpha = c.a * (age < 1.4 ? 1 : 1 - (age - 1.4) / 0.8);
+      ctx.translate(c.x, c.y);
+      ctx.rotate(c.face * fall * Math.PI / 2 * 0.95);
+      var spr = this.zombieSprite(c.type, 0, c.face, night);
+      this.blit(ctx, spr, 0, 0, zs);
+      ctx.restore();
+    }
+  };
   R.star = function (ctx, x, y, r) {
     ctx.beginPath();
     for (var i = 0; i < 10; i++) { var a = -Math.PI / 2 + i * Math.PI / 5, rr = i % 2 ? r * 0.45 : r; ctx.lineTo(x + Math.cos(a) * rr, y + Math.sin(a) * rr); }
@@ -935,6 +1018,7 @@
       ellipse(ctx, rg.x, rg.y, e.rx, e.ry); ctx.stroke(); ctx.globalAlpha = 1;
     }
 
+    this.drawCorpses(ctx, nightOn);
     // ---- depth-sorted world objects ----
     var list = this.drawList;
     for (i = 0; i < list.length; i++) this.drawPool.push(list[i]);
@@ -977,20 +1061,19 @@
     list.sort(function (p, q) { return p.d - q.d; });
     this.stats.drawn = list.length;
 
-    var dayA = night < 0.25 ? 1 : night > 0.75 ? 0 : 1 - (night - 0.25) / 0.5;
     var walkFrame = Math.floor(this.time * 4);
+    // Low effects: nearest-neighbour sprite sampling is much cheaper on weak devices
+    ctx.imageSmoothingEnabled = !st.lowFx;
+    // keep people readable when zoomed out (tower-defense readability over strict scale)
+    this.agentScale = C.clamp(0.95 / z, 1, 1.9);
     for (i = 0; i < list.length; i++) {
       d = list[i];
       if (d.k === 0) {
         var cb2 = cbs[d.o], b2 = blds[d.o], alive = b2.S + b2.E + b2.Ek + b2.V + b2.R;
         var dmg = alive < b2.orig * 0.3 ? 2 : (b2.Z > 0 || g.t - b2.breachT < 6) ? 1 : 0;
-        if (dayA > 0) this.blit(ctx, this.buildingSprite(cb2, false, dmg), d.x, d.y);
-        if (dayA < 1) {
-          var s2 = this.buildingSprite(cb2, true, dmg);
-          if (dayA > 0) ctx.globalAlpha = 1 - dayA;
-          this.blit(ctx, s2, d.x, d.y);
-          ctx.globalAlpha = 1;
-        }
+        // One sprite per building per frame (a day/night cross-fade doubled the cost).
+        var bsk = this.bShake[d.o], jx = (bsk !== undefined && this.time - bsk < 0.35 && !st.reducedMotion) ? Math.sin(this.time * 70) * 1.3 : 0;
+        this.blit(ctx, this.buildingSprite(cb2, nightOn, dmg), d.x + jx, d.y);
         if (cb2.landmark === 'lighthouse' && night > 0.3 && !st.lowFx) this.drawBeam(ctx, d.x, d.y - this.bHeight(cb2) - 5, night);
       } else if (d.k === 1) {
         var ts = this.treeSprite(d.o.kind, d.o.v, nightOn), sc = d.o.s;
@@ -1006,6 +1089,7 @@
       }
     }
 
+    ctx.imageSmoothingEnabled = true;
     // placement ghost on top
     if (ui && ui.placeType && ui.hover) {
       var gtw = { type: ui.placeType, x: ui.hover.x + 0.5, y: ui.hover.y + 0.5, level: 1, id: 0, angle: 0.8, st: D.TOWERS[ui.placeType], hp: 1, patients: [] };
@@ -1102,23 +1186,34 @@
     var g = this.game, spr, frame = (wf + a.id) & 1;
     var sdx = a.dirx - a.diry, face = sdx < 0 ? -1 : 1;
     if (a.kind === 0 || (a.type === 'carrier' && !a.revealed)) {
-      var flee = a.kind === 0 && a.flee > 0 ? 1 : 0;
+      var stk = this.struck[a.id], hitNow = stk !== undefined && this.time - stk < 0.6;
+      var flee = a.kind === 0 && (a.flee > 0 || hitNow) ? 1 : 0;
       var greenish = a.kind === 1; // carriers: a subtle tell for sharp-eyed players
       spr = this.personSprite(a.id % 8, frame, flee, face, night, greenish);
-      var bob = frame ? -0.6 : 0;
-      this.blit(ctx, spr, x, y + bob);
-      if (a.kind === 0 && a.known && a.st === 1) this.marker(ctx, x, y - 22, 'exposed');
+      var bob = frame ? -0.6 : 0, as = this.agentScale;
+      if (hitNow) { var jit = Math.sin(this.time * 50) * 1.2; x += jit; ctx.strokeStyle = 'rgba(176,124,224,' + (1 - (this.time - stk) / 0.6).toFixed(2) + ')'; ctx.lineWidth = 2; ellipse(ctx, x, y, 7 * as, 3.5 * as); ctx.stroke(); }
+      this.blit(ctx, spr, x, y + bob, as);
+      if (a.kind === 0 && a.known && a.st === 1) this.marker(ctx, x, y - 22 * as, 'exposed', as);
     } else {
-      var sway = Math.sin(this.time * 3 + a.id) * 0.6;
-      spr = this.zombieSprite(a.type === 'carrier' ? 'basic' : a.type, frame, face, night);
-      this.blit(ctx, spr, x + sway, y);
+      var sway = Math.sin(this.time * 3 + a.id) * 0.6, zs = this.agentScale, zf = frame;
+      var lg = this.lunge[a.id];
+      if (lg && this.time - lg.t < 0.4) {
+        // lunge at the victim
+        var lf = Math.sin(Math.PI * (this.time - lg.t) / 0.4), vp = iso(lg.x, lg.y), ldx = vp.x - x, ldy = vp.y - y, ll = Math.hypot(ldx, ldy) || 1;
+        x += ldx / ll * lf * 7 * zs; y += ldy / ll * lf * 4 * zs; zf = 2; face = ldx < 0 ? -1 : 1;
+      } else if (a.breach > 0 && this.bang[a.id] !== undefined && this.time - this.bang[a.id] < 1.2) {
+        zf = Math.floor(this.time * 8) % 2 ? 2 : 0; sway = Math.sin(this.time * 25) * 1.6; // pounding on the door
+      }
+      spr = this.zombieSprite(a.type === 'carrier' ? 'basic' : a.type, zf, face, night);
+      this.blit(ctx, spr, x + sway, y, zs);
+      if (g.t - a.hitT < 0.12) { ctx.fillStyle = 'rgba(255,255,255,0.65)'; ellipse(ctx, x + sway, y - 10 * zs, 5 * zs, 8 * zs); ctx.fill(); }
       if (a.type === 'carrier') {
-        ctx.strokeStyle = '#CC79A7'; ctx.lineWidth = 1.5; ctx.setLineDash([3, 2]);
-        ellipse(ctx, x, y, 8, 4); ctx.stroke(); ctx.setLineDash([]);
-        this.marker(ctx, x, y - 26, 'carrier');
+        ctx.strokeStyle = '#CC79A7'; ctx.lineWidth = 1.5 * zs; ctx.setLineDash([3, 2]);
+        ellipse(ctx, x, y, 8 * zs, 4 * zs); ctx.stroke(); ctx.setLineDash([]);
+        this.marker(ctx, x, y - 26 * zs, 'carrier', zs);
       }
       if (g.t - a.hitT < 1.5 || a.type === 'brute') {
-        var hw = a.type === 'brute' ? 12 : 8, top = a.type === 'brute' ? y - 36 : y - 26;
+        var hw = (a.type === 'brute' ? 12 : 8) * zs, top = y - (a.type === 'brute' ? 36 : 26) * zs;
         ctx.fillStyle = 'rgba(0,0,0,0.55)'; ctx.fillRect(x - hw, top, hw * 2, 2.5);
         ctx.fillStyle = '#E8E8E8'; ctx.fillRect(x - hw, top, hw * 2 * Math.max(0, a.hp / a.maxhp), 2.5);
       }
@@ -1126,8 +1221,8 @@
   };
 
   // Map markers: shape-coded so they never rely on color alone
-  R.marker = function (ctx, x, y, kind) {
-    var pulse = 1 + Math.sin(this.time * 6) * (this.settings.reducedMotion ? 0 : 0.12);
+  R.marker = function (ctx, x, y, kind, sc) {
+    var pulse = (sc || 1) * (1 + Math.sin(this.time * 6) * (this.settings.reducedMotion ? 0 : 0.12));
     ctx.save(); ctx.translate(x, y); ctx.scale(pulse, pulse);
     if (kind === 'exposed') {
       ctx.fillStyle = '#E69F00'; ctx.strokeStyle = '#3A2A00'; ctx.lineWidth = 1;
@@ -1211,7 +1306,7 @@
 
   R.drawBadges = function (ctx, ui) {
     var g = this.game, z = this.cam.zoom, v = this.view, cbs = g.city.buildings;
-    var showPop = this.settings.badges && z >= 0.85;
+    var showPop = this.settings.badges && z >= 1.25;
     var lens = ui && ui.lens;
     var fs = 10 / Math.max(0.6, z);
     ctx.font = 'bold ' + fs.toFixed(1) + 'px system-ui, sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
