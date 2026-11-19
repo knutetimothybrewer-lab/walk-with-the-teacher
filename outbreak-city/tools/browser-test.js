@@ -271,11 +271,11 @@ const addBots = page => page.addScriptTag({ path: path.join(__dirname, 'strategi
       if (lowFx) app.settings.lowFx = true;
       document.querySelector('[data-f=tut]').checked = false; document.querySelector('[data-a=start]').click();
       const g = app.game;
-      // grow an outbreak, then top up to ~300 moving agents (150 walkers + 140 zombies)
+      // grow an outbreak, then fill the streets to the zombie cap (~150 walkers + 220 zombies)
       while (g.phase !== 'ended' && g.wave < 3) { if (g.phase === 'build') g.startWave(); else if (g.phase === 'briefing') { g.choose(0); } else g.step(); }
       for (let i = 0; i < 600 && g.phase === 'wave'; i++) g.step();
       const roads = []; for (let i = 0; i < g.city.tiles.length; i++) if (g.city.tiles[i] === 1) roads.push(i);
-      while (g.nZombies < 140) { const t = roads[Math.floor(Math.random() * roads.length)]; g.spawnZombie(Math.random() < 0.3 ? 'runner' : 'basic', t % g.W + 0.5, ((t / g.W) | 0) + 0.5, t, 0, -1); }
+      while (g.nZombies < g.maxZombies) { const t = roads[Math.floor(Math.random() * roads.length)]; g.spawnZombie(Math.random() < 0.3 ? 'runner' : 'basic', t % g.W + 0.5, ((t / g.W) | 0) + 0.5, t, 0, -1); }
       for (let i = 0; i < 200 && g.phase === 'wave'; i++) g.step();
       app.hideScreen(); app.lastPhase = g.phase;
       // a few towers so towers/projectiles/particles are in the mix
@@ -287,6 +287,12 @@ const addBots = page => page.addScriptTag({ path: path.join(__dirname, 'strategi
     await page.waitForTimeout(5000);
     const st = await page.evaluate(() => { const a = OutbreakCity._instances[0], ft = a.ft.slice().sort((x, y) => x - y); return { n: a.game.agents.length, frames: ft.length, avg: ft.reduce((x, y) => x + y, 0) / ft.length, med: ft[ft.length >> 1], p95: ft[Math.floor(ft.length * 0.95)], phase: a.game.phase }; });
     if (!lowFx) await shot(page, '50-stress-300-entities');
+    if (lowFx) {
+      // The counters must match the map: zombies = street figures + zombies trapped inside buildings
+      const m = await page.evaluate(() => { const g = OutbreakCity._instances[0].game, t = g.totals; let street = 0; g.agents.forEach(a => { if (!a.dead && a.kind === 1) street++; });
+        const inside = g.blds.reduce((s, b) => s + b.Z, 0); return { counter: +document.querySelector('[data-k=infected] b').textContent, street, inside, sub: document.querySelector('[data-s=infected]').textContent, people: document.querySelector('[data-s=healthy]').textContent, cap: g.maxZombies }; });
+      check('Zombie counter = zombies on the street + zombies inside buildings', Math.abs(m.counter - m.street - m.inside) <= 2 && m.sub.length > 0 && /street/.test(m.people), JSON.stringify(m));
+    }
     // Full effects is reported, not required: on slow devices the game switches to Low effects by itself.
     check('Frame time under load, ' + (lowFx ? 'Low effects (required < 30 ms)' : 'full effects (reported only)') + ' (' + st.n + ' agents; headless software rendering)', lowFx ? st.avg < 30 : true,
       'avg ' + st.avg.toFixed(1) + ' ms (' + (1000 / st.avg).toFixed(0) + ' fps), median ' + st.med.toFixed(1) + ', p95 ' + st.p95.toFixed(1));

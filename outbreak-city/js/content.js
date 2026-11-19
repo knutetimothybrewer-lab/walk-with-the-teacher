@@ -625,7 +625,7 @@
     panic: { name: 'Panic', text: 'Fear in the streets. Panicked people flee across town (spreading infection), buy everything, and follow guidance less.' },
     equity: { name: 'Equity Index', text: 'How fairly protection and outcomes are shared across districts (100 = perfectly fair). Starts low because some districts begin with far less health-care access.' },
     reff: { name: 'R_eff (estimate)', text: 'Average new infections caused by each infected person right now. Above 1 = growing outbreak. Below 1 = shrinking. Estimates are more reliable with Testing Labs.' },
-    counts: { name: 'Who is who', text: 'Healthy = not infected. Known Exposed = infected but not yet turned, found by testing. Infected = active zombies. Dead = lost residents. Many Exposed cases stay hidden unless you test.' }
+    counts: { name: 'Who is who', text: 'Look healthy = everyone not yet showing symptoms (including hidden Exposed). Most residents are indoors; only people on a trip walk the streets. Known Exposed = infected but not yet turned, found by testing. Zombies = every active zombie: those on the streets plus any trapped inside buildings (red badges). Lost = residents who died. Many Exposed cases stay hidden unless you test.' }
   };
 
   /* ------------------------------------------------------------------

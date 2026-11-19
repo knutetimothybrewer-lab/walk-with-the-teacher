@@ -74,16 +74,16 @@
     var side = this.side = el('div', 'oc-box oc-side');
     side.innerHTML = '<div class="oc-side-head"><span>Outbreak status</span><button class="oc-btn" type="button" aria-label="Collapse status panel" title="Collapse (T)" style="min-height:24px;padding:0 6px">▾</button></div>' +
       '<div class="oc-side-body"><div class="oc-counts">' +
-      '<div class="oc-count" data-k="healthy" tabindex="0">' + SHAPES.healthy + '<div><b>-</b><small>Look healthy</small></div></div>' +
+      '<div class="oc-count" data-k="healthy" tabindex="0">' + SHAPES.healthy + '<div><b>-</b><small>Look healthy</small><small class="oc-sub" data-s="healthy"></small></div></div>' +
       '<div class="oc-count" data-k="known" tabindex="0">' + SHAPES.known + '<div><b>-</b><small>Known exposed</small></div></div>' +
-      '<div class="oc-count" data-k="infected" tabindex="0">' + SHAPES.infected + '<div><b>-</b><small>Infected</small></div></div>' +
+      '<div class="oc-count" data-k="infected" tabindex="0">' + SHAPES.infected + '<div><b>-</b><small>Zombies</small><small class="oc-sub" data-s="infected"></small></div></div>' +
       '<div class="oc-count" data-k="dead" tabindex="0">' + SHAPES.dead + '<div><b>-</b><small>Lost</small></div></div>' +
       '</div><div class="oc-reff" tabindex="0"><span class="muted oc-small">R<sub>eff</sub> estimate</span><b>-</b></div>' +
       '<canvas class="oc-chart" width="440" height="190" aria-label="Epidemic curve"></canvas>' +
       '<div class="oc-legend"><span><i style="border-color:#D55E00"></i>Infected</span><span><i style="border-color:#E69F00;border-top-style:dashed"></i>Known exposed</span><span><i style="border-color:#F2A6D6;border-top-style:dotted"></i>Hospital beds</span></div></div>';
     side.querySelector('button').addEventListener('click', function () { side.classList.toggle('collapsed'); });
     this.counts = {};
-    side.querySelectorAll('.oc-count').forEach(function (c) { self.counts[c.getAttribute('data-k')] = c.querySelector('b'); self.bindTip(c, function () { return '<b>' + esc(D.METERS.counts.name) + '</b>' + esc(D.METERS.counts.text); }); });
+    side.querySelectorAll('.oc-count').forEach(function (c) { self.counts[c.getAttribute('data-k')] = c.querySelector('b'); var sub = c.querySelector('.oc-sub'); if (sub) (self.countSubs = self.countSubs || {})[c.getAttribute('data-k')] = sub; self.bindTip(c, function () { return '<b>' + esc(D.METERS.counts.name) + '</b>' + esc(D.METERS.counts.text); }); });
     this.reffEl = side.querySelector('.oc-reff b');
     this.bindTip(side.querySelector('.oc-reff'), function () { return '<b>' + esc(D.METERS.reff.name) + '</b>' + esc(D.METERS.reff.text) + (self.game && self.game.reffConf < 0.2 ? '<span class="c">Low confidence: few residents are covered by testing.</span>' : ''); });
     this.chart = side.querySelector('canvas');
@@ -187,6 +187,11 @@
 
   /* ================= HUD updates ================= */
   var barColor = function (v, invert) { var x = invert ? 100 - v : v; return x < 25 ? '#D55E00' : x < 50 ? '#E69F00' : '#36d19a'; };
+  U.setSub = function (key, text) {
+    var el = this.countSubs && this.countSubs[key];
+    if (el && el.textContent !== text) el.textContent = text;
+  };
+
   U.setMeter = function (key, text, pct, invert, warn) {
     var m = this.meters[key];
     if (m.last !== text) { m.val.textContent = text; m.last = text; m.el.setAttribute('aria-label', D.METERS[key].name + ': ' + text); }
@@ -221,6 +226,9 @@
     this.counts.healthy.textContent = t.healthyLooking;
     this.counts.known.textContent = t.knownE;
     this.counts.infected.textContent = t.zombies;
+    var outside = t.walkers - t.knownWalk;
+    this.setSub('healthy', outside + ' out on the street, rest indoors');
+    this.setSub('infected', t.Z > 0 ? t.zAgents + ' in streets, ' + t.Z + ' inside buildings' : (t.zombies > 0 ? 'all in the streets' : ''));
     this.counts.dead.textContent = g.stats.deaths;
     var rv = g.reff, conf = g.reffConf;
     if (!g.reffReady) { this.reffEl.textContent = '—'; this.reffEl.style.color = '#a9b8c4'; }
@@ -508,7 +516,7 @@
       body = '<p><b>Goal:</b> get ' + esc(D.CITY_NAME) + ' through every wave with as many residents, as much trust and as much fairness as possible. How you win matters: your ending depends on survival, trust, equity and your choices.</p>' +
         '<p><b>The catch:</b> bitten people look healthy while they incubate (the orange ◆ only appears once a Testing Lab finds them). Shooting visible zombies never finds them.</p>' +
         '<h3>Controls</h3><ul class="oc-small"><li>Drag (or WASD / arrow keys) to move the map. Scroll, pinch or +/− to zoom. C to recenter.</li><li>1–9 or the build bar to pick an intervention, then click a spot. Shift-click to place several. Esc or right-click cancels.</li><li>Click a tower to upgrade (U), sell (X) or learn about it. Health Worker vans move when you tap a road.</li><li>Space pauses (you can still build). F changes speed (1x/2x/3x). L opens the Data Lens. Enter starts the next wave.</li></ul>' +
-        '<h3>Map legend</h3><ul class="oc-small"><li><b style="color:#E69F00">◆ orange diamond</b>: a known Exposed person or building (found by testing).</li><li><b style="color:#CC79A7">? pink circle</b>: an unmasked Carrier (looked like a citizen).</li><li>Zombies reach forward with both arms. Sprinters lean and leave speed lines. Brutes are big and armored. <b style="color:#B7E34A">Super-Spreaders</b> (from wave 5) are giants with a green toxic ring: they infect several people per attack, smash barricades and can’t be captured by hospitals.</li><li>Newer zombies: <b>Spitters</b> (bloated, green throat) infect people from a distance; <b>Screamers</b> (pale, wild hair) shriek to speed up nearby zombies; <b>Crawlers</b> drag themselves along the ground, slip under barricades and are hard to hit.</li><li>Buildings change for good once residents are infected: a red quarantine X, then smashed windows and vines, then a smoking ruin.</li><li><b style="color:#FFB27A">▼ INCOMING</b>: glowing cracks where the next wave will claw up out of the ground. Once open, these hell holes keep producing zombies.</li><li><b style="color:#56B4E9">City Hall</b> (center) is your command bunker. Zombies march on it. If its integrity hits 0, the game ends.</li><li>Building badges show residents; orange badges show infections that testing has found.</li></ul>';
+        '<h3>Map legend</h3><ul class="oc-small"><li><b style="color:#E69F00">◆ orange diamond</b>: a known Exposed person or building (found by testing).</li><li><b style="color:#CC79A7">? pink circle</b>: an unmasked Carrier (looked like a citizen).</li><li>Zombies reach forward with both arms. Sprinters lean and leave speed lines. Brutes are big and armored. <b style="color:#B7E34A">Super-Spreaders</b> (from wave 5) are giants with a green toxic ring: they infect several people per attack, smash barricades and can’t be captured by hospitals.</li><li>Newer zombies: <b>Spitters</b> (bloated, green throat) infect people from a distance; <b>Screamers</b> (pale, wild hair) shriek to speed up nearby zombies; <b>Crawlers</b> drag themselves along the ground, slip under barricades and are hard to hit.</li><li>Buildings change for good once residents are infected: a red quarantine X, then smashed windows and vines, then a smoking ruin.</li><li><b style="color:#FFB27A">▼ INCOMING</b>: glowing cracks where the next wave will claw up out of the ground. Once open, these hell holes keep producing zombies.</li><li><b style="color:#56B4E9">City Hall</b> (center) is your command bunker. Zombies march on it. If its integrity hits 0, the game ends.</li><li>Building badges show residents (most people are indoors; only those on a trip walk the streets). Orange badges show infections that testing has found. A red badge means zombies are trapped inside: the street can only hold so many at once, so the rest wait in buildings and still count.</li></ul>';
     } else if (tab === 'towers') {
       body = D.TOWER_ORDER.map(function (k) {
         var t = D.TOWERS[k];

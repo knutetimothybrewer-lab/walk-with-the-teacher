@@ -1965,7 +1965,9 @@
       var pressure = b.E + b.Ek + b.Z;
       var alive = b.S + b.E + b.Ek + b.V + b.R;
       var showP = seen && pressure > 0;
-      if (!showPop && !showP && !lens) continue;
+      // zombies trapped inside are never hidden: the counter includes them, so the map shows them too
+      var showZ = !showP && b.Z > 0;
+      if (!showPop && !showP && !showZ && !lens) continue;
       var p = iso(cb.x + 0.5, cb.y + 0.5);
       var top = p.y - this.bHeight(cb) - 22;
       if (p.x < v.x0 || p.x > v.x1 || top < v.y0 - 20 || top > v.y1) continue;
@@ -1981,6 +1983,11 @@
         ctx.fillStyle = b.Z > 0 ? '#D55E00' : '#E69F00';
         ctx.beginPath(); ctx.roundRect ? ctx.roundRect(p.x - w / 2, top - 7 / z, w, 14 / z, 7 / z) : ctx.rect(p.x - w / 2, top - 7 / z, w, 14 / z); ctx.fill();
         ctx.fillStyle = '#1A1206'; ctx.fillText(label, p.x, top + 0.5 / z);
+      } else if (showZ) {
+        var lz = '\u25B2 ' + b.Z, wz = ctx.measureText(lz).width + 8 / z;
+        ctx.fillStyle = '#D55E00';
+        ctx.beginPath(); ctx.roundRect ? ctx.roundRect(p.x - wz / 2, top - 7 / z, wz, 14 / z, 7 / z) : ctx.rect(p.x - wz / 2, top - 7 / z, wz, 14 / z); ctx.fill();
+        ctx.fillStyle = '#1A1206'; ctx.fillText(lz, p.x, top + 0.5 / z);
       } else if (showPop && alive > 0) {
         var lb = '' + alive, w2 = ctx.measureText(lb).width + 8 / z;
         ctx.fillStyle = 'rgba(20,28,40,0.72)';

@@ -57,7 +57,7 @@
 
     // --- Agents ---
     maxWalkers: 150,         // residents walking the streets at once (simulation cap)
-    maxZombies: 140,         // zombie agents on the streets at once (extra wait inside buildings)
+    maxZombies: 220,         // zombie agents on the streets at once (extra wait inside buildings)
     commuteRate: 3.2,        // trips started per second citywide (before mobility modifiers)
     sameDistrictTrips: 0.55, // share of trips that stay in the home district
     walkerSpeed: 1.15,       // tiles per second
@@ -128,7 +128,7 @@
     normal: { hall: 1.0, label: 'Normal', budget: 1.0,  trust: 60, transmission: 1.0,  spawn: 1.0,  grant: 1.0,  vaccines: 1.0, pop: 1.0 },
     hard:   { hall: 0.8, label: 'Hard',   budget: 0.9,  trust: 52, transmission: 0.95, spawn: 1.15,  grant: 0.9,  vaccines: 0.85, pop: 1.1 },
     // INSANE: unlocked after finishing a game. Unlimited budget, a crazy number of zombies.
-    insane: { hall: 3,   label: 'INSANE', budget: 1,    trust: 60, transmission: 1.1,  spawn: 4,    grant: 1,    vaccines: 6,   pop: 1.0, unlimited: true, zombieCap: 260, locked: true }
+    insane: { hall: 3,   label: 'INSANE', budget: 1,    trust: 60, transmission: 1.1,  spawn: 4,    grant: 1,    vaccines: 6,   pop: 1.0, unlimited: true, zombieCap: 400, locked: true }
   };
 
   /* ---- TOWERS / INTERVENTIONS ---------------------------------------

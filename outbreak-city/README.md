@@ -158,6 +158,11 @@ The whole game is one namespace (`window.OutbreakCity`) with one entry point:
 
 All CSS is scoped under `.oc-root`, saved data uses one `localStorage` key (`outbreakCity.v1`), and the game fills whatever element you give it.
 
+## What the counters mean
+
+- **Look healthy:** every resident not yet showing symptoms. Most people are indoors (badges over buildings show how many). Only residents on a trip walk the streets, and the line under the number says how many are out right now.
+- **Zombies:** every active zombie. Up to 220 walk the streets at once (400 in INSANE) so Chromebooks stay smooth. Any extra wait inside buildings, still count, and show as red ▲ badges. The line under the number splits the total, e.g. "220 in streets, 173 inside buildings".
+
 ## How the game maps to public health
 
 | In the game | Real concept |
@@ -278,11 +283,11 @@ Win rates and game length (`node outbreak-city/tools/winrates.js 40 normal full`
 
 | Strategy | Infection stopped | Contained (endemic) | Survived, damaged | Infection wins | Avg survival | Game length at 1× |
 |---|---|---|---|---|---|---|
-| Do nothing | 0% | 0% | 0% | 100% | 38% | 5 min (4–6) |
+| Do nothing | 0% | 0% | 0% | 100% | 46% | 5 min (4–6) |
 | Pure militia | 0% | 0% | 3% | 98% | 42% | 14 min (10–15) |
 | Heavy Turrets + militia | 0% | 0% | 0% | 100% | 38% | 10 min (6–15) |
-| Rich districts only | 0% | 18% | 13% | 70% | 54% | 15 min |
-| **Typical student** (varied, partly random choices) | 0% | 23% | 30% | **48%** | 55% | 14 min (8–15) |
+| Rich districts only | 0% | 18% | 10% | 73% | 54% | 14 min |
+| **Typical student** (varied, partly random choices) | 0% | 25% | 25% | **50%** | 55% | 15 min (11–15) |
 | Balanced public-health toolkit | 15% | 85% | 0% | 0% | 74% | 15 min |
 | Expert (guards entrances + full toolkit) | 23% | 73% | 0% | 5% | 75% | 15 min |
 
