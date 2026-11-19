@@ -6,10 +6,10 @@ const D = NS.data;
 const CHOICES = {
   tough: { honesty: 1, curfew: 0, schools: 2, masks: 2, donors: 0, batch: 0, rumor: 1, stockpile: 1, patrol: 0, surge: 2, stadium: 0,
     influencer: 2, gates: 0, sickleave: 1, research: 1, hoarding: 1, mall: 0, app: 0, transit: 0, volunteers: 1, inspector: 1,
-    language: 1, premium: 0, memorial: 1, families: 1, evictions: 1, blame: 2, neighbor: 1, wastewater: 1, bounty: 0 },
+    language: 1, premium: 0, memorial: 1, families: 1, evictions: 1, blame: 2, neighbor: 1, wastewater: 1, bounty: 0, military: 0 },
   good: { honesty: 0, curfew: 1, schools: 1, masks: 1, donors: 1, batch: 2, rumor: 0, stockpile: 0, patrol: 1, surge: 0, stadium: 1,
     influencer: 0, gates: 1, sickleave: 0, research: 0, hoarding: 0, mall: 1, app: 1, transit: 2, volunteers: 0, inspector: 0,
-    language: 0, premium: 1, memorial: 0, families: 0, evictions: 0, blame: 0, neighbor: 0, wastewater: 0, bounty: 1 }
+    language: 0, premium: 1, memorial: 0, families: 0, evictions: 0, blame: 0, neighbor: 0, wastewater: 0, bounty: 1, military: 2 }
 };
 
 function candidates(g, type, district) {
@@ -111,6 +111,10 @@ const STRATS = {
     },
     build(g) { return STRATS.balanced.build.call(this, g); },
     choose: (g, card) => ({ donors: 0, stockpile: 1, premium: 0, transit: 0, hoarding: 1, language: 1, blame: 2, sickleave: 1, evictions: 1, patrol: 0 })[card.id] ?? (CHOICES.good[card.id] ?? 0)
+  },
+  heavyShooter: {
+    build(g) { let guard = 0; while (guard++ < 40 && (placeBest(g, 'heavy') || placeBest(g, 'militia') || upgradeAny(g, ['heavy', 'militia']))); },
+    choose: (g, card) => CHOICES.tough[card.id] ?? 0
   },
   random: {
     build(g) {

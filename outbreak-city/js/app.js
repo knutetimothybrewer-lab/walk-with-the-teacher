@@ -220,8 +220,8 @@
     if (g.phase === 'ended' && !this.endShown) {
       this.endShown = true; this.autosave();
       var self = this;
-      this.banner(g.endReason === 'hall' ? 'CITY HALL HAS FALLEN' : g.endReason === 'collapse' ? 'THE CITY HAS FALLEN' : 'OUTBREAK OVER', g.endReason === 'hall' ? 'The command bunker was overrun' : g.endReason === 'collapse' ? 'Too many residents were lost' : 'Let’s see what kind of city is left');
-      setTimeout(function () { if (!self.destroyed) self.showEnd(); }, 1600);
+      if (g.endReason !== 'nuke') this.banner(g.endReason === 'hall' ? 'CITY HALL HAS FALLEN' : g.endReason === 'collapse' ? 'THE CITY HAS FALLEN' : 'OUTBREAK OVER', g.endReason === 'hall' ? 'The command bunker was overrun' : g.endReason === 'collapse' ? 'Too many residents were lost' : 'Let’s see what kind of city is left');
+      var endedGame = g; setTimeout(function () { if (!self.destroyed && self.game === endedGame && endedGame.phase === 'ended') self.showEnd(); }, g.endReason === 'nuke' ? 7000 : 1600);
     }
   };
 
@@ -242,6 +242,11 @@
         case 'news': this.pushNews(this.fillNews(e.key, e.vars)); break;
         case 'consequence': this.toast('⏳ ' + e.text, 'warn', 7000); this.pushNews('UPDATE: ' + e.text.toUpperCase()); s.play('alert'); break;
         case 'waveStart': this.banner('WAVE ' + e.w, e.w === g.totalWaves ? 'Final wave' : (g.weather !== 'clear' ? (g.weather === 'fog' ? 'Fog rolls in: turrets see less' : 'Rain: fewer people out') : 'Zombies approach')); break;
+        case 'tanksArrive': this.banner('TANKS ROLLING IN', 'The military will hunt zombies this wave, but they can\u2019t see hidden infections'); s.play('wave'); this.pushNews(this.fillNews('tanks')); break;
+        case 'tanksLeave': this.toast('The tanks have pulled out of the city.', 'warn'); break;
+        case 'tankShot': s.play('boom'); break;
+        case 'scream': s.play('scream'); break;
+        case 'nuke': this.banner('\u2622 NUCLEAR OPTION', 'Mercy Falls is being destroyed'); break;
         case 'megaArrive': this.banner('SUPER-SPREADER!', 'A giant zombie that infects many people at once. Focus fire, barricades and high vaccination slow it.'); s.play('alert'); s.play('wave'); this.pushNews(this.fillNews('mega')); break;
         case 'ruin': s.play('barricade'); break;
         case 'chaos':
@@ -258,7 +263,7 @@
         case 'finalPush': this.banner('FINAL PUSH', 'No more arrivals. Clear the remaining cases!'); s.play('alert'); break;
         case 'stockout': this.toast('Vaccine stock is empty. Clinics are idle until the next shipment.', 'bad'); this.flashMeter('vaccines'); break;
         case 'firstBite': if (this.tut) this.tutEvent('bite'); break;
-        case 'ended': s.play(g.ending === 'collapse' || g.ending === 'hallFallen' || g.ending === 'hollow' || g.ending === 'zombieMayor' ? 'lose' : 'win'); break;
+        case 'ended': s.play(g.ending === 'nuked' ? 'boomBig' : g.ending === 'collapse' || g.ending === 'hallFallen' || g.ending === 'hollow' || g.ending === 'zombieMayor' ? 'lose' : 'win'); break;
       }
     }
     fx.length = 0;
@@ -404,7 +409,7 @@
       return;
     }
     if (!g || g.attract) return;
-    if (k >= '1' && k <= '8') { this.selectTower(D.TOWER_ORDER[+k - 1]); e.preventDefault(); return; }
+    if (k >= '1' && k <= '9') { var tt = D.TOWER_ORDER.filter(function (q) { return D.TOWERS[q].key === k; })[0]; if (tt) { this.selectTower(tt); e.preventDefault(); } return; }
     switch (lk) {
       case 'Escape': this.cancelModes(); this.ui.selected = null; this.updateSelPanel(true); break;
       case ' ': this.togglePause(); e.preventDefault(); break;

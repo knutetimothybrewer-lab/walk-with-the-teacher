@@ -597,6 +597,7 @@
 
   R.zombieSprite = function (type, frame, face, night) {
     var key = 'z|' + type + '|' + frame + '|' + face + '|' + (night ? 1 : 0);
+    if (type === 'spitter' || type === 'screamer' || type === 'crawler') return this.sprite(key, 30, 30, 13, 25, function (ctx) { R.paintNewZombie(ctx, type, frame, face, night); });
     var mega = type === 'mega', big = type === 'brute' || mega;
     var sw = mega ? 66 : big ? 26 : 20, sh = mega ? 82 : big ? 34 : 28, sax = mega ? 30 : big ? 12 : 9, say = mega ? 76 : big ? 30 : 24;
     return this.sprite(key, sw, sh, sax, say, function (ctx) {
@@ -740,7 +741,8 @@
     switch (e.k) {
       case 'shot':
         this.flash[e.tw] = this.time;
-        this.tracer(e.x0, e.y0, 22, e.x1, e.y1, 9, { color: '#FFE08A', max: 0.09, arc: 3, w: 1.6 });
+        this.tracer(e.x0, e.y0, 22, e.x1, e.y1, 9, { color: '#FFE08A', max: e.heavy ? 0.12 : 0.09, arc: 3, w: e.heavy ? 3.2 : 1.6 });
+        if (e.heavy) { this.burst(e.x1, e.y1, 10, { colors: ['#FF6A1F', '#FFD24A', '#6B6B6B'], speed: 38, up: 50, max: 0.6, size: 2.8 }); this.ring(e.x1, e.y1, 0.75, 'rgba(255,170,60,0.85)', 0.35, 2.5); this.addShake(0.8); }
         this.part(iso(e.x1, e.y1).x, iso(e.x1, e.y1).y, { z: 9, max: 0.15, kind: 'spark', color: '#FFF3B0', size: 4, g: 0 });
         if (e.stray) {
           this.tracer(e.x0, e.y0, 22, e.sx, e.sy, 8, { color: '#FF6A3D', max: 0.15, arc: 2, w: 2 });
@@ -801,6 +803,15 @@
         this.addShake(e.mega ? 5 : 1.6);
         break;
       }
+      case 'spit': this.tracer(e.x0, e.y0, 14, e.x, e.y, 8, { color: '#B7E34A', max: 0.45, arc: 18, kind: 'dart', w: 2.6, onHit: function () { self.burst(e.x, e.y, 6, { colors: ['#B7E34A', '#7FA83A'], speed: 18, up: 22, max: 0.5 }); } }); break;
+      case 'scream': this.ring(e.x, e.y, e.r * 0.6, 'rgba(230,230,255,0.85)', 0.6, 3); this.ring(e.x, e.y, e.r, 'rgba(200,180,255,0.6)', 0.9, 2); if (this.time - (this.lastScream || -9) > 1.2) { this.lastScream = this.time; this.text(e.x, e.y, 'SCREEEE!', '#E6E0FF'); } break;
+      case 'tankShot':
+        this.tracer(e.x0, e.y0, 18, e.x1, e.y1, 6, { color: '#FFE08A', max: 0.14, arc: 4, w: 3 });
+        this.burst(e.x1, e.y1, 14, { colors: ['#FF6A1F', '#FFD24A', '#6B6B6B'], speed: 46, up: 60, max: 0.7, size: 3 });
+        this.ring(e.x1, e.y1, 0.9, 'rgba(255,170,60,0.9)', 0.4, 3); this.addShake(1.4);
+        if (this.time - this.lastBang > 0.6) { this.lastBang = this.time; this.text(e.x1, e.y1, 'BOOM!', '#FFB347', true); }
+        break;
+      case 'nuke': this.nukeT = this.time; this.nukeAt = { x: e.x, y: e.y }; this.focus(e.x, e.y, 0.55); setTimeout(function () { self.addShake(14); }, 1250); break;
       case 'megaArrive': this.ring(e.x, e.y, 2.2, 'rgba(183,227,74,0.9)', 1.4, 4); this.addShake(7); break;
       case 'ruin': this.burst(e.x, e.y, 16, { colors: ['#6B6B6B', '#3E3E3E', '#8BC34A'], speed: 26, up: 50, max: 1.4, kind: 'smoke', size: 5, g: -12, z: 20 }); this.text(e.x, e.y, 'OVERRUN', '#B7E34A', true); this.addShake(2); break;
       case 'waveStart': this.addShake(2); break;
@@ -867,6 +878,28 @@
           var rec = firing ? -1.5 : 0;
           this.soldier(ctx, px + dx * rec, py + dy * rec * 0.5, dx, dy, firing, tw.id + sd);
         }
+        break;
+      }
+      case 'heavy': {
+        platform();
+        // reinforced concrete emplacement with a radar mast
+        box(x, y - 3, 20, 10, 9, '#8A8D86');
+        ctx.fillStyle = shade('#6B6E66', 1); for (var hz = 0; hz < 4; hz++) ctx.fillRect(x - 18 + hz * 9, y - 10 + hz * 1.5, 5, 1.5);
+        ctx.strokeStyle = '#555'; ctx.lineWidth = 1.3; ctx.beginPath(); ctx.moveTo(x - 14, y - 10); ctx.lineTo(x - 14, y - 30); ctx.stroke();
+        var rs = Math.cos(t * 3 + tw.id);
+        ctx.fillStyle = '#D9DDE2'; ellipse(ctx, x - 14, y - 31, Math.abs(rs) * 6 + 1, 3); ctx.fill();
+        var ang2 = tw.angle || 0, hdx = Math.cos(ang2) - Math.sin(ang2), hdy = (Math.cos(ang2) + Math.sin(ang2)) * 0.5, hl = Math.hypot(hdx, hdy) || 1;
+        hdx /= hl; hdy /= hl;
+        var ft2 = this.flash[tw.id], rec2 = ft2 !== undefined && t - ft2 < 0.1 ? -3 : 0;
+        ctx.strokeStyle = '#23261F'; ctx.lineWidth = 4; ctx.lineCap = 'round';
+        for (var bb2 = -1; bb2 <= 1; bb2 += 2) { var ox = -hdy * 3 * bb2, oy = hdx * 1.5 * bb2; ctx.beginPath(); ctx.moveTo(x + ox, y - 17 + oy); ctx.lineTo(x + ox + hdx * (26 + rec2), y - 17 + oy + hdy * (26 + rec2)); ctx.stroke(); }
+        box(x, y - 12, 10, 5, 7, '#5C6152');
+        ctx.fillStyle = '#8C2D19'; ctx.beginPath(); ctx.arc(x, y - 21, 3, 0, 7); ctx.fill();
+        if (ft2 !== undefined && t - ft2 < 0.08) {
+          ctx.fillStyle = '#FFE08A'; ctx.beginPath(); ctx.arc(x + hdx * 30, y - 17 + hdy * 30, 8, 0, 7); ctx.fill();
+          ctx.fillStyle = '#FFFFFF'; ctx.beginPath(); ctx.arc(x + hdx * 30, y - 17 + hdy * 30, 3.5, 0, 7); ctx.fill();
+        }
+        if (!ghost) for (var sd2 = 0; sd2 < 3; sd2++) this.soldier(ctx, x - 20 + sd2 * 17, y + 4 + (sd2 % 2) * 3, hdx, hdy, ft2 !== undefined && t - ft2 < 0.12 && sd2 === 1, tw.id + sd2);
         break;
       }
       case 'lab': {
@@ -1169,17 +1202,145 @@
   };
 
 
+
+  // The three newer zombie types, each with a distinct silhouette (not just color)
+  R.paintNewZombie = function (ctx, type, frame, face, night) {
+    ctx.scale(face, 1);
+    var atk = frame === 2, l = frame ? 1.6 : -1.2;
+    ctx.fillStyle = 'rgba(0,0,0,0.28)'; ellipse(ctx, 0, 0, type === 'crawler' ? 8 : 5, 2); ctx.fill();
+    if (type === 'crawler') {
+      // dragging itself along the ground, arms clawing forward
+      var skin = shade('#8FB27C', 1, night);
+      ctx.fillStyle = shade('#5A4F45', 1, night); ctx.beginPath(); ctx.ellipse(-2, -2.6, 6, 2.6, -0.08, 0, 7); ctx.fill();
+      ctx.strokeStyle = shade('#3A3442', 1, night); ctx.lineWidth = 1.6; ctx.lineCap = 'round';
+      ctx.beginPath(); ctx.moveTo(-7, -2); ctx.lineTo(-10.5, -1 + l * 0.4); ctx.stroke();
+      ctx.strokeStyle = skin; ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.moveTo(2.5, -3.5); ctx.lineTo(7.5 + l, -1); ctx.moveTo(2, -2.5); ctx.lineTo(6.5 - l * 0.6, 0); ctx.stroke();
+      ctx.fillStyle = skin; ctx.beginPath(); ctx.arc(4.4, -5, 2.6, 0, 7); ctx.fill();
+      ctx.fillStyle = '#F0E442'; ctx.fillRect(5.2, -5.8, 1, 1); ctx.fillRect(6.4, -5.6, 0.9, 0.9);
+      ctx.fillStyle = shade('#5B3A3A', 1, night); ctx.fillRect(5, -4, 2, atk ? 1.6 : 0.6);
+      return;
+    }
+    var legC = shade('#3A3442', 1, night);
+    ctx.strokeStyle = legC; ctx.lineWidth = 1.8; ctx.lineCap = 'round';
+    ctx.beginPath(); ctx.moveTo(-1, -5.5); ctx.lineTo(-1.5 + l, -0.4); ctx.moveTo(1, -5.5); ctx.lineTo(1.5 - l, 0); ctx.stroke();
+    if (type === 'spitter') {
+      // bloated, with a glowing acid sac at the throat
+      var sk = shade('#9DBA6A', 1, night);
+      ctx.fillStyle = shade('#6E7A3C', 1, night); ctx.beginPath(); ctx.ellipse(0.5, -9, 5.2, 4.6, 0, 0, 7); ctx.fill();
+      ctx.fillStyle = shade('#B7E34A', 1, night); ctx.beginPath(); ctx.ellipse(1.5, -8, 2.6, 2.2, 0, 0, 7); ctx.fill();
+      ctx.strokeStyle = sk; ctx.lineWidth = 1.4; ctx.beginPath(); ctx.moveTo(-3.5, -10); ctx.lineTo(-5, -6.5); ctx.moveTo(4.5, -10); ctx.lineTo(6, -7); ctx.stroke();
+      ctx.fillStyle = sk; ctx.beginPath(); ctx.arc(2, atk ? -15.5 : -14.6, 2.7, 0, 7); ctx.fill();
+      ctx.fillStyle = '#C7F25A'; ctx.beginPath(); ctx.ellipse(3.8, atk ? -16 : -13.6, 1.3, atk ? 1.6 : 0.9, 0, 0, 7); ctx.fill();
+      ctx.fillStyle = '#1A1A1A'; ctx.fillRect(2.6, -15.6, 0.9, 0.9);
+      if (atk) { ctx.fillStyle = 'rgba(183,227,74,0.9)'; ctx.beginPath(); ctx.arc(7, -17, 1.4, 0, 7); ctx.arc(9.5, -17.8, 1, 0, 7); ctx.fill(); }
+    } else {
+      // screamer: gaunt, pale, wild hair, mouth stretched open
+      var pale = shade('#D9DCC8', 1, night);
+      ctx.fillStyle = shade('#4E4A5E', 1, night); ctx.fillRect(-2.4, -11.5, 4.8, 6.2);
+      ctx.strokeStyle = pale; ctx.lineWidth = 1.3; ctx.beginPath();
+      if (atk) { ctx.moveTo(-2.2, -10.8); ctx.lineTo(-6.5, -14); ctx.moveTo(2.2, -10.8); ctx.lineTo(6.5, -14); }
+      else { ctx.moveTo(-2.2, -10.8); ctx.lineTo(-3.6, -6.5); ctx.moveTo(2.2, -10.8); ctx.lineTo(3.6, -6.5); }
+      ctx.stroke();
+      ctx.fillStyle = pale; ctx.beginPath(); ctx.ellipse(0.4, -14.4, 2.6, 3, 0, 0, 7); ctx.fill();
+      ctx.strokeStyle = shade('#2B2B2B', 1, night); ctx.lineWidth = 0.9;
+      for (var hk = 0; hk < 5; hk++) { ctx.beginPath(); ctx.moveTo(-2 + hk, -16.8); ctx.lineTo(-3.5 + hk * 1.6 + (frame ? 0.6 : -0.6), -20.5 + (hk % 2)); ctx.stroke(); }
+      ctx.fillStyle = '#111'; ctx.beginPath(); ctx.ellipse(0.8, -13, 1.1, atk ? 2 : 1.1, 0, 0, 7); ctx.fill();
+      ctx.fillStyle = '#D55E00'; ctx.fillRect(-0.6, -15.4, 0.9, 0.9); ctx.fillRect(1.4, -15.4, 0.9, 0.9);
+    }
+  };
+
+  // Army tank: hull, tracks and turret drawn from a rotated box projected to iso
+  R.drawTank = function (ctx, tk, x, y) {
+    var c = Math.cos(tk.angle), sn = Math.sin(tk.angle), L = 0.48, Wd = 0.3, t = this.time, night = this.night > 0.5;
+    var pt = function (fx, fy, h) { var wx = fx * c - fy * sn, wy = fx * sn + fy * c; return { x: x + (wx - wy) * HW, y: y + (wx + wy) * HH - (h || 0) }; };
+    var poly = function (pts, col) { ctx.fillStyle = col; ctx.beginPath(); pts.forEach(function (p, i) { if (i) ctx.lineTo(p.x, p.y); else ctx.moveTo(p.x, p.y); }); ctx.closePath(); ctx.fill(); };
+    poly([pt(-L, -Wd, -2), pt(L, -Wd, -2), pt(L, Wd, -2), pt(-L, Wd, -2)], 'rgba(0,0,0,0.3)');
+    poly([pt(-L, -Wd, 0), pt(L, -Wd, 0), pt(L, Wd, 0), pt(-L, Wd, 0)], shade('#2A2D22', 1, night));
+    poly([pt(-L, -Wd, 4), pt(L, -Wd, 4), pt(L, Wd, 4), pt(-L, Wd, 4)], shade('#2E3326', 1, night));
+    poly([pt(-L * 0.9, -Wd * 0.75, 9), pt(L * 0.9, -Wd * 0.75, 9), pt(L * 0.9, Wd * 0.75, 9), pt(-L * 0.9, Wd * 0.75, 9)], shade('#5E6B3A', 1.05, night));
+    // tread marks animate while moving
+    ctx.strokeStyle = 'rgba(20,20,20,0.6)'; ctx.lineWidth = 1;
+    for (var k = 0; k < 5; k++) { var f = ((k / 5 + t * 1.2) % 1) * 2 - 1, a1 = pt(f * L, -Wd, 3), a2 = pt(f * L, Wd, 3); ctx.beginPath(); ctx.moveTo(a1.x, a1.y); ctx.lineTo(a1.x, a1.y + 3); ctx.moveTo(a2.x, a2.y); ctx.lineTo(a2.x, a2.y + 3); ctx.stroke(); }
+    // turret + barrel
+    var tc = pt(0, 0, 11), ta = tk.turret, bx = Math.cos(ta) - Math.sin(ta), by = (Math.cos(ta) + Math.sin(ta)) * 0.5, bl = Math.hypot(bx, by) || 1;
+    bx /= bl; by /= bl;
+    ctx.strokeStyle = shade('#3E4630', 1, night); ctx.lineWidth = 3.4; ctx.lineCap = 'round';
+    ctx.beginPath(); ctx.moveTo(tc.x, tc.y - 1); ctx.lineTo(tc.x + bx * 24, tc.y - 1 + by * 24); ctx.stroke();
+    ctx.fillStyle = shade('#6F7D45', 1, night); ctx.beginPath(); ctx.ellipse(tc.x, tc.y, 10, 6, 0, 0, 7); ctx.fill();
+    ctx.fillStyle = shade('#56632F', 1, night); ctx.beginPath(); ctx.ellipse(tc.x, tc.y + 1.5, 10, 4.5, 0, 0, Math.PI); ctx.fill();
+    ctx.fillStyle = '#F0F0F0'; ctx.font = '700 7px Oswald, sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('★', tc.x, tc.y - 0.5);
+    if (this.game.t - tk.lastFire < 0.12) {
+      var mx = tc.x + bx * 27, my = tc.y - 1 + by * 27;
+      ctx.fillStyle = '#FFE08A'; ctx.beginPath(); ctx.arc(mx, my, 7, 0, 7); ctx.fill(); ctx.fillStyle = '#FFF'; ctx.beginPath(); ctx.arc(mx, my, 3, 0, 7); ctx.fill();
+    }
+    if (!this.settings.lowFx && Math.random() < 0.08) { var ex = pt(-L, 0, 6); this.part(ex.x, ex.y, { z: 0, vx: -6, vy: -2, vz: 10, g: -4, max: 1.4, kind: 'smoke', color: 'rgba(90,90,90,0.4)', size: 3 }); }
+  };
+
+  // The nuclear option: missile, white flash, fireball, mushroom cloud and shockwave
+  R.drawNuke = function (ctx) {
+    if (this.nukeT === undefined) return;
+    var e = this.time - this.nukeT, p = iso(this.nukeAt.x, this.nukeAt.y);
+    if (e < 1.2) {
+      var f = e / 1.2, my = p.y - 900 * (1 - f);
+      ctx.strokeStyle = 'rgba(255,255,255,0.6)'; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(p.x, my - 160); ctx.lineTo(p.x, my); ctx.stroke();
+      ctx.fillStyle = '#E8E8E8'; ctx.beginPath(); ctx.ellipse(p.x, my, 4, 12, 0, 0, 7); ctx.fill();
+      ctx.fillStyle = '#FF6A1F'; ctx.beginPath(); ctx.arc(p.x, my - 14, 4, 0, 7); ctx.fill();
+      return;
+    }
+    var b = e - 1.2, grow = Math.min(1, b / 3);
+    // shockwave across the map
+    var sw = ISO.ellipse(4 + b * 14);
+    ctx.strokeStyle = 'rgba(255,240,220,' + Math.max(0, 0.8 - b * 0.18).toFixed(2) + ')'; ctx.lineWidth = 8; ellipse(ctx, p.x, p.y, sw.rx, sw.ry); ctx.stroke();
+    // stem
+    var top = p.y - 60 - 240 * grow;
+    var st = ctx.createLinearGradient(p.x, p.y, p.x, top);
+    st.addColorStop(0, 'rgba(255,140,40,0.95)'); st.addColorStop(1, 'rgba(120,100,90,0.95)');
+    ctx.fillStyle = st; ctx.beginPath(); ctx.moveTo(p.x - 30, p.y); ctx.quadraticCurveTo(p.x - 14, (p.y + top) / 2, p.x - 22, top); ctx.lineTo(p.x + 22, top); ctx.quadraticCurveTo(p.x + 14, (p.y + top) / 2, p.x + 30, p.y); ctx.fill();
+    // cap: billowing circles
+    var capR = 40 + 90 * grow;
+    for (var k = 0; k < 9; k++) {
+      var a = k / 9 * Math.PI * 2 + b * 0.3, cx = p.x + Math.cos(a) * capR * 0.7, cy = top + Math.sin(a) * capR * 0.25;
+      var gr = ctx.createRadialGradient(cx, cy, 2, cx, cy, capR * 0.6);
+      gr.addColorStop(0, 'rgba(255,190,90,0.95)'); gr.addColorStop(0.5, 'rgba(200,90,40,0.9)'); gr.addColorStop(1, 'rgba(90,80,75,0)');
+      ctx.fillStyle = gr; ctx.beginPath(); ctx.arc(cx, cy, capR * 0.6, 0, 7); ctx.fill();
+    }
+    var core = ctx.createRadialGradient(p.x, top, 4, p.x, top, capR * 0.7);
+    core.addColorStop(0, 'rgba(255,250,210,1)'); core.addColorStop(1, 'rgba(255,120,40,0)');
+    ctx.fillStyle = core; ctx.beginPath(); ctx.arc(p.x, top, capR * 0.7, 0, 7); ctx.fill();
+    // fireball on the ground
+    var fb = ctx.createRadialGradient(p.x, p.y, 4, p.x, p.y, 120 * grow + 30);
+    fb.addColorStop(0, 'rgba(255,255,220,0.95)'); fb.addColorStop(0.4, 'rgba(255,140,40,0.8)'); fb.addColorStop(1, 'rgba(120,40,10,0)');
+    ctx.fillStyle = fb; ellipse(ctx, p.x, p.y, 120 * grow + 30, (120 * grow + 30) * 0.5); ctx.fill();
+  };
+  R.drawNukeFlash = function (ctx) {
+    if (this.nukeT === undefined) return;
+    var b = this.time - this.nukeT - 1.2;
+    if (b < 0) return;
+    var a = b < 0.25 ? 1 : Math.max(0, 1 - (b - 0.25) / 1.6);
+    if (a > 0) { ctx.fillStyle = 'rgba(255,255,245,' + a.toFixed(3) + ')'; ctx.fillRect(0, 0, this.vw, this.vh); }
+    ctx.fillStyle = 'rgba(255,120,40,' + Math.min(0.25, b * 0.05).toFixed(3) + ')'; ctx.fillRect(0, 0, this.vw, this.vh);
+  };
+
   /* ================= CHAOS: what an overrun district looks like =================
      Driven by game.chaos[d] (0..1, share of the district's buildings overrun). */
+  // Flames are pre-drawn once (8 animation frames) and then stamped: building a gradient
+  // for every flame every frame was the main cost when whole districts are burning.
+  R.flameSprite = function (f) {
+    return this.sprite('fl|' + f, 16, 34, 8, 31, function (ctx) {
+      var a = f / 8 * Math.PI * 2, size = 20, fh = size * (1 + 0.22 * Math.sin(a) + 0.12 * Math.sin(a * 2 + 1)), fw = size * 0.45;
+      var fl = ctx.createLinearGradient(0, 0, 0, -fh);
+      fl.addColorStop(0, 'rgba(255,200,70,0.95)'); fl.addColorStop(0.45, 'rgba(255,110,30,0.85)'); fl.addColorStop(1, 'rgba(200,30,10,0)');
+      ctx.fillStyle = fl;
+      ctx.beginPath(); ctx.moveTo(-fw, 0);
+      ctx.quadraticCurveTo(-fw * 0.6 + Math.sin(a * 1.3) * 2, -fh * 0.55, Math.sin(a) * 2, -fh);
+      ctx.quadraticCurveTo(fw * 0.6, -fh * 0.55, fw, 0); ctx.closePath(); ctx.fill();
+      ctx.fillStyle = 'rgba(255,240,180,0.85)'; ellipse(ctx, 0, -1, fw * 0.45, size * 0.12); ctx.fill();
+    });
+  };
   R.flame = function (ctx, x, y, size, seed) {
-    var t = this.time, fh = size * (1 + 0.25 * Math.sin(t * 13 + seed) + 0.15 * Math.sin(t * 23 + seed * 3)), fw = size * 0.45;
-    var fl = ctx.createLinearGradient(x, y, x, y - fh);
-    fl.addColorStop(0, 'rgba(255,200,70,0.95)'); fl.addColorStop(0.45, 'rgba(255,110,30,0.85)'); fl.addColorStop(1, 'rgba(200,30,10,0)');
-    ctx.fillStyle = fl;
-    ctx.beginPath(); ctx.moveTo(x - fw, y);
-    ctx.quadraticCurveTo(x - fw * 0.6 + Math.sin(t * 9 + seed) * 2, y - fh * 0.55, x + Math.sin(t * 7 + seed) * 2, y - fh);
-    ctx.quadraticCurveTo(x + fw * 0.6, y - fh * 0.55, x + fw, y); ctx.closePath(); ctx.fill();
-    ctx.fillStyle = 'rgba(255,240,180,0.85)'; ellipse(ctx, x, y - 1, fw * 0.45, size * 0.12); ctx.fill();
+    var f = Math.floor(this.time * 12 + seed * 1.7) & 7;
+    this.blit(ctx, this.flameSprite(f), x, y, size / 20);
   };
 
   R.buildChaosProps = function () {
@@ -1195,7 +1356,7 @@
   };
 
   R.drawChaosProps = function (ctx, dt) {
-    var g = this.game; if (!g.chaos || !this.chaosProps) return;
+    var g = this.game; if (!g.chaos || !this.chaosProps || this.settings.lowFx) return; // Low effects: skip street wrecks
     var v = this.view, st = this.settings, t = this.time, night = this.night > 0.5;
     for (var i = 0; i < this.chaosProps.length; i++) {
       var pr = this.chaosProps[i];
@@ -1241,12 +1402,12 @@
   // Overrun buildings burn: roof fires on most ruins, window fires in burning districts
   R.drawBuildingFire = function (ctx, x, y, cb, b, dt) {
     var g = this.game, h = this.bHeight(cb), id = b.id, chaos = g.chaos ? g.chaos[b.d] : 0;
-    if (b.blight >= 3 && hash2(id, 5) < 0.75) {
+    if (b.blight >= 3 && hash2(id, 5) < (this.settings.lowFx ? 0.35 : 0.75)) {
       this.flame(ctx, x - 6, y - h + 2, 16, id);
-      this.flame(ctx, x + 7, y - h + 5, 12, id + 9);
+      if (!this.settings.lowFx) this.flame(ctx, x + 7, y - h + 5, 12, id + 9);
       if (!this.settings.lowFx && Math.random() < dt * 2.5) this.part(x, y - h - 14, { z: 0, vx: 5, vy: -2, vz: 18, g: -6, max: 3, kind: 'smoke', color: 'rgba(35,35,35,0.55)', size: 5 });
       if (!this.settings.lowFx && Math.random() < dt * 3) this.part(x + (Math.random() - 0.5) * 16, y - h, { z: 0, vx: (Math.random() - 0.5) * 10, vy: 0, vz: 30, g: -3, max: 1.5, kind: 'spark', color: '#FFB347', size: 1.8 });
-    } else if (chaos > 0.15 && hash2(id, 11) < 0.15 + chaos * 0.5) {
+    } else if (!this.settings.lowFx && chaos > 0.15 && hash2(id, 11) < 0.15 + chaos * 0.5) {
       this.flame(ctx, x - 8 + hash2(id, 3) * 16, y - h * (0.35 + hash2(id, 4) * 0.4), 9, id);
     }
   };
@@ -1357,6 +1518,7 @@
     ctx.strokeStyle = color || '#fff'; ctx.fillStyle = color || '#fff'; ctx.lineWidth = 2.4; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
     switch (kind) {
       case 'crosshair': ctx.beginPath(); ctx.arc(0, 0, 7, 0, 7); ctx.stroke(); ctx.beginPath(); ctx.moveTo(-10, 0); ctx.lineTo(-4, 0); ctx.moveTo(4, 0); ctx.lineTo(10, 0); ctx.moveTo(0, -10); ctx.lineTo(0, -4); ctx.moveTo(0, 4); ctx.lineTo(0, 10); ctx.stroke(); break;
+      case 'cannon': ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(-8, 3); ctx.lineTo(9, -5); ctx.moveTo(-8, 7); ctx.lineTo(9, -1); ctx.stroke(); ctx.beginPath(); ctx.arc(-6, 6, 4.5, 0, 7); ctx.fill(); break;
       case 'magnifier': ctx.beginPath(); ctx.arc(-2, -2, 6, 0, 7); ctx.stroke(); ctx.lineWidth = 3.4; ctx.beginPath(); ctx.moveTo(3, 3); ctx.lineTo(9, 9); ctx.stroke(); break;
       case 'syringe': ctx.beginPath(); ctx.moveTo(-8, 8); ctx.lineTo(5, -5); ctx.stroke(); ctx.lineWidth = 4; ctx.beginPath(); ctx.moveTo(-5, 5); ctx.lineTo(3, -3); ctx.stroke(); ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(5, -5); ctx.lineTo(9, -9); ctx.moveTo(2, -8); ctx.lineTo(8, -2); ctx.stroke(); break;
       case 'h': ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(-6, -8); ctx.lineTo(-6, 8); ctx.moveTo(6, -8); ctx.lineTo(6, 8); ctx.moveTo(-6, 0); ctx.lineTo(6, 0); ctx.stroke(); break;
@@ -1480,6 +1642,11 @@
       if (!inView(twp.x, twp.y, -70)) continue;
       d = this.getDraw(); d.k = 2; d.d = tw.x + tw.y + (tw.type === 'barricade' ? 0 : 0.5); d.o = tw;
     }
+    for (i = 0; i < (g.tanks ? g.tanks.length : 0); i++) {
+      var tk = g.tanks[i], tkx = tk.px + (tk.x - tk.px) * alpha, tky = tk.py + (tk.y - tk.py) * alpha, tkp = iso(tkx, tky);
+      if (!inView(tkp.x, tkp.y, -40)) continue;
+      d = this.getDraw(); d.k = 5; d.d = tkx + tky; d.o = tk; d.x = tkp.x; d.y = tkp.y;
+    }
     var ag = g.agents;
     for (i = 0; i < ag.length; i++) {
       var a = ag[i]; if (a.dead) continue;
@@ -1525,6 +1692,8 @@
         this.drawTower(ctx, d.o, 1, false);
       } else if (d.k === 3) {
         this.drawAgent(ctx, d.o, d.x, d.y, walkFrame, nightOn, ui);
+      } else if (d.k === 5) {
+        this.drawTank(ctx, d.o, d.x, d.y);
       } else {
         var cs = this.carSprite(d.o.color, d.o.axis, nightOn);
         this.blit(ctx, cs, d.x, d.y);
@@ -1535,6 +1704,7 @@
     ctx.imageSmoothingEnabled = true;
     this.drawChaosGlow(ctx);
     this.drawHelicopter(ctx, dt);
+    this.drawNuke(ctx);
     // placement ghost on top
     if (ui && ui.placeType && ui.hover) {
       var gtw = { type: ui.placeType, x: ui.hover.x + 0.5, y: ui.hover.y + 0.5, level: 1, id: 0, angle: 0.8, st: D.TOWERS[ui.placeType], hp: 1, patients: [] };
@@ -1598,6 +1768,7 @@
     }
     this.drawWeather(ctx, dt * simSpeed);
     this.drawAsh(ctx, dt * simSpeed);
+    this.drawNukeFlash(ctx);
     this.drawHallAlert(ctx);
   };
 
@@ -1760,7 +1931,7 @@
     };
     if (ui.selected) {
       var stw = ui.selected;
-      showRange(stw, D.TOWERS[stw.type].color, stw.type === 'militia' ? stw.st.range * g.weatherDef().militiaRange : stw.st.range);
+      showRange(stw, D.TOWERS[stw.type].color, stw.st.gun ? stw.st.range * g.weatherDef().militiaRange : stw.st.range);
       var sp = iso(stw.tx + 0.5, stw.ty + 0.5);
       ctx.strokeStyle = '#FFFFFF'; ctx.lineWidth = 2; diamond(ctx, stw.type === 'chw' ? Math.floor(stw.x) : stw.tx, stw.type === 'chw' ? Math.floor(stw.y) : stw.ty, 1); ctx.stroke();
       if (stw.type === 'chw' && stw.path && stw.pi < stw.path.length) {
@@ -1858,7 +2029,7 @@
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     var sky = {
       eradication: ['#FFD58A', '#8FD3F4'], endemic: ['#F4C28A', '#9BB8D9'], hollow: ['#5A5F6E', '#2A2E38'], twoTier: ['#E8C07A', '#4A4E6A'],
-      collapse: ['#6E3B2E', '#1E1A1F'], zombieMayor: ['#7A9A6A', '#2E3A2A'], modelCity: ['#FFE6A0', '#7FD6C2']
+      collapse: ['#6E3B2E', '#1E1A1F'], nuked: ['#C2622E', '#3A1E16'], zombieMayor: ['#7A9A6A', '#2E3A2A'], modelCity: ['#FFE6A0', '#7FD6C2']
     }[art] || ['#CCC', '#888'];
     var g = ctx.createLinearGradient(0, 0, 0, h); g.addColorStop(0, sky[1]); g.addColorStop(1, sky[0]);
     ctx.fillStyle = g; ctx.fillRect(0, 0, w, h);
@@ -1872,11 +2043,11 @@
     while (bx < w) {
       var bw = w * (0.05 + next() * 0.07), bh = h * (0.18 + next() * 0.38);
       var right = bx > w * 0.5;
-      var col = art === 'collapse' ? '#2A2226' : art === 'hollow' ? '#3A3E48' : art === 'twoTier' ? (right ? '#3A3550' : '#F0E3C0') : art === 'zombieMayor' ? '#3E4A38' : '#5D7A9A';
+      var col = (art === 'collapse' || art === 'nuked') ? '#2A2226' : art === 'hollow' ? '#3A3E48' : art === 'twoTier' ? (right ? '#3A3550' : '#F0E3C0') : art === 'zombieMayor' ? '#3E4A38' : '#5D7A9A';
       ctx.fillStyle = col; ctx.fillRect(bx, ground - bh, bw - 3, bh);
       // windows
       for (var wy = ground - bh + 8; wy < ground - 8; wy += 12) for (var wx = bx + 5; wx < bx + bw - 8; wx += 9) {
-        var on = next() > (art === 'collapse' ? 0.93 : art === 'twoTier' && right ? 0.85 : 0.45);
+        var on = next() > ((art === 'collapse' || art === 'nuked') ? 0.97 : art === 'twoTier' && right ? 0.85 : 0.45);
         ctx.fillStyle = on ? (art === 'zombieMayor' ? '#B8E08A' : '#FFE29A') : 'rgba(0,0,0,0.25)';
         ctx.fillRect(wx, wy, 4, 6);
       }
@@ -1919,6 +2090,14 @@
       ctx.fillStyle = 'rgba(255,120,60,0.25)'; ctx.fillRect(0, 0, w, h);
       ctx.fillStyle = '#AAA'; ctx.fillRect(w * 0.7, h * 0.12, 50, 10); ctx.fillRect(w * 0.7 + 20, h * 0.1, 10, 4); // helicopter
       ctx.strokeStyle = '#AAA'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(w * 0.7 - 10 + Math.sin(t * 20) * 8, h * 0.09); ctx.lineTo(w * 0.7 + 60 - Math.sin(t * 20) * 8, h * 0.09); ctx.stroke();
+    } else if (art === 'nuked') {
+      ctx.fillStyle = 'rgba(40,30,30,1)'; ctx.fillRect(0, ground, w, h - ground);
+      ctx.fillStyle = 'rgba(255,120,40,0.3)'; ctx.fillRect(0, 0, w, h);
+      var mx = w * 0.5, base = ground, topY = h * 0.3, cr = h * 0.2 + Math.sin(t) * 3;
+      var stem = ctx.createLinearGradient(mx, base, mx, topY); stem.addColorStop(0, '#FF8A3D'); stem.addColorStop(1, '#8A7A70');
+      ctx.fillStyle = stem; ctx.beginPath(); ctx.moveTo(mx - 40, base); ctx.quadraticCurveTo(mx - 18, (base + topY) / 2, mx - 30, topY); ctx.lineTo(mx + 30, topY); ctx.quadraticCurveTo(mx + 18, (base + topY) / 2, mx + 40, base); ctx.fill();
+      for (i = 0; i < 10; i++) { var aa = i / 10 * Math.PI * 2 + t * 0.2; ctx.fillStyle = i % 2 ? '#C9643A' : '#9A8A80'; ctx.beginPath(); ctx.arc(mx + Math.cos(aa) * cr, topY + Math.sin(aa) * cr * 0.35, cr * 0.55, 0, 7); ctx.fill(); }
+      ctx.fillStyle = '#FFD98A'; ctx.beginPath(); ctx.arc(mx, topY, cr * 0.45, 0, 7); ctx.fill();
     } else if (art === 'hallFallen') {
       // City Hall with zombies on the steps and a sock for a flag
       var hx = w * 0.5, hb = ground;

@@ -39,6 +39,7 @@ Add options to the link:
 | `diff` | `&diff=easy` | `easy`, `normal` (default) or `hard` |
 | `mode` | `&mode=quick` | 6-wave quick game |
 | `teacher` | `?teacher=reset` | Clears this device's saved game and settings |
+| `insane` | `?insane=1` | Unlocks INSANE mode for a preview (normally it unlocks after a student finishes a full game) |
 
 Example: `.../outbreak-city/?seed=PERIOD3&diff=normal&mode=quick`
 
@@ -56,6 +57,10 @@ When a game ends, students see a newspaper front page for their ending, then cli
 - How to take a screenshot on a Chromebook, Windows, Mac or iPad
 
 Ask students to submit a screenshot of this page. The full After-Action Report is one click away.
+
+## INSANE mode
+
+After a student finishes a full game (all waves) on a device, an **INSANE** difficulty unlocks on the title screen. It gives an unlimited budget (towers and upgrades are free), about 4× as many zombies, and a higher zombie limit. It's a reward round, not a fair assessment, so completion codes mark it as INSANE.
 
 ## Completion codes (works without any setup)
 
@@ -172,13 +177,18 @@ All CSS is scoped under `.oc-root`, saved data uses one `localStorage` key (`out
 | City Hall command bunker in the middle of town: zombies march on it, crowd its walls and pound on it (damage numbers, cracks, smoke, then fire); an arrow points to it when it's off screen; if its integrity hits 0 the game ends | Protecting public health infrastructure and coordination (Essential Service 10) |
 | New arrivals claw out of glowing "hell holes" at the city's edges | Imported cases keep arriving from outside, so a response has to plan for them |
 | Super-Spreader zombies (from wave 5): giant, armored, infect several people per attack, smash barricades | Super-spreading (a few cases cause most spread); vaccination and controlling crowds blunt it |
+| Spitters (infect from a distance), Screamers (speed up nearby zombies, raise panic), Crawlers (slip under barricades, hard to hit) | Different transmission routes need different responses; one tool never fits all |
+| Before the middle wave, a General offers tanks for one wave: they kill many zombies but can't see hidden infections | Military force can't replace surveillance and prevention; it costs trust and endangers bystanders |
+| Once the infection takes over, a two-step "Nuclear Option" can destroy the whole city (its own ending) | Ethics of proportionality: the most extreme measure, and what it costs |
 | Districts fall into chaos as they're overrun: burning buildings and car wrecks, flashing police cars, fire glow and smoke, a news helicopter, falling ash | An uncontrolled outbreak spreads harm beyond the sick: panic, lost services, damage to whole neighborhoods |
 | Buildings permanently decay once residents are infected (quarantine X → smashed and overgrown → smoking ruin) | The lasting damage of an uncontrolled outbreak; which neighborhoods were hit hardest |
+| Heavy Turret (key 9): an expensive upgraded military turret with twin cannons and splash damage, and even louder | More force still can't see hidden infections; escalation costs trust |
 | Militia Turret: stray fire, noise draws more arrivals, trust loss | Containment by force, ethics (autonomy, non-maleficence, justice, proportionality) |
 | Briefing cards (curfews, schools, stadium detention, donors, price gouging) | Public health policy, law and ethics |
 | After-Action Report checklist | The 10 Essential Public Health Services |
 
 **Endings** are computed from the final state:
+- **The Nuclear Option:** the player destroyed the city to stop the outbreak.
 - **City Hall Has Fallen:** zombies broke into the command bunker.
 - **Collapse:** fewer than 55% survive or the outbreak is out of control.
 - **Hollow Victory:** survived, but trust is near zero or the response was coercive.
@@ -230,7 +240,7 @@ Tell students the game is satirical, and that how they win matters as much as wh
 
 | Key | Action |
 |---|---|
-| 1–8 | Pick an intervention (Shift-click to place several) |
+| 1–9 | Pick an intervention (Shift-click to place several) |
 | Esc or right-click | Cancel |
 | U / X | Upgrade / sell the selected tower |
 | Space | Pause (you can still build while paused) |
@@ -264,13 +274,20 @@ node outbreak-city/tools/browser-test.js /tmp/oc-shots
 - `tools/bots.js` runs scripted strategies headlessly to check balance.
 - `tools/browser-test.js` runs the end-to-end browser checks and saves screenshots.
 
-Balance (seeds TEST01, ABC, K7Q2MX, ZED9, Q1 and HELLO on Normal):
+Win rates and game length (`node outbreak-city/tools/winrates.js 40 normal full`). This plays 40 different seeds per strategy on Normal. "Infection wins" means the city collapsed, City Hall fell, or it was nuked.
 
-| Strategy | Typical ending | Survival | Trust |
-|---|---|---|---|
-| Do nothing | Collapse (wave 4–6) | 38% | ~35 |
-| Pure militia | Hollow Victory | 69–76% | 0 |
-| Balanced toolkit | Eradication or Controlled Endemic | 74–92% | 80–97 |
-| Rich districts only | Two-Tier City or low-equity Endemic | 59–69% | 55–86 |
-| Spin-heavy militia | *Secret ending* / Hollow Victory | – | – |
-| No-militia expert (Easy) | Eradication, Endemic or *secret ending* | – | – |
+| Strategy | Infection stopped | Contained (endemic) | Survived, damaged | Infection wins | Avg survival | Game length at 1× |
+|---|---|---|---|---|---|---|
+| Do nothing | 0% | 0% | 0% | 100% | 38% | 5 min (4–6) |
+| Pure militia | 0% | 0% | 3% | 98% | 42% | 14 min (10–15) |
+| Heavy Turrets + militia | 0% | 0% | 0% | 100% | 38% | 10 min (6–15) |
+| Rich districts only | 0% | 18% | 13% | 70% | 54% | 15 min |
+| **Typical student** (varied, partly random choices) | 0% | 23% | 30% | **48%** | 55% | 14 min (8–15) |
+| Balanced public-health toolkit | 15% | 85% | 0% | 0% | 74% | 15 min |
+| Expert (guards entrances + full toolkit) | 23% | 73% | 0% | 5% | 75% | 15 min |
+
+- **Tuning target:** a typical student loses about half the time, while strong public-health play almost never loses.
+- **Easy:** the typical student never loses, and balanced play stops the infection about 95% of the time.
+- **Hard:** the typical student loses about 75% and balanced players about 25%.
+
+**Classroom time:** a full game is about 15 minutes of simulated time at 1× speed. With planning between waves and reading briefings (about 25 s per wave), plan on **18–20 minutes**, plus the tutorial (about 5 minutes) the first time. Doing nothing ends in about 7 minutes. 2× or 3× speed shortens waves. Simulating 280 games takes the computer about 3.5 minutes.
