@@ -57,7 +57,7 @@ function welcome(app, existing) {
     form,
     h('details', { class: 'how' }, h('summary', {}, 'How scoring works'),
       h('ul', {},
-        h('li', {}, `You get ${cfg.maxAttempts} tries on every question. Credit goes down a little with each try (${levels}).`),
+        h('li', {}, `You get ${cfg.maxAttempts} tries on every question. Credit goes down with each try (${levels}).`),
         h('li', {}, 'After a wrong try you get a hint, not the answer. After the last try we show you the answer and why.'),
         h('li', {}, 'For sorting and matching, cards you get right stay put so you only fix what is wrong.'),
         h('li', {}, 'Your progress saves automatically. If the page refreshes, you pick up where you left off.'),

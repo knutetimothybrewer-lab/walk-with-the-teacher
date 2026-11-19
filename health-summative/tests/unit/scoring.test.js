@@ -13,26 +13,26 @@ import { mc, multi, sort, order, match, tag } from '../../content/dsl.js';
 
 const near = (a, b) => assert.ok(Math.abs(a - b) < 1e-9, `${a} !== ${b}`);
 
-test('attempt multipliers: 100 / 90 / 75 / 0', () => {
+test('attempt multipliers: 100 / 50 / 0 (two tries)', () => {
   assert.equal(multiplier(1, cfg), 1);
-  assert.equal(multiplier(2, cfg), 0.9);
-  assert.equal(multiplier(3, cfg), 0.75);
-  assert.equal(multiplier(4, cfg), 0);
+  assert.equal(multiplier(2, cfg), 0.5);
+  assert.equal(multiplier(3, cfg), 0);   // there is no third try
 });
 
 test('single-answer item earns points x multiplier on the attempt it is solved', () => {
   near(itemOutcome(1, [{ fraction: 1 }], cfg).earned, 1);
-  near(itemOutcome(1, [{ fraction: 0 }, { fraction: 1 }], cfg).earned, 0.9);
-  near(itemOutcome(1, [{ fraction: 0 }, { fraction: 0 }, { fraction: 1 }], cfg).earned, 0.75);
-  near(itemOutcome(1, [{ fraction: 0 }, { fraction: 0 }, { fraction: 0 }], cfg).earned, 0);
-  near(itemOutcome(3, [{ fraction: 0 }, { fraction: 1 }], cfg).earned, 2.7);
+  near(itemOutcome(1, [{ fraction: 0 }, { fraction: 1 }], cfg).earned, 0.5);
+  near(itemOutcome(1, [{ fraction: 0 }, { fraction: 0 }], cfg).earned, 0);
+  near(itemOutcome(3, [{ fraction: 0 }, { fraction: 1 }], cfg).earned, 1.5);
 });
 
 test('partial credit: fraction x points x attempt multiplier; best attempt counts', () => {
-  // 3 of 4 right on try 1, perfect on try 2 -> max(0.75, 0.9) = 0.9 (x2 points)
-  near(itemOutcome(2, [{ fraction: 0.75 }, { fraction: 1 }], cfg).earned, 1.8);
+  // 3 of 4 right on try 1, perfect on try 2 -> max(0.75, 0.5) = 0.75 (x2 points): the better first try is kept
+  near(itemOutcome(2, [{ fraction: 0.75 }, { fraction: 1 }], cfg).earned, 1.5);
   // 3 of 4 right on try 1 and never completed: keeps the 0.75 from try 1 (x2 points)
-  near(itemOutcome(2, [{ fraction: 0.75 }, { fraction: 0.75 }, { fraction: 0.75 }], cfg).earned, 1.5);
+  near(itemOutcome(2, [{ fraction: 0.75 }, { fraction: 0.75 }], cfg).earned, 1.5);
+  // 1 of 4 right on try 1, perfect on try 2 -> max(0.25, 0.5) = 0.5 (x2 points)
+  near(itemOutcome(2, [{ fraction: 0.25 }, { fraction: 1 }], cfg).earned, 1.0);
   // try 1 was better than a later regression
   near(itemOutcome(2, [{ fraction: 0.5 }, { fraction: 0.25 }], cfg).earned, 1.0);
 });
