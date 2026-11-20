@@ -39,7 +39,6 @@ Add options to the link:
 | `diff` | `&diff=easy` | `easy`, `normal` (default) or `hard` |
 | `mode` | `&mode=quick` | 6-wave quick game |
 | `teacher` | `?teacher=reset` | Clears this device's saved game and settings |
-| `insane` | `?insane=1` | Unlocks INSANE mode for a preview (normally it unlocks after a student finishes a full game) |
 
 Example: `.../outbreak-city/?seed=PERIOD3&diff=normal&mode=quick`
 
@@ -60,7 +59,7 @@ Ask students to submit a screenshot of this page. The full After-Action Report i
 
 ## INSANE mode
 
-After a student finishes a full game (all waves) on a device, an **INSANE** difficulty unlocks on the title screen. It gives an unlimited budget (towers and upgrades are free), about 4× as many zombies, and a higher zombie limit. It's a reward round, not a fair assessment, so completion codes mark it as INSANE.
+**INSANE** is on the title screen from the start. It gives an unlimited budget (towers and upgrades are free), about 4× as many zombies, and a higher zombie limit. It's a reward round, not a fair assessment, so completion codes mark it as INSANE.
 
 ## Completion codes (works without any setup)
 
@@ -187,6 +186,8 @@ All CSS is scoped under `.oc-root`, saved data uses one `localStorage` key (`out
 | Once the infection takes over, a two-step "Nuclear Option" can destroy the whole city (its own ending) | Ethics of proportionality: the most extreme measure, and what it costs |
 | Districts fall into chaos as they're overrun: burning buildings and car wrecks, flashing police cars, fire glow and smoke, a news helicopter, falling ash | An uncontrolled outbreak spreads harm beyond the sick: panic, lost services, damage to whole neighborhoods |
 | Buildings permanently decay once residents are infected (quarantine X → smashed and overgrown → smoking ruin) | The lasting damage of an uncontrolled outbreak; which neighborhoods were hit hardest |
+| Laser Cannon (key 0): unlocks after wave 5 ("advanced research"), one per city, built downtown near City Hall. The player aims it (Z or the FIRE LASER button, then click) and it has a limited number of charges each wave | Scarce emergency tools (antivirals, ventilators, antibodies): deciding where each limited dose goes, and they still can't find hidden cases |
+| Overrun buildings keep getting worse the longer they're lost: window fires and a tentacle poking out, then a roof inferno with writhing tentacles, then a towering column of fire, huge tentacles and a giant blinking eye. Pustules and fungus grow on the walls | The longer an outbreak goes uncontrolled, the more damage it does |
 | Heavy Turret (key 9): an expensive upgraded military turret with twin cannons and splash damage, and even louder | More force still can't see hidden infections; escalation costs trust |
 | Militia Turret: stray fire, noise draws more arrivals, trust loss | Containment by force, ethics (autonomy, non-maleficence, justice, proportionality) |
 | Briefing cards (curfews, schools, stadium detention, donors, price gouging) | Public health policy, law and ethics |
@@ -245,7 +246,8 @@ Tell students the game is satirical, and that how they win matters as much as wh
 
 | Key | Action |
 |---|---|
-| 1–9 | Pick an intervention (Shift-click to place several) |
+| 1–9, 0 | Pick an intervention (Shift-click to place several); 0 is the Laser Cannon |
+| Z | Aim the Laser Cannon, then click to fire (Esc stops aiming) |
 | Esc or right-click | Cancel |
 | U / X | Upgrade / sell the selected tower |
 | Space | Pause (you can still build while paused) |
@@ -283,16 +285,18 @@ Win rates and game length (`node outbreak-city/tools/winrates.js 40 normal full`
 
 | Strategy | Infection stopped | Contained (endemic) | Survived, damaged | Infection wins | Avg survival | Game length at 1× |
 |---|---|---|---|---|---|---|
-| Do nothing | 0% | 0% | 0% | 100% | 46% | 5 min (4–6) |
-| Pure militia | 0% | 0% | 3% | 98% | 42% | 14 min (10–15) |
-| Heavy Turrets + militia | 0% | 0% | 0% | 100% | 38% | 10 min (6–15) |
-| Rich districts only | 0% | 18% | 10% | 73% | 54% | 14 min |
-| **Typical student** (varied, partly random choices) | 0% | 25% | 25% | **50%** | 55% | 15 min (11–15) |
-| Balanced public-health toolkit | 15% | 85% | 0% | 0% | 74% | 15 min |
-| Expert (guards entrances + full toolkit) | 23% | 73% | 0% | 5% | 75% | 15 min |
+| Do nothing | 0% | 0% | 0% | 100% | 44% | 4 min (4–5) |
+| Pure militia | 0% | 0% | 0% | 100% | 40% | 14 min (12–15) |
+| Heavy Turrets + militia | 0% | 0% | 0% | 100% | 38% | 9 min (7–15) |
+| Rich districts only | 0% | 35% | 8% | 58% | 54% | 15 min |
+| **Typical student** (varied, partly random choices) | 0% | 28% | 23% | **50%** | 54% | 14 min (8–15) |
+| Balanced public-health toolkit | 13% | 83% | 0% | 5% | 74% | 15 min |
+| Expert (guards entrances + full toolkit) | 20% | 68% | 0% | 13% | 75% | 14 min |
 
-- **Tuning target:** a typical student loses about half the time, while strong public-health play almost never loses.
-- **Easy:** the typical student never loses, and balanced play stops the infection about 95% of the time.
-- **Hard:** the typical student loses about 75% and balanced players about 25%.
+The bots never fire the Laser Cannon (it needs a player to aim it), so a student who uses it well will do a bit better than these numbers.
+
+- **Tuning target:** a typical student loses about half the time, while strong public-health play rarely loses.
+- **Easy:** the typical student never loses, and balanced play stops the infection about 90% of the time.
+- **Hard:** the typical student loses about 90% and balanced players about 25%.
 
 **Classroom time:** a full game is about 15 minutes of simulated time at 1× speed. With planning between waves and reading briefings (about 25 s per wave), plan on **18–20 minutes**, plus the tutorial (about 5 minutes) the first time. Doing nothing ends in about 7 minutes. 2× or 3× speed shortens waves. Simulating 280 games takes the computer about 3.5 minutes.

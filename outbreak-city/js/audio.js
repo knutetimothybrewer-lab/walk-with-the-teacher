@@ -67,6 +67,7 @@
       case 'barricade': if (this.ok(name, 0.3)) { this.noise(0.35, 0.3, 200, 0.6); } break;
       case 'win': if (this.ok(name, 2)) { [523, 659, 784, 1046, 1318].forEach(function (f, i) { self.tone(f, 0.4, 'triangle', 0.1, 1, i * 0.12); }); } break;
       case 'lose': if (this.ok(name, 2)) { [392, 349, 311, 262].forEach(function (f, i) { self.tone(f, 0.5, 'sawtooth', 0.06, 1, i * 0.22); }); } break;
+      case 'laser': if (this.ok(name, 0.2)) { this.tone(2200, 0.4, 'sawtooth', 0.07, 0.12); this.tone(3300, 0.25, 'square', 0.035, 0.2); this.noise(0.3, 0.12, 1800, 0.6, 0.05); } break;
       case 'boom': if (this.ok(name, 0.25)) { this.noise(0.35, 0.3, 160, 0.7); this.tone(70, 0.3, 'sine', 0.18, 0.5); } break;
       case 'scream': if (this.ok(name, 1.5)) { this.tone(1400, 0.5, 'sawtooth', 0.04, 0.6); this.tone(1900, 0.4, 'square', 0.025, 0.7, 0.05); } break;
       case 'nuke': if (this.ok(name, 5)) { this.tone(600, 1.2, 'sine', 0.06, 0.4); } break;

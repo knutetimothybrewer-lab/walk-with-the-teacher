@@ -45,7 +45,7 @@
     population: 2600,        // residents at the start (Normal)
 
     // --- Pathogen ("the zombie virus") ---
-    biteSuccess: 0.42,        // chance a bite on a Susceptible person causes infection (Exposed)
+    biteSuccess: 0.47,        // chance a bite on a Susceptible person causes infection (Exposed)
     incubationMean: 34,      // average seconds an Exposed person incubates before turning
     turnBites: 2,            // bites a newly turned zombie makes on its own household before leaving
     householdMult: 1.35,      // close contact at home: those bites succeed more often
@@ -127,8 +127,8 @@
     easy:   { hall: 1.35, label: 'Easy',   budget: 1.3,  trust: 68, transmission: 0.85, spawn: 0.75, grant: 1.2,  vaccines: 1.3, pop: 0.9 },
     normal: { hall: 1.0, label: 'Normal', budget: 1.0,  trust: 60, transmission: 1.0,  spawn: 1.0,  grant: 1.0,  vaccines: 1.0, pop: 1.0 },
     hard:   { hall: 0.8, label: 'Hard',   budget: 0.9,  trust: 52, transmission: 0.95, spawn: 1.15,  grant: 0.9,  vaccines: 0.85, pop: 1.1 },
-    // INSANE: unlocked after finishing a game. Unlimited budget, a crazy number of zombies.
-    insane: { hall: 3,   label: 'INSANE', budget: 1,    trust: 60, transmission: 1.1,  spawn: 4,    grant: 1,    vaccines: 6,   pop: 1.0, unlimited: true, zombieCap: 400, locked: true }
+    // INSANE: open from the start. Unlimited budget, a crazy number of zombies.
+    insane: { hall: 3,   label: 'INSANE', budget: 1,    trust: 60, transmission: 1.1,  spawn: 4,    grant: 1,    vaccines: 6,   pop: 1.0, unlimited: true, zombieCap: 400 }
   };
 
   /* ---- TOWERS / INTERVENTIONS ---------------------------------------
@@ -137,49 +137,60 @@
   D.TOWERS = {
     militia: {
       key: '1', name: 'Militia Turret', glyph: 'crosshair', color: '#D55E00', gun: true,
-      cost: 60, range: 4.0, rate: 1.1, damage: 20, strayBase: 0.02, strayPerCiv: 0.035,
+      cost: 60, range: 4.6, rate: 1.1, damage: 20, strayBase: 0.02, strayPerCiv: 0.035,
       trustDrain: 0.006, noise: 5.5, spawnPenalty: 0.05, strayMult: 1, trustDrainMult: 1,
       short: 'Shoots visible zombies. Cheap, loud, and not picky.',
       concept: 'Containment by force: it works on what you can see, and it costs trust, autonomy and justice.',
       upgrades: [
-        { cost: 70, label: 'Heavier Ordnance', damage: 34, range: 4.6 },
+        { cost: 70, label: 'Heavier Ordnance', damage: 34, range: 5.3 },
         { cost: 90, label: 'De-escalation Training', rate: 1.3, strayMult: 0.4, trustDrainMult: 0.5 }
       ]
     },
     heavy: {
       key: '9', name: 'Heavy Turret', glyph: 'cannon', color: '#8C2D19', gun: true,
-      cost: 220, range: 5.5, rate: 1.4, damage: 55, splash: 0.75, strayBase: 0.01, strayPerCiv: 0.02,
+      cost: 220, range: 6.3, rate: 1.4, damage: 55, splash: 0.75, strayBase: 0.01, strayPerCiv: 0.02,
       trustDrain: 0.012, noise: 7, spawnPenalty: 0.07, strayMult: 1, trustDrainMult: 1,
       short: 'Upgraded military firepower: twin cannons, longer range, splash damage. Expensive and very loud.',
       concept: 'More force, same blind spot: it still cannot see people who are infected but look healthy.',
       upgrades: [
         { cost: 150, label: 'Twin Autocannons', rate: 2.2, damage: 65 },
-        { cost: 180, label: 'Targeting Computer', range: 6.8, strayMult: 0.3, trustDrainMult: 0.6 }
+        { cost: 180, label: 'Targeting Computer', range: 7.8, strayMult: 0.3, trustDrainMult: 0.6 }
+      ]
+    },
+    laser: {
+      key: '0', name: 'Laser Cannon', glyph: 'laser', color: '#12A8C9',
+      cost: 400, unlockWave: 5, unique: true, nearHall: 5, range: 14,
+      ammo: 10, cooldown: 0.7, damage: 600, radius: 1.0, beamWidth: 0.35, panicPerShot: 0.4,
+      short: 'Advanced research (unlocks after wave 5). Build it downtown, then YOU aim it: click anywhere to blast zombies. Limited charges each wave.',
+      concept: 'A powerful emergency tool with a limited supply. It still cannot see residents who are infected but look healthy.',
+      upgrades: [
+        { cost: 200, label: 'Capacitor Bank', ammo: 16 },
+        { cost: 250, label: 'Wide Beam', radius: 1.6, beamWidth: 0.6 }
       ]
     },
     lab: {
       key: '2', name: 'Testing & Tracing Lab', glyph: 'magnifier', color: '#0072B2',
-      cost: 90, range: 6.5, scanInterval: 1.5, revealWalker: 0.5, revealBuilding: 0.3, trace: false,
+      cost: 90, range: 7.5, scanInterval: 1.5, revealWalker: 0.5, revealBuilding: 0.3, trace: false,
       short: 'Finds Exposed people who look healthy. Lets hospitals target them.',
       concept: 'Surveillance, screening and contact tracing (secondary prevention): you cannot fight what you cannot see.',
       upgrades: [
-        { cost: 80, label: 'Rapid Tests', scanInterval: 1.0, range: 7.3 },
+        { cost: 80, label: 'Rapid Tests', scanInterval: 1.0, range: 8.4 },
         { cost: 100, label: 'Contact Tracing Team', trace: true, revealBuilding: 0.3 }
       ]
     },
     clinic: {
       key: '3', name: 'Vaccination Clinic', glyph: 'syringe', color: '#009E73',
-      cost: 120, range: 5.5, rate: 2.4,
+      cost: 120, range: 6.3, rate: 2.4,
       short: 'Immunizes people in range before they are bitten. Uses vaccine stock.',
       concept: 'Primary prevention: protect people before exposure. Enough immunity gives herd immunity.',
       upgrades: [
         { cost: 90, label: 'Extra Nurses', rate: 3.4 },
-        { cost: 110, label: 'Mobile Outreach', rate: 4.4, range: 6.5 }
+        { cost: 110, label: 'Mobile Outreach', rate: 4.4, range: 7.5 }
       ]
     },
     hospital: {
       key: '4', name: 'Field Hospital', glyph: 'h', color: '#CC79A7',
-      cost: 150, range: 5.0, beds: 10, admitInterval: 0.8, stay: 14, selfPresent: 0.03, freshWindowMult: 1,
+      cost: 150, range: 5.8, beds: 10, admitInterval: 0.8, stay: 14, selfPresent: 0.03, freshWindowMult: 1,
       short: 'Cures known Exposed and freshly turned people. Limited beds.',
       concept: 'Treatment and surge capacity (tertiary care). When beds run out, care runs out.',
       upgrades: [
@@ -198,7 +209,7 @@
     },
     radio: {
       key: '6', name: 'Radio Tower', glyph: 'waves', color: '#56B4E9',
-      cost: 90, range: 8, trustGain: 0.03, panicDrop: 0.06, complianceBonus: 0.12, uptakeMult: 1.25,
+      cost: 90, range: 9.2, trustGain: 0.03, panicDrop: 0.06, complianceBonus: 0.12, uptakeMult: 1.25,
       short: 'Clear, honest health messages. Raises trust and compliance, calms panic.',
       concept: 'Risk communication: people follow guidance they understand and trust.',
       upgrades: [
@@ -207,24 +218,24 @@
     },
     chw: {
       key: '7', name: 'Community Health Workers', glyph: 'heart', color: '#E69F00', mobile: true, road: true,
-      cost: 80, range: 3.5, boost: 1.4, boostUnderserved: 1.9, speed: 1.3, doorVax: 0.35, doorReveal: 0.08,
+      cost: 80, range: 4, boost: 1.4, boostUnderserved: 1.9, speed: 1.3, doorVax: 0.35, doorReveal: 0.08,
       short: 'Mobile team from the neighborhood. Boosts nearby labs, clinics and hospitals, most in underserved areas.',
       concept: 'Community-based approaches and health equity: trusted local messengers reach people systems miss.',
       upgrades: [
-        { cost: 70, label: 'Bigger Team', range: 4.5, boost: 1.6, boostUnderserved: 2.2, doorVax: 0.6 }
+        { cost: 70, label: 'Bigger Team', range: 5.2, boost: 1.6, boostUnderserved: 2.2, doorVax: 0.6 }
       ]
     },
     pantry: {
       key: '8', name: 'Mutual-Aid Pantry', glyph: 'basket', color: '#A0785A',
-      cost: 70, range: 4, panicDrop: 0.05, complianceBonus: 0.15, tripCut: 0.3,
+      cost: 70, range: 4.6, panicDrop: 0.05, complianceBonus: 0.15, tripCut: 0.3,
       short: 'Food and supplies so people can stay home. Cuts trips and panic.',
       concept: 'Social determinants of health: people can only isolate if they can afford to stay home.',
       upgrades: [
-        { cost: 60, label: 'Delivery Bikes', range: 5.5, complianceBonus: 0.22, tripCut: 0.45 }
+        { cost: 60, label: 'Delivery Bikes', range: 6.3, complianceBonus: 0.22, tripCut: 0.45 }
       ]
     }
   };
-  D.TOWER_ORDER = ['militia', 'lab', 'clinic', 'hospital', 'barricade', 'radio', 'chw', 'pantry', 'heavy'];
+  D.TOWER_ORDER = ['militia', 'lab', 'clinic', 'hospital', 'barricade', 'radio', 'chw', 'pantry', 'heavy', 'laser'];
 
   /* ---- ZOMBIE TYPES --------------------------------------------------- */
   D.ZOMBIES = {

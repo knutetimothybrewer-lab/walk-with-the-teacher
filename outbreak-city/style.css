@@ -15,7 +15,7 @@
 .oc-root button { font: inherit; color: inherit; cursor: pointer; }
 .oc-root button:focus-visible, .oc-root input:focus-visible, .oc-root select:focus-visible, .oc-root [tabindex]:focus-visible { outline: 3px solid var(--yellow); outline-offset: 2px; }
 .oc-canvas { position: absolute; inset: 0; display: block; cursor: grab; }
-.oc-canvas.placing { cursor: crosshair; }
+.oc-canvas.placing, .oc-canvas.aiming { cursor: crosshair; }
 .oc-canvas.dragging { cursor: grabbing; }
 .oc-hud { position: absolute; inset: 0; pointer-events: none; }
 .oc-hud > * { pointer-events: auto; }
@@ -291,11 +291,16 @@ details.oc-details summary { cursor: pointer; color: var(--mute); }
 .oc-unlock { font-family: 'Bangers', Impact, sans-serif; font-size: 1.3em; letter-spacing: 0.05em; color: #B3160B; margin: 6px 0; }
 .oc-nuke { position: absolute; right: 8px; bottom: 58px; background: #2A0A06; color: #FFD24A; border: 2px solid #FF5A1F; border-radius: 10px; padding: 8px 14px; font-family: 'Oswald', system-ui, sans-serif; font-weight: 700; letter-spacing: 0.06em; box-shadow: 0 0 18px rgba(255,90,31,0.6); animation: oc-pulse 1.4s infinite; pointer-events: auto; }
 .oc-nuke:hover { background: #4A1208; }
+.oc-laser { position: absolute; right: 8px; bottom: 106px; background: #06232B; color: #7FE9FF; border: 2px solid #2BC4E8; border-radius: 10px; padding: 8px 14px; font-family: 'Oswald', system-ui, sans-serif; font-weight: 700; letter-spacing: 0.05em; box-shadow: 0 0 16px rgba(43,196,232,0.55); pointer-events: auto; }
+.oc-laser:hover { background: #0B3742; }
+.oc-laser.aiming { background: #2BC4E8; color: #04161B; }
+.oc-laser.empty { opacity: 0.55; box-shadow: none; }
+.oc-tbtn.locked { opacity: 0.5; filter: grayscale(0.7); }
 .oc-nukecard { border: 3px solid #FF5A1F; max-width: 520px; }
 .oc-nuke-sign { font-size: 3em; color: #FFD24A; text-align: center; line-height: 1; }
 .oc-launch { background: #B3160B; border-color: #FF5A1F; color: #fff; font-weight: 700; }
 
-/* nine build buttons */
+/* ten build buttons */
 .oc-tbtn { width: 72px; }
 @media (max-width: 1100px) { .oc-tbtn { width: 60px; } }
 @media (max-width: 860px), (max-height: 600px) { .oc-tbtn { width: 50px; } }

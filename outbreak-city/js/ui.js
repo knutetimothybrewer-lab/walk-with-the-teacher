@@ -125,6 +125,10 @@
     this.tickerTrack = tk.querySelector('.track'); this.tickerEl = tk;
     hud.appendChild(tk);
     this.seedEl = el('div', 'oc-seed'); hud.appendChild(this.seedEl);
+    this.laserBtn = el('button', 'oc-laser oc-hidden', ''); this.laserBtn.type = 'button';
+    this.laserBtn.setAttribute('aria-label', 'Aim the Laser Cannon (key Z), then click where to fire');
+    this.laserBtn.addEventListener('click', function () { self.sfx.unlock(); self.toggleAim(); });
+    hud.appendChild(this.laserBtn);
     this.nukeBtn = el('button', 'oc-nuke oc-hidden', '\u2622 NUCLEAR OPTION'); this.nukeBtn.type = 'button';
     this.nukeBtn.setAttribute('aria-label', 'Nuclear option: destroy the whole city to stop the infection');
     this.nukeBtn.addEventListener('click', function () { self.sfx.unlock(); self.confirmNuke(); });
@@ -244,9 +248,21 @@
       var fr = b.querySelector('.free');
       if (g.freeTowers[type] && !fr) { fr = el('span', 'free', 'FREE'); b.appendChild(fr); }
       if (!g.freeTowers[type] && fr) fr.remove();
-      var costEl = b.querySelector('.cost'), ctext = cost ? '$' + cost : 'FREE';
+      var def2 = D.TOWERS[type], locked = !g.researched(type);
+      b.classList.toggle('locked', locked);
+      var costEl = b.querySelector('.cost'), ctext = locked ? '\uD83D\uDD12 after W' + def2.unlockWave : cost ? '$' + cost : 'FREE';
       if (costEl.textContent !== ctext) costEl.textContent = ctext;
     });
+    if (g.laserUnlocked() && !this.laserToastShown && !g.attract) { this.laserToastShown = true; this.toast('ADVANCED RESEARCH COMPLETE: the LASER CANNON is ready to build (key 0). Put it downtown, then aim it yourself.', 'good', 7000); }
+    var ltw = g.laserTower(), showL = !!ltw && g.phase === 'wave';
+    this.laserBtn.classList.toggle('oc-hidden', !showL);
+    if (!showL && this.ui.aimLaser) this.ui.aimLaser = false;
+    if (showL) {
+      var ltxt = (this.ui.aimLaser ? '\u2716 STOP AIMING' : '\u26A1 FIRE LASER') + ' \u00B7 ' + ltw.ammo + '/' + g.laserAmmo(ltw) + ' (Z)';
+      if (this.laserBtn.textContent !== ltxt) this.laserBtn.textContent = ltxt;
+      this.laserBtn.classList.toggle('aiming', !!this.ui.aimLaser);
+      this.laserBtn.classList.toggle('empty', ltw.ammo <= 0);
+    }
     var nukeOk = g.nukeAvailable();
     if (nukeOk && !this.nukeShown) this.toast('The infection is taking over. A last-resort NUCLEAR OPTION is now available.', 'bad', 6000);
     this.nukeShown = nukeOk; this.nukeBtn.classList.toggle('oc-hidden', !nukeOk);
@@ -281,6 +297,7 @@
       case 'barricade': rows = [['Strength', Math.round(tw.hp) + ' / ' + st.hp], ['Slows zombies to', Math.round(st.slow * 100) + '%'], ['Residents', 'can’t travel through']]; break;
       case 'radio': rows = [['Range', st.range + ' tiles'], ['Compliance', '+' + Math.round(st.complianceBonus * 100) + '%'], ['Vaccine uptake', '×' + st.uptakeMult]]; break;
       case 'chw': rows = [['Range', st.range + ' tiles'], ['Boost to nearby health towers', '×' + st.boost + ' (×' + st.boostUnderserved + ' underserved)'], ['Status', tw.moving ? 'on the move' : 'working here']]; break;
+      case 'laser': rows = [['Charges this wave', tw.ammo + ' / ' + g.laserAmmo(tw)], ['Recharge between shots', st.cooldown + 's'], ['Blast radius', st.radius + ' tiles'], ['Reach', st.range + ' tiles'], ['How to fire', 'press Z or the FIRE LASER button, then click']]; break;
       case 'pantry': rows = [['Range', st.range + ' tiles'], ['Compliance', '+' + Math.round(st.complianceBonus * 100) + '%'], ['Trips cut', Math.round(st.tripCut * 100) + '%']]; break;
     }
     var upCost = g.upgradeCost(tw), upLabel = upCost !== null ? def.upgrades[tw.level - 1].label : null;
@@ -401,7 +418,7 @@
   U.showTitle = function () {
     var self = this, st = this.store, sv = st.save;
     var tag = D.TITLE_TAGLINES[Math.floor(Math.random() * D.TITLE_TAGLINES.length)];
-    var insaneOpen = !!(st.insaneUnlocked || this.opts.insane);
+    var insaneOpen = true; // INSANE is open from the start
     var diff = this.opts.difficulty && D.DIFFICULTY[this.opts.difficulty] && (this.opts.difficulty !== 'insane' || insaneOpen) ? this.opts.difficulty : 'normal';
     var quick = !!this.opts.quick;
     var seed = this.seedFromUrl || C.randomSeed();
@@ -515,7 +532,7 @@
     if (tab === 'play') {
       body = '<p><b>Goal:</b> get ' + esc(D.CITY_NAME) + ' through every wave with as many residents, as much trust and as much fairness as possible. How you win matters: your ending depends on survival, trust, equity and your choices.</p>' +
         '<p><b>The catch:</b> bitten people look healthy while they incubate (the orange ◆ only appears once a Testing Lab finds them). Shooting visible zombies never finds them.</p>' +
-        '<h3>Controls</h3><ul class="oc-small"><li>Drag (or WASD / arrow keys) to move the map. Scroll, pinch or +/− to zoom. C to recenter.</li><li>1–9 or the build bar to pick an intervention, then click a spot. Shift-click to place several. Esc or right-click cancels.</li><li>Click a tower to upgrade (U), sell (X) or learn about it. Health Worker vans move when you tap a road.</li><li>Space pauses (you can still build). F changes speed (1x/2x/3x). L opens the Data Lens. Enter starts the next wave.</li></ul>' +
+        '<h3>Controls</h3><ul class="oc-small"><li>Drag (or WASD / arrow keys) to move the map. Scroll, pinch or +/− to zoom. C to recenter.</li><li>1–9 and 0 or the build bar to pick an intervention, then click a spot. Shift-click to place several. Esc or right-click cancels.</li><li>Click a tower to upgrade (U), sell (X) or learn about it. Health Worker vans move when you tap a road.</li><li>Laser Cannon (after wave 5): press Z or FIRE LASER, then click where to blast. It has a few charges per wave, refilled when the next wave starts.</li><li>Space pauses (you can still build). F changes speed (1x/2x/3x). L opens the Data Lens. Enter starts the next wave.</li></ul>' +
         '<h3>Map legend</h3><ul class="oc-small"><li><b style="color:#E69F00">◆ orange diamond</b>: a known Exposed person or building (found by testing).</li><li><b style="color:#CC79A7">? pink circle</b>: an unmasked Carrier (looked like a citizen).</li><li>Zombies reach forward with both arms. Sprinters lean and leave speed lines. Brutes are big and armored. <b style="color:#B7E34A">Super-Spreaders</b> (from wave 5) are giants with a green toxic ring: they infect several people per attack, smash barricades and can’t be captured by hospitals.</li><li>Newer zombies: <b>Spitters</b> (bloated, green throat) infect people from a distance; <b>Screamers</b> (pale, wild hair) shriek to speed up nearby zombies; <b>Crawlers</b> drag themselves along the ground, slip under barricades and are hard to hit.</li><li>Buildings change for good once residents are infected: a red quarantine X, then smashed windows and vines, then a smoking ruin.</li><li><b style="color:#FFB27A">▼ INCOMING</b>: glowing cracks where the next wave will claw up out of the ground. Once open, these hell holes keep producing zombies.</li><li><b style="color:#56B4E9">City Hall</b> (center) is your command bunker. Zombies march on it. If its integrity hits 0, the game ends.</li><li>Building badges show residents (most people are indoors; only those on a trip walk the streets). Orange badges show infections that testing has found. A red badge means zombies are trapped inside: the street can only hold so many at once, so the rest wait in buildings and still count.</li></ul>';
     } else if (tab === 'towers') {
       body = D.TOWER_ORDER.map(function (k) {
@@ -679,7 +696,7 @@
     node.innerHTML = '<div class="mast">' + esc(D.NEWSPAPER.toUpperCase()) + '</div><div class="date">' + now.toDateString() + ' · Seed ' + esc(g.seed) + ' · ' + esc(g.diff.label) + (r.name ? ' · Acting Health Commissioner ' + esc(r.name) : '') + '</div>' +
       '<canvas width="760" height="380" aria-hidden="true"></canvas>' +
       '<span class="endtag">' + esc(end.title.toUpperCase()) + (end.secret && firstTime ? ' · SECRET UNLOCKED!' : '') + '</span>' +
-      (newlyInsane ? '<p class="oc-unlock">\u2620 INSANE MODE UNLOCKED! Pick it on the title screen: unlimited budget, a crazy number of zombies.</p>' : '') +
+      (newlyInsane ? '<p class="oc-unlock">\u2620 You beat the city! Ready for more? Try INSANE mode on the title screen: unlimited budget, a crazy number of zombies.</p>' : '') +
       '<h1>' + esc(end.headline) + '</h1><p class="sub">' + esc(end.sub) + '</p><p>' + esc(end.body) + '</p>' +
       '<div class="oc-stats">' +
       stat(Math.round(r.survival * 100) + '%', 'residents survived') + stat(r.deaths, 'residents lost') + stat(r.peakR || '-', 'peak R_eff') +

@@ -604,6 +604,7 @@
 
   /* Real-world notes per tower (shown in info panels and the report) */
   D.TOWER_REAL = {
+    laser: 'There is no laser for a real outbreak, but there are scarce emergency tools: limited stockpiles of antivirals, ventilators or monoclonal antibodies. Officials must decide where each limited dose goes, and none of them replace finding hidden cases.',
     heavy: 'Militaries can be useful in emergencies (logistics, field hospitals, security), but heavy weapons do nothing against an infection people carry without symptoms, and armed responses in neighborhoods erode the trust outbreak control depends on.',
     militia: 'Force can stop what it can see, but outbreaks spread through people who look healthy. Heavy-handed enforcement in real epidemics has often reduced cooperation and harmed communities that were already over-policed.',
     lab: 'Testing and contact tracing find infections before they spread further. They are the "eyes" of public health. Without them, officials are guessing.',
@@ -645,6 +646,7 @@
     { when: function (r) { return r.auth >= 3; }, q: 'You chose several coercive measures (curfews, patrols, detention, tracking). Were they proportional? Which could have been replaced with less restrictive options?' },
     { when: function (r) { return r.overflowSeconds > 20; }, q: 'Your hospitals were full for about {overflowSeconds} seconds. What does "flattening the curve" mean, and how does surge capacity connect to deaths?' },
     { when: function (r) { return r.peakR > 1.5; }, q: 'Your R_eff peaked around {peakR}. What does that number mean, and which of your actions brought it down (or failed to)?' },
+    { when: function (r) { return r.laserShots > 0; }, q: 'Your Laser Cannon fired a limited number of charges each wave. How did you decide where to aim them? How is that like deciding who gets a scarce treatment or vaccine during an outbreak?' },
     { when: function (r) { return r.towerCounts.barricade >= 4; }, q: 'You built {barricades} quarantine barricades. What is the difference between quarantine and isolation, and what did the barricades cost the city?' },
     { when: function (r) { return r.towerCounts.chw === 0; }, q: 'You never deployed Community Health Workers. How might trusted local messengers have changed uptake in Eastside Flats or Rustwater Port?' },
     { when: function (r) { return r.ending === 'nuked'; }, q: 'You chose the nuclear option. Was there an earlier point when a less harmful measure could have worked? Use proportionality and justice to explain.' },
