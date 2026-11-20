@@ -245,6 +245,7 @@
         case 'tanksArrive': this.banner('TANKS ROLLING IN', 'The military will hunt zombies this wave, but they can\u2019t see hidden infections'); s.play('wave'); this.pushNews(this.fillNews('tanks')); break;
         case 'tanksLeave': this.toast('The tanks have pulled out of the city.', 'warn'); break;
         case 'tankShot': s.play('boom'); break;
+        case 'laser': s.play('laser'); break;
         case 'scream': s.play('scream'); break;
         case 'nuke': this.banner('\u2622 NUCLEAR OPTION', 'Mercy Falls is being destroyed'); break;
         case 'megaArrive': this.banner('SUPER-SPREADER!', 'A giant zombie that infects many people at once. Focus fire, barricades and high vaccination slow it.'); s.play('alert'); s.play('wave'); this.pushNews(this.fillNews('mega')); break;
@@ -341,7 +342,22 @@
     this.renderer && this.renderer.resize(Math.max(320, r.width), Math.max(240, r.height), dpr);
   };
 
-  A.cancelModes = function () { this.ui.placeType = null; this.ui.moveTeam = false; this.updateHud(true); };
+  A.cancelModes = function () { this.ui.placeType = null; this.ui.moveTeam = false; this.ui.aimLaser = false; this.updateHud(true); };
+  A.toggleAim = function () {
+    var g = this.game; if (!g || g.attract) return;
+    var tw = g.laserTower();
+    if (!tw) { this.toast(g.laserUnlocked() ? 'Build a Laser Cannon downtown first (key 0).' : 'The Laser Cannon unlocks after wave ' + D.TOWERS.laser.unlockWave + '.', 'bad'); return; }
+    if (g.phase !== 'wave') { this.toast('The laser fires during waves.', 'bad'); return; }
+    this.ui.aimLaser = !this.ui.aimLaser;
+    if (this.ui.aimLaser) { this.ui.placeType = null; this.ui.moveTeam = false; this.ui.selected = null; this.updateSelPanel(true); }
+    this.sfx.play('click'); this.updateHud(true);
+  };
+  A.doLaser = function (wx, wy) {
+    var g = this.game, r = g.fireLaser(wx, wy);
+    if (!r.ok) { this.sfx.play('error'); this.toast(r.reason, 'bad'); }
+    else { this.autosave(); var tw = g.laserTower(); if (tw && tw.ammo <= 0) { this.ui.aimLaser = false; this.toast('Laser out of charges until the next wave.', 'bad'); } }
+    this.updateHud(true);
+  };
 
   A.updateHover = function (sx, sy) {
     var g = this.game; if (!g || g.attract) return;
@@ -361,6 +377,8 @@
       if (bi >= 0 && this.mouse) this.showBuildingTip(sx, sy, bi); else this.hideTip();
     }
     this.canvas.classList.toggle('placing', !!(this.ui.placeType || this.ui.moveTeam));
+    this.canvas.classList.toggle('aiming', !!this.ui.aimLaser);
+    if (this.ui.aimLaser) { this.ui.aimAt = { x: w.x, y: w.y }; this.hideTip(); }
   };
 
   A.pickTower = function (sx, sy) {
@@ -378,6 +396,7 @@
     var w = this.renderer.screenToWorld(sx, sy), tx = Math.floor(w.x), ty = Math.floor(w.y);
     var hi = this.renderer.hallIndicator;
     if (hi && Math.hypot(sx - hi.x, sy - hi.y) < 50) { this.goToHall(); return; }
+    if (this.ui.aimLaser) { this.doLaser(w.x, w.y); return; }
     if (this.ui.placeType) { this.tryPlace(this.ui.placeType, tx, ty); this.updateHover(sx, sy); return; }
     var sel = this.ui.selected;
     if (sel && sel.type === 'chw' && (this.ui.moveTeam || this.isRoad(tx, ty)) && !this.pickTower(sx, sy)) { this.doMove(sel, tx, ty); return; }
@@ -409,13 +428,14 @@
       return;
     }
     if (!g || g.attract) return;
-    if (k >= '1' && k <= '9') { var tt = D.TOWER_ORDER.filter(function (q) { return D.TOWERS[q].key === k; })[0]; if (tt) { this.selectTower(tt); e.preventDefault(); } return; }
+    if (k >= '0' && k <= '9') { var tt = D.TOWER_ORDER.filter(function (q) { return D.TOWERS[q].key === k; })[0]; if (tt) { this.selectTower(tt); e.preventDefault(); } return; }
     switch (lk) {
       case 'Escape': this.cancelModes(); this.ui.selected = null; this.updateSelPanel(true); break;
       case ' ': this.togglePause(); e.preventDefault(); break;
       case 'f': this.cycleSpeed(); break;
       case 'c': this.renderer.recenter(); break;
       case 'l': this.toggleLens(); break;
+      case 'z': this.toggleAim(); break;
       case 'm': this.toggleMute(); break;
       case 'h': case '?': this.showHelp(); break;
       case 't': this.side.classList.toggle('collapsed'); break;
@@ -444,7 +464,7 @@
   A.selectTower = function (type) {
     var g = this.game;
     if (this.ui.placeType === type) { this.ui.placeType = null; }
-    else { this.ui.placeType = type; this.ui.selected = null; this.ui.moveTeam = false; }
+    else { this.ui.placeType = type; this.ui.selected = null; this.ui.moveTeam = false; this.ui.aimLaser = false; }
     this.sfx.play('click');
     if (this.mouse) this.updateHover(this.mouse.x, this.mouse.y);
     this.updateHud(true); this.updateSelPanel(true);

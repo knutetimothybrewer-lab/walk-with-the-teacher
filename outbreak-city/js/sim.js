@@ -607,6 +607,9 @@
     if (!def) return { ok: false, reason: 'Unknown tower' };
     if (tx < 0 || ty < 0 || tx >= this.W || ty >= this.H) return { ok: false, reason: 'Off the map' };
     if (this.phase === 'ended') return { ok: false, reason: 'Game over' };
+    if (!this.researched(type)) return { ok: false, reason: 'Advanced research: unlocks after wave ' + def.unlockWave };
+    if (def.unique && this.countTowers(type) > 0) return { ok: false, reason: 'Only one ' + def.name + ' allowed' };
+    if (def.nearHall) { var hb = this.blds[this.hallId], hdx = tx + 0.5 - hb.cx, hdy = ty + 0.5 - hb.cy; if (hdx * hdx + hdy * hdy > def.nearHall * def.nearHall) return { ok: false, reason: 'Must go downtown, near City Hall' }; }
     var i = ty * this.W + tx, t = this.city.tiles[i];
     if (this.towerAt[i] >= 0) return { ok: false, reason: 'Something is already here' };
     if (def.road) { if (t !== T.ROAD && t !== T.BRIDGE) return { ok: false, reason: 'Must go on a road' }; }
@@ -627,6 +630,7 @@
       bld: [], rr: 0, patients: [], hp: def.hp || 0, x: tx + 0.5, y: ty + 0.5, path: null, pi: 0, boost: 1, uptakeMult: 1,
       nearBld: -1, placedT: this.t, scanT: -99, fxc: 0, sumE: 0, target: null };
     tw.st = this.towerStats(tw);
+    if (type === 'laser') tw.ammo = this.laserAmmo(tw);
     this.towers.push(tw);
     if (type === 'barricade') { this.barricadeAt[i] = tw.id; this.pathCache.clear(); }
     if (type !== 'chw') this.towerAt[i] = tw.id;
@@ -666,8 +670,10 @@
     if (this.unlimited) cost = 0;
     if (this.budget < cost) return { ok: false, reason: 'Not enough budget' };
     this.budget -= cost; tw.spent += cost; tw.level++;
+    var oldAmmo = tw.type === 'laser' ? this.laserAmmo(tw) : 0;
     tw.st = this.towerStats(tw);
     if (tw.type === 'barricade') tw.hp = tw.st.hp;
+    if (tw.type === 'laser') tw.ammo += this.laserAmmo(tw) - oldAmmo;
     this.computeTowerBld(tw);
     this.dirty = true;
     this.cmd('upgrade', [id]);
@@ -904,6 +910,7 @@
         case 'militia': case 'heavy': tw.cd -= DT; if (tw.cd <= 0) this.militiaFire(tw); break;
         case 'lab': tw.cd -= DT * tw.boost; if (tw.cd <= 0) { tw.cd = tw.st.scanInterval; this.labScan(tw); } break;
         case 'clinic': this.clinicTick(tw); break;
+        case 'laser': tw.cd -= DT; break;
         case 'hospital': this.hospitalTick(tw); break;
         case 'chw': this.chwTick(tw); break;
       }
@@ -1135,6 +1142,7 @@
   G.startWave = function () {
     if (this.phase !== 'build') return { ok: false };
     this.wave++; this.waveTime = 0; this.phase = 'wave';
+    for (var lz = 0; lz < this.towers.length; lz++) if (this.towers[lz].type === 'laser') this.towers[lz].ammo = this.laserAmmo(this.towers[lz]);
     var def = this.waveDefs[this.wave - 1], plan = this.plans[this.wave - 1];
     this.weather = def.weather;
     // Delayed consequences that come due this wave
@@ -1364,6 +1372,42 @@
     }
   };
 
+  /* ================= Laser cannon (player-aimed) ================= */
+  G.laserAmmo = function (tw) { return tw.st.ammo * (this.unlimited ? 2 : 1); };
+  G.laserTower = function () { for (var i = 0; i < this.towers.length; i++) if (this.towers[i].type === 'laser') return this.towers[i]; return null; };
+  // 'after wave N': unlocked once wave N is over
+  G.researched = function (type) { var u = D.TOWERS[type].unlockWave; return !u || this.wave > u || (this.wave === u && this.phase !== 'wave'); };
+  G.laserUnlocked = function () { return this.researched('laser'); };
+  G.fireLaser = function (x, y) {
+    var tw = this.laserTower();
+    if (!tw) return { ok: false, reason: 'Build a Laser Cannon first' };
+    if (this.phase !== 'wave') return { ok: false, reason: 'The laser fires during waves' };
+    if (tw.ammo <= 0) return { ok: false, reason: 'Out of charges until next wave' };
+    if (tw.cd > 0) return { ok: false, reason: 'Recharging...' };
+    var st = tw.st, dx = x - tw.x, dy = y - tw.y, d = Math.hypot(dx, dy);
+    if (d > st.range) { x = tw.x + dx / d * st.range; y = tw.y + dy / d * st.range; d = st.range; }
+    x = Math.round(x * 100) / 100; y = Math.round(y * 100) / 100;
+    this.cmd('laser', [x, y]);
+    tw.ammo--; tw.cd = st.cooldown; tw.lastFire = this.t; tw.angle = Math.atan2(y - tw.y, x - tw.x);
+    this.stats.laserShots = (this.stats.laserShots || 0) + 1;
+    var ux = d ? (x - tw.x) / d : 0, uy = d ? (y - tw.y) / d : 0, kills = 0, self = this, hit = [];
+    // everything revealed along the beam, plus a blast at the end
+    this.near((tw.x + x) / 2, (tw.y + y) / 2, d / 2 + st.radius + 0.5, function (a) {
+      if (a.kind !== 1 || a.dead || !a.revealed) return false;
+      var ax = a.x - tw.x, ay = a.y - tw.y, along = ax * ux + ay * uy, perp = Math.abs(ax * uy - ay * ux);
+      var inBeam = along > 0.3 && along < d && perp < st.beamWidth, inBlast = Math.hypot(a.x - x, a.y - y) < st.radius;
+      if (inBeam || inBlast) hit.push(a);
+      return false;
+    });
+    for (var i = 0; i < hit.length; i++) {
+      var a = hit[i]; a.hp -= st.damage; a.hitT = this.t;
+      if (a.hp <= 0 && !a.dead) { kills++; this.stats.kills++; this.stats.laserKills = (this.stats.laserKills || 0) + 1; if (a.zdef.boss) this.stats.megaKills++; this.emit({ k: 'kill', x: a.x, y: a.y, z: a.type, face: 1, laser: true }); this.killZombie(a, 'laser'); }
+    }
+    this.panic = Math.min(100, this.panic + st.panicPerShot);
+    this.emit({ k: 'laser', x0: tw.x, y0: tw.y, x1: x, y1: y, kills: kills, r: st.radius, tw: tw.id });
+    return { ok: true, kills: kills };
+  };
+
   /* ================= Nuclear option ================= */
   G.nukeAvailable = function () {
     if (this.phase !== 'wave' || this.attract) return false;
@@ -1407,7 +1451,7 @@
       detectionRate: detectionRate, detectionPct: Math.round(detectionRate * 100),
       vaxCoverage: st.vaccinated / this.totalPop, vaxPct: Math.round(100 * st.vaccinated / this.totalPop),
       towerCounts: tc, barricades: tc.barricade, spin: this.counters.spin, auth: Math.round(this.counters.auth * 10) / 10, flags: this.flags,
-      hallPct: Math.round(100 * this.hallHp / this.hallMax), tankKills: st.tankKills || 0, nuked: st.nuked || 0, megas: st.megas, megaInf: st.megaInf, overrun: this.blds.filter(function (b) { return b.blight >= 2; }).length, ruined: this.blds.filter(function (b) { return b.blight >= 3; }).length,
+      hallPct: Math.round(100 * this.hallHp / this.hallMax), tankKills: st.tankKills || 0, laserKills: st.laserKills || 0, laserShots: st.laserShots || 0, nuked: st.nuked || 0, megas: st.megas, megaInf: st.megaInf, overrun: this.blds.filter(function (b) { return b.blight >= 2; }).length, ruined: this.blds.filter(function (b) { return b.blight >= 3; }).length,
       overflowSeconds: Math.round(st.overflowSeconds), worstDistrict: D.DISTRICTS[worst].name, wave: this.wave, totalWaves: this.totalWaves,
       budget: Math.round(this.budget), vaccines: Math.round(this.vaccines), decisions: this.decisions, active: t.active, t: Math.round(this.t)
     };
@@ -1423,6 +1467,7 @@
       case 'start': return this.startWave();
       case 'choose': return this.choose(e.a[0]);
       case 'nuke': return this.nuke();
+      case 'laser': return this.fireLaser(e.a[0], e.a[1]);
     }
   };
 

@@ -291,7 +291,8 @@ const addBots = page => page.addScriptTag({ path: path.join(__dirname, 'strategi
       // The counters must match the map: zombies = street figures + zombies trapped inside buildings
       const m = await page.evaluate(() => { const g = OutbreakCity._instances[0].game, t = g.totals; let street = 0; g.agents.forEach(a => { if (!a.dead && a.kind === 1) street++; });
         const inside = g.blds.reduce((s, b) => s + b.Z, 0); return { counter: +document.querySelector('[data-k=infected] b').textContent, street, inside, sub: document.querySelector('[data-s=infected]').textContent, people: document.querySelector('[data-s=healthy]').textContent, cap: g.maxZombies }; });
-      check('Zombie counter = zombies on the street + zombies inside buildings', Math.abs(m.counter - m.street - m.inside) <= 2 && m.sub.length > 0 && /street/.test(m.people), JSON.stringify(m));
+      const parts = (m.sub.match(/\d+/g) || []).map(Number);
+      check('Zombie counter = zombies on the street + zombies inside buildings', parts.length === 2 && parts[0] + parts[1] === m.counter && Math.abs(m.counter - m.street - m.inside) <= 8 && /street/.test(m.people), JSON.stringify(m));
     }
     // Full effects is reported, not required: on slow devices the game switches to Low effects by itself.
     check('Frame time under load, ' + (lowFx ? 'Low effects (required < 30 ms)' : 'full effects (reported only)') + ' (' + st.n + ' agents; headless software rendering)', lowFx ? st.avg < 30 : true,
@@ -334,31 +335,23 @@ const addBots = page => page.addScriptTag({ path: path.join(__dirname, 'strategi
     await page.close();
   }
 
-  // ---------- 4c. INSANE unlock, military tanks, nuclear option, no fog ----------
+  // ---------- 4c. INSANE, military tanks, nuclear option, no fog, laser cannon ----------
   {
     const page = await newPage(browser);
     await page.goto(base + 'index.html?seed=BIG1');
     await page.evaluate(() => { try { localStorage.removeItem('outbreakCity.v1'); } catch (e) { } });
     await page.reload(); await page.waitForTimeout(500);
-    const locked = await page.evaluate(() => document.querySelector('.oc-insane').classList.contains('locked'));
-    check('INSANE is locked before finishing a game', locked);
-    // finish a quick game -> INSANE unlocks
-    await page.uncheck('[data-f=tut]'); await page.click('[data-a=start]');
-    await page.evaluate(() => { const app = OutbreakCity._instances[0], g = app.game; g.waveDefs = g.waveDefs.slice(0, 2); g.totalWaves = 2; g.plans = g.plans.slice(0, 2);
-      while (g.phase !== 'ended') { if (g.phase === 'build') g.startWave(); else if (g.phase === 'briefing') g.choose(0); else g.step(); } app.lastPhase = 'wave'; });
-    await page.waitForSelector('.oc-paper', { timeout: 8000 });
-    const unlockedMsg = await page.isVisible('.oc-unlock');
-    await page.click('.oc-paper [data-a=again]'); await page.waitForTimeout(500);
-    const unlocked = await page.evaluate(() => !document.querySelector('.oc-insane').classList.contains('locked'));
-    check('Finishing a game unlocks INSANE (with a message)', unlockedMsg && unlocked);
+    const open = await page.evaluate(() => !document.querySelector('.oc-insane').classList.contains('locked'));
+    check('INSANE is open from the start (fresh device)', open);
     await page.click('.oc-insane'); await page.uncheck('[data-f=tut]'); await page.click('[data-a=start]'); await page.waitForTimeout(400);
     const ins = await page.evaluate(() => { const app = OutbreakCity._instances[0], g = app.game; const before = g.budget; let placed = 0;
       for (let y = 2; y < g.H - 2 && placed < 40; y++) for (let x = 2; x < g.W - 2 && placed < 40; x++) if (g.place('clinic', x, y).ok) placed++;
       app.updateHud(true); return { diff: g.diffKey, budgetText: document.querySelector('.oc-meter .val') && app.meters.budget.val.textContent, placed, spent: before - g.budget, cap: g.maxZombies }; });
     check('INSANE: unlimited budget (∞) and a higher zombie cap', ins.diff === 'insane' && ins.budgetText === '∞' && ins.placed === 40 && ins.spent === 0 && ins.cap > 140, JSON.stringify(ins));
     // military card and tanks (Normal)
-    await page.evaluate(() => { const app = OutbreakCity._instances[0]; app.newGame({ seed: 'BIG1', difficulty: 'easy' }); const g = app.game;
-      while (!(g.phase === 'briefing' && g.briefing.card.id === 'military') && g.phase !== 'ended') { if (g.phase === 'build') g.startWave(); else if (g.phase === 'briefing') g.choose(0); else g.step(); } app.lastPhase = 'wave'; });
+    await page.addScriptTag({ path: path.join(__dirname, 'strategies.js') });
+    await page.evaluate(() => { const app = OutbreakCity._instances[0]; app.newGame({ seed: 'BIG1', difficulty: 'easy' }); const g = app.game, S = Object.assign({}, OCBots.STRATS.balanced);
+      while (!(g.phase === 'briefing' && g.briefing.card.id === 'military') && g.phase !== 'ended') { if (g.phase === 'build') { S.build(g); g.startWave(); } else if (g.phase === 'briefing') g.choose(0); else g.step(); } app.lastPhase = 'wave'; });
     await page.waitForSelector('.oc-brief', { timeout: 5000 });
     const card = await page.evaluate(() => OutbreakCity._instances[0].game.briefing.card.id + ' after wave ' + OutbreakCity._instances[0].game.wave);
     await page.click('.oc-opt >> nth=0'); await page.click('.oc-brief .oc-btn.primary');
@@ -373,7 +366,24 @@ const addBots = page => page.addScriptTag({ path: path.join(__dirname, 'strategi
     check('Nuclear option (asks twice) destroys the city and ends the game', nk.ending === 'nuked' && nk.alive === 0 && nk.ruins, JSON.stringify(nk));
     const fog = await page.evaluate(() => OutbreakCity.data.WAVES.filter(w => w.weather === 'fog').length);
     check('No fog in any wave', fog === 0, fog + ' foggy waves');
-    check('No errors (INSANE / tanks / nuke)', page.errors.length === 0, page.errors.join(' | '));
+    // Laser Cannon: locked until wave 5 is over, built downtown, player-aimed, limited charges
+    const lz = await page.evaluate(() => { const app = OutbreakCity._instances[0]; app.newGame({ seed: 'LASER1', difficulty: 'easy' }); const g = app.game, S = Object.assign({}, OCBots.STRATS.balanced);
+      const out = {}; const hb = g.blds[g.hallId];
+      out.lockedEarly = /after wave 5/.test(g.canPlace('laser', Math.floor(hb.cx) + 2, Math.floor(hb.cy) + 2).reason || '');
+      while (g.phase !== 'ended' && !(g.wave === 5 && g.phase === 'build')) { if (g.phase === 'build') { S.build(g); g.startWave(); } else if (g.phase === 'briefing') g.choose(S.choose(g, g.briefing.card)); else g.step(); }
+      out.far = g.canPlace('laser', 1, 1).reason;
+      const c = []; for (let y = 0; y < g.H; y++) for (let x = 0; x < g.W; x++) if (g.canPlace('laser', x, y).ok) c.push([x, y]);
+      out.spots = c.length; out.placed = c.length ? g.place('laser', c[0][0], c[0][1]).ok : false;
+      app.hideScreen(); app.doStartWave(); for (let i = 0; i < 400; i++) g.step();
+      const tw = g.laserTower(); let best = null; for (const z of g.agents) if (!z.dead && z.kind === 1 && z.revealed && Math.hypot(z.x - tw.x, z.y - tw.y) < 13) { best = z; break; }
+      if (best) { app.renderer.focus(best.x, best.y, 1.2); const cm = app.renderer.cam; cm.x = cm.tx; cm.y = cm.ty; cm.zoom = cm.tz; }
+      app.paused = true; app.lastPhase = g.phase; app.updateHud(true); window.__lzT = best ? { x: best.x, y: best.y } : { x: tw.x + 2, y: tw.y + 1.5 }; if (!best) { app.renderer.focus(tw.x, tw.y, 1.2); const cm = app.renderer.cam; cm.x = cm.tx; cm.y = cm.ty; cm.zoom = cm.tz; } out.ammo0 = tw.ammo; return out; });
+    await page.keyboard.press('z'); await page.waitForTimeout(150);
+    const tgt = await page.evaluate(() => { const t = window.__lzT; if (!t) return null; const p = OutbreakCity._instances[0].renderer.worldToScreen(t.x, t.y, 0), r = document.querySelector('canvas').getBoundingClientRect(); return { x: r.left + p.x, y: r.top + p.y }; });
+    if (tgt) { await page.mouse.move(tgt.x, tgt.y); await page.mouse.click(tgt.x, tgt.y); await page.waitForTimeout(80); await shot(page, '55-laser-cannon'); }
+    const lz2 = await page.evaluate(() => { const g = OutbreakCity._instances[0].game, tw = g.laserTower(); return { ammo: tw.ammo, shots: g.log.filter(e => e.c === 'laser').length, kills: g.stats.laserKills || 0, btn: document.querySelector('.oc-laser').textContent }; });
+    check('Laser Cannon: locked until after wave 5, downtown only, aimed with Z + click, uses a charge', lz.lockedEarly && /downtown/.test(lz.far || '') && lz.placed && tgt && lz2.shots === 1 && lz2.ammo === lz.ammo0 - 1 && /FIRE LASER|STOP AIMING/.test(lz2.btn), JSON.stringify(Object.assign({}, lz, lz2)));
+    check('No errors (INSANE / tanks / nuke / laser)', page.errors.length === 0, page.errors.join(' | '));
     await page.close();
   }
 

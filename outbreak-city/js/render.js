@@ -79,6 +79,7 @@
 
   R.setGame = function (game) {
     this.game = game;
+    this.nukeT = undefined; this.nukeAt = null; this.beams = []; // effects from a previous game must not carry over
     var city = game.city;
     this.W = city.W; this.H = city.H;
     this.chunks = null;
@@ -520,6 +521,20 @@
         for (var lf = 1; lf < 8; lf += 2) { var lp = face(0, vs + Math.sin(lf * 1.7 + v) * 0.05, top * lf / 8); ctx.fillStyle = '#4FA33F'; ctx.beginPath(); ctx.arc(lp.x + 1, lp.y, 1.1, 0, 7); ctx.fill(); }
       }
     }
+    // things growing out of the walls: pustules first, then fungus shelves
+    for (var pu = 0; pu < 2 + dmg * 2; pu++) {
+      var pc = face(pu % 2, 0.12 + r(pu + 120) * 0.76, 0.08 + r(pu + 130) * 0.6), pr = 1.2 + r(pu + 140) * (0.8 + dmg * 0.7);
+      ctx.fillStyle = '#5A2A63'; ctx.beginPath(); ctx.arc(pc.x, pc.y, pr + 0.6, 0, 7); ctx.fill();
+      ctx.fillStyle = dmg >= 2 && pu % 3 === 0 ? '#C8E02A' : '#B05FC0'; ctx.beginPath(); ctx.arc(pc.x, pc.y, pr, 0, 7); ctx.fill();
+      ctx.fillStyle = 'rgba(255,230,250,0.7)'; ctx.beginPath(); ctx.arc(pc.x - pr * 0.35, pc.y - pr * 0.35, pr * 0.3, 0, 7); ctx.fill();
+    }
+    if (dmg >= 2) {
+      for (var fu = 0; fu < 3 + dmg; fu++) {
+        var fc = face(fu % 2, 0.15 + r(fu + 150) * 0.7, 0.1 + r(fu + 160) * 0.55), fw = 3 + r(fu + 170) * 3;
+        ctx.fillStyle = '#7A5A2E'; ctx.beginPath(); ctx.ellipse(fc.x, fc.y, fw, fw * 0.45, fu % 2 ? -0.45 : 0.45, Math.PI, 0); ctx.fill();
+        ctx.fillStyle = '#D9C27A'; ctx.beginPath(); ctx.ellipse(fc.x, fc.y - 0.6, fw * 0.8, fw * 0.25, fu % 2 ? -0.45 : 0.45, Math.PI, 0); ctx.fill();
+      }
+    }
     if (dmg >= 3) {
       // toxic glow leaking from a few windows
       for (var g2 = 0; g2 < 3; g2++) {
@@ -805,6 +820,16 @@
       }
       case 'spit': this.tracer(e.x0, e.y0, 14, e.x, e.y, 8, { color: '#B7E34A', max: 0.45, arc: 18, kind: 'dart', w: 2.6, onHit: function () { self.burst(e.x, e.y, 6, { colors: ['#B7E34A', '#7FA83A'], speed: 18, up: 22, max: 0.5 }); } }); break;
       case 'scream': this.ring(e.x, e.y, e.r * 0.6, 'rgba(230,230,255,0.85)', 0.6, 3); this.ring(e.x, e.y, e.r, 'rgba(200,180,255,0.6)', 0.9, 2); if (this.time - (this.lastScream || -9) > 1.2) { this.lastScream = this.time; this.text(e.x, e.y, 'SCREEEE!', '#E6E0FF'); } break;
+      case 'laser': {
+        var lb = this.beams || (this.beams = []);
+        lb.push({ x0: e.x0, y0: e.y0, x1: e.x1, y1: e.y1, t: this.time, r: e.r });
+        this.ring(e.x1, e.y1, e.r * 1.3, 'rgba(120,240,255,0.95)', 0.45, 4);
+        this.ring(e.x1, e.y1, e.r * 0.6, 'rgba(255,255,255,0.9)', 0.3, 3);
+        this.burst(e.x1, e.y1, 18, { colors: ['#7FE9FF', '#FFFFFF', '#2BC4E8'], speed: 60, up: 70, max: 0.6, size: 2.6 });
+        this.addShake(3);
+        this.text(e.x1, e.y1 - 0.4, e.kills ? (e.kills > 2 ? 'ZAPPED x' + e.kills + '!' : 'ZAP!') : 'MISS', e.kills ? '#7FE9FF' : '#BBBBBB', true);
+        break;
+      }
       case 'tankShot':
         this.tracer(e.x0, e.y0, 18, e.x1, e.y1, 6, { color: '#FFE08A', max: 0.14, arc: 4, w: 3 });
         this.burst(e.x1, e.y1, 14, { colors: ['#FF6A1F', '#FFD24A', '#6B6B6B'], speed: 46, up: 60, max: 0.7, size: 3 });
@@ -900,6 +925,29 @@
           ctx.fillStyle = '#FFFFFF'; ctx.beginPath(); ctx.arc(x + hdx * 30, y - 17 + hdy * 30, 3.5, 0, 7); ctx.fill();
         }
         if (!ghost) for (var sd2 = 0; sd2 < 3; sd2++) this.soldier(ctx, x - 20 + sd2 * 17, y + 4 + (sd2 % 2) * 3, hdx, hdy, ft2 !== undefined && t - ft2 < 0.12 && sd2 === 1, tw.id + sd2);
+        break;
+      }
+      case 'laser': {
+        platform();
+        // reactor base with glowing coils, a dome and a long emitter barrel
+        box(x, y - 3, 18, 9, 10, '#3B4654');
+        var glow = 0.55 + 0.45 * Math.sin(t * 5 + tw.id), ammoPct = tw.ammo !== undefined && tw.st ? tw.ammo / Math.max(1, tw.st.ammo) : 1;
+        ctx.fillStyle = 'rgba(40,220,255,' + (0.35 + 0.5 * glow * Math.min(1, ammoPct + 0.15)).toFixed(3) + ')';
+        for (var cl = 0; cl < 3; cl++) { ctx.fillRect(x - 15 + cl * 5, y - 10 + cl * 2.5, 3, 5); ctx.fillRect(x + 4 + cl * 5, y - 5 - cl * 2.5, 3, 5); }
+        ctx.fillStyle = shade('#C9D3DD', 1); ctx.beginPath(); ctx.ellipse(x, y - 14, 13, 8, 0, Math.PI, 0); ctx.fill();
+        ctx.fillStyle = shade('#9AA6B2', 1); ctx.fillRect(x - 13, y - 14, 26, 3);
+        var la = tw.angle || -0.8, ldx = Math.cos(la) - Math.sin(la), ldy = (Math.cos(la) + Math.sin(la)) * 0.5, ll = Math.hypot(ldx, ldy) || 1;
+        ldx /= ll; ldy /= ll;
+        var lft = tw.lastFire !== undefined && this.game ? this.game.t - tw.lastFire : 9, rec3 = lft < 0.15 ? -4 : 0;
+        ctx.lineCap = 'round';
+        ctx.strokeStyle = '#1E252E'; ctx.lineWidth = 6; ctx.beginPath(); ctx.moveTo(x, y - 20); ctx.lineTo(x + ldx * (28 + rec3), y - 20 + ldy * (28 + rec3)); ctx.stroke();
+        ctx.strokeStyle = '#7FE9FF'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(x + ldx * 6, y - 20 + ldy * 6); ctx.lineTo(x + ldx * (27 + rec3), y - 20 + ldy * (27 + rec3)); ctx.stroke();
+        ctx.fillStyle = 'rgba(120,240,255,' + (0.4 + 0.6 * glow).toFixed(3) + ')'; ctx.beginPath(); ctx.arc(x + ldx * (29 + rec3), y - 20 + ldy * (29 + rec3), 3 + glow * 1.5, 0, 7); ctx.fill();
+        // charge pips
+        if (!ghost && tw.ammo !== undefined) {
+          var tot = this.game ? this.game.laserAmmo(tw) : tw.ammo, pw = Math.min(4, 60 / Math.max(1, tot));
+          for (var ap = 0; ap < tot; ap++) { ctx.fillStyle = ap < tw.ammo ? '#5FF2FF' : 'rgba(255,255,255,0.18)'; ctx.fillRect(x - tot * pw / 2 + ap * pw, y - 40, pw - 1, 3); }
+        }
         break;
       }
       case 'lab': {
@@ -1322,6 +1370,38 @@
     ctx.fillStyle = 'rgba(255,120,40,' + Math.min(0.25, b * 0.05).toFixed(3) + ')'; ctx.fillRect(0, 0, this.vw, this.vh);
   };
 
+  // Laser beams (and the aiming reticle while the player is aiming)
+  R.drawLaser = function (ctx, ui) {
+    var g = this.game, bs = this.beams;
+    if (bs && bs.length) {
+      ctx.save(); ctx.globalCompositeOperation = 'lighter'; ctx.lineCap = 'round';
+      for (var i = bs.length - 1; i >= 0; i--) {
+        var b = bs[i], age = this.time - b.t, life = 0.45;
+        if (age > life) { bs.splice(i, 1); continue; }
+        var f = 1 - age / life, p0 = iso(b.x0, b.y0), p1 = iso(b.x1, b.y1), sy0 = p0.y - 20;
+        ctx.strokeStyle = 'rgba(40,200,255,' + (0.35 * f).toFixed(3) + ')'; ctx.lineWidth = 28 * f + 3; ctx.beginPath(); ctx.moveTo(p0.x, sy0); ctx.lineTo(p1.x, p1.y); ctx.stroke();
+        ctx.strokeStyle = 'rgba(140,240,255,' + (0.8 * f).toFixed(3) + ')'; ctx.lineWidth = 10 * f + 2; ctx.beginPath(); ctx.moveTo(p0.x, sy0); ctx.lineTo(p1.x, p1.y); ctx.stroke();
+        ctx.strokeStyle = 'rgba(255,255,255,' + f.toFixed(3) + ')'; ctx.lineWidth = 3.5 * f + 1; ctx.beginPath(); ctx.moveTo(p0.x, sy0); ctx.lineTo(p1.x, p1.y); ctx.stroke();
+        ctx.fillStyle = 'rgba(160,245,255,' + (0.5 * f).toFixed(3) + ')'; ellipse(ctx, p1.x, p1.y, b.r * HW * (1.4 - f * 0.4), b.r * HH * (1.4 - f * 0.4)); ctx.fill();
+      }
+      ctx.restore();
+    }
+    if (ui && ui.aimLaser && ui.aimAt && g) {
+      var tw = g.laserTower(); if (!tw) return;
+      var st = tw.st, ax = ui.aimAt.x, ay = ui.aimAt.y, dx = ax - tw.x, dy = ay - tw.y, d = Math.hypot(dx, dy);
+      if (d > st.range) { ax = tw.x + dx / d * st.range; ay = tw.y + dy / d * st.range; }
+      var tp = iso(tw.x, tw.y), ap2 = iso(ax, ay), ready = tw.ammo > 0 && tw.cd <= 0, pulse = 1 + 0.08 * Math.sin(this.time * 10);
+      ctx.save();
+      ctx.setLineDash([6, 6]); ctx.strokeStyle = ready ? 'rgba(127,233,255,0.7)' : 'rgba(255,140,90,0.6)'; ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.moveTo(tp.x, tp.y - 20); ctx.lineTo(ap2.x, ap2.y); ctx.stroke(); ctx.setLineDash([]);
+      ctx.strokeStyle = ready ? '#7FE9FF' : '#FF8C5A'; ctx.lineWidth = 2.5;
+      ellipse(ctx, ap2.x, ap2.y, st.radius * HW * pulse, st.radius * HH * pulse); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(ap2.x - 14, ap2.y); ctx.lineTo(ap2.x - 5, ap2.y); ctx.moveTo(ap2.x + 5, ap2.y); ctx.lineTo(ap2.x + 14, ap2.y);
+      ctx.moveTo(ap2.x, ap2.y - 9); ctx.lineTo(ap2.x, ap2.y - 3); ctx.moveTo(ap2.x, ap2.y + 3); ctx.lineTo(ap2.x, ap2.y + 9); ctx.stroke();
+      ctx.restore();
+    }
+  };
+
   /* ================= CHAOS: what an overrun district looks like =================
      Driven by game.chaos[d] (0..1, share of the district's buildings overrun). */
   // Flames are pre-drawn once (8 animation frames) and then stamped: building a gradient
@@ -1399,16 +1479,94 @@
     }
   };
 
-  // Overrun buildings burn: roof fires on most ruins, window fires in burning districts
+  // How far gone a building is, 0..1. It keeps climbing after the building is overrun:
+  // more residents lost, and the longer it has been a ruin, the worse it looks.
+  R.mutation = function (b) {
+    var g = this.game, lost = C.clamp((b.D + b.Z) / Math.max(1, b.orig), 0, 1);
+    if (b.blight < 2) return 0;
+    if (b.blight < 3) return 0.12 + 0.3 * lost;
+    if (this.ruinGame !== g) { this.ruinGame = g; this.ruinT = {}; }
+    var rt = this.ruinT;
+    if (rt[b.id] === undefined || rt[b.id] > g.t) rt[b.id] = g.t;
+    var age = C.clamp((g.t - rt[b.id]) / 45, 0, 1);
+    return C.clamp(0.42 + 0.3 * lost + 0.35 * age, 0, 1);
+  };
+
+  // Mutant tentacles: pre-drawn (2 colours x 2 directions x 8 frames) and stamped.
+  R.tentacleSprite = function (col, dir, f) {
+    return this.sprite('tn|' + col + '|' + dir + '|' + f, 60, 60, 30, 56, function (ctx) {
+      var P = col ? ['#2E4A18', '#5E8F2C', '#A6DB55', '#E9F7A0'] : ['#3A1544', '#73318A', '#B86BCB', '#F6BCDD'];
+      var ph = f / 8 * Math.PI * 2, sg = dir ? 1 : -1, N = 18, seg = 3, x = 0, y = 0, pts = [];
+      for (var i = 0; i <= N; i++) {
+        var u = i / N, th = sg * (0.35 * u + 0.75 * u * Math.sin(ph - u * 4.2)) + sg * 0.15;
+        pts.push([x, y, 5.6 * (1 - u) + 0.9]);
+        x += Math.sin(th) * seg; y -= Math.cos(th) * seg;
+      }
+      var k;
+      for (k = 0; k < pts.length; k++) { ctx.fillStyle = P[0]; ctx.beginPath(); ctx.arc(pts[k][0], pts[k][1], pts[k][2] + 1.1, 0, 7); ctx.fill(); }
+      for (k = 0; k < pts.length; k++) { ctx.fillStyle = P[1]; ctx.beginPath(); ctx.arc(pts[k][0], pts[k][1], pts[k][2], 0, 7); ctx.fill(); }
+      for (k = 0; k < pts.length - 2; k++) { ctx.fillStyle = P[2]; ctx.beginPath(); ctx.arc(pts[k][0] - sg * pts[k][2] * 0.35, pts[k][1], pts[k][2] * 0.4, 0, 7); ctx.fill(); }
+      for (k = 1; k < pts.length - 3; k += 2) { ctx.fillStyle = P[3]; ctx.beginPath(); ctx.arc(pts[k][0] + sg * pts[k][2] * 0.6, pts[k][1], Math.max(0.6, pts[k][2] * 0.28), 0, 7); ctx.fill(); }
+      // slime drip at the root
+      ctx.fillStyle = 'rgba(160,230,70,0.7)'; ellipse(ctx, 0, 1, 6, 2); ctx.fill();
+    });
+  };
+  R.tentacle = function (ctx, x, y, size, seed, col) {
+    var f = this.settings.reducedMotion ? (seed & 7) : (Math.floor(this.time * 5 + seed * 2.3) & 7);
+    this.blit(ctx, this.tentacleSprite(col, seed & 1, f), x, y, size);
+  };
+  // A giant eye that grew on the wall. It blinks now and then.
+  R.eyeSprite = function (open) {
+    return this.sprite('eye|' + open, 22, 18, 11, 9, function (ctx) {
+      ctx.fillStyle = '#5A1E3A'; ellipse(ctx, 0, 0, 10, 7.5); ctx.fill();
+      if (!open) { ctx.strokeStyle = '#F2B8D0'; ctx.lineWidth = 1.4; ctx.beginPath(); ctx.moveTo(-8, 0); ctx.quadraticCurveTo(0, 3, 8, 0); ctx.stroke(); return; }
+      ctx.fillStyle = '#F7F1DC'; ellipse(ctx, 0, 0, 8.5, 6); ctx.fill();
+      ctx.strokeStyle = 'rgba(200,30,30,0.8)'; ctx.lineWidth = 0.6;
+      for (var v = 0; v < 6; v++) { var a = v * 1.05; ctx.beginPath(); ctx.moveTo(Math.cos(a) * 8, Math.sin(a) * 5.6); ctx.lineTo(Math.cos(a + 0.3) * 4.5, Math.sin(a + 0.3) * 3); ctx.stroke(); }
+      ctx.fillStyle = '#C8E02A'; ctx.beginPath(); ctx.arc(1, 0, 3.6, 0, 7); ctx.fill();
+      ctx.fillStyle = '#111'; ctx.fillRect(0.3, -3, 1.6, 6);
+      ctx.fillStyle = 'rgba(255,255,255,0.85)'; ctx.beginPath(); ctx.arc(-1.5, -1.8, 1, 0, 7); ctx.fill();
+    });
+  };
+
+  // Overrun buildings burn and mutate, and it gets worse the further gone they are:
+  // overrun = window fires and a tentacle poking out; ruined = a roof inferno and
+  // tentacles writhing out of the broken top; long-dead ruins = a towering column of
+  // fire, huge tentacles and a giant blinking eye.
   R.drawBuildingFire = function (ctx, x, y, cb, b, dt) {
-    var g = this.game, h = this.bHeight(cb), id = b.id, chaos = g.chaos ? g.chaos[b.d] : 0;
-    if (b.blight >= 3 && hash2(id, 5) < (this.settings.lowFx ? 0.35 : 0.75)) {
-      this.flame(ctx, x - 6, y - h + 2, 16, id);
-      if (!this.settings.lowFx) this.flame(ctx, x + 7, y - h + 5, 12, id + 9);
-      if (!this.settings.lowFx && Math.random() < dt * 2.5) this.part(x, y - h - 14, { z: 0, vx: 5, vy: -2, vz: 18, g: -6, max: 3, kind: 'smoke', color: 'rgba(35,35,35,0.55)', size: 5 });
-      if (!this.settings.lowFx && Math.random() < dt * 3) this.part(x + (Math.random() - 0.5) * 16, y - h, { z: 0, vx: (Math.random() - 0.5) * 10, vy: 0, vz: 30, g: -3, max: 1.5, kind: 'spark', color: '#FFB347', size: 1.8 });
-    } else if (!this.settings.lowFx && chaos > 0.15 && hash2(id, 11) < 0.15 + chaos * 0.5) {
-      this.flame(ctx, x - 8 + hash2(id, 3) * 16, y - h * (0.35 + hash2(id, 4) * 0.4), 9, id);
+    var g = this.game, st = this.settings, low = st.lowFx, h = this.bHeight(cb), id = b.id, chaos = g.chaos ? g.chaos[b.d] : 0;
+    var m = this.mutation(b), a = HW * (cb.inset || 0.8), col = hash2(id, 17) < 0.5 ? 0 : 1, k, n;
+    if (b.blight >= 3) {
+      var top = y - h * 0.62;
+      // tentacles first so the fire licks over them
+      n = low ? 1 : 1 + Math.round(3 * m);
+      for (k = 0; k < n; k++) {
+        var tx = x + (hash2(id, 40 + k) - 0.5) * a * 1.3, ty = top + 3 + hash2(id, 50 + k) * 6;
+        this.tentacle(ctx, tx, ty, 0.55 + 0.95 * m * (0.7 + 0.3 * hash2(id, 60 + k)), id + k * 3, col);
+      }
+      // a giant eye on the wall of a long-dead ruin
+      if (m > 0.6 && hash2(id, 21) < 0.7) {
+        var blink = st.reducedMotion ? false : ((this.time * 0.6 + hash2(id, 22) * 5) % 4) < 0.18;
+        this.blit(ctx, this.eyeSprite(blink ? 0 : 1), x + a * 0.45, y - h * 0.32, 0.7 + 0.6 * m);
+      }
+      // roof inferno: more and bigger flames the worse it gets
+      n = low ? (m > 0.7 ? 2 : 1) : 2 + Math.round(3 * m);
+      var fs = 16 + 26 * m;
+      for (k = 0; k < n; k++) this.flame(ctx, x + (hash2(id, 70 + k) - 0.5) * a * 1.4, top + 4, fs * (0.65 + 0.35 * hash2(id, 80 + k)), id + k * 5);
+      // ridiculous: a towering column of fire
+      if (m > 0.75) {
+        var big = 30 + 40 * (m - 0.75) * 4;
+        this.flame(ctx, x, top, big, id + 99);
+        if (!low) this.flame(ctx, x + 2, top - big * 1.1, big * 0.75, id + 98);
+        if (!low && m > 0.9) this.flame(ctx, x - 1, top - big * 2, big * 0.5, id + 97);
+      }
+      if (!low && Math.random() < dt * (2 + 4 * m)) this.part(x, top - fs * 1.2, { z: 0, vx: 5, vy: -2, vz: 18 + 14 * m, g: -6, max: 3 + 2 * m, kind: 'smoke', color: 'rgba(30,30,30,0.6)', size: 5 + 5 * m });
+      if (!low && Math.random() < dt * (3 + 8 * m)) this.part(x + (Math.random() - 0.5) * a * 2, top, { z: 0, vx: (Math.random() - 0.5) * 18, vy: 0, vz: 30 + 30 * m, g: -3, max: 1.6, kind: 'spark', color: Math.random() < 0.5 ? '#FFB347' : '#FF6A2A', size: 1.8 + m });
+    } else {
+      // overrun: fire in the windows and the first tentacle poking out
+      n = low ? 1 : 1 + (m > 0.3 ? 1 : 0) + (chaos > 0.3 ? 1 : 0);
+      for (k = 0; k < n; k++) this.flame(ctx, x + (hash2(id, 3 + k) - 0.5) * a * 1.5, y - h * (0.3 + hash2(id, 4 + k) * 0.45), 8 + 10 * m + 4 * chaos, id + k);
+      if (hash2(id, 23) < 0.55) this.tentacle(ctx, x + (hash2(id, 24) - 0.5) * a, y - h * (0.25 + hash2(id, 25) * 0.4), 0.3 + 0.5 * m, id, col);
     }
   };
 
@@ -1518,6 +1676,7 @@
     ctx.strokeStyle = color || '#fff'; ctx.fillStyle = color || '#fff'; ctx.lineWidth = 2.4; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
     switch (kind) {
       case 'crosshair': ctx.beginPath(); ctx.arc(0, 0, 7, 0, 7); ctx.stroke(); ctx.beginPath(); ctx.moveTo(-10, 0); ctx.lineTo(-4, 0); ctx.moveTo(4, 0); ctx.lineTo(10, 0); ctx.moveTo(0, -10); ctx.lineTo(0, -4); ctx.moveTo(0, 4); ctx.lineTo(0, 10); ctx.stroke(); break;
+      case 'laser': ctx.beginPath(); ctx.arc(-4, 4, 5, 0, 7); ctx.fill(); ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(-3, 3); ctx.lineTo(4, -4); ctx.stroke(); ctx.lineWidth = 1.6; ctx.beginPath(); ctx.moveTo(6, -6); ctx.lineTo(10, -10); ctx.moveTo(7, -2); ctx.lineTo(10, -1); ctx.moveTo(2, -7); ctx.lineTo(1, -10); ctx.stroke(); break;
       case 'cannon': ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(-8, 3); ctx.lineTo(9, -5); ctx.moveTo(-8, 7); ctx.lineTo(9, -1); ctx.stroke(); ctx.beginPath(); ctx.arc(-6, 6, 4.5, 0, 7); ctx.fill(); break;
       case 'magnifier': ctx.beginPath(); ctx.arc(-2, -2, 6, 0, 7); ctx.stroke(); ctx.lineWidth = 3.4; ctx.beginPath(); ctx.moveTo(3, 3); ctx.lineTo(9, 9); ctx.stroke(); break;
       case 'syringe': ctx.beginPath(); ctx.moveTo(-8, 8); ctx.lineTo(5, -5); ctx.stroke(); ctx.lineWidth = 4; ctx.beginPath(); ctx.moveTo(-5, 5); ctx.lineTo(3, -3); ctx.stroke(); ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(5, -5); ctx.lineTo(9, -9); ctx.moveTo(2, -8); ctx.lineTo(8, -2); ctx.stroke(); break;
@@ -1710,6 +1869,8 @@
       var gtw = { type: ui.placeType, x: ui.hover.x + 0.5, y: ui.hover.y + 0.5, level: 1, id: 0, angle: 0.8, st: D.TOWERS[ui.placeType], hp: 1, patients: [] };
       this.drawTower(ctx, gtw, 1, true);
     }
+
+    this.drawLaser(ctx, ui);
 
     // tracers / darts
     for (i = 0; i < this.tracers.length; i++) {
@@ -1945,7 +2106,8 @@
       var hx = ui.hover.x, hy = ui.hover.y, ok = ui.canPlace;
       ctx.fillStyle = ok ? 'rgba(0,158,115,0.45)' : 'rgba(213,94,0,0.45)'; diamond(ctx, hx, hy, 0.5); ctx.fill();
       ctx.strokeStyle = ok ? '#7CF0C8' : '#FFB27A'; ctx.lineWidth = 2; diamond(ctx, hx, hy, 0.5); ctx.stroke();
-      if (ui.placeType && D.TOWERS[ui.placeType].range > 1) showRange({ x: hx + 0.5, y: hy + 0.5 }, D.TOWERS[ui.placeType].color, D.TOWERS[ui.placeType].range);
+      if (ui.placeType && D.TOWERS[ui.placeType].nearHall) { var hb3 = g.blds[g.hallId]; showRange({ x: hb3.cx, y: hb3.cy }, '#7FE9FF', D.TOWERS[ui.placeType].nearHall); }
+      else if (ui.placeType && D.TOWERS[ui.placeType].range > 1) showRange({ x: hx + 0.5, y: hy + 0.5 }, D.TOWERS[ui.placeType].color, D.TOWERS[ui.placeType].range);
     } else if (ui.hover && ui.hoverBld !== null && ui.hoverBld !== undefined) {
       var hb2 = g.city.buildings[ui.hoverBld];
       ctx.strokeStyle = 'rgba(255,255,255,0.85)'; ctx.lineWidth = 2; diamond(ctx, hb2.x, hb2.y, 0.5); ctx.stroke();
