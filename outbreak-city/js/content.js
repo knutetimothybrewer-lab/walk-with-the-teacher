@@ -554,6 +554,8 @@
     chaos2: ['{d} IN FLAMES; NEWS HELICOPTERS CIRCLE OVERHEAD', 'CHAOS IN {d}: CARS ABANDONED, STREETS ON FIRE'],
     tanks: ['TANKS ROLL INTO MERCY FALLS; ZOMBIES, PARKED CARS EQUALLY CONCERNED'],
     hallHit: ['ZOMBIES POUNDING ON CITY HALL DOORS; MAYOR "WORKING FROM UNDER DESK"', 'COMMAND BUNKER UNDER ATTACK; STAFF BARRICADE BREAK ROOM'],
+    ultra: ['GIANT SPIDER ZOMBIE SPOTTED; LOCAL MAN "NOT GOING OUTSIDE EVER AGAIN"', 'EXPERTS CONFIRM SPIDER IS "EXTREMELY BIG" AND "VERY MUCH A PROBLEM"'],
+    abomination: ['ENTIRE CITY BLOCK GROWS TENTACLES; PROPERTY VALUES PLUMMET', 'RESIDENTS REPORT NEIGHBORHOOD IS NOW ONE (1) SCREAMING MONSTER'],
     mega: ['SUPER-SPREADER SIGHTED ON THE HIGHWAY; EXPERTS: "THAT IS A VERY LARGE BOY"', 'GIANT ZOMBIE INFECTS ENTIRE BIRTHDAY PARTY; CAKE UNHARMED'],
     rising: ['CASES RISING FAST; R-NUMBER ABOVE {r}', 'EXPERTS: "EACH CASE IS MAKING MORE THAN ONE NEW CASE. THAT IS BAD."'],
     consequence: ['UPDATE: {text}']
@@ -646,6 +648,8 @@
     { when: function (r) { return r.auth >= 3; }, q: 'You chose several coercive measures (curfews, patrols, detention, tracking). Were they proportional? Which could have been replaced with less restrictive options?' },
     { when: function (r) { return r.overflowSeconds > 20; }, q: 'Your hospitals were full for about {overflowSeconds} seconds. What does "flattening the curve" mean, and how does surge capacity connect to deaths?' },
     { when: function (r) { return r.peakR > 1.5; }, q: 'Your R_eff peaked around {peakR}. What does that number mean, and which of your actions brought it down (or failed to)?' },
+    { when: function (r) { return r.abominations > 0; }, q: 'Whole blocks of your city fused into monsters once every building there was overrun. In a real outbreak, what happens to a neighborhood when every household is sick at once (work, food, care, schools)?' },
+    { when: function (r) { return r.burstInf > 0; }, q: 'Shooting Bloaters splashed infection onto people nearby. When can a forceful response make an outbreak worse instead of better?' },
     { when: function (r) { return r.laserShots > 0; }, q: 'Your Laser Cannon fired a limited number of charges each wave. How did you decide where to aim them? How is that like deciding who gets a scarce treatment or vaccine during an outbreak?' },
     { when: function (r) { return r.towerCounts.barricade >= 4; }, q: 'You built {barricades} quarantine barricades. What is the difference between quarantine and isolation, and what did the barricades cost the city?' },
     { when: function (r) { return r.towerCounts.chw === 0; }, q: 'You never deployed Community Health Workers. How might trusted local messengers have changed uptake in Eastside Flats or Rustwater Port?' },

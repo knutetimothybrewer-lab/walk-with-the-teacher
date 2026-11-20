@@ -241,13 +241,17 @@
         case 'barricadeBreak': s.play('barricade'); this.toast('A barricade was broken through!', 'bad'); break;
         case 'news': this.pushNews(this.fillNews(e.key, e.vars)); break;
         case 'consequence': this.toast('⏳ ' + e.text, 'warn', 7000); this.pushNews('UPDATE: ' + e.text.toUpperCase()); s.play('alert'); break;
-        case 'waveStart': this.banner('WAVE ' + e.w, e.w === g.totalWaves ? 'Final wave' : (g.weather !== 'clear' ? (g.weather === 'fog' ? 'Fog rolls in: turrets see less' : 'Rain: fewer people out') : 'Zombies approach')); break;
+        case 'waveStart': this.banner('WAVE ' + e.w, e.w === g.totalWaves && !g.endless ? 'Final wave' : (g.weather !== 'clear' ? (g.weather === 'fog' ? 'Fog rolls in: turrets see less' : 'Rain: fewer people out') : 'Zombies approach')); break;
         case 'tanksArrive': this.banner('TANKS ROLLING IN', 'The military will hunt zombies this wave, but they can\u2019t see hidden infections'); s.play('wave'); this.pushNews(this.fillNews('tanks')); break;
         case 'tanksLeave': this.toast('The tanks have pulled out of the city.', 'warn'); break;
         case 'tankShot': s.play('boom'); break;
         case 'laser': s.play('laser'); break;
         case 'scream': s.play('scream'); break;
         case 'nuke': this.banner('\u2622 NUCLEAR OPTION', 'Mercy Falls is being destroyed'); break;
+        case 'ultraArrive': this.banner('ULTRA-SPREADER!', 'A gigantic mutant spider. It bites three people at once and can wreck City Hall. Throw everything at it.'); s.play('alert'); s.play('boomBig'); this.pushNews(this.fillNews('ultra')); break;
+        case 'abomination': this.banner('THE BLOCK HAS MUTATED', 'Every building on the block fused into one radioactive monster. Its tentacles grab anyone who walks past.'); s.play('boomBig'); s.play('scream'); this.pushNews(this.fillNews('abomination')); break;
+        case 'burst': s.play('kill'); break;
+        case 'grab': s.play('groan'); break;
         case 'megaArrive': this.banner('SUPER-SPREADER!', 'A giant zombie that infects many people at once. Focus fire, barricades and high vaccination slow it.'); s.play('alert'); s.play('wave'); this.pushNews(this.fillNews('mega')); break;
         case 'ruin': s.play('barricade'); break;
         case 'chaos':

@@ -274,10 +274,10 @@
   /* ===================================================================
      SPRITES */
   // Sprites are small cached canvases (one per unique look), drawn with blit().
-  R.sprite = function (key, w, h, ax, ay, paint) {
+  R.sprite = function (key, w, h, ax, ay, paint, res) {
     var s = this.sprites[key];
     if (s) return s;
-    var ss = this.settings.lowFx ? 1 : 1.5;
+    var ss = (this.settings.lowFx ? 1 : 1.5) * (res || 1);
     var c = mkCanvas(w * ss, h * ss), ctx = c.getContext('2d');
     ctx.setTransform(ss, 0, 0, ss, ax * ss, ay * ss);
     paint(ctx);
@@ -612,7 +612,7 @@
 
   R.zombieSprite = function (type, frame, face, night) {
     var key = 'z|' + type + '|' + frame + '|' + face + '|' + (night ? 1 : 0);
-    if (type === 'spitter' || type === 'screamer' || type === 'crawler') return this.sprite(key, 30, 30, 13, 25, function (ctx) { R.paintNewZombie(ctx, type, frame, face, night); });
+    if (type === 'spitter' || type === 'screamer' || type === 'crawler' || type === 'bloater' || type === 'hazmat' || type === 'leaper') return this.sprite(key, 30, 30, 13, 25, function (ctx) { R.paintNewZombie(ctx, type, frame, face, night); });
     var mega = type === 'mega', big = type === 'brute' || mega;
     var sw = mega ? 66 : big ? 26 : 20, sh = mega ? 82 : big ? 34 : 28, sax = mega ? 30 : big ? 12 : 9, say = mega ? 76 : big ? 30 : 24;
     return this.sprite(key, sw, sh, sax, say, function (ctx) {
@@ -838,6 +838,29 @@
         break;
       case 'nuke': this.nukeT = this.time; this.nukeAt = { x: e.x, y: e.y }; this.focus(e.x, e.y, 0.55); setTimeout(function () { self.addShake(14); }, 1250); break;
       case 'megaArrive': this.ring(e.x, e.y, 2.2, 'rgba(183,227,74,0.9)', 1.4, 4); this.addShake(7); break;
+      case 'ultraArrive': this.ring(e.x, e.y, 3.5, 'rgba(255,60,40,0.95)', 1.8, 5); this.ring(e.x, e.y, 2, 'rgba(183,227,74,0.9)', 1.2, 4); this.burst(e.x, e.y, 30, { colors: ['#3A1544', '#B7E34A', '#FF3B30'], speed: 60, up: 90, max: 1.2, size: 4 }); this.addShake(12); break;
+      case 'burst':
+        this.ring(e.x, e.y, e.r, 'rgba(183,227,74,0.95)', 0.7, 4);
+        this.burst(e.x, e.y, 26, { colors: ['#B7E34A', '#D6F05A', '#6E7A3C', '#8C9A52'], speed: 50, up: 60, max: 1, size: 3.4 });
+        this.burst(e.x, e.y, 8, { colors: ['rgba(150,200,60,0.6)'], speed: 14, up: 20, max: 1.8, kind: 'smoke', size: 7, g: -8 });
+        this.text(e.x, e.y, e.n ? 'SPLAT! +' + e.n + ' infected' : 'SPLAT!', '#C7F25A', true); this.addShake(2);
+        break;
+      case 'leap':
+        this.burst(e.x0, e.y0, 6, { colors: ['#9A8A6A', '#C9B48A'], speed: 26, up: 20, max: 0.5, kind: 'smoke', size: 3 });
+        this.tracer(e.x0, e.y0, 6, e.x, e.y, 6, { color: 'rgba(160,200,120,0.6)', max: 0.3, arc: 26, kind: 'dart', w: 2 });
+        this.burst(e.x, e.y, 6, { colors: ['#9A8A6A', '#C9B48A'], speed: 26, up: 20, max: 0.5, kind: 'smoke', size: 3 });
+        break;
+      case 'abomination':
+        this.ring(e.x, e.y, 3.2, 'rgba(183,227,74,0.95)', 1.6, 6); this.ring(e.x, e.y, 2, 'rgba(255,255,255,0.8)', 0.8, 4);
+        this.burst(e.x, e.y, 40, { colors: ['#6E6259', '#4E4540', '#B7E34A', '#73318A'], speed: 70, up: 110, max: 1.6, size: 4.5 });
+        this.text(e.x, e.y - 1.2, 'THE BLOCK HAS MUTATED!', '#C7F25A', true); this.addShake(10);
+        break;
+      case 'grab': {
+        var gp0 = iso(e.x0, e.y0);
+        this.tracer(e.x0, e.y0, 60, e.x, e.y, 4, { color: '#5E8F2C', max: 0.5, arc: 30, kind: 'dart', w: 6 });
+        if (e.ok) this.text(e.x, e.y, 'GRABBED!', '#B7E34A');
+        break;
+      }
       case 'ruin': this.burst(e.x, e.y, 16, { colors: ['#6B6B6B', '#3E3E3E', '#8BC34A'], speed: 26, up: 50, max: 1.4, kind: 'smoke', size: 5, g: -12, z: 20 }); this.text(e.x, e.y, 'OVERRUN', '#B7E34A', true); this.addShake(2); break;
       case 'waveStart': this.addShake(2); break;
     }
@@ -877,28 +900,54 @@
       ctx.strokeStyle = col; ctx.lineWidth = 2;
       ctx.beginPath(); ctx.moveTo(x - 24, y - 3); ctx.lineTo(x, y + 9); ctx.lineTo(x + 24, y - 3); ctx.stroke();
     };
+    var lvl = tw.level || 1, self = this;
+    // upgrade dressing shared by the military towers
+    var flag = function (fx, fy, h) {
+      ctx.strokeStyle = '#3A3A3A'; ctx.lineWidth = 1.2; ctx.beginPath(); ctx.moveTo(fx, fy); ctx.lineTo(fx, fy - h); ctx.stroke();
+      var wv = Math.sin(t * 6 + tw.id) * 1.5;
+      ctx.fillStyle = '#4B5320'; ctx.beginPath(); ctx.moveTo(fx, fy - h); ctx.quadraticCurveTo(fx + 6, fy - h - 2 + wv, fx + 12, fy - h + wv); ctx.lineTo(fx + 12, fy - h + 6 + wv); ctx.quadraticCurveTo(fx + 6, fy - h + 4 + wv, fx, fy - h + 6); ctx.fill();
+      ctx.fillStyle = '#F0E442'; ctx.font = 'bold 5px sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('\u2605', fx + 6, fy - h + 3 + wv * 0.6);
+    };
+    var crate = function (cx, cy) { box(cx, cy, 4, 2, 4, '#4E5A2E'); ctx.fillStyle = '#E0C040'; ctx.fillRect(cx - 3, cy - 2.6, 2.2, 0.8); };
+    var wire = function (r1, r2, cy) { ctx.strokeStyle = 'rgba(200,200,200,0.85)'; ctx.lineWidth = 0.7; for (var wi = 0; wi < 14; wi++) { var wa = wi / 14 * Math.PI * 2; ctx.beginPath(); ctx.arc(x + Math.cos(wa) * r1, cy + Math.sin(wa) * r2, 1.6, 0, 7); ctx.stroke(); } };
+    var searchlight = function (sx, sy) {
+      ctx.fillStyle = '#2E3328'; ctx.fillRect(sx - 1, sy - 8, 2, 8); ctx.fillStyle = '#DDE3E8'; ctx.beginPath(); ctx.arc(sx, sy - 9, 2.6, 0, 7); ctx.fill();
+      if (!ghost && self.night > 0.3 && !self.settings.lowFx) {
+        var sa = t * 0.8 + tw.id, lx = sx + Math.cos(sa) * 70, ly = sy + Math.sin(sa) * 35 + 20;
+        ctx.save(); ctx.globalCompositeOperation = 'lighter'; ctx.fillStyle = 'rgba(255,250,200,' + (0.12 * self.night).toFixed(3) + ')';
+        ctx.beginPath(); ctx.moveTo(sx, sy - 9); ctx.lineTo(lx - 12, ly - 6); ctx.lineTo(lx + 12, ly + 6); ctx.closePath(); ctx.fill(); ctx.restore();
+      }
+    };
     switch (tw.type) {
       case 'militia': {
         platform();
+        if (lvl >= 3) { box(x, y - 1, 23, 11.5, 7, '#8E9188'); ctx.fillStyle = 'rgba(60,70,40,0.55)'; ctx.fillRect(x - 20, y - 9, 40, 2); wire(26, 13, y - 8); }
         // sandbags
         for (var i = 0; i < 10; i++) {
           var a = i / 10 * Math.PI * 2, sx = x + Math.cos(a) * 15, sy = y - 4 + Math.sin(a) * 7.5;
           ctx.fillStyle = shade('#C8B48A', i % 2 ? 0.9 : 1); ellipse(ctx, sx, sy, 5, 3); ctx.fill();
         }
-        box(x, y - 5, 8, 4, 7, '#6E7563');
+        if (lvl >= 2) {
+          for (var i2 = 0; i2 < 8; i2++) { var a2 = i2 / 8 * Math.PI * 2 + 0.2, sx2 = x + Math.cos(a2) * 13, sy2 = y - 8 + Math.sin(a2) * 6.5; ctx.fillStyle = shade('#B8A47A', i2 % 2 ? 0.9 : 1); ellipse(ctx, sx2, sy2, 4.6, 2.8); ctx.fill(); }
+          crate(x - 18, y + 5); crate(x - 13, y + 7.5);
+        }
+        box(x, y - 5, 8, 4, 7, lvl >= 2 ? '#4E5A3E' : '#6E7563');
         var ang = tw.angle || 0, dx = Math.cos(ang) - Math.sin(ang), dy = (Math.cos(ang) + Math.sin(ang)) * 0.5, len = Math.hypot(dx, dy) || 1;
         dx /= len; dy /= len;
-        ctx.strokeStyle = '#2E3328'; ctx.lineWidth = 3.5; ctx.lineCap = 'round';
-        ctx.beginPath(); ctx.moveTo(x, y - 15); ctx.lineTo(x + dx * 17, y - 15 + dy * 17); ctx.stroke();
+        var gl = lvl >= 2 ? 22 : 17;
+        ctx.strokeStyle = '#2E3328'; ctx.lineWidth = lvl >= 2 ? 5 : 3.5; ctx.lineCap = 'round';
+        ctx.beginPath(); ctx.moveTo(x, y - 15); ctx.lineTo(x + dx * gl, y - 15 + dy * gl); ctx.stroke();
+        if (lvl >= 2) { ctx.strokeStyle = '#B8902A'; ctx.lineWidth = 1.4; ctx.setLineDash([1.2, 0.8]); ctx.beginPath(); ctx.moveTo(x - 4, y - 13); ctx.quadraticCurveTo(x - 7, y - 6, x - 2, y - 7); ctx.stroke(); ctx.setLineDash([]); ctx.fillStyle = '#1F2319'; ctx.fillRect(x + dx * gl - 2, y - 15 + dy * gl - 2, 4, 4); }
+        if (lvl >= 3) { flag(x + 16, y - 6, 26); searchlight(x - 16, y - 6); }
         ctx.fillStyle = shade('#7C8570', 1); ctx.beginPath(); ctx.arc(x, y - 15, 5.5, 0, 7); ctx.fill();
         var ft = this.flash[tw.id];
         if (ft !== undefined && t - ft < 0.07) {
-          ctx.fillStyle = '#FFE08A'; ctx.beginPath(); ctx.arc(x + dx * 20, y - 15 + dy * 20, 5, 0, 7); ctx.fill();
-          ctx.fillStyle = '#FFFFFF'; ctx.beginPath(); ctx.arc(x + dx * 20, y - 15 + dy * 20, 2.2, 0, 7); ctx.fill();
+          ctx.fillStyle = '#FFE08A'; ctx.beginPath(); ctx.arc(x + dx * (gl + 3), y - 15 + dy * (gl + 3), lvl >= 2 ? 7 : 5, 0, 7); ctx.fill();
+          ctx.fillStyle = '#FFFFFF'; ctx.beginPath(); ctx.arc(x + dx * (gl + 3), y - 15 + dy * (gl + 3), lvl >= 2 ? 3 : 2.2, 0, 7); ctx.fill();
         }
         // two soldiers behind the sandbags, aiming where the turret aims
-        if (!ghost) for (var sd = 0; sd < 2; sd++) {
-          var px = x + (sd ? 13 : -14), py = y + (sd ? 3 : 1);
+        if (!ghost) for (var sd = 0; sd < (lvl >= 3 ? 3 : 2); sd++) {
+          var px = x + (sd === 2 ? 0 : sd ? 13 : -14), py = y + (sd === 2 ? 8 : sd ? 3 : 1);
           var firing = ft !== undefined && t - ft < 0.12 && (Math.floor(ft * 13) % 2) === sd;
           var rec = firing ? -1.5 : 0;
           this.soldier(ctx, px + dx * rec, py + dy * rec * 0.5, dx, dy, firing, tw.id + sd);
@@ -907,8 +956,10 @@
       }
       case 'heavy': {
         platform();
+        if (lvl >= 3) { wire(28, 14, y - 2); crate(x + 20, y + 4); crate(x + 24, y + 1.5); }
         // reinforced concrete emplacement with a radar mast
-        box(x, y - 3, 20, 10, 9, '#8A8D86');
+        box(x, y - 3, 20, 10, 9, lvl >= 2 ? '#6F736A' : '#8A8D86');
+        if (lvl >= 2) { ctx.fillStyle = '#E0B020'; for (var hz2 = 0; hz2 < 6; hz2++) { ctx.beginPath(); ctx.moveTo(x - 20 + hz2 * 3.4, y - 3 + hz2 * 1.7); ctx.lineTo(x - 18.4 + hz2 * 3.4, y - 3 + hz2 * 1.7 + 0.8); ctx.lineTo(x - 18.4 + hz2 * 3.4, y - 5.5 + hz2 * 1.7 + 0.8); ctx.lineTo(x - 20 + hz2 * 3.4, y - 5.5 + hz2 * 1.7); ctx.fill(); } }
         ctx.fillStyle = shade('#6B6E66', 1); for (var hz = 0; hz < 4; hz++) ctx.fillRect(x - 18 + hz * 9, y - 10 + hz * 1.5, 5, 1.5);
         ctx.strokeStyle = '#555'; ctx.lineWidth = 1.3; ctx.beginPath(); ctx.moveTo(x - 14, y - 10); ctx.lineTo(x - 14, y - 30); ctx.stroke();
         var rs = Math.cos(t * 3 + tw.id);
@@ -917,19 +968,44 @@
         hdx /= hl; hdy /= hl;
         var ft2 = this.flash[tw.id], rec2 = ft2 !== undefined && t - ft2 < 0.1 ? -3 : 0;
         ctx.strokeStyle = '#23261F'; ctx.lineWidth = 4; ctx.lineCap = 'round';
-        for (var bb2 = -1; bb2 <= 1; bb2 += 2) { var ox = -hdy * 3 * bb2, oy = hdx * 1.5 * bb2; ctx.beginPath(); ctx.moveTo(x + ox, y - 17 + oy); ctx.lineTo(x + ox + hdx * (26 + rec2), y - 17 + oy + hdy * (26 + rec2)); ctx.stroke(); }
-        box(x, y - 12, 10, 5, 7, '#5C6152');
+        var nb = lvl >= 2 ? 4 : 2, blen = lvl >= 2 ? 30 : 26;
+        for (var bb2 = 0; bb2 < nb; bb2++) { var off = (bb2 - (nb - 1) / 2) * (nb > 2 ? 2.2 : 6), ox = -hdy * off, oy = hdx * off * 0.5; ctx.beginPath(); ctx.moveTo(x + ox, y - 17 + oy); ctx.lineTo(x + ox + hdx * (blen + rec2), y - 17 + oy + hdy * (blen + rec2)); ctx.stroke(); }
+        if (lvl >= 2) { ctx.fillStyle = '#23261F'; for (var mb = 0; mb < nb; mb++) { var off2 = (mb - (nb - 1) / 2) * 2.2; ctx.fillRect(x - hdy * off2 + hdx * (blen + rec2) - 1.5, y - 17 + hdx * off2 * 0.5 + hdy * (blen + rec2) - 1.5, 3, 3); } }
+        if (lvl >= 3) {
+          // targeting computer: laser sight, missile pod and a big radar dish
+          if (!ghost) { ctx.strokeStyle = 'rgba(255,40,40,0.55)'; ctx.lineWidth = 0.8; ctx.beginPath(); ctx.moveTo(x + hdx * 10, y - 21 + hdy * 10); ctx.lineTo(x + hdx * 140, y - 21 + hdy * 140); ctx.stroke(); }
+          box(x + 12, y - 12, 5, 2.5, 6, '#3E4630'); ctx.fillStyle = '#E8342A'; for (var ms = 0; ms < 4; ms++) { ctx.beginPath(); ctx.arc(x + 9.5 + (ms % 2) * 4, y - 19.5 + Math.floor(ms / 2) * 2.6, 1.1, 0, 7); ctx.fill(); }
+          var rd = Math.cos(t * 2 + tw.id);
+          ctx.strokeStyle = '#555'; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(x - 14, y - 30); ctx.lineTo(x - 14, y - 40); ctx.stroke();
+          ctx.fillStyle = '#E8ECF0'; ctx.strokeStyle = '#7A8590'; ctx.lineWidth = 1; ellipse(ctx, x - 14, y - 42, Math.abs(rd) * 11 + 1.5, 6); ctx.fill(); ctx.stroke();
+          ctx.fillStyle = '#E8342A'; ctx.beginPath(); ctx.arc(x - 14 + rd * 6, y - 43, 1.3, 0, 7); ctx.fill();
+        }
+        box(x, y - 12, lvl >= 2 ? 12 : 10, lvl >= 2 ? 6 : 5, lvl >= 2 ? 8 : 7, lvl >= 2 ? '#454B3C' : '#5C6152');
         ctx.fillStyle = '#8C2D19'; ctx.beginPath(); ctx.arc(x, y - 21, 3, 0, 7); ctx.fill();
+        if (lvl >= 3) flag(x + 18, y - 3, 30);
         if (ft2 !== undefined && t - ft2 < 0.08) {
           ctx.fillStyle = '#FFE08A'; ctx.beginPath(); ctx.arc(x + hdx * 30, y - 17 + hdy * 30, 8, 0, 7); ctx.fill();
           ctx.fillStyle = '#FFFFFF'; ctx.beginPath(); ctx.arc(x + hdx * 30, y - 17 + hdy * 30, 3.5, 0, 7); ctx.fill();
         }
-        if (!ghost) for (var sd2 = 0; sd2 < 3; sd2++) this.soldier(ctx, x - 20 + sd2 * 17, y + 4 + (sd2 % 2) * 3, hdx, hdy, ft2 !== undefined && t - ft2 < 0.12 && sd2 === 1, tw.id + sd2);
+        if (!ghost) for (var sd2 = 0; sd2 < (lvl >= 3 ? 4 : 3); sd2++) this.soldier(ctx, x - 20 + sd2 * 17, y + 4 + (sd2 % 2) * 3, hdx, hdy, ft2 !== undefined && t - ft2 < 0.12 && sd2 === 1, tw.id + sd2);
         break;
       }
       case 'laser': {
         platform();
         // reactor base with glowing coils, a dome and a long emitter barrel
+        if (lvl >= 2) {
+          // capacitor bank: two charged towers arcing electricity into the cannon
+          for (var cp = -1; cp <= 1; cp += 2) {
+            var cx2 = x + cp * 20, cy2 = y + 2;
+            box(cx2, cy2, 4, 2, 18, '#2E3A48');
+            ctx.fillStyle = '#5FF2FF'; for (var rg = 0; rg < 3; rg++) ctx.fillRect(cx2 - 4, cy2 - 5 - rg * 5, 8, 1.2);
+            if (!ghost && !this.settings.lowFx && Math.random() < 0.6) {
+              ctx.strokeStyle = 'rgba(160,250,255,0.9)'; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(cx2, cy2 - 19);
+              for (var zz = 1; zz <= 4; zz++) ctx.lineTo(cx2 + (x - cx2) * zz / 4 + (Math.random() - 0.5) * 5, cy2 - 19 + (y - 16 - cy2 + 19) * zz / 4 + (Math.random() - 0.5) * 5);
+              ctx.stroke();
+            }
+          }
+        }
         box(x, y - 3, 18, 9, 10, '#3B4654');
         var glow = 0.55 + 0.45 * Math.sin(t * 5 + tw.id), ammoPct = tw.ammo !== undefined && tw.st ? tw.ammo / Math.max(1, tw.st.ammo) : 1;
         ctx.fillStyle = 'rgba(40,220,255,' + (0.35 + 0.5 * glow * Math.min(1, ammoPct + 0.15)).toFixed(3) + ')';
@@ -942,11 +1018,22 @@
         ctx.lineCap = 'round';
         ctx.strokeStyle = '#1E252E'; ctx.lineWidth = 6; ctx.beginPath(); ctx.moveTo(x, y - 20); ctx.lineTo(x + ldx * (28 + rec3), y - 20 + ldy * (28 + rec3)); ctx.stroke();
         ctx.strokeStyle = '#7FE9FF'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(x + ldx * 6, y - 20 + ldy * 6); ctx.lineTo(x + ldx * (27 + rec3), y - 20 + ldy * (27 + rec3)); ctx.stroke();
-        ctx.fillStyle = 'rgba(120,240,255,' + (0.4 + 0.6 * glow).toFixed(3) + ')'; ctx.beginPath(); ctx.arc(x + ldx * (29 + rec3), y - 20 + ldy * (29 + rec3), 3 + glow * 1.5, 0, 7); ctx.fill();
+        ctx.fillStyle = 'rgba(120,240,255,' + (0.4 + 0.6 * glow).toFixed(3) + ')'; ctx.beginPath(); ctx.arc(x + ldx * (29 + rec3), y - 20 + ldy * (29 + rec3), (lvl >= 3 ? 5 : 3) + glow * 1.5, 0, 7); ctx.fill();
+        if (lvl >= 3) {
+          // wide-beam focusing rings spinning round the barrel, and a floating crystal
+          for (var fr = 0; fr < 3; fr++) {
+            var fp = 10 + fr * 7, rx = x + ldx * fp, ry = y - 20 + ldy * fp, spin = Math.abs(Math.cos(t * 4 + fr));
+            ctx.strokeStyle = 'rgba(127,233,255,0.9)'; ctx.lineWidth = 1.4; ellipse(ctx, rx, ry, 2 + spin * 4, 5); ctx.stroke();
+          }
+          var cyl = y - 46 + Math.sin(t * 2 + tw.id) * 2;
+          ctx.fillStyle = '#7FE9FF'; ctx.beginPath(); ctx.moveTo(x, cyl - 6); ctx.lineTo(x + 3.5, cyl); ctx.lineTo(x, cyl + 6); ctx.lineTo(x - 3.5, cyl); ctx.closePath(); ctx.fill();
+          ctx.fillStyle = 'rgba(255,255,255,0.8)'; ctx.beginPath(); ctx.moveTo(x, cyl - 6); ctx.lineTo(x + 1.2, cyl); ctx.lineTo(x, cyl + 2); ctx.closePath(); ctx.fill();
+          if (!this.settings.lowFx) { ctx.save(); ctx.globalCompositeOperation = 'lighter'; ctx.fillStyle = 'rgba(80,220,255,' + (0.15 + 0.15 * glow).toFixed(3) + ')'; ctx.beginPath(); ctx.arc(x, cyl, 10, 0, 7); ctx.fill(); ctx.restore(); }
+        }
         // charge pips
         if (!ghost && tw.ammo !== undefined) {
           var tot = this.game ? this.game.laserAmmo(tw) : tw.ammo, pw = Math.min(4, 60 / Math.max(1, tot));
-          for (var ap = 0; ap < tot; ap++) { ctx.fillStyle = ap < tw.ammo ? '#5FF2FF' : 'rgba(255,255,255,0.18)'; ctx.fillRect(x - tot * pw / 2 + ap * pw, y - 40, pw - 1, 3); }
+          for (var ap = 0; ap < tot; ap++) { ctx.fillStyle = ap < tw.ammo ? '#5FF2FF' : 'rgba(255,255,255,0.18)'; ctx.fillRect(x - tot * pw / 2 + ap * pw, y - (lvl >= 3 ? 58 : 40), pw - 1, 3); }
         }
         break;
       }
@@ -1269,6 +1356,56 @@
       ctx.fillStyle = shade('#5B3A3A', 1, night); ctx.fillRect(5, -4, 2, atk ? 1.6 : 0.6);
       return;
     }
+    if (type === 'bloater') {
+      // grotesquely swollen belly covered in glowing boils, tiny head
+      var bs = shade('#A9B86A', 1, night);
+      ctx.strokeStyle = shade('#3A3442', 1, night); ctx.lineWidth = 2.2; ctx.lineCap = 'round';
+      ctx.beginPath(); ctx.moveTo(-2, -4); ctx.lineTo(-2.6 + l * 0.6, 0); ctx.moveTo(2, -4); ctx.lineTo(2.6 - l * 0.6, 0); ctx.stroke();
+      var puff = atk ? 1.12 : 1;
+      ctx.fillStyle = shade('#8C9A52', 1, night); ctx.beginPath(); ctx.ellipse(0.5, -9.5, 7.2 * puff, 6.4 * puff, 0, 0, 7); ctx.fill();
+      ctx.fillStyle = shade('#C2D27A', 1, night); ctx.beginPath(); ctx.ellipse(2.2, -10.5, 3.6, 3, 0, 0, 7); ctx.fill();
+      var boils = [[-4, -11, 1.5], [3.5, -6.5, 1.3], [-1.5, -5.5, 1.1], [5, -11.5, 1.2], [-4.5, -7.5, 1]];
+      for (var bo = 0; bo < boils.length; bo++) { ctx.fillStyle = '#D6F05A'; ctx.beginPath(); ctx.arc(boils[bo][0], boils[bo][1], boils[bo][2], 0, 7); ctx.fill(); ctx.fillStyle = 'rgba(255,255,255,0.6)'; ctx.fillRect(boils[bo][0] - 0.5, boils[bo][1] - 0.8, 0.6, 0.6); }
+      ctx.strokeStyle = 'rgba(90,40,60,0.7)'; ctx.lineWidth = 0.6; ctx.beginPath(); ctx.moveTo(-5, -12); ctx.quadraticCurveTo(0, -9, -2, -5); ctx.moveTo(4, -14); ctx.quadraticCurveTo(6, -9, 3, -5); ctx.stroke();
+      ctx.strokeStyle = bs; ctx.lineWidth = 1.3; ctx.beginPath(); ctx.moveTo(5.5, -11); ctx.lineTo(8.5, -9 + (frame ? 0.6 : -0.4)); ctx.stroke();
+      ctx.fillStyle = bs; ctx.beginPath(); ctx.arc(1.5, -16.2, 2.2, 0, 7); ctx.fill();
+      ctx.fillStyle = '#1A1A1A'; ctx.fillRect(2.2, -16.8, 0.8, 0.8); ctx.fillRect(3.2, -16.6, 0.7, 0.7);
+      ctx.fillStyle = '#5B3A3A'; ctx.fillRect(2, -15.2, 1.6, atk ? 1.4 : 0.6);
+      return;
+    }
+    if (type === 'hazmat') {
+      // torn yellow hazmat suit, cracked visor with a zombie face behind it
+      var suit = shade('#E8C21C', 1, night), suitD = shade('#B8940E', 1, night);
+      ctx.strokeStyle = suitD; ctx.lineWidth = 2.2; ctx.lineCap = 'round';
+      ctx.beginPath(); ctx.moveTo(-1.2, -5.5); ctx.lineTo(-1.6 + l, -0.4); ctx.moveTo(1.2, -5.5); ctx.lineTo(1.6 - l, 0); ctx.stroke();
+      ctx.fillStyle = '#2B2B2B'; ctx.fillRect(-2.6 + l, -1.2, 2.2, 1.4); ctx.fillRect(0.6 - l, -1, 2.2, 1.4);
+      ctx.fillStyle = suit; ctx.beginPath(); ctx.moveTo(-3.6, -5); ctx.lineTo(3.6, -5); ctx.lineTo(4.2, -12); ctx.lineTo(-3.4, -12); ctx.closePath(); ctx.fill();
+      ctx.fillStyle = suitD; ctx.fillRect(-3.4, -8.6, 7.6, 0.9);
+      ctx.fillStyle = '#5A3A3A'; ctx.beginPath(); ctx.moveTo(-1, -10); ctx.lineTo(1.2, -11); ctx.lineTo(0.4, -8.5); ctx.closePath(); ctx.fill(); // tear
+      ctx.strokeStyle = suit; ctx.lineWidth = 1.8; ctx.beginPath();
+      if (atk) { ctx.moveTo(3, -10.5); ctx.lineTo(8, -15); ctx.moveTo(2.6, -9); ctx.lineTo(8.6, -12.5); } else { ctx.moveTo(3, -10.5); ctx.lineTo(8, -10 + (frame ? 0.6 : -0.4)); ctx.moveTo(2.6, -9); ctx.lineTo(7.6, -8.4); }
+      ctx.stroke();
+      ctx.fillStyle = '#2B2B2B'; ctx.beginPath(); ctx.arc(8.4, -10, 1, 0, 7); ctx.fill();
+      ctx.fillStyle = suit; ctx.beginPath(); ctx.arc(1, -14.6, 3.6, 0, 7); ctx.fill();
+      ctx.fillStyle = 'rgba(160,210,200,0.85)'; ctx.beginPath(); ctx.ellipse(2.2, -14.6, 2.2, 2.4, 0, 0, 7); ctx.fill();
+      ctx.fillStyle = '#7FA06A'; ctx.beginPath(); ctx.arc(2.2, -14.4, 1.5, 0, 7); ctx.fill();
+      ctx.fillStyle = '#D55E00'; ctx.fillRect(1.6, -15.2, 0.7, 0.7); ctx.fillRect(2.8, -15.2, 0.7, 0.7);
+      ctx.strokeStyle = '#FFFFFF'; ctx.lineWidth = 0.5; ctx.beginPath(); ctx.moveTo(1, -16.5); ctx.lineTo(2.6, -14.4); ctx.lineTo(2, -13); ctx.stroke(); // crack
+      ctx.fillStyle = '#1A1A1A'; ctx.font = 'bold 3px sans-serif'; ctx.textAlign = 'center'; ctx.fillText('\u2623', -0.4, -6);
+      return;
+    }
+    if (type === 'leaper') {
+      // crouched on long bent legs, about to spring; long clawed arms
+      var lk = shade('#86A874', 1, night), crouch = frame ? 1 : 0;
+      ctx.strokeStyle = shade('#3A3442', 1, night); ctx.lineWidth = 1.6; ctx.lineCap = 'round';
+      ctx.beginPath(); ctx.moveTo(-1, -6 + crouch); ctx.lineTo(-5, -3.5); ctx.lineTo(-2.5, 0); ctx.moveTo(1, -6 + crouch); ctx.lineTo(4.5, -3.5); ctx.lineTo(2.5, 0); ctx.stroke();
+      ctx.fillStyle = shade('#4D5A3E', 1, night); ctx.beginPath(); ctx.ellipse(0.8, -9 + crouch, 3, 3.6, 0.5, 0, 7); ctx.fill();
+      ctx.strokeStyle = lk; ctx.lineWidth = 1.2; ctx.beginPath(); ctx.moveTo(2, -10 + crouch); ctx.lineTo(7, atk ? -14 : -6); ctx.lineTo(8.5, atk ? -15 : -4.5); ctx.moveTo(1.5, -9 + crouch); ctx.lineTo(6.5, atk ? -12 : -4); ctx.stroke();
+      ctx.fillStyle = lk; ctx.beginPath(); ctx.arc(3.2, -12.6 + crouch, 2.3, 0, 7); ctx.fill();
+      ctx.fillStyle = '#FF3B30'; ctx.fillRect(3.8, -13.4 + crouch, 0.9, 0.9); ctx.fillRect(5, -13.2 + crouch, 0.8, 0.8);
+      ctx.strokeStyle = 'rgba(255,255,255,0.4)'; ctx.lineWidth = 0.7; ctx.beginPath(); ctx.moveTo(-5, -11); ctx.lineTo(-8, -12); ctx.moveTo(-5, -8); ctx.lineTo(-8.5, -8.5); ctx.stroke();
+      return;
+    }
     var legC = shade('#3A3442', 1, night);
     ctx.strokeStyle = legC; ctx.lineWidth = 1.8; ctx.lineCap = 'round';
     ctx.beginPath(); ctx.moveTo(-1, -5.5); ctx.lineTo(-1.5 + l, -0.4); ctx.moveTo(1, -5.5); ctx.lineTo(1.5 - l, 0); ctx.stroke();
@@ -1296,6 +1433,132 @@
       ctx.fillStyle = '#111'; ctx.beginPath(); ctx.ellipse(0.8, -13, 1.1, atk ? 2 : 1.1, 0, 0, 7); ctx.fill();
       ctx.fillStyle = '#D55E00'; ctx.fillRect(-0.6, -15.4, 0.9, 0.9); ctx.fillRect(1.4, -15.4, 0.9, 0.9);
     }
+  };
+
+  // ULTRA-SPREADER: a gigantic radioactive spider with a zombie fused to its back
+  R.drawSpider = function (ctx, a, x, y, zs) {
+    var t = this.time, s = zs * 1.2, night = this.night > 0.5, low = this.settings.lowFx;
+    var face = (a.dirx - a.diry) < 0 ? -1 : 1, walk = (a.breach > 0 ? 9 : 6) * t + a.id;
+    var bob = Math.sin(walk * 2) * 1.5 * s, by = y - 30 * s + bob;
+    ctx.save();
+    ctx.fillStyle = 'rgba(0,0,0,0.38)'; ellipse(ctx, x, y + 2 * s, 50 * s, 17 * s); ctx.fill();
+    // eight jointed legs
+    ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+    for (var pass = 0; pass < 2; pass++) for (var side = -1; side <= 1; side += 2) for (var k = 0; k < 4; k++) {
+      var ph = walk + k * 1.7 + (side > 0 ? Math.PI : 0), lift = Math.max(0, Math.sin(ph)) * 7 * s;
+      var hx = x + side * (3 + k * 2) * s, hy = by + (k - 1.5) * 3 * s;
+      var fx = x + side * (30 + k * 7) * s + Math.cos(ph) * 5 * s * side, fy = y + (k - 1.5) * 7 * s - lift;
+      var kx = hx + side * (16 + k * 5) * s, ky = by - (26 - k * 3) * s - lift * 0.6;
+      if (pass === 0) {
+        ctx.strokeStyle = shade('#1E0F24', 1, night); ctx.lineWidth = 6.5 * s;
+        ctx.beginPath(); ctx.moveTo(hx, hy); ctx.lineTo(kx, ky); ctx.lineTo(fx, fy); ctx.stroke();
+      } else {
+        ctx.strokeStyle = shade('#4A2358', 1, night); ctx.lineWidth = 3.4 * s;
+        ctx.beginPath(); ctx.moveTo(hx, hy); ctx.lineTo(kx, ky); ctx.lineTo(fx, fy); ctx.stroke();
+        ctx.strokeStyle = '#B7E34A'; ctx.lineWidth = 1.3 * s; // glowing knee spikes and claws
+        ctx.beginPath(); ctx.moveTo(kx, ky); ctx.lineTo(kx + side * 2 * s, ky - 6 * s); ctx.moveTo(fx, fy); ctx.lineTo(fx + side * 3 * s, fy + 2 * s); ctx.stroke();
+      }
+    }
+    // abdomen: swollen, with a glowing radioactive hourglass and pustules
+    var pulse = 0.5 + 0.5 * Math.sin(t * 3 + a.id), ax = x - face * 16 * s, ay = by - 6 * s;
+    if (!low) { ctx.save(); ctx.globalCompositeOperation = 'lighter'; ctx.fillStyle = 'rgba(120,255,40,' + (0.08 + 0.08 * pulse).toFixed(2) + ')'; ctx.beginPath(); ctx.ellipse(ax, ay, 34 * s, 28 * s, 0, 0, 7); ctx.fill(); ctx.restore(); }
+    ctx.fillStyle = shade('#2B1233', 1, night); ctx.beginPath(); ctx.ellipse(ax, ay, 25 * s, 20 * s, -face * 0.25, 0, 7); ctx.fill();
+    ctx.fillStyle = shade('#4E2160', 1, night); ctx.beginPath(); ctx.ellipse(ax - face * 3 * s, ay - 5 * s, 17 * s, 11 * s, -face * 0.25, 0, 7); ctx.fill();
+    ctx.fillStyle = 'rgba(183,227,74,' + (0.65 + 0.35 * pulse).toFixed(2) + ')';
+    ctx.beginPath(); ctx.moveTo(ax - 6 * s, ay - 12 * s); ctx.lineTo(ax + 6 * s, ay - 12 * s); ctx.lineTo(ax - 6 * s, ay + 8 * s); ctx.lineTo(ax + 6 * s, ay + 8 * s); ctx.closePath(); ctx.fill();
+    if (!low) {
+      for (var pu = 0; pu < 6; pu++) { var pxx = ax + Math.cos(pu * 1.9) * 15 * s, pyy = ay + Math.sin(pu * 1.9) * 11 * s; ctx.fillStyle = '#C7F25A'; ctx.beginPath(); ctx.arc(pxx, pyy, (1.6 + (pu % 3) * 0.6) * s, 0, 7); ctx.fill(); }
+    }
+    // head/thorax with a cluster of red eyes and dripping fangs
+    var hx2 = x + face * 12 * s, hy2 = by - 2 * s;
+    ctx.fillStyle = shade('#341640', 1, night); ctx.beginPath(); ctx.ellipse(hx2, hy2, 14 * s, 11 * s, 0, 0, 7); ctx.fill();
+    for (var ey = 0; ey < 8; ey++) { var ex = hx2 + face * (4 + (ey % 4) * 2.6) * s, eyy = hy2 - (5 - Math.floor(ey / 4) * 3.5) * s; ctx.fillStyle = '#FF2A1A'; ctx.beginPath(); ctx.arc(ex, eyy, (ey % 4 === 1 ? 2 : 1.3) * s, 0, 7); ctx.fill(); }
+    var fang = a.breach > 0 || Math.sin(t * 5 + a.id) > 0.7 ? 3 * s : 0;
+    ctx.fillStyle = '#E8E2C8';
+    ctx.beginPath(); ctx.moveTo(hx2 + face * 9 * s, hy2 + 4 * s); ctx.lineTo(hx2 + face * (13 * s + fang), hy2 + 13 * s); ctx.lineTo(hx2 + face * 6 * s, hy2 + 6 * s); ctx.fill();
+    ctx.beginPath(); ctx.moveTo(hx2 + face * 4 * s, hy2 + 5 * s); ctx.lineTo(hx2 + face * (5 * s + fang * 0.5), hy2 + 14 * s); ctx.lineTo(hx2 + face * 1 * s, hy2 + 6 * s); ctx.fill();
+    ctx.fillStyle = '#B7E34A'; ctx.beginPath(); ctx.arc(hx2 + face * 13 * s, hy2 + (14 + (t * 20 % 6)) * s, 1.3 * s, 0, 7); ctx.fill();
+    // the zombie fused to its back, arms reaching
+    var zx = x - face * 2 * s, zy = by - 14 * s;
+    ctx.fillStyle = shade('#6E5C7B', 1, night); ctx.fillRect(zx - 3.5 * s, zy - 12 * s, 7 * s, 12 * s);
+    ctx.strokeStyle = shade('#9EC28A', 1, night); ctx.lineWidth = 2 * s; var sw2 = Math.sin(t * 4) * 2 * s;
+    ctx.beginPath(); ctx.moveTo(zx + 2 * s, zy - 10 * s); ctx.lineTo(zx + face * 11 * s, zy - 16 * s + sw2); ctx.moveTo(zx - 2 * s, zy - 9 * s); ctx.lineTo(zx + face * 9 * s, zy - 11 * s - sw2); ctx.stroke();
+    ctx.fillStyle = shade('#9EC28A', 1, night); ctx.beginPath(); ctx.arc(zx + face * 1 * s, zy - 15 * s, 3.4 * s, 0, 7); ctx.fill();
+    ctx.fillStyle = '#F0E442'; ctx.fillRect(zx + face * 1.5 * s - s, zy - 16 * s, 1.3 * s, 1.3 * s); ctx.fillRect(zx + face * 3.2 * s - s, zy - 16 * s, 1.2 * s, 1.2 * s);
+    if (this.hitFlash(a)) { ctx.fillStyle = 'rgba(255,255,255,0.5)'; ctx.beginPath(); ctx.ellipse(x, by, 30 * s, 22 * s, 0, 0, 7); ctx.fill(); }
+    ctx.restore();
+  };
+
+  // A whole block fused into one nuclear-waste monster: building chunks, flesh,
+  // tentacles made of concrete and windows, eyes, a glowing maw and a toxic pool.
+  R.drawAbomination = function (ctx, bk, x, y) {
+    var g = this.game, t = this.time, low = this.settings.lowFx, night = this.night > 0.5;
+    var grow = C.clamp((g.t - bk.monT) / 12, 0.35, 1), s = grow, seed = bk.id * 7 + 3;
+    var r = function (k) { return hash2(seed + k * 11, k * 5 + 1); };
+    var pulse = 0.5 + 0.5 * Math.sin(t * 2.2 + bk.id), e = ISO.ellipse(2.3);
+    ctx.save();
+    // toxic waste pool with ripples
+    ctx.fillStyle = 'rgba(40,60,20,0.85)'; ellipse(ctx, x, y + 6, e.rx, e.ry); ctx.fill();
+    ctx.fillStyle = 'rgba(150,230,50,' + (0.45 + 0.2 * pulse).toFixed(2) + ')'; ellipse(ctx, x, y + 6, e.rx * 0.82, e.ry * 0.8); ctx.fill();
+    if (!low) for (var rp = 0; rp < 2; rp++) { var rf = ((t * 0.5 + rp * 0.5) % 1); ctx.strokeStyle = 'rgba(220,255,140,' + (0.5 * (1 - rf)).toFixed(2) + ')'; ctx.lineWidth = 1.5; ellipse(ctx, x, y + 6, e.rx * 0.3 + e.rx * 0.5 * rf, e.ry * 0.3 + e.ry * 0.5 * rf); ctx.stroke(); }
+    // leaking nuclear-waste barrels round the edge
+    for (var br = 0; br < (low ? 2 : 5); br++) {
+      var ang = br * 1.3 + r(br) * 0.5, bx = x + Math.cos(ang) * e.rx * 0.85, by = y + 6 + Math.sin(ang) * e.ry * 0.85;
+      ctx.fillStyle = '#C9A21A'; ctx.fillRect(bx - 3.5, by - 9, 7, 9); ctx.fillStyle = '#8A6E10'; ctx.fillRect(bx - 3.5, by - 6, 7, 1.2);
+      ctx.fillStyle = '#1A1A1A'; ctx.font = 'bold 5px sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('☢', bx, by - 3.2);
+      ctx.fillStyle = '#B7E34A'; ellipse(ctx, bx + 4, by, 4, 1.6); ctx.fill();
+    }
+    var H = 95 * s, iso2 = function (ox, oy) { return { x: x + (ox - oy) * HW, y: y + (ox + oy) * HH }; };
+    // back tentacles rise first
+    var nT = low ? 3 : 7;
+    for (var tb = 0; tb < nT; tb += 2) { var ta = Math.PI + (tb / nT) * Math.PI; this.tentacle(ctx, x + Math.cos(ta) * 42 * s, y - H * 0.35 + Math.sin(ta) * 22 * s, (1.5 + r(tb + 20) * 0.7) * s, bk.id * 5 + tb, 2); }
+    // the mound: broken building chunks heaped up and fused with flesh
+    var box = function (cx, cy, w, h, c) {
+      ctx.fillStyle = shade(c, 0.95, night); ctx.beginPath(); ctx.moveTo(cx - w, cy); ctx.lineTo(cx, cy + w / 2); ctx.lineTo(cx, cy + w / 2 - h); ctx.lineTo(cx - w, cy - h); ctx.fill();
+      ctx.fillStyle = shade(c, 0.7, night); ctx.beginPath(); ctx.moveTo(cx, cy + w / 2); ctx.lineTo(cx + w, cy); ctx.lineTo(cx + w, cy - h); ctx.lineTo(cx, cy + w / 2 - h); ctx.fill();
+      ctx.fillStyle = shade(c, 1.12, night); ctx.beginPath(); ctx.moveTo(cx - w, cy - h); ctx.lineTo(cx, cy + w / 2 - h); ctx.lineTo(cx + w, cy - h); ctx.lineTo(cx, cy - w / 2 - h); ctx.fill();
+      ctx.fillStyle = r(cx) < 0.5 ? 'rgba(200,242,90,0.9)' : 'rgba(242,210,122,0.85)';
+      for (var wi = 0; wi < 3; wi++) { ctx.fillRect(cx - w + 3 + wi * (w / 3), cy - h * 0.7 + wi * 2, 2, 3); ctx.fillRect(cx + 3 + wi * (w / 3), cy - h * 0.5 - wi * 2, 2, 3); }
+    };
+    var cols = ['#7C7C86', '#8A5A44', '#5E6670', '#9A8E80', '#6B4E3E'];
+    var chunks = low ? 4 : 7;
+    for (var c = 0; c < chunks; c++) {
+      var ca = c / chunks * Math.PI * 2, cr = c === chunks - 1 ? 0 : 22 * s;
+      box(x + Math.cos(ca) * cr, y - 4 + Math.sin(ca) * cr * 0.5 - (c === chunks - 1 ? H * 0.35 : 0), (12 + r(c) * 8) * s, (24 + r(c + 3) * 30) * s, cols[c % cols.length]);
+    }
+    // flesh binding it all together
+    var flesh = night ? '#3E1A48' : '#5A2A66';
+    ctx.fillStyle = flesh;
+    ctx.beginPath(); ctx.ellipse(x, y - H * 0.38, 40 * s, 30 * s * (0.95 + 0.05 * pulse), 0, 0, 7); ctx.fill();
+    ctx.beginPath(); ctx.ellipse(x - 14 * s, y - H * 0.62, 22 * s, 20 * s, 0.3, 0, 7); ctx.fill();
+    ctx.beginPath(); ctx.ellipse(x + 16 * s, y - H * 0.58, 20 * s, 18 * s, -0.3, 0, 7); ctx.fill();
+    ctx.fillStyle = night ? '#5B2A66' : '#7A3D8C'; ctx.beginPath(); ctx.ellipse(x - 6 * s, y - H * 0.5, 22 * s, 13 * s, 0, 0, 7); ctx.fill();
+    // glowing veins
+    ctx.strokeStyle = 'rgba(183,227,74,' + (0.55 + 0.35 * pulse).toFixed(2) + ')'; ctx.lineWidth = 1.6;
+    for (var v = 0; v < (low ? 3 : 7); v++) { var va = v * 0.9 + 0.3; ctx.beginPath(); ctx.moveTo(x, y - H * 0.45); ctx.quadraticCurveTo(x + Math.cos(va) * 22 * s, y - H * 0.45 + Math.sin(va) * 22 * s, x + Math.cos(va + 0.4) * 38 * s, y - H * 0.4 + Math.sin(va + 0.4) * 22 * s); ctx.stroke(); }
+    // a chunk of building jammed into the top like a crown
+    box(x + 4 * s, y - H * 0.78, 10 * s, 26 * s, '#6E7A84');
+    // eyes
+    var eyes = low ? [[0, 0.45, 2.4]] : [[0, 0.45, 2.6], [-22, 0.36, 1.5], [20, 0.62, 1.7], [-12, 0.7, 1.2], [26, 0.32, 1.1]];
+    for (var ei = 0; ei < eyes.length; ei++) {
+      var blink = !this.settings.reducedMotion && ((t * 0.5 + ei * 1.7 + bk.id) % 5) < 0.2;
+      this.blit(ctx, this.eyeSprite(blink ? 0 : 1), x + eyes[ei][0] * s, y - H * eyes[ei][1], eyes[ei][2] * s);
+    }
+    // maw: a gaping mouth with teeth and a radioactive glow inside
+    var mo = 6 + 4 * pulse, mx = x + 2 * s, my = y - H * 0.22;
+    ctx.fillStyle = '#12060F'; ctx.beginPath(); ctx.ellipse(mx, my, 20 * s, mo * s, 0, 0, 7); ctx.fill();
+    ctx.fillStyle = 'rgba(183,227,74,0.8)'; ctx.beginPath(); ctx.ellipse(mx, my + 1, 10 * s, mo * 0.45 * s, 0, 0, 7); ctx.fill();
+    ctx.fillStyle = '#EDE6CC';
+    for (var tt = 0; tt < 8; tt++) { var tx = mx - 17 * s + tt * 4.8 * s; ctx.beginPath(); ctx.moveTo(tx - 1.8 * s, my - mo * s * 0.8); ctx.lineTo(tx, my - mo * s * 0.8 + 5 * s); ctx.lineTo(tx + 1.8 * s, my - mo * s * 0.8); ctx.fill(); ctx.beginPath(); ctx.moveTo(tx - 1.6 * s, my + mo * s * 0.8); ctx.lineTo(tx + 0.6 * s, my + mo * s * 0.8 - 4 * s); ctx.lineTo(tx + 2.2 * s, my + mo * s * 0.8); ctx.fill(); }
+    // front tentacles
+    for (var tf = 1; tf < nT; tf += 2) { var side2 = tf % 4 === 1 ? -1 : 1; this.tentacle(ctx, x + side2 * (40 + r(tf) * 10) * s, y + 2, (1.3 + r(tf + 30) * 0.6) * s, bk.id * 5 + tf, tf % 3 === 0 ? 0 : 2); }
+    if (!low) {
+      ctx.globalCompositeOperation = 'lighter';
+      ctx.fillStyle = 'rgba(140,255,60,' + (0.04 + 0.05 * pulse).toFixed(2) + ')'; ellipse(ctx, x, y - H * 0.4, 60 * s, 48 * s); ctx.fill();
+      ctx.globalCompositeOperation = 'source-over';
+      if (Math.random() < 0.15) { var wp = ISO.toWorld(x + (Math.random() - 0.5) * 60 * s, y - H * 0.4); this.part(x + (Math.random() - 0.5) * 50 * s, y - H * 0.5, { z: 0, vx: (Math.random() - 0.5) * 8, vy: 0, vz: 20, g: -2, max: 1.6, kind: 'spark', color: '#B7E34A', size: 2 }); }
+    }
+    ctx.restore();
   };
 
   // Army tank: hull, tracks and turret drawn from a rotated box projected to iso
@@ -1493,9 +1756,9 @@
   };
 
   // Mutant tentacles: pre-drawn (2 colours x 2 directions x 8 frames) and stamped.
-  R.tentacleSprite = function (col, dir, f) {
-    return this.sprite('tn|' + col + '|' + dir + '|' + f, 60, 60, 30, 56, function (ctx) {
-      var P = col ? ['#2E4A18', '#5E8F2C', '#A6DB55', '#E9F7A0'] : ['#3A1544', '#73318A', '#B86BCB', '#F6BCDD'];
+  R.tentacleSprite = function (col, dir, f, hi) {
+    return this.sprite('tn|' + col + '|' + dir + '|' + f + (hi ? '|h' : ''), 60, 60, 30, 56, function (ctx) {
+      var P = col === 2 ? ['#26262C', '#5E5E68', '#8C8C96', '#C8F25A'] : col ? ['#2E4A18', '#5E8F2C', '#A6DB55', '#E9F7A0'] : ['#3A1544', '#73318A', '#B86BCB', '#F6BCDD'];
       var ph = f / 8 * Math.PI * 2, sg = dir ? 1 : -1, N = 18, seg = 3, x = 0, y = 0, pts = [];
       for (var i = 0; i <= N; i++) {
         var u = i / N, th = sg * (0.35 * u + 0.75 * u * Math.sin(ph - u * 4.2)) + sg * 0.15;
@@ -1506,14 +1769,18 @@
       for (k = 0; k < pts.length; k++) { ctx.fillStyle = P[0]; ctx.beginPath(); ctx.arc(pts[k][0], pts[k][1], pts[k][2] + 1.1, 0, 7); ctx.fill(); }
       for (k = 0; k < pts.length; k++) { ctx.fillStyle = P[1]; ctx.beginPath(); ctx.arc(pts[k][0], pts[k][1], pts[k][2], 0, 7); ctx.fill(); }
       for (k = 0; k < pts.length - 2; k++) { ctx.fillStyle = P[2]; ctx.beginPath(); ctx.arc(pts[k][0] - sg * pts[k][2] * 0.35, pts[k][1], pts[k][2] * 0.4, 0, 7); ctx.fill(); }
-      for (k = 1; k < pts.length - 3; k += 2) { ctx.fillStyle = P[3]; ctx.beginPath(); ctx.arc(pts[k][0] + sg * pts[k][2] * 0.6, pts[k][1], Math.max(0.6, pts[k][2] * 0.28), 0, 7); ctx.fill(); }
+      if (col === 2) {
+        // concrete and steel fused into the flesh: lit windows, rebar, and a glowing green core
+        for (k = 1; k < pts.length - 3; k += 2) { ctx.fillStyle = k % 4 === 1 ? P[3] : '#F2D27A'; ctx.fillRect(pts[k][0] - pts[k][2] * 0.35, pts[k][1] - pts[k][2] * 0.3, Math.max(0.8, pts[k][2] * 0.5), Math.max(0.8, pts[k][2] * 0.45)); }
+        ctx.strokeStyle = '#3B2A22'; ctx.lineWidth = 0.7; for (k = 3; k < pts.length - 4; k += 4) { ctx.beginPath(); ctx.moveTo(pts[k][0], pts[k][1]); ctx.lineTo(pts[k][0] - sg * (pts[k][2] + 3), pts[k][1] - 2); ctx.stroke(); }
+      } else for (k = 1; k < pts.length - 3; k += 2) { ctx.fillStyle = P[3]; ctx.beginPath(); ctx.arc(pts[k][0] + sg * pts[k][2] * 0.6, pts[k][1], Math.max(0.6, pts[k][2] * 0.28), 0, 7); ctx.fill(); }
       // slime drip at the root
       ctx.fillStyle = 'rgba(160,230,70,0.7)'; ellipse(ctx, 0, 1, 6, 2); ctx.fill();
-    });
+    }, hi ? 3 : 1);
   };
   R.tentacle = function (ctx, x, y, size, seed, col) {
     var f = this.settings.reducedMotion ? (seed & 7) : (Math.floor(this.time * 5 + seed * 2.3) & 7);
-    this.blit(ctx, this.tentacleSprite(col, seed & 1, f), x, y, size);
+    this.blit(ctx, this.tentacleSprite(col, seed & 1, f, size * this.cam.zoom > 2.2), x, y, size);
   };
   // A giant eye that grew on the wall. It blinks now and then.
   R.eyeSprite = function (open) {
@@ -1783,10 +2050,18 @@
     list.length = 0;
     var city = g.city, blds = g.blds, cbs = city.buildings, d;
     var inView = function (px, py, up) { return px > vx0 && px < vx1 && py > vy0 && py - up < vy1; };
+    var blocks = g.blocks, bb0 = g.bldBlock;
     for (i = 0; i < cbs.length; i++) {
       var cb = cbs[i], b = blds[i], pp = iso(cb.x + 0.5, cb.y + 0.5);
+      if (blocks && bb0[i] >= 0 && blocks[bb0[i]].mon) continue; // swallowed by the abomination
       if (!inView(pp.x, pp.y, -140)) continue;
       d = this.getDraw(); d.k = 0; d.d = cb.x + cb.y + 1; d.o = i; d.x = pp.x; d.y = pp.y;
+    }
+    if (blocks) for (i = 0; i < blocks.length; i++) {
+      var bk = blocks[i]; if (!bk.mon) continue;
+      var bkp = iso(bk.cx, bk.cy);
+      if (!inView(bkp.x, bkp.y, -260)) continue;
+      d = this.getDraw(); d.k = 6; d.d = bk.cx + bk.cy + 1.2; d.o = bk; d.x = bkp.x; d.y = bkp.y;
     }
     var towerTiles = g.towerAt;
     for (i = 0; i < city.trees.length; i++) {
@@ -1853,6 +2128,8 @@
         this.drawAgent(ctx, d.o, d.x, d.y, walkFrame, nightOn, ui);
       } else if (d.k === 5) {
         this.drawTank(ctx, d.o, d.x, d.y);
+      } else if (d.k === 6) {
+        this.drawAbomination(ctx, d.o, d.x, d.y);
       } else {
         var cs = this.carSprite(d.o.color, d.o.axis, nightOn);
         this.blit(ctx, cs, d.x, d.y);
@@ -1962,6 +2239,11 @@
     ctx.restore();
   };
 
+  // White hit flash, timed in real time so it doesn't stick while the game is paused
+  R.hitFlash = function (a) {
+    if (a._seenHit !== a.hitT) { a._seenHit = a.hitT; a._hitRT = this.game.t - a.hitT < 0.12 ? this.time : -9; }
+    return this.time - a._hitRT < 0.12;
+  };
   R.drawAgent = function (ctx, a, x, y, wf, night, ui) {
     var g = this.game, spr, frame = (wf + a.id) & 1;
     var sdx = a.dirx - a.diry, face = sdx < 0 ? -1 : 1;
@@ -1987,7 +2269,7 @@
       var boss = a.zdef && a.zdef.boss;
       if (boss) {
         // toxic aura showing how far its bite reaches, and a ground-shaking walk
-        var pa = 0.5 + 0.5 * Math.sin(this.time * 4 + a.id), er = ISO.ellipse(1.15 + pa * 0.15);
+        var pa = 0.5 + 0.5 * Math.sin(this.time * 4 + a.id), er = ISO.ellipse((a.zdef.ultra ? 2.6 : 1.15) + pa * 0.15);
         ctx.fillStyle = 'rgba(139,195,74,' + (0.12 + pa * 0.1).toFixed(2) + ')'; ellipse(ctx, x, y, er.rx, er.ry); ctx.fill();
         ctx.strokeStyle = 'rgba(183,227,74,0.7)'; ctx.lineWidth = 1.5; ctx.setLineDash([5, 4]); ellipse(ctx, x, y, er.rx, er.ry); ctx.stroke(); ctx.setLineDash([]);
         var step = Math.floor(this.time * 2.2 + a.id);
@@ -2004,23 +2286,25 @@
         zf = 2; sway = Math.sin(this.time * 18 + a.id) * 1.2;
       }
       spr = this.zombieSprite(a.type === 'carrier' ? 'basic' : a.type, zf, face, night);
-      if (emerging) {
+      if (a.zdef && a.zdef.ultra) {
+        this.drawSpider(ctx, a, x + sway * 0.3, y + (emerging ? (1 - ef) * 60 * zs : 0), zs);
+      } else if (emerging) {
         ctx.save(); ctx.beginPath(); ctx.rect(x - 80, y - 260, 160, 260 + 2 * zs); ctx.clip();
         this.blit(ctx, spr, x + sway, y + (1 - ef) * spr.ay * zs, zs);
         ctx.restore();
       } else this.blit(ctx, spr, x + sway, y, zs);
-      if (g.t - a.hitT < 0.12) { ctx.fillStyle = 'rgba(255,255,255,0.65)'; ellipse(ctx, x + sway, y - 10 * zs, 5 * zs, 8 * zs); ctx.fill(); }
+      if (this.hitFlash(a)) { ctx.fillStyle = 'rgba(255,255,255,0.65)'; ellipse(ctx, x + sway, y - 10 * zs, 5 * zs, 8 * zs); ctx.fill(); }
       if (a.type === 'carrier') {
         ctx.strokeStyle = '#CC79A7'; ctx.lineWidth = 1.5 * zs; ctx.setLineDash([3, 2]);
         ellipse(ctx, x, y, 8 * zs, 4 * zs); ctx.stroke(); ctx.setLineDash([]);
         this.marker(ctx, x, y - 26 * zs, 'carrier', zs);
       }
       if (boss) {
-        var bw = 24 * zs, bt = y - 82 * zs;
+        var ultra = a.zdef.ultra, bw = (ultra ? 40 : 24) * zs, bt = y - (ultra ? 118 : 82) * zs, bl = ultra ? 'ULTRA-SPREADER' : 'SUPER-SPREADER';
         ctx.fillStyle = 'rgba(0,0,0,0.65)'; ctx.fillRect(x - bw - 1, bt - 1, bw * 2 + 2, 6);
         ctx.fillStyle = '#B7E34A'; ctx.fillRect(x - bw, bt, bw * 2 * Math.max(0, a.hp / a.maxhp), 4);
         ctx.font = '700 ' + (8.5 * zs).toFixed(1) + 'px Oswald, system-ui, sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'bottom';
-        ctx.lineWidth = 2.5; ctx.strokeStyle = 'rgba(0,0,0,0.8)'; ctx.strokeText('SUPER-SPREADER', x, bt - 2); ctx.fillStyle = '#D9F27A'; ctx.fillText('SUPER-SPREADER', x, bt - 2);
+        ctx.lineWidth = 2.5; ctx.strokeStyle = 'rgba(0,0,0,0.8)'; ctx.strokeText(bl, x, bt - 2); ctx.fillStyle = ultra ? '#FF5A3C' : '#D9F27A'; ctx.fillText(bl, x, bt - 2);
       } else if (g.t - a.hitT < 1.5 || a.type === 'brute') {
         var hw = (a.type === 'brute' ? 12 : 8) * zs, top = y - (a.type === 'brute' ? 36 : 26) * zs;
         ctx.fillStyle = 'rgba(0,0,0,0.55)'; ctx.fillRect(x - hw, top, hw * 2, 2.5);
@@ -2123,6 +2407,7 @@
     var ww = !!g.flags.wastewater;
     for (var i = 0; i < cbs.length; i++) {
       var cb = cbs[i], b = g.blds[i];
+      if (g.blocks && g.bldBlock[i] >= 0 && g.blocks[g.bldBlock[i]].mon) continue;
       var seen = ww || g.t - b.seenT < 12;
       var pressure = b.E + b.Ek + b.Z;
       var alive = b.S + b.E + b.Ek + b.V + b.R;

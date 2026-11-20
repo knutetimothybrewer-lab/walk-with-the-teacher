@@ -115,7 +115,7 @@
     nukeSurvival: 0.65,      // available when the share of residents still alive falls below this...
     nukeChaos: 0.4,          // ...or a district is this overrun...
     nukeZombies: 0.12,       // ...or zombies make up this share of the population         // seconds a zombie spends climbing out of a hell hole before it can move
-    hallDamage: { basic: 3, runner: 2, brute: 8, carrier: 2, mega: 18 }, // integrity lost per attack
+    hallDamage: { basic: 3, runner: 2, brute: 8, carrier: 2, mega: 18, bloater: 3, hazmat: 3, leaper: 2, ultra: 50 }, // integrity lost per attack
 
     // --- Performance ---
     lowFxFrameMs: 20,        // auto "Low effects" if average frame time exceeds this...
@@ -126,9 +126,9 @@
   D.DIFFICULTY = {
     easy:   { hall: 1.35, label: 'Easy',   budget: 1.3,  trust: 68, transmission: 0.85, spawn: 0.75, grant: 1.2,  vaccines: 1.3, pop: 0.9 },
     normal: { hall: 1.0, label: 'Normal', budget: 1.0,  trust: 60, transmission: 1.0,  spawn: 1.0,  grant: 1.0,  vaccines: 1.0, pop: 1.0 },
-    hard:   { hall: 0.85, label: 'Hard',   budget: 0.95, trust: 54, transmission: 0.93, spawn: 1.1,  grant: 0.9,  vaccines: 0.85, pop: 1.1 },
+    hard:   { hall: 0.85, label: 'Hard',   budget: 0.95, trust: 54, transmission: 0.9, spawn: 1.0,  grant: 0.9,  vaccines: 0.85, pop: 1.1 },
     // INSANE: open from the start. Unlimited budget, a crazy number of zombies.
-    insane: { hall: 3,   label: 'INSANE', budget: 1,    trust: 60, transmission: 1.1,  spawn: 4,    grant: 1,    vaccines: 6,   pop: 1.0, unlimited: true, zombieCap: 400 }
+    insane: { hall: 3,   label: 'INSANE', budget: 1,    trust: 60, transmission: 1.1,  spawn: 4,    grant: 1,    vaccines: 6,   pop: 1.0, unlimited: true, zombieCap: 400, ultra: true, endless: true }
   };
 
   /* ---- TOWERS / INTERVENTIONS ---------------------------------------
@@ -251,25 +251,36 @@
     // SCREAMER: shrieks every few seconds; nearby zombies speed up and panic rises
     screamer:{ name: 'Screamer', hp: 40,  speed: 0.85, life: 36, bites: 1, armor: 0,    stealth: false, size: 0.95, scream: { every: 6, radius: 4, haste: 1.6, time: 4, panic: 1.5 } },
     // CRAWLER: low to the ground: slips under barricades and is hard to hit
-    crawler: { name: 'Crawler',  hp: 50,  speed: 0.9,  life: 34, bites: 1, armor: 0,    stealth: false, size: 0.8, underBarricades: true, dodge: 0.4 }
+    crawler: { name: 'Crawler',  hp: 50,  speed: 0.9,  life: 34, bites: 1, armor: 0,    stealth: false, size: 0.8, underBarricades: true, dodge: 0.4 },
+    // BLOATER: swollen with infection. Shoot it and it bursts, splashing people nearby
+    bloater: { name: 'Bloater',  hp: 90,  speed: 0.5,  life: 40, bites: 1, armor: 0,    stealth: false, size: 1.3, burst: { radius: 1.4, chance: 0.5 } },
+    // HAZMAT: a fallen responder; the suit makes most bullets glance off
+    hazmat:  { name: 'Hazmat',   hp: 80,  speed: 0.75, life: 40, bites: 1, armor: 0.6,  stealth: false, size: 1.05 },
+    // LEAPER: springs two tiles ahead every few seconds, clearing barricades
+    leaper:  { name: 'Leaper',   hp: 35,  speed: 1.0,  life: 30, bites: 1, armor: 0,    stealth: false, size: 0.9, leap: { every: 3.5, tiles: 2 } },
+    // ULTRA-SPREADER (INSANE only): a gigantic spider. Huge health, bites up to 3 people
+    // at once from far away, wrecks barricades and City Hall. Hospitals can't capture it.
+    ultra:   { name: 'Ultra-Spreader', hp: 4000, speed: 0.5, life: 120, bites: 10, armor: 0.55, stealth: false, size: 3.4, boss: true, ultra: true, streetRange: 3, multiBite: 3, barricadeDps: 150 }
   };
-  D.ZOMBIE_ORDER = ['basic', 'runner', 'brute', 'carrier', 'mega', 'spitter', 'screamer', 'crawler'];
+  // ultra is not in this list: it only arrives in INSANE (see "u" in the waves below)
+  D.ZOMBIE_ORDER = ['basic', 'runner', 'brute', 'carrier', 'mega', 'spitter', 'screamer', 'crawler', 'bloater', 'hazmat', 'leaper'];
 
   /* ---- WAVES -----------------------------------------------------------
-     z: arriving zombies [shambler, sprinter, brute, carrier, super-spreader, spitter, screamer, crawler]
+     z: arriving zombies [shambler, sprinter, brute, carrier, super-spreader, spitter, screamer, crawler, bloater, hazmat, leaper]
+     u: Ultra-Spreader spiders (INSANE only)
      imports: infected-but-healthy-looking travelers arriving from outside
      entries: how many road entrances zombies use
      night: [start, end] darkness 0..1 across the wave; weather: clear/fog/rain */
   D.WAVES = [
-    { z: [4, 0, 0, 0, 0, 0, 0, 0],  imports: 2, entries: 1, night: [0, 0.05],   weather: 'clear' },
-    { z: [6, 2, 0, 0, 0, 0, 0, 1],  imports: 3, entries: 2, night: [0.05, 0.25], weather: 'clear' },
-    { z: [7, 3, 1, 1, 0, 1, 0, 1],  imports: 3, entries: 2, night: [0.25, 0.75], weather: 'clear' },
-    { z: [8, 4, 1, 2, 0, 1, 1, 2],  imports: 4, entries: 2, night: [0.75, 0.95], weather: 'clear' },
-    { z: [9, 5, 2, 2, 1, 2, 1, 2],  imports: 4, entries: 3, night: [0.9, 0.2],  weather: 'clear' },
-    { z: [10, 6, 2, 3, 1, 2, 1, 3], imports: 5, entries: 3, night: [0.1, 0.15], weather: 'rain' },
-    { z: [11, 7, 3, 3, 2, 3, 2, 3], imports: 5, entries: 3, night: [0.15, 0.6], weather: 'clear' },
-    { z: [12, 8, 3, 4, 2, 3, 2, 4], imports: 6, entries: 3, night: [0.6, 1.0],  weather: 'clear' },
-    { z: [14, 9, 4, 4, 3, 4, 3, 4], imports: 6, entries: 4, night: [1.0, 0.55], weather: 'rain' }
+    { z: [4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  u: 0, imports: 2, entries: 1, night: [0, 0.05],   weather: 'clear' },
+    { z: [6, 2, 0, 0, 0, 0, 0, 1, 0, 0, 1],  u: 0, imports: 3, entries: 2, night: [0.05, 0.25], weather: 'clear' },
+    { z: [7, 3, 1, 1, 0, 1, 0, 1, 1, 0, 1],  u: 0, imports: 3, entries: 2, night: [0.25, 0.75], weather: 'clear' },
+    { z: [8, 4, 1, 2, 0, 1, 1, 2, 1, 1, 1],  u: 1, imports: 4, entries: 2, night: [0.75, 0.95], weather: 'clear' },
+    { z: [9, 5, 2, 2, 1, 2, 1, 2, 1, 1, 2],  u: 1, imports: 4, entries: 3, night: [0.9, 0.2],  weather: 'clear' },
+    { z: [10, 6, 2, 3, 1, 2, 1, 3, 2, 1, 2], u: 1, imports: 5, entries: 3, night: [0.1, 0.15], weather: 'rain' },
+    { z: [11, 7, 3, 3, 2, 3, 2, 3, 2, 2, 2], u: 2, imports: 5, entries: 3, night: [0.15, 0.6], weather: 'clear' },
+    { z: [12, 8, 3, 4, 2, 3, 2, 4, 2, 2, 3], u: 2, imports: 6, entries: 3, night: [0.6, 1.0],  weather: 'clear' },
+    { z: [14, 9, 4, 4, 3, 4, 3, 4, 3, 2, 3], u: 3, imports: 6, entries: 4, night: [1.0, 0.55], weather: 'rain' }
   ];
   D.QUICK_WAVES = [0, 1, 3, 5, 7, 8]; // which of the above a Quick game uses
   D.WEATHER = {
