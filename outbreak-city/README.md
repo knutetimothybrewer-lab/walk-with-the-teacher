@@ -61,6 +61,9 @@ Ask students to submit a screenshot of this page. The full After-Action Report i
 
 **INSANE** is on the title screen from the start. It gives an unlimited budget (towers and upgrades are free), about 4× as many zombies, and a higher zombie limit. It's a reward round, not a fair assessment, so completion codes mark it as INSANE.
 
+- **Endless:** waves never stop. After wave 9, each wave brings about 18% more zombies, and they get 15% tougher. The game ends only when City Hall falls, the city collapses, or the player nukes it. Students who build lightly fall around wave 4–6. Players who build heavily with the free budget last to about wave 20–24 (30+ minutes).
+- **Ultra-Spreader:** from wave 4, gigantic mutant spiders arrive (more each wave). They have 4,000 health, bite three people at once from far away, wreck barricades, and take a big chunk out of City Hall with each attack.
+
 ## Completion codes (works without any setup)
 
 At the end, every student gets a completion code like `OC1-MXxCb3R8...-MFUA`, which they paste into your LMS. It encodes their name, seed, difficulty, ending, survival, trust, equity, peak R_eff, deaths, stray-fire deaths, vaccination and detection rates, the towers they built and each Mayor's Briefing decision. Paste a code into **Teacher tools → Check a student's completion code** to read it. A checksum flags codes that were edited by hand. It is an honor-system check, not real security.
@@ -182,6 +185,9 @@ All CSS is scoped under `.oc-root`, saved data uses one `localStorage` key (`out
 | New arrivals claw out of glowing "hell holes" at the city's edges | Imported cases keep arriving from outside, so a response has to plan for them |
 | Super-Spreader zombies (from wave 5): giant, armored, infect several people per attack, smash barricades | Super-spreading (a few cases cause most spread); vaccination and controlling crowds blunt it |
 | Spitters (infect from a distance), Screamers (speed up nearby zombies, raise panic), Crawlers (slip under barricades, hard to hit) | Different transmission routes need different responses; one tool never fits all |
+| Bloaters burst when shot and splash infection onto people nearby; Hazmat zombies shrug off most bullets; Leapers jump ahead and over barricades | A forceful response can spread an outbreak further; one tool never fits every case |
+| When every building on a block is overrun, the block fuses into a radioactive abomination that grabs anyone walking past | Whole neighborhoods collapse when every household is sick at once, and the damage keeps spreading |
+| Military towers look tougher with each upgrade: extra sandbags, crates, heavier guns and flags, then razor wire, searchlights, four-barrel cannons, laser sights and radar | Escalation is visible, and so is its cost |
 | Before the middle wave, a General offers tanks for one wave: they kill many zombies but can't see hidden infections | Military force can't replace surveillance and prevention; it costs trust and endangers bystanders |
 | Once the infection takes over, a two-step "Nuclear Option" can destroy the whole city (its own ending) | Ethics of proportionality: the most extreme measure, and what it costs |
 | Districts fall into chaos as they're overrun: burning buildings and car wrecks, flashing police cars, fire glow and smoke, a news helicopter, falling ash | An uncontrolled outbreak spreads harm beyond the sick: panic, lost services, damage to whole neighborhoods |
@@ -285,18 +291,18 @@ Win rates and game length (`node outbreak-city/tools/winrates.js 40 normal full`
 
 | Strategy | Infection stopped | Contained (endemic) | Survived, damaged | Infection wins | Avg survival | Game length at 1× |
 |---|---|---|---|---|---|---|
-| Do nothing | 0% | 0% | 0% | 100% | 44% | 4 min (4–5) |
-| Pure militia | 0% | 0% | 0% | 100% | 40% | 14 min (12–15) |
-| Heavy Turrets + militia | 0% | 0% | 0% | 100% | 38% | 9 min (7–15) |
-| Rich districts only | 0% | 35% | 8% | 58% | 54% | 15 min |
-| **Typical student** (varied, partly random choices) | 0% | 28% | 23% | **50%** | 54% | 14 min (8–15) |
-| Balanced public-health toolkit | 13% | 83% | 0% | 5% | 74% | 15 min |
-| Expert (guards entrances + full toolkit) | 20% | 68% | 0% | 13% | 75% | 14 min |
+| Do nothing | 0% | 0% | 0% | 100% | 45% | 4 min |
+| Pure militia | 0% | 0% | 0% | 100% | 38% | 13 min |
+| Heavy Turrets + militia | 0% | 0% | 0% | 100% | 38% | 9 min |
+| Rich districts only | 0% | 13% | 15% | 73% | 53% | 14 min |
+| **Typical student** (varied, partly random choices) | 0% | 25% | 20% | **55%** | 54% | 14 min |
+| Balanced public-health toolkit | 15% | 78% | 0% | 8% | 73% | 15 min |
+| Expert (guards entrances + full toolkit) | 20% | 63% | 0% | 18% | 74% | 14 min |
 
 The bots never fire the Laser Cannon (it needs a player to aim it), so a student who uses it well will do a bit better than these numbers.
 
 - **Tuning target:** a typical student loses about half the time, while strong public-health play rarely loses.
 - **Easy:** the typical student never loses, and balanced play stops the infection about 90% of the time.
-- **Hard:** the typical student loses about 70% and balanced players about 15%.
+- **Hard:** the typical student loses about 65% and balanced players under 10%.
 
 **Classroom time:** a full game is about 15 minutes of simulated time at 1× speed. With planning between waves and reading briefings (about 25 s per wave), plan on **18–20 minutes**, plus the tutorial (about 5 minutes) the first time. Doing nothing ends in about 7 minutes. 2× or 3× speed shortens waves. Simulating 280 games takes the computer about 3.5 minutes.

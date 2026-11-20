@@ -37,6 +37,7 @@
     this.fxOn = opts.fx !== false;
     this.waveDefs = this.quick ? D.QUICK_WAVES.map(function (i) { return D.WAVES[i]; }) : D.WAVES.slice();
     this.totalWaves = this.waveDefs.length;
+    this.endless = !!this.diff.endless; // INSANE: waves never stop until the city falls
     this.waveDuration = this.quick ? CFG.quickWaveDuration : CFG.waveDuration;
 
     var city = this.city = NS.city.generate(this.seed, { popMult: diff.pop });
@@ -120,19 +121,37 @@
   var G = Game.prototype;
 
   /* ================= Planning ================= */
+  G.planOne = function (def, wr) {
+    var city = this.city, self = this;
+    var entries = wr.shuffle(city.entries.slice()).slice(0, Math.max(1, def.entries));
+    var z = D.ZOMBIE_ORDER.map(function (type, k) {
+      var max = Math.ceil((def.z[k] || 0) * Math.max(2.6, self.diff.spawn * 1.3)) + 2, list = [];
+      for (var i = 0; i < max; i++) list.push({ t: wr.next(), entry: wr.pick(entries), type: type });
+      return list;
+    });
+    var imports = [];
+    for (var i = 0; i < Math.ceil(def.imports * 2.6) + 2; i++) imports.push({ t: wr.next(), entry: wr.pick(city.entries), dest: wr.int(self.blds.length), inc: wr.exp(CFG.incubationMean) + 6 });
+    return { entries: entries, z: z, imports: imports };
+  };
+  // INSANE endless mode: each extra wave is bigger than the last, forever
+  G.addEndlessWave = function () {
+    var n = this.waveDefs.length + 1, k = n - D.WAVES.length, last = D.WAVES[D.WAVES.length - 1], grow = Math.pow(1.18, k);
+    var nightCycle = [[0.1, 0.5], [0.5, 1.0], [1.0, 0.4], [0.4, 0.1]][k % 4];
+    var def = { z: last.z.map(function (c) { return Math.ceil(c * grow); }), u: (last.u || 0) + k, imports: last.imports + k, entries: Math.min(8, last.entries + Math.floor(k / 2)), night: nightCycle, weather: k % 3 === 0 ? 'rain' : 'clear' };
+    this.waveDefs.push(def);
+    var wr = new C.RNG(C.hashStr(this.seed + '|endless|' + n)), plan = this.planOne(def, wr);
+    if (this.diff.ultra) { plan.ultra = []; for (var i = 0; i < def.u; i++) plan.ultra.push({ t: 0.15 + wr.next() * 0.7, entry: wr.pick(plan.entries) }); }
+    this.plans.push(plan);
+  };
+
   G.planWaves = function () {
     var wr = new C.RNG(C.hashStr(this.seed + '|waves')), city = this.city, self = this;
-    this.plans = this.waveDefs.map(function (def) {
-      var entries = wr.shuffle(city.entries.slice()).slice(0, Math.max(1, def.entries));
-      var z = D.ZOMBIE_ORDER.map(function (type, k) {
-        var max = Math.ceil((def.z[k] || 0) * Math.max(2.6, self.diff.spawn * 1.3)) + 2, list = [];
-        for (var i = 0; i < max; i++) list.push({ t: wr.next(), entry: wr.pick(entries), type: type });
-        return list;
-      });
-      var imports = [];
-      for (var i = 0; i < Math.ceil(def.imports * 2.6) + 2; i++) imports.push({ t: wr.next(), entry: wr.pick(city.entries), dest: wr.int(self.blds.length), inc: wr.exp(CFG.incubationMean) + 6 });
-      return { entries: entries, z: z, imports: imports };
-    });
+    this.plans = this.waveDefs.map(function (def) { return self.planOne(def, wr); });
+    // INSANE: giant spiders, planned from their own stream so other seeds are unaffected
+    if (this.diff.ultra) {
+      var ur = new C.RNG(C.hashStr(this.seed + '|ultra'));
+      this.plans.forEach(function (pl, i) { pl.ultra = []; for (var k = 0; k < (self.waveDefs[i].u || 0); k++) pl.ultra.push({ t: 0.15 + ur.next() * 0.7, entry: ur.pick(pl.entries) }); });
+    }
     // Patient zero: a mid-sized building (seeded), never in the first-placed district for variety
     var cands = this.blds.filter(function (b) { return b.orig >= 6; });
     this.patientZero = (wr.pick(cands) || this.blds[0]).id;
@@ -215,7 +234,9 @@
 
   G.spawnZombie = function (type, x, y, roadTile, offspring, fromBld) {
     var z = D.ZOMBIES[type], a = this.newAgent();
-    a.kind = 1; a.type = type; a.zdef = z; a.hp = a.maxhp = z.hp; a.life = z.life * this.rng.range(0.8, 1.2);
+    // endless waves: every wave past the last regular one makes zombies 15% tougher
+    var hpm = this.endless && this.wave > D.WAVES.length ? 1 + 0.15 * (this.wave - D.WAVES.length) : 1;
+    a.kind = 1; a.type = type; a.zdef = z; a.hp = a.maxhp = z.hp * hpm; a.life = z.life * this.rng.range(0.8, 1.2);
     a.x = a.px = x; a.y = a.py = y; a.roadTile = roadTile; a.offspring = offspring || 0; a.lastBld = fromBld === undefined ? -1 : fromBld;
     a.revealed = !z.stealth;
     this.agents.push(a); this.nZombies++;
@@ -509,6 +530,7 @@
 
   G.killZombie = function (a, cause) {
     var d = this.city.district[this.tileOf(a.x, a.y)];
+    if (a.zdef.burst && cause !== 'decay') this.burstBloater(a);
     this.removeAgent(a);
     this.recordRemoval(a.offspring);
     if (a.outsider) this.stats.outsiders = (this.stats.outsiders || 0) + 1; // arrived from outside: not a resident
@@ -558,7 +580,8 @@
         }
         var tile = this.tileOf(a.x, a.y), sp = z.speed * (a.hasteT > this.t ? a.haste : 1);
         if (z.scream) this.screamTick(a, z);
-        var bar = z.underBarricades ? -1 : this.barricadeAt[tile];
+        var leapt = z.leap ? this.leapTick(a, z) : false;
+        var bar = z.underBarricades || leapt ? -1 : this.barricadeAt[tile];
         if (bar >= 0) {
           var btw = this.towerById(bar);
           if (btw) {
@@ -575,10 +598,11 @@
         if (a.path && a.pi < a.path.length) a.roadTile = a.path[Math.max(0, a.pi - 1)];
         // Street bites (stealthy carriers keep a low profile)
         if (a.biteCd <= 0 && !(z.stealth && !a.revealed) && ((tick + a.id) & 1) === 0) {
-          var victim = null;
-          this.near(a.x, a.y, CFG.biteRange * (z.streetRange || 1), function (w) { if (w.kind === 0) { victim = w; return true; } return false; });
-          if (victim) {
-            a.biteCd = z.spitCooldown || CFG.biteCooldown;
+          var victims = [], nv = z.multiBite || 1;
+          this.near(a.x, a.y, CFG.biteRange * (z.streetRange || 1), function (w) { if (w.kind === 0) { victims.push(w); return victims.length >= nv; } return false; });
+          if (victims.length) a.biteCd = z.spitCooldown || CFG.biteCooldown;
+          for (var vi = 0; vi < victims.length; vi++) {
+            var victim = victims[vi];
             if (z.spitCooldown) this.emit({ k: 'spit', x0: a.x, y0: a.y, x: victim.x, y: victim.y, zid: a.id });
             var p = CFG.biteSuccess * CFG.streetBiteMult * this.em.transmission;
             if (victim.st === V) p *= (1 - this.vaxEff());
@@ -588,9 +612,10 @@
               victim.st = E; victim.inc = rng.exp(CFG.incubationMean); victim.known = false; victim.isolating = false;
               a.offspring++;
               if (z.boss) this.stats.megaInf++;
+              if (z.ultra) this.stats.ultraInf = (this.stats.ultraInf || 0) + 1;
               this.onInfect(this.city.district[tile], victim.x, victim.y);
             }
-            this.emit({ k: 'bite', x: victim.x, y: victim.y, zid: a.id, vid: victim.id, ok: bit });
+            this.emit({ k: 'bite', x: victim.x, y: victim.y, zid: a.id, vid: victim.id, ok: bit, ultra: !!z.ultra });
           }
         }
       }
@@ -1110,7 +1135,7 @@
     this.updateBuildings();
     this.launchWalkers();
     this.updateAgents();
-    if (this.phase === 'wave') { this.updateTowers(); if (this.tanks.length) this.updateTanks(); }
+    if (this.phase === 'wave') { this.updateTowers(); if (this.tanks.length) this.updateTanks(); if (this.tick % CFG.simHz === 0) this.abominationTick(); }
     this.compact();
     if (this.tick % CFG.simHz === 0) this.perSecond();
     if (this.phase === 'wave' && this.tick % (CFG.simHz * 2) === 0) this.sample();
@@ -1127,12 +1152,13 @@
           this.spawnWalker(E, ex, ey, path, dst.id, false, s.inc, dst.d);
           this.stats.imports++;
         } else { dst.E++; this.stats.imports++; }
-      } else if (this.nZombies < this.maxZombies + 10) {
+      } else if (this.nZombies < this.maxZombies + 10 || s.type === 'ultra') {
         var oz = this.spawnZombie(s.type, ex, ey, s.entry, 0, -1);
         oz.outsider = true; oz.hallPull = undefined; this.retarget(oz); // arrivals march on City Hall more often
         oz.emerge = CFG.emergeTime; // climbing out of a hell hole
         this.holeT = this.holeT || {}; this.holeT[s.entry] = this.t;
-        if (oz.zdef.boss) { this.stats.megas++; this.news('mega', null, true); this.emit({ k: 'megaArrive', x: ex, y: ey }); }
+        if (oz.zdef.ultra) { this.stats.ultras = (this.stats.ultras || 0) + 1; this.panic = Math.min(100, this.panic + 6); this.news('ultra', null, true); this.emit({ k: 'ultraArrive', x: ex, y: ey }); }
+        else if (oz.zdef.boss) { this.stats.megas++; this.news('mega', null, true); this.emit({ k: 'megaArrive', x: ex, y: ey }); }
         this.stats.imports++;
         this.emit({ k: 'arrive', x: ex, y: ey, type: s.type });
       }
@@ -1163,6 +1189,7 @@
       var n = Math.min(plan.z[k].length, Math.round(def.z[k] * mult));
       for (var j = 0; j < n; j++) q.push({ t: plan.z[k][j].t * dur, entry: plan.z[k][j].entry, type: type });
     });
+    if (plan.ultra) for (i = 0; i < plan.ultra.length; i++) q.push({ t: plan.ultra[i].t * dur, entry: plan.ultra[i].entry, type: 'ultra' });
     var ni = Math.min(plan.imports.length, Math.round(def.imports * this.em.imports * this.diff.spawn));
     for (i = 0; i < ni; i++) { var im = plan.imports[i]; q.push({ t: im.t * dur, entry: im.entry, imp: true, dest: im.dest, inc: im.inc }); }
     q.sort(function (a, b) { return a.t - b.t; });
@@ -1179,7 +1206,8 @@
 
   G.endWave = function () {
     if (this.tanks.length) { this.tanks = []; this.emit({ k: 'tanksLeave' }); }
-    if (this.wave >= this.totalWaves) {
+    if (this.endless && this.wave >= this.waveDefs.length) this.addEndlessWave();
+    if (this.wave >= this.totalWaves && !this.endless) {
       // Final Push: a short overtime with no new arrivals to clear the last cases
       if (!this.overtime && this.totals.active > 0) {
         this.overtime = true; this.emit({ k: 'finalPush' }); this.annotations.push({ t: this.t, kind: 'wave', label: 'Final Push' });
@@ -1284,7 +1312,8 @@
     this.emit({ k: 'ended', ending: this.ending });
   };
 
-  G.survival = function () { return this.totals.aliveNonZ / this.totalPop; };
+  // capped: cured zombies that came from outside the city join it, which could push this past 100%
+  G.survival = function () { return Math.min(1, this.totals.aliveNonZ / this.totalPop); };
 
   G.computeEnding = function () {
     var t = this.totals, surv = this.survival(), active = t.active;
@@ -1304,6 +1333,75 @@
 
 
   /* ================= New zombie behaviours ================= */
+  // Leaper: every few seconds it springs ahead along its route (over barricades)
+  G.leapTick = function (a, z) {
+    a.leapT = (a.leapT === undefined ? z.leap.every * 0.6 : a.leapT) - DT;
+    if (a.leapT > 0 || !a.path || a.pi >= a.path.length - 1) return false;
+    a.leapT = z.leap.every;
+    var x0 = a.x, y0 = a.y, W = this.W;
+    a.pi = Math.min(a.path.length - 1, a.pi + z.leap.tiles);
+    var t = a.path[a.pi - 1]; a.x = t % W + 0.5; a.y = ((t / W) | 0) + 0.5;
+    this.emit({ k: 'leap', x0: x0, y0: y0, x: a.x, y: a.y, zid: a.id });
+    return true;
+  };
+  // Bloater: killing it bursts it, splashing infection onto anyone close by
+  G.burstBloater = function (a) {
+    var b = a.zdef.burst, rng = this.rng, self = this, hit = 0, d = this.city.district[this.tileOf(a.x, a.y)];
+    this.near(a.x, a.y, b.radius, function (w) {
+      if (w.kind !== 0 || (w.st !== S && w.st !== V)) return false;
+      var p = b.chance * self.em.transmission * (w.st === V ? 1 - self.vaxEff() : 1);
+      if (rng.next() < p) { w.st = E; w.inc = rng.exp(CFG.incubationMean); w.known = false; w.isolating = false; hit++; self.onInfect(d, w.x, w.y); }
+      return false;
+    });
+    this.stats.burstInf = (this.stats.burstInf || 0) + hit;
+    this.emit({ k: 'burst', x: a.x, y: a.y, r: b.radius, n: hit });
+  };
+
+  // City blocks: when every building in a block is overrun, the block fuses into
+  // a single nuclear-waste abomination that grabs passers-by with its tentacles.
+  G.buildBlocks = function () {
+    var cbs = this.city.buildings, map = {}, list = [], hallKey = null;
+    this.bldBlock = new Int16Array(cbs.length).fill(-1);
+    for (var i = 0; i < cbs.length; i++) {
+      var key = Math.floor((cbs[i].x - 1) / 5) + ',' + Math.floor((cbs[i].y - 1) / 5);
+      if (i === this.hallId) hallKey = key;
+      (map[key] = map[key] || []).push(i);
+    }
+    for (var k in map) {
+      if (k === hallKey || map[k].length < 2) continue;
+      var ids = map[k], cx = 0, cy = 0;
+      for (var j = 0; j < ids.length; j++) { cx += this.blds[ids[j]].cx; cy += this.blds[ids[j]].cy; this.bldBlock[ids[j]] = list.length; }
+      list.push({ id: list.length, blds: ids, cx: cx / ids.length, cy: cy / ids.length, mon: false, monT: 0, grabT: 0 });
+    }
+    this.blocks = list;
+  };
+  G.abominationTick = function () {
+    if (!this.blocks) this.buildBlocks();
+    var rng = this.rng, self = this;
+    for (var i = 0; i < this.blocks.length; i++) {
+      var bk = this.blocks[i];
+      if (!bk.mon) {
+        var all = true;
+        for (var j = 0; j < bk.blds.length && all; j++) if (this.blds[bk.blds[j]].blight < 2) all = false;
+        if (!all) continue;
+        bk.mon = true; bk.monT = this.t; bk.grabT = 3;
+        this.stats.abominations = (this.stats.abominations || 0) + 1;
+        this.panic = Math.min(100, this.panic + 4);
+        this.news('abomination', null, true);
+        this.emit({ k: 'abomination', x: bk.cx, y: bk.cy, id: bk.id });
+        continue;
+      }
+      if (--bk.grabT > 0) continue;
+      bk.grabT = 4;
+      var victim = null;
+      this.near(bk.cx, bk.cy, 2.8, function (w) { if (w.kind === 0 && (w.st === S || w.st === V)) { victim = w; return true; } return false; });
+      if (!victim) continue;
+      var ok = rng.next() < 0.75 * (victim.st === V ? 1 - this.vaxEff() : 1);
+      if (ok) { victim.st = E; victim.inc = rng.exp(CFG.incubationMean); victim.known = false; victim.isolating = false; this.stats.abomInf = (this.stats.abomInf || 0) + 1; this.onInfect(this.city.district[this.tileOf(victim.x, victim.y)], victim.x, victim.y); }
+      this.emit({ k: 'grab', x0: bk.cx, y0: bk.cy, x: victim.x, y: victim.y, ok: ok, id: bk.id });
+    }
+  };
+
   G.screamTick = function (a, z) {
     a.screamT = (a.screamT === undefined ? z.scream.every * 0.5 : a.screamT) - DT;
     if (a.screamT > 0) return;
@@ -1451,7 +1549,7 @@
       detectionRate: detectionRate, detectionPct: Math.round(detectionRate * 100),
       vaxCoverage: st.vaccinated / this.totalPop, vaxPct: Math.round(100 * st.vaccinated / this.totalPop),
       towerCounts: tc, barricades: tc.barricade, spin: this.counters.spin, auth: Math.round(this.counters.auth * 10) / 10, flags: this.flags,
-      hallPct: Math.round(100 * this.hallHp / this.hallMax), tankKills: st.tankKills || 0, laserKills: st.laserKills || 0, laserShots: st.laserShots || 0, nuked: st.nuked || 0, megas: st.megas, megaInf: st.megaInf, overrun: this.blds.filter(function (b) { return b.blight >= 2; }).length, ruined: this.blds.filter(function (b) { return b.blight >= 3; }).length,
+      hallPct: Math.round(100 * this.hallHp / this.hallMax), tankKills: st.tankKills || 0, laserKills: st.laserKills || 0, laserShots: st.laserShots || 0, ultras: st.ultras || 0, ultraInf: st.ultraInf || 0, abominations: st.abominations || 0, burstInf: st.burstInf || 0, nuked: st.nuked || 0, megas: st.megas, megaInf: st.megaInf, overrun: this.blds.filter(function (b) { return b.blight >= 2; }).length, ruined: this.blds.filter(function (b) { return b.blight >= 3; }).length,
       overflowSeconds: Math.round(st.overflowSeconds), worstDistrict: D.DISTRICTS[worst].name, wave: this.wave, totalWaves: this.totalWaves,
       budget: Math.round(this.budget), vaccines: Math.round(this.vaccines), decisions: this.decisions, active: t.active, t: Math.round(this.t)
     };

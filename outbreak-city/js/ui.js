@@ -210,8 +210,8 @@
     var t = g.totals;
     var wb = this.waveBox;
     var title, sub;
-    if (g.phase === 'build') { title = g.wave === 0 ? 'PLANNING' : 'BETWEEN WAVES'; sub = 'Next: wave ' + (g.wave + 1) + ' of ' + g.totalWaves; }
-    else if (g.phase === 'wave') { title = g.overtime ? 'FINAL PUSH' : 'WAVE ' + g.wave + ' / ' + g.totalWaves; sub = C.fmtTime(g.waveDuration + (g.overtime ? D.CONFIG.finalPush : 0) - g.waveTime) + ' left' + (g.weather !== 'clear' ? ' · ' + g.weather : ''); }
+    if (g.phase === 'build') { title = g.wave === 0 ? 'PLANNING' : 'BETWEEN WAVES'; sub = 'Next: wave ' + (g.wave + 1) + (g.endless ? ' (endless)' : ' of ' + g.totalWaves); }
+    else if (g.phase === 'wave') { title = g.overtime ? 'FINAL PUSH' : 'WAVE ' + g.wave + ' / ' + (g.endless ? '\u221E' : g.totalWaves); sub = C.fmtTime(g.waveDuration + (g.overtime ? D.CONFIG.finalPush : 0) - g.waveTime) + ' left' + (g.weather !== 'clear' ? ' · ' + g.weather : ''); }
     else if (g.phase === 'briefing') { title = 'MAYOR’S BRIEFING'; sub = 'After wave ' + g.wave; }
     else { title = 'OUTBREAK OVER'; sub = D.ENDINGS[g.ending] ? D.ENDINGS[g.ending].title : ''; }
     var wtxt = title + '|' + sub;
@@ -392,12 +392,14 @@
     while (this.toastsEl.children.length > 3) this.toastsEl.removeChild(this.toastsEl.firstChild);
     setTimeout(function () { if (t.parentNode) t.parentNode.removeChild(t); }, ms || 4500);
   };
-  U.banner = function (title, sub) {
+  // compact: a smaller alert near the top that leaves the city visible (monster arrivals)
+  U.banner = function (title, sub, compact) {
     var b = this.bannerEl, self = this;
     b.innerHTML = '<div>' + esc(title) + (sub ? '<small>' + esc(sub) + '</small>' : '') + '</div>';
+    b.classList.toggle('compact', !!compact);
     b.classList.remove('oc-hidden');
     clearTimeout(this.bannerT);
-    this.bannerT = setTimeout(function () { b.classList.add('oc-hidden'); }, 2000);
+    this.bannerT = setTimeout(function () { b.classList.add('oc-hidden'); }, compact ? 3000 : 2000);
   };
 
   /* ================= modal screens ================= */
@@ -533,7 +535,7 @@
       body = '<p><b>Goal:</b> get ' + esc(D.CITY_NAME) + ' through every wave with as many residents, as much trust and as much fairness as possible. How you win matters: your ending depends on survival, trust, equity and your choices.</p>' +
         '<p><b>The catch:</b> bitten people look healthy while they incubate (the orange ◆ only appears once a Testing Lab finds them). Shooting visible zombies never finds them.</p>' +
         '<h3>Controls</h3><ul class="oc-small"><li>Drag (or WASD / arrow keys) to move the map. Scroll, pinch or +/− to zoom. C to recenter.</li><li>1–9 and 0 or the build bar to pick an intervention, then click a spot. Shift-click to place several. Esc or right-click cancels.</li><li>Click a tower to upgrade (U), sell (X) or learn about it. Health Worker vans move when you tap a road.</li><li>Laser Cannon (after wave 5): press Z or FIRE LASER, then click where to blast. It has a few charges per wave, refilled when the next wave starts.</li><li>Space pauses (you can still build). F changes speed (1x/2x/3x). L opens the Data Lens. Enter starts the next wave.</li></ul>' +
-        '<h3>Map legend</h3><ul class="oc-small"><li><b style="color:#E69F00">◆ orange diamond</b>: a known Exposed person or building (found by testing).</li><li><b style="color:#CC79A7">? pink circle</b>: an unmasked Carrier (looked like a citizen).</li><li>Zombies reach forward with both arms. Sprinters lean and leave speed lines. Brutes are big and armored. <b style="color:#B7E34A">Super-Spreaders</b> (from wave 5) are giants with a green toxic ring: they infect several people per attack, smash barricades and can’t be captured by hospitals.</li><li>Newer zombies: <b>Spitters</b> (bloated, green throat) infect people from a distance; <b>Screamers</b> (pale, wild hair) shriek to speed up nearby zombies; <b>Crawlers</b> drag themselves along the ground, slip under barricades and are hard to hit.</li><li>Buildings change for good once residents are infected: a red quarantine X, then smashed windows and vines, then a smoking ruin.</li><li><b style="color:#FFB27A">▼ INCOMING</b>: glowing cracks where the next wave will claw up out of the ground. Once open, these hell holes keep producing zombies.</li><li><b style="color:#56B4E9">City Hall</b> (center) is your command bunker. Zombies march on it. If its integrity hits 0, the game ends.</li><li>Building badges show residents (most people are indoors; only those on a trip walk the streets). Orange badges show infections that testing has found. A red badge means zombies are trapped inside: the street can only hold so many at once, so the rest wait in buildings and still count.</li></ul>';
+        '<h3>Map legend</h3><ul class="oc-small"><li><b style="color:#E69F00">◆ orange diamond</b>: a known Exposed person or building (found by testing).</li><li><b style="color:#CC79A7">? pink circle</b>: an unmasked Carrier (looked like a citizen).</li><li>Zombies reach forward with both arms. Sprinters lean and leave speed lines. Brutes are big and armored. <b style="color:#B7E34A">Super-Spreaders</b> (from wave 5) are giants with a green toxic ring: they infect several people per attack, smash barricades and can’t be captured by hospitals.</li><li>Newer zombies: <b>Spitters</b> (bloated, green throat) infect people from a distance; <b>Screamers</b> (pale, wild hair) shriek to speed up nearby zombies; <b>Crawlers</b> drag themselves along the ground, slip under barricades and are hard to hit.</li><li><b>Bloaters</b> (swollen, glowing boils) burst when killed and splash infection onto people nearby. <b>Hazmat</b> zombies (yellow suits) shrug off most bullets. <b>Leapers</b> spring ahead and over barricades.</li><li>INSANE only: the <b style="color:#FF5A3C">Ultra-Spreader</b>, a gigantic spider that bites three people at once. INSANE waves never stop until the city falls.</li><li>When every building on a block is overrun, the whole block fuses into a radioactive abomination that grabs passers-by.</li><li>Buildings change for good once residents are infected: a red quarantine X, then smashed windows and vines, then a smoking ruin.</li><li><b style="color:#FFB27A">▼ INCOMING</b>: glowing cracks where the next wave will claw up out of the ground. Once open, these hell holes keep producing zombies.</li><li><b style="color:#56B4E9">City Hall</b> (center) is your command bunker. Zombies march on it. If its integrity hits 0, the game ends.</li><li>Building badges show residents (most people are indoors; only those on a trip walk the streets). Orange badges show infections that testing has found. A red badge means zombies are trapped inside: the street can only hold so many at once, so the rest wait in buildings and still count.</li></ul>';
     } else if (tab === 'towers') {
       body = D.TOWER_ORDER.map(function (k) {
         var t = D.TOWERS[k];
@@ -736,7 +738,7 @@
         '<div class="oc-res-end"><span class="oc-res-tag">' + esc(end.title.toUpperCase()) + '</span><b>' + esc(end.headline) + '</b></div>' +
         '<div class="oc-stats">' + stat(Math.round(r.survival * 100) + '%', 'residents survived') + stat(r.deaths, 'residents lost') + stat(r.peakR || '-', 'peak R_eff') +
         stat(r.trust, 'final trust') + stat(r.equity, 'equity index') + stat(r.detectionPct + '%', 'infections detected') + stat(r.vaxPct + '%', 'vaccinated') +
-        stat(r.cured, 'cured') + stat(r.strayDeaths, 'stray-fire deaths') + stat(g.decisions.length, 'briefing decisions') + stat(r.wave + ' / ' + r.totalWaves, 'waves played') +
+        stat(r.cured, 'cured') + stat(r.strayDeaths, 'stray-fire deaths') + stat(g.decisions.length, 'briefing decisions') + stat(g.endless ? r.wave : r.wave + ' / ' + r.totalWaves, g.endless ? 'waves survived (endless)' : 'waves played') +
         stat(D.TOWER_ORDER.reduce(function (n, k) { return n + r.towerCounts[k]; }, 0), 'interventions built') + stat(r.hallPct + '%', 'City Hall integrity') + stat(r.overrun, 'buildings overrun') + stat(r.megas, 'super-spreaders faced') + '</div>' +
         '<div class="oc-res-code"><span class="oc-small muted">Completion code</span><div class="oc-code">' + esc(code) + '</div></div>' +
         '<div class="oc-res-howto">📸 <b>Take a screenshot of this whole page</b> and submit it to your teacher' + (self.webhook ? ' (your results were also sent automatically)' : '') + '.<br><span class="oc-small muted">Chromebook: Ctrl + Show windows (or Ctrl + Shift + Show windows for part of the screen). Windows: Win + Shift + S. Mac: Cmd + Shift + 4. iPad: top button + volume up.</span></div>' +
