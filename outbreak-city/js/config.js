@@ -126,7 +126,7 @@
   D.DIFFICULTY = {
     easy:   { hall: 1.35, label: 'Easy',   budget: 1.3,  trust: 68, transmission: 0.85, spawn: 0.75, grant: 1.2,  vaccines: 1.3, pop: 0.9 },
     normal: { hall: 1.0, label: 'Normal', budget: 1.0,  trust: 60, transmission: 1.0,  spawn: 1.0,  grant: 1.0,  vaccines: 1.0, pop: 1.0 },
-    hard:   { hall: 0.8, label: 'Hard',   budget: 0.9,  trust: 52, transmission: 0.95, spawn: 1.15,  grant: 0.9,  vaccines: 0.85, pop: 1.1 },
+    hard:   { hall: 0.85, label: 'Hard',   budget: 0.95, trust: 54, transmission: 0.93, spawn: 1.1,  grant: 0.9,  vaccines: 0.85, pop: 1.1 },
     // INSANE: open from the start. Unlimited budget, a crazy number of zombies.
     insane: { hall: 3,   label: 'INSANE', budget: 1,    trust: 60, transmission: 1.1,  spawn: 4,    grant: 1,    vaccines: 6,   pop: 1.0, unlimited: true, zombieCap: 400 }
   };

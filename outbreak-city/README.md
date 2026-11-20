@@ -297,6 +297,6 @@ The bots never fire the Laser Cannon (it needs a player to aim it), so a student
 
 - **Tuning target:** a typical student loses about half the time, while strong public-health play rarely loses.
 - **Easy:** the typical student never loses, and balanced play stops the infection about 90% of the time.
-- **Hard:** the typical student loses about 90% and balanced players about 25%.
+- **Hard:** the typical student loses about 70% and balanced players about 15%.
 
 **Classroom time:** a full game is about 15 minutes of simulated time at 1× speed. With planning between waves and reading briefings (about 25 s per wave), plan on **18–20 minutes**, plus the tutorial (about 5 minutes) the first time. Doing nothing ends in about 7 minutes. 2× or 3× speed shortens waves. Simulating 280 games takes the computer about 3.5 minutes.
