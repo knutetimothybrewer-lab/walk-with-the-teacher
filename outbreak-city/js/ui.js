@@ -392,12 +392,14 @@
     while (this.toastsEl.children.length > 3) this.toastsEl.removeChild(this.toastsEl.firstChild);
     setTimeout(function () { if (t.parentNode) t.parentNode.removeChild(t); }, ms || 4500);
   };
-  U.banner = function (title, sub) {
+  // compact: a smaller alert near the top that leaves the city visible (monster arrivals)
+  U.banner = function (title, sub, compact) {
     var b = this.bannerEl, self = this;
     b.innerHTML = '<div>' + esc(title) + (sub ? '<small>' + esc(sub) + '</small>' : '') + '</div>';
+    b.classList.toggle('compact', !!compact);
     b.classList.remove('oc-hidden');
     clearTimeout(this.bannerT);
-    this.bannerT = setTimeout(function () { b.classList.add('oc-hidden'); }, 2000);
+    this.bannerT = setTimeout(function () { b.classList.add('oc-hidden'); }, compact ? 3000 : 2000);
   };
 
   /* ================= modal screens ================= */

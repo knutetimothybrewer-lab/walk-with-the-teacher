@@ -248,11 +248,11 @@
         case 'laser': s.play('laser'); break;
         case 'scream': s.play('scream'); break;
         case 'nuke': this.banner('\u2622 NUCLEAR OPTION', 'Mercy Falls is being destroyed'); break;
-        case 'ultraArrive': this.banner('ULTRA-SPREADER!', 'A gigantic mutant spider. It bites three people at once and can wreck City Hall. Throw everything at it.'); s.play('alert'); s.play('boomBig'); this.pushNews(this.fillNews('ultra')); break;
-        case 'abomination': this.banner('THE BLOCK HAS MUTATED', 'Every building on the block fused into one radioactive monster. Its tentacles grab anyone who walks past.'); s.play('boomBig'); s.play('scream'); this.pushNews(this.fillNews('abomination')); break;
+        case 'ultraArrive': this.banner('ULTRA-SPREADER!', 'A gigantic mutant spider. It bites three people at once and can wreck City Hall.', true); s.play('alert'); s.play('boomBig'); this.pushNews(this.fillNews('ultra')); break;
+        case 'abomination': this.banner('THE BLOCK HAS MUTATED', 'It grabs anyone who walks past.', true); s.play('boomBig'); s.play('scream'); this.pushNews(this.fillNews('abomination')); break;
         case 'burst': s.play('kill'); break;
         case 'grab': s.play('groan'); break;
-        case 'megaArrive': this.banner('SUPER-SPREADER!', 'A giant zombie that infects many people at once. Focus fire, barricades and high vaccination slow it.'); s.play('alert'); s.play('wave'); this.pushNews(this.fillNews('mega')); break;
+        case 'megaArrive': this.banner('SUPER-SPREADER!', 'Infects many people at once. Focus fire, barricades and vaccines slow it.', true); s.play('alert'); s.play('wave'); this.pushNews(this.fillNews('mega')); break;
         case 'ruin': s.play('barricade'); break;
         case 'chaos':
           var dn = D.DISTRICTS[e.d].name;

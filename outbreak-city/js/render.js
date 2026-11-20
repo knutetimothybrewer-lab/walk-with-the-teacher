@@ -2303,8 +2303,9 @@
         var ultra = a.zdef.ultra, bw = (ultra ? 40 : 24) * zs, bt = y - (ultra ? 118 : 82) * zs, bl = ultra ? 'ULTRA-SPREADER' : 'SUPER-SPREADER';
         ctx.fillStyle = 'rgba(0,0,0,0.65)'; ctx.fillRect(x - bw - 1, bt - 1, bw * 2 + 2, 6);
         ctx.fillStyle = '#B7E34A'; ctx.fillRect(x - bw, bt, bw * 2 * Math.max(0, a.hp / a.maxhp), 4);
-        ctx.font = '700 ' + (8.5 * zs).toFixed(1) + 'px Oswald, system-ui, sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'bottom';
-        ctx.lineWidth = 2.5; ctx.strokeStyle = 'rgba(0,0,0,0.8)'; ctx.strokeText(bl, x, bt - 2); ctx.fillStyle = ultra ? '#FF5A3C' : '#D9F27A'; ctx.fillText(bl, x, bt - 2);
+        // label stays a readable fixed size on screen instead of growing with zoom
+        ctx.font = '700 ' + (11 / this.cam.zoom).toFixed(2) + 'px Oswald, system-ui, sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'bottom';
+        ctx.lineWidth = 2.5 / this.cam.zoom; ctx.strokeStyle = 'rgba(0,0,0,0.8)'; ctx.strokeText(bl, x, bt - 2); ctx.fillStyle = ultra ? '#FF5A3C' : '#D9F27A'; ctx.fillText(bl, x, bt - 2);
       } else if (g.t - a.hitT < 1.5 || a.type === 'brute') {
         var hw = (a.type === 'brute' ? 12 : 8) * zs, top = y - (a.type === 'brute' ? 36 : 26) * zs;
         ctx.fillStyle = 'rgba(0,0,0,0.55)'; ctx.fillRect(x - hw, top, hw * 2, 2.5);
