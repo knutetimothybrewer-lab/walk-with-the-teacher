@@ -37,6 +37,8 @@ There's also a 5-question pre/post check and a printable Debrief Guide.
 
 **Choosing a town:** students pick ⚓ Port Juniper (harbor), ⛏️ Copper Ridge (mining), 🌃 Neon Bay (big city) or 🌾 Prairie Hollow (farm). Every town has the same rules and prices, so groups playing different towns can still compare results. Letting each group pick its own town builds ownership. You can also add a town named after your community (see `README.md`).
 
+**🎓 Tutorial:** new players play a guided 5-minute practice game with Dex before their first real game (one Year, against one computer player). Dex highlights each button and waits until the student does it, so nobody can click past the lessons. The device remembers who has finished, so students only do it once per device. A group can do it together, and their game starts as soon as it ends. Budget 5 extra minutes the first day, or have students do the tutorial (🎓 on the start screen) the day before. To skip it for a class that already knows the game, uncheck "New players must do the tutorial first" on the setup screen, or type SKIP when asked.
+
 **Full screen:** press ⛶ (or the F key) for a bigger board on Chromebooks and projectors.
 
 **Choosing a length** (times are estimated play time, not counting about 2–3 minutes of career picks):

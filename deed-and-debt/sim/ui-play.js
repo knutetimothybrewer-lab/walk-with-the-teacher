@@ -119,7 +119,7 @@ async function launch(w, h, anim) {
   page.on('pageerror', e => problems.push('pageerror: ' + e.message));
   page.on('console', m => { if (m.type() === 'error') problems.push('console: ' + m.text()); });
   page.on('request', r => { const u = r.url(); if (!/^(file|data|blob|about):/.test(u)) problems.push('network: ' + u); });
-  await page.addInitScript((a) => { try { localStorage.setItem('deedndebt:prefs', JSON.stringify({ anim: a, muted: true })); } catch (e) { } }, anim);
+  await page.addInitScript((a) => { try { localStorage.setItem('deedndebt:prefs', JSON.stringify({ anim: a, muted: true, requireTutorial: false })); } catch (e) { } }, anim);
   await page.goto(FILE);
   return { browser, page, problems };
 }

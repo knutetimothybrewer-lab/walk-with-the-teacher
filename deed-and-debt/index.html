@@ -250,6 +250,14 @@ textarea{width:100%;min-height:70px}
 .qc-choices button.right{background:#7be495}.qc-choices button.wrong{background:#ffb3b8}
 .coach{position:fixed;z-index:90;background:#fff;border:4px solid var(--accent2);border-radius:16px;padding:12px 16px;max-width:360px;box-shadow:var(--shadow);font-size:17px}
 .coachHole{position:fixed;z-index:89;border:4px dashed var(--accent2);border-radius:14px;pointer-events:none;box-shadow:0 0 0 9999px rgba(0,0,0,.35)}
+#tutor{position:fixed;left:12px;bottom:12px;width:330px;z-index:96;background:#fffdf3;border:4px solid var(--accent2);border-radius:16px;padding:10px 12px;box-shadow:var(--shadow);font-size:16px;line-height:1.35}
+#tutor .tutProg{font-size:12px;font-weight:800;color:var(--accent2);text-transform:uppercase;letter-spacing:.5px}
+#tutor .tutWait{font-size:13px;color:var(--muted);font-style:italic}
+#tutRing{position:fixed;z-index:95;border:4px dashed var(--accent2);border-radius:14px;pointer-events:none;animation:tutPulse 1.2s ease-in-out infinite}
+@keyframes tutPulse{50%{box-shadow:0 0 0 6px rgba(255,122,26,.35)}}
+body.tut-modal #modalRoot{padding-bottom:150px}
+body.tut-modal .modal{max-height:calc(100vh - 170px)}
+body.tut-modal #tutor{left:50%;transform:translateX(-50%);width:min(780px,96vw);bottom:8px;max-height:136px;overflow:auto}
 .reduced *{animation-duration:0s!important;transition-duration:0s!important}
 
 @media (max-width:1200px){ #side{min-width:330px} .pdash .stats{grid-template-columns:repeat(3,1fr)} }
@@ -1151,7 +1159,7 @@ const Engine = (function () {
      ===================================================================== */
   function newGame(cfg) {
     const settings = Object.assign({}, DEFAULT_SETTINGS, cfg.settings || {});
-    settings.years = clamp(Math.round(+settings.years || 10), T.minYears || 3, T.maxYears || 25);
+    settings.years = clamp(Math.round(+settings.years || 10), settings.isTutorial ? 1 : (T.minYears || 3), T.maxYears || 25);
     const seed = cfg.seed != null ? cfg.seed : Math.floor(Math.random() * 1e9);
     const s = {
       v: 1, seed, rng: hashSeed(String(seed)), groupName: cfg.groupName || 'Group', createdAt: cfg.now || 0, savedAt: 0,
@@ -1188,7 +1196,7 @@ const Engine = (function () {
     s.decks.civic = { order: shuffle(s, C.CIVIC.map((_, i) => i)), i: 0 };
     s.decks.decision = { order: shuffle(s, C.DECISIONS.map((_, i) => i)), i: 0 };
     s.decks.tenant = { order: shuffle(s, C.TENANT.map((_, i) => i)), i: 0 };
-    const by = ballotYearsFor(settings.years);
+    const by = Array.isArray(settings.ballotYears) ? settings.ballotYears.slice() : ballotYearsFor(settings.years);
     s.ballots.years = settings.ballots ? by.slice() : [];
     s.ballots.order = shuffle(s, C.BALLOTS.map(b => b.id));
     s.players.forEach(p => { p.yr = blankYr(); });
@@ -1394,7 +1402,7 @@ const Engine = (function () {
         startBallot(s);
       } else if (st === 'event') {
         if (s.flow.endRequested) { finish(s); break; }
-        drawEvent(s); s.flow.stage = 'turns'; buildQueue(s);
+        const fe = s.flow.forceEvent; s.flow.forceEvent = null; drawEvent(s, fe || undefined); s.flow.stage = 'turns'; buildQueue(s);
       } else if (st === 'turns') {
         turnTick(s);
       } else if (st === 'yearEnd') {
@@ -1421,7 +1429,7 @@ const Engine = (function () {
     emit({ t: 'results' });
   }
 
-  function turnsPerYear(s) { return T.turnsPerYear[s.players.length] || 2; }
+  function turnsPerYear(s) { return s.settings.turnsPerYear || T.turnsPerYear[s.players.length] || 2; }
   function buildQueue(s) {
     const n = s.players.length, k = turnsPerYear(s), ids = s.players.map(p => p.id), q = [];
     if (k >= 1 && Number.isInteger(k)) { for (let r = 0; r < k; r++) q.push(...ids); }
@@ -2446,6 +2454,7 @@ const Engine = (function () {
 
   function doRoll(s, p, forced) {
     const t = s.flow.turn;
+    if (!forced && s.flow.diceQueue && s.flow.diceQueue.length) forced = s.flow.diceQueue.shift();
     const d1 = forced ? forced[0] : rint(s, 1, 6), d2 = forced ? forced[1] : rint(s, 1, 6);
     t.rolls++; s.pending = null;
     emit({ t: 'dice', d1, d2, pid: p.id });
@@ -2992,7 +3001,7 @@ if (typeof module !== 'undefined') module.exports = { Engine };
   // Saves right away whenever the turn, stage or open prompt changes (and when the tab is hidden or closed); repeated changes inside one prompt are saved at most every 5 seconds (fewer, smaller writes are kinder to Chromebook storage).
   let saveTimer = null, lastSave = 0, lastSavedTurn = -1;
   function save(force) {
-    if (!G) return;
+    if (!G || G.settings.isTutorial) return;
     const turnMark = G.flow.turnCount * 100 + G.flow.year + '|' + G.flow.stage + '|' + pendingSig(G.pending);
     if (!force && turnMark === lastSavedTurn && Date.now() - lastSave < 5000) { if (!saveTimer) saveTimer = setTimeout(() => { saveTimer = null; save(true); }, 5000); return; }
     if (saveTimer) { clearTimeout(saveTimer); saveTimer = null; }
@@ -3333,6 +3342,7 @@ if (typeof module !== 'undefined') module.exports = { Engine };
     draw();
     const go = async () => {
       await passScreen(p.name, 'Time to choose your career and home.');
+      if (!G || !G.pending || G.pending.kind !== 'career' || G.pending.player !== pd.player) return; // game left while the pass screen was up
       setPrompt(openModal({ title: esc(p.token + ' ' + p.name) + ', choose your path', body, wide: true, label: 'Choose career',
         buttons: [{ label: 'Why?', keepOpen: true, onClick: () => { $('#cWhy', body).classList.toggle('hidden'); } },
           { label: 'Confirm', cls: 'primary', keepOpen: true, onClick: (close) => { if (!st.path) { toast('Pick a career first.'); return false; } close(true); dispatch({ type: 'career', path: st.path, home: st.home, ins: { health: st.health, renters: st.renters } }); } }] }));
@@ -3505,6 +3515,7 @@ if (typeof module !== 'undefined') module.exports = { Engine };
     const v = pnow.voters.find(x => pnow.votes[x] == null); const p = G.players[v];
     if (p.cpu) { handlePendingSoon(); return; }
     await passScreen(p.name, 'Your vote is private. Everyone else, look away!');
+    if (!G || !G.pending || G.pending.kind !== 'ballot') return;
     const body = document.createElement('div'); body.innerHTML = ballotBody(b);
     setPrompt(openModal({ title: '🗳️ ' + esc(p.name) + ', how do you vote?', body, wide: true, label: 'Vote', noSpeak: false,
       buttons: [{ label: '✅ Vote YES', cls: 'go', onClick: () => { Snd.play('vote'); setTimeout(() => dispatch({ type: 'vote', player: p.id, yes: true }), 10); } },
@@ -3943,6 +3954,8 @@ if (typeof module !== 'undefined') module.exports = { Engine };
   }
   function exitToMenu() {
     save(true);
+    if (UI.tutTimer) { clearInterval(UI.tutTimer); UI.tutTimer = null; } UI.tut = null; ['#tutor', '#tutRing'].forEach(q => { const el = $(q); if (el) el.remove(); });
+    document.body.classList.remove('tut-modal');
     stopTurnTimer(); if (UI.cpuTimer) { clearTimeout(UI.cpuTimer); UI.cpuTimer = null; }
     UI.modals.slice().forEach(m => m.close(null)); G = null; UI.fxq = []; UI.promptSig = null;
     $('#game').classList.add('hidden'); $('#ticker').classList.add('hidden'); showStart();
@@ -4027,10 +4040,12 @@ if (typeof module !== 'undefined') module.exports = { Engine };
     applyThemeUI('juniper');
     const saves = listSaves();
     const el = screen('<div class="hero"><svg width="160" height="160" class="dex-bob" role="img" aria-label="Dex the Beaver"><use href="#dexSym"/></svg><div><h1>DEED &amp; DEBT</h1><p>Buy property, build a career, vote on your town\'s future and learn how money and government really work in <b>' + esc(C.meta.town) + '</b>.</p></div></div>' +
-      '<div class="row" style="justify-content:center"><button type="button" class="primary" style="font-size:24px;padding:10px 34px" id="stNew">▶ New Group Game</button><button type="button" class="go" style="font-size:24px;padding:10px 34px" id="stSolo">🤖 Solo vs. Computer</button><button type="button" id="stFs" data-fs="text">' + fsLabel() + '</button><button type="button" id="stHow">❔ How to Play</button><button type="button" id="stDeb">📋 Teacher Debrief Guide</button></div>' +
+      '<div class="row" style="justify-content:center"><button type="button" class="primary" style="font-size:24px;padding:10px 34px" id="stNew">▶ New Group Game</button><button type="button" class="go" style="font-size:24px;padding:10px 34px" id="stSolo">🤖 Solo vs. Computer</button><button type="button" id="stTut">🎓 Tutorial</button><button type="button" id="stFs" data-fs="text">' + fsLabel() + '</button><button type="button" id="stHow">❔ How to Play</button><button type="button" id="stDeb">📋 Teacher Debrief Guide</button></div>' +
       '<h2 style="margin-top:24px">Saved games</h2><div class="savelist">' + (saves.length ? saves.map(x => '<div class="saveitem"><b style="font-size:18px">' + esc(x.s.groupName) + '</b><span class="grow">Year ' + Math.max(1, x.s.flow.year) + ' of ' + x.s.settings.years + ' · ' + ((C.THEMES[x.s.settings.theme] || C.THEMES.juniper).emoji + ' ' + esc((C.THEMES[x.s.settings.theme] || C.THEMES.juniper).name)) + ' · ' + x.s.players.map(p => esc(p.name)).join(', ') + (x.s.flow.stage === 'results' ? ' · <b>finished</b>' : '') + ' · saved ' + new Date(x.s.savedAt || 0).toLocaleString() + '</span><button type="button" class="primary" data-res="' + esc(x.key) + '">Resume</button><button type="button" class="danger" data-del="' + esc(x.key) + '">Delete</button></div>').join('') : '<p>No saved games yet. Games save automatically on this device after every turn.</p>') + '</div>' +
       '<p class="realworld" style="margin-top:20px">Privacy: use first names or nicknames only. Everything stays on this device. No accounts, no network, no tracking.</p>');
-    $('#stNew', el).onclick = () => showSetup('group'); $('#stSolo', el).onclick = () => showSetup('solo'); $('#stFs', el).onclick = toggleFullscreen; $('#stHow', el).onclick = openHowTo; $('#stDeb', el).onclick = () => openDebrief(true);
+    $('#stNew', el).onclick = () => showSetup('group'); $('#stSolo', el).onclick = () => showSetup('solo'); $('#stFs', el).onclick = toggleFullscreen;
+    $('#stTut', el).onclick = () => { const body = document.createElement('div'); body.innerHTML = '<p>A 5-minute practice game with Dex. It teaches buying, rent, the Bank, cards, ballot votes and the Annual Report.</p><label>Your first name or nickname <input type="text" id="tutName" maxlength="16" autocomplete="off"></label>';
+      openModal({ title: '🎓 Tutorial', body, closable: true, focus: '#tutName', label: 'Tutorial', buttons: [{ label: 'Cancel' }, { label: 'Start ▶', cls: 'primary', keepOpen: true, onClick: (close) => { const n = $('#tutName', body).value.trim(); if (!n) { toast('Type your first name or a nickname.'); return false; } close(null); setTimeout(() => startTutorial({ learner: n, names: [n] }), 30); } }] }); }; $('#stHow', el).onclick = openHowTo; $('#stDeb', el).onclick = () => openDebrief(true);
     $$('[data-res]', el).forEach(b => b.onclick = () => { const x = listSaves().find(v => v.key === b.dataset.res); if (x) startGame(x.s, true); else toast('That save could not be loaded.'); });
     $$('[data-del]', el).forEach(b => b.onclick = () => openModal({ title: 'Delete this saved game?', body: '<p>This can\'t be undone.</p>', closable: true, buttons: [{ label: 'Cancel' }, { label: 'Delete', cls: 'danger', onClick: () => { deleteSave(b.dataset.del); showStart(); } }] }));
   }
@@ -4080,6 +4095,7 @@ if (typeof module !== 'undefined') module.exports = { Engine };
         '<label class="chk"><input type="checkbox" id="sgTT" ' + (st.turnTimer ? 'checked' : '') + '> Soft turn timer (' + T.turnTimerSec + 's "Hurry up!")</label>' +
         '<label class="chk"><input type="checkbox" id="sgQC" ' + (st.quickChecks ? 'checked' : '') + '> Quick Checks</label>' +
         '<label class="chk"><input type="checkbox" id="sgBal" ' + (st.ballots ? 'checked' : '') + '> Ballot Measures</label>' +
+        '<label class="chk"><input type="checkbox" id="sgTutReq" ' + (tutorialRequired() ? 'checked' : '') + '> New players must do the tutorial first (on this device)</label>' +
         '<label class="chk"><input type="checkbox" id="sgPP" ' + (st.prePost ? 'checked' : '') + '> Pre/Post check</label></div></div></fieldset>' + (solo ? '</details>' : '') +
         '<div class="row"><button type="button" id="sgBack">◀ Back</button><button type="button" id="sgDeb">📋 Debrief Guide</button><span class="grow"></span><button type="button" class="primary" style="font-size:22px" id="sgGo">Start Game ▶</button></div>');
       $$('[data-theme]', el).forEach(b => b.onclick = () => { st.theme = b.dataset.theme; draw(); const nb = $('[data-theme="' + st.theme + '"]'); if (nb) nb.focus(); });
@@ -4097,7 +4113,8 @@ if (typeof module !== 'undefined') module.exports = { Engine };
       $('#sgSeed', el).oninput = (e) => { st.seed = e.target.value; };
       $('#sgYT', el).onchange = (e) => { st.yearTimer = e.target.checked; }; $('#sgYTM', el).onchange = (e) => { st.yearTimerMin = Math.max(1, +e.target.value || 4); };
       $('#sgTT', el).onchange = (e) => { st.turnTimer = e.target.checked; }; $('#sgQC', el).onchange = (e) => { st.quickChecks = e.target.checked; };
-      $('#sgBal', el).onchange = (e) => { st.ballots = e.target.checked; }; $('#sgPP', el).onchange = (e) => { st.prePost = e.target.checked; };
+      $('#sgBal', el).onchange = (e) => { st.ballots = e.target.checked; };
+      $('#sgTutReq', el).onchange = (e) => { PREFS.requireTutorial = e.target.checked; savePrefs(); }; $('#sgPP', el).onchange = (e) => { st.prePost = e.target.checked; };
       $('#sgBack', el).onclick = showStart; $('#sgDeb', el).onclick = () => openDebrief(true);
       $('#sgGo', el).onclick = () => {
         if (solo && !st.players[0].name.trim()) { toast('Type your first name or a nickname.'); $('#soloName').focus(); return; }
@@ -4106,14 +4123,15 @@ if (typeof module !== 'undefined') module.exports = { Engine };
         const names = players.map((p, i) => (p.name.trim() || (p.cpu ? 'CPU ' + (i + 1) : 'Player ' + (i + 1))).slice(0, 16));
         if (new Set(names.map(n => n.toLowerCase())).size !== names.length) { toast('Each player needs a different name.'); return; }
 
+        const humanList = players.map((p, i) => ({ name: names[i], token: p.token, cpu: p.cpu })).filter(p => !p.cpu);
         const doStart = () => {
           const cfg = { groupName: group, seed: st.seed.trim() || Math.floor(Math.random() * 1e9), now: Date.now(), players: players.map((p, i) => ({ name: names[i], token: p.token, cpu: p.cpu })),
-            settings: { theme: st.theme, years: st.years, yearTimer: st.yearTimer, yearTimerMin: st.yearTimerMin, turnTimer: st.turnTimer, turnTimerSec: T.turnTimerSec, quickChecks: st.quickChecks, ballots: st.ballots, prePost: st.prePost, difficulty: st.difficulty, anim: PREFS.anim || (systemReduced ? 'reduced' : 'normal'), muted: PREFS.muted } };
+            settings: { theme: st.theme, years: st.years, yearTimer: st.yearTimer, yearTimerMin: st.yearTimerMin, turnTimer: st.turnTimer, turnTimerSec: T.turnTimerSec, quickChecks: st.quickChecks, ballots: st.ballots, tutorial: needsTutorial(humanList.map(h => h.name)).length > 0, prePost: st.prePost, difficulty: st.difficulty, anim: PREFS.anim || (systemReduced ? 'reduced' : 'normal'), muted: PREFS.muted } };
           if (st.prePost && players.some(p => !p.cpu)) runCheck('pre', cfg.players.map((p, i) => ({ i, name: p.name, cpu: p.cpu })), (answers) => { cfg.prechecks = answers; startGame(E.newGame(cfg), false); });
           else startGame(E.newGame(cfg), false);
         };
-        if (listSaves().some(x => x.s.groupName === group)) openModal({ title: 'Replace saved game?', body: '<p>A saved game named "' + esc(group) + '" already exists. Starting will replace it.' + (solo ? ' (To keep it, go back and press Resume instead.)' : '') + '</p>', closable: true, buttons: [{ label: 'Cancel' }, { label: 'Replace it', cls: 'danger', onClick: doStart }] });
-        else doStart();
+        if (listSaves().some(x => x.s.groupName === group)) openModal({ title: 'Replace saved game?', body: '<p>A saved game named "' + esc(group) + '" already exists. Starting will replace it.' + (solo ? ' (To keep it, go back and press Resume instead.)' : '') + '</p>', closable: true, buttons: [{ label: 'Cancel' }, { label: 'Replace it', cls: 'danger', onClick: () => setTimeout(() => tutorialGate(humanList, st.theme, doStart), 30) }] });
+        else tutorialGate(humanList, st.theme, doStart);
       };
     };
     draw();
@@ -4248,6 +4266,149 @@ if (typeof module !== 'undefined') module.exports = { Engine };
     s.innerHTML = '<div class="screen"><div class="inner"><h1>' + esc(title) + '</h1>' + html + '</div></div>';
     $('#game').classList.add('hidden'); $('#modalRoot').classList.add('hidden');
     setTimeout(() => { window.print(); s.innerHTML = prev; if (!gHidden) $('#game').classList.remove('hidden'); $('#modalRoot').classList.remove('hidden'); if (G && G.flow.stage === 'results') showResults(); else if (!G) showStart(); }, 50);
+  }
+
+
+  /* =====================================================================
+     TUTORIAL: a guided 1-Year practice game against one computer player.
+     New players must finish it before their first game (teacher can turn this off).
+     ===================================================================== */
+  const TUT_KEY = 'deedndebt:tutorialDone';
+  const normName = (n) => String(n || '').trim().toLowerCase();
+  function tutDoneList() {
+    const set = new Set();
+    try { JSON.parse(localStorage.getItem(TUT_KEY) || '[]').forEach(n => set.add(n)); } catch (e) { }
+    idbCache.forEach(x => { if (x.key === TUT_KEY) { try { JSON.parse(x.json).forEach(n => set.add(n)); } catch (e) { } } });
+    return set;
+  }
+  function markTutorialDone(names) {
+    const set = tutDoneList(); names.forEach(n => set.add(normName(n)));
+    const json = JSON.stringify(Array.from(set));
+    try { localStorage.setItem(TUT_KEY, json); } catch (e) { }
+    IDB.put(TUT_KEY, json); idbCache = idbCache.filter(x => x.key !== TUT_KEY).concat([{ key: TUT_KEY, json }]);
+  }
+  function needsTutorial(names) { const done = tutDoneList(); return names.filter(n => !done.has(normName(n))); }
+  function tutorialRequired() { return PREFS.requireTutorial !== false; }
+
+  // Steps: text, optional highlight (sel), and either a Next button or a condition (wait) that moves on by itself.
+  function tutorialSteps(learner) {
+    const me = () => G && G.players[0];
+    const modalTitle = (re) => UI.modals.some(m => re.test(m.o.title || ''));
+    const idle = () => G && !UI.pumping && !UI.fxq.length && !UI.modals.length;
+    // progress markers, so a fast clicker can never get stuck on a step: turn 1 = you, 2 = Rosa, 3 = you, 4 = Rosa
+    const qi = () => (G.flow.stage === 'turns' ? G.flow.qi : G.flow.stage === 'results' || G.flow.stage === 'yearEnd' || G.flow.stage === 'report' || G.flow.stage === 'tenant' ? 9 : -1);
+    const past = (n) => qi() >= n || G.flow.stage === 'results';
+    return [
+      { text: 'Hi ' + learner + ', I\'m Dex! 🦫 This 5-minute practice game teaches you how to play. Your goal is the highest <b>net worth</b> (what you own minus what you owe) when the game ends. I\'ll tell you what to do in this box.', next: 'Let\'s go!' },
+      { text: 'First, pick your path after high school. Tap each career to compare pay and student loans, press <b>Why?</b> to see the tradeoff, then press <b>Confirm</b>.', sel: '.careerCard', wait: () => me() && me().career },
+      { text: 'Every few Years the town votes on a <b>Ballot Measure</b>. Read what YES and NO mean, press <b>Start private voting</b>, then vote. There is no right answer!', sel: '#modalRoot .modal:not(.hidden)', wait: () => G.ballots.results.length > 0 || past(0) },
+      { text: 'The votes are counted and the result changes the town right away. Taxes and zoning come from votes like this one. Press <b>Continue</b>.', sel: '#modalRoot .modal:not(.hidden) .btns', wait: () => modalTitle(/Economic Boom/) || past(0) },
+      { text: 'Each Year starts with a <b>Life &amp; Economy Event</b>. A boom makes land worth more and raises pay. Read the 💡 Econ Insight, then press <b>Continue</b>.', sel: '#modalRoot .modal:not(.hidden) .btns', wait: () => (idle() && G.pending && G.pending.kind === 'roll') || past(1) || (past(0) && G.flow.turn && G.flow.turn.rolls > 0) },
+      { text: 'This is the <b>Economy Ticker</b>: interest rate, inflation, the business cycle and the property tax rate (millage). Watch it change during the game.', sel: '#ticker', next: 'Next' },
+      { text: 'These are the <b>player dashboards</b>: cash (and what it\'s really worth after inflation), net worth, credit score, debt and yearly cash flow. Red cash flow means more money going out than coming in.', sel: '#dash', next: 'Next' },
+      { text: 'Your turn! Press <b>🎲 Roll</b> (or the R key).', sel: '#btnRoll', wait: () => (G.pending && ['buy', 'auction'].includes(G.pending.kind)) || G.spaces[3].owner != null || past(1) },
+      { text: 'You landed on a property for sale! Press <b>Why?</b> to see the tradeoff, then <b>Buy</b> it. Owning property earns rent when other players land on it.', sel: '#modalRoot .modal:not(.hidden)', wait: () => (G.spaces[3].owner != null && idle()) || past(1) },
+      { text: 'Smart players save, too. Open <b>🏦 Bank &amp; Market</b> (or press B).', sel: '#sbBank', wait: () => modalTitle(/Bank & Market/) || past(1) },
+      { text: 'Put <b>$50</b> in Savings: tap <b>$50</b>, then press <b>Deposit</b>. See how compound interest would grow it by the end of the game?', sel: '#modalRoot [data-do="deposit"]', wait: () => me().savings > 0 || past(1) },
+      { text: 'Nice! Close the Bank with <b>✖</b> or <b>Close</b>.', sel: '#modalRoot .tools [data-close]', wait: () => !UI.modals.some(m => /Bank & Market/.test(m.o.title || '')) || past(1) },
+      { text: 'Press <b>End Turn</b> (or E). Then watch Rival Rosa take her turn.', sel: '#btnEnd', wait: () => past(1) },
+      { text: 'Rival Rosa is rolling… If she lands on your property, she has to pay you rent!', wait: () => (idle() && G.pending && G.pending.kind === 'roll' && G.pending.player === 0 && past(2)) || past(3) || (past(2) && G.flow.turn && G.flow.turn.rolls > 0) },
+      { text: () => (me().stats.rentCollected > 0 ? 'Rival Rosa landed on your property and paid you <b>' + fmt(me().stats.rentCollected) + ' rent</b>. That\'s income from your investment! ' : '') + 'Your turn again: press <b>🎲 Roll</b>.', sel: '#btnRoll', wait: () => (G.pending && G.pending.kind === 'choice' && !UI.pumping) || past(3) || (past(2) && G.flow.turn && G.flow.turn.step === 'post' && !G.pending) },
+      { text: 'An <b>Opportunity</b> card with a choice! Press <b>Why?</b> on each option before you decide. (Hint: a "guaranteed" high return is a warning sign.)', sel: '#modalRoot .modal:not(.hidden)', wait: () => (G.pending && G.pending.kind !== 'choice') || past(3) },
+      { text: 'Every card ends with an <b>Econ Insight</b> and a vocabulary word. Tap any <u>underlined word</u> to see what it means, and 🔊 reads a card aloud. Press <b>Continue</b>.', sel: '#modalRoot .modal:not(.hidden) .btns', wait: () => (idle() && G.pending && G.pending.kind === 'endTurn') || past(3) },
+      { text: 'Press <b>End Turn</b>. After Rosa\'s turn, the Year ends.', sel: '#btnEnd', wait: () => modalTitle(/Annual Report/) || G.flow.stage === 'results' },
+      { text: 'At the end of every Year, the <b>Annual Report</b> shows income, expenses, cash flow, debt, credit score and net worth for everyone. At Year end you also pay living costs, rent or home costs, insurance and taxes. Press <b>Next Year ▶</b>.', sel: '#modalRoot .modal:not(.hidden) .btns', wait: () => G.flow.stage === 'results' }
+    ];
+  }
+  function startTutorial(opts) {
+    const learner = (opts.learner || 'Learner').slice(0, 16);
+    const cfg = { groupName: 'Tutorial', seed: 2024, now: Date.now(),
+      players: [{ name: learner, token: opts.token || TOKENS[0], cpu: false }, { name: 'Rival Rosa', token: TOKENS.find(t => t !== (opts.token || TOKENS[0])), cpu: true, strategy: 'balanced' }],
+      settings: { years: 1, isTutorial: true, turnsPerYear: 2, ballotYears: [1], quickChecks: false, prePost: false, yearTimer: false, turnTimer: false, tutorial: false, ballots: true,
+        theme: opts.theme || 'juniper', difficulty: 'standard', anim: PREFS.anim || (systemReduced ? 'reduced' : 'normal'), muted: PREFS.muted } };
+    const s = E.newGame(cfg);
+    s.flow.diceQueue = [[1, 2], [1, 2], [1, 3], [3, 1]];   // you buy space 3; Rosa lands there and pays rent; then an Opportunity card
+    s.flow.forceEvent = 'e_boom';
+    s.ballots.order = ['b_levy'].concat(s.ballots.order.filter(x => x !== 'b_levy'));
+    const oi = C.OPPORTUNITY.findIndex(c => c.id === 'o_scam'); if (oi >= 0) s.decks.opportunity.order = [oi].concat(s.decks.opportunity.order.filter(x => x !== oi));
+    UI.tut = { steps: tutorialSteps(learner), i: 0, names: opts.names || [learner], after: opts.after || null, learner };
+    startGame(s, false);
+    showTutorStep();
+    if (UI.tutTimer) clearInterval(UI.tutTimer);
+    UI.tutTimer = setInterval(tutorTick, 250);
+  }
+  function tutorBox() {
+    let box = $('#tutor');
+    if (!box) {
+      box = document.createElement('div'); box.id = 'tutor'; box.setAttribute('role', 'status'); box.setAttribute('aria-live', 'polite');
+      const ring = document.createElement('div'); ring.id = 'tutRing'; ring.setAttribute('aria-hidden', 'true');
+      document.body.appendChild(ring); document.body.appendChild(box);
+    }
+    return box;
+  }
+  function showTutorStep() {
+    const t = UI.tut; if (!t) return;
+    const st = t.steps[t.i]; if (!st) return;
+    const box = tutorBox();
+    const text = typeof st.text === 'function' ? st.text() : st.text;
+    box.innerHTML = '<div class="row" style="flex-wrap:nowrap;align-items:flex-start"><svg width="46" height="46" style="flex:none"><use href="#dexSym"/></svg><div><div class="tutProg">Tutorial · step ' + (t.i + 1) + ' of ' + t.steps.length + '</div><div class="tutText">' + text + '</div></div></div>' +
+      '<div class="row" style="margin-top:6px"><button type="button" class="small ghost" id="tutExit">Exit tutorial</button><button type="button" class="small" id="tutSay" aria-label="Read aloud">🔊</button><span class="grow"></span>' + (st.next ? '<button type="button" class="primary" id="tutNext">' + st.next + '</button>' : '<span class="tutWait">Your move…</span>') + '</div>';
+    $('#tutExit').onclick = () => openModal({ title: 'Leave the tutorial?', body: '<p>You can start it again from the main menu. New players need to finish it before playing a real game.</p>', closable: true, buttons: [{ label: 'Keep going', cls: 'primary' }, { label: 'Exit', onClick: () => { endTutorial(false); } }] });
+    $('#tutSay').onclick = () => speak(box.querySelector('.tutText').innerText);
+    if (st.next) { $('#tutNext').onclick = () => { t.i++; showTutorStep(); }; if (!UI.modals.length) setTimeout(() => { const b = $('#tutNext'); if (b) b.focus(); }, 30); }
+    t.shown = text;
+    placeRing();
+  }
+  function placeRing() {
+    const t = UI.tut, ring = $('#tutRing'); if (!t || !ring) return;
+    const st = t.steps[t.i]; const el = st && st.sel ? $(st.sel) : null;
+    if (!el || el.offsetParent === null) { ring.style.display = 'none'; return; }
+    const r = el.getBoundingClientRect(); ring.style.display = 'block';
+    ring.style.left = (r.left - 6) + 'px'; ring.style.top = (r.top - 6) + 'px'; ring.style.width = (r.width + 12) + 'px'; ring.style.height = (r.height + 12) + 'px';
+  }
+  function tutorTick() {
+    const t = UI.tut; if (!t) return;
+    if (!G || !G.settings.isTutorial) { endTutorial(false); return; }
+    const st = t.steps[t.i];
+    if (st && st.wait) { let ok = false; try { ok = !!st.wait(); } catch (e) { } if (ok) { t.i++; showTutorStep(); return; } }
+    if (st && typeof st.text === 'function') { const now = st.text(); if (now !== t.shown) showTutorStep(); }
+    document.body.classList.toggle('tut-modal', UI.modals.length > 0);
+    placeRing();
+    if (G.flow.stage === 'results' && t.i >= t.steps.length - 1 && !t.finished) { t.finished = true; setTimeout(finishTutorial, 600); }
+  }
+  function finishTutorial() {
+    const t = UI.tut; if (!t) return;
+    document.body.classList.remove('tut-modal');
+    markTutorialDone(t.names);
+    const box = $('#tutor'); if (box) box.remove(); const ring = $('#tutRing'); if (ring) ring.remove();
+    if (UI.tutTimer) { clearInterval(UI.tutTimer); UI.tutTimer = null; }
+    Snd.play('fanfare'); confetti();
+    openModal({ title: '🎓 Tutorial complete!', label: 'Tutorial complete', body: '<div class="row" style="flex-wrap:nowrap"><svg width="90" height="90" style="flex:none" class="' + (reduced() ? '' : 'dex-bob') + '"><use href="#dexSym"/></svg><div><p style="font-size:19px">Great job, ' + esc(t.names.join(', ')) + '! You\'re ready to play. Remember:</p></div></div><ul style="font-size:17px">' +
+      '<li>🏆 Win with the highest <b>net worth</b>, not just the most cash.</li><li>🏘️ Own a whole color group to double rent and build houses.</li><li>🏦 Use the Bank to save, invest, borrow and buy insurance.</li>' +
+      '<li>⚖️ Press <b>Why?</b> before big decisions, and tap <u>underlined words</u>.</li><li>💸 Short on cash? Sell or mortgage property. Nobody is ever knocked out.</li></ul>',
+      buttons: t.after ? [{ label: 'Start my game ▶', cls: 'primary', onClick: () => { const go = t.after; UI.tut = null; G = null; go(); } }] : [{ label: 'Back to the menu', cls: 'primary', onClick: () => { UI.tut = null; exitToMenu(); } }] });
+  }
+  function endTutorial(done) {
+    document.body.classList.remove('tut-modal');
+    const box = $('#tutor'); if (box) box.remove(); const ring = $('#tutRing'); if (ring) ring.remove();
+    if (UI.tutTimer) { clearInterval(UI.tutTimer); UI.tutTimer = null; }
+    const was = UI.tut; UI.tut = null;
+    if (!done && was && G && G.settings.isTutorial) exitToMenu();
+  }
+  // Ask before a game when some players haven't done the tutorial yet
+  function tutorialGate(humans, theme, startFn) {
+    const fresh = tutorialRequired() ? needsTutorial(humans.map(h => h.name)) : [];
+    if (!fresh.length) { startFn(); return; }
+    const body = document.createElement('div');
+    body.innerHTML = '<div class="row" style="flex-wrap:nowrap"><svg width="80" height="80" style="flex:none"><use href="#dexSym"/></svg><p style="font-size:19px">' + (fresh.length === 1 ? '<b>' + esc(fresh[0]) + '</b> is new' : '<b>' + fresh.map(esc).join(', ') + '</b> are new') + ' to DEED &amp; DEBT. New players play a quick <b>5-minute tutorial</b> first. ' + (fresh.length > 1 ? 'You can do it together as a group. ' : '') + 'Your game starts right after.</p></div>' +
+      '<details style="margin-top:8px"><summary>Teacher: skip the tutorial</summary><label>Type <b>SKIP</b> to start without it <input type="text" id="tutSkipTxt" autocomplete="off" style="width:110px"></label> <button type="button" class="small" id="tutSkipBtn">Skip</button></details>';
+    openModal({ title: '🎓 Tutorial time!', body, label: 'Tutorial required', closable: true,
+      onOpen: (m, close) => { $('#tutSkipBtn', body).onclick = () => { if ($('#tutSkipTxt', body).value.trim().toUpperCase() !== 'SKIP') { toast('Type SKIP to confirm.'); return; } close(null); startFn(); }; },
+      buttons: [{ label: 'Back', value: null }, { label: '🎓 Start the tutorial', cls: 'primary', onClick: () => {
+        const learner = fresh.length === 1 ? fresh[0] : fresh.map(n => n.split(' ')[0]).join(' & ').slice(0, 16);
+        const tok = (humans.find(h => normName(h.name) === normName(fresh[0])) || humans[0]).token;
+        setTimeout(() => startTutorial({ learner, token: tok, names: fresh, theme, after: startFn }), 30);
+      } }] });
   }
 
   /* ---------- boot ---------- */

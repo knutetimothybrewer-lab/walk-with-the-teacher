@@ -19,6 +19,10 @@ A classroom board game about economics and civics, set in the invented town of *
 
   A ballot vote comes about every 3rd Year, with at least one in every game.
 - **Four towns to choose from:** ⚓ **Port Juniper** (harbor town), ⛏️ **Copper Ridge** (mountain mining town), 🌃 **Neon Bay** (big city) and 🌾 **Prairie Hollow** (farm town). A town renames all 28 properties, the 8 districts and their icons, the rail lines and utilities, and every place name on cards, events and ballots. It also recolors the board. Rules and prices are the same in every town. District colors and patterns never change, so color-blind support stays the same.
+- **🎓 Tutorial for new players:** a guided 5-minute practice game with Dex the Beaver, one Year against one computer player. Each step highlights what to press and waits until the student does it. Students choose a career, vote on a ballot measure, read an economy event, buy property (with Why?), save at the Bank, collect rent, decide on an Opportunity card, end turns and read the Annual Report.
+  - **Required by default:** the device remembers who has finished the tutorial. When a game starts, any new player is sent there first; a group can do it together, and their game starts right after.
+  - **Teacher options:** turn the requirement off with the setup checkbox "New players must do the tutorial first," or skip it for one game (type SKIP).
+  - **Anytime:** the 🎓 Tutorial button on the start screen runs it whenever someone wants a refresher.
 - **Full screen:** the ⛶ button on the start screen or in the top bar, or the **F** key. This is good for projectors and Chromebooks. Press it again, or Esc, to leave full screen.
 - **One file:** `index.html` (about 370 KB) with no build step, no server, no accounts, no network and no tracking. Fonts, art, sound and charts are all built into the file.
 - **Saving:** the game saves in the browser at every turn change, every few seconds in between, and whenever the tab is hidden or closed. Each save goes to two places, `localStorage` plus a backup copy in IndexedDB, and the newer copy is used. The start screen lists saved games by group name, so a game can resume on another day on the same device.
@@ -87,6 +91,7 @@ These need [Node.js](https://nodejs.org) 18+. The browser checks also need Playw
 | `node sim/trigger-all.js` | Forces every card, card option, Decision Point, Tenant Notice, event and ballot measure, then finishes each game. Checks for errors and softlocks. |
 | `node sim/engine-checks.js` | Save → reload → resume at hundreds of random points, End Game Now from any point, no softlocks, and CSV format. |
 | `node sim/ui-play.js 2 2 6 fast` | Plays a whole game in a real browser by clicking the UI (2 humans, 2 CPUs, 6 Years). `node sim/ui-play.js solo 3 4` plays a solo game against 3 computers. |
+| `node sim/tutorial-check.js` | Plays the tutorial as a brand-new student in a real browser. It checks that new players are sent to it, it can be finished step by step, their game starts right after, returning players aren't asked again, and the teacher can skip it or turn it off. |
 | `node sim/ui-check.js` | Browser checks: layout at 1366×768 and 1920×1080, keyboard-only play, save/resume, End Game Now, CSV export, reduced motion and no network. It writes `sim/UI_CHECKS.md` and screenshots in `sim/shots/`. |
 
 Games are reproducible: type the same **Random seed** on the setup screen to get the same dice and events.
