@@ -76,7 +76,7 @@ async function toFirstHumanRoll(page) { await playGame(page, { stopAt: (st) => s
     await tabTo('[data-pn="1"]'); await page.keyboard.type('Lou');
     await tabTo('[data-cpu="2"]'); // already CPU
     await tabTo('[data-rm="3"]'); await page.keyboard.press('Enter');
-    await tabTo('#sgLen'); await page.keyboard.press('ArrowUp'); // Standard -> Short
+    await tabTo('#sgLen'); await page.keyboard.press('Home'); // Standard -> Sprint (3 Years)
     await tabTo('#sgPP'); await page.keyboard.press('Space'); // pre/post off
     await tabTo('#sgGo'); await page.keyboard.press('Enter');
     let kbOk = true, detail = '';

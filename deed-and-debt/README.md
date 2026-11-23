@@ -2,8 +2,22 @@
 
 A classroom board game about economics and civics, set in the invented town of **Port Juniper**. It plays like the classic property-trading board game. Every mechanic teaches a real idea, from supply and demand, loans, credit and taxes to zoning, insurance, inflation, ballot measures and bankruptcy. The mascot is **Dex the Beaver**.
 
-- **Players:** 2–6 per device (pass the device), plus optional CPU players to fill seats. Several groups can play at once on separate devices.
-- **Length:** a Standard game is 10 Years, about 40–45 minutes. There is also Short (6 Years, about 25 minutes) and Long (14 Years, multi-day).
+- **Two ways to play:**
+  - **Group game:** 2–6 students share one device and pass it, with optional CPU players to fill seats. Several groups can play at once on separate devices.
+  - **🤖 Solo vs. Computer:** one student plays against 1–5 computer rivals. It's good for homework, absent students, early finishers or a 1:1 device day. There are no pass-the-device screens.
+- **Length:** pick from seven presets or set a Custom length of 3–25 Years. Times are estimates from `sim/lengths.js`:
+
+  | Length | Years | Group of 4 | Solo vs. 3 computers |
+  |---|---|---|---|
+  | Sprint | 3 | ~14 min | ~8 min |
+  | Quick | 4 | ~18 min | ~10 min |
+  | Short | 6 | ~27 min | ~15 min |
+  | Half Period | 8 | ~35 min | ~19 min |
+  | **Standard** | 10 | ~44 min | ~24 min |
+  | Long | 14 | ~61 min | ~33 min |
+  | Marathon | 20 | ~87 min (multi-day) | ~46 min |
+
+  A ballot vote comes about every 3rd Year, with at least one in every game.
 - **One file:** `index.html` (about 370 KB) with no build step, no server, no accounts, no network and no tracking. Fonts, art, sound and charts are all built into the file.
 - **Saving:** the game saves in the browser at every turn change, every few seconds in between, and whenever the tab is hidden or closed. Each save goes to two places, `localStorage` plus a backup copy in IndexedDB, and the newer copy is used. The start screen lists saved games by group name, so a game can resume on another day on the same device.
 
@@ -47,6 +61,7 @@ All content is in one object called `GAME_CONTENT` near the top of the first `<s
 | Quick Checks and the pre/post check | `QUICK_CHECKS`, `PREPOST` (`answer` = number of the right choice, starting at 0) |
 | Glossary | `GLOSSARY` (terms are underlined automatically the first time they appear in a turn) |
 | Debrief questions | `DEBRIEF_GENERAL` |
+| Game lengths on the setup menu (names, Years, minute estimates) | `GAME_LENGTHS`; ballot Years per length are in `TUNING.ballotYears` (other lengths get a vote about every 3rd Year) |
 | Difficulty presets | `DIFFICULTY` (turn taxes, credit, inflation, variable loans, depreciation and Tenant Notices on or off) |
 | Overall tuning | `TUNING`: starting cash, rent scale, living costs, loan limits, interest spreads, insurance prices, tax brackets, Years with ballot votes, and more |
 
@@ -65,9 +80,10 @@ These need [Node.js](https://nodejs.org) 18+. The browser checks also need Playw
 | Command | What it does |
 |---|---|
 | `node sim/simulate.js 500` | Plays 500 seeded CPU-only Standard games and writes `sim/REPORT.md` (play time, bankruptcy rate, win rates by strategy, career and rent vs. buy). |
+| `node sim/lengths.js` | Estimates play time for every game length, for a group of 4 and for solo play, and writes `sim/LENGTHS.md`. Rerun it after tuning changes and update the minutes in `GAME_LENGTHS`. |
 | `node sim/trigger-all.js` | Forces every card, card option, Decision Point, Tenant Notice, event and ballot measure, then finishes each game. Checks for errors and softlocks. |
 | `node sim/engine-checks.js` | Save → reload → resume at hundreds of random points, End Game Now from any point, no softlocks, and CSV format. |
-| `node sim/ui-play.js 2 2 6 fast` | Plays a whole game in a real browser by clicking the UI. |
+| `node sim/ui-play.js 2 2 6 fast` | Plays a whole game in a real browser by clicking the UI (2 humans, 2 CPUs, 6 Years). `node sim/ui-play.js solo 3 4` plays a solo game against 3 computers. |
 | `node sim/ui-check.js` | Browser checks: layout at 1366×768 and 1920×1080, keyboard-only play, save/resume, End Game Now, CSV export, reduced motion and no network. It writes `sim/UI_CHECKS.md` and screenshots in `sim/shots/`. |
 
 Games are reproducible: type the same **Random seed** on the setup screen to get the same dice and events.

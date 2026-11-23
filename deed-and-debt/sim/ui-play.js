@@ -80,6 +80,17 @@ async function playGame(page, opts = {}) {
   await page.screenshot({ path: path.join(__dirname, 'shots', 'ui-play-stuck.png') }); throw new Error('UI game did not finish: ' + JSON.stringify(await page.evaluate(() => { const G = window.__DD.G; return G ? { stage: G.flow.stage, year: G.flow.year, pending: G.pending, ui: { pumping: window.__DD.UI.pumping, modals: window.__DD.UI.modals.length, fxq: window.__DD.UI.fxq.length, sig: window.__DD.UI.promptSig } } : null; })));
 }
 
+async function newSoloGame(page, { name, rivals, years, prePost }) {
+  await page.click('#stSolo');
+  await page.fill('#soloName', name);
+  await page.selectOption('#sgRivals', String(rivals));
+  await page.click('details summary');
+  await page.selectOption('#sgLen', String(years));
+  if (!prePost) await page.uncheck('#sgPP');
+  await page.click('#sgGo');
+  if (prePost) { await page.waitForSelector('.modal input[name=q0]'); for (let q = 0; q < 5; q++) await page.check('.modal input[name=q' + q + '][value="' + (q % 3) + '"]'); await page.click('.modal .btns button.primary'); }
+}
+
 async function newGame(page, { humans, cpus, years, group, prePost }) {
   await page.click('#stNew');
   await page.fill('#sgName', group);
@@ -112,22 +123,28 @@ async function launch(w, h, anim) {
   await page.goto(FILE);
   return { browser, page, problems };
 }
-module.exports = { playGame, newGame, launch, FILE };
+module.exports = { playGame, newGame, newSoloGame, launch, FILE };
 
 if (require.main === module) {
   (async () => {
-    const { browser, page, problems } = await launch(W, HT, ANIM);
+    const SOLO = process.argv[2] === 'solo';
+    const { browser, page, problems } = await launch(SOLO ? 1366 : W, SOLO ? 768 : HT, SOLO ? (process.argv[5] || 'fast') : ANIM);
     const t0 = Date.now();
-    await newGame(page, { humans: H, cpus: CP, years: YEARS, group: 'UI Test', prePost: true });
+    let passScreens = 0; page.on('console', () => {}); await page.exposeFunction('__passSeen', () => { passScreens++; });
+    await page.addInitScript(() => { new MutationObserver(() => { const h = document.querySelector('.modal:not(.hidden) h2'); if (h && /Pass the device/.test(h.textContent) && !h.dataset.seen) { h.dataset.seen = 1; window.__passSeen(); } }).observe(document, { subtree: true, childList: true }); });
+    if (SOLO) { await page.reload(); await newSoloGame(page, { name: 'Sky', rivals: +process.argv[3] || 3, years: +process.argv[4] || 6, prePost: true }); }
+    else await newGame(page, { humans: H, cpus: CP, years: YEARS, group: 'UI Test', prePost: true });
     await playGame(page);
     // post-check and exports on the results page
-    await page.click('#rsPost'); for (let k = 0; k < H; k++) { await page.click('.modal .btns button.primary'); await page.waitForSelector('.modal input[name=q0]'); for (let q = 0; q < 5; q++) await page.check('.modal input[name=q' + q + '][value="' + C_ANS[q] + '"]'); await page.click('.modal .btns button.primary'); }
+    await page.click('#rsPost'); for (let k = 0; k < (SOLO ? 1 : H); k++) { if (!SOLO) await page.click('.modal .btns button.primary'); await page.waitForSelector('.modal input[name=q0]'); for (let q = 0; q < 5; q++) await page.check('.modal input[name=q' + q + '][value="' + C_ANS[q] + '"]'); await page.click('.modal .btns button.primary'); }
     await page.waitForSelector('#rsLine');
     const ta = await page.$('textarea[data-ref]'); if (ta) { await ta.fill('Because I took a loan to build houses.'); await ta.dispatchEvent('change'); }
     const [dl] = await Promise.all([page.waitForEvent('download'), page.click('#rsCsv')]);
     const csvPath = path.join(__dirname, 'shots', 'ui-play-log.csv'); await dl.saveAs(csvPath);
     await page.screenshot({ path: path.join(__dirname, 'shots', 'ui-play-results.png'), fullPage: false });
     const summary = await page.evaluate(() => { const G = window.__DD.G; return { year: G.flow.year, turns: G.flow.turnCount, log: G.log.length, post: G.players.map(p => p.checks.post), refl: G.players.map(p => Object.keys(p.reflections).length) }; });
+    if (SOLO) console.log('Solo game: players', JSON.stringify(await page.evaluate(() => window.__DD.G.players.map(p => p.name + (p.cpu ? '(CPU)' : '')))), '| "Pass the device" screens shown:', passScreens);
+    else console.log('"Pass the device" screens shown:', passScreens);
     console.log('Finished UI game in', ((Date.now() - t0) / 1000).toFixed(0), 's', JSON.stringify(summary));
     if (problems.length) { console.log('PROBLEMS:\n' + problems.join('\n')); process.exitCode = 1; } else console.log('No page errors, console errors or network requests.');
     await browser.close();
