@@ -21,7 +21,7 @@ Two ways to play:
 - **Group game:** 2–6 students share one device, and CPU players can fill empty seats.
 - **Solo vs. Computer:** one student plays against 1–5 computer rivals.
 
-There are seven game lengths plus Custom (3–25 Years), from Sprint (3 Years, ~14 min for a group, ~8 min solo) through Standard (10 Years, ~44 min, ~24 min solo) to Marathon (20 Years, multi-day). Every game ends with a Results page (charts, awards, best and toughest decisions, reflections, pre/post check, copy-for-Classroom, CSV game log) and a Teacher Debrief Guide.
+New players start with a guided 5-minute tutorial with Dex the Beaver (required by default; teachers can turn it off). Students can choose one of four towns (Port Juniper, Copper Ridge, Neon Bay or Prairie Hollow) with the same rules, and play in full screen. There are seven game lengths plus Custom (3–25 Years), from Sprint (3 Years, ~14 min for a group, ~8 min solo) through Standard (10 Years, ~44 min, ~24 min solo) to Marathon (20 Years, multi-day). Every game ends with a Results page (charts, awards, best and toughest decisions, reflections, pre/post check, copy-for-Classroom, CSV game log) and a Teacher Debrief Guide.
 
 Technically, it's one self-contained `index.html` (about 370 KB) that runs fully offline with no network, accounts or tracking. All cards, prices and tuning live in one editable `GAME_CONTENT` block. Start with `deed-and-debt/README.md` and `deed-and-debt/TEACHER_GUIDE.md`.
 

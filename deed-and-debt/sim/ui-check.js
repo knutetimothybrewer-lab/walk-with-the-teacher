@@ -16,7 +16,7 @@ const results = []; const net = [];
 const want = (k) => !process.env.ONLY || process.env.ONLY.includes(k); // e.g. ONLY=CD node sim/ui-check.js
 const record = (name, pass, detail) => { results.push({ name, pass, detail }); console.log((pass ? 'PASS ' : 'FAIL ') + name + (detail ? ' - ' + detail : '')); };
 
-async function open(browser, w, h, extra = {}, prefs = { anim: 'fast', muted: true }) {
+async function open(browser, w, h, extra = {}, prefs = { anim: 'fast', muted: true, requireTutorial: false }) {
   const ctx = await browser.newContext(Object.assign({ viewport: { width: w, height: h }, acceptDownloads: true }, extra));
   await ctx.setOffline(true);
   const page = await ctx.newPage(); const errs = [];
@@ -154,8 +154,8 @@ async function toFirstHumanRoll(page) { await playGame(page, { stopAt: (st) => s
     await ctx.close(); return { seen, errs };
   };
   if (want('F')) {
-  const red = await motionTest({ reducedMotion: 'reduce' }, null);
-  const norm = await motionTest({}, { anim: 'normal', muted: true });
+  const red = await motionTest({ reducedMotion: 'reduce' }, { muted: true, requireTutorial: false });
+  const norm = await motionTest({}, { anim: 'normal', muted: true, requireTutorial: false });
   record('F. Reduced motion disables shake and confetti', !red.seen.shake && !red.seen.confetti && !red.seen.fall && norm.seen.shake && norm.seen.confetti,
     'OS reduced-motion: shake=' + red.seen.shake + ', confetti=' + red.seen.confetti + ', falling arrows=' + red.seen.fall + ' | Normal mode (control): shake=' + norm.seen.shake + ', confetti=' + norm.seen.confetti);
   }
