@@ -847,7 +847,7 @@ function spawnBad(kind, mega = false) {
   const hp = mega ? Diff.megaHp : 1;
   const b = Object.assign(m, { kind, mega, x: p.x, z: p.z, hp, maxHp: hp, state: 'seek', stateT: 0, target: null, carry: null, scale: sc, speedMul: rand(0.85, 1.15) * (mega ? 0.55 : 1),
     ph: rand(TAU), walk: rand(TAU), heading: 0, hitCool: 0, sq: 0, sqV: 0, exit: null, wander: null });
-  b.radius *= sc; m.lamps.forEach((l, i) => l.visible = i < hp);
+  b.radius *= sc; m.lamps.forEach((l, i) => l.visible = i < Math.ceil(hp * 5 / b.maxHp));
   addBlob(m.root, 0.9); m.root.scale.setScalar(sc); m.root.position.set(b.x, 0, b.z); scene.add(m.root); bads.push(b);
   if (mega) Sound.boing();
   return b;
@@ -924,7 +924,7 @@ function hitBad(b, chained) {
   if (b.hp <= 0) { b.state = 'antic'; b.stateT = 0; b.root.rotation.z = 0; Sound.antic(); }
   else {                                                        // mega toy: wobble more with every hit
     if (b.state !== 'ouch') b.prev = b.state; b.state = 'ouch'; b.stateT = 0; b.sqV = 9;
-    b.lamps.forEach((l, i) => l.visible = i < b.hp);
+    b.lamps.forEach((l, i) => l.visible = i < Math.ceil(b.hp * 5 / b.maxHp));
     emit('star', 8, b.x, b.height * b.scale * 0.7, b.z, { sp: [2, 6], up: [5, 9], colors: theme.starPal });
     emit('glitter', 14, b.x, b.height * b.scale * 0.7, b.z, { sp: [2, 6], up: [1, 7], colors: theme.glitPal, life: [0.6, 1.2] });
     flash(b.x, 2, b.z, 0.5); addShake(0.15); Sound.boing(); Sound.pop();
@@ -1042,7 +1042,7 @@ function impact(s) { emit('glitter', Math.round(10 * Quality.particleMul), s.x, 
 const Diff = {
   hist: [], n: 0,
   // every level adds a little; the adaptive part can cancel only half of it
-  ramp() { return Math.min(0.5, settings.level * 0.05); },
+  ramp() { return settings.level * 0.05; },                 // no ceiling: it keeps climbing forever
   record(hit) {
     this.hist.push(hit ? 1 : 0); if (this.hist.length > 20) this.hist.shift();
     if (this.hist.length >= 6) {
@@ -1053,17 +1053,18 @@ const Diff = {
     this.apply(); if (++this.n % 12 === 0) save();
   },
   apply() {
-    const c = settings.calm, e = clamp(settings.diff + this.ramp(), 0, 1), d = c ? Math.min(e, 0.35) : e;
-    this.d = d;
-    this.maxBad = Math.min(c ? 2 : 4, 1 + Math.floor(d * 3.2));   // 1..4 bad toys, never a crowd
-    this.speed = lerp(1.25, 2.9, d) * (c ? 0.7 : 1);              // toy walking speed
-    this.wiggle = lerp(0, 1.2, d);                                // how much they weave
-    this.scale = lerp(1.35, 1.0, d);                              // bigger targets when he's missing
-    this.spawnDelay = lerp(4.5, 1.6, d) * (c ? 1.5 : 1);
-    this.cone = lerp(0.8, 0.4, d);                                // aim-assist half-angle (radians)
-    this.tapR = lerp(3.4, 2.3, d);                                // "close enough" tap radius
-    this.megaHp = d < 0.33 ? 3 : d < 0.66 ? 4 : 5;
-    this.megaEvery = c ? 10 : Math.max(4, 7 - Math.floor(settings.level / 3));   // mega toys show up sooner on later levels
+    const c = settings.calm, e = Math.max(0, settings.diff + this.ramp()), d0 = c ? Math.min(e, 0.35) : e;
+    const d = Math.min(d0, 1), x = Math.max(0, d0 - 1);          // x = how far past the old maximum we are
+    this.d = d0;
+    this.maxBad = Math.min(c ? 2 : 12, 1 + Math.floor(d * 3.2) + Math.floor(x * 2));   // 12 is the frame-rate ceiling
+    this.speed = (lerp(1.25, 2.9, d) + x * 1.2) * (c ? 0.7 : 1);              // toy walking speed
+    this.wiggle = Math.min(2.2, lerp(0, 1.2, d) + x * 0.4);                                // how much they weave
+    this.scale = Math.max(0.65, lerp(1.35, 1.0, d) - x * 0.1);                              // bigger targets when he's missing
+    this.spawnDelay = lerp(4.5, 1.6, d) / (1 + x) * (c ? 1.5 : 1);
+    this.cone = Math.max(0.12, lerp(0.8, 0.4, d) - x * 0.1);                                // aim-assist half-angle (radians)
+    this.tapR = Math.max(1.2, lerp(3.4, 2.3, d) - x * 0.4);                                // "close enough" tap radius
+    this.megaHp = (d < 0.33 ? 3 : d < 0.66 ? 4 : 5) + Math.floor(x * 2);
+    this.megaEvery = c ? 10 : Math.max(3, 7 - Math.floor(settings.level / 3));   // mega toys show up sooner on later levels
   },
 };
 Diff.apply();
@@ -1088,7 +1089,7 @@ const COOKIE_URL = cookieImage(160, false);
 $('playCookie').src = cookieImage(640, true);
 const jarEl = $('jar'), slotsEl = $('slots'), flyLayer = $('flyLayer'), wipeEl = $('wipe');
 function buildJar(n) {
-  slotsEl.innerHTML = ''; const cols = 4, rows = Math.ceil(n / cols), w = 100 / cols;
+  slotsEl.innerHTML = ''; const cols = Math.max(4, Math.ceil(Math.sqrt(n))), rows = Math.ceil(n / cols), w = 100 / cols;
   for (let i = 0; i < n; i++) {
     const row = (i / cols) | 0, inRow = Math.min(cols, n - row * cols), col = i % cols, el = document.createElement('img');
     el.src = COOKIE_URL; el.draggable = false; el.className = 'ghost'; el.style.width = (w * 1.12) + '%';
@@ -1128,7 +1129,7 @@ const Game = { state: 'start', collected: 0, need: 10, sinceMega: 0, badT: 3, co
 const bigStar = (() => {
   const g = new THREE.Group(), s = mesh(starGeo(1.5, 0.68, 0.45), mat('#ffd23f', { r: 0.25, e: 0.3 })); g.add(s); g.rotation.x = -0.75; g.position.set(0, 4.6, -2.6); g.visible = false; scene.add(g); return { g, s };
 })();
-function needFor(level) { return Math.min(16, 10 + Math.floor(level / 2)); }   // a few more cookies as levels go up
+function needFor(level) { return Math.min(40, 10 + Math.floor(level / 2)); }   // a few more cookies as levels go up
 function startLevel() {
   Diff.apply();
   Game.state = 'play'; Game.collected = 0; Game.need = needFor(settings.level); Game.badT = 3; Game.cookieT = 0.3; Game.celebT = 0;
