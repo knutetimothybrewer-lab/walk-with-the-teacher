@@ -35,6 +35,10 @@ There's also a 5-question pre/post check and a printable Debrief Guide.
 - **▶ New Group Game:** 2–6 students share one device and pass it each turn. CPU players can fill empty seats.
 - **🤖 Solo vs. Computer:** one student against 1–5 computer rivals (Rival Rosa, Banker Bo, Tycoon Ty, Saver Sam and Builder Bea). Each rival follows a different strategy. Solo games skip the pass-the-device screens and run about half as long, because computer turns are quick. Use them for homework, make-up work for absent students, early finishers or a 1:1 device day. Students still get the full Results page, reflections and "Copy for Google Classroom/Canvas."
 
+**Choosing a town:** students pick ⚓ Port Juniper (harbor), ⛏️ Copper Ridge (mining), 🌃 Neon Bay (big city) or 🌾 Prairie Hollow (farm). Every town has the same rules and prices, so groups playing different towns can still compare results. Letting each group pick its own town builds ownership. You can also add a town named after your community (see `README.md`).
+
+**Full screen:** press ⛶ (or the F key) for a bigger board on Chromebooks and projectors.
+
 **Choosing a length** (times are estimated play time, not counting about 2–3 minutes of career picks):
 
 | Length | Years | Group of 4 | Solo | Good for |

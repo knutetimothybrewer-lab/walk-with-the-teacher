@@ -18,6 +18,8 @@ A classroom board game about economics and civics, set in the invented town of *
   | Marathon | 20 | ~87 min (multi-day) | ~46 min |
 
   A ballot vote comes about every 3rd Year, with at least one in every game.
+- **Four towns to choose from:** ⚓ **Port Juniper** (harbor town), ⛏️ **Copper Ridge** (mountain mining town), 🌃 **Neon Bay** (big city) and 🌾 **Prairie Hollow** (farm town). A town renames all 28 properties, the 8 districts and their icons, the rail lines and utilities, and every place name on cards, events and ballots. It also recolors the board. Rules and prices are the same in every town. District colors and patterns never change, so color-blind support stays the same.
+- **Full screen:** the ⛶ button on the start screen or in the top bar, or the **F** key. This is good for projectors and Chromebooks. Press it again, or Esc, to leave full screen.
 - **One file:** `index.html` (about 370 KB) with no build step, no server, no accounts, no network and no tracking. Fonts, art, sound and charts are all built into the file.
 - **Saving:** the game saves in the browser at every turn change, every few seconds in between, and whenever the tab is hidden or closed. Each save goes to two places, `localStorage` plus a backup copy in IndexedDB, and the newer copy is used. The start screen lists saved games by group name, so a game can resume on another day on the same device.
 
@@ -49,6 +51,7 @@ All content is in one object called `GAME_CONTENT` near the top of the first `<s
 | To change… | Edit this in `GAME_CONTENT` |
 |---|---|
 | The town name | `meta.town` |
+| Town themes (add your own town!) | `THEMES`: copy a theme, give it a new key, and set `name`, `emoji`, `tagline`, board colors, district names and icons, and a name for each property by space number. It appears on the setup screen automatically. |
 | Street names (for example, rename "Cotton Mill Row" after a local street) | `name` in `SPACES` |
 | District names, colors, icons | `GROUPS` (keep a different `pattern` and `icon` for each group so color is never the only clue) |
 | Prices and rents | `price` and `rent` in `SPACES` (`rent` = no houses, 1, 2, 3, 4 houses, hotel) |
@@ -99,4 +102,4 @@ Students use first names or nicknames only. Nothing leaves the device: there are
 - **Motion and sound:** animation speed can be Normal, Fast or Reduced, and the game follows the device's "reduce motion" setting. Sound is synthesized and can be muted.
 - **Reading support:** every card and dialog has a 🔊 read-aloud button (using the device's own voices). Every decision has a **Why?** button.
 - **Color:** color groups also use an icon and a pattern, so color never carries meaning by itself.
-- **Keyboard:** the game is fully playable by keyboard (R roll, E end turn, B bank, P property, T trade, G glossary, ? help, Tab and Enter for everything else). Focus is always visible, and touch targets are at least 44 px.
+- **Keyboard:** the game is fully playable by keyboard (R roll, E end turn, B bank, P property, T trade, G glossary, F full screen, ? help, Tab and Enter for everything else). Focus is always visible, and touch targets are at least 44 px.

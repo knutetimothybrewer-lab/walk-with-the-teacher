@@ -225,6 +225,10 @@ table.t th:first-child,table.t td:first-child{text-align:left}
 .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
 .careerCard{border:3px solid var(--ink);border-radius:14px;padding:10px;background:#fff;text-align:left;font-weight:400;box-shadow:0 4px 0 var(--ink);display:flex;flex-direction:column;gap:4px}
 .careerCard[aria-pressed=true]{background:#fff3c4;outline:4px solid var(--accent2)}
+.themes{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+.themeCard{display:flex;flex-direction:column;gap:3px;text-align:left;font-weight:400;border:3px solid var(--ink);border-radius:14px;padding:10px;box-shadow:0 4px 0 var(--ink)}
+.themeCard b{font-size:19px}
+.themeCard[aria-pressed=true]{outline:5px solid var(--accent2);outline-offset:2px}
 .careerCard .big{font-size:34px}
 fieldset{border:2px solid var(--ink);border-radius:12px;padding:8px 12px;margin:8px 0;background:rgba(255,255,255,.7)}
 legend{font-weight:900;padding:0 6px}
@@ -407,6 +411,33 @@ const GAME_CONTENT = {
     midtown:  { name: "Midtown Office",   color: "#f2c230", icon: "💼", pattern: "vstripes",kind: "com", sub: "Commercial · Office" },
     foundry:  { name: "Foundry District", color: "#2e9e5b", icon: "⚙️", pattern: "zigzag",  kind: "com", sub: "Commercial · Industrial" },
     harbor:   { name: "Harbor Point",     color: "#27408b", icon: "⚓", pattern: "diamonds",kind: "res", sub: "Residential · Luxury" }
+  },
+
+  /* ---------- TOWN THEMES (students pick one on the setup screen) ----------
+     A theme only renames things and recolors the board; rules and prices stay the same.
+     groups: new district name + icon (colors and patterns stay fixed, so color is never the only clue).
+     spaces: new names by space number (see SPACES below). Any place name used in card, event or
+     ballot text is swapped automatically. To add your own town, copy a theme and give it a new key. */
+  THEMES: {
+    juniper: { name: "Port Juniper", emoji: "⚓", tagline: "A harbor town with mills, shops and a busy waterfront.", board: "#cfe8d5", paper: "#fbf7ea" },
+    copper: { name: "Copper Ridge", emoji: "⛏️", tagline: "A mountain mining town where the railroad brought the boom.", board: "#ead8bd", paper: "#fdf6ea",
+      groups: { mill: { name: "Miners' Row", icon: "⛏️" }, heights: { name: "Pinecrest", icon: "🌲" }, oldtown: { name: "Gold Rush District", icon: "🪙" }, river: { name: "Creekside", icon: "🏞️" },
+                market: { name: "Trading Post", icon: "🏪" }, midtown: { name: "Assay Square", icon: "📊" }, foundry: { name: "Smelter Yards", icon: "🏭" }, harbor: { name: "Summit Estates", icon: "🏔️" } },
+      spaces: { 1: "Ore Cart Lane", 3: "Lantern Gulch", 5: "Silver Spur Line", 6: "Spruce Way", 8: "Fir Street", 9: "Larch Lane", 11: "Saloon Street", 12: "Ridge Power Co-op", 13: "Assay Office Row", 14: "Boomtown Alley",
+                15: "Canyon Line", 16: "Willow Creek Road", 18: "Trout Run", 19: "Beaver Pond Way", 21: "General Store Corner", 23: "Outfitters Row", 24: "Main Street Mercantile", 25: "Timberline Railway",
+                26: "Claims Office Avenue", 27: "Bank Block", 28: "Snowmelt Water Works", 29: "Exchange Hall", 31: "Smelter Lane", 32: "Stamp Mill Works", 34: "Tailings Yard", 35: "Summit Express", 37: "Ridgeview Drive", 39: "Summit Terrace" } },
+    neon: { name: "Neon Bay", emoji: "🌃", tagline: "A big city of towers, transit lines and tech startups.", board: "#d3d8f5", paper: "#f7f8ff",
+      groups: { mill: { name: "Old Docks", icon: "🚢" }, heights: { name: "Garden Heights", icon: "🌳" }, oldtown: { name: "Brick District", icon: "🧱" }, river: { name: "Canal Walk", icon: "🛶" },
+                market: { name: "Night Market", icon: "🏮" }, midtown: { name: "Tech Row", icon: "💻" }, foundry: { name: "Port Warehouses", icon: "📦" }, harbor: { name: "Skyline Towers", icon: "🏙️" } },
+      spaces: { 1: "Pier 9 Lofts", 3: "Crane Street", 5: "Red Line", 6: "Elm Court", 8: "Maple Commons", 9: "Rooftop Gardens", 11: "Brick Lane", 12: "Metro Power Grid", 13: "Clocktower Lofts", 14: "Gaslight Row",
+                15: "Blue Line", 16: "Canal Street", 18: "Lock Keeper Way", 19: "Gondola Point", 21: "Lantern Alley", 23: "Dumpling Row", 24: "Neon Arcade", 25: "Green Line",
+                26: "Startup Plaza", 27: "Code Tower", 28: "City Water Authority", 29: "Data Center Drive", 31: "Container Yard", 32: "Freight Hub", 34: "Robot Works", 35: "Airport Express", 37: "Sky Garden Tower", 39: "Penthouse Row" } },
+    prairie: { name: "Prairie Hollow", emoji: "🌾", tagline: "A farm town of grain elevators, orchards and a county courthouse.", board: "#efe5b8", paper: "#fffbea",
+      groups: { mill: { name: "Grain Elevator Row", icon: "🌾" }, heights: { name: "Orchard Hill", icon: "🍎" }, oldtown: { name: "Courthouse Square", icon: "🏛️" }, river: { name: "Mill Creek", icon: "🐟" },
+                market: { name: "Feed & Seed District", icon: "🛍️" }, midtown: { name: "County Offices", icon: "🗂️" }, foundry: { name: "Tractor Works", icon: "🚜" }, harbor: { name: "Lakeshore Ranches", icon: "🐎" } },
+      spaces: { 1: "Silo Lane", 3: "Haystack Court", 5: "Wheatland Line", 6: "Apple Way", 8: "Peach Street", 9: "Cherry Lane", 11: "Courthouse Row", 12: "Rural Electric Co-op", 13: "Bandstand Square", 14: "Depot Alley",
+                15: "Cattle Trail Line", 16: "Creek Bend", 18: "Waterwheel Road", 19: "Fishing Point", 21: "Feed Store Corner", 23: "Farmers Market Row", 24: "Main Street Diner", 25: "Harvest Line",
+                26: "County Clerk Avenue", 27: "Extension Office Plaza", 28: "Prairie Water District", 29: "Co-op Bank Street", 31: "Tractor Lane", 32: "Combine Works", 34: "Ethanol Plant Yard", 35: "Big Sky Express", 37: "Lakeshore Ranch", 39: "Big Sky Ranch" } }
   },
 
   /* ---------- THE BOARD: 40 SPACES, clockwise from PAYDAY ----------
@@ -738,10 +769,10 @@ const GAME_CONTENT = {
       effects: [{ op: "corridorDouble", years: 2 }],
       insight: "In the 1800s, railroads created whole towns. Land near a station became valuable because people and goods could reach it.", vocab: "infrastructure" },
     { id: "e_factory", scope: "macro", fx: "boom", title: "New Factory Opens", weights: [2,1,0,2],
-      text: "A battery factory opens in the Foundry District. Foundry demand rises 30%, and Mill Flats rises 15% (workers need homes).",
+      text: "A battery factory opens in the Foundry District. Foundry District demand rises 30%, and Mill Flats rises 15% (workers need homes).",
       effects: [{ op: "demand", target: ["foundry"], mult: 1.3 }, { op: "demand", target: ["mill"], mult: 1.15 }],
       insight: "New jobs bring new workers, who need housing and shops. One business can lift a whole area.", vocab: "multiplier effect" },
-    { id: "e_tech", scope: "macro", fx: "boom", title: "Tech Company Moves to Midtown", weights: [2,1,0,1],
+    { id: "e_tech", scope: "macro", fx: "boom", title: "Tech Company Moves In", weights: [2,1,0,1],
       text: "A tech company leases a whole building. Midtown Office demand rises 30%.",
       effects: [{ op: "demand", target: ["midtown"], mult: 1.3 }],
       insight: "Offices are worth more when businesses want to be there. Demand for space follows jobs.", vocab: "demand" },
@@ -750,7 +781,7 @@ const GAME_CONTENT = {
       effects: [{ op: "demand", target: ["market"], mult: 0.8 }, { op: "demand", target: ["foundry"], mult: 1.15 }],
       insight: "New technology helps some businesses and hurts others. Economists call this creative destruction.", vocab: "creative destruction" },
     { id: "e_remote", scope: "macro", title: "Remote Work Trend", weights: [1,1,1,1],
-      text: "Many workers now work from home. Office demand drops 20% and residential demand rises 10%.",
+      text: "Many workers now work from home. Midtown Office demand drops 20% and residential demand rises 10%.",
       effects: [{ op: "demand", target: ["midtown"], mult: 0.8 }, { op: "demand", target: "res", mult: 1.1 }],
       insight: "When people change how they live and work, demand shifts from one kind of property to another.", vocab: "shift in demand" },
     { id: "e_steady", scope: "macro", title: "Steady Growth", weights: [3,1,0,2],
@@ -857,7 +888,7 @@ const GAME_CONTENT = {
       con: "Neighbors may face more traffic, noise and change to the neighborhood's character.",
       effects: [{ op: "zoneGroup", group: "heights", to: "C" }], cpu: "group:heights",
       insight: "Zoning is decided by local governments, often after public hearings or votes. It shapes what a town looks like.", vocab: "referendum" },
-    { id: "b_mixeduse", title: "Measure D: Foundry Mixed Use", summary: "Let old factories in the Foundry District become apartments and lofts.",
+    { id: "b_mixeduse", title: "Measure D: Foundry District Mixed Use", summary: "Let old factories in the Foundry District become apartments and lofts.",
       yes: "Foundry District demand rises 10% and empty units drop, because the buildings can be used for more things.",
       no: "The Foundry District stays industrial only.",
       fiscal: "No direct cost.",
@@ -890,7 +921,7 @@ const GAME_CONTENT = {
       effects: [{ op: "rentControl" }, { op: "demand", target: "res", mult: 0.9 }], cpu: "renter",
       insight: "Rent control is a price ceiling. Economists debate how it affects the supply and quality of housing.", vocab: "price ceiling" },
     { id: "b_factory", title: "Measure H: Factory Tax Incentive", summary: "Give a new factory 5 Years with no property tax so it chooses Port Juniper.",
-      yes: "The factory comes: Foundry demand rises 30%. Everyone else pays +1 mill to make up the lost tax.",
+      yes: "The factory comes: Foundry District demand rises 30%. Everyone else pays +1 mill to make up the lost tax.",
       no: "The factory may go to another town.",
       fiscal: "The town gives up the factory's taxes; others pay +1 mill for 5 Years.",
       pro: "Brings hundreds of jobs and new customers for local businesses.",
@@ -1079,8 +1110,33 @@ const Engine = (function () {
   const STRATEGIES = ['res', 'com', 'rail', 'saver', 'balanced'];
   const STRAT_LABEL = { res: 'Residential-heavy', com: 'Commercial-heavy', rail: 'Rail-heavy', saver: 'Saver/Investor', balanced: 'Balanced' };
 
+  /* ---------- town themes: rename places in place (rules never change) ---------- */
+  const THEMED_KEYS = ['meta', 'GROUPS', 'SPACES', 'OPPORTUNITY', 'CIVIC', 'DECISIONS', 'EVENTS', 'BALLOTS', 'TENANT', 'QUICK_CHECKS', 'DEBRIEF_GENERAL'];
+  const THEME_BASE = JSON.parse(JSON.stringify(THEMED_KEYS.reduce((o, k) => { o[k] = C[k]; return o; }, {})));
+  let currentTheme = 'juniper';
+  function restoreInPlace(target, src) { Object.keys(src).forEach(k => { if (src[k] && typeof src[k] === 'object') restoreInPlace(target[k], src[k]); else target[k] = src[k]; }); }
+  function mapStrings(obj, fn) { Object.keys(obj).forEach(k => { const v = obj[k]; if (typeof v === 'string') obj[k] = fn(v); else if (v && typeof v === 'object') mapStrings(v, fn); }); }
+  function applyTheme(id) {
+    const th = (C.THEMES || {})[id] ? C.THEMES[id] : null;
+    THEMED_KEYS.forEach(k => { if (C[k]) restoreInPlace(C[k], THEME_BASE[k]); });
+    currentTheme = th ? id : 'juniper';
+    if (!th || id === 'juniper') return currentTheme;
+    const swap = {};
+    if (th.name) swap[THEME_BASE.meta.town] = th.name;
+    Object.keys(th.groups || {}).forEach(g => { const base = THEME_BASE.GROUPS[g]; if (!base) return; if (th.groups[g].name) swap[base.name] = th.groups[g].name; });
+    Object.keys(th.spaces || {}).forEach(i => { const base = THEME_BASE.SPACES[+i]; if (base && th.spaces[i]) swap[base.name] = th.spaces[i]; });
+    const keys = Object.keys(swap).sort((a, b) => b.length - a.length).map(k => k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+    const re = keys.length ? new RegExp(keys.join('|'), 'g') : null;
+    const fn = (t) => re ? t.replace(re, m => swap[m]) : t;
+    ['OPPORTUNITY', 'CIVIC', 'DECISIONS', 'EVENTS', 'BALLOTS', 'TENANT', 'QUICK_CHECKS', 'DEBRIEF_GENERAL'].forEach(k => { if (C[k]) mapStrings(C[k], fn); });
+    if (th.name) C.meta.town = th.name;
+    Object.keys(th.groups || {}).forEach(g => { if (C.GROUPS[g]) { if (th.groups[g].name) C.GROUPS[g].name = th.groups[g].name; if (th.groups[g].icon) C.GROUPS[g].icon = th.groups[g].icon; } });
+    Object.keys(th.spaces || {}).forEach(i => { if (C.SPACES[+i] && th.spaces[i]) C.SPACES[+i].name = th.spaces[i]; });
+    return currentTheme;
+  }
+
   const DEFAULT_SETTINGS = { years: 10, yearTimer: true, yearTimerMin: T.yearTimerMin, turnTimer: true, turnTimerSec: T.turnTimerSec,
-    quickChecks: true, ballots: true, prePost: true, difficulty: 'standard', anim: 'normal', muted: false, tutorial: true };
+    quickChecks: true, ballots: true, prePost: true, difficulty: 'standard', anim: 'normal', muted: false, tutorial: true, theme: 'juniper' };
 
   const diff = (s) => C.DIFFICULTY[s.settings.difficulty] || C.DIFFICULTY.standard;
   const P = (s, id) => s.players[id];
@@ -2714,7 +2770,7 @@ const Engine = (function () {
   }
 
   return {
-    newGame, step, stepMut, cpuDecide, cpuAuctionBid, quickAuction, results, csv,
+    newGame, step, stepMut, applyTheme, theme: () => currentTheme, cpuDecide, cpuAuctionBid, quickAuction, results, csv,
     // read-only helpers for the screen and the simulator
     lotPrice, listPrice, lotDemand, groupDemand, rentFor, houseCost, buildPrice, canBuild, marketValue, assessedValue, millage, netWorth, totalDebt, realCash,
     propertyValue, homeValue, savingsAPY, loanQuote, creditPremium, incomeTax, yearExpensesEst, livingCost, housingCost, premiums, propTaxLots, salaryNow,
@@ -2837,6 +2893,29 @@ if (typeof module !== 'undefined') module.exports = { Engine };
     $('[data-x]', pop).focus();
   }
 
+  /* ---------- town theme (names + board colors) ---------- */
+  function applyThemeUI(id) {
+    const used = E.applyTheme(id || 'juniper'); const th = (C.THEMES || {})[used] || {};
+    const root = document.documentElement.style;
+    root.setProperty('--board', th.board || '#cfe8d5'); root.setProperty('--paper', th.paper || '#fbf7ea');
+    return used;
+  }
+  /* ---------- full screen ---------- */
+  function fsSupported() { const d = document.documentElement; return !!(d.requestFullscreen || d.webkitRequestFullscreen); }
+  function isFullscreen() { return !!(document.fullscreenElement || document.webkitFullscreenElement); }
+  function toggleFullscreen() {
+    if (!fsSupported()) { toast('Full screen is not available in this browser. Try pressing F11 (or the ⛶ key on a Chromebook).'); return; }
+    try {
+      if (isFullscreen()) { (document.exitFullscreen || document.webkitExitFullscreen).call(document); }
+      else { const d = document.documentElement; const r = (d.requestFullscreen || d.webkitRequestFullscreen).call(d); if (r && r.catch) r.catch(() => toast('Full screen was blocked. Try pressing F11 (or the ⛶ key on a Chromebook).')); }
+    } catch (e) { toast('Full screen was blocked. Try pressing F11.'); }
+  }
+  const fsLabel = () => isFullscreen() ? '🗗 Exit full screen' : '⛶ Full screen';
+  ['fullscreenchange', 'webkitfullscreenchange'].forEach(ev => document.addEventListener(ev, () => {
+    $$('[data-fs]').forEach(b => { b.textContent = b.dataset.fs === 'icon' ? (isFullscreen() ? '🗗' : '⛶') : fsLabel(); b.setAttribute('aria-label', isFullscreen() ? 'Exit full screen' : 'Full screen'); });
+    setTimeout(() => { if (G && !$('#game').classList.contains('hidden')) renderTokens(); }, 150);
+  }));
+
   /* ---------- toasts & live ---------- */
   function toast(msg, ms = 2600) {
     const t = document.createElement('div'); t.className = 'toast'; t.textContent = msg; $('#toasts').appendChild(t);
@@ -2886,6 +2965,8 @@ if (typeof module !== 'undefined') module.exports = { Engine };
     if (UI.promptEntry === entry) { UI.promptEntry = null; UI.promptSig = null; }
     entry.resolve(val);
   }
+  // F toggles full screen on any screen (not while typing or inside a dialog)
+  document.addEventListener('keydown', (ev) => { if (ev.key && ev.key.toLowerCase() === 'f' && !ev.ctrlKey && !ev.metaKey && !ev.altKey && !UI.modals.length && !/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)) toggleFullscreen(); });
   // keyboard: trap focus inside the top modal
   document.addEventListener('keydown', (ev) => {
     const top = UI.modals[UI.modals.length - 1];
@@ -3077,8 +3158,8 @@ if (typeof module !== 'undefined') module.exports = { Engine };
       '<span class="tk">Phase <b class="phase-' + e.phase + '">' + e.phase.toUpperCase() + '</b></span>' +
       (D.taxes ? '<span class="tk" title="Property tax rate">Millage <b>' + E.millage(G) + '</b></span>' : '') +
       '<span class="news" aria-label="Headline"><span>📰 ' + headlines.map(esc).join(' &nbsp;•&nbsp; ') + '</span></span>' +
-      '<button type="button" id="tkGloss" aria-label="Glossary">📖</button><button type="button" id="tkHelp" aria-label="How to play">❔</button><button type="button" id="tkMute" aria-label="' + (isMuted() ? 'Unmute' : 'Mute') + '">' + (isMuted() ? '🔇' : '🔊') + '</button><button type="button" id="tkSet" aria-label="Settings">⚙️</button>';
-    $('#tkGloss').onclick = openGlossary; $('#tkHelp').onclick = openHowTo; $('#tkSet').onclick = openSettings;
+      '<button type="button" id="tkFs" data-fs="icon" aria-label="' + (isFullscreen() ? 'Exit full screen' : 'Full screen') + '" title="Full screen (F)">' + (isFullscreen() ? '🗗' : '⛶') + '</button><button type="button" id="tkGloss" aria-label="Glossary">📖</button><button type="button" id="tkHelp" aria-label="How to play">❔</button><button type="button" id="tkMute" aria-label="' + (isMuted() ? 'Unmute' : 'Mute') + '">' + (isMuted() ? '🔇' : '🔊') + '</button><button type="button" id="tkSet" aria-label="Settings">⚙️</button>';
+    $('#tkFs').onclick = toggleFullscreen; $('#tkGloss').onclick = openGlossary; $('#tkHelp').onclick = openHowTo; $('#tkSet').onclick = openSettings;
     $('#tkMute').onclick = () => { dispatch({ type: 'setting', key: 'muted', value: !G.settings.muted }); PREFS.muted = G.settings.muted; savePrefs(); };
   }
 
@@ -3835,7 +3916,7 @@ if (typeof module !== 'undefined') module.exports = { Engine };
       '<li><b>Year end:</b> you pay living costs, rent or home costs, insurance, property tax and loan payments. Then everyone sees an Annual Report.</li>' +
       '<li><b>Short on cash?</b> Sell buildings or mortgage property. If that isn\'t enough, choose a bankruptcy fresh start and keep playing.</li>' +
       '<li><b>Help:</b> tap any <button type="button" class="term" data-term="equity">underlined word</button> for its meaning, press <b>Why?</b> before a decision, and use 🔊 to hear any card read aloud.</li></ol>' +
-      '<p>Keyboard: R roll · E end turn · B bank · P property · T trade · G glossary · ? help · Tab moves between buttons.</p>',
+      '<p>Keyboard: R roll · E end turn · B bank · P property · T trade · G glossary · F full screen · ? help · Tab moves between buttons.</p>',
       buttons: [{ label: 'Got it!', cls: 'primary' }] });
   }
   function openSettings() {
@@ -3943,12 +4024,13 @@ if (typeof module !== 'undefined') module.exports = { Engine };
      ===================================================================== */
   function screen(html) { const s = $('#screens'); s.innerHTML = '<div class="screen"><div class="inner">' + html + '</div></div>'; s.scrollTop = 0; return $('.screen', s); }
   function showStart() {
+    applyThemeUI('juniper');
     const saves = listSaves();
     const el = screen('<div class="hero"><svg width="160" height="160" class="dex-bob" role="img" aria-label="Dex the Beaver"><use href="#dexSym"/></svg><div><h1>DEED &amp; DEBT</h1><p>Buy property, build a career, vote on your town\'s future and learn how money and government really work in <b>' + esc(C.meta.town) + '</b>.</p></div></div>' +
-      '<div class="row" style="justify-content:center"><button type="button" class="primary" style="font-size:24px;padding:10px 34px" id="stNew">▶ New Group Game</button><button type="button" class="go" style="font-size:24px;padding:10px 34px" id="stSolo">🤖 Solo vs. Computer</button><button type="button" id="stHow">❔ How to Play</button><button type="button" id="stDeb">📋 Teacher Debrief Guide</button></div>' +
-      '<h2 style="margin-top:24px">Saved games</h2><div class="savelist">' + (saves.length ? saves.map(x => '<div class="saveitem"><b style="font-size:18px">' + esc(x.s.groupName) + '</b><span class="grow">Year ' + Math.max(1, x.s.flow.year) + ' of ' + x.s.settings.years + ' · ' + x.s.players.map(p => esc(p.name)).join(', ') + (x.s.flow.stage === 'results' ? ' · <b>finished</b>' : '') + ' · saved ' + new Date(x.s.savedAt || 0).toLocaleString() + '</span><button type="button" class="primary" data-res="' + esc(x.key) + '">Resume</button><button type="button" class="danger" data-del="' + esc(x.key) + '">Delete</button></div>').join('') : '<p>No saved games yet. Games save automatically on this device after every turn.</p>') + '</div>' +
+      '<div class="row" style="justify-content:center"><button type="button" class="primary" style="font-size:24px;padding:10px 34px" id="stNew">▶ New Group Game</button><button type="button" class="go" style="font-size:24px;padding:10px 34px" id="stSolo">🤖 Solo vs. Computer</button><button type="button" id="stFs" data-fs="text">' + fsLabel() + '</button><button type="button" id="stHow">❔ How to Play</button><button type="button" id="stDeb">📋 Teacher Debrief Guide</button></div>' +
+      '<h2 style="margin-top:24px">Saved games</h2><div class="savelist">' + (saves.length ? saves.map(x => '<div class="saveitem"><b style="font-size:18px">' + esc(x.s.groupName) + '</b><span class="grow">Year ' + Math.max(1, x.s.flow.year) + ' of ' + x.s.settings.years + ' · ' + ((C.THEMES[x.s.settings.theme] || C.THEMES.juniper).emoji + ' ' + esc((C.THEMES[x.s.settings.theme] || C.THEMES.juniper).name)) + ' · ' + x.s.players.map(p => esc(p.name)).join(', ') + (x.s.flow.stage === 'results' ? ' · <b>finished</b>' : '') + ' · saved ' + new Date(x.s.savedAt || 0).toLocaleString() + '</span><button type="button" class="primary" data-res="' + esc(x.key) + '">Resume</button><button type="button" class="danger" data-del="' + esc(x.key) + '">Delete</button></div>').join('') : '<p>No saved games yet. Games save automatically on this device after every turn.</p>') + '</div>' +
       '<p class="realworld" style="margin-top:20px">Privacy: use first names or nicknames only. Everything stays on this device. No accounts, no network, no tracking.</p>');
-    $('#stNew', el).onclick = () => showSetup('group'); $('#stSolo', el).onclick = () => showSetup('solo'); $('#stHow', el).onclick = openHowTo; $('#stDeb', el).onclick = () => openDebrief(true);
+    $('#stNew', el).onclick = () => showSetup('group'); $('#stSolo', el).onclick = () => showSetup('solo'); $('#stFs', el).onclick = toggleFullscreen; $('#stHow', el).onclick = openHowTo; $('#stDeb', el).onclick = () => openDebrief(true);
     $$('[data-res]', el).forEach(b => b.onclick = () => { const x = listSaves().find(v => v.key === b.dataset.res); if (x) startGame(x.s, true); else toast('That save could not be loaded.'); });
     $$('[data-del]', el).forEach(b => b.onclick = () => openModal({ title: 'Delete this saved game?', body: '<p>This can\'t be undone.</p>', closable: true, buttons: [{ label: 'Cancel' }, { label: 'Delete', cls: 'danger', onClick: () => { deleteSave(b.dataset.del); showStart(); } }] }));
   }
@@ -3957,7 +4039,7 @@ if (typeof module !== 'undefined') module.exports = { Engine };
     const solo = mode === 'solo';
     UI.soloSetup = solo;
     const st = { group: '', players: [{ name: '', token: TOKENS[0], cpu: false }, { name: '', token: TOKENS[1], cpu: false }, { name: '', token: TOKENS[2], cpu: true }, { name: '', token: TOKENS[3], cpu: true }],
-      years: 10, yearTimer: true, yearTimerMin: T.yearTimerMin, turnTimer: true, quickChecks: true, ballots: true, prePost: true, difficulty: 'standard', seed: '', rivals: 3 };
+      years: 10, yearTimer: true, yearTimerMin: T.yearTimerMin, turnTimer: true, quickChecks: true, ballots: true, prePost: true, difficulty: 'standard', seed: '', rivals: 3, theme: (prefill && prefill.theme) || 'juniper' };
     if (solo) { st.players = [{ name: (prefill && prefill.name) || '', token: (prefill && prefill.token) || TOKENS[0], cpu: false }]; st.yearTimer = false; st.ballots = true; }
     else if (prefill && prefill.group) st.group = prefill.group;
     // estimated minutes scale with the number of Years (based on the Standard length's estimate)
@@ -3967,6 +4049,10 @@ if (typeof module !== 'undefined') module.exports = { Engine };
       const votes = E.ballotYearsFor(st.years).length;
       return 'About ' + mins + ' minutes of play' + (solo ? ' against the computer' : ' for a group of 4') + ', ' + votes + ' ballot vote' + (votes === 1 ? '' : 's') + (L && L.note ? ' · ' + esc(L.note) : '') + (mins > 45 ? '. Saves automatically, so you can finish another day.' : '.');
     };
+    const themeBlock = () => '<fieldset><legend>Choose your town</legend><div class="themes" role="group" aria-label="Town theme">' + Object.keys(C.THEMES).map(k => {
+        const th = C.THEMES[k], names = th.spaces ? [th.spaces[1], th.spaces[24], th.spaces[39]] : [SP[1].name, SP[24].name, SP[39].name];
+        return '<button type="button" class="themeCard" data-theme="' + k + '" aria-pressed="' + (st.theme === k) + '" style="background:' + (th.board || '#cfe8d5') + '"><span style="font-size:30px">' + th.emoji + '</span><b>' + esc(th.name) + '</b><span>' + esc(th.tagline) + '</span><span class="realworld">' + names.map(esc).join(' · ') + '</span></button>';
+      }).join('') + '</div><p class="realworld">Every town has the same rules and prices. Only the names, icons and board colors change.</p></fieldset>';
     const soloPlayers = () => [st.players[0]].concat(RIVALS.slice(0, st.rivals).map((n, i) => ({ name: n, token: TOKENS.filter(t => t !== st.players[0].token)[i], cpu: true })));
     const playerBlock = () => solo
       ? '<fieldset><legend>You (first name or nickname only)</legend><div class="prow" style="grid-template-columns:40px 1fr auto"><span style="font-size:26px">' + st.players[0].token + '</span><input type="text" id="soloName" data-pn="0" maxlength="16" placeholder="Your name" value="' + esc(st.players[0].name) + '" aria-label="Your name">' +
@@ -3981,8 +4067,9 @@ if (typeof module !== 'undefined') module.exports = { Engine };
     const draw = () => {
       const el = screen('<h1>' + (solo ? '🤖 Solo vs. Computer' : 'New Group Game') + '</h1>' +
         (solo ? '' : '<fieldset><legend>Group</legend><label>Group name (used for saving) <input type="text" id="sgName" maxlength="24" value="' + esc(st.group) + '" placeholder="e.g. Table 3"></label></fieldset>') +
+        themeBlock() +
         playerBlock() +
-        (solo ? '<details><summary style="font-weight:800;cursor:pointer;min-height:44px;display:flex;align-items:center">⚙️ Game settings: length, difficulty, timers… (tap to open) ▾</summary>' : '') +
+        (solo ? '<details id="sgMore"' + (st.showSettings ? ' open' : '') + '><summary style="font-weight:800;cursor:pointer;min-height:44px;display:flex;align-items:center">⚙️ Game settings: length, difficulty, timers… (tap to open) ▾</summary>' : '') +
         '<fieldset><legend>' + (solo ? 'Settings' : 'Teacher settings') + '</legend><div class="grid2"><div>' +
         '<label>Game length <select id="sgLen">' + C.GAME_LENGTHS.map(L => '<option value="' + L.years + '" ' + (!st.custom && st.years === L.years ? 'selected' : '') + '>' + esc(L.name) + ': ' + L.years + ' Years (~' + (solo ? L.soloMin : L.groupMin) + ' min)</option>').join('') + '<option value="custom" ' + (st.custom ? 'selected' : '') + '>Custom…</option></select></label>' +
         (st.custom ? '<label>Number of Years (' + (T.minYears || 3) + '-' + (T.maxYears || 25) + ') <input type="number" id="sgYears" min="' + (T.minYears || 3) + '" max="' + (T.maxYears || 25) + '" value="' + st.years + '" style="width:90px"></label>' : '') +
@@ -3995,6 +4082,8 @@ if (typeof module !== 'undefined') module.exports = { Engine };
         '<label class="chk"><input type="checkbox" id="sgBal" ' + (st.ballots ? 'checked' : '') + '> Ballot Measures</label>' +
         '<label class="chk"><input type="checkbox" id="sgPP" ' + (st.prePost ? 'checked' : '') + '> Pre/Post check</label></div></div></fieldset>' + (solo ? '</details>' : '') +
         '<div class="row"><button type="button" id="sgBack">◀ Back</button><button type="button" id="sgDeb">📋 Debrief Guide</button><span class="grow"></span><button type="button" class="primary" style="font-size:22px" id="sgGo">Start Game ▶</button></div>');
+      $$('[data-theme]', el).forEach(b => b.onclick = () => { st.theme = b.dataset.theme; draw(); const nb = $('[data-theme="' + st.theme + '"]'); if (nb) nb.focus(); });
+      const more = $('#sgMore', el); if (more) more.ontoggle = () => { st.showSettings = more.open; };
       if (!solo) $('#sgName', el).oninput = (e) => { st.group = e.target.value; };
       if (solo) $('#sgRivals', el).onchange = (e) => { st.rivals = +e.target.value; draw(); };
       $$('[data-pn]', el).forEach(i => i.oninput = () => { st.players[+i.dataset.pn].name = i.value; });
@@ -4019,7 +4108,7 @@ if (typeof module !== 'undefined') module.exports = { Engine };
 
         const doStart = () => {
           const cfg = { groupName: group, seed: st.seed.trim() || Math.floor(Math.random() * 1e9), now: Date.now(), players: players.map((p, i) => ({ name: names[i], token: p.token, cpu: p.cpu })),
-            settings: { years: st.years, yearTimer: st.yearTimer, yearTimerMin: st.yearTimerMin, turnTimer: st.turnTimer, turnTimerSec: T.turnTimerSec, quickChecks: st.quickChecks, ballots: st.ballots, prePost: st.prePost, difficulty: st.difficulty, anim: PREFS.anim || (systemReduced ? 'reduced' : 'normal'), muted: PREFS.muted } };
+            settings: { theme: st.theme, years: st.years, yearTimer: st.yearTimer, yearTimerMin: st.yearTimerMin, turnTimer: st.turnTimer, turnTimerSec: T.turnTimerSec, quickChecks: st.quickChecks, ballots: st.ballots, prePost: st.prePost, difficulty: st.difficulty, anim: PREFS.anim || (systemReduced ? 'reduced' : 'normal'), muted: PREFS.muted } };
           if (st.prePost && players.some(p => !p.cpu)) runCheck('pre', cfg.players.map((p, i) => ({ i, name: p.name, cpu: p.cpu })), (answers) => { cfg.prechecks = answers; startGame(E.newGame(cfg), false); });
           else startGame(E.newGame(cfg), false);
         };
@@ -4045,7 +4134,7 @@ if (typeof module !== 'undefined') module.exports = { Engine };
   function checkScore(ans) { if (!ans) return null; return C.PREPOST.reduce((s, q, i) => s + (ans[i] === q.answer ? 1 : 0), 0); }
 
   function startGame(state, resumed) {
-    G = state; UI.fxq = []; UI.promptSig = null; UI.promptEntry = null; UI.coachDone = !G.settings.tutorial; UI.ballotIntro = {}; UI.yearStart = Date.now(); UI.yearWarned = false;
+    G = state; applyThemeUI(G.settings.theme); UI.fxq = []; UI.promptSig = null; UI.promptEntry = null; UI.coachDone = !G.settings.tutorial; UI.ballotIntro = {}; UI.yearStart = Date.now(); UI.yearWarned = false;
     if (G.settings.anim) PREFS.anim = PREFS.anim || null;
     applyAnim();
     $('#screens').innerHTML = '';
@@ -4135,7 +4224,7 @@ if (typeof module !== 'undefined') module.exports = { Engine };
     const a = document.createElement('a'); a.href = url; a.download = name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 2000);
     toast('Downloaded ' + name);
   }
-  function showSetupFrom(old) { const hs = old.players.filter(p => !p.cpu); if (hs.length === 1) { showSetup('solo', { name: hs[0].name, token: hs[0].token }); return; } showSetup('group'); setTimeout(() => { const n = $('#sgName'); if (n) { n.value = old.groupName + ' 2'; n.dispatchEvent(new Event('input')); } }, 20); }
+  function showSetupFrom(old) { const hs = old.players.filter(p => !p.cpu); if (hs.length === 1) { showSetup('solo', { name: hs[0].name, token: hs[0].token, theme: old.settings.theme }); return; } showSetup('group', { theme: old.settings.theme }); setTimeout(() => { const n = $('#sgName'); if (n) { n.value = old.groupName + ' 2'; n.dispatchEvent(new Event('input')); } }, 20); }
 
   /* ---------- debrief guide ---------- */
   function openDebrief(general) {

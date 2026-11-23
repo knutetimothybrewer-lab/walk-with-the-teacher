@@ -8,7 +8,7 @@
    3. No softlocks: every game in this file reaches Results; negative cash always resolves.
    4. CSV: the game log parses as RFC 4180 CSV with 6 columns on every row and no formula-like cells.
    Usage: node sim/engine-checks.js                                                                  */
-const { Engine: E } = require('./load-engine')();
+const { Engine: E, C: GAME_C } = require('./load-engine')();
 const fails = [];
 const ok = (cond, msg) => { if (!cond) fails.push(msg); };
 
@@ -98,5 +98,22 @@ for (let seed = 1; seed <= 120; seed++) {
   } catch (e) { fails.push(e.message); }
 }
 console.log('Full games finished:', games, '| times a player went negative and recovered:', debtsResolved);
+
+// ---------- 5. town themes: every theme plays to the end; names swap and restore ----------
+{
+  const baseNames = ['Port Juniper', 'Foundry District', 'Juniper Heights', 'Bayview Terrace', 'Main Street Shops'];
+  const themes = Object.keys(GAME_C.THEMES); // themes rename places in the same GAME_CONTENT the engine uses
+  for (const th of themes) {
+    E.applyTheme(th);
+    const text = JSON.stringify([E.cardById('opportunity', 'o_expo'), E.ballotById('b_upzone'), E.ballotById('b_mixeduse')]);
+    if (th !== 'juniper') ok(!baseNames.some(n => text.includes(n)), 'theme ' + th + ': base place names left in card text');
+    for (let seed = 1; seed <= 6; seed++) {
+      try { const s = game(9000 + seed, 2 + (seed % 4), [3, 6, 10][seed % 3]); s.settings.theme = th; runToEnd(s, 'theme ' + th); const rows = parseCSV(E.csv(s)); ok(rows.every(r => r.length === 6), 'theme csv ' + th); } catch (e) { fails.push(e.message); }
+    }
+  }
+  E.applyTheme('juniper');
+  ok(E.cardById('opportunity', 'o_expo').text.includes('Main Street Shops') && E.ballotById('b_upzone').title.includes('Juniper Heights'), 'theme restore to Port Juniper failed');
+  console.log('Themes played to the end:', themes.join(', '));
+}
 if (fails.length) { console.log('FAILURES (' + fails.length + '):\n' + fails.slice(0, 30).join('\n')); process.exit(1); }
 console.log('ALL ENGINE CHECKS PASSED');
