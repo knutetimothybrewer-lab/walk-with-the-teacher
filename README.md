@@ -6,6 +6,22 @@ Teacher walk through AI literacy (`index.html`).
 
 Every summative (`health-summative/`, `substance-use-summative/`, `unit7-nutrition-activity/`, `community-health-mission/`, `wildcats-wellness-quest/`) has a hard 90-minute limit counted from the moment the student starts. A countdown shows in the top bar (amber under 15 minutes, red under 5, with warnings at 15, 5 and 1), refreshing or reopening the page does not add time, and at zero the work so far is submitted and locked automatically; anything unanswered earns 0. Change or turn it off with `timeLimitMinutes` (`0` = off) in each app's `config.js` (`community-health-mission/server/grading.js` has `TIME_LIMIT_MIN`, enforced by the server; rebuild and redeploy `Code.gs` after changing it).
 
+## DEED & DEBT: economics & civics board game (`deed-and-debt/`)
+
+A classroom board game in the style of the classic property-trading game, set in the invented town of Port Juniper, where every mechanic teaches a real economics or civics idea:
+
+- supply and demand pricing, loans with credit scores, and fixed vs. variable rates
+- property and progressive income tax, zoning and variances, and rail corridors
+- inflation and real value, and the business cycle
+- careers, rent vs. buy, savings, index funds, emergency funds and insurance
+- private-vote ballot measures, and bankruptcy with no elimination
+
+2–6 students share one device (CPU players fill empty seats). A Standard game is 10 Years and about 45 minutes. It ends with a Results page (charts, awards, best and toughest decisions, reflections, pre/post check, copy-for-Classroom, CSV game log) and a Teacher Debrief Guide.
+
+Technically, it's one self-contained `index.html` (about 370 KB) that runs fully offline with no network, accounts or tracking. All cards, prices and tuning live in one editable `GAME_CONTENT` block. Start with `deed-and-debt/README.md` and `deed-and-debt/TEACHER_GUIDE.md`.
+
+Student link once GitHub Pages is on: `https://YOUR-USER.github.io/walk-with-the-teacher/deed-and-debt/`
+
 ## Outbreak City: public health tower defense (`outbreak-city/`)
 
 A satirical zombie-apocalypse tower defense game in a 2.5D isometric city where every mechanic is a real public health concept (SEIR, incubation, R_eff, surveillance and contact tracing, vaccination and herd immunity, surge capacity, isolation vs. quarantine, risk communication, social determinants, health equity, ethics). Students place eight interventions (militia, testing labs, clinics, hospitals, barricades, radio, community health workers, pantries), answer 30 Mayor's Briefing cards with delayed consequences, and reach one of seven endings (pure shooting ends in Collapse or a Hollow Victory). Ends with an After-Action Report (annotated epidemic curve, deaths by district, decisions, the 10 Essential Public Health Services, personal reflection questions) and a completion code. No server, no build, about 340 KB; works offline from a double-click. Same `?seed=` = same outbreak for the whole class. Optional Google Sheets logging. Start with `outbreak-city/README.md`.
