@@ -27,7 +27,7 @@ button.small{min-height:36px;padding:3px 10px;font-size:14px}
 input[type=text],input[type=number],select,textarea{min-height:44px;border:2px solid var(--ink);border-radius:8px;padding:6px 10px;background:#fff}
 h1,h2,h3{font-family:"Arial Black","Segoe UI Black",Roboto,sans-serif;margin:.2em 0;letter-spacing:.5px}
 .hidden{display:none!important}
-.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.sr{position:absolute;top:0;left:0;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
 .money-pos{color:var(--good);font-weight:800}.money-neg{color:var(--bad);font-weight:800}
 .row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 .grow{flex:1}
@@ -128,11 +128,11 @@ h1,h2,h3{font-family:"Arial Black","Segoe UI Black",Roboto,sans-serif;margin:.2e
 @keyframes fall{to{transform:translateY(110vh) rotate(25deg);opacity:.2}}
 .rise{position:absolute;bottom:-40px;font-size:30px;animation:rise calc(1.8s * var(--spd)) ease-out forwards}
 @keyframes rise{to{transform:translateY(-110vh);opacity:.1}}
-.flycash{position:fixed;font-weight:900;font-size:20px;padding:2px 8px;border-radius:12px;background:#fff;border:2px solid var(--ink);transition:left calc(.6s * var(--spd)) ease-in-out,top calc(.6s * var(--spd)) ease-in-out,opacity .3s;z-index:61}
-.floaty{position:fixed;font-weight:900;font-size:18px;animation:floaty calc(1.2s * var(--spd)) ease-out forwards;z-index:61;text-shadow:0 1px 0 #fff}
+.flycash{pointer-events:none;position:fixed;font-weight:900;font-size:20px;padding:2px 8px;border-radius:12px;background:#fff;border:2px solid var(--ink);transition:left calc(.6s * var(--spd)) ease-in-out,top calc(.6s * var(--spd)) ease-in-out,opacity .3s;z-index:61}
+.floaty{pointer-events:none;position:fixed;font-weight:900;font-size:18px;animation:floaty calc(1.2s * var(--spd)) ease-out forwards;z-index:61;text-shadow:0 1px 0 #fff}
 @keyframes floaty{to{transform:translateY(-40px);opacity:0}}
 #confetti{position:fixed;inset:0;pointer-events:none;z-index:70}
-.banner{position:fixed;left:50%;top:40%;transform:translate(-50%,-50%) scale(.2);background:var(--ink);color:var(--accent);font-family:"Arial Black",sans-serif;font-size:56px;padding:18px 44px;border-radius:20px;border:5px solid var(--accent);z-index:65;opacity:0;animation:banner calc(1.8s * var(--spd)) ease-out forwards;text-align:center;white-space:nowrap}
+.banner{pointer-events:none;position:fixed;left:50%;top:40%;transform:translate(-50%,-50%) scale(.2);background:var(--ink);color:var(--accent);font-family:"Arial Black",sans-serif;font-size:56px;padding:18px 44px;border-radius:20px;border:5px solid var(--accent);z-index:65;opacity:0;animation:banner calc(1.8s * var(--spd)) ease-out forwards;text-align:center;white-space:nowrap}
 .banner small{display:block;font-size:22px;color:#fff}
 @keyframes banner{15%{transform:translate(-50%,-50%) scale(1.1);opacity:1}25%{transform:translate(-50%,-50%) scale(1)}80%{opacity:1;transform:translate(-50%,-50%) scale(1)}100%{opacity:0;transform:translate(-50%,-60%) scale(.9)}}
 .reduced .banner{animation:none;opacity:1;transform:translate(-50%,-50%)}
@@ -158,8 +158,8 @@ h1,h2,h3{font-family:"Arial Black","Segoe UI Black",Roboto,sans-serif;margin:.2e
 .pdash .stats{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;font-size:12px}
 .pdash .stat{display:flex;flex-direction:column;min-width:0}
 .pdash .stat b{font-size:14px;white-space:nowrap}
-.pdash .stat span{color:var(--muted);white-space:nowrap}
-.pdash canvas{width:100%;height:16px}
+.pdash .stat span{color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pdash canvas{width:100%;height:14px;display:block}
 .flowneg{animation:flash 1s steps(2) infinite;color:var(--bad)!important}
 @keyframes flash{50%{opacity:.35}}
 #sideBtns{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
@@ -232,7 +232,8 @@ label.chk{display:flex;align-items:center;gap:8px;min-height:44px;cursor:pointer
 label.chk input{width:22px;height:22px}
 .podium{display:flex;align-items:flex-end;justify-content:center;gap:12px;height:260px;margin:10px 0}
 .pod{width:150px;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:flex-end}
-.pod .blk{width:100%;background:var(--accent);border:4px solid var(--ink);border-radius:10px 10px 0 0;display:flex;align-items:flex-start;justify-content:center;font-family:"Arial Black",sans-serif;font-size:34px;padding-top:6px;height:0;transition:height calc(1.2s * var(--spd)) ease-out}
+.pod .blk{width:100%;background:var(--accent);border:4px solid var(--ink);border-radius:10px 10px 0 0;display:flex;align-items:flex-start;justify-content:center;font-family:"Arial Black",sans-serif;font-size:34px;padding-top:6px;overflow:hidden;animation:growUp calc(1.2s * var(--spd)) ease-out}
+@keyframes growUp{from{height:0}}
 .pod .tk{font-size:40px}
 .statgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:6px;font-size:14px}
 .statgrid div{background:var(--panel2);border-radius:8px;padding:6px}
@@ -1454,7 +1455,7 @@ const Engine = (function () {
     if (ev.requires === 'targetRents') return target && target.home.mode === 'rent';
     return true;
   }
-  function drawEvent(s, forceId) {
+  function drawEvent(s, forceId, targetId) {
     const ph = PHASES.indexOf(s.economy.phase);
     let ev = null, target = null;
     if (forceId) { ev = C.EVENTS.find(e => e.id === forceId); }
@@ -1471,6 +1472,7 @@ const Engine = (function () {
       }
       if (!ev) ev = C.EVENTS.find(e => e.id === 'e_steady');
     }
+    if (ev.scope === 'personal' && !target && targetId != null && eventOk(s, ev, P(s, targetId))) target = P(s, targetId);
     if (ev.scope === 'personal' && !target) { const ok = s.players.filter(p => eventOk(s, ev, p)); target = ok.length ? pickR(s, ok) : s.players[0]; }
     s.eventsUsed.push(ev.id);
     const msgs = [];
@@ -1695,7 +1697,7 @@ const Engine = (function () {
     const it = incomeTax(s, taxable);
     const owe = it.tax - p.yr.withheld - p.yr.taxPaid;
     if (owe > 0) { cash(s, p, -owe, 'tax', 'Tax Day: income tax due'); p.yr.taxPaid += owe; }
-    else if (owe < 0) { cash(s, p, -owe, 'other', 'Tax Day: refund'); p.yr.taxPaid += owe; }
+    else if (owe < 0) { cash(s, p, -owe, 'gift', 'Tax Day: refund'); p.yr.taxPaid += owe; }
     emit({ t: 'taxday', pid: p.id, income: p.yr.taxable, dep, taxable, rows: it.rows, tax: it.tax, withheld: p.yr.withheld, paidBefore: p.yr.taxPaid - owe, owe });
   }
 
@@ -2651,10 +2653,10 @@ const Engine = (function () {
       return { id: p.id, name: p.name, token: p.token, cpu: p.cpu, strategy: p.strategy, nw, cash: r0(p.cash), savingsInv: r0(p.savings + p.fund + p.emergency),
         equity: r0(propertyValue(s, p) + homeValue(s, p)), debt: totalDebt(s, p), career: p.career ? p.career.path : null, careerLabel: p.career ? C.CAREERS[p.career.path].label : '',
         homeStart: p.homeStart || 'rent', homeEnd: p.home.mode, credit: p.credit, creditStart: p.stats.creditStart, stats: p.stats, rails: railsOwned(s, p.id), comVal, minNW, comeback: nw - minNW,
-        cashFlowTotal, best, worst, bankrupt: p.stats.bankruptcies > 0, bk: p.bk, yearly: p.yearly, checks: p.checks, reflections: p.reflections, lots: lots.length };
+        civic: p.civic, cashFlowTotal, best, worst, bankrupt: p.stats.bankruptcies > 0, bk: p.bk, yearly: p.yearly, checks: p.checks, reflections: p.reflections, lots: lots.length };
     });
     const rank = ps.slice().sort((a, b) => b.nw - a.nw);
-    const award = (title, icon, fn, desc, filter) => { const pool = ps.filter(filter || (() => true)); if (!pool.length) return null; const best = Math.max(...pool.map(fn)); if (!isFinite(best)) return null; const winners = pool.filter(x => fn(x) === best); if (winners.length === ps.length && ps.length > 1 && title !== 'Civic Voter') return null; return { title, icon, desc, winners: winners.map(w => w.id), value: best }; };
+    const award = (title, icon, fn, desc, filter) => { const pool = ps.filter(filter || (() => true)); if (!pool.length) return null; const best = Math.max(...pool.map(fn)); if (!isFinite(best)) return null; const winners = pool.filter(x => fn(x) === best); if (winners.length === ps.length && ps.length > 1) return null; return { title, icon, desc, winners: winners.map(w => w.id), value: best }; };
     const awards = [
       award('Cash-Flow Champion', '💵', x => x.cashFlowTotal, 'Most income minus expenses over the game.'),
       award('Debt-Free Dynasty', '🕊️', x => -x.debt * 1e6 + x.nw, 'Least debt at the end.'),
@@ -2663,7 +2665,7 @@ const Engine = (function () {
       award('Smart Saver', '🐷', x => x.stats.interestEarned + x.stats.fundGain, 'Most earned from savings and investing.', x => x.stats.interestEarned + x.stats.fundGain > 0),
       award('Best Credit Score', '⭐', x => x.credit, 'Highest final credit score.'),
       award('Comeback Kid', '🔄', x => x.comeback + (x.bankrupt ? 100000 : 0), 'Biggest climb from their lowest point.', x => x.comeback > 0),
-      award('Civic Voter', '🗳️', x => x.stats.votes, 'Voted on every ballot measure.', x => x.stats.votes > 0 && x.stats.votes >= s.ballots.results.length),
+      award('Civic Voter', '🗳️', x => x.civic, 'Most civic actions: voting, jury duty and registering to vote.', x => x.civic > 0 && x.stats.votes >= s.ballots.results.length),
       award('Most Taxes Paid', '🏛️', x => x.stats.taxesPaid, 'Paid the most in taxes (taxes fund public services!).', x => x.stats.taxesPaid > 0)
     ].filter(Boolean);
     ps.forEach(x => { x.reflectPrompts = reflectionPrompts(s, x); });
@@ -2719,7 +2721,7 @@ if (typeof module !== 'undefined') module.exports = { Engine };
   const TOKENS = ['🚲', '🎒', '🛹', '🎧', '🪴', '☕', '🐢', '🚀'];
   const SAVE_PREFIX = 'deedndebt:save:';
   let G = null;
-  const UI = { turnLeft: null, fxq: [], pumping: false, seen: new Set(), modals: [], promptSig: null, cpuTimer: null, turnTimer: null, yearStart: Date.now(), yearWarned: false,
+  const UI = { shownCash: {}, turnLeft: null, fxq: [], pumping: false, seen: new Set(), modals: [], promptSig: null, cpuTimer: null, turnTimer: null, yearStart: Date.now(), yearWarned: false,
     ballotIntro: {}, pass: {}, auction: null, lastNW: {}, coachDone: false };
 
   /* ---------- prefs ---------- */
@@ -2885,15 +2887,38 @@ if (typeof module !== 'undefined') module.exports = { Engine };
   /* =====================================================================
      SAVE / LOAD
      ===================================================================== */
-  function save() {
+  // Saves right away whenever the turn, stage or open prompt changes (and when the tab is hidden or closed); repeated changes inside one prompt are saved at most every 5 seconds (fewer, smaller writes are kinder to Chromebook storage).
+  let saveTimer = null, lastSave = 0, lastSavedTurn = -1;
+  function save(force) {
     if (!G) return;
-    try { G.savedAt = Date.now(); localStorage.setItem(SAVE_PREFIX + G.groupName, JSON.stringify(G)); } catch (e) { toast('Could not save (storage full?)'); }
+    const turnMark = G.flow.turnCount * 100 + G.flow.year + '|' + G.flow.stage + '|' + pendingSig(G.pending);
+    if (!force && turnMark === lastSavedTurn && Date.now() - lastSave < 5000) { if (!saveTimer) saveTimer = setTimeout(() => { saveTimer = null; save(true); }, 5000); return; }
+    if (saveTimer) { clearTimeout(saveTimer); saveTimer = null; }
+    lastSave = Date.now(); lastSavedTurn = turnMark;
+    G.savedAt = Date.now(); const json = JSON.stringify(G); let ok = false;
+    try { localStorage.setItem(SAVE_PREFIX + G.groupName, json); ok = true; } catch (e) { }
+    IDB.put(SAVE_PREFIX + G.groupName, json); // second copy: some browsers drop localStorage writes for pages opened as local files
+    if (!ok && !IDB.db) toast('Could not save (storage full?)');
   }
+  // IndexedDB backup copy of every save (the newest of the two copies wins when loading)
+  const IDB = {
+    db: null,
+    open() { return new Promise(res => { try { const r = indexedDB.open('deedndebt', 1); r.onupgradeneeded = () => r.result.createObjectStore('saves'); r.onsuccess = () => { IDB.db = r.result; res(); }; r.onerror = () => res(); r.onblocked = () => res(); } catch (e) { res(); } setTimeout(res, 1500); }); },
+    put(k, v) { if (!this.db) return; try { this.db.transaction('saves', 'readwrite').objectStore('saves').put(v, k); } catch (e) { } },
+    del(k) { if (!this.db) return; try { this.db.transaction('saves', 'readwrite').objectStore('saves').delete(k); } catch (e) { } },
+    all() { return new Promise(res => { if (!this.db) return res([]); const out = []; try { const rq = this.db.transaction('saves').objectStore('saves').openCursor(); rq.onsuccess = () => { const c = rq.result; if (c) { out.push({ key: c.key, json: c.value }); c.continue(); } else res(out); }; rq.onerror = () => res(out); } catch (e) { res(out); } }); }
+  };
+  window.addEventListener('pagehide', () => save(true));
+  document.addEventListener('visibilitychange', () => { if (document.hidden) save(true); });
+  let idbCache = [];
   function listSaves() {
-    const out = [];
-    try { for (let i = 0; i < localStorage.length; i++) { const k = localStorage.key(i); if (k && k.startsWith(SAVE_PREFIX)) { try { const s = JSON.parse(localStorage.getItem(k)); out.push({ key: k, s }); } catch (e) { } } } } catch (e) { }
-    return out.sort((a, b) => (b.s.savedAt || 0) - (a.s.savedAt || 0));
+    const map = {};
+    const add = (k, json) => { try { const s = JSON.parse(json); if (!map[k] || (s.savedAt || 0) > (map[k].s.savedAt || 0)) map[k] = { key: k, s }; } catch (e) { } };
+    try { for (let i = 0; i < localStorage.length; i++) { const k = localStorage.key(i); if (k && k.startsWith(SAVE_PREFIX)) add(k, localStorage.getItem(k)); } } catch (e) { }
+    idbCache.forEach(x => { if (String(x.key).startsWith(SAVE_PREFIX)) add(x.key, x.json); });
+    return Object.values(map).sort((a, b) => (b.s.savedAt || 0) - (a.s.savedAt || 0));
   }
+  function deleteSave(key) { try { localStorage.removeItem(key); } catch (e) { } IDB.del(key); idbCache = idbCache.filter(x => x.key !== key); }
 
   /* =====================================================================
      DISPATCH & FX PUMP
@@ -2903,7 +2928,7 @@ if (typeof module !== 'undefined') module.exports = { Engine };
     Snd.init();
     const r = E.step(G, a);
     if (r.error) { toast(r.error); Snd.play('bad'); return false; }
-    G = r.state; save();
+    G = r.state; save(a.type === 'endTurn' || a.type === 'endGameNow' || G.flow.stage === 'results');
     UI.fxq.push(...r.fx);
     pump();
     return true;
@@ -3070,15 +3095,29 @@ if (typeof module !== 'undefined') module.exports = { Engine };
         '<span class="av" style="border-color:' + pColor(p.id) + '">' + p.token + '</span>' +
         '<span class="nm">' + esc(p.name) + ' ' + tags + '</span>' +
         '<span class="stats">' +
-        '<span class="stat"><span>Cash</span><b data-count="' + p.cash + '" class="' + (p.cash < 0 ? 'money-neg' : '') + '">' + fmt(p.cash) + '</b>' + (D.inflation ? '<span title="Real value: what your cash buys in Year 1 dollars">real ' + fmt(E.realCash(G, p)) + '</span>' : '') + '</span>' +
-        '<span class="stat"><span>Net worth</span><b>' + fmt(nw) + '</b><canvas data-spark="' + p.id + '"></canvas></span>' +
-        (D.credit ? '<span class="stat"><span>Credit</span><b>' + p.credit + '</b></span>' : '') +
-        '<span class="stat"><span>Debt</span><b class="' + (debt > 0 ? 'money-neg' : '') + '">' + fmt(debt) + '</b></span>' +
-        '<span class="stat"><span>Cash flow/yr</span><b class="' + (cf < 0 ? 'flowneg' : 'money-pos') + '">' + (cf >= 0 ? '+' : '') + fmt(cf) + '</b></span>' +
+        '<span class="stat"><span>Cash' + (D.inflation ? ' <i title="Real value: what your cash buys in Year 1 dollars" style="font-style:normal">(real ' + fmt(E.realCash(G, p)) + ')</i>' : '') + '</span><b data-roll-cash="' + p.id + '" class="' + (p.cash < 0 ? 'money-neg' : '') + '">' + fmt(p.cash) + '</b><canvas data-spark="' + p.id + '" data-k="cash"></canvas></span>' +
+        '<span class="stat"><span>Net worth</span><b>' + fmt(nw) + '</b><canvas data-spark="' + p.id + '" data-k="nw"></canvas></span>' +
+        (D.credit ? '<span class="stat"><span>Credit</span><b>' + p.credit + '</b><canvas data-spark="' + p.id + '" data-k="credit"></canvas></span>' : '') +
+        '<span class="stat"><span>Debt</span><b class="' + (debt > 0 ? 'money-neg' : '') + '">' + fmt(debt) + '</b><canvas data-spark="' + p.id + '" data-k="debt"></canvas></span>' +
+        '<span class="stat"><span>Cash flow/yr</span><b class="' + (cf < 0 ? 'flowneg' : 'money-pos') + '">' + (cf >= 0 ? '+' : '') + fmt(cf) + '</b><canvas data-spark="' + p.id + '" data-k="flow"></canvas></span>' +
         '</span></button>';
     }).join('');
     $$('.pdash', dash).forEach(b => { b.onclick = () => openPlayer(+b.dataset.pid); });
-    $$('canvas[data-spark]', dash).forEach(cv => { const p = G.players[+cv.dataset.spark]; sparkline(cv, p.yearly.map(y => y.nw).concat([E.netWorth(G, p)]), pColor(p.id)); });
+    $$('canvas[data-spark]', dash).forEach(cv => {
+      const p = G.players[+cv.dataset.spark], k = cv.dataset.k;
+      const now = { nw: E.netWorth(G, p), cash: p.cash, credit: p.credit, debt: E.totalDebt(G, p), flow: cashFlowEst(p) }[k];
+      const hist = p.yearly.map(y => k === 'flow' ? (y.year ? y.income - y.expenses : null) : y[k]).filter(v => v != null);
+      sparkline(cv, hist.concat([now]), k === 'debt' ? '#d62f3a' : pColor(p.id));
+    });
+    // number counters roll from the old value to the new one
+    $$('[data-roll-cash]', dash).forEach(el => {
+      const pid = +el.dataset.rollCash, to = G.players[pid].cash, from = UI.shownCash[pid];
+      UI.shownCash[pid] = to;
+      if (from == null || from === to || reduced()) return;
+      const t0 = performance.now(), dur = 700 * speedK();
+      const tick = (t) => { const k = Math.min(1, (t - t0) / dur); el.textContent = fmt(from + (to - from) * (1 - Math.pow(1 - k, 3))); if (k < 1 && document.contains(el)) requestAnimationFrame(tick); };
+      requestAnimationFrame(tick);
+    });
     $('#sideBtns').innerHTML = '<button type="button" id="sbProp">🏘️ Property (P)</button><button type="button" id="sbBank">🏦 Bank &amp; Market (B)</button><button type="button" id="sbTrade">🤝 Trade (T)</button><button type="button" id="sbLog">📜 Log</button>';
     $('#sbProp').onclick = openPropertyList; $('#sbBank').onclick = openBank; $('#sbTrade').onclick = openTrade; $('#sbLog').onclick = openLog;
     updateTimerBar();
@@ -3129,7 +3168,7 @@ if (typeof module !== 'undefined') module.exports = { Engine };
   }
   function handlePending() {
     if (!G) return;
-    if (G.flow.stage === 'results') { showResults(); return; }
+    if (G.flow.stage === 'results') { if (!$('#rsLine')) showResults(); return; }
     const pd = G.pending; if (!pd) return;
     if (UI.modals.some(m => m.o.fx)) return;
     if (isCpuPending(pd)) {
@@ -3239,7 +3278,9 @@ if (typeof module !== 'undefined') module.exports = { Engine };
         { label: '🏦 Bank', keepOpen: true, onClick: () => openBank() },
         { label: 'Send to auction', keepOpen: true, onClick: () => dispatch({ type: 'auction' }) },
         { label: 'Buy for ' + fmt(pd.price), cls: 'primary', keepOpen: true, onClick: () => dispatch({ type: 'buy' }) }] }));
-    UI.promptEntry.refresh = () => { draw(); };
+    const entry = UI.promptEntry;
+    entry.refresh = () => { draw(); const bb = $('.btns button.primary', entry.el); if (bb) { const c = G.players[pd.player].cash; bb.disabled = c < pd.price; bb.title = c < pd.price ? 'Not enough cash' : ''; } };
+    entry.refresh();
   }
 
   /* ---------- auction (30-second timer) ---------- */
@@ -3681,9 +3722,9 @@ if (typeof module !== 'undefined') module.exports = { Engine };
       $$('[data-tab]', body).forEach(b => b.onclick = () => { tab = UI.bankTab = b.dataset.tab; draw(); const nb = $('[data-tab="' + tab + '"]', body); if (nb) nb.focus(); });
       const a = $('#bAmt', body); if (a) a.oninput = () => { st.amt = Math.max(0, Math.round(+a.value || 0)); const keep = a.selectionStart; draw(); const na = $('#bAmt', body); na.focus(); try { na.setSelectionRange(keep, keep); } catch (e) { } };
       $$('[data-set]', body).forEach(b => b.onclick = () => { st.amt = +b.dataset.set; draw(); });
-      const la = $('#lAmt', body); if (la) la.onchange = () => { st.loanAmt = Math.round(+la.value || 0); draw(); };
-      const ly = $('#lYears', body); if (ly) ly.onchange = () => { st.years = +ly.value; draw(); };
-      const lt = $('#lType', body); if (lt) lt.onchange = () => { st.type = lt.value; draw(); };
+      const la = $('#lAmt', body); if (la) la.onchange = () => { st.loanAmt = Math.round(+la.value || 0); setTimeout(draw, 0); };
+      const ly = $('#lYears', body); if (ly) ly.onchange = () => { st.years = +ly.value; setTimeout(draw, 0); };
+      const lt = $('#lType', body); if (lt) lt.onchange = () => { st.type = lt.value; setTimeout(draw, 0); };
       $$('[data-why]', body).forEach(b => b.onclick = () => $('#' + b.dataset.why, body).classList.toggle('hidden'));
       $$('[data-pay]', body).forEach(b => b.onclick = () => { if (dispatch({ type: 'payoff', loan: b.dataset.pay, amount: st.amt || 100, player: me.id })) setTimeout(draw, 60); });
       $$('[data-ins]', body).forEach(c => c.onchange = () => { dispatch({ type: 'insure', kind: c.dataset.ins, on: c.checked, player: me.id }); setTimeout(draw, 60); });
@@ -3726,8 +3767,8 @@ if (typeof module !== 'undefined') module.exports = { Engine };
         '<label>Cash $ <input type="number" min="0" step="10" data-cash="' + key + '" value="' + side.cash + '" style="width:110px"></label><div>Value ≈ <b>' + fmt(key === 'give' ? v.fromGives : v.toGives) + '</b></div></div>';
       body.innerHTML = '<div class="grid2">' + col(from, st.give, 'give') + col(to, st.get, 'get') + '</div>' + valueBar(v.fromGives, v.toGives) +
         '<p>' + (Math.abs(v.fromGives - v.toGives) < Math.max(v.fromGives, v.toGives) * 0.15 ? '⚖️ About even by market value.' : v.fromGives > v.toGives ? '⬅️ You give more value than you get.' : '➡️ You get more value than you give.') + ' ⏱ <span id="trLeft">' + left + '</span>s</p><p class="realworld">Only lots with no buildings and no liens can be traded. Completing a color group can be worth more than market value!</p>';
-      $$('[data-lot]', body).forEach(c => c.onchange = () => { const arr = st[c.dataset.k].lots, id = +c.dataset.lot; if (c.checked) arr.push(id); else arr.splice(arr.indexOf(id), 1); draw(); });
-      $$('[data-cash]', body).forEach(c => c.onchange = () => { st[c.dataset.cash].cash = Math.max(0, Math.round(+c.value || 0)); draw(); });
+      $$('[data-lot]', body).forEach(c => c.onchange = () => { const arr = st[c.dataset.k].lots, id = +c.dataset.lot; if (c.checked) arr.push(id); else arr.splice(arr.indexOf(id), 1); setTimeout(draw, 0); });
+      $$('[data-cash]', body).forEach(c => c.onchange = () => { st[c.dataset.cash].cash = Math.max(0, Math.round(+c.value || 0)); setTimeout(draw, 0); });
     };
     draw();
     openModal({ title: '🤝 Trade: ' + esc(from.name) + ' ↔ ' + esc(to.name), body, wide: true, closable: true, label: 'Trade editor',
@@ -3787,7 +3828,7 @@ if (typeof module !== 'undefined') module.exports = { Engine };
       $('#sYear', body).onchange = (e) => dispatch({ type: 'setting', key: 'yearTimer', value: e.target.checked });
       $('#sQC', body).onchange = (e) => dispatch({ type: 'setting', key: 'quickChecks', value: e.target.checked });
       $('#sDebrief', body).onclick = () => openDebrief();
-      $('#sExit', body).onclick = () => { save(); close(null); exitToMenu(); };
+      $('#sExit', body).onclick = () => { save(true); close(null); exitToMenu(); };
       $('#sEnd', body).onclick = () => confirmEndGame();
     } });
   }
@@ -3797,6 +3838,7 @@ if (typeof module !== 'undefined') module.exports = { Engine };
     openModal({ title: '⏹ End Game Now?', body, closable: true, focus: '#endTxt', label: 'End game now', buttons: [{ label: 'Cancel' }, { label: 'End the game', cls: 'danger', keepOpen: true, onClick: (close) => { if ($('#endTxt', body).value.trim().toUpperCase() !== 'END') { toast('Type END to confirm.'); return false; } UI.modals.slice().forEach(m => { if (!m.o.fx) m.close(null); }); dispatch({ type: 'endGameNow' }); toast('The game will end after this turn.'); } }] });
   }
   function exitToMenu() {
+    save(true);
     stopTurnTimer(); if (UI.cpuTimer) { clearTimeout(UI.cpuTimer); UI.cpuTimer = null; }
     UI.modals.slice().forEach(m => m.close(null)); G = null; UI.fxq = []; UI.promptSig = null;
     $('#game').classList.add('hidden'); $('#ticker').classList.add('hidden'); showStart();
@@ -3884,8 +3926,8 @@ if (typeof module !== 'undefined') module.exports = { Engine };
       '<h2 style="margin-top:24px">Saved games</h2><div class="savelist">' + (saves.length ? saves.map(x => '<div class="saveitem"><b style="font-size:18px">' + esc(x.s.groupName) + '</b><span class="grow">Year ' + Math.max(1, x.s.flow.year) + ' of ' + x.s.settings.years + ' · ' + x.s.players.map(p => esc(p.name)).join(', ') + (x.s.flow.stage === 'results' ? ' · <b>finished</b>' : '') + ' · saved ' + new Date(x.s.savedAt || 0).toLocaleString() + '</span><button type="button" class="primary" data-res="' + esc(x.key) + '">Resume</button><button type="button" class="danger" data-del="' + esc(x.key) + '">Delete</button></div>').join('') : '<p>No saved games yet. Games save automatically on this device after every turn.</p>') + '</div>' +
       '<p class="realworld" style="margin-top:20px">Privacy: use first names or nicknames only. Everything stays on this device. No accounts, no network, no tracking.</p>');
     $('#stNew', el).onclick = showSetup; $('#stHow', el).onclick = openHowTo; $('#stDeb', el).onclick = () => openDebrief(true);
-    $$('[data-res]', el).forEach(b => b.onclick = () => { try { const s = JSON.parse(localStorage.getItem(b.dataset.res)); startGame(s, true); } catch (e) { toast('That save could not be loaded.'); } });
-    $$('[data-del]', el).forEach(b => b.onclick = () => openModal({ title: 'Delete this saved game?', body: '<p>This can\'t be undone.</p>', closable: true, buttons: [{ label: 'Cancel' }, { label: 'Delete', cls: 'danger', onClick: () => { localStorage.removeItem(b.dataset.del); showStart(); } }] }));
+    $$('[data-res]', el).forEach(b => b.onclick = () => { const x = listSaves().find(v => v.key === b.dataset.res); if (x) startGame(x.s, true); else toast('That save could not be loaded.'); });
+    $$('[data-del]', el).forEach(b => b.onclick = () => openModal({ title: 'Delete this saved game?', body: '<p>This can\'t be undone.</p>', closable: true, buttons: [{ label: 'Cancel' }, { label: 'Delete', cls: 'danger', onClick: () => { deleteSave(b.dataset.del); showStart(); } }] }));
   }
   function showSetup() {
     const st = { group: '', players: [{ name: '', token: TOKENS[0], cpu: false }, { name: '', token: TOKENS[1], cpu: false }, { name: '', token: TOKENS[2], cpu: true }, { name: '', token: TOKENS[3], cpu: true }],
@@ -3958,9 +4000,9 @@ if (typeof module !== 'undefined') module.exports = { Engine };
     if (G.settings.anim) PREFS.anim = PREFS.anim || null;
     applyAnim();
     $('#screens').innerHTML = '';
-    if (G.flow.stage === 'results') { showResults(); return; }
+    if (G.flow.stage === 'results') { if (!$('#rsLine')) showResults(); return; }
     $('#game').classList.remove('hidden'); $('#ticker').classList.remove('hidden');
-    buildBoard(); render(); save();
+    buildBoard(); render(); save(true);
     if (resumed) toast('Welcome back, ' + G.groupName + '! Resuming Year ' + Math.max(1, G.flow.year) + '.');
     handlePending();
   }
@@ -3978,14 +4020,14 @@ if (typeof module !== 'undefined') module.exports = { Engine };
     const humans = R.players.filter(p => !p.cpu);
     const el = screen('<div class="row noprint"><h1 class="grow">🏆 Final Results: ' + esc(G.groupName) + '</h1><button type="button" id="rsCopy">📋 Copy for Google Classroom/Canvas</button><button type="button" id="rsCsv">⬇ Download Game Log (CSV)</button><button type="button" id="rsPrint">🖨 Print / Save as PDF</button><button type="button" id="rsDeb">📋 Debrief Guide</button><button type="button" class="primary" id="rsAgain">🔁 Play Again</button><button type="button" id="rsMenu">Menu</button></div>' +
       '<h1 class="hidden" style="display:none">Final Results</h1><p>' + (R.ended ? 'The teacher ended the game in Year ' + R.years + '. ' : 'All ' + R.of + ' Years played. ') + 'The winner has the highest <b>net worth</b> = cash + savings + investments + market value of property and buildings − all debt.</p>' +
-      '<div class="podium" aria-label="Podium">' + pod.map(p => { const place = R.rank.indexOf(p.id) + 1; return '<div class="pod"><div class="tk">' + p.token + '</div><b>' + esc(p.name) + '</b><div>' + fmt(p.nw) + '</div><div class="blk" data-h="' + (place === 1 ? 200 : place === 2 ? 150 : 110) + '" style="background:' + (place === 1 ? '#ffcc29' : place === 2 ? '#d9dee3' : '#e3a46b') + '">' + place + '</div></div>'; }).join('') + '</div>' +
+      '<div class="podium" aria-label="Podium">' + pod.map(p => { const place = R.rank.indexOf(p.id) + 1; return '<div class="pod"><div class="tk">' + p.token + '</div><b>' + esc(p.name) + '</b><div>' + fmt(p.nw) + '</div><div class="blk" style="height:' + (place === 1 ? 170 : place === 2 ? 125 : 90) + 'px;background:' + (place === 1 ? '#ffcc29' : place === 2 ? '#d9dee3' : '#e3a46b') + '">' + place + '</div></div>'; }).join('') + '</div>' +
       (order.length > 3 ? '<p style="text-align:center">' + order.slice(3).map((p, i) => (i + 4) + '. ' + p.token + ' ' + esc(p.name) + ' ' + fmt(p.nw)).join(' · ') + '</p>' : '') +
       '<div class="resCard"><h2>🏅 Awards</h2>' + (R.awards.map(a => '<span class="award" title="' + esc(a.desc) + '">' + a.icon + ' ' + esc(a.title) + ': ' + a.winners.map(w => esc(byId(w).name)).join(' & ') + '</span>').join('') || 'No awards this time.') + '</div>' +
       '<div class="resCard"><h2>📈 Net worth over time</h2><canvas id="rsLine"></canvas><h2>🧱 What each player has</h2><canvas id="rsBar"></canvas></div>' +
       order.map(p => playerResultCard(p, R)).join('') +
       '<div class="resCard"><h2>🎓 The long-run career tradeoff</h2>' + careerTradeoff(R) + '</div>' +
       (G.settings.prePost && humans.length ? '<div class="resCard noprint"><h2>📝 Post-check</h2><p>Take the same 5 questions as the pre-check to see what you learned.</p><button type="button" class="primary" id="rsPost">Start Post-check</button></div>' : ''));
-    setTimeout(() => { $$('.pod .blk', el).forEach(b => b.style.height = b.dataset.h + 'px'); }, 60);
+    
     if (!reduced()) { confetti(); Snd.play('fanfare'); }
     const w = Math.min(1060, el.querySelector('.inner').clientWidth - 30);
     lineChart($('#rsLine', el), R.players.map(p => ({ name: p.name, color: pColor(p.id), pts: p.yearly.map(y => ({ x: y.year, y: y.nw })) })), R.markers, w, 340);
@@ -4072,9 +4114,9 @@ if (typeof module !== 'undefined') module.exports = { Engine };
 
   /* ---------- boot ---------- */
   applyAnim();
-  showStart();
+  IDB.open().then(() => IDB.all()).then(list => { idbCache = list; if (!G) showStart(); });
   // test hooks (used by automated checks; harmless for students)
-  window.__DD = { get G() { return G; }, dispatch, E, UI, startGame, showResults, exitToMenu, save, listSaves };
+  window.__DD = { get G() { return G; }, dispatch, E, UI, startGame, showResults, exitToMenu, save, listSaves, fx: (f) => { UI.fxq.push(f); pump(); } };
 })();
 </script>
 </body></html>

@@ -1,0 +1,390 @@
+Year,Turn,Player,Type,Description,Amount
+0,0,Kim,career,Chose Trade Program and bought a home,
+0,0,Lou,career,Chose College and bought a home,
+0,0,CPU 3,career,Chose Trade Program and bought a home,
+1,0,Kim,salary,Yearly paycheck,200
+1,0,CPU 3,salary,Yearly paycheck,200
+1,0,,year,Year 1 begins (expansion),
+1,0,,event,Economic Boom,
+1,1,Kim,roll,Rolled 4 + 3,
+1,1,Kim,card,Opportunity: Dividend Day,
+1,2,Lou,roll,Rolled 2 + 3,
+1,2,Lou,cash,Bought Lakeshore Line,-200
+1,2,Lou,buy,Bought Lakeshore Line,-200
+1,3,CPU 3,roll,Rolled 1 + 4,
+1,3,CPU 3,rent,Rent at Lakeshore Line,-25
+1,3,Lou,rent,Collected from CPU 3,25
+1,4,Kim,roll,Rolled 2 + 3,
+1,4,Kim,cash,Bought Juniper Power & Light,-150
+1,4,Kim,buy,Bought Juniper Power & Light,-150
+1,5,Lou,roll,Rolled 5 + 1,
+1,5,Lou,cash,Bought Lantern Street,-176
+1,5,Lou,buy,Bought Lantern Street,-176
+1,6,CPU 3,roll,Rolled 6 + 4,
+1,6,CPU 3,cash,Bought Ironwood Line,-200
+1,6,CPU 3,buy,Bought Ironwood Line,-200
+1,7,Kim,roll,Rolled 3 + 2,
+1,7,Kim,card,Civic: Building Code Inspection,
+1,8,Lou,roll,Rolled 6 + 5,
+1,8,Lou,card,Decision Point: Extended Warranty?,
+1,8,Lou,insurance,Extended Warranty?,-30
+1,8,Lou,decision,Extended Warranty? -> Buy the warranty,
+1,9,CPU 3,roll,Rolled 6 + 1,
+1,9,CPU 3,card,Decision Point: Job Offer Across Town,
+1,9,CPU 3,other,Job Offer Across Town,-100
+1,9,CPU 3,decision,Job Offer Across Town -> Take the job,
+1,9,Kim,living,"Living costs (food, phone, transport)",-70
+1,9,Kim,maint,Home maintenance,-23
+1,9,Kim,propTax,Property tax on your home,-23
+1,9,Kim,insurance,Insurance premiums,-40
+1,9,Kim,propTax,Property tax: assessed value x 20 mills,-3
+1,9,Kim,loans,Student loan payment,-92
+1,9,Kim,loans,Home mortgage payment,-198
+1,9,Lou,living,"Living costs (food, phone, transport)",-70
+1,9,Lou,maint,Home maintenance,-23
+1,9,Lou,propTax,Property tax on your home,-23
+1,9,Lou,insurance,Insurance premiums,-40
+1,9,Lou,propTax,Property tax: assessed value x 20 mills,-8
+1,9,Lou,loans,Home mortgage payment,-198
+1,9,CPU 3,living,"Living costs (food, phone, transport)",-70
+1,9,CPU 3,maint,Home maintenance,-23
+1,9,CPU 3,propTax,Property tax on your home,-23
+1,9,CPU 3,insurance,Insurance premiums,-57
+1,9,CPU 3,propTax,Property tax: assessed value x 20 mills,-4
+1,9,CPU 3,loans,Student loan payment,-92
+1,9,CPU 3,loans,Home mortgage payment,-198
+1,9,,year,Year 1 ends,
+2,9,Kim,salary,Yearly paycheck,344
+2,9,Kim,tax,Income tax withheld from paycheck,-14
+2,9,Lou,salary,Yearly paycheck,438
+2,9,Lou,tax,Income tax withheld from paycheck,-24
+2,9,CPU 3,salary,Yearly paycheck,385
+2,9,CPU 3,tax,Income tax withheld from paycheck,-19
+2,9,,year,Year 2 begins (expansion),
+2,9,,event,Housing Bubble Inflates,
+2,10,Kim,roll,Rolled 3 + 2,
+2,10,Kim,card,Decision Point: Health Insurance?,
+2,10,Kim,decision,Health Insurance? -> Buy health insurance,
+2,11,Lou,roll,Rolled 6 + 4,
+2,11,CPU 3,auction,Won auction for Rivet Works,-276
+2,11,CPU 3,cash,Bought Rivet Works,-276
+2,11,CPU 3,buy,Bought Rivet Works,-276
+2,12,CPU 3,roll,Rolled 2 + 4,
+2,12,CPU 3,cash,Bought Port Juniper Water Works,-153
+2,12,CPU 3,buy,Bought Port Juniper Water Works,-153
+2,13,Kim,roll,Rolled 2 + 4,
+2,13,Kim,rent,Rent at Port Juniper Water Works,-24
+2,13,CPU 3,rent,Collected from Kim,24
+2,14,Lou,roll,Rolled 5 + 6,
+2,14,Lou,bonus,Bonus Check for passing PAYDAY,110
+2,14,Lou,cash,Bought Tannery Court,-122
+2,14,Lou,buy,Bought Tannery Court,-122
+2,15,CPU 3,roll,Rolled 1 + 4,
+2,15,CPU 3,card,Civic: Eminent Domain: New Road,
+2,15,CPU 3,gift,Eminent domain: sold Rivet Works,579
+2,15,CPU 3,tax,Capital gains tax on Rivet Works,-45
+2,15,CPU 3,eminent,Eminent domain took Rivet Works,579
+2,16,Kim,roll,Rolled 5 + 4,
+2,16,Kim,cash,Bought Lighthouse Drive,-714
+2,16,Kim,buy,Bought Lighthouse Drive,-714
+2,17,Lou,roll,Rolled 1 + 6,
+2,18,CPU 3,roll,Rolled 6 + 5,
+2,18,CPU 3,bonus,Bonus Check for passing PAYDAY,96
+2,18,CPU 3,tax,Tax Day: income tax due,-12
+2,18,Kim,living,"Living costs (food, phone, transport)",-72
+2,18,Kim,maint,Home maintenance,-32
+2,18,Kim,propTax,Property tax on your home,-32
+2,18,Kim,insurance,Insurance premiums,-41
+2,18,Kim,lien,Unpaid property tax became a tax lien,-19
+2,18,Kim,missed,Missed Student loan payment,-25
+2,18,Kim,missed,Missed Home mortgage payment,-25
+2,18,Lou,living,"Living costs (food, phone, transport)",-72
+2,18,Lou,maint,Home maintenance,-32
+2,18,Lou,propTax,Property tax on your home,-32
+2,18,Lou,insurance,Insurance premiums,-41
+2,18,Lou,propTax,Property tax: assessed value x 20 mills,-12
+2,18,Lou,loans,Student loan payment,-196
+2,18,Lou,missed,Missed Home mortgage payment,-25
+2,18,CPU 3,living,"Living costs (food, phone, transport)",-72
+2,18,CPU 3,maint,Home maintenance,-32
+2,18,CPU 3,propTax,Property tax on your home,-32
+2,18,CPU 3,insurance,Insurance premiums,-65
+2,18,CPU 3,propTax,Property tax: assessed value x 20 mills,-7
+2,18,CPU 3,loans,Student loan payment,-92
+2,18,CPU 3,loans,Home mortgage payment,-198
+2,18,,year,Year 2 ends,
+2,18,Kim,cash,Mortgaged Juniper Power & Light,78
+2,18,Kim,mortgage,Mortgaged Juniper Power & Light,78
+2,18,Kim,cash,Mortgaged Lighthouse Drive,364
+2,18,Kim,mortgage,Mortgaged Lighthouse Drive,364
+3,18,Kim,salary,Yearly paycheck,353
+3,18,Kim,tax,Income tax withheld from paycheck,-15
+3,18,Lou,salary,Yearly paycheck,451
+3,18,Lou,tax,Income tax withheld from paycheck,-25
+3,18,CPU 3,salary,Yearly paycheck,395
+3,18,CPU 3,tax,Income tax withheld from paycheck,-20
+3,18,,year,Year 3 begins (expansion),
+3,18,Kim,vote,Voted on Measure E: Rail Bond,
+3,18,Lou,vote,Voted on Measure E: Rail Bond,
+3,18,CPU 3,vote,Voted on Measure E: Rail Bond,
+3,18,,ballot,Measure E: Rail Bond FAILED 1-2,
+3,18,Lou,other,Car Repair,-150
+3,18,Lou,event,Car Repair,
+3,19,Kim,roll,Rolled 2 + 5,
+3,19,Kim,bonus,Bonus Check for passing PAYDAY,88
+3,19,Kim,tax,Tax Day: income tax due,-9
+3,20,Lou,roll,Rolled 1 + 4,
+3,20,Lou,rent,Rent at Ironwood Line,-26
+3,20,CPU 3,rent,Collected from Lou,26
+3,21,CPU 3,roll,Rolled 2 + 2,
+3,21,CPU 3,cash,Bought Birch Street,-208
+3,21,CPU 3,buy,Bought Birch Street,-208
+3,21,CPU 3,roll,Rolled 1 + 2,
+3,21,CPU 3,rent,Rent at Lantern Street,-23
+3,21,Lou,rent,Collected from CPU 3,23
+3,22,Kim,roll,Rolled 4 + 2,
+3,23,Lou,roll,Rolled 5 + 5,
+3,23,Lou,cash,Bought Prairie Line,-208
+3,23,Lou,buy,Bought Prairie Line,-208
+3,23,Lou,roll,Rolled 2 + 5,
+3,23,CPU 3,auction,Won auction for Rivet Works,-292
+3,23,CPU 3,cash,Bought Rivet Works,-292
+3,23,CPU 3,buy,Bought Rivet Works,-292
+3,24,CPU 3,roll,Rolled 5 + 1,
+3,24,CPU 3,card,Civic: Utility Rate Hearing,
+3,25,Kim,roll,Rolled 1 + 6,
+3,25,Kim,card,Civic: Sales Tax Holiday,
+3,25,Kim,other,Sales Tax Holiday,30
+3,26,Lou,roll,Rolled 1 + 6,
+3,26,,auction,No bids for Bayview Terrace,
+3,27,CPU 3,roll,Rolled 3 + 1,
+3,27,,auction,No bids for Corner Market,
+3,27,Kim,living,"Living costs (food, phone, transport)",-74
+3,27,Kim,maint,Home maintenance,-33
+3,27,Kim,propTax,Property tax on your home,-33
+3,27,Kim,insurance,Insurance premiums,-42
+3,27,Kim,propTax,Paid tax lien,-19
+3,27,Kim,propTax,Property tax: assessed value x 20 mills,-18
+3,27,Kim,loans,Student loan payment,-92
+3,27,Kim,loans,Home mortgage payment,-198
+3,27,Lou,living,"Living costs (food, phone, transport)",-74
+3,27,Lou,maint,Home maintenance,-33
+3,27,Lou,propTax,Property tax on your home,-33
+3,27,Lou,insurance,Insurance premiums,-42
+3,27,Lou,lien,Unpaid property tax became a tax lien,-18
+3,27,Lou,missed,Missed Student loan payment,-25
+3,27,Lou,missed,Missed Home mortgage payment,-25
+3,27,CPU 3,living,"Living costs (food, phone, transport)",-74
+3,27,CPU 3,maint,Home maintenance,-33
+3,27,CPU 3,propTax,Property tax on your home,-33
+3,27,CPU 3,insurance,Insurance premiums,-66
+3,27,CPU 3,lien,Unpaid property tax became a tax lien,-26
+3,27,CPU 3,missed,Missed Student loan payment,-25
+3,27,CPU 3,missed,Missed Home mortgage payment,-25
+3,27,,phase,Economy enters peak,
+3,27,,year,Year 3 ends,
+3,27,Lou,cash,Mortgaged Tannery Court,64
+3,27,Lou,mortgage,Mortgaged Tannery Court,64
+3,27,CPU 3,cash,Mortgaged Port Juniper Water Works,80
+3,27,CPU 3,mortgage,Mortgaged Port Juniper Water Works,80
+4,27,Kim,salary,Yearly paycheck,362
+4,27,Kim,tax,Income tax withheld from paycheck,-16
+4,27,Lou,salary,Yearly paycheck,465
+4,27,Lou,tax,Income tax withheld from paycheck,-27
+4,27,CPU 3,salary,Yearly paycheck,405
+4,27,CPU 3,tax,Income tax withheld from paycheck,-21
+4,27,,year,Year 4 begins (peak),
+4,27,,event,Supply-Chain Shortage,
+4,28,Kim,roll,Rolled 5 + 2,
+4,28,Kim,cash,Bought Main Street Shops,-460
+4,28,Kim,buy,Bought Main Street Shops,-460
+4,29,Lou,roll,Rolled 3 + 6,
+4,29,Lou,bonus,Bonus Check for passing PAYDAY,116
+4,29,Lou,rent,Rent at Birch Street,-17
+4,29,CPU 3,rent,Collected from Lou,17
+4,30,CPU 3,cash,Unmortgaged Port Juniper Water Works,-80
+4,30,CPU 3,loans,Mortgage interest (10%),-8
+4,30,CPU 3,roll,Rolled 4 + 1,
+4,30,CPU 3,auction,Won auction for Ledger Avenue,-249
+4,30,CPU 3,cash,Bought Ledger Avenue,-249
+4,30,CPU 3,buy,Bought Ledger Avenue,-249
+4,31,Kim,roll,Rolled 1 + 5,
+4,31,Kim,audit,Sent to Audit,
+4,32,Lou,roll,Rolled 2 + 4,
+4,32,Lou,cash,Bought Cobble Alley,-339
+4,32,Lou,buy,Bought Cobble Alley,-339
+4,33,CPU 3,roll,Rolled 2 + 5,
+4,33,CPU 3,card,Civic: Free Tax Help,
+4,33,CPU 3,other,Free Tax Help,30
+4,35,Lou,roll,Rolled 4 + 5,
+4,35,,auction,No bids for Bazaar Row,
+4,36,CPU 3,roll,Rolled 6 + 2,
+4,36,CPU 3,bonus,Bonus Check for passing PAYDAY,101
+4,36,CPU 3,cash,Bought Cotton Mill Row,-127
+4,36,CPU 3,buy,Bought Cotton Mill Row,-127
+4,36,Kim,living,"Living costs (food, phone, transport)",-75
+4,36,Kim,maint,Home maintenance,-32
+4,36,Kim,propTax,Property tax on your home,-32
+4,36,Kim,insurance,Insurance premiums,-43
+4,36,Kim,lien,Unpaid property tax became a tax lien,-31
+4,36,Kim,missed,Missed Student loan payment,-25
+4,36,Kim,missed,Missed Home mortgage payment,-25
+4,36,Lou,living,"Living costs (food, phone, transport)",-75
+4,36,Lou,maint,Home maintenance,-32
+4,36,Lou,propTax,Property tax on your home,-32
+4,36,Lou,insurance,Insurance premiums,-43
+4,36,Lou,propTax,Paid tax lien,-18
+4,36,Lou,propTax,Property tax: assessed value x 20 mills,-23
+4,36,Lou,missed,Missed Student loan payment,-25
+4,36,Lou,missed,Missed Home mortgage payment,-25
+4,36,Lou,foreclosure,Foreclosure on Lantern Street,272
+4,36,CPU 3,living,"Living costs (food, phone, transport)",-75
+4,36,CPU 3,maint,Home maintenance,-32
+4,36,CPU 3,propTax,Property tax on your home,-32
+4,36,CPU 3,insurance,Insurance premiums,-67
+4,36,CPU 3,propTax,Paid tax lien,-26
+4,36,CPU 3,lien,Unpaid property tax became a tax lien,-41
+4,36,CPU 3,missed,Missed Student loan payment,-25
+4,36,CPU 3,missed,Missed Home mortgage payment,-25
+4,36,,phase,Economy enters recession,
+4,36,,year,Year 4 ends,
+4,36,Kim,cash,Mortgaged Main Street Shops,247
+4,36,Kim,mortgage,Mortgaged Main Street Shops,247
+4,36,CPU 3,cash,Mortgaged Cotton Mill Row,65
+4,36,CPU 3,mortgage,Mortgaged Cotton Mill Row,65
+4,36,CPU 3,cash,Mortgaged Port Juniper Water Works,81
+4,36,CPU 3,mortgage,Mortgaged Port Juniper Water Works,81
+5,36,Kim,salary,Yearly paycheck,371
+5,36,Kim,tax,Income tax withheld from paycheck,-17
+5,36,Lou,salary,Yearly paycheck,479
+5,36,Lou,tax,Income tax withheld from paycheck,-28
+5,36,CPU 3,salary,Yearly paycheck,415
+5,36,CPU 3,tax,Income tax withheld from paycheck,-22
+5,36,CPU 3,vacancy,Rivet Works is vacant this Year,0
+5,36,,year,Year 5 begins (recession),
+5,36,Kim,vote,Voted on Measure G: Rent Control,
+5,36,Lou,vote,Voted on Measure G: Rent Control,
+5,36,CPU 3,vote,Voted on Measure G: Rent Control,
+5,36,,ballot,Measure G: Rent Control FAILED 1-2,
+5,36,Lou,event,Layoff,
+5,38,Lou,roll,Rolled 5 + 3,
+5,38,Lou,cash,Bought Foundry Lane,-425
+5,38,Lou,buy,Bought Foundry Lane,-425
+5,39,CPU 3,cash,Unmortgaged Cotton Mill Row,-65
+5,39,CPU 3,loans,Mortgage interest (10%),-7
+5,39,CPU 3,roll,Rolled 6 + 3,
+5,40,Kim,fees,Paid to settle the audit (3rd try),-50
+5,40,Kim,cash,Bought Heron Point,-320
+5,40,Kim,buy,Bought Heron Point,-320
+5,41,Lou,roll,Rolled 2 + 3,
+5,41,Lou,card,Opportunity: Hire an Agent,
+5,41,Lou,gift,Hire an Agent: sold Tannery Court,122
+5,41,Lou,loans,Paid off mortgage on Tannery Court,-64
+5,41,Lou,decision,Hire an Agent -> Sell with the agent,
+5,42,CPU 3,roll,Rolled 3 + 5,
+5,42,CPU 3,auction,Won auction for Ferry Road,-189
+5,42,CPU 3,cash,Bought Ferry Road,-189
+5,42,CPU 3,buy,Bought Ferry Road,-189
+5,43,Kim,roll,Rolled 4 + 5,
+5,44,Lou,roll,Rolled 3 + 3,
+5,44,Lou,bonus,Bonus Check for passing PAYDAY,48
+5,44,Lou,card,Civic: Filing Error,
+5,44,Lou,audit,Sent to Audit,
+5,45,CPU 3,roll,Rolled 3 + 3,
+5,45,CPU 3,roll,Rolled 5 + 3,
+5,45,Kim,living,"Living costs (food, phone, transport)",-77
+5,45,Kim,maint,Home maintenance,-29
+5,45,Kim,propTax,Property tax on your home,-29
+5,45,Kim,insurance,Insurance premiums,-44
+5,45,Kim,propTax,Paid tax lien,-31
+5,45,Kim,lien,Unpaid property tax became a tax lien,-36
+5,45,Kim,missed,Missed Student loan payment,-25
+5,45,Kim,missed,Missed Home mortgage payment,-25
+5,45,Lou,living,"Living costs (food, phone, transport)",-77
+5,45,Lou,maint,Home maintenance,-29
+5,45,Lou,propTax,Property tax on your home,-29
+5,45,Lou,insurance,Insurance premiums,-44
+5,45,Lou,lien,Unpaid property tax became a tax lien,-26
+5,45,Lou,missed,Missed Student loan payment,-25
+5,45,Lou,foreclosure,Foreclosure on Cobble Alley,336
+5,45,Lou,missed,Missed Home mortgage payment,-25
+5,45,CPU 3,living,"Living costs (food, phone, transport)",-77
+5,45,CPU 3,maint,Home maintenance,-29
+5,45,CPU 3,propTax,Property tax on your home,-29
+5,45,CPU 3,insurance,Insurance premiums,-66
+5,45,CPU 3,propTax,Paid tax lien,-41
+5,45,CPU 3,lien,Unpaid property tax became a tax lien,-46
+5,45,CPU 3,missed,Missed Student loan payment,-25
+5,45,CPU 3,foreclosure,Foreclosure on Rivet Works,556
+5,45,CPU 3,other,Leftover from foreclosure sale,376
+5,45,CPU 3,loans,Home mortgage payment,-198
+5,45,,year,Year 5 ends,
+5,45,Kim,cash,Mortgaged Heron Point,180
+5,45,Kim,mortgage,Mortgaged Heron Point,180
+5,45,Lou,cash,Mortgaged Lakeshore Line,111
+5,45,Lou,mortgage,Mortgaged Lakeshore Line,111
+6,45,Kim,salary,Yearly paycheck,380
+6,45,Kim,tax,Income tax withheld from paycheck,-18
+6,45,Lou,salary,Yearly paycheck,197
+6,45,CPU 3,salary,Yearly paycheck,425
+6,45,CPU 3,tax,Income tax withheld from paycheck,-23
+6,45,,year,Year 6 begins (recession),
+6,45,,event,State Raises Minimum Wage,
+6,46,Kim,roll,Rolled 3 + 4,
+6,46,Kim,cash,Bought Harbor Line,-221
+6,46,Kim,buy,Bought Harbor Line,-221
+6,48,CPU 3,cash,Unmortgaged Port Juniper Water Works,-81
+6,48,CPU 3,loans,Mortgage interest (10%),-8
+6,48,CPU 3,roll,Rolled 1 + 5,
+6,48,CPU 3,card,"Decision Point: Buy Now, Pay Later?",
+6,48,CPU 3,decision,"Buy Now, Pay Later? -> Buy now, pay later",
+6,49,Kim,roll,Rolled 4 + 6,
+6,49,Kim,bonus,Bonus Check for passing PAYDAY,95
+6,50,CPU 3,auction,Won auction for Cobble Alley,-147
+6,50,CPU 3,cash,Bought Cobble Alley,-147
+6,50,CPU 3,buy,Bought Cobble Alley,-147
+6,51,CPU 3,roll,Rolled 5 + 4,
+6,51,CPU 3,bonus,Bonus Check for passing PAYDAY,106
+6,51,CPU 3,card,Opportunity: Raise the Rent?,
+6,51,CPU 3,decision,Raise the Rent? -> Raise it 30%,
+6,52,Kim,roll,Rolled 6 + 6,
+6,52,Kim,card,Civic: HOA Dues,
+6,52,Kim,fees,HOA Dues,-20
+6,52,Kim,roll,Rolled 4 + 3,
+6,52,Kim,other,Quick Check bonus,20
+6,53,Lou,roll,Rolled 5 + 3,
+6,53,Lou,card,Decision Point: Pay Down Debt or Invest?,
+6,53,Lou,decision,Pay Down Debt or Invest? -> Pay down debt,
+6,54,CPU 3,roll,Rolled 5 + 2,
+6,54,Kim,living,"Living costs (food, phone, transport)",-79
+6,54,Kim,maint,Home maintenance,-26
+6,54,Kim,propTax,Property tax on your home,-26
+6,54,Kim,insurance,Insurance premiums,-45
+6,54,Kim,propTax,Paid tax lien,-36
+6,54,Kim,propTax,Property tax: assessed value x 20 mills,-35
+6,54,Kim,loans,Student loan payment,-92
+6,54,Kim,missed,Missed Home mortgage payment,-25
+6,54,Kim,foreclosure,Foreclosure on Lighthouse Drive,672
+6,54,Lou,living,"Living costs (food, phone, transport)",-79
+6,54,Lou,maint,Home maintenance,-26
+6,54,Lou,propTax,Property tax on your home,-26
+6,54,Lou,insurance,Insurance premiums,-45
+6,54,Lou,propTax,Paid tax lien,-26
+6,54,Lou,lien,Unpaid property tax became a tax lien,-18
+6,54,Lou,missed,Missed Student loan payment,-25
+6,54,Lou,missed,Missed Home mortgage payment,-25
+6,54,CPU 3,living,"Living costs (food, phone, transport)",-79
+6,54,CPU 3,maint,Home maintenance,-26
+6,54,CPU 3,propTax,Property tax on your home,-26
+6,54,CPU 3,insurance,Insurance premiums,-65
+6,54,CPU 3,other,TV payments,-50
+6,54,CPU 3,propTax,Paid tax lien,-46
+6,54,CPU 3,propTax,Property tax: assessed value x 20 mills,-35
+6,54,CPU 3,missed,Missed Home mortgage payment,-25
+6,54,,phase,Economy enters recovery,
+6,54,,year,Year 6 ends,
+6,54,Lou,cash,Mortgaged Prairie Line,113
+6,54,Lou,mortgage,Mortgaged Prairie Line,113
+6,54,Lou,cash,Mortgaged Foundry Lane,193
+6,54,Lou,mortgage,Mortgaged Foundry Lane,193
+6,54,,game,Game over. Final scores by net worth.,
