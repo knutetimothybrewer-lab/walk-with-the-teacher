@@ -47,7 +47,7 @@ console.log('Save/resume tested at prompts:', JSON.stringify(kinds));
 const endKinds = {};
 for (let i = 1; i <= 300; i++) {
   const seed = 5000 + i;
-  const s = advanceN(game(seed, 2 + (i % 5), [6, 10, 14][i % 3], ['easy', 'standard', 'advanced'][i % 3]), Math.floor((i * 104729) % 300));
+  const s = advanceN(game(seed, 2 + (i % 5), [3, 4, 6, 8, 10, 14, 20, 25][i % 8], ['easy', 'standard', 'advanced'][i % 3]), Math.floor((i * 104729) % 300));
   if (s.flow.stage === 'results') continue;
   const kind = s.pending ? s.pending.kind : 'none'; endKinds[kind] = (endKinds[kind] || 0) + 1;
   const r = E.stepMut(s, { type: 'endGameNow' });
@@ -80,7 +80,7 @@ function parseCSV(text) {
 let debtsResolved = 0, games = 0;
 for (let seed = 1; seed <= 120; seed++) {
   try {
-    const s = game(seed, 2 + (seed % 5), [6, 10, 14][seed % 3], ['easy', 'standard', 'advanced'][seed % 3]);
+    const s = game(seed, 2 + (seed % 5), [3, 4, 6, 8, 10, 14, 20, 25][seed % 8], ['easy', 'standard', 'advanced'][seed % 3]);
     let k = 0, inDebt = false;
     while (s.flow.stage !== 'results') {
       const r = E.stepMut(s, { type: 'cpu' }); if (r.error) throw new Error('seed ' + seed + ' ' + r.error);

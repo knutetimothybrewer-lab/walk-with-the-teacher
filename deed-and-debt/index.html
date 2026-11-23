@@ -372,9 +372,23 @@ const GAME_CONTENT = {
     phaseLength: { expansion: [2,3], peak: [1,1], recession: [1,2], recovery: [1,2] },
     turnsPerYear: { 2: 4, 3: 3, 4: 2, 5: 1.5, 6: 1.5 }, // 1.5 = 1 turn each + a bonus turn for half the group (alternating)
     tenantNoticeChance: 0.6,  // Advanced: chance a landlord gets a Tenant Notice each Year
-    ballotYears: { 6: [3,5], 10: [3,6,9], 14: [3,6,9,12] },
+    ballotYears: { 3: [2], 4: [3], 6: [3,5], 10: [3,6,9], 14: [3,6,9,12] }, // other lengths: a vote about every 3rd Year (at least one per game)
+    minYears: 3, maxYears: 25,
     backToSchoolCost: 300, backToSchoolRaise: 80
   },
+
+  /* ---------- GAME LENGTHS shown on the setup screen ----------
+     years = number of Years. groupMin / soloMin = estimated minutes of play (from sim/simulate.js),
+     for a 4-player group and for 1 player vs. 3 computer players. A "Custom" choice (3-25 Years) is always offered too. */
+  GAME_LENGTHS: [
+    { years: 3,  name: "Sprint",      groupMin: 14, soloMin: 8,  note: "a quick taste of the game" },
+    { years: 4,  name: "Quick",       groupMin: 18, soloMin: 10,  note: "fits a short block or warm-up" },
+    { years: 6,  name: "Short",       groupMin: 27, soloMin: 15, note: "fits a shorter class" },
+    { years: 8,  name: "Half Period", groupMin: 35, soloMin: 19, note: "leaves time for setup and debrief" },
+    { years: 10, name: "Standard",    groupMin: 44, soloMin: 24, note: "the full experience", standard: true },
+    { years: 14, name: "Long",        groupMin: 61, soloMin: 33, note: "two class days" },
+    { years: 20, name: "Marathon",    groupMin: 87, soloMin: 46, note: "three or more class days; see a full business cycle or two" }
+  ],
 
   /* ---------- DIFFICULTY PRESETS ---------- */
   DIFFICULTY: {
@@ -1081,6 +1095,7 @@ const Engine = (function () {
      ===================================================================== */
   function newGame(cfg) {
     const settings = Object.assign({}, DEFAULT_SETTINGS, cfg.settings || {});
+    settings.years = clamp(Math.round(+settings.years || 10), T.minYears || 3, T.maxYears || 25);
     const seed = cfg.seed != null ? cfg.seed : Math.floor(Math.random() * 1e9);
     const s = {
       v: 1, seed, rng: hashSeed(String(seed)), groupName: cfg.groupName || 'Group', createdAt: cfg.now || 0, savedAt: 0,
@@ -1117,7 +1132,7 @@ const Engine = (function () {
     s.decks.civic = { order: shuffle(s, C.CIVIC.map((_, i) => i)), i: 0 };
     s.decks.decision = { order: shuffle(s, C.DECISIONS.map((_, i) => i)), i: 0 };
     s.decks.tenant = { order: shuffle(s, C.TENANT.map((_, i) => i)), i: 0 };
-    const by = T.ballotYears[settings.years] || T.ballotYears[10].filter(y => y < settings.years);
+    const by = ballotYearsFor(settings.years);
     s.ballots.years = settings.ballots ? by.slice() : [];
     s.ballots.order = shuffle(s, C.BALLOTS.map(b => b.id));
     s.players.forEach(p => { p.yr = blankYr(); });
@@ -1127,6 +1142,12 @@ const Engine = (function () {
     return s;
   }
 
+  // Years with a ballot vote: from TUNING.ballotYears if listed, otherwise about every 3rd Year (never the last Year), at least one per game
+  function ballotYearsFor(n) {
+    if (T.ballotYears[n]) return T.ballotYears[n].filter(y => y <= n);
+    const out = []; for (let y = 3; y < n; y += 3) out.push(y);
+    return out.length ? out : [Math.max(1, n - 1)];
+  }
   function blankYr() {
     return { inc: { salary: 0, bonus: 0, rent: 0, interest: 0, other: 0 }, exp: { tax: 0, propTax: 0, maint: 0, loans: 0, insurance: 0, living: 0, housing: 0, rentPaid: 0, fees: 0, other: 0 },
       taxable: 0, withheld: 0, taxPaid: 0, startNW: 0, startDebt: 0, startCredit: 0, notes: [] };
@@ -2698,7 +2719,7 @@ const Engine = (function () {
     lotPrice, listPrice, lotDemand, groupDemand, rentFor, houseCost, buildPrice, canBuild, marketValue, assessedValue, millage, netWorth, totalDebt, realCash,
     propertyValue, homeValue, savingsAPY, loanQuote, creditPremium, incomeTax, yearExpensesEst, livingCost, housingCost, premiums, propTaxLots, salaryNow,
     tradeValues, tradeError, varianceChance, inCorridor, corridorFactor, ownsGroup, lotsOf, railsOwned, lotKind, maxLevel, liquidatable, emergencyLoanOk,
-    oppCostLine, ballotById, cardById, depreciationDeduction, dti, turnsPerYear,
+    oppCostLine, ballotById, cardById, depreciationDeduction, dti, turnsPerYear, ballotYearsFor,
     // test hooks
     _test: { drawEvent, drawCard, applyEffects, startBallot, finishBallot: (s) => finishBallot(s), advance, setFX: () => { FX = []; }, getFX: () => FX, landOn, yearEnd, sendToAudit },
     money, pct, GROUP_LOTS, RAILS, UTILS, OWNABLE, STRATEGIES, STRAT_LABEL, PHASES
@@ -3200,7 +3221,9 @@ if (typeof module !== 'undefined') module.exports = { Engine };
     tradeOffer(pd) { promptTradeOffer(pd); }
   };
 
+  function singleHuman() { return G ? G.players.filter(p => !p.cpu).length <= 1 : !!UI.soloSetup; }
   function passScreen(name, why) {
+    if (singleHuman()) return Promise.resolve(true);
     return openModal({ title: '📱 Pass the device to ' + esc(name), body: '<p style="font-size:20px">' + (why || 'Everyone else, look away for a moment!') + '</p>', buttons: [{ label: 'I\'m ' + esc(name) + ', show me', cls: 'primary', value: true }], noSpeak: true });
   }
 
@@ -3922,41 +3945,65 @@ if (typeof module !== 'undefined') module.exports = { Engine };
   function showStart() {
     const saves = listSaves();
     const el = screen('<div class="hero"><svg width="160" height="160" class="dex-bob" role="img" aria-label="Dex the Beaver"><use href="#dexSym"/></svg><div><h1>DEED &amp; DEBT</h1><p>Buy property, build a career, vote on your town\'s future and learn how money and government really work in <b>' + esc(C.meta.town) + '</b>.</p></div></div>' +
-      '<div class="row" style="justify-content:center"><button type="button" class="primary" style="font-size:24px;padding:10px 34px" id="stNew">▶ New Game</button><button type="button" id="stHow">❔ How to Play</button><button type="button" id="stDeb">📋 Teacher Debrief Guide</button></div>' +
+      '<div class="row" style="justify-content:center"><button type="button" class="primary" style="font-size:24px;padding:10px 34px" id="stNew">▶ New Group Game</button><button type="button" class="go" style="font-size:24px;padding:10px 34px" id="stSolo">🤖 Solo vs. Computer</button><button type="button" id="stHow">❔ How to Play</button><button type="button" id="stDeb">📋 Teacher Debrief Guide</button></div>' +
       '<h2 style="margin-top:24px">Saved games</h2><div class="savelist">' + (saves.length ? saves.map(x => '<div class="saveitem"><b style="font-size:18px">' + esc(x.s.groupName) + '</b><span class="grow">Year ' + Math.max(1, x.s.flow.year) + ' of ' + x.s.settings.years + ' · ' + x.s.players.map(p => esc(p.name)).join(', ') + (x.s.flow.stage === 'results' ? ' · <b>finished</b>' : '') + ' · saved ' + new Date(x.s.savedAt || 0).toLocaleString() + '</span><button type="button" class="primary" data-res="' + esc(x.key) + '">Resume</button><button type="button" class="danger" data-del="' + esc(x.key) + '">Delete</button></div>').join('') : '<p>No saved games yet. Games save automatically on this device after every turn.</p>') + '</div>' +
       '<p class="realworld" style="margin-top:20px">Privacy: use first names or nicknames only. Everything stays on this device. No accounts, no network, no tracking.</p>');
-    $('#stNew', el).onclick = showSetup; $('#stHow', el).onclick = openHowTo; $('#stDeb', el).onclick = () => openDebrief(true);
+    $('#stNew', el).onclick = () => showSetup('group'); $('#stSolo', el).onclick = () => showSetup('solo'); $('#stHow', el).onclick = openHowTo; $('#stDeb', el).onclick = () => openDebrief(true);
     $$('[data-res]', el).forEach(b => b.onclick = () => { const x = listSaves().find(v => v.key === b.dataset.res); if (x) startGame(x.s, true); else toast('That save could not be loaded.'); });
     $$('[data-del]', el).forEach(b => b.onclick = () => openModal({ title: 'Delete this saved game?', body: '<p>This can\'t be undone.</p>', closable: true, buttons: [{ label: 'Cancel' }, { label: 'Delete', cls: 'danger', onClick: () => { deleteSave(b.dataset.del); showStart(); } }] }));
   }
-  function showSetup() {
+  const RIVALS = ['Rival Rosa', 'Banker Bo', 'Tycoon Ty', 'Saver Sam', 'Builder Bea'];
+  function showSetup(mode, prefill) {
+    const solo = mode === 'solo';
+    UI.soloSetup = solo;
     const st = { group: '', players: [{ name: '', token: TOKENS[0], cpu: false }, { name: '', token: TOKENS[1], cpu: false }, { name: '', token: TOKENS[2], cpu: true }, { name: '', token: TOKENS[3], cpu: true }],
-      years: 10, yearTimer: true, yearTimerMin: T.yearTimerMin, turnTimer: true, quickChecks: true, ballots: true, prePost: true, difficulty: 'standard', seed: '' };
-    const draw = () => {
-      const el = screen('<h1>New Game</h1>' +
-        '<fieldset><legend>Group</legend><label>Group name (used for saving) <input type="text" id="sgName" maxlength="24" value="' + esc(st.group) + '" placeholder="e.g. Table 3"></label></fieldset>' +
-        '<fieldset><legend>Players (2 to 6). First names or nicknames only.</legend>' + st.players.map((p, i) => '<div class="prow"><span style="font-size:26px">' + p.token + '</span><input type="text" data-pn="' + i + '" maxlength="16" placeholder="' + (p.cpu ? 'CPU ' + (i + 1) : 'Player ' + (i + 1)) + '" value="' + esc(p.name) + '" aria-label="Player ' + (i + 1) + ' name">' +
+      years: 10, yearTimer: true, yearTimerMin: T.yearTimerMin, turnTimer: true, quickChecks: true, ballots: true, prePost: true, difficulty: 'standard', seed: '', rivals: 3 };
+    if (solo) { st.players = [{ name: (prefill && prefill.name) || '', token: (prefill && prefill.token) || TOKENS[0], cpu: false }]; st.yearTimer = false; st.ballots = true; }
+    else if (prefill && prefill.group) st.group = prefill.group;
+    // estimated minutes scale with the number of Years (based on the Standard length's estimate)
+    const lengthNote = () => {
+      const L = C.GAME_LENGTHS.find(x => x.years === st.years), std = C.GAME_LENGTHS.find(x => x.standard) || C.GAME_LENGTHS[0];
+      const mins = L ? (solo ? L.soloMin : L.groupMin) : Math.round((solo ? std.soloMin : std.groupMin) * st.years / std.years);
+      const votes = E.ballotYearsFor(st.years).length;
+      return 'About ' + mins + ' minutes of play' + (solo ? ' against the computer' : ' for a group of 4') + ', ' + votes + ' ballot vote' + (votes === 1 ? '' : 's') + (L && L.note ? ' · ' + esc(L.note) : '') + (mins > 45 ? '. Saves automatically, so you can finish another day.' : '.');
+    };
+    const soloPlayers = () => [st.players[0]].concat(RIVALS.slice(0, st.rivals).map((n, i) => ({ name: n, token: TOKENS.filter(t => t !== st.players[0].token)[i], cpu: true })));
+    const playerBlock = () => solo
+      ? '<fieldset><legend>You (first name or nickname only)</legend><div class="prow" style="grid-template-columns:40px 1fr auto"><span style="font-size:26px">' + st.players[0].token + '</span><input type="text" id="soloName" data-pn="0" maxlength="16" placeholder="Your name" value="' + esc(st.players[0].name) + '" aria-label="Your name">' +
+        '<div class="tokpick" role="group" aria-label="Your token">' + TOKENS.map(t => '<button type="button" data-tok="0" data-t="' + t + '" aria-pressed="' + (st.players[0].token === t) + '" aria-label="token ' + t + '">' + t + '</button>').join('') + '</div></div>' +
+        '<label>Computer opponents <select id="sgRivals">' + [1, 2, 3, 4, 5].map(n => '<option value="' + n + '" ' + (st.rivals === n ? 'selected' : '') + '>' + n + '</option>').join('') + '</select></label>' +
+        '<p class="realworld">You\'ll play against: ' + RIVALS.slice(0, st.rivals).map(esc).join(', ') + '. Each computer player follows its own strategy (homes, shops, rail lines, saving, or a mix). Can you beat them all?</p></fieldset>'
+      : '<fieldset><legend>Players (2 to 6). First names or nicknames only.</legend>' + st.players.map((p, i) => '<div class="prow"><span style="font-size:26px">' + p.token + '</span><input type="text" data-pn="' + i + '" maxlength="16" placeholder="' + (p.cpu ? 'CPU ' + (i + 1) : 'Player ' + (i + 1)) + '" value="' + esc(p.name) + '" aria-label="Player ' + (i + 1) + ' name">' +
           '<div class="tokpick" role="group" aria-label="Token for player ' + (i + 1) + '">' + TOKENS.map(t => '<button type="button" data-tok="' + i + '" data-t="' + t + '" aria-pressed="' + (p.token === t) + '" aria-label="token ' + t + '">' + t + '</button>').join('') + '</div>' +
           '<label class="chk"><input type="checkbox" data-cpu="' + i + '" ' + (p.cpu ? 'checked' : '') + '> CPU</label>' +
           '<button type="button" class="small danger" data-rm="' + i + '" ' + (st.players.length <= 2 ? 'disabled' : '') + ' aria-label="Remove player ' + (i + 1) + '">✖</button></div>').join('') +
-        '<button type="button" id="sgAdd" ' + (st.players.length >= 6 ? 'disabled' : '') + '>+ Add player</button> <span class="realworld">Tip: CPU players fill empty seats. Turns per Year adjust to group size so a Standard game fits ~45 minutes.</span></fieldset>' +
-        '<fieldset><legend>Teacher settings</legend><div class="grid2"><div>' +
-        '<label>Game length <select id="sgLen"><option value="6" ' + (st.years === 6 ? 'selected' : '') + '>Short: 6 Years (~25 min)</option><option value="10" ' + (st.years === 10 ? 'selected' : '') + '>Standard: 10 Years (~45 min)</option><option value="14" ' + (st.years === 14 ? 'selected' : '') + '>Long: 14 Years (multi-day)</option></select></label>' +
+        '<button type="button" id="sgAdd" ' + (st.players.length >= 6 ? 'disabled' : '') + '>+ Add player</button> <span class="realworld">Tip: CPU players fill empty seats. Turns per Year adjust to group size so a Standard game fits ~45 minutes.</span></fieldset>';
+    const draw = () => {
+      const el = screen('<h1>' + (solo ? '🤖 Solo vs. Computer' : 'New Group Game') + '</h1>' +
+        (solo ? '' : '<fieldset><legend>Group</legend><label>Group name (used for saving) <input type="text" id="sgName" maxlength="24" value="' + esc(st.group) + '" placeholder="e.g. Table 3"></label></fieldset>') +
+        playerBlock() +
+        (solo ? '<details><summary style="font-weight:800;cursor:pointer;min-height:44px;display:flex;align-items:center">⚙️ Game settings: length, difficulty, timers… (tap to open) ▾</summary>' : '') +
+        '<fieldset><legend>' + (solo ? 'Settings' : 'Teacher settings') + '</legend><div class="grid2"><div>' +
+        '<label>Game length <select id="sgLen">' + C.GAME_LENGTHS.map(L => '<option value="' + L.years + '" ' + (!st.custom && st.years === L.years ? 'selected' : '') + '>' + esc(L.name) + ': ' + L.years + ' Years (~' + (solo ? L.soloMin : L.groupMin) + ' min)</option>').join('') + '<option value="custom" ' + (st.custom ? 'selected' : '') + '>Custom…</option></select></label>' +
+        (st.custom ? '<label>Number of Years (' + (T.minYears || 3) + '-' + (T.maxYears || 25) + ') <input type="number" id="sgYears" min="' + (T.minYears || 3) + '" max="' + (T.maxYears || 25) + '" value="' + st.years + '" style="width:90px"></label>' : '') +
+        '<p class="realworld" id="sgLenNote">' + lengthNote() + '</p>' +
         '<label>Difficulty <select id="sgDiff">' + Object.keys(C.DIFFICULTY).map(k => '<option value="' + k + '" ' + (st.difficulty === k ? 'selected' : '') + '>' + C.DIFFICULTY[k].label + '</option>').join('') + '</select></label><p class="realworld" id="sgDiffNote">' + esc(C.DIFFICULTY[st.difficulty].note) + '</p>' +
         '<label>Random seed (optional, for identical games) <input type="text" id="sgSeed" value="' + esc(st.seed) + '" style="width:140px"></label></div><div>' +
         '<label class="chk"><input type="checkbox" id="sgYT" ' + (st.yearTimer ? 'checked' : '') + '> Year timer (gentle wrap-up warning)</label><label>Minutes per Year <input type="number" id="sgYTM" min="1" max="15" value="' + st.yearTimerMin + '" style="width:80px"></label>' +
         '<label class="chk"><input type="checkbox" id="sgTT" ' + (st.turnTimer ? 'checked' : '') + '> Soft turn timer (' + T.turnTimerSec + 's "Hurry up!")</label>' +
         '<label class="chk"><input type="checkbox" id="sgQC" ' + (st.quickChecks ? 'checked' : '') + '> Quick Checks</label>' +
         '<label class="chk"><input type="checkbox" id="sgBal" ' + (st.ballots ? 'checked' : '') + '> Ballot Measures</label>' +
-        '<label class="chk"><input type="checkbox" id="sgPP" ' + (st.prePost ? 'checked' : '') + '> Pre/Post check</label></div></div></fieldset>' +
+        '<label class="chk"><input type="checkbox" id="sgPP" ' + (st.prePost ? 'checked' : '') + '> Pre/Post check</label></div></div></fieldset>' + (solo ? '</details>' : '') +
         '<div class="row"><button type="button" id="sgBack">◀ Back</button><button type="button" id="sgDeb">📋 Debrief Guide</button><span class="grow"></span><button type="button" class="primary" style="font-size:22px" id="sgGo">Start Game ▶</button></div>');
-      $('#sgName', el).oninput = (e) => { st.group = e.target.value; };
+      if (!solo) $('#sgName', el).oninput = (e) => { st.group = e.target.value; };
+      if (solo) $('#sgRivals', el).onchange = (e) => { st.rivals = +e.target.value; draw(); };
       $$('[data-pn]', el).forEach(i => i.oninput = () => { st.players[+i.dataset.pn].name = i.value; });
       $$('[data-tok]', el).forEach(b => b.onclick = () => { const i = +b.dataset.tok; const other = st.players.findIndex((p, j) => j !== i && p.token === b.dataset.t); if (other >= 0) st.players[other].token = st.players[i].token; st.players[i].token = b.dataset.t; draw(); });
       $$('[data-cpu]', el).forEach(c => c.onchange = () => { st.players[+c.dataset.cpu].cpu = c.checked; draw(); });
       $$('[data-rm]', el).forEach(b => b.onclick = () => { st.players.splice(+b.dataset.rm, 1); draw(); });
-      $('#sgAdd', el).onclick = () => { const used = st.players.map(p => p.token); st.players.push({ name: '', token: TOKENS.find(t => !used.includes(t)), cpu: true }); draw(); };
-      $('#sgLen', el).onchange = (e) => { st.years = +e.target.value; };
+      if (!solo) $('#sgAdd', el).onclick = () => { const used = st.players.map(p => p.token); st.players.push({ name: '', token: TOKENS.find(t => !used.includes(t)), cpu: true }); draw(); };
+      $('#sgLen', el).onchange = (e) => { if (e.target.value === 'custom') { st.custom = true; } else { st.custom = false; st.years = +e.target.value; } draw(); setTimeout(() => { const f = $('#sgYears') || $('#sgLen'); if (f) f.focus(); }, 0); };
+      const yi = $('#sgYears', el); if (yi) yi.onchange = () => { st.years = Math.max(T.minYears || 3, Math.min(T.maxYears || 25, Math.round(+yi.value || 10))); yi.value = st.years; $('#sgLenNote', el).innerHTML = lengthNote(); };
       $('#sgDiff', el).onchange = (e) => { st.difficulty = e.target.value; $('#sgDiffNote', el).textContent = C.DIFFICULTY[st.difficulty].note; };
       $('#sgSeed', el).oninput = (e) => { st.seed = e.target.value; };
       $('#sgYT', el).onchange = (e) => { st.yearTimer = e.target.checked; }; $('#sgYTM', el).onchange = (e) => { st.yearTimerMin = Math.max(1, +e.target.value || 4); };
@@ -3964,17 +4011,19 @@ if (typeof module !== 'undefined') module.exports = { Engine };
       $('#sgBal', el).onchange = (e) => { st.ballots = e.target.checked; }; $('#sgPP', el).onchange = (e) => { st.prePost = e.target.checked; };
       $('#sgBack', el).onclick = showStart; $('#sgDeb', el).onclick = () => openDebrief(true);
       $('#sgGo', el).onclick = () => {
-        const group = st.group.trim() || ('Group ' + new Date().toLocaleTimeString().replace(/[^0-9]/g, '').slice(0, 4));
-        const names = st.players.map((p, i) => (p.name.trim() || (p.cpu ? 'CPU ' + (i + 1) : 'Player ' + (i + 1))).slice(0, 16));
+        if (solo && !st.players[0].name.trim()) { toast('Type your first name or a nickname.'); $('#soloName').focus(); return; }
+        const players = solo ? soloPlayers() : st.players;
+        const group = solo ? ('Solo: ' + st.players[0].name.trim()).slice(0, 24) : (st.group.trim() || ('Group ' + new Date().toLocaleTimeString().replace(/[^0-9]/g, '').slice(0, 4)));
+        const names = players.map((p, i) => (p.name.trim() || (p.cpu ? 'CPU ' + (i + 1) : 'Player ' + (i + 1))).slice(0, 16));
         if (new Set(names.map(n => n.toLowerCase())).size !== names.length) { toast('Each player needs a different name.'); return; }
-        if (!st.players.some(p => !p.cpu)) { /* all-CPU demo is allowed */ }
+
         const doStart = () => {
-          const cfg = { groupName: group, seed: st.seed.trim() || Math.floor(Math.random() * 1e9), now: Date.now(), players: st.players.map((p, i) => ({ name: names[i], token: p.token, cpu: p.cpu })),
+          const cfg = { groupName: group, seed: st.seed.trim() || Math.floor(Math.random() * 1e9), now: Date.now(), players: players.map((p, i) => ({ name: names[i], token: p.token, cpu: p.cpu })),
             settings: { years: st.years, yearTimer: st.yearTimer, yearTimerMin: st.yearTimerMin, turnTimer: st.turnTimer, turnTimerSec: T.turnTimerSec, quickChecks: st.quickChecks, ballots: st.ballots, prePost: st.prePost, difficulty: st.difficulty, anim: PREFS.anim || (systemReduced ? 'reduced' : 'normal'), muted: PREFS.muted } };
-          if (st.prePost && st.players.some(p => !p.cpu)) runCheck('pre', cfg.players.map((p, i) => ({ i, name: p.name, cpu: p.cpu })), (answers) => { cfg.prechecks = answers; startGame(E.newGame(cfg), false); });
+          if (st.prePost && players.some(p => !p.cpu)) runCheck('pre', cfg.players.map((p, i) => ({ i, name: p.name, cpu: p.cpu })), (answers) => { cfg.prechecks = answers; startGame(E.newGame(cfg), false); });
           else startGame(E.newGame(cfg), false);
         };
-        if (listSaves().some(x => x.s.groupName === group)) openModal({ title: 'Replace saved game?', body: '<p>A saved game named "' + esc(group) + '" already exists. Starting will replace it.</p>', closable: true, buttons: [{ label: 'Cancel' }, { label: 'Replace it', cls: 'danger', onClick: doStart }] });
+        if (listSaves().some(x => x.s.groupName === group)) openModal({ title: 'Replace saved game?', body: '<p>A saved game named "' + esc(group) + '" already exists. Starting will replace it.' + (solo ? ' (To keep it, go back and press Resume instead.)' : '') + '</p>', closable: true, buttons: [{ label: 'Cancel' }, { label: 'Replace it', cls: 'danger', onClick: doStart }] });
         else doStart();
       };
     };
@@ -4086,7 +4135,7 @@ if (typeof module !== 'undefined') module.exports = { Engine };
     const a = document.createElement('a'); a.href = url; a.download = name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 2000);
     toast('Downloaded ' + name);
   }
-  function showSetupFrom(old) { showSetup(); setTimeout(() => { const n = $('#sgName'); if (n) { n.value = old.groupName + ' 2'; n.dispatchEvent(new Event('input')); } }, 20); }
+  function showSetupFrom(old) { const hs = old.players.filter(p => !p.cpu); if (hs.length === 1) { showSetup('solo', { name: hs[0].name, token: hs[0].token }); return; } showSetup('group'); setTimeout(() => { const n = $('#sgName'); if (n) { n.value = old.groupName + ' 2'; n.dispatchEvent(new Event('input')); } }, 20); }
 
   /* ---------- debrief guide ---------- */
   function openDebrief(general) {

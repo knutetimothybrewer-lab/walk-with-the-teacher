@@ -30,6 +30,26 @@ There's also a 5-question pre/post check and a printable Debrief Guide.
 
 **Setup:** open `index.html` (or your GitHub Pages link). No accounts, no internet and no student data leave the device.
 
+## Ways to play
+
+- **▶ New Group Game:** 2–6 students share one device and pass it each turn. CPU players can fill empty seats.
+- **🤖 Solo vs. Computer:** one student against 1–5 computer rivals (Rival Rosa, Banker Bo, Tycoon Ty, Saver Sam and Builder Bea). Each rival follows a different strategy. Solo games skip the pass-the-device screens and run about half as long, because computer turns are quick. Use them for homework, make-up work for absent students, early finishers or a 1:1 device day. Students still get the full Results page, reflections and "Copy for Google Classroom/Canvas."
+
+**Choosing a length** (times are estimated play time, not counting about 2–3 minutes of career picks):
+
+| Length | Years | Group of 4 | Solo | Good for |
+|---|---|---|---|---|
+| Sprint | 3 | ~14 min | ~8 min | A first look, or the last 15 minutes of class |
+| Quick | 4 | ~18 min | ~10 min | A warm-up or a short block |
+| Short | 6 | ~27 min | ~15 min | A shorter class with time to debrief |
+| Half Period | 8 | ~35 min | ~19 min | A 45-minute class including setup and debrief |
+| Standard | 10 | ~44 min | ~24 min | The full experience (a whole period, or a period plus a few minutes the next day) |
+| Long | 14 | ~61 min | ~33 min | Two class days |
+| Marathon | 20 | ~87 min | ~46 min | A multi-day project with more economic cycles and six ballot votes |
+| Custom | 3–25 | | | Anything else |
+
+Shorter games still include at least one Life/Economy Event per Year, at least one ballot vote, an Annual Report every Year, and the full Results page. Longer games show the business cycle repeating and let compound interest and loan payoffs play out.
+
 ## Suggested 45-minute lesson
 
 | Time | What happens |
@@ -41,7 +61,7 @@ There's also a 5-question pre/post check and a printable Debrief Guide.
 **Timing notes:**
 - The simulator estimates a Standard game at about 44 minutes of play, plus 2–3 minutes for career picks (see `sim/REPORT.md`).
 - If the setup and debrief must both fit in a single 45-minute period, choose one of these:
-  - Use **Short (6 Years)**.
+  - Use **Half Period (8 Years, ~35 min)** or **Short (6 Years, ~27 min)**.
   - Keep the **Year timer** on (default 4 minutes per Year) and plan to press **End Game Now** at the 40-minute mark.
   - Play over two class days. Games resume from the start screen on the same device.
 - Turns per Year adjust to group size so the length stays about the same: 2 players get 4 turns each per Year, 3 players get 3, 4 players get 2, and 5–6 players alternate between 1 and 2.
