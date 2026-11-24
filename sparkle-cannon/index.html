@@ -590,11 +590,11 @@ function updateFX(dt, raw) {
   FX.comboT -= dt; if (FX.comboT <= 0) FX.combo = 0;
   CAM.shake = damp(CAM.shake, 0, 7, raw); CAM.punch = damp(CAM.punch, 0, 8, raw);
 }
-function addShake(a) { CAM.shake = Math.min(1, CAM.shake + a * (settings.calm ? 0.35 : 1)); CAM.punch = Math.min(1, CAM.punch + a * (settings.calm ? 0.4 : 1.2)); }
+function addShake(a) { a *= theme.motion; CAM.shake = Math.min(1, CAM.shake + a * (settings.calm ? 0.35 : 1)); CAM.punch = Math.min(1, CAM.punch + a * (settings.calm ? 0.4 : 1.2)); }
 
 /* The big one. size 1 = normal toy, ~2.4 = mega finale. */
 function explosion(x, z, size, partsSpec, partColors) {
-  const T = theme, mul = Quality.particleMul * (settings.calm ? 0.75 : 1), n = k => Math.max(1, Math.round(k * size * mul)), y = 1.0;
+  const T = theme, mul = Quality.particleMul * (settings.calm ? 0.75 : 1) * (0.5 + 0.5 * T.motion), n = k => Math.max(1, Math.round(k * size * mul)), y = 1.0;
   const sp = [2 * Math.sqrt(size), 8.5 * Math.sqrt(size)], up = [6, 13 + 2 * size];
   emit('paper', n(34), x, y, z, { sp, up, colors: T.pal });
   emit('streamer', n(8), x, y, z, { sp, up: [8, 15], colors: T.pal });
@@ -640,14 +640,19 @@ const THEMES = [{
     mel: [72, 0, 76, 79, 0, 76, 72, 0,  77, 0, 81, 84, 0, 81, 77, 0,  79, 0, 83, 86, 0, 83, 79, 77,  76, 0, 72, 0, 79, 0, 84, 0,
           76, 0, 79, 84, 0, 79, 76, 0,  81, 0, 84, 89, 0, 84, 81, 0,  83, 0, 86, 91, 0, 86, 83, 79,  84, 0, 79, 76, 72, 0, 0, 0],
     bass: [48, 0, 55, 0, 48, 0, 55, 0,  53, 0, 60, 0, 53, 0, 60, 0,  55, 0, 62, 0, 55, 0, 59, 0,  48, 0, 55, 0, 52, 0, 55, 0] },
+  bads: ['robot', 'car'], megaKind: 'robot', motion: 1,
+  yard: { grass: '#72d351', stripes: ['rgba(255,255,160,.07)', 'rgba(0,90,40,.06)'], blotch: ['rgba(190,240,110,.22)', 'rgba(40,150,70,.16)', 'rgba(255,250,150,.12)'],
+    fence: '#ffffff', rail: '#f3efe6', hedge: ['#3fa34d', '#4db85a', '#369447'], flowers: ['#ff5d8f', '#ffffff', '#ffd23f', '#c77dff', '#ff9f1c', '#6ecbff'],
+    stem: '#3d9b4a', tufts: ['#4fb84a', '#8be06a', '#3fa34d'], wood: '#e8a65a', sand: '#f8e2a6', stone: '#e9e2d0', flies: 3 },
   build(g) {
+    const C = this.yard;
     // lawn with soft blotches and mowing stripes
     const tex = canvasTex(1024, 1024, (c, w, h) => {
-      c.fillStyle = '#72d351'; c.fillRect(0, 0, w, h);
-      for (let i = 0; i < 24; i++) { c.fillStyle = i % 2 ? 'rgba(255,255,160,.07)' : 'rgba(0,90,40,.06)'; c.fillRect(0, i * h / 24, w, h / 24); }
+      c.fillStyle = C.grass; c.fillRect(0, 0, w, h);
+      for (let i = 0; i < 24; i++) { c.fillStyle = C.stripes[i % 2]; c.fillRect(0, i * h / 24, w, h / 24); }
       for (let i = 0; i < 260; i++) {
         const x = rand(w), y = rand(h), r = rand(18, 80), gr = c.createRadialGradient(x, y, 0, x, y, r);
-        gr.addColorStop(0, pick(['rgba(190,240,110,.22)', 'rgba(40,150,70,.16)', 'rgba(255,250,150,.12)'])); gr.addColorStop(1, 'rgba(0,0,0,0)');
+        gr.addColorStop(0, pick(C.blotch)); gr.addColorStop(1, 'rgba(0,0,0,0)');
         c.fillStyle = gr; c.fillRect(x - r, y - r, r * 2, r * 2);
       }
     });
@@ -661,12 +666,12 @@ const THEMES = [{
     // picket fence + hedge along the far edge
     const fz = B.farZ + 1.3, pickets = [], hedge = [];
     for (let x = -B.farX - 2; x <= B.farX + 2; x += 0.72) pickets.push({ x, y: 0.7, z: fz, ry: rand(-0.05, 0.05) });
-    inst(rbox(0.52, 1.4, 0.14, 0.07), mat('#ffffff', { r: 0.6 }), pickets);
-    const rail = mesh(rbox(1, 0.16, 0.1, 0.04), mat('#f3efe6', { r: 0.6 }), 0, 0.85, fz - 0.1); rail.scale.x = B.farX * 2 + 6; g.add(rail);
-    for (let x = -B.farX - 3; x <= B.farX + 3; x += 1.7) hedge.push({ x: x + rand(-0.3, 0.3), y: 0.5, z: fz - 1.4 + rand(-0.3, 0.3), sx: rand(1.2, 1.6), sy: rand(0.9, 1.3), sz: 1.2, c: pick(['#3fa34d', '#4db85a', '#369447']) });
+    inst(rbox(0.52, 1.4, 0.14, 0.07), mat(C.fence, { r: 0.6 }), pickets);
+    const rail = mesh(rbox(1, 0.16, 0.1, 0.04), mat(C.rail, { r: 0.6 }), 0, 0.85, fz - 0.1); rail.scale.x = B.farX * 2 + 6; g.add(rail);
+    for (let x = -B.farX - 3; x <= B.farX + 3; x += 1.7) hedge.push({ x: x + rand(-0.3, 0.3), y: 0.5, z: fz - 1.4 + rand(-0.3, 0.3), sx: rand(1.2, 1.6), sy: rand(0.9, 1.3), sz: 1.2, c: pick(C.hedge) });
     inst(SPH, new THREE.MeshStandardMaterial({ roughness: 0.9 }), hedge);
     // flowers (mostly around the rim so the middle stays readable)
-    const stems = [], heads = [], mids = [], FC = ['#ff5d8f', '#ffffff', '#ffd23f', '#c77dff', '#ff9f1c', '#6ecbff'];
+    const stems = [], heads = [], mids = [], FC = C.flowers;
     for (let i = 0; i < 70; i++) {
       const edge = i < 52, x = rand(-B.outX, B.outX), z = rand(B.farZ + 2, B.outZ1 - 1.5);
       if (edge && Math.abs(x) < B.inX * 0.8 && z > B.inZ0 + 1.5 && z < B.inZ1 - 1.5) continue;
@@ -677,26 +682,26 @@ const THEMES = [{
       mids.push({ x, y: hgt + 0.03, z: z + 0.02, sx: 0.09 * s, sy: 0.06 * s, sz: 0.09 * s });
     }
     const petalsGeo = geo('flower', () => { const s = new THREE.Shape(); for (let i = 0; i <= 60; i++) { const a = i / 60 * TAU, r = 0.15 + 0.1 * Math.abs(Math.cos(a * 2.5)); s[i ? 'lineTo' : 'moveTo'](Math.cos(a) * r, Math.sin(a) * r); } return new THREE.ShapeGeometry(s); });
-    inst(CYL, mat('#3d9b4a'), stems, false);
+    inst(CYL, mat(C.stem), stems, false);
     inst(petalsGeo, new THREE.MeshStandardMaterial({ roughness: 0.7, side: THREE.DoubleSide }), heads);
     inst(SPH, mat('#ffb703'), mids, false);
     // grass tufts
     const tufts = [];
-    for (let i = 0; i < 90; i++) { const x = rand(-B.outX, B.outX), z = rand(B.farZ + 1, B.outZ1); if (Math.hypot(x, z) > 2.8) tufts.push({ x, y: 0.13, z, sx: 0.07, sy: rand(0.2, 0.34), sz: 0.07, rz: rand(-0.3, 0.3), c: pick(['#4fb84a', '#8be06a', '#3fa34d']) }); }
+    for (let i = 0; i < 90; i++) { const x = rand(-B.outX, B.outX), z = rand(B.farZ + 1, B.outZ1); if (Math.hypot(x, z) > 2.8) tufts.push({ x, y: 0.13, z, sx: 0.07, sy: rand(0.2, 0.34), sz: 0.07, rz: rand(-0.3, 0.3), c: pick(C.tufts) }); }
     inst(CONE, new THREE.MeshStandardMaterial({ roughness: 0.9 }), tufts, false);
     // sandbox with bucket, shovel and a tiny castle
     const sb = new THREE.Group(); sb.position.set(-B.inX + 1.6, 0, B.inZ0 + 1.4); sb.rotation.y = 0.18; g.add(sb);
-    const wood = mat('#e8a65a', { r: 0.7 }), sand = mesh(rbox(4, 0.2, 3.2, 0.08), mat('#f8e2a6', { r: 1 }), 0, 0.06, 0); sand.receiveShadow = true; sb.add(sand);
+    const wood = mat(C.wood, { r: 0.7 }), sand = mesh(rbox(4, 0.2, 3.2, 0.08), mat(C.sand, { r: 1 }), 0, 0.06, 0); sand.receiveShadow = true; sb.add(sand);
     [[0, -1.7, 4.5, 0.4], [0, 1.7, 4.5, 0.4], [-2.1, 0, 0.4, 3.8], [2.1, 0, 0.4, 3.8]].forEach(([x, z, w, d]) => { const m = mesh(rbox(w, 0.42, d, 0.14), wood, x, 0.2, z); m.receiveShadow = true; sb.add(m); });
     sb.add(mesh(CYL, mat('#ff5d8f'), -1.1, 0.42, -0.6, 0.36, 0.55, 0.36), mesh(torus(0.36, 0.05), mat('#ffffff'), -1.1, 0.7, -0.6));
     sb.children[sb.children.length - 1].rotation.x = Math.PI / 2;
     sb.add(mesh(CONE, mat('#f1d48a', { r: 1 }), 0.8, 0.42, 0.3, 0.45, 0.6, 0.45), mesh(CONE, mat('#f1d48a', { r: 1 }), 1.35, 0.32, -0.3, 0.3, 0.4, 0.3));
     const shovel = mesh(rbox(0.12, 0.08, 0.9, 0.03), mat('#4cc9f0'), 0.1, 0.22, -0.9); shovel.rotation.y = 0.7; sb.add(shovel, mesh(rbox(0.36, 0.07, 0.4, 0.03), mat('#4cc9f0'), 0.42, 0.22, -1.26));
     // stepping stones
-    for (let i = 0; i < 5; i++) { const a = 0.2 + i * 0.42, m = mesh(CYL, mat('#e9e2d0', { r: 0.9 }), B.inX * 0.92 - Math.cos(a) * 3.2, 0.03, B.inZ1 - Math.sin(a) * 4.4 + 2.4, rand(0.55, 0.75), 0.07, rand(0.5, 0.65)); m.receiveShadow = true; m.castShadow = false; g.add(m); }
+    for (let i = 0; i < 5; i++) { const a = 0.2 + i * 0.42, m = mesh(CYL, mat(C.stone, { r: 0.9 }), B.inX * 0.92 - Math.cos(a) * 3.2, 0.03, B.inZ1 - Math.sin(a) * 4.4 + 2.4, rand(0.55, 0.75), 0.07, rand(0.5, 0.65)); m.receiveShadow = true; m.castShadow = false; g.add(m); }
     // butterflies for a bit of life
     const flies = [];
-    for (let i = 0; i < 3; i++) {
+    for (let i = 0; i < C.flies; i++) {
       const b = new THREE.Group(), wm = new THREE.MeshStandardMaterial({ color: pick(['#ff8fb0', '#ffe066', '#b388ff']), side: THREE.DoubleSide, roughness: 0.6 }), wg = geo('wing', () => new THREE.CircleGeometry(0.22, 12).translate(0.2, 0, 0).rotateX(-Math.PI / 2));
       const l = new THREE.Mesh(wg, wm), r = new THREE.Mesh(wg, wm); r.scale.x = -1; l.castShadow = r.castShadow = true; b.add(l, r); g.add(b);
       flies.push({ b, l, r, ph: rand(TAU), cx: rand(-B.inX, B.inX), cz: rand(B.inZ0, B.inZ1) });
@@ -707,6 +712,24 @@ const THEMES = [{
     } };
   },
 }];
+/* Moonlight garden: the same yard, recoloured, with different bad toys and calmer motion. */
+THEMES.push({
+  name: 'moonlight', bg: '#2f8f96',
+  hemi: [0xd9e4ff, 0x2f8f96, 1.45], key: [0xe6dcff, 2.0],
+  pal: ['#7ae7ff', '#c9a7ff', '#ff9fd6', '#ffffff', '#9dffd0', '#ffe9a8', '#6f8cff'],
+  starPal: ['#fff3b0', '#ffffff', '#c9f4ff'], glitPal: ['#c9f4ff', '#e3d0ff', '#ffd6f0', '#ffffff'], ringPal: [0xc9f4ff, 0xe3d0ff, 0xffd6f0],
+  special: { type: 'petal', n: 16, colors: ['#c9a7ff', '#ffffff', '#7ae7ff', '#ff9fd6'], sc: [0.9, 1.5] },
+  music: { bpm: 104,
+    mel: [69, 0, 72, 0, 76, 0, 72, 0,  65, 0, 69, 0, 72, 0, 69, 0,  67, 0, 71, 0, 74, 0, 71, 0,  64, 0, 67, 0, 72, 0, 0, 0,
+          76, 0, 72, 0, 69, 0, 72, 0,  77, 0, 72, 0, 69, 0, 65, 0,  74, 0, 71, 0, 67, 0, 71, 0,  72, 0, 0, 0, 76, 0, 0, 0],
+    bass: [45, 0, 52, 0, 45, 0, 52, 0,  41, 0, 48, 0, 41, 0, 48, 0,  43, 0, 50, 0, 43, 0, 50, 0,  48, 0, 55, 0, 48, 0, 52, 0] },
+  bads: ['jack', 'teddy'], megaKind: 'teddy',
+  motion: 0.6,                                   // 1 = full bounce; lower = gentler walk cycles, less shake, less confetti
+  yard: { grass: '#3fb5a8', stripes: ['rgba(190,255,240,.06)', 'rgba(20,40,110,.07)'], blotch: ['rgba(140,240,220,.18)', 'rgba(40,70,150,.16)', 'rgba(200,180,255,.12)'],
+    fence: '#d9ccff', rail: '#c4b5f2', hedge: ['#2b7f8c', '#32919a', '#276f80'], flowers: ['#ffffff', '#c9a7ff', '#7ae7ff', '#ff9fd6', '#ffe9a8', '#9dffd0'],
+    stem: '#24806f', tufts: ['#2c8f86', '#5fd0bd', '#278078'], wood: '#b48be0', sand: '#e8dcff', stone: '#cfd6f5', flies: 1 },
+  build: THEMES[0].build,
+});
 let theme = THEMES[0], themeGroup = null, themeTick = null;
 function setTheme(i) {
   theme = THEMES[i % THEMES.length];
@@ -842,12 +865,66 @@ const BAD = {
       } };
   },
 };
+// crown of lamps for mega toys: one goes out with each hit
+function megaCrown(head, y, z = 0.1) {
+  const lamps = [];
+  for (let i = 0; i < 5; i++) { const l = mesh(SPH, mat('#ffe066', { e: 0.45 }), (i - 2) * 0.2, y, z, 0.085); head.add(l); lamps.push(l); head.add(mesh(CONE, mat('#ffd23f', { r: 0.3 }), (i - 2) * 0.2, y + 0.12, z - 0.22, 0.1, 0.3, 0.1)); }
+  return lamps;
+}
+BAD.jack = function () {                                          // sneaky jack-in-the-box
+  const root = new THREE.Group(), body = new THREE.Group(); root.add(body);
+  const box = new THREE.Group(); body.add(box);
+  box.add(mesh(rbox(1.15, 0.85, 1.15, 0.14), mat('#7b5cf0', { r: 0.4 }), 0, 0.43, 0));
+  for (const s of [-1, 1]) box.add(mesh(rbox(0.16, 0.87, 1.17, 0.06), mat('#ffd23f', { r: 0.4 }), s * 0.36, 0.43, 0));
+  box.add(mesh(starGeo(0.22, 0.1, 0.05), mat('#ff9fd6'), 0, 0.45, 0.6));
+  const lid = mesh(rbox(1.15, 0.12, 1.15, 0.05), mat('#ffd23f', { r: 0.4 }), 0, 1.3, -0.72); lid.rotation.x = -1.25; box.add(lid);
+  const crank = new THREE.Group(); crank.position.set(0.6, 0.45, 0); box.add(crank);
+  crank.add(mesh(CYL, mat('#d7dcff'), 0.1, 0, 0, 0.04, 0.2, 0.04), mesh(SPH, mat('#ff5d8f'), 0.22, 0.14, 0, 0.1)); crank.children[0].rotation.z = Math.PI / 2;
+  const spring = mesh(springGeo, mat('#d7dcff', { r: 0.3 }), 0, 1.05, 0, 1.7, 1.0, 1.7); body.add(spring);
+  const head = new THREE.Group(); head.position.y = 1.55; body.add(head);
+  head.add(mesh(SPH, mat('#ffe3c9', { r: 0.4 }), 0, 0, 0, 0.5), mesh(SPH, mat('#ff5d5d', { r: 0.3 }), 0, -0.05, 0.5, 0.1));
+  const grin = mesh(torus(0.2, 0.035, Math.PI), M.black, 0, -0.16, 0.42); grin.rotation.set(-0.2, 0, Math.PI); head.add(grin);
+  const hat = [-1, 1].map(s => { const h = new THREE.Group(); h.position.set(s * 0.2, 0.36, 0); h.rotation.z = -s * 0.75; h.add(mesh(CONE, mat(s < 0 ? '#39c2c9' : '#ff5d8f', { r: 0.4 }), 0, 0.25, 0, 0.26, 0.6, 0.26), mesh(SPH, mat('#ffd23f', { e: 0.3 }), 0, 0.58, 0, 0.1)); head.add(h); return h; });
+  const E = makeEyes(head, { x: 0.19, y: 0.12, z: 0.4, r: 0.16, tilt: -0.35, lid: '#ffe3c9' });
+  return { root, body, E, lamps: [], brows: brows(head, 0.2, 0.36, 0.44, 0.24), height: 2.3, radius: 0.85, faceCam: true,
+    parts: [['spring', 4], ['button', 3], ['bolt', 2], ['puff', 3]], partColors: ['#7b5cf0', '#ffd23f', '#ff5d8f', '#39c2c9'],
+    anim(o, t, dt, moving) {
+      const m = theme.motion; o.walk += dt * (moving ? 8 : 2.5) * (0.5 + 0.5 * m); const w = o.walk, a = (moving ? 1 : 0.25) * m, hop = Math.abs(Math.sin(w));
+      box.position.y = hop * 0.3 * a; box.rotation.z = Math.sin(w) * 0.08 * a;
+      const st = 1 + Math.sin(w * 2 + 1) * 0.3 * a - (o.state === 'grab' ? 0.4 : 0);          // head boings on its spring
+      spring.scale.y = st; spring.position.y = box.position.y + 0.8 + 0.25 * st; head.position.y = box.position.y + 1.05 + 0.5 * st;
+      head.rotation.z = Math.sin(w * 2) * 0.16 * a; hat[0].rotation.x = hat[1].rotation.x = Math.sin(w * 2 + 2) * 0.25 * a; crank.rotation.x += dt * 4 * m;
+    } };
+};
+BAD.teddy = function (mega) {                                     // mischievous teddy in a tiny bandit mask
+  const root = new THREE.Group(), body = new THREE.Group(); root.add(body);
+  const fur = mega ? '#8c6bd9' : '#b9773f', pale = mega ? '#cdbcff' : '#f0cf9f', F = mat(fur, { r: 0.75 }), Pm = mat(pale, { r: 0.75 });
+  const legs = [-1, 1].map(s => { const l = mesh(SPH, F, s * 0.3, 0.2, 0.12, 0.24, 0.2, 0.34); body.add(l); return l; });
+  const up = new THREE.Group(); body.add(up);
+  up.add(mesh(SPH, F, 0, 0.72, 0, 0.62, 0.6, 0.55), mesh(SPH, Pm, 0, 0.68, 0.32, 0.4, 0.42, 0.3));
+  const arms = [-1, 1].map(s => { const a = new THREE.Group(); a.position.set(s * 0.56, 1.0, 0.05); a.add(mesh(SPH, F, s * 0.1, -0.24, 0, 0.17, 0.34, 0.17)); up.add(a); return a; });
+  const head = new THREE.Group(); head.position.set(0, 1.5, 0.08); up.add(head);
+  head.add(mesh(SPH, F, 0, 0, 0, 0.55, 0.5, 0.5), mesh(SPH, Pm, 0, -0.14, 0.4, 0.24, 0.18, 0.2), mesh(SPH, M.black, 0, -0.06, 0.58, 0.075, 0.06, 0.05));
+  for (const s of [-1, 1]) head.add(mesh(SPH, F, s * 0.42, 0.4, 0, 0.2, 0.2, 0.12), mesh(SPH, Pm, s * 0.42, 0.4, 0.07, 0.11, 0.11, 0.07), mesh(SPH, M.black, s * 0.2, 0.12, 0.36, 0.25, 0.2, 0.14));
+  head.add(mesh(SPH, M.black, 0, 0.12, 0.44, 0.16, 0.11, 0.08));                    // mask bridge between the two eye patches
+  const knot = mesh(SPH, M.black, 0, 0.12, -0.52, 0.1); head.add(knot, mesh(CONE, M.black, -0.12, 0.05, -0.6, 0.07, 0.3, 0.07), mesh(CONE, M.black, 0.12, 0.05, -0.6, 0.07, 0.3, 0.07));
+  const E = makeEyes(head, { x: 0.2, y: 0.12, z: 0.42, r: 0.15, tilt: -0.35, lid: '#1d1430' });
+  return { root, body, E, lamps: mega ? megaCrown(head, 0.52) : [], brows: brows(head, 0.2, 0.34, 0.47, 0.22), height: 2.1, radius: 0.8, faceCam: true,
+    parts: [['puff', 8], ['button', 3], ['spring', 1]], partColors: [fur, pale, '#ffd23f', '#ff9fd6'],
+    anim(o, t, dt, moving) {
+      const m = theme.motion; o.walk += dt * (moving ? 9 : 2.5) * (0.5 + 0.5 * m); const w = o.walk, a = (moving ? 1 : 0.25) * m;
+      legs[0].position.y = 0.2 + Math.max(0, Math.sin(w)) * 0.16 * a; legs[1].position.y = 0.2 + Math.max(0, -Math.sin(w)) * 0.16 * a;
+      up.rotation.z = Math.sin(w) * 0.16 * a; up.position.y = Math.abs(Math.cos(w)) * 0.07 * a; head.rotation.z = -Math.sin(w) * 0.08 * a;
+      const lift = o.carry || o.state === 'taunt' ? 2.5 : 0;
+      arms[0].rotation.x = Math.sin(w) * 0.8 * a; arms[1].rotation.x = -Math.sin(w) * 0.8 * a; arms[0].rotation.z = -lift; arms[1].rotation.z = lift;
+    } };
+};
 function spawnBad(kind, mega = false) {
   const m = BAD[kind](mega), sc = (mega ? 2.0 : 1) * Diff.scale, p = edgePoint();
   const hp = mega ? Diff.megaHp : 1;
   const b = Object.assign(m, { kind, mega, x: p.x, z: p.z, hp, maxHp: hp, state: 'seek', stateT: 0, target: null, carry: null, scale: sc, speedMul: rand(0.85, 1.15) * (mega ? 0.55 : 1),
     ph: rand(TAU), walk: rand(TAU), heading: 0, hitCool: 0, sq: 0, sqV: 0, exit: null, wander: null });
-  b.radius *= sc; m.lamps.forEach((l, i) => l.visible = i < hp);
+  b.radius *= sc; m.lamps.forEach((l, i) => l.visible = i < Math.ceil(hp * 5 / b.maxHp));
   addBlob(m.root, 0.9); m.root.scale.setScalar(sc); m.root.position.set(b.x, 0, b.z); scene.add(m.root); bads.push(b);
   if (mega) Sound.boing();
   return b;
@@ -924,7 +1001,7 @@ function hitBad(b, chained) {
   if (b.hp <= 0) { b.state = 'antic'; b.stateT = 0; b.root.rotation.z = 0; Sound.antic(); }
   else {                                                        // mega toy: wobble more with every hit
     if (b.state !== 'ouch') b.prev = b.state; b.state = 'ouch'; b.stateT = 0; b.sqV = 9;
-    b.lamps.forEach((l, i) => l.visible = i < b.hp);
+    b.lamps.forEach((l, i) => l.visible = i < Math.ceil(b.hp * 5 / b.maxHp));
     emit('star', 8, b.x, b.height * b.scale * 0.7, b.z, { sp: [2, 6], up: [5, 9], colors: theme.starPal });
     emit('glitter', 14, b.x, b.height * b.scale * 0.7, b.z, { sp: [2, 6], up: [1, 7], colors: theme.glitPal, life: [0.6, 1.2] });
     flash(b.x, 2, b.z, 0.5); addShake(0.15); Sound.boing(); Sound.pop();
@@ -1042,7 +1119,7 @@ function impact(s) { emit('glitter', Math.round(10 * Quality.particleMul), s.x, 
 const Diff = {
   hist: [], n: 0,
   // every level adds a little; the adaptive part can cancel only half of it
-  ramp() { return Math.min(0.5, settings.level * 0.05); },
+  ramp() { return settings.level * 0.05; },                 // no ceiling: it keeps climbing forever
   record(hit) {
     this.hist.push(hit ? 1 : 0); if (this.hist.length > 20) this.hist.shift();
     if (this.hist.length >= 6) {
@@ -1053,17 +1130,18 @@ const Diff = {
     this.apply(); if (++this.n % 12 === 0) save();
   },
   apply() {
-    const c = settings.calm, e = clamp(settings.diff + this.ramp(), 0, 1), d = c ? Math.min(e, 0.35) : e;
-    this.d = d;
-    this.maxBad = Math.min(c ? 2 : 4, 1 + Math.floor(d * 3.2));   // 1..4 bad toys, never a crowd
-    this.speed = lerp(1.25, 2.9, d) * (c ? 0.7 : 1);              // toy walking speed
-    this.wiggle = lerp(0, 1.2, d);                                // how much they weave
-    this.scale = lerp(1.35, 1.0, d);                              // bigger targets when he's missing
-    this.spawnDelay = lerp(4.5, 1.6, d) * (c ? 1.5 : 1);
-    this.cone = lerp(0.8, 0.4, d);                                // aim-assist half-angle (radians)
-    this.tapR = lerp(3.4, 2.3, d);                                // "close enough" tap radius
-    this.megaHp = d < 0.33 ? 3 : d < 0.66 ? 4 : 5;
-    this.megaEvery = c ? 10 : Math.max(4, 7 - Math.floor(settings.level / 3));   // mega toys show up sooner on later levels
+    const c = settings.calm, e = Math.max(0, settings.diff + this.ramp()), d0 = c ? Math.min(e, 0.35) : e;
+    const d = Math.min(d0, 1), x = Math.max(0, d0 - 1);          // x = how far past the old maximum we are
+    this.d = d0;
+    this.maxBad = Math.min(c ? 2 : 12, 1 + Math.floor(d * 3.2) + Math.floor(x * 2));   // 12 is the frame-rate ceiling
+    this.speed = (lerp(1.25, 2.9, d) + x * 1.2) * (c ? 0.7 : 1);              // toy walking speed
+    this.wiggle = Math.min(2.2, lerp(0, 1.2, d) + x * 0.4);                                // how much they weave
+    this.scale = Math.max(0.65, lerp(1.35, 1.0, d) - x * 0.1);                              // bigger targets when he's missing
+    this.spawnDelay = lerp(4.5, 1.6, d) / (1 + x) * (c ? 1.5 : 1);
+    this.cone = Math.max(0.12, lerp(0.8, 0.4, d) - x * 0.1);                                // aim-assist half-angle (radians)
+    this.tapR = Math.max(1.2, lerp(3.4, 2.3, d) - x * 0.4);                                // "close enough" tap radius
+    this.megaHp = (d < 0.33 ? 3 : d < 0.66 ? 4 : 5) + Math.floor(x * 2);
+    this.megaEvery = c ? 10 : Math.max(3, 7 - Math.floor(settings.level / 3));   // mega toys show up sooner on later levels
   },
 };
 Diff.apply();
@@ -1088,7 +1166,7 @@ const COOKIE_URL = cookieImage(160, false);
 $('playCookie').src = cookieImage(640, true);
 const jarEl = $('jar'), slotsEl = $('slots'), flyLayer = $('flyLayer'), wipeEl = $('wipe');
 function buildJar(n) {
-  slotsEl.innerHTML = ''; const cols = 4, rows = Math.ceil(n / cols), w = 100 / cols;
+  slotsEl.innerHTML = ''; const cols = Math.max(4, Math.ceil(Math.sqrt(n))), rows = Math.ceil(n / cols), w = 100 / cols;
   for (let i = 0; i < n; i++) {
     const row = (i / cols) | 0, inRow = Math.min(cols, n - row * cols), col = i % cols, el = document.createElement('img');
     el.src = COOKIE_URL; el.draggable = false; el.className = 'ghost'; el.style.width = (w * 1.12) + '%';
@@ -1128,7 +1206,7 @@ const Game = { state: 'start', collected: 0, need: 10, sinceMega: 0, badT: 3, co
 const bigStar = (() => {
   const g = new THREE.Group(), s = mesh(starGeo(1.5, 0.68, 0.45), mat('#ffd23f', { r: 0.25, e: 0.3 })); g.add(s); g.rotation.x = -0.75; g.position.set(0, 4.6, -2.6); g.visible = false; scene.add(g); return { g, s };
 })();
-function needFor(level) { return Math.min(16, 10 + Math.floor(level / 2)); }   // a few more cookies as levels go up
+function needFor(level) { return Math.min(40, 10 + Math.floor(level / 2)); }   // a few more cookies as levels go up
 function startLevel() {
   Diff.apply();
   Game.state = 'play'; Game.collected = 0; Game.need = needFor(settings.level); Game.badT = 3; Game.cookieT = 0.3; Game.celebT = 0;
@@ -1166,8 +1244,8 @@ function updateGame(dt) {
     Game.badT -= dt;
     if (bads.length < Diff.maxBad && Game.badT <= 0) {
       const mega = Game.sinceMega >= Diff.megaEvery && !bads.some(b => b.mega);
-      if (mega) { Game.sinceMega = 0; spawnBad('robot', true); }
-      else { const k = Game.lastBad === 'robot' ? (Math.random() < 0.75 ? 'car' : 'robot') : (Math.random() < 0.75 ? 'robot' : 'car'); Game.lastBad = k; spawnBad(k); }
+      if (mega) { Game.sinceMega = 0; spawnBad(theme.megaKind, true); }
+      else { const [k1, k2] = theme.bads, k = Game.lastBad === k1 ? (Math.random() < 0.75 ? k2 : k1) : (Math.random() < 0.75 ? k1 : k2); Game.lastBad = k; spawnBad(k); }
       Game.badT = Diff.spawnDelay * rand(0.7, 1.3);
     }
   } else if (Game.state === 'celebrate') {
